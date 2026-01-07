@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dad's Slots v2.1</title>
+    
+    <link rel="stylesheet" href="css/slots.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div id="toastContainer" class="toast-container"></div>
+        
+        <div class="top-bar">
+            <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
+            <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)">
+                </select>
+            <button class="sys-btn warning" onclick="window.location.href='index.html'">🏠 LOBBY</button>
+        </div>
+
+        <div class="header">
+            <div class="stats-box">
+                <div class="label">BALANCE</div>
+                <div id="coinCount" class="value highlight">$100.00</div>
+            </div>
+            <div class="stats-box">
+                <div class="label">WIN</div>
+                <div id="totalBet" class="value">$0.00</div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <canvas id="slotCanvas"></canvas>
+            
+            <div id="winOverlay" class="win-overlay"></div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <button class="circle-btn" onclick="changeBet(-0.20)">-</button>
+                <div class="display-panel">
+                    <span class="label">BET</span>
+                    <span id="betAmount">$1.00</span>
+                </div>
+                <button class="circle-btn" onclick="changeBet(0.20)">+</button>
+            </div>
+
+            <button id="spinButton" class="spin-btn" onclick="spin()">SPIN</button>
+
+            <div class="control-group">
+                <button class="circle-btn" onclick="changePaylines(-1)">-</button>
+                <div class="display-panel">
+                    <span class="label">LINES</span>
+                    <span id="paylineCount">20</span>
+                </div>
+                <button class="circle-btn" onclick="changePaylines(1)">+</button>
+            </div>
+        </div>
+
+        <div id="rulesModal" class="modal-overlay" onclick="toggleRules()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h2>PAYTABLE</h2>
+                    <button class="close-btn" onclick="toggleRules()">×</button>
+                </div>
+                <div id="paytableContent" class="modal-body"></div>
+                <div class="modal-footer">
+                    <p>Wilds (W) substitute for all symbols except Scatters.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="js/themes.js"></script>
+    <script src="js/slots.js"></script>
+</body>
+</html>
