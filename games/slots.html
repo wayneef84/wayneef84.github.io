@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dad's Slots v2.1</title>
+    <title>Dad's Slots v2.0</title>
     
-    <link rel="stylesheet" href="css/slots.css">
+    <link rel="stylesheet" href="../css/slots.css">
 </head>
 <body>
     <div class="game-wrapper">
@@ -14,8 +14,9 @@
         <div class="top-bar">
             <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
             <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)">
-                </select>
-            <button class="sys-btn warning" onclick="window.location.href='index.html'">🏠 LOBBY</button>
+            </select>
+            <button id="audioButton" class="sys-btn" onclick="toggleAudio()" title="Toggle Sound">🔊</button>
+            <button class="sys-btn warning" onclick="window.location.href='../index.html'">🏠 LOBBY</button>
         </div>
 
         <div class="header">
@@ -24,7 +25,7 @@
                 <div id="coinCount" class="value highlight">$100.00</div>
             </div>
             <div class="stats-box">
-                <div class="label">WIN</div>
+                <div class="label">TOTAL WON</div>
                 <div id="totalBet" class="value">$0.00</div>
             </div>
         </div>
@@ -66,13 +67,17 @@
                 <div id="paytableContent" class="modal-body"></div>
                 <div class="modal-footer">
                     <p>Wilds (W) substitute for all symbols except Scatters.</p>
+                    <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">
+                        Balance saves automatically between sessions.
+                    </p>
                 </div>
             </div>
         </div>
 
     </div>
     
-    <script src="js/themes.js"></script>
-    <script src="js/slots.js"></script>
+    <script src="../js/slots_audio.js"></script>
+    <script src="../js/themes.js"></script>
+    <script src="../js/slots.js"></script>
 </body>
 </html>

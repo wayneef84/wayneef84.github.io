@@ -1,13 +1,14 @@
 /**
  * DAD'S SLOTS - GAME ENGINE
  * File: js/slots.js
- * Version: 2.1 (Restructured)
+ * Version: 2.0 (Audio + Persistence)
  */
 
 const GAME_CONFIG = {
     grid: { reels: 5, rows: 4, symbolSize: 100 },
     economy: { startingBalance: 100.00, minBet: 0.20, maxBet: 5.00, betIncrement: 0.20 },
-    math: { baseWinChance: 50 } 
+    math: { baseWinChance: 50 },
+    storage: { key: 'dadsSlots_saveData' }
 };
 
 class SlotMachine {
@@ -15,13 +16,24 @@ class SlotMachine {
         this.canvas = document.getElementById('slotCanvas');
         this.ctx = this.canvas.getContext('2d');
         
-        this.playerBalance = GAME_CONFIG.economy.startingBalance;
-        this.currentBet = 1.00;
+        // Initialize audio (requires user interaction to fully enable)
+        this.audio = typeof slotAudio !== 'undefined' ? slotAudio : null;
+        
+        // Load saved data or use defaults
+        const savedData = this.loadGame();
+        this.playerBalance = savedData.balance ?? GAME_CONFIG.economy.startingBalance;
+        this.currentBet = savedData.bet ?? 1.00;
+        this.activePaylinesCount = savedData.paylines ?? 20;
+        this.currentThemeKey = savedData.theme ?? 'fantasy';
+        this.audioEnabled = savedData.audioEnabled ?? true;
+        this.totalSpins = savedData.totalSpins ?? 0;
+        this.totalWon = savedData.totalWon ?? 0;
+        this.biggestWin = savedData.biggestWin ?? 0;
+        
         this.dadModeWinChance = GAME_CONFIG.math.baseWinChance;
         this.isSpinning = false;
         
         // PAYLINE SETUP
-        this.activePaylinesCount = 20; 
         this.paylinePatterns = this.generatePaylines();
         
         // LOAD LIBRARY
@@ -32,39 +44,89 @@ class SlotMachine {
             this.library = this.getBackupLibrary();
         }
 
-        this.currentThemeKey = 'fantasy';
         this.reelOffsets = new Array(GAME_CONFIG.grid.reels).fill(0);
         this.reelSpeeds = new Array(GAME_CONFIG.grid.reels).fill(0);
-        this.reelData = []; 
+        this.reelData = [];
+        this.reelsStoppedCount = 0;
         
-        this.winningLines = []; 
-        this.winningCells = new Set(); 
-        this.particles = []; 
-        this.animationFrameId = null; 
-        this.winTimestamp = 0; 
+        this.winningLines = [];
+        this.winningCells = new Set();
+        this.particles = [];
+        this.animationFrameId = null;
+        this.winTimestamp = 0;
+        this.spinTickInterval = null;
         
         this.populateThemeDropdown();
         this.loadTheme(this.currentThemeKey);
-        this.generateReelData(); 
+        this.generateReelData();
         this.resizeCanvas();
         this.updateUI();
+        this.updateAudioButton();
         
         window.addEventListener('resize', () => this.resizeCanvas());
+        
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', () => this.saveGame());
+        
+        console.log("🎰 Dad's Slots v2.0 loaded!");
+        if (savedData.balance) {
+            console.log(`💰 Restored balance: $${this.playerBalance.toFixed(2)}`);
+        }
+    }
+
+    // --- PERSISTENCE ---
+    saveGame() {
+        const data = {
+            balance: this.playerBalance,
+            bet: this.currentBet,
+            paylines: this.activePaylinesCount,
+            theme: this.currentThemeKey,
+            audioEnabled: this.audioEnabled,
+            totalSpins: this.totalSpins,
+            totalWon: this.totalWon,
+            biggestWin: this.biggestWin,
+            lastSaved: new Date().toISOString()
+        };
+        try {
+            localStorage.setItem(GAME_CONFIG.storage.key, JSON.stringify(data));
+        } catch (e) {
+            console.warn("Could not save game:", e);
+        }
+    }
+
+    loadGame() {
+        try {
+            const raw = localStorage.getItem(GAME_CONFIG.storage.key);
+            if (raw) {
+                return JSON.parse(raw);
+            }
+        } catch (e) {
+            console.warn("Could not load save data:", e);
+        }
+        return {};
+    }
+
+    clearSaveData() {
+        try {
+            localStorage.removeItem(GAME_CONFIG.storage.key);
+        } catch (e) {
+            console.warn("Could not clear save:", e);
+        }
     }
 
     // --- PAYLINE DEFINITIONS (5x4 Grid) ---
     generatePaylines() {
         return [
-            { id: 1, path: [0,0,0,0,0] }, 
-            { id: 2, path: [1,1,1,1,1] }, 
-            { id: 3, path: [2,2,2,2,2] }, 
-            { id: 4, path: [3,3,3,3,3] }, 
-            { id: 5, path: [0,1,2,1,0] }, 
-            { id: 6, path: [3,2,1,2,3] }, 
-            { id: 7, path: [0,1,0,1,0] }, 
-            { id: 8, path: [3,2,3,2,3] }, 
-            { id: 9, path: [0,1,2,3,3] }, 
-            { id: 10, path: [3,2,1,0,0] }, 
+            { id: 1, path: [0,0,0,0,0] },
+            { id: 2, path: [1,1,1,1,1] },
+            { id: 3, path: [2,2,2,2,2] },
+            { id: 4, path: [3,3,3,3,3] },
+            { id: 5, path: [0,1,2,1,0] },
+            { id: 6, path: [3,2,1,2,3] },
+            { id: 7, path: [0,1,0,1,0] },
+            { id: 8, path: [3,2,3,2,3] },
+            { id: 9, path: [0,1,2,3,3] },
+            { id: 10, path: [3,2,1,0,0] },
             { id: 11, path: [1,2,1,2,1] },
             { id: 12, path: [2,1,2,1,2] },
             { id: 13, path: [1,0,1,0,1] },
@@ -96,7 +158,7 @@ class SlotMachine {
             const option = document.createElement('option');
             option.value = key;
             const icon = data.symbols && data.symbols[6] ? data.symbols[6].name : '🎰';
-            option.textContent = `${icon} ${data.name}`; 
+            option.textContent = `${icon} ${data.name}`;
             selector.appendChild(option);
         }
     }
@@ -134,6 +196,10 @@ class SlotMachine {
     toggleRules() {
         const modal = document.getElementById('rulesModal');
         modal.classList.toggle('active');
+        if (this.audio) {
+            this.audio.init();
+            this.audio.playClick();
+        }
     }
 
     changeTheme(newThemeKey) {
@@ -144,13 +210,38 @@ class SlotMachine {
         this.generateReelData();
         this.drawGameFrame();
         this.showToast(`Theme: ${this.currentTheme.name}`, "info");
+        this.saveGame();
+        if (this.audio) this.audio.playClick();
+    }
+
+    toggleAudio() {
+        if (this.audio) {
+            this.audio.init();
+            this.audioEnabled = this.audio.toggle();
+            this.updateAudioButton();
+            this.saveGame();
+            if (this.audioEnabled) this.audio.playClick();
+        }
+    }
+
+    updateAudioButton() {
+        const btn = document.getElementById('audioButton');
+        if (btn) {
+            btn.textContent = this.audioEnabled ? '🔊' : '🔇';
+            btn.title = this.audioEnabled ? 'Sound On' : 'Sound Off';
+        }
     }
 
     resetGame() {
-        if (confirm("Reset your balance to $100.00?")) {
+        if (this.audio) this.audio.playClick();
+        if (confirm("Reset your balance to $100.00?\n\nThis will also reset your stats.")) {
             this.playerBalance = 100.00;
+            this.totalSpins = 0;
+            this.totalWon = 0;
+            this.biggestWin = 0;
             this.winningLines = [];
             this.winningCells.clear();
+            this.clearSaveData();
             this.updateUI();
             this.showToast("Balance Reset!", "info");
             this.drawGameFrame();
@@ -182,30 +273,47 @@ class SlotMachine {
     }
 
     spin() {
+        // Initialize audio on first interaction
+        if (this.audio) this.audio.init();
+        
         if (this.isSpinning) {
             this.quickStop();
             return;
         }
         
         if (this.playerBalance < this.currentBet) {
-             this.showToast("Not enough credits!", "error");
-             return;
+            this.showToast("Not enough credits!", "error");
+            if (this.audio) this.audio.playError();
+            return;
         }
 
         this.playerBalance -= this.currentBet;
+        this.totalSpins++;
         this.isSpinning = true;
         this.winningLines = [];
         this.winningCells.clear();
         this.particles = [];
+        this.reelsStoppedCount = 0;
         
         const overlay = document.getElementById('winOverlay');
         if(overlay) overlay.classList.remove('active');
         
-        this.updateUI(); 
+        this.updateUI();
+        
+        if (this.audio) this.audio.playClick();
 
         this.reelSpeeds = this.reelSpeeds.map(() => 20 + Math.random() * 10);
         this.generateReelData();
         this.spinStartTime = Date.now();
+        
+        // Start spin tick sound
+        if (this.audio && this.audioEnabled) {
+            this.spinTickInterval = setInterval(() => {
+                if (this.isSpinning && this.audio) {
+                    this.audio.playSpinTick();
+                }
+            }, 80);
+        }
         
         if(this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
         this.animate();
@@ -218,16 +326,20 @@ class SlotMachine {
 
     animate() {
         const now = Date.now();
-        const duration = 2000; 
+        const duration = 2000;
         let stillSpinning = false;
 
         for (let i = 0; i < GAME_CONFIG.grid.reels; i++) {
             if (this.reelSpeeds[i] > 0) {
                 if (now - this.spinStartTime > duration + (i * 300)) {
-                    this.reelSpeeds[i] *= 0.90; 
+                    this.reelSpeeds[i] *= 0.90;
                     if (this.reelSpeeds[i] < 0.5) {
                         this.reelSpeeds[i] = 0;
-                        this.reelOffsets[i] = 0; 
+                        this.reelOffsets[i] = 0;
+                        
+                        // Play reel stop sound
+                        this.reelsStoppedCount++;
+                        if (this.audio) this.audio.playReelStop();
                     } else {
                         stillSpinning = true;
                     }
@@ -255,17 +367,31 @@ class SlotMachine {
 
     endSpin() {
         this.isSpinning = false;
+        
+        // Stop spin tick sound
+        if (this.spinTickInterval) {
+            clearInterval(this.spinTickInterval);
+            this.spinTickInterval = null;
+        }
+        
         this.evaluateWins();
         this.updateUI();
+        this.saveGame();
+        
         if (this.winningLines.length > 0) {
-            this.winTimestamp = Date.now(); 
+            this.winTimestamp = Date.now();
             this.startWinAnimation();
+        } else {
+            // Small delay then play no-win sound
+            setTimeout(() => {
+                if (this.audio) this.audio.playNoWin();
+            }, 200);
         }
     }
 
     startWinAnimation() {
         const loop = () => {
-            if (this.isSpinning) return; 
+            if (this.isSpinning) return;
             this.drawGameFrame();
             
             if (this.particles.length > 0) {
@@ -302,7 +428,7 @@ class SlotMachine {
                 
                 this.winningLines.push({
                     patternIndex: i,
-                    path: pattern.path, 
+                    path: pattern.path,
                     count: matchData.count,
                     color: this.currentTheme.paylineColor || '#fff'
                 });
@@ -316,18 +442,31 @@ class SlotMachine {
 
         if (totalWin > 0) {
             this.playerBalance += totalWin;
+            this.totalWon += totalWin;
+            if (totalWin > this.biggestWin) {
+                this.biggestWin = totalWin;
+            }
+            
+            const isJackpot = totalWin >= (this.currentBet * 50);
             const isBigWin = totalWin >= (this.currentBet * 10);
             
             const overlay = document.getElementById('winOverlay');
             if(overlay) overlay.classList.add('active');
 
-            if (isBigWin) {
+            if (isJackpot) {
+                this.showToast(`🎉 JACKPOT: $${totalWin.toFixed(2)}!`, "win");
+                this.triggerScreenFlash('big');
+                this.spawnParticles(150);
+                if (this.audio) this.audio.playJackpot();
+            } else if (isBigWin) {
                 this.showToast(`💎 BIG WIN: $${totalWin.toFixed(2)}!`, "win");
                 this.triggerScreenFlash('big');
-                this.spawnParticles(100); 
+                this.spawnParticles(100);
+                if (this.audio) this.audio.playWinBig();
             } else {
                 this.showToast(`WIN: $${totalWin.toFixed(2)}`, "win");
                 this.triggerScreenFlash('small');
+                if (this.audio) this.audio.playWinSmall();
             }
         }
     }
@@ -336,7 +475,7 @@ class SlotMachine {
         const overlay = document.getElementById('winOverlay');
         if (!overlay) return;
         overlay.classList.remove('flash-small', 'flash-big');
-        void overlay.offsetWidth; 
+        void overlay.offsetWidth;
         if (type === 'big') overlay.classList.add('flash-big');
         else overlay.classList.add('flash-small');
         setTimeout(() => { overlay.classList.remove('flash-small', 'flash-big'); }, 1000);
@@ -423,7 +562,7 @@ class SlotMachine {
     }
 
     drawPaylines() {
-        const time = Date.now() / 20; 
+        const time = Date.now() / 20;
         
         this.winningLines.forEach(win => {
             this.ctx.beginPath();
@@ -442,18 +581,18 @@ class SlotMachine {
 
             // Glow
             this.ctx.lineWidth = 12;
-            this.ctx.strokeStyle = win.color; 
+            this.ctx.strokeStyle = win.color;
             this.ctx.globalAlpha = 0.5;
             this.ctx.stroke();
             this.ctx.globalAlpha = 1.0;
 
             // Core
             this.ctx.lineWidth = 4;
-            this.ctx.strokeStyle = '#fff'; 
-            this.ctx.setLineDash([20, 20]); 
-            this.ctx.lineDashOffset = -time; 
+            this.ctx.strokeStyle = '#fff';
+            this.ctx.setLineDash([20, 20]);
+            this.ctx.lineDashOffset = -time;
             this.ctx.stroke();
-            this.ctx.setLineDash([]); 
+            this.ctx.setLineDash([]);
         });
     }
 
@@ -473,7 +612,7 @@ class SlotMachine {
             drawX = centerX - (w / 2);
             drawY = centerY - (h / 2);
         } else if (this.winningLines.length > 0 && !this.isSpinning) {
-            this.ctx.globalAlpha = 0.3; 
+            this.ctx.globalAlpha = 0.3;
         }
 
         this.ctx.fillStyle = '#222';
@@ -502,7 +641,7 @@ class SlotMachine {
             drawX = centerX - (w / 2);
             drawY = centerY - (h / 2);
         } else if (this.winningLines.length > 0 && !this.isSpinning) {
-            this.ctx.globalAlpha = 0.3; 
+            this.ctx.globalAlpha = 0.3;
         }
 
         this.ctx.fillStyle = '#fff';
@@ -524,14 +663,17 @@ class SlotMachine {
     updateUI() {
         const coinEl = document.getElementById('coinCount');
         const betEl = document.getElementById('betAmount');
+        const winEl = document.getElementById('totalBet');
+        
         if(coinEl) coinEl.textContent = `$${this.playerBalance.toFixed(2)}`;
         if(betEl) betEl.textContent = `$${this.currentBet.toFixed(2)}`;
+        if(winEl) winEl.textContent = `$${this.totalWon.toFixed(2)}`;
         
         const btn = document.getElementById('spinButton');
         if(btn) {
             if (this.isSpinning) {
                 btn.textContent = "STOP";
-                btn.disabled = false; 
+                btn.disabled = false;
             } else {
                 btn.textContent = "SPIN";
                 btn.disabled = false;
@@ -547,6 +689,8 @@ class SlotMachine {
         if (newBet >= GAME_CONFIG.economy.minBet && newBet <= GAME_CONFIG.economy.maxBet) {
             this.currentBet = newBet;
             this.updateUI();
+            this.saveGame();
+            if (this.audio) this.audio.playClick();
         }
     }
 
@@ -556,7 +700,9 @@ class SlotMachine {
         if (newCount >= 1 && newCount <= 20) {
             this.activePaylinesCount = newCount;
             this.updateUI();
+            this.saveGame();
             this.showToast(`Active Lines: ${this.activePaylinesCount}`, "info");
+            if (this.audio) this.audio.playClick();
         }
     }
 
@@ -581,18 +727,18 @@ class Particle {
         this.y = y;
         this.color = color || '#ffd700';
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 15 + 5; 
+        const speed = Math.random() * 15 + 5;
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
         this.gravity = 0.8;
-        this.life = 1.0; 
+        this.life = 1.0;
     }
 
     update() {
         this.x += this.vx;
         this.y += this.vy;
         this.vy += this.gravity;
-        this.life -= 0.02; 
+        this.life -= 0.02;
     }
 
     draw(ctx) {
@@ -600,7 +746,7 @@ class Particle {
         ctx.globalAlpha = Math.max(0, this.life);
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 8, 0, Math.PI * 2); 
+        ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
     }
@@ -614,3 +760,4 @@ function changePaylines(val) { if(game) game.changePaylines(val); }
 function resetGame() { if(game) game.resetGame(); }
 function changeTheme(val) { if(game) game.changeTheme(val); }
 function toggleRules() { if(game) game.toggleRules(); }
+function toggleAudio() { if(game) game.toggleAudio(); }

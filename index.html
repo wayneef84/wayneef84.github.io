@@ -3,44 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad's Casino - Lobby</title>
+    <title>Dad's Casino</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             background-color: #000;
             color: #ffd700;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
             text-align: center;
             background-image: radial-gradient(circle, #2a0a40 0%, #000 100%);
         }
-        h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 5px; }
-        p { color: #aaa; margin-bottom: 40px; }
-        .enter-btn {
-            padding: 20px 50px;
-            font-size: 1.5rem;
-            background: #ffd700;
-            color: #000;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
+        
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 5px; 
+            text-transform: uppercase; 
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
-        .enter-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+        
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .game-card {
+            background: linear-gradient(145deg, #1a0a2e, #0d0518);
+            border: 2px solid #b8860b;
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-decoration: none;
+            color: #ffd700;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+        }
+        
+        .game-card.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            border-color: #444;
+        }
+        
+        .game-icon {
+            font-size: 3rem;
+        }
+        
+        .game-name {
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .game-status {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+        
+        .game-card:not(.disabled) .game-status {
+            color: #4ade80;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            color: #555;
+            font-size: 0.75rem;
+        }
+        
+        .footer a {
+            color: #b8860b;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <h1>Dad's Casino</h1>
-    <p>Version 2.1 • Mobile Ready • High Volatility</p>
+    <h1>🎰 Dad's Casino</h1>
+    <p class="subtitle">Version 2.0 • Pick Your Game</p>
     
-    <a href="slots.html" class="enter-btn">PLAY SLOTS</a>
+    <div class="game-grid">
+        <a href="games/slots.html" class="game-card">
+            <span class="game-icon">🎰</span>
+            <span class="game-name">Slots</span>
+            <span class="game-status">● Play Now</span>
+        </a>
+        
+        <div class="game-card disabled">
+            <span class="game-icon">🃏</span>
+            <span class="game-name">Blackjack</span>
+            <span class="game-status">Coming Soon</span>
+        </div>
+        
+        <div class="game-card disabled">
+            <span class="game-icon">🎲</span>
+            <span class="game-name">Craps</span>
+            <span class="game-status">Coming Soon</span>
+        </div>
+        
+        <div class="game-card disabled">
+            <span class="game-icon">♠️</span>
+            <span class="game-name">Video Poker</span>
+            <span class="game-status">Coming Soon</span>
+        </div>
+    </div>
+    
+    <div class="footer">
+        Made with ❤️ for Dad
+    </div>
 </body>
 </html>
