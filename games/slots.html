@@ -2,81 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dad's Slots v2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a0b2e">
+    <title>Dad's Slots v3.0</title>
     
     <link rel="stylesheet" href="../css/slots.css">
 </head>
 <body>
-    <div class="game-wrapper">
-        <div id="toastContainer" class="toast-container"></div>
-        
-        <div class="top-bar">
-            <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
-            <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)">
-            </select>
-            <button id="audioButton" class="sys-btn" onclick="toggleAudio()" title="Toggle Sound">🔊</button>
-            <button class="sys-btn warning" onclick="window.location.href='../index.html'">🏠 LOBBY</button>
-        </div>
 
-        <div class="header">
-            <div class="stats-box">
-                <div class="label">BALANCE</div>
-                <div id="coinCount" class="value highlight">$100.00</div>
+    <div id="gameScaler">
+
+        <div class="game-wrapper">
+
+            <div id="toastContainer" class="toast-container"></div>
+
+            <div class="bolt tl">✦</div>
+            <div class="bolt tr">✦</div>
+            <div class="bolt bl">✦</div>
+            <div class="bolt br">✦</div>
+
+            <!-- Floating sparkles -->
+            <div class="sparkle-container">
+                <div class="sparkle" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+                <div class="sparkle" style="left: 85%; top: 35%; animation-delay: 1.5s;"></div>
+                <div class="sparkle" style="left: 25%; top: 70%; animation-delay: 3s;"></div>
+                <div class="sparkle" style="left: 70%; top: 60%; animation-delay: 2s;"></div>
+                <div class="sparkle" style="left: 50%; top: 45%; animation-delay: 4s;"></div>
+                <div class="sparkle" style="left: 92%; top: 85%; animation-delay: 2.5s;"></div>
             </div>
-            <div class="stats-box">
-                <div class="label">TOTAL WON</div>
-                <div id="totalBet" class="value">$0.00</div>
+
+            <div class="top-bar">
+                <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
+                <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)"></select>
+                <button id="audioButton" class="sys-btn" onclick="toggleAudio()">🔊</button>
+                <button class="sys-btn warning" onclick="window.location.href='/'">🏠</button>
             </div>
-        </div>
 
-        <div class="game-container">
-            <canvas id="slotCanvas"></canvas>
-            
-            <div id="winOverlay" class="win-overlay"></div>
-        </div>
-
-        <div class="controls">
-            <div class="control-group">
-                <button class="circle-btn" onclick="changeBet(-0.20)">-</button>
-                <div class="display-panel">
-                    <span class="label">BET</span>
-                    <span id="betAmount">$1.00</span>
+            <div class="header">
+                <div class="stats-box">
+                    <div class="label">BALANCE</div>
+                    <div id="coinCount" class="value highlight">$100.00</div>
                 </div>
-                <button class="circle-btn" onclick="changeBet(0.20)">+</button>
-            </div>
-
-            <button id="spinButton" class="spin-btn" onclick="spin()">SPIN</button>
-
-            <div class="control-group">
-                <button class="circle-btn" onclick="changePaylines(-1)">-</button>
-                <div class="display-panel">
-                    <span class="label">LINES</span>
-                    <span id="paylineCount">20</span>
-                </div>
-                <button class="circle-btn" onclick="changePaylines(1)">+</button>
-            </div>
-        </div>
-
-        <div id="rulesModal" class="modal-overlay" onclick="toggleRules()">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <div class="modal-header">
-                    <h2>PAYTABLE</h2>
-                    <button class="close-btn" onclick="toggleRules()">×</button>
-                </div>
-                <div id="paytableContent" class="modal-body"></div>
-                <div class="modal-footer">
-                    <p>Wilds (W) substitute for all symbols except Scatters.</p>
-                    <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">
-                        Balance saves automatically between sessions.
-                    </p>
+                <div class="stats-box">
+                    <div class="label">TOTAL WON</div>
+                    <div id="totalWon" class="value">$0.00</div>
                 </div>
             </div>
-        </div>
 
-    </div>
-    
-    <script src="../js/slots_audio.js"></script>
+            <div class="game-container">
+                <canvas id="slotCanvas"></canvas>
+                <div id="winOverlay" class="win-overlay"></div>
+                <div id="bonusIndicator" class="bonus-indicator"></div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <button class="circle-btn" onclick="changeBet(-0.50)">−</button>
+                    <div class="display-panel">
+                        <span class="label">BET</span>
+                        <span id="betAmount">$1.00</span>
+                    </div>
+                    <button class="circle-btn" onclick="changeBet(0.50)">+</button>
+                </div>
+
+                <button id="spinButton" class="spin-btn" onclick="spin()">SPIN</button>
+
+                <div class="control-group">
+                    <button class="circle-btn" onclick="changePaylines(-1)">−</button>
+                    <div class="display-panel">
+                        <span class="label">LINES</span>
+                        <span id="paylineCount">20</span>
+                    </div>
+                    <button class="circle-btn" onclick="changePaylines(1)">+</button>
+                </div>
+            </div>
+
+            <div id="rulesModal" class="modal-overlay" onclick="toggleRules()">
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h2>PAYTABLE</h2>
+                        <button class="close-btn" onclick="toggleRules()">×</button>
+                    </div>
+                    <div id="paytableContent" class="modal-body"></div>
+                    <div class="modal-footer">
+                        <p>Wilds (W) substitute for all symbols except Scatters.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div> <script src="../js/slots_audio.js"></script>
     <script src="../js/themes.js"></script>
     <script src="../js/slots.js"></script>
 </body>

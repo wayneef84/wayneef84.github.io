@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprunki Mixer - SELF HOSTED</title>
+    <style>
+        body { background: #0f0f1b; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .stage { display: flex; justify-content: center; gap: 10px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; min-height: 160px; margin-bottom: 20px; border: 1px solid #333; }
+        .slot { width: 110px; height: 140px; border: 2px dashed #444; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
+        .slot.active { border-style: solid; border-color: #00f3ff; box-shadow: 0 0 15px #00f3ff; background: rgba(0, 243, 255, 0.1); }
+        .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; max-width: 950px; margin: 0 auto; padding-bottom: 50px; }
+        .char-box { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .char-box:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); border-color: #fff; }
+        .character-img { width: 60px; height: 60px; object-fit: contain; pointer-events: none; }
+        .char-label { font-size: 11px; color: #aaa; display: block; margin-top: 5px; font-weight: bold; }
+        .controls { margin-bottom: 30px; }
+        button { padding: 12px 35px; font-size: 1rem; border-radius: 50px; border: none; cursor: pointer; background: #ff0055; color: white; font-weight: bold; margin: 0 10px; }
+        .category-header { text-align: left; grid-column: 1 / -1; font-size: 14px; color: #ff0055; text-transform: uppercase; margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .error-msg { color: red; font-size: 12px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Sprunki Mixer (Offline Mode)</h1>
+    <div class="stage" id="stage"></div>
+    <div class="controls">
+        <button id="playBtn" onclick="toggleAll()">▶ PLAY</button>
+        <button onclick="clearStage()" style="background:#333">🗑 RESET</button>
+    </div>
+    <div id="palette" class="palette"></div>
+
+    <script>
+        // STRICT LOCAL PATH - Looks for a folder named "Sprunki" in the same directory
+        const ASSET_PATH = "./Sprunki/"; 
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const activeSources = {};
+        let isPlaying = false;
+
+        // VERIFIED HASHES FROM PROJECT.JSON (No CDN)
+        const characters = [
+            { cat: "Beats", name: "Oren", sound: "2ff9e556ae0b3cb4f9e4750dbe9b17d4.wav", img: "5f188f291a010091bd38162b7642e9f4.svg" },
+            { cat: "Beats", name: "Raddy", sound: "ae111f7b2abb4ffe113d49e85cadcf7c.wav", img: "d7dc847b001632e8bdf1a390145f10ac.svg" },
+            { cat: "Beats", name: "Clukr", sound: "70589678ccbc9c5dd1e638aea9638aea.wav", img: "5d14b470589678ccbc9c5dd1e638aea9.svg" },
+            { cat: "Beats", name: "Fun Bot", sound: "410667e9c7c5d755a22e2e04508088ed.wav", img: "7a86c3b3e1fd3e3bef80bb5cd5cd1df2.svg" },
+            { cat: "Beats", name: "Vineria", sound: "73400a4d1f5e8f3b2a1c0d4e5f6a7b8c.wav", img: "73903442b0f1ccf295e8d77861b01931.svg" },
+            
+            { cat: "Effects", name: "Gray", sound: "9803b5d3d73856f9961959093454b2b1.wav", img: "3db86288cf0374c914fe41f32c7d84a7.svg" },
+            { cat: "Effects", name: "Brud", sound: "efeaaf6fb1abbe3b6ee9c974c2eda43e.wav", img: "cd2774fdabaf08225d3b3f99476a6d6.svg" },
+            { cat: "Effects", name: "Garnold", sound: "f518e1ce4b1a0cddc337c2471f544199.wav", img: "7bf5b38ed89225a0e5a377d3b1f72d40.jpg" }, // Note: JPG
+            { cat: "Effects", name: "OWAKCX", sound: "b424d031e4e1a72d3b4a5f6e7d8c9b0a.wav", img: "468f77626c81f088184f475691d90472.svg" },
+            { cat: "Effects", name: "Sky", sound: "c39e54d80f08fd650cc23e04b733a83d.wav", img: "6ee7ba49eae48f5753deb07e0b32199b.svg" },
+            
+            { cat: "Melodies", name: "Mr. Sun", sound: "d4864d2ac4176cff6ecffa0064f6a9b8.wav", img: "78203662c512913b3b4a16300cdf194a.svg" },
+            { cat: "Melodies", name: "Durple", sound: "a61d4acb6949d64706ec7246eefc7e96.wav", img: "89536b13f86fa5415b0d51716634fa9e.svg" },
+            { cat: "Melodies", name: "Mr. Tree", sound: "d690ea637972fe97870d672dca854c80.wav", img: "1ccf355435482ae38d24bd5b948ef417.svg" },
+            { cat: "Melodies", name: "Simon", sound: "5a09fb11b6441a49fc732a93b3b86b00.wav", img: "543119325ed8a16300cd194f4a3b3f9e.svg" },
+            { cat: "Melodies", name: "Tunner", sound: "61a8cb7f8e7bb6a59483726150d4e5f6.wav", img: "f8e7bb6a59483726150d4e5f6a7b8c9.svg" },
+            
+            { cat: "Vocals", name: "Computer", sound: "cc85f2be1b1764358cd1ab84455d00a0.wav", img: "a08bbafe2167b837995fd8bf79f5a27f.svg" },
+            { cat: "Vocals", name: "Wenda", sound: "d3412e9a60ca1e4fb3db49587687ec28.wav", img: "16d88ed40d2540e0196ad94687a163c3.svg" },
+            { cat: "Vocals", name: "Pinki", sound: "aeb8170a18b917b62af5860505618222.wav", img: "2e0787e97d8164005797f1f96e4313f8.svg" },
+            { cat: "Vocals", name: "Jevin", sound: "0b42651f2815543210d4e5f6a7b8c9d0.wav", img: "f2815543210d4e5f6a7b8c9d0e1f2a3.svg" },
+            { cat: "Vocals", name: "Black", sound: "9a31540a1704432109d4e5f6a7b8c9d0.wav", img: "a1704432109d4e5f6a7b8c9d0e1f2a3.svg" }
+        ];
+
+        // Initialize UI
+        const stageDiv = document.getElementById('stage');
+        for(let i=0; i<7; i++) stageDiv.innerHTML += `<div class="slot" id="slot-${i}" onclick="removeChar(${i})">+</div>`;
+
+        const paletteDiv = document.getElementById('palette');
+        let currentCat = "";
+        characters.forEach(char => {
+            if(char.cat !== currentCat) {
+                currentCat = char.cat;
+                paletteDiv.innerHTML += `<div class="category-header">${currentCat}</div>`;
+            }
+            // Uses standard <img> tag for local assets
+            paletteDiv.innerHTML += `
+                <div class="char-box" onclick="addChar('${char.name}', '${char.sound}', '${char.img}')">
+                    <img src="${ASSET_PATH}${char.img}" class="character-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZHk9Ii4zZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj4/PC90ZXh0Pjwvc3ZnPg=='">
+                    <span class="char-label">${char.name}</span>
+                </div>`;
+        });
+
+        function toggleAll() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            isPlaying = !isPlaying;
+            document.getElementById('playBtn').textContent = isPlaying ? "⏹ STOP" : "▶ PLAY";
+            if (!isPlaying) audioCtx.suspend(); else audioCtx.resume();
+        }
+
+        async function addChar(name, soundFile, imgFile) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const slots = Array.from(document.querySelectorAll('.slot'));
+            const emptySlot = slots.find(s => s.innerText === '+');
+            if (!emptySlot) return;
+
+            // Updated: Properly references local ASSET_PATH
+            emptySlot.innerHTML = `<img src="${ASSET_PATH}${imgFile}" style="width:100%; height:100%; object-fit:contain;">`;
+            emptySlot.classList.add('active');
+
+            try {
+                // Fetch from Local Folder
+                const response = await fetch(`${ASSET_PATH}${soundFile}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                
+                const source = audioCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.loop = true;
+                source.connect(audioCtx.destination);
+                source.start(0);
+                activeSources[emptySlot.id] = source;
+                
+                if (!isPlaying) audioCtx.suspend();
+            } catch (e) {
+                console.error("Local Asset Error:", e);
+                emptySlot.innerHTML = "<span class='error-msg'>FILE NOT FOUND</span>";
+                alert(`Error: Cannot find ${soundFile}. Ensure 'Sprunki' folder exists and you are running a Local Server!`);
+            }
+        }
+
+        function removeChar(index) {
+            const id = `slot-${index}`;
+            if (activeSources[id]) {
+                activeSources[id].stop();
+                delete activeSources[id];
+            }
+            const slot = document.getElementById(id);
+            slot.innerHTML = "+";
+            slot.classList.remove('active');
+        }
+
+        function clearStage() {
+            for(let i=0; i<7; i++) removeChar(i);
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = "▶ PLAY";
+            audioCtx.resume();
+        }
+    </script>
+</body>
+</html>

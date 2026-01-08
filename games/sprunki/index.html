@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>S4K Mixer V3.4 (Gold)</title>
+    
+    <style>
+        /* * ========================================================================
+         * CSS VARIABLES & RESET
+         * ========================================================================
+         */
+        :root {
+            /* Defines the base size of a character slot. 
+               JS reads this to calculate stage width. */
+            --slot-size: 65px;
+            --slot-gap: 8px;
+        }
+
+        /* Prevent standard touch behaviors (zoom, scroll) to allow custom drag */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
+        body { 
+            background: #0f0f1b; 
+            color: white; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            text-align: center; 
+            margin: 0; 
+            padding: 10px; 
+            padding-bottom: 120px;
+            min-height: 100vh;
+            transition: background 0.5s ease-in-out;
+            /* Prevents "Pull to Refresh" on mobile from interrupting drag */
+            overscroll-behavior: none; 
+        }
+
+        /* * ========================================================================
+         * COMPONENT: DRAG GHOST
+         * ========================================================================
+         * This element is created dynamically when dragging starts.
+         * pointer-events: none is CRITICAL. It allows the JS to "see through"
+         * the ghost image to detect the Slot div underneath the finger.
+         */
+        .drag-ghost {
+            position: fixed;
+            width: 70px; height: 70px;
+            opacity: 0.8;
+            pointer-events: none; 
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(1.2); /* Float effect */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            transition: transform 0.1s;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        .home-btn {
+            background: linear-gradient(to bottom, #333, #111);
+            border: 1px solid #555;
+            color: #aaa;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .home-btn:hover {
+            color: white;
+            background: linear-gradient(to bottom, #444, #222);
+            border-color: #777;
+        }
+
+        .home-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- HEADER & SETTINGS --- */
+        .header-container {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; margin: 8px 0 15px;
+        }
+        h1 { font-size: 1.4rem; margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+        .settings-bar {
+            display: flex; gap: 15px; background: rgba(0,0,0,0.3);
+            padding: 8px 15px; border-radius: 20px; align-items: center;
+            flex-wrap: wrap; justify-content: center;
+        }
+        
+        select.pack-select { 
+            background: #333; color: white; border: 1px solid #555; 
+            padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; outline: none; 
+        }
+
+        .slider-container { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #aaa; }
+        input[type=range] { width: 100px; accent-color: #00f3ff; cursor: pointer; }
+
+        /* --- CONTROLS --- */
+        .controls { 
+            display: flex; justify-content: center; align-items: center; 
+            gap: 15px; margin-bottom: 15px; 
+        }
+        
+        .btn-play { 
+            width: 70px; height: 70px; border-radius: 50%; border: none; 
+            font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            background: #2ecc71; color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-play:active { transform: scale(0.92); }
+        .btn-play.playing { background: #f39c12; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4); }
+        
+        .btn-reset { 
+            height: 50px; padding: 0 20px; border-radius: 25px; border: none; 
+            font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; 
+            align-items: center; justify-content: center; gap: 8px; 
+            background: #e74c3c; color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        .btn-reset:active { transform: scale(0.95); }
+
+        /* * ========================================================================
+         * COMPONENT: THE STAGE (Flexbox)
+         * ========================================================================
+         * The stage uses 'justify-content: center' to handle incomplete rows.
+         * Example: If row 1 has 7 items and row 2 has 1 item, the 1 item is centered.
+         * The 'max-width' is set dynamically by JS to force the wrap.
+         */
+        .stage-container { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+        .stage { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: var(--slot-gap); padding: 12px; background: rgba(255,255,255,0.03); 
+            border-radius: 16px; border: 1px solid #333;
+            transition: border-color 0.3s, max-width 0.3s;
+        }
+        
+        .slot { 
+            width: var(--slot-size); height: 80px; 
+            border: 2px dashed #444; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; 
+            transition: 0.2s; font-size: 1.5rem; color: #555;
+            background: rgba(0,0,0,0.2); position: relative; overflow: hidden;
+        }
+        
+        .slot.drag-over { border-color: #ffff00; background: rgba(255, 255, 0, 0.2); transform: scale(1.05); }
+
+        .slot.active { border-style: solid; border-color: #00f3ff; background: rgba(0, 243, 255, 0.08); box-shadow: 0 0 12px rgba(0, 243, 255, 0.5); }
+        .slot.active img { animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; pointer-events: none; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1) translateY(-3px); } }
+        .slot img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+        
+        /* --- PALETTE --- */
+        .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 450px; margin: 0 auto; padding: 5px 10px; }
+        .cat-header { grid-column: 1 / -1; text-align: left; font-size: 11px; color: #666; text-transform: uppercase; margin-top: 8px; padding: 4px 0; border-bottom: 1px solid #333; letter-spacing: 1px; }
+        
+        .char-box { 
+            aspect-ratio: 1; background: rgba(255,255,255,0.06); padding: 6px; 
+            border-radius: 10px; cursor: grab; transition: 0.2s; 
+            border: 2px solid transparent; border-bottom-width: 3px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .char-box:active { cursor: grabbing; transform: scale(0.93); background: rgba(255,255,255,0.12); }
+        .char-box.on-stage { opacity: 0.3; filter: grayscale(100%); cursor: not-allowed; border-color: #333 !important; }
+        .char-box img { width: 80%; height: 60%; object-fit: contain; pointer-events: none; }
+        .char-label { font-size: 8px; color: #aaa; margin-top: 2px; font-weight: 600; text-transform: uppercase; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        
+        .loading { grid-column: 1 / -1; padding: 30px; color: #555; }
+        .error { grid-column: 1 / -1; padding: 15px; color: #e74c3c; background: rgba(231,76,60,0.1); border-radius: 10px; }
+        
+        @media (max-width: 500px) { :root { --slot-size: 45px; } .slot { height: 60px; font-size: 1rem; } .palette { grid-template-columns: repeat(4, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button class="home-btn" onclick="window.location.href='/'">🏠 HOME</button>
+    </div>
+
+    <div class="header-container">
+        <h1>S4K MIXER</h1>
+        <div class="settings-bar">
+            <select id="packSelect" class="pack-select" onchange="switchPack()"><option value="" disabled>Loading...</option></select>
+            <div class="slider-container">
+                <label for="slotRange">Slots:</label>
+                <input type="range" id="slotRange" oninput="handleSliderChange()">
+                <span id="slotCountVal">-</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button id="playBtn" class="btn-play">▶</button>
+        <button id="resetBtn" class="btn-reset"><span class="icon">↺</span><span>Reset</span></button>
+    </div>
+    
+    <div class="stage-container"><div class="stage" id="stage"><div class="loading">Loading...</div></div></div>
+    
+    <div id="palette" class="palette"><div class="loading">Loading...</div></div>
+
+    <script>
+        /**
+         * ========================================================================
+         * S4K MIXER V3.4 - CLIENT LOGIC
+         * ========================================================================
+         */
+        
+        // --- GLOBAL STATE ---
+        let config = null;       // Stores the loaded JSON config
+        let audioCtx = null;     // Web Audio API Context
+        let currentPackId = null; // ID of the currently active pack (e.g., 'phase1')
+        let slotCount = 0;       // Current number of active stage slots
+        
+        // --- TRACKING OBJECTS ---
+        const activeSources = {}; // Maps slotId (e.g., 'slot-0') -> AudioBufferSourceNode
+        const activeSlots = {};   // Maps slotId -> Character Data Object
+        const activeCharIds = new Set(); // Set of currently active Character IDs (to prevent dupes)
+        
+        // --- DRAG ENGINE VARIABLES ---
+        let dragItem = null;      // The character data being dragged
+        let dragGhost = null;     // The DOM element following the cursor
+        let currentPackBase = ''; // The root path for the current pack (e.g., './assets/packs/phase1/')
+        let startX = 0, startY = 0; // Coordinates where touch started
+        let isDragging = false;   // Flag: True if movement > 5px
+
+        /**
+         * INIT
+         * Entry point of the application.
+         * 1. Fetches config.json.
+         * 2. Initializes layout settings.
+         * 3. Builds the Pack Switcher.
+         * 4. Binds global input listeners.
+         */
+        async function init() {
+            try {
+                const response = await fetch('./config.json');
+                if (!response.ok) throw new Error('Config not found. Ensure v3_config.json exists.');
+                config = await response.json();
+                
+                initSettings();
+                initPackSelector();
+                
+                // Load Default Pack (First one in list)
+                const defaultPack = config.packs[0].id;
+                await switchPack(defaultPack);
+                
+                // Bind Controls
+                document.getElementById('playBtn').onclick = togglePlay;
+                document.getElementById('resetBtn').onclick = clearStage;
+                
+                // Bind Global Drag Listeners (Touch & Mouse)
+                // We listen on Window to catch movements outside the palette
+                window.addEventListener('touchmove', onDragMove, { passive: false });
+                window.addEventListener('touchend', onDragEnd);
+                window.addEventListener('mousemove', onDragMove);
+                window.addEventListener('mouseup', onDragEnd);
+                
+                console.log(`S4K V3.4 System Ready.`);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('stage').innerHTML = `<div class="error">${err.message}</div>`;
+            }
+        }
+        
+        /**
+         * LAYOUT INITIALIZATION
+         * Reads CSS variables to calculate the precise pixel width of the stage.
+         * This ensures the stage wraps exactly when the config says to.
+         */
+        function initSettings() {
+            const settings = config.settings.stage;
+            const range = document.getElementById('slotRange');
+            range.min = settings.min_slots;
+            range.max = settings.max_slots;
+            range.value = settings.default_slots;
+            slotCount = settings.default_slots;
+            
+            // Layout Math
+            const rootStyle = getComputedStyle(document.body);
+            const slotSize = parseInt(rootStyle.getPropertyValue('--slot-size'));
+            const slotGap = 8;
+            const padding = 24; 
+            const border = 4;   
+            
+            // Formula: (Slots * Size) + (Gaps) + Padding + Safety Border
+            const limit = settings.slots_per_row;
+            const maxWidth = (limit * slotSize) + ((limit - 1) * slotGap) + padding + border;
+            document.getElementById('stage').style.maxWidth = `${maxWidth}px`;
+            document.getElementById('slotCountVal').textContent = slotCount;
+        }
+
+        /**
+         * PACK SWITCHER
+         * Populates the dropdown menu from config.packs
+         */
+        function initPackSelector() {
+            const select = document.getElementById('packSelect');
+            select.innerHTML = '';
+            config.packs.forEach(pack => {
+                const opt = document.createElement('option');
+                opt.value = pack.id;
+                opt.textContent = pack.label;
+                select.appendChild(opt);
+            });
+            select.value = config.packs[0].id;
+        }
+
+        /**
+         * SWITCH PACK
+         * Changing packs is a destructive action:
+         * 1. Clears the stage (Stops audio).
+         * 2. Updates the currentPackId.
+         * 3. Rebuilds the Palette with new assets.
+         */
+        async function switchPack() {
+            const targetId = document.getElementById('packSelect').value;
+            if (currentPackId && currentPackId !== targetId) clearStage(); 
+            currentPackId = targetId;
+            
+            const packInfo = config.packs.find(p => p.id === currentPackId);
+            currentPackBase = packInfo ? packInfo.base_path : '';
+
+            buildStage(slotCount);
+            buildPalette(currentPackId);
+        }
+
+        /**
+         * SLIDER HANDLER
+         * Includes "Safety Lock": Prevents shrinking stage below active slots.
+         */
+        function handleSliderChange() {
+            const range = document.getElementById('slotRange');
+            const newVal = parseInt(range.value);
+            
+            // Find right-most occupied slot
+            let maxOccupiedIndex = -1;
+            for (let i = 0; i < config.settings.stage.max_slots; i++) {
+                if (activeSlots[`slot-${i}`]) maxOccupiedIndex = i;
+            }
+            // Constraint Check
+            if (newVal < maxOccupiedIndex + 1) {
+                range.value = maxOccupiedIndex + 1; // Snap back
+                return;
+            }
+            
+            const oldVal = slotCount;
+            slotCount = newVal;
+            document.getElementById('slotCountVal').textContent = slotCount;
+            updateStageDOM(oldVal, slotCount);
+        }
+
+        /**
+         * DOM UPDATER
+         * Efficiently adds/removes slots without rebuilding the whole stage.
+         */
+        function updateStageDOM(oldVal, newVal) {
+            const stage = document.getElementById('stage');
+            if (newVal > oldVal) {
+                for (let i = oldVal; i < newVal; i++) createSlot(i, stage);
+            } else if (newVal < oldVal) {
+                for (let i = oldVal - 1; i >= newVal; i--) {
+                    const el = document.getElementById(`slot-${i}`);
+                    if (el) el.remove();
+                }
+            }
+        }
+
+        function createSlot(i, container) {
+            const slot = document.createElement('div');
+            slot.className = 'slot';
+            slot.id = `slot-${i}`;
+            slot.textContent = '+';
+            // Click to remove functionality
+            slot.onclick = () => { if(activeSlots[slot.id]) removeFromSlot(i); };
+            container.appendChild(slot);
+        }
+
+        function buildStage(count) {
+            const stage = document.getElementById('stage');
+            stage.innerHTML = '';
+            for (let i = 0; i < count; i++) createSlot(i, stage);
+        }
+        
+        /**
+         * BUILD PALETTE
+         * Filters characters based on current 'pack_id'.
+         */
+        function buildPalette(packId) {
+            const palette = document.getElementById('palette');
+            palette.innerHTML = '';
+            
+            // Filter
+            const charsInPack = config.characters.filter(c => c.pack_id === packId);
+            
+            // Group by Type (Beats, Effects...)
+            const byType = {};
+            charsInPack.forEach(c => { if(!byType[c.type]) byType[c.type]=[]; byType[c.type].push(c); });
+            
+            config.categories.forEach(cat => {
+                if (!byType[cat.id]) return;
+                
+                // Add Header
+                const header = document.createElement('div');
+                header.className = 'cat-header'; header.textContent = cat.label; header.style.borderBottomColor = cat.color;
+                palette.appendChild(header);
+                
+                // Add Characters
+                byType[cat.id].forEach(char => {
+                    const box = document.createElement('div');
+                    box.className = 'char-box';
+                    box.id = `char-btn-${char.id}`; 
+                    box.style.borderBottomColor = cat.color;
+                    
+                    const imgPath = `${currentPackBase}${char.img}`;
+                    box.innerHTML = `<img src="${imgPath}" alt="${char.name}"><span class="char-label">${char.name}</span>`;
+                    
+                    // INIT INPUT (Touch or Mouse)
+                    const startInput = (e) => {
+                        if (activeCharIds.has(char.id)) return;
+                        initDrag(e, char, imgPath);
+                    };
+
+                    box.addEventListener('touchstart', startInput, {passive: false});
+                    box.addEventListener('mousedown', startInput);
+                    
+                    palette.appendChild(box);
+                });
+            });
+        }
+        
+        /**
+         * ========================================================================
+         * HYBRID INPUT ENGINE (Click vs. Drag)
+         * ========================================================================
+         * Determines if the user intended to TAP (auto-add) or DRAG (manual placement).
+         */
+        
+        function initDrag(e, char, imgPath) {
+            dragItem = char;
+            isDragging = false; // Assume click initially
+            
+            const touch = e.touches ? e.touches[0] : e;
+            startX = touch.clientX;
+            startY = touch.clientY;
+            
+            // Prepare Ghost (Hidden)
+            dragGhost = document.createElement('img');
+            dragGhost.src = imgPath;
+            dragGhost.className = 'drag-ghost';
+            dragGhost.style.display = 'none'; 
+            document.body.appendChild(dragGhost);
+        }
+        
+        function onDragMove(e) {
+            if (!dragItem) return;
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const x = touch.clientX;
+            const y = touch.clientY;
+            
+            // DISTANCE CHECK
+            // If finger moves > 5 pixels, upgrade to DRAG mode
+            const dist = Math.hypot(x - startX, y - startY);
+            
+            if (dist > 5 && !isDragging) {
+                isDragging = true;
+                dragGhost.style.display = 'block'; // Show ghost
+            }
+            
+            if (isDragging) {
+                if(e.cancelable) e.preventDefault(); // Stop page scrolling
+                
+                // Move Ghost
+                dragGhost.style.left = `${x}px`;
+                dragGhost.style.top = `${y}px`;
+                
+                // Visual Detection of Drop Target
+                document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+                const elementBelow = document.elementFromPoint(x, y);
+                const slot = elementBelow ? elementBelow.closest('.slot') : null;
+                if (slot) slot.classList.add('drag-over');
+            }
+        }
+        
+        function onDragEnd(e) {
+            if (!dragItem) return;
+            
+            // Cleanup Ghost
+            if (dragGhost) dragGhost.remove();
+            dragGhost = null;
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+            
+            if (isDragging) {
+                // --- DRAG MODE FINISHED ---
+                // Check where we dropped
+                const touch = e.changedTouches ? e.changedTouches[0] : e;
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                const slot = elementBelow ? elementBelow.closest('.slot') : null;
+                
+                if (slot) {
+                    assignToSlot(slot, dragItem);
+                }
+            } else {
+                // --- CLICK MODE DETECTED ---
+                // User didn't move finger enough, treat as Click
+                autoAddChar(dragItem);
+            }
+            
+            dragItem = null;
+            isDragging = false;
+        }
+
+        // AUTO-ADD: Finds first empty slot (V1/V2 behavior)
+        function autoAddChar(char) {
+            let emptySlot = null;
+            for (let i = 0; i < slotCount; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (slot && slot.textContent === '+') {
+                    emptySlot = slot;
+                    break;
+                }
+            }
+            
+            if (emptySlot) {
+                assignToSlot(emptySlot, char);
+            } else {
+                // Shake Stage if full
+                const st = document.getElementById('stage');
+                st.classList.add('full');
+                setTimeout(() => st.classList.remove('full'), 300);
+            }
+        }
+
+        /**
+         * ASSIGN CHARACTER TO SLOT
+         * Handles the visual update, state update, and audio loading.
+         * Handles SWAPPING if slot is already full.
+         */
+        async function assignToSlot(slot, char) {
+            // Swap Logic
+            if (activeSlots[slot.id]) {
+                removeFromSlot(parseInt(slot.id.split('-')[1]));
+            }
+            
+            const ctx = getAudioContext();
+            const basePath = currentPackBase;
+            const audioPath = `${basePath}${char.audio}`;
+            
+            try {
+                // Optimistic UI Update
+                const imgPath = `${basePath}${char.img}`;
+                slot.innerHTML = `<img src="${imgPath}" alt="${char.name}">`;
+                slot.classList.add('active');
+                slot.dataset.charId = char.id;
+                
+                // Update State
+                activeSlots[slot.id] = char;
+                activeCharIds.add(char.id);
+                updatePaletteState(char.id, true);
+
+                // Audio Fetch
+                const response = await fetch(audioPath);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const ab = await response.arrayBuffer();
+                const buff = await ctx.decodeAudioData(ab);
+                
+                // Audio Playback
+                const src = ctx.createBufferSource();
+                src.buffer = buff; src.loop = true;
+                src.connect(ctx.destination);
+                src.start(0);
+                activeSources[slot.id] = src;
+                
+                // Check Global Play State
+                if (!isPlaying) ctx.suspend();
+            } catch (err) {
+                console.error(err);
+                slot.innerHTML = '❌';
+                // Rollback on error
+                removeFromSlot(parseInt(slot.id.split('-')[1]));
+            }
+        }
+
+        // --- AUDIO HELPERS ---
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        let isPlaying = false;
+        function togglePlay() {
+            const ctx = getAudioContext();
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                btn.textContent = '⏸'; btn.classList.add('playing'); ctx.resume();
+            } else {
+                btn.textContent = '▶'; btn.classList.remove('playing'); ctx.suspend();
+            }
+        }
+
+        function removeFromSlot(index) {
+            const slotId = `slot-${index}`;
+            const char = activeSlots[slotId];
+            if (!char) return;
+            
+            // Stop Audio
+            if (activeSources[slotId]) {
+                activeSources[slotId].stop();
+                delete activeSources[slotId];
+            }
+            
+            // Clear Data
+            activeCharIds.delete(char.id);
+            delete activeSlots[slotId];
+            updatePaletteState(char.id, false);
+            
+            // Clear DOM
+            const slot = document.getElementById(slotId);
+            slot.innerHTML = '+';
+            slot.classList.remove('active');
+            delete slot.dataset.charId;
+        }
+
+        function clearStage() {
+            // Hard Stop All
+            Object.values(activeSources).forEach(src => src.stop());
+            for (const key in activeSources) delete activeSources[key];
+            for (const key in activeSlots) delete activeSlots[key];
+            activeCharIds.clear();
+            
+            buildStage(slotCount);
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = '▶';
+            document.getElementById('playBtn').classList.remove('playing');
+            buildPalette(currentPackId); // Refresh palette dimming
+            if (audioCtx) audioCtx.resume();
+        }
+
+        function updatePaletteState(charId, isOnStage) {
+            const btn = document.getElementById(`char-btn-${charId}`);
+            if (btn) {
+                isOnStage ? btn.classList.add('on-stage') : btn.classList.remove('on-stage');
+            }
+        }
+        
+        // --- BOOTSTRAP ---
+        init();
+    </script>
+</body>
+</html>

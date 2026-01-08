@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprunki Mixer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #ff6b9d, #c44cff, #6bccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: #888;
+      margin-top: 8px;
+    }
+
+    /* Stage */
+    .stage {
+      background: rgba(255,255,255,0.05);
+      border-radius: 24px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stage-slots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .slot {
+      width: 100px;
+      height: 130px;
+      border: 2px dashed #444;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .slot.drag-over {
+      border-color: #4ade80;
+      background: rgba(74, 222, 128, 0.15);
+      transform: scale(1.05);
+    }
+
+    .slot.filled {
+      border-style: solid;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .slot.playing .slot-image {
+      animation: pulse 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    .slot-image {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    .slot-name {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 6px;
+      text-align: center;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .slot-placeholder {
+      width: 50px;
+      height: 50px;
+      border: 2px dashed #555;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 24px;
+    }
+
+    .slot-number {
+      font-size: 10px;
+      color: #555;
+      margin-top: 8px;
+    }
+
+    .slot .remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: #ef4444;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .slot.filled { position: relative; }
+    .slot.filled:hover .remove-btn { display: flex; }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-play {
+      background: #22c55e;
+      color: white;
+    }
+
+    .btn-play.playing {
+      background: #ef4444;
+    }
+
+    .btn-play:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .btn-clear {
+      background: #374151;
+      color: white;
+    }
+
+    .btn-clear:hover {
+      background: #4b5563;
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #374151;
+      padding: 8px 16px;
+      border-radius: 50px;
+    }
+
+    .volume-control input {
+      width: 80px;
+      accent-color: #a855f7;
+    }
+
+    /* Category Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: #374151;
+      color: #9ca3af;
+      transition: all 0.2s;
+      text-transform: capitalize;
+    }
+
+    .tab:hover {
+      background: #4b5563;
+    }
+
+    .tab.active {
+      color: white;
+    }
+
+    .tab[data-cat="beats"].active { background: #ef4444; }
+    .tab[data-cat="effects"].active { background: #8b5cf6; }
+    .tab[data-cat="melodies"].active { background: #22c55e; }
+    .tab[data-cat="vocals"].active { background: #3b82f6; }
+
+    /* Character Palette */
+    .palette {
+      background: rgba(255,255,255,0.05);
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .characters {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .character {
+      width: 90px;
+      padding: 12px 8px;
+      border-radius: 16px;
+      text-align: center;
+      cursor: grab;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .character:hover {
+      transform: scale(1.05);
+    }
+
+    .character:active {
+      cursor: grabbing;
+    }
+
+    .character.on-stage {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .character.on-stage::after {
+      content: '♪';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #4ade80;
+    }
+
+    .character { position: relative; }
+
+    .char-image {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .char-fallback {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-weight: bold;
+      font-size: 18px;
+      color: white;
+    }
+
+    .char-name {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Loading Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #7c3aed;
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .toast.show { display: block; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #555;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎵 Sprunki Mixer</h1>
+      <p>Drag characters to the stage to create music</p>
+    </header>
+
+    <section class="stage">
+      <div class="stage-slots" id="stage"></div>
+    </section>
+
+    <section class="controls">
+      <button class="btn btn-play" id="playBtn">▶ Play</button>
+      <button class="btn btn-clear" id="clearBtn">🗑 Clear</button>
+      <div class="volume-control">
+        <span>🔊</span>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.7">
+      </div>
+    </section>
+
+    <section class="tabs" id="tabs"></section>
+
+    <section class="palette">
+      <div class="characters" id="palette"></div>
+    </section>
+
+    <div class="toast" id="toast">Loading sounds...</div>
+
+    <footer>
+      <p>Personal use only • Assets extracted from open-source Scratch project</p>
+    </footer>
+  </div>
+
+  <script>
+    // ==========================================================================
+    // SPRUNKI MIXER - Self-contained version with local assets
+    // Assets should be in a "Sprunki" folder at the same level as this HTML
+    // ==========================================================================
+
+    const ASSET_PATH = './Sprunki';  // Folder containing extracted .sb3 assets
+    const LOOP_DURATION = 4.8;       // Seconds per loop
+    const NUM_SLOTS = 7;
+
+    // Real character data with MD5 hashes from project.json
+    const CHARACTERS = {
+      beats: [
+        { id: 'oren', name: 'Oren', color: '#FF6B35', sound: '2ff9e556ae0b3cb4f9e4750dbe9b17d4.wav', image: '5f188f291a010091bd38162b7642e9f4.svg' },
+        { id: 'raddy', name: 'Raddy', color: '#E63946', sound: 'ae111f7b2abb4ffe113d49e85cadcf7c.wav', image: 'd7dc847b001632e8bdf1a390145f10ac.svg' },
+        { id: 'clukr', name: 'Clukr', color: '#A8DADC', sound: '70a511bac6487b9dfb4b9420ad7e86f6.wav', image: 'b015564e47af15b260825f7d6af8c643.svg' },
+        { id: 'funbot', name: 'Fun Bot', color: '#457B9D', sound: '5af077595ce5ece3c73a7cb302394015.wav', image: '4539a15043d037f0b70f71553b30c9cd.svg' },
+        { id: 'vineria', name: 'Vineria', color: '#2A9D8F', sound: '7f08e76918d14fdfa46c4c61728808fc.wav', image: '876921f082afc3d621d511481167abc4.svg' },
+      ],
+      effects: [
+        { id: 'gray', name: 'Gray', color: '#6B7280', sound: 'ac76a6a92f290e7fac145dd9cf8c2b32.wav', image: '2b0d707dc5b6ea94ca34186218819915.svg' },
+        { id: 'brud', name: 'Brud', color: '#8B5A2B', sound: 'ef3c0e50f5c2ac26bfc5700fce42db63.wav', image: 'd8d68126b5adc22c77480dd7d6bef466.svg' },
+        { id: 'garnold', name: 'Garnold', color: '#FFD700', sound: '20dd7bff5b7f33e61e878d6e7b03e48c.wav', image: '9601af13c89996f130ecc71a8eb0febc.svg' },
+        { id: 'owakcx', name: 'OWAKCX', color: '#84CC16', sound: '793e0dde46587175bc6817a4cfd37699.wav', image: '654ee2c380273f6f0a7e263a6d9b6b28.svg' },
+        { id: 'sky', name: 'Sky', color: '#87CEEB', sound: 'c39e54d80f08fd650cc23e04b733a83d.wav', image: '6ee7ba49eae48f5753deb07e0b32199b.svg' },
+      ],
+      melodies: [
+        { id: 'mrsun', name: 'Mr. Sun', color: '#FBBF24', sound: 'd4864d2ac4176cff6ecffa0064f6a9b8.wav', image: '78203662c512913b3b4a16300cdf194a.svg' },
+        { id: 'durple', name: 'Durple', color: '#8B5CF6', sound: 'a61d4acb6949d64706ec7246eefc7e96.wav', image: '89536b13f86fa5415b0d51716634fa9e.svg' },
+        { id: 'mrtree', name: 'Mr. Tree', color: '#22C55E', sound: 'd690ea637972fe97870d672dca854c80.wav', image: '1ccf355435482ae38d24bd5b948ef417.svg' },
+        { id: 'simon', name: 'Simon', color: '#FACC15', sound: '5a09fb11b6441a49fc732a93b3b86b00.wav', image: '543119325edb49e5294dd252d196b479.svg' },
+        { id: 'tunner', name: 'Tunner', color: '#D2B48C', sound: '92ed28220e031b247f5bcce8d0436130.wav', image: 'b8faa34280594a1de2cae550193055a1.svg' },
+      ],
+      vocals: [
+        { id: 'mrfuncomputer', name: 'Mr. Fun Computer', color: '#06B6D4', sound: 'cc85f2be1b1764358cd1ab84455d00a0.wav', image: 'a08bbafe2167b837995fd8bf79f5a27f.svg' },
+        { id: 'wenda', name: 'Wenda', color: '#F8FAFC', sound: 'd3412e9a60ca1e4fb3db49587687ec28.wav', image: '16d88ed40d2540e0196ad94687a163c3.svg' },
+        { id: 'pinki', name: 'Pinki', color: '#EC4899', sound: 'be1cb011ce50969caf9511048105f167.wav', image: '4cf8eac32e710942a8ebc364559b1a44.svg' },
+        { id: 'jevin', name: 'Jevin', color: '#3B82F6', sound: 'a241da320fdf120b146456732065baa6.wav', image: 'a43501db4b83e7684b7e6bbb0f735027.svg' },
+        { id: 'black', name: 'Black', color: '#1F2937', sound: '3b725f348a5b90f2190ff1c50709f1cd.wav', image: '08bc20f75cb5b089296dc66c5418096c.svg' },
+      ],
+    };
+
+    const CATEGORIES = ['beats', 'effects', 'melodies', 'vocals'];
+    const CAT_COLORS = { beats: '#ef4444', effects: '#8b5cf6', melodies: '#22c55e', vocals: '#3b82f6' };
+
+    // ==========================================================================
+    // AUDIO ENGINE
+    // ==========================================================================
+    class AudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.buffers = new Map();
+        this.sources = new Map();
+        this.loopStart = 0;
+        this.playing = false;
+      }
+
+      async init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.connect(this.ctx.destination);
+      }
+
+      async loadSound(id, file) {
+        if (this.buffers.has(id)) return this.buffers.get(id);
+        await this.init();
+
+        const url = `${ASSET_PATH}/${file}`;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const arr = await res.arrayBuffer();
+          const buf = await this.ctx.decodeAudioData(arr);
+          this.buffers.set(id, buf);
+          return buf;
+        } catch (e) {
+          console.error(`Failed to load ${id}:`, e);
+          return null;
+        }
+      }
+
+      play(id, buf) {
+        if (!buf || !this.ctx) return;
+        this.stop(id);
+
+        const src = this.ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        src.loopEnd = Math.min(LOOP_DURATION, buf.duration);
+
+        const gain = this.ctx.createGain();
+        src.connect(gain);
+        gain.connect(this.masterGain);
+
+        // Sync to loop
+        const elapsed = (this.ctx.currentTime - this.loopStart) % LOOP_DURATION;
+        src.start(0, elapsed);
+        this.sources.set(id, { src, gain });
+      }
+
+      stop(id) {
+        const s = this.sources.get(id);
+        if (s) {
+          try { s.src.stop(); } catch(e) {}
+          this.sources.delete(id);
+        }
+      }
+
+      stopAll() {
+        this.sources.forEach((_, id) => this.stop(id));
+        this.playing = false;
+      }
+
+      startPlayback() {
+        this.loopStart = this.ctx.currentTime;
+        this.playing = true;
+      }
+
+      setVolume(v) {
+        if (this.masterGain) this.masterGain.gain.value = v;
+      }
+
+      async resume() {
+        if (this.ctx?.state === 'suspended') await this.ctx.resume();
+      }
+    }
+
+    // ==========================================================================
+    // APP STATE
+    // ==========================================================================
+    const audio = new AudioEngine();
+    let stage = Array(NUM_SLOTS).fill(null);
+    let activeCategory = 'beats';
+    let isPlaying = false;
+
+    // ==========================================================================
+    // UI RENDERING
+    // ==========================================================================
+    function renderStage() {
+      const el = document.getElementById('stage');
+      el.innerHTML = stage.map((char, i) => {
+        if (char) {
+          return `
+            <div class="slot filled ${isPlaying ? 'playing' : ''}" 
+                 data-slot="${i}" 
+                 style="border-color: ${char.color}"
+                 ondragover="onDragOver(event)" 
+                 ondragleave="onDragLeave(event)"
+                 ondrop="onDrop(event, ${i})"
+                 onclick="removeFromStage(${i})">
+              <img class="slot-image" src="${ASSET_PATH}/${char.image}" 
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="char-fallback" style="background:${char.color};display:none">${char.name[0]}</div>
+              <div class="slot-name">${char.name}</div>
+              <div class="remove-btn">×</div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="slot" data-slot="${i}"
+                 ondragover="onDragOver(event)" 
+                 ondragleave="onDragLeave(event)"
+                 ondrop="onDrop(event, ${i})">
+              <div class="slot-placeholder">+</div>
+              <div class="slot-number">Slot ${i + 1}</div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function renderTabs() {
+      const el = document.getElementById('tabs');
+      el.innerHTML = CATEGORIES.map(cat => `
+        <button class="tab ${cat === activeCategory ? 'active' : ''}" 
+                data-cat="${cat}"
+                onclick="setCategory('${cat}')">${cat}</button>
+      `).join('');
+    }
+
+    function renderPalette() {
+      const chars = CHARACTERS[activeCategory];
+      const stageIds = stage.filter(Boolean).map(c => c.id);
+      const el = document.getElementById('palette');
+      
+      el.innerHTML = chars.map(char => {
+        const onStage = stageIds.includes(char.id);
+        return `
+          <div class="character ${onStage ? 'on-stage' : ''}" 
+               draggable="${!onStage}"
+               data-id="${char.id}"
+               data-cat="${activeCategory}"
+               style="background: ${char.color}22; border-color: ${char.color}"
+               ondragstart="onDragStart(event, '${char.id}', '${activeCategory}')">
+            <img class="char-image" src="${ASSET_PATH}/${char.image}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="char-fallback" style="background:${char.color};display:none">${char.name[0]}</div>
+            <div class="char-name">${char.name}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function render() {
+      renderStage();
+      renderTabs();
+      renderPalette();
+    }
+
+    // ==========================================================================
+    // EVENT HANDLERS
+    // ==========================================================================
+    function setCategory(cat) {
+      activeCategory = cat;
+      render();
+    }
+
+    function onDragStart(e, id, cat) {
+      e.dataTransfer.setData('text/plain', JSON.stringify({ id, cat }));
+    }
+
+    function onDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function onDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    async function onDrop(e, slotIndex) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+
+      try {
+        const { id, cat } = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const char = CHARACTERS[cat].find(c => c.id === id);
+        if (!char) return;
+
+        // Check if already on stage
+        if (stage.some(s => s?.id === id)) return;
+
+        // Add to stage
+        stage[slotIndex] = { ...char, category: cat };
+        render();
+
+        // Load and play if playing
+        showToast(true);
+        const buf = await audio.loadSound(char.id, char.sound);
+        showToast(false);
+
+        if (buf && isPlaying) {
+          audio.play(char.id, buf);
+        }
+      } catch (err) {
+        console.error('Drop error:', err);
+      }
+    }
+
+    function removeFromStage(slotIndex) {
+      const char = stage[slotIndex];
+      if (char) {
+        audio.stop(char.id);
+        stage[slotIndex] = null;
+        render();
+      }
+    }
+
+    async function togglePlay() {
+      await audio.resume();
+
+      if (isPlaying) {
+        audio.stopAll();
+        isPlaying = false;
+      } else {
+        audio.startPlayback();
+        isPlaying = true;
+
+        // Start all characters on stage
+        for (const char of stage.filter(Boolean)) {
+          showToast(true);
+          const buf = await audio.loadSound(char.id, char.sound);
+          showToast(false);
+          if (buf) audio.play(char.id, buf);
+        }
+      }
+
+      updatePlayButton();
+      renderStage();
+    }
+
+    function clearStage() {
+      audio.stopAll();
+      stage = Array(NUM_SLOTS).fill(null);
+      isPlaying = false;
+      updatePlayButton();
+      render();
+    }
+
+    function updatePlayButton() {
+      const btn = document.getElementById('playBtn');
+      btn.textContent = isPlaying ? '⏹ Stop' : '▶ Play';
+      btn.classList.toggle('playing', isPlaying);
+    }
+
+    function showToast(show) {
+      document.getElementById('toast').classList.toggle('show', show);
+    }
+
+    // ==========================================================================
+    // INIT
+    // ==========================================================================
+    document.getElementById('playBtn').addEventListener('click', togglePlay);
+    document.getElementById('clearBtn').addEventListener('click', clearStage);
+    document.getElementById('volume').addEventListener('input', (e) => {
+      audio.setVolume(parseFloat(e.target.value));
+    });
+
+    render();
+    console.log('Sprunki Mixer loaded. Assets expected at:', ASSET_PATH);
+  </script>
+</body>
+</html>

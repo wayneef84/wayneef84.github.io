@@ -1,0 +1,92 @@
+{
+  "_meta_header": {
+    "system": "S4K Mixer Configuration",
+    "version": "3.4",
+    "description": "Master configuration file controlling Stage Logic, Asset Packs, and Character Mappings.",
+    "warning": "Ensure 'base_path' in packs always ends with a trailing slash."
+  },
+
+  "_comment_settings": "Defines the physical limitations of the mixer stage UI.",
+  "settings": {
+    "stage": {
+      "min_slots": 1, 
+      "max_slots": 14,
+      "default_slots": 7,
+      "slots_per_row": 7,
+      "_note": "If slots exceed slots_per_row, flexbox will wrap them to a new line."
+    }
+  },
+
+  "_comment_packs": "Defines the available Asset Libraries (Themes). Switching packs triggers a full reset.",
+  "packs": [
+    {
+      "id": "phase1",
+      "label": "Phase 1 (Standard)",
+      "base_path": "./assets/packs/phase1/"
+    },
+    {
+      "id": "reverse",
+      "label": "UNO Reverse (Test)",
+      "base_path": "./assets/packs/reverse/"
+    }
+  ],
+
+  "_comment_categories": "Defines the visual color coding for the bottom palette.",
+  "categories": [
+    { "id": "beats", "label": "Beats", "color": "#f1c40f" },
+    { "id": "effects", "label": "Effects", "color": "#9b59b6" },
+    { "id": "melodies", "label": "Melodies", "color": "#e74c3c" },
+    { "id": "vocals", "label": "Vocals", "color": "#3498db" }
+  ],
+
+  "_comment_characters": "The roster. 'pack_id' must match an ID in the 'packs' array above.",
+  "characters": [
+    { "id": "b01", "name": "Oren", "type": "beats", "pack_id": "phase1", "audio": "audio/b01.wav", "img": "img/b01.svg" },
+    { "id": "b02", "name": "Raddy", "type": "beats", "pack_id": "phase1", "audio": "audio/b02.wav", "img": "img/b02.svg" },
+    { "id": "b03", "name": "Clukr", "type": "beats", "pack_id": "phase1", "audio": "audio/b03.wav", "img": "img/b03.svg" },
+    { "id": "b04", "name": "Fun Bot", "type": "beats", "pack_id": "phase1", "audio": "audio/b04.wav", "img": "img/b04.svg" },
+    { "id": "b05", "name": "Vineria", "type": "beats", "pack_id": "phase1", "audio": "audio/b05.wav", "img": "img/b05.svg" },
+    
+    { "id": "e01", "name": "Gray", "type": "effects", "pack_id": "phase1", "audio": "audio/e01.wav", "img": "img/e01.svg" },
+    { "id": "e02", "name": "Brud", "type": "effects", "pack_id": "phase1", "audio": "audio/e02.wav", "img": "img/e02.svg" },
+    { "id": "e03", "name": "Garnold", "type": "effects", "pack_id": "phase1", "audio": "audio/e03.wav", "img": "img/e03.svg" },
+    { "id": "e04", "name": "OWAKCX", "type": "effects", "pack_id": "phase1", "audio": "audio/e04.wav", "img": "img/e04.svg" },
+    { "id": "e05", "name": "Sky", "type": "effects", "pack_id": "phase1", "audio": "audio/e05.wav", "img": "img/e05.svg" },
+
+    { "id": "m01", "name": "Sun", "type": "melodies", "pack_id": "phase1", "audio": "audio/m01.wav", "img": "img/m01.svg" },
+    { "id": "m02", "name": "Durple", "type": "melodies", "pack_id": "phase1", "audio": "audio/m02.wav", "img": "img/m02.svg" },
+    { "id": "m03", "name": "Tree", "type": "melodies", "pack_id": "phase1", "audio": "audio/m03.wav", "img": "img/m03.svg" },
+    { "id": "m04", "name": "Simon", "type": "melodies", "pack_id": "phase1", "audio": "audio/m04.wav", "img": "img/m04.svg" },
+    { "id": "m05", "name": "Tunner", "type": "melodies", "pack_id": "phase1", "audio": "audio/m05.wav", "img": "img/m05.svg" },
+
+    { "id": "v01", "name": "Computer", "type": "vocals", "pack_id": "phase1", "audio": "audio/v01.wav", "img": "img/v01.svg" },
+    { "id": "v02", "name": "Wenda", "type": "vocals", "pack_id": "phase1", "audio": "audio/v02.wav", "img": "img/v02.svg" },
+    { "id": "v03", "name": "Pinki", "type": "vocals", "pack_id": "phase1", "audio": "audio/v03.wav", "img": "img/v03.svg" },
+    { "id": "v04", "name": "Jevin", "type": "vocals", "pack_id": "phase1", "audio": "audio/v04.wav", "img": "img/v04.svg" },
+    { "id": "v05", "name": "Black", "type": "vocals", "pack_id": "phase1", "audio": "audio/v05.wav", "img": "img/v05.svg" },
+
+    { "id": "rb01", "name": "Reverse Oren", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b01.wav", "img": "../phase1/img/b01.svg" },
+    { "id": "rb02", "name": "Reverse Raddy", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b02.wav", "img": "../phase1/img/b02.svg" },
+    { "id": "rb03", "name": "Reverse Clukr", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b03.wav", "img": "../phase1/img/b03.svg" },
+    { "id": "rb04", "name": "Reverse Fun Bot", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b04.wav", "img": "../phase1/img/b04.svg" },
+    { "id": "rb05", "name": "Reverse Vineria", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b05.wav", "img": "../phase1/img/b05.svg" },
+
+    { "id": "re01", "name": "Reverse Gray", "type": "effects", "pack_id": "reverse", "audio": "../phase1/audio/e01.wav", "img": "../phase1/img/e01.svg" },
+    { "id": "re02", "name": "Reverse Brud", "type": "effects", "pack_id": "reverse", "audio": "../phase1/audio/e02.wav", "img": "../phase1/img/e02.svg" },
+    { "id": "re03", "name": "Reverse Garnold", "type": "effects", "pack_id": "reverse", "audio": "../phase1/audio/e03.wav", "img": "../phase1/img/e03.svg" },
+    { "id": "re04", "name": "Reverse OWAKCX", "type": "effects", "pack_id": "reverse", "audio": "../phase1/audio/e04.wav", "img": "../phase1/img/e04.svg" },
+    { "id": "re05", "name": "Reverse Sky", "type": "effects", "pack_id": "reverse", "audio": "../phase1/audio/e05.wav", "img": "../phase1/img/e05.svg" },
+
+    { "id": "rm01", "name": "Reverse Sun", "type": "melodies", "pack_id": "reverse", "audio": "../phase1/audio/m01.wav", "img": "../phase1/img/m01.svg" },
+    { "id": "rm02", "name": "Reverse Durple", "type": "melodies", "pack_id": "reverse", "audio": "../phase1/audio/m02.wav", "img": "../phase1/img/m02.svg" },
+    { "id": "rm03", "name": "Reverse Tree", "type": "melodies", "pack_id": "reverse", "audio": "../phase1/audio/m03.wav", "img": "../phase1/img/m03.svg" },
+    { "id": "rm04", "name": "Reverse Simon", "type": "melodies", "pack_id": "reverse", "audio": "../phase1/audio/m04.wav", "img": "../phase1/img/m04.svg" },
+    { "id": "rm05", "name": "Reverse Tunner", "type": "melodies", "pack_id": "reverse", "audio": "../phase1/audio/m05.wav", "img": "../phase1/img/m05.svg" },
+
+    { "id": "rv01", "name": "Reverse Computer", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v01.wav", "img": "../phase1/img/v01.svg" },
+    { "id": "rv02", "name": "Reverse Wenda", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v02.wav", "img": "../phase1/img/v02.svg" },
+    { "id": "rv03", "name": "Reverse Pinki", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v03.wav", "img": "../phase1/img/v03.svg" },
+    { "id": "rv04", "name": "Reverse Jevin", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v04.wav", "img": "../phase1/img/v04.svg" },
+    { "id": "rv05", "name": "Reverse Black", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v05.wav", "img": "../phase1/img/v05.svg" }
+  ]
+}

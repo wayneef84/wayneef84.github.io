@@ -13,6 +13,9 @@ class SlotAudio {
         this.enabled = true;
         this.volume = 0.3; // Master volume (0-1)
         this.initialized = false;
+        this.bgMusic = null; // Current background music Audio element
+        this.bgMusicVolume = 0.15; // Background music volume (0-1)
+        this.currentMusicUrl = null;
     }
 
     // Must be called from a user gesture (click/tap) due to browser autoplay policies
@@ -37,6 +40,16 @@ class SlotAudio {
 
     toggle() {
         this.enabled = !this.enabled;
+
+        // Toggle background music
+        if (this.bgMusic) {
+            if (this.enabled) {
+                this.bgMusic.play().catch(e => console.warn('Could not play music:', e));
+            } else {
+                this.bgMusic.pause();
+            }
+        }
+
         return this.enabled;
     }
 
@@ -248,21 +261,70 @@ class SlotAudio {
     playError() {
         if (!this.enabled || !this.ctx) return;
         this.resume();
-        
+
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        
+
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        
+
         osc.frequency.value = 150;
         osc.type = 'square';
-        
+
         gain.gain.setValueAtTime(this.volume * 0.2, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-        
+
         osc.start(this.ctx.currentTime);
         osc.stop(this.ctx.currentTime + 0.15);
+    }
+
+    // --- BACKGROUND MUSIC ---
+
+    loadBackgroundMusic(url) {
+        // If same music is already loaded, don't reload
+        if (this.currentMusicUrl === url && this.bgMusic) {
+            return;
+        }
+
+        // Stop and clean up old music
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.src = '';
+            this.bgMusic = null;
+        }
+
+        // No music for this theme
+        if (!url) {
+            this.currentMusicUrl = null;
+            return;
+        }
+
+        // Load new music
+        this.bgMusic = new Audio(url);
+        this.bgMusic.loop = true;
+        this.bgMusic.volume = this.bgMusicVolume;
+        this.currentMusicUrl = url;
+
+        // Auto-play if audio is enabled
+        if (this.enabled) {
+            this.bgMusic.play().catch(e => {
+                console.warn('Background music autoplay blocked. User interaction required:', e);
+            });
+        }
+    }
+
+    stopBackgroundMusic() {
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
+        }
+    }
+
+    setBgMusicVolume(val) {
+        this.bgMusicVolume = Math.max(0, Math.min(1, val));
+        if (this.bgMusic) {
+            this.bgMusic.volume = this.bgMusicVolume;
+        }
     }
 }
 
