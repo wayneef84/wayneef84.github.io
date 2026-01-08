@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Xiangqi - Dad's Casino</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="header">
+            <h1>象棋 Xiangqi</h1>
+            <a href="../../index.html" class="backButton">← Back to Casino</a>
+        </div>
+
+        <div id="gameScaler">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div id="controls">
+            <div id="gameMode">
+                <label>
+                    <input type="radio" name="mode" value="pvp" checked>
+                    <span>Player vs Player</span>
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="ai">
+                    <span>vs AI</span>
+                </label>
+            </div>
+
+            <div id="aiControls" style="display: none;">
+                <div class="aiSetting">
+                    <label for="aiColor">AI Plays:</label>
+                    <select id="aiColor">
+                        <option value="red" selected>Red (You are Black)</option>
+                        <option value="black">Black (You are Red)</option>
+                    </select>
+                </div>
+
+                <div class="aiSetting">
+                    <label for="aiDifficulty">AI Difficulty:</label>
+                    <select id="aiDifficulty">
+                        <option value="1">Easy (Level 1)</option>
+                        <option value="2" selected>Medium (Level 2)</option>
+                        <option value="3">Hard (Level 3)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="turnDisplay">Red's Turn</div>
+            <button id="resetButton">New Game</button>
+        </div>
+    </div>
+
+    <script src="js/rules.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

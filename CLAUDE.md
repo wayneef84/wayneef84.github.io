@@ -7,7 +7,266 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Dad's Casino** is a browser-based casino game collection featuring multiple games:
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system
+- **Xiangqi** (v0.3.1 - Complete): Fully playable Chinese Chess with AI opponent (Red or Black), 3 difficulty levels, complete rule validation
 - Additional games (Blackjack, Craps) are placeholders
+
+---
+
+## Xiangqi (Chinese Chess) - Development Guide
+
+### Project Goals
+Mobile-first Chinese Chess game for Dad. The 9x10 board fits portrait orientation perfectly. Turn-based logic game with tunable AI difficulty.
+
+### Architecture: "Logic vs. Juice"
+Unlike Slots (80% visuals), Xiangqi is 80% logic. Three distinct concerns:
+
+| File | Role | Responsibility |
+|------|------|----------------|
+| `rules.js` | The Referee | Move validation, piece movement rules, board state |
+| `ai.js` | The Brain | Minimax algorithm, difficulty via search depth |
+| `game.js` | The Painter | Canvas rendering, click handling, UI |
+
+### File Structure
+```
+games/xiangqi/
+├── index.html
+├── css/
+│   └── style.css      # Wood theme (#DEB887), simple layout
+└── js/
+    ├── rules.js       # Move validation logic
+    ├── ai.js          # Minimax engine
+    └── game.js        # Main loop & UI handling
+```
+
+### Tech Stack
+- HTML5 Canvas + Vanilla JS (matches existing S4D conventions)
+- No frameworks, no build tools
+- Mobile-first, portrait orientation
+- Unicode pieces (e.g., 帅, 將) or styled text circles
+
+### AI Difficulty Levels
+Difficulty is controlled by Minimax search depth, not different code:
+- **Level 1 (Easy):** Depth 1 - Greedy, captures if possible
+- **Level 2 (Medium):** Depth 2 - Considers opponent's response
+- **Level 3 (Hard):** Depth 4 - Simulates thousands of futures
+
+### Development Phases
+
+**Phase 1: Board & Interaction (No Rules)**
+- Draw 9x10 grid with river and palace markings
+- Render pieces in starting positions
+- Click to select, click to move (no validation)
+
+**Phase 2: Move Validation**
+- Implement piece-specific movement rules:
+  - General (帅/將): 1 step within palace, no facing
+  - Advisor (仕/士): Diagonal within palace
+  - Elephant (相/象): Diagonal 2, can't cross river, blockable
+  - Horse (馬): "Sun" shape (L-shape), blockable at first step
+  - Chariot (車): Straight lines, any distance
+  - Cannon (炮): Straight lines, must jump exactly one piece to capture
+  - Soldier (兵/卒): Forward only, sideways after crossing river
+
+**Phase 3: AI Integration**
+- Implement Minimax with alpha-beta pruning
+- Board evaluation function (material + position)
+- Difficulty selector in UI
+
+### Current Implementation Status
+
+**Phase 1: Complete ✓**
+
+The foundation is fully implemented in `games/xiangqi/js/game.js`:
+
+**Game Engine:** `XiangqiGame` class
+- **Board Initialization** (lines 43-79): Sets up 9x10 board array with all 32 pieces in starting positions
+  - Red pieces: 帥 (General), 仕 (Advisor), 相 (Elephant), 馬 (Horse), 車 (Chariot), 炮 (Cannon), 兵 (Soldier)
+  - Black pieces: 將 (General), 士 (Advisor), 象 (Elephant), 馬 (Horse), 車 (Chariot), 炮 (Cannon), 卒 (Soldier)
+  - Each piece stores: type, player, and Unicode character
+
+**Board Rendering** (lines 88-177):
+- **Grid Drawing** (lines 88-134): Intersection-based 9x10 grid with proper line connections
+- **River Zone** (lines 136-156): Visual distinction between rows 4-5 with "楚河漢界" text overlay
+- **Palace Markings** (lines 158-177): Diagonal X patterns in both 3x3 palace zones (rows 0-2 and 7-9, columns 3-5)
+
+**Piece Rendering** (lines 179-217):
+- Circular pieces with player-specific styling (red: #FFE4E1 background, black: #F0F0F0)
+- Unicode characters centered in circles
+- Selection highlight system with golden glow effect (shadowBlur: 15, color: #FFD700)
+
+**Interaction System** (lines 258-305):
+- Click detection with canvas coordinate mapping (accounts for canvas scaling)
+- Two-click movement with rule validation
+- Player can only select their own pieces (line 260)
+- Clicking another own piece switches selection (lines 274-277)
+- Invalid moves trigger red flash feedback (lines 300-302, 321-332)
+- Selected piece highlighted with golden border and shadow
+- Turn tracking system alternates between red and black players
+
+**UI Elements:**
+- Turn display updates after each move (games/xiangqi/index.html:21)
+- Reset button restores initial board state (games/xiangqi/js/game.js:313-319)
+- Mobile-first canvas with wood theme (#DEB887 background)
+
+---
+
+**Phase 2: Complete ✓**
+
+Move validation system fully implemented in `games/xiangqi/js/rules.js`:
+
+**Rules Engine:** `XiangqiRules` object (module pattern)
+- **Main Validator** (lines 9-71): `isValidMove()` - Master validation function
+  - Bounds checking
+  - Player turn enforcement
+  - Friendly fire prevention
+  - Delegates to piece-specific validators
+  - Flying General rule enforcement
+
+**Piece-Specific Movement Rules:**
+- **General** (lines 77-89): 1-step orthogonal within palace, no facing opponent general
+- **Advisor** (lines 94-105): 1-step diagonal within palace
+- **Elephant** (lines 110-133): 2-step diagonal, cannot cross river, blockable at midpoint ("elephant eye")
+- **Horse** (lines 139-162): L-shape movement (1 orthogonal + 1 diagonal), blockable at first step ("hobbling")
+- **Chariot** (lines 168-176): Any distance orthogonally, path must be clear
+- **Cannon** (lines 181-194): Moves like chariot, must jump exactly 1 piece to capture
+- **Soldier** (lines 199-221): Forward only before river, can move sideways after crossing
+
+**Special Rules:**
+- **Flying General Rule** (lines 227-265): Prevents generals from facing each other on same column with no pieces between
+  - Creates temporary board state to test move
+  - Scans for both generals after hypothetical move
+  - Checks for clear line of sight between them
+- **Palace Bounds** (lines 270-280): Helper to validate general/advisor stay in 3x3 palace
+- **Path Clearance** (lines 285-308): Helper for chariot movement validation
+- **Piece Counting** (lines 313-338): Helper for cannon jump validation
+
+**Integration with Game Engine:**
+- `games/xiangqi/index.html` loads rules.js before game.js (line 26)
+- `game.js` calls `XiangqiRules.isValidMove()` before executing moves (lines 280-287)
+- Invalid moves keep selection active and flash red (line 302)
+- Valid moves execute, clear selection, toggle turn (lines 289-299)
+
+---
+
+**Phase 3: Complete ✓**
+
+AI opponent system fully implemented in `games/xiangqi/js/ai.js`:
+
+**AI Engine:** `XiangqiAI` object (269 lines)
+- **Minimax Algorithm** (lines 118-149): Recursive game tree search with alpha-beta pruning
+  - Negamax variant for cleaner code
+  - Alpha-beta pruning reduces search space by ~50-90%
+  - Depth-limited search based on difficulty level
+  - Returns best move as `{from: {row, col}, to: {row, col}}`
+
+- **Board Evaluation** (lines 154-181): Heuristic position scoring
+  - Material counting: General (10000), Chariot (90), Cannon (45), Horse (40), Advisor/Elephant (20), Soldier (10)
+  - Positional bonus tables for Soldier, Horse, Chariot, Cannon (lines 11-64)
+  - Tables encourage forward progression and center control
+  - Black's positions mirrored from Red's perspective
+
+- **Move Generation** (lines 186-204): Legal move enumeration
+  - Scans entire board for player's pieces
+  - Tests all 90 destination squares per piece
+  - Uses `XiangqiRules.isValidMove()` for legality
+  - Returns array of all valid moves
+
+- **Difficulty Levels** (lines 262-269):
+  - Level 1 (Easy): Depth 1 - Greedy, only looks at immediate captures
+  - Level 2 (Medium): Depth 2 - Thinks 1 move ahead, considers opponent response
+  - Level 3 (Hard): Depth 4 - Thinks 2 moves ahead, evaluates ~10,000-50,000 positions
+
+**Game Integration** (`game.js` updates):
+- AI state tracking: `gameMode` ('pvp' or 'ai'), `aiColor` ('red' or 'black'), `aiDifficulty` (1-3), `isAiThinking` (lines 26-30)
+- Mode selector event handler (lines 37-39, 367-380)
+- AI color selector event handler (lines 41-46) - resets game on change
+- AI difficulty dropdown handler (lines 48-50)
+- Automatic AI move trigger after human move (lines 329-332)
+- AI thinking delay (500ms) for visual feedback (lines 382-407)
+- Click blocking during AI's turn (lines 279-282) - works for any AI color
+
+**UI Enhancements:**
+- Game mode toggle: Player vs Player / vs AI (index.html:21-30)
+- AI color selector: Choose Red or Black for AI (index.html:33-39, default: Red)
+- AI difficulty selector with 3 levels (index.html:41-48)
+- "AI is thinking..." status display (game.js:388)
+- Styled controls with hover effects (style.css:140-180)
+- Auto-reset when changing AI color to prevent confusion
+
+**All Development Phases Complete:**
+- ✓ Phase 1: Board rendering and interaction
+- ✓ Phase 2: Complete rule validation
+- ✓ Phase 3: AI opponent with difficulty levels
+
+---
+
+### Version History
+
+**v0.3.1 - AI Color Selection** (2026-01-08)
+- Added AI color selector: Choose whether AI plays Red or Black
+- Default changed: AI now plays Red (player is Black) instead of AI playing Black
+- AI automatically makes first move when playing as Red (with 100ms delay for UI readiness)
+- Updated all game logic to support AI as either color:
+  - handleClick() blocks interaction during AI's turn (any color)
+  - makeAIMove() dynamically checks AI color
+  - handleModeChange() triggers AI move if it's AI's turn on mode switch (100ms delay)
+  - resetGame() triggers AI move if AI plays Red (ensures first move on reset/color change)
+- Auto-reset when changing AI color to prevent mid-game confusion
+- UI shows clear labels: "Red (You are Black)" / "Black (You are Red)"
+- Updated game.js (413 lines): Added aiColor state, event handlers, dynamic turn checking
+- Updated index.html: Added AI color dropdown selector
+- Updated style.css: Styled .aiSetting containers for clean layout
+- Bug fix: AI now correctly makes first move when playing as Red
+
+**v0.3.0 - Phase 3: AI Opponent** (2026-01-08)
+- Created `games/xiangqi/js/ai.js` (269 lines) - Complete AI engine
+- Implemented Minimax algorithm with alpha-beta pruning
+- Board evaluation function with material + positional scoring
+- Positional bonus tables for strategic piece placement
+- Three difficulty levels via search depth (1, 2, 4)
+- Move generation scans all legal moves for AI player
+- Integrated AI into game.js with automatic move triggering
+- Added game mode toggle: Player vs Player / vs AI
+- Added AI difficulty selector dropdown (Easy/Medium/Hard)
+- AI thinking delay (500ms) for better UX
+- Click blocking during AI's turn
+- Updated turn display to show "AI is thinking..."
+- Added Xiangqi to main casino index (index.html)
+- Game is now complete and fully playable solo or 2-player
+
+**v0.2.0 - Phase 2: Move Validation** (2026-01-08)
+- Created `games/xiangqi/js/rules.js` (338 lines) - Complete rules engine
+- Implemented all 7 piece movement types with special rules:
+  - General: Palace bounds + Flying General rule (no facing opponent)
+  - Advisor: Diagonal palace movement
+  - Elephant: 2-step diagonal with blocking check, river restriction
+  - Horse: L-shape with hobbling check
+  - Chariot: Orthogonal with path clearance
+  - Cannon: Jump-to-capture mechanic
+  - Soldier: Forward movement + post-river lateral movement
+- Integrated validation into `game.js` handleClick method (lines 280-287)
+- Added player turn enforcement (only select own pieces)
+- Added piece selection switching (click different piece to switch)
+- Added invalid move visual feedback (red flash overlay)
+- Game is now fully playable as 2-player local game
+- All traditional Xiangqi rules enforced
+
+**v0.1.0 - Phase 1: Board & Interaction** (2026-01-08)
+- Created initial file structure: `games/xiangqi/` with HTML, CSS, JS
+- Implemented `XiangqiGame` class in `game.js` (337 lines)
+- Board rendering: 9x10 grid, river zone, palace X-markings
+- All 32 pieces in correct starting positions with Unicode characters
+- Canvas-based rendering with wood theme (#DEB887)
+- Two-click selection and movement system (no validation)
+- Turn tracking and UI controls (turn display, reset button)
+
+### Key Rules Reference
+- Red moves first
+- Generals cannot "see" each other (no pieces between on same file)
+- Stalemate = loss (unlike Western chess)
+- Perpetual check = loss for checking side
+
+---
 
 ## Development Commands
 
@@ -15,13 +274,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Main Casino Hub:**
 ```bash
-# Open index.html directly in browser
 open index.html
 ```
 
 **Slots Game:**
 ```bash
-# Open games/slots.html directly in browser
 open games/slots.html
 ```
 
@@ -31,15 +288,14 @@ open games/slots.html
 cd games/sprunki
 python3 -m http.server 8000
 # Then navigate to http://localhost:8000/index.html
-
-# Or use the provided scripts:
-./start_server.sh  # macOS/Linux
-start_server.bat   # Windows
 ```
 
-### Testing Changes
+**Xiangqi:**
+```bash
+open games/xiangqi/index.html
+```
 
-The slots game and main hub are static HTML/CSS/JS and can be tested by refreshing the browser. The Sprunki mixer requires a web server for audio/image loading.
+---
 
 ## Architecture
 
@@ -101,12 +357,83 @@ assets/
     unoreverse/ # Example of asset reuse via relative paths
 ```
 
+### Xiangqi Architecture
+
+**Current State:** v0.3.1 - All phases complete - Fully playable with AI opponent (selectable color)
+
+**Three-Layer Architecture ("Logic vs. Juice"):**
+
+1. **rules.js - The Referee** (338 lines)
+   - Pure logic module, no UI dependencies
+   - Exports `XiangqiRules` object with validation methods
+   - Stateless - all functions take board state as parameters
+   - Returns boolean validation results
+   - Handles all piece movement rules and special cases (Flying General, elephant blocking, horse hobbling)
+
+2. **game.js - The Painter** (413 lines)
+   - Manages game state (board array, current player, selection, AI mode)
+   - Renders everything to canvas
+   - Handles user input (click detection, coordinate mapping)
+   - Calls rules.js for validation before executing moves
+   - Calls ai.js for opponent moves when in AI mode
+   - Provides visual feedback (selection glow, invalid move flash, AI thinking status)
+
+3. **ai.js - The Brain** (269 lines) ✓
+   - Implements Minimax algorithm with alpha-beta pruning
+   - Uses rules.js to validate candidate moves
+   - Exports `getBestMove(board, player, difficulty)` function
+   - Board evaluation with material + positional scoring
+   - Three difficulty levels via search depth (1, 2, 4)
+
+**Core Game Engine:** `games/xiangqi/js/game.js` - XiangqiGame class
+- Board represented as 10x9 array (rows x columns)
+- Intersection-based coordinate system (pieces sit on line intersections, not in squares)
+- Canvas rendering with fixed cell size (45px) and margins (30px)
+- No responsive scaling yet (unlike Slots) - fixed canvas dimensions
+
+**Board State:**
+- Each cell contains either `null` or a piece object: `{type, player, char}`
+- Piece types: 'general', 'advisor', 'elephant', 'horse', 'chariot', 'cannon', 'soldier'
+- Players: 'red' (moves first) or 'black'
+- Unicode characters for display (e.g., 帥/將, 車, 馬, etc.)
+
+**Rendering Pipeline:**
+1. Clear canvas and draw wood background (#DEB887)
+2. Draw grid lines (9 vertical, 10 horizontal)
+3. Draw river zone decoration (rows 4-5)
+4. Draw palace X-markings (both palaces)
+5. Draw all pieces with selection highlighting
+
+**Click Handling & Validation:**
+- Converts screen coordinates to board grid coordinates using rounding
+- Maintains `selectedPiece` state object: `{row, col}`
+- Two-click system: select piece → validate move → execute or reject
+- Validation flow: game.js → rules.js → return boolean → game.js executes
+- Invalid moves flash red overlay (150ms) and keep piece selected
+- Valid moves update board, toggle turn, clear selection
+
+**Data Flow:**
+```
+User Click → game.js (handleClick)
+           → rules.js (isValidMove)
+           → piece-specific validator
+           → Flying General check
+           → Boolean result
+           → game.js (execute or flash)
+
 ### Key File Relationships
 
 - `games/slots.html` loads `js/slots.js` (engine) + `js/themes.js` (data) + `js/slots_audio.js` (sound)
 - `js/slots.js` references `THEME_LIBRARY` global from themes.js
 - Themes reference background music files in `music/` directory
 - `audio/` directory contains unused legacy files (not loaded by current code)
+- `games/xiangqi/index.html` loads `js/rules.js` → `js/ai.js` → `js/game.js` (in order)
+- `game.js` references global `XiangqiRules` object for move validation
+- `game.js` references global `XiangqiAI` object for AI opponent moves
+- `ai.js` calls `XiangqiRules.isValidMove()` during move generation
+- Data flow: User → game.js → rules.js (validate) → game.js (execute) → ai.js (calculate) → game.js (execute AI move)
+
+---
 
 ## Common Development Tasks
 
@@ -167,6 +494,8 @@ Win line animations are in `slots.js` lines 598-775. The system draws:
 **Economy:**
 - `GAME_CONFIG.economy` sets starting balance, min/max bet, bet increment
 
+---
+
 ## Important Implementation Notes
 
 ### Mobile Scaling (Critical)
@@ -190,6 +519,32 @@ Historical issue (resolved in v1.0): Win lines must be drawn **after** symbol ba
 ### localStorage Keys
 
 - `dadsSlotsSave`: Stores `{balance, bet, theme}` for slots game
+
+### Xiangqi Board Coordinates
+
+**Critical:** Xiangqi uses intersection-based coordinates, not square-based like Western chess.
+
+- Board is 9 columns × 10 rows (9 vertical lines, 10 horizontal lines)
+- Pieces sit **on intersections**, not in squares
+- Coordinate system: `board[row][col]` where row 0 = Red's back rank, row 9 = Black's back rank
+- Click detection uses `Math.round()` to snap to nearest intersection
+- Palace zones: Red (rows 0-2, cols 3-5), Black (rows 7-9, cols 3-5)
+- River: Between rows 4 and 5
+
+**Canvas Coordinate Mapping:**
+```javascript
+// Screen to board conversion (game.js:231-232)
+const col = Math.round((clickX - margin) / cellSize);
+const row = Math.round((clickY - margin) / cellSize);
+
+// Board to screen conversion (game.js:200)
+const x = margin + col * cellSize;
+const y = margin + row * cellSize;
+```
+
+This is different from Slots which uses a continuous coordinate system. Always work with grid intersections in Xiangqi.
+
+---
 
 ## Code Style Conventions
 
