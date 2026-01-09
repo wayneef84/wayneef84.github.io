@@ -1,14 +1,15 @@
-/* games/letters/css/style.css */
-
 body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fff9e6; /* Creamy background */
+    
+    /* Mobile Viewport Fixes */
+    height: 100dvh; 
+    width: 100vw;
     display: flex;
     justify-content: center;
-    height: 100vh;
-    overflow: hidden;
+    overflow: hidden; /* Prevent body scroll */
 }
 
 .game-container {
@@ -19,9 +20,10 @@ body {
     flex-direction: column;
     background: white;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
 }
 
-/* --- HEADER & CONTROLS --- */
+/* --- HEADER (Fixed Top) --- */
 .header {
     display: flex;
     justify-content: space-between;
@@ -32,6 +34,9 @@ body {
     position: relative; /* Anchor for settings panel */
     gap: 8px;
     z-index: 50;
+    
+    /* Prevent header from shrinking on small screens */
+    flex-shrink: 0; 
 }
 
 .back-btn {
@@ -53,7 +58,7 @@ body {
     flex-grow: 1; /* evenly space */
 }
 
-/* Settings Button (New) */
+/* Settings Button */
 .icon-btn {
     background: white;
     border: 2px solid #ccc;
@@ -72,7 +77,7 @@ body {
     background: #f0f0f0;
 }
 
-/* Settings Panel Popup (New) */
+/* Settings Panel Popup */
 .settings-panel {
     position: absolute;
     top: 60px;
@@ -136,12 +141,20 @@ input[type=range] {
     transition: opacity 0.3s, transform 0.3s;
 }
 
-/* --- CANVAS AREA --- */
+/* --- CANVAS AREA (Flexible Middle) --- */
 .canvas-wrapper {
     position: relative;
-    flex-grow: 1;
     background-color: #fff;
     touch-action: none; /* Prevents scrolling while drawing */
+    
+    /* FLEX TRICK: Forces canvas to fit available space without pushing boundaries */
+    flex-grow: 1;
+    height: 0; 
+    min-height: 0;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 canvas {
@@ -149,6 +162,7 @@ canvas {
     height: 100%;
     display: block;
     cursor: crosshair;
+    object-fit: contain; /* Ensures geometry doesn't stretch */
 }
 
 .hint-icon {
@@ -159,16 +173,22 @@ canvas {
     transition: opacity 0.3s;
 }
 
-/* --- LETTER GRID (BOTTOM) --- */
+/* --- LETTER GRID (Fixed Bottom) --- */
 .letter-grid {
     padding: 10px;
     background-color: #f8f9fa;
     border-top: 1px solid #ddd;
+    
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
     gap: 8px;
-    max-height: 200px;
+    
+    /* Constrain height for mobile, allow scroll */
+    max-height: 30dvh; 
     overflow-y: auto;
+    
+    /* Prevent grid from shrinking */
+    flex-shrink: 0;
 }
 
 .letter-btn {
