@@ -24,7 +24,7 @@ class LetterGame {
         this.isDrawing = false;
         this.lastPos = null;
         this.particles = [];
-        this.guidanceMode = 'ghost'; // Default
+        this.guidanceMode = 'ghost_plus'; // Default
         
         // Ghost Animation State
         this.ghostT = 0; // 0.0 to 1.0
@@ -86,10 +86,23 @@ class LetterGame {
         });
     }
 
+    // Update this existing method to handle the new Data Structure
     selectLetter(char) {
         this.currentLetter = char;
-        const instructions = this.currentPack.items[char];
-        this.strokes = instructions.map(instr => this.generatePoints(instr));
+        const data = this.currentPack.items[char];
+        
+        // SUPPORT BOTH FORMATS:
+        // 1. Old Format: Just an Array of strokes
+        // 2. New Format: Object { strokes: [], words: [], name: "..." }
+        let instructionData = [];
+        
+        if (Array.isArray(data)) {
+            instructionData = data; // Old way
+        } else if (data && data.strokes) {
+            instructionData = data.strokes; // New way
+        }
+
+        this.strokes = instructionData.map(instr => this.generatePoints(instr));
         
         this.resetProgress();
         this.msgEl.classList.add('hidden');
@@ -323,14 +336,53 @@ class LetterGame {
         });
     }
 
+    // Update the Win Logic for Slower Speech + Random Words
     checkWin() {
         if (this.strokeDone.every(d => d === true)) {
+            
+            // 1. PREFIXES
+            const prefixes = ["Great Job", "Way to go", "Awesome", "Super", "Nice work"];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+            // 2. GET DATA
+            // Handle both Old (Array) and New (Object) formats
+            const data = this.currentPack.items[this.currentLetter];
+            let spokenName = this.currentLetter;
+            let exampleWords = [];
+
+            if (!Array.isArray(data)) {
+                if (data.name) spokenName = data.name;
+                if (data.words) exampleWords = data.words;
+            }
+
+            // 3. BUILD TEXT
+            let fullText = "";
+            
+            if (exampleWords.length > 0) {
+                // RICH MODE: "Great Job! S is for Snake, and Spider."
+                // Shuffle and pick 2
+                const shuffled = exampleWords.sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 2);
+                
+                // logic: Prefix + "!" + Name + " is for " + Word1 + ", and " + Word2.
+                fullText = `${prefix}! ${spokenName} is for ${selected[0]} and ${selected[1]}.`;
+            } else {
+                // SIMPLE MODE: "Great Job S!"
+                fullText = `${prefix} ${spokenName}!`;
+            }
+
+            // 4. DISPLAY & SPEAK
             this.msgEl.classList.remove('hidden'); 
-            this.msgEl.textContent = "Great Job! " + this.currentLetter;
+            this.msgEl.textContent = fullText;
+            
             if ('speechSynthesis' in window) { 
-                const utter = new SpeechSynthesisUtterance("Great Job! " + this.currentLetter); 
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(fullText);
+                utter.pitch = 1.1; 
+                utter.rate = 0.9; 
                 window.speechSynthesis.speak(utter); 
             }
+            
             const center = this.toPixels({x:50, y:50}); 
             this.createParticles(center.x, center.y);
         }
