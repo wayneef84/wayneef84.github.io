@@ -7,36 +7,45 @@ class LetterGame {
         this.packSelectEl = document.getElementById('packSelect');
         this.modeSelectEl = document.getElementById('guidanceSelect');
         
+        // Settings UI
+        this.settingsBtn = document.getElementById('settingsBtn');
+        this.settingsPanel = document.getElementById('settingsPanel');
+        this.speedSlider = document.getElementById('voiceSpeed');
+        this.speedDisplay = document.getElementById('speedDisplay');
+
         // State
         this.allPacks = [];
         this.currentPack = null;
         this.currentLetter = null;
+        this.globalConfig = {}; // For global audio
         
         // Path Data
-        this.strokes = [];       // Array of Arrays of Points (The Target)
-        this.userStrokes = [];   // Array of Arrays of Points (The Ink)
+        this.strokes = [];       
+        this.userStrokes = [];   
         
-        // Progress Tracking (PER STROKE)
-        this.strokeProgress = []; // Index of next point needed for each stroke
-        this.strokeDone = [];     // Boolean for each stroke
+        // Progress Tracking
+        this.strokeProgress = []; 
+        this.strokeDone = [];     
         
         // Game Logic
         this.isDrawing = false;
         this.lastPos = null;
         this.particles = [];
-        this.guidanceMode = 'ghost_plus'; // Default
-        
-        // Ghost Animation State
-        this.ghostT = 0; // 0.0 to 1.0
+        this.guidanceMode = 'ghost_plus'; // Default Mode (Labeled "Guide")
+        this.voiceRate = 0.9; // Default Speed
+        this.ghostT = 0;
 
         this.init();
     }
 
     init() {
         if (window.GAME_CONTENT) {
+            this.globalConfig = window.GAME_CONTENT.globalAudio || {};
             this.allPacks = window.GAME_CONTENT.packs;
+            
             this.populatePackSelector();
             this.setupModeSelector();
+            this.setupSettings();
 
             if (this.allPacks.length > 0) this.loadPack(0);
 
@@ -46,10 +55,23 @@ class LetterGame {
         }
     }
 
+    setupSettings() {
+        // Toggle Panel
+        this.settingsBtn.onclick = () => {
+            this.settingsPanel.classList.toggle('hidden');
+        };
+
+        // Slider Logic
+        this.speedSlider.oninput = (e) => {
+            this.voiceRate = parseFloat(e.target.value);
+            this.speedDisplay.textContent = this.voiceRate + "x";
+        };
+    }
+
     setupModeSelector() {
         this.modeSelectEl.onchange = (e) => {
             this.guidanceMode = e.target.value;
-            this.draw(); // Refresh visuals
+            this.draw(); 
         };
     }
 
@@ -86,20 +108,16 @@ class LetterGame {
         });
     }
 
-    // Update this existing method to handle the new Data Structure
     selectLetter(char) {
         this.currentLetter = char;
         const data = this.currentPack.items[char];
         
-        // SUPPORT BOTH FORMATS:
-        // 1. Old Format: Just an Array of strokes
-        // 2. New Format: Object { strokes: [], words: [], name: "..." }
+        // Handle Rich Format vs Simple Array
         let instructionData = [];
-        
         if (Array.isArray(data)) {
-            instructionData = data; // Old way
+            instructionData = data;
         } else if (data && data.strokes) {
-            instructionData = data.strokes; // New way
+            instructionData = data.strokes;
         }
 
         this.strokes = instructionData.map(instr => this.generatePoints(instr));
@@ -115,28 +133,94 @@ class LetterGame {
     }
 
     resetProgress() {
-        // Initialize trackers for EVERY stroke
         this.strokeProgress = this.strokes.map(() => 0);
         this.strokeDone = this.strokes.map(() => false);
-        this.userStrokes = this.strokes.map(() => []); // Separate ink for each stroke
-        
+        this.userStrokes = this.strokes.map(() => []); 
         this.isDrawing = false;
         this.lastPos = null;
     }
 
-    // --- GAME LOOP ---
+    // --- AUDIO RESOLUTION SYSTEM ---
+    resolveAudioList(componentType) {
+        const item = this.currentPack.items[this.currentLetter];
+        const pack = this.currentPack;
+        const global = this.globalConfig;
+
+        // 1. CHECK ITEM LEVEL (Override)
+        if (item.hasOwnProperty('audioOverride') && item.audioOverride.hasOwnProperty(componentType)) {
+            return item.audioOverride[componentType];
+        }
+
+        // 2. CHECK PACK LEVEL (Default)
+        if (pack.hasOwnProperty('audioDefaults') && pack.audioDefaults.hasOwnProperty(componentType)) {
+            return pack.audioDefaults[componentType];
+        }
+
+        // 3. CHECK GLOBAL LEVEL
+        if (global.hasOwnProperty(componentType)) {
+            return global[componentType];
+        }
+
+        return [];
+    }
+
+    checkWin() {
+        if (this.strokeDone.every(d => d === true)) {
+            
+            // COMPONENT A: PREFIX
+            const aList = this.resolveAudioList('A');
+            const partA = aList.length > 0 ? aList[Math.floor(Math.random() * aList.length)] : "";
+
+            // COMPONENT B: CONTENT (Name + Words)
+            const item = this.currentPack.items[this.currentLetter];
+            let partB = "";
+            
+            if (item.hasOwnProperty('words') && item.words.length > 0) {
+                const name = item.name || this.currentLetter;
+                // Shuffle words to pick 2 random ones
+                const shuffled = [...item.words].sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 2);
+                partB = `${name} is for ${selected[0]}, and ${selected[1]}`;
+            } else {
+                // Fallback for simple items
+                const name = item.name || `Letter ${this.currentLetter}`;
+                partB = name;
+            }
+
+            // COMPONENT C: SUFFIX
+            const cList = this.resolveAudioList('C');
+            const partC = cList.length > 0 ? cList[Math.floor(Math.random() * cList.length)] : "";
+
+            // ASSEMBLE
+            const fullText = [partA, partB, partC].filter(s => s.length > 0).join(". ");
+
+            // DISPLAY & SPEAK
+            this.msgEl.classList.remove('hidden'); 
+            this.msgEl.textContent = fullText;
+            
+            if ('speechSynthesis' in window) { 
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(fullText);
+                utter.pitch = 1.1; 
+                utter.rate = this.voiceRate;
+                window.speechSynthesis.speak(utter); 
+            }
+            
+            const center = this.toPixels({x:50, y:50}); 
+            this.createParticles(center.x, center.y);
+        }
+    }
+
+    // --- DRAWING ENGINE ---
     loop() {
-        // Animate Ghost
         this.ghostT += 0.015;
         if (this.ghostT > 1) this.ghostT = 0;
-
-        if (this.guidanceMode.includes('ghost') || this.particles.length > 0) {
+        if (this.guidanceMode.includes('ghost') || this.guidanceMode === 'guide' || this.particles.length > 0) {
             this.draw();
         }
         requestAnimationFrame(() => this.loop());
     }
 
-    // --- DRAWING ENGINE ---
     draw() {
         const w = this.canvas.width; 
         const h = this.canvas.height; 
@@ -147,67 +231,48 @@ class LetterGame {
 
         if (!this.currentLetter) return;
 
-        // 1. Draw "Ghost" Guide Lines (Gray)
-        ctx.lineCap = 'round'; 
-        ctx.lineJoin = 'round';
+        // Draw Ghost Lines
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         this.strokes.forEach(stroke => {
             const pts = stroke.map(p => this.toPixels(p));
-            // Outer gray
-            ctx.beginPath(); 
-            ctx.strokeStyle = '#e0e0e0'; 
-            ctx.lineWidth = 30;
+            ctx.beginPath(); ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 30;
             ctx.moveTo(pts[0].x, pts[0].y);
             for(let i=1; i<pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
             ctx.stroke();
-            // Inner dash
-            ctx.beginPath(); 
-            ctx.strokeStyle = '#bbb'; 
-            ctx.lineWidth = 2; 
-            ctx.setLineDash([10, 10]);
+            ctx.beginPath(); ctx.strokeStyle = '#bbb'; ctx.lineWidth = 2; ctx.setLineDash([10, 10]);
             ctx.moveTo(pts[0].x, pts[0].y);
             for(let i=1; i<pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-            ctx.stroke(); 
-            ctx.setLineDash([]);
+            ctx.stroke(); ctx.setLineDash([]);
         });
 
-        // 2. Draw "Ink" (User Progress)
-        ctx.strokeStyle = '#4a90e2'; 
-        ctx.lineWidth = 25;
-        
-        // Draw ALL segments that have been hit
+        // Draw Ink
+        ctx.strokeStyle = '#4a90e2'; ctx.lineWidth = 25;
         this.strokes.forEach((stroke, sIdx) => {
             const progress = this.strokeProgress[sIdx];
             if (progress > 0) {
                 const pts = stroke.map(p => this.toPixels(p));
-                ctx.beginPath();
-                ctx.moveTo(pts[0].x, pts[0].y);
-                // Draw up to the furthest point reached
+                ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
                 for(let i=1; i < progress; i++) ctx.lineTo(pts[i].x, pts[i].y);
                 ctx.stroke();
             }
         });
 
-        // 3. Guidance Visuals
         this.drawGuidance(ctx);
-
-        // 4. Particles
         this.updateParticles();
     }
 
     drawGuidance(ctx) {
         if (this.guidanceMode === 'off' || this.guidanceMode === 'loose') return;
 
-        // Find the next stroke to do (Strict Order)
         let targetStrokeIdx = this.strokeDone.findIndex(done => !done);
-        if (targetStrokeIdx === -1) return; // All done
+        if (targetStrokeIdx === -1) return; 
 
         const stroke = this.strokes[targetStrokeIdx];
         const progressIdx = this.strokeProgress[targetStrokeIdx];
         const pixelPoints = stroke.map(p => this.toPixels(p));
 
-        // A. GHOST WRITER (Travelling Dot)
-        if (this.guidanceMode.includes('ghost')) {
-            // Calculate interpolated position based on ghostT
+        // Ghost Dot (Active for 'ghost_plus' which we renamed to 'guide' in UI)
+        if (this.guidanceMode === 'ghost_plus') {
             const totalPoints = pixelPoints.length;
             const floatIdx = this.ghostT * (totalPoints - 1);
             const idx = Math.floor(floatIdx);
@@ -218,48 +283,36 @@ class LetterGame {
                 const p2 = pixelPoints[idx+1];
                 const x = p1.x + (p2.x - p1.x) * t;
                 const y = p1.y + (p2.y - p1.y) * t;
-                
-                ctx.fillStyle = 'rgba(255, 107, 107, 0.6)'; // Reddish
-                ctx.beginPath();
-                ctx.arc(x, y, 12, 0, Math.PI*2);
-                ctx.fill();
+                ctx.fillStyle = 'rgba(255, 107, 107, 0.6)'; 
+                ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI*2); ctx.fill();
             }
         }
 
-        // B. START HELP (Pulsing Green Dot)
-        // Show if mode is Strict OR Ghost+
+        // Green Pulse (Active for Strict and Guide)
         if (this.guidanceMode === 'strict' || this.guidanceMode === 'ghost_plus') {
             const nextPt = pixelPoints[progressIdx];
             if (nextPt) {
                 const pulse = 10 + Math.sin(Date.now() / 200) * 3;
-                ctx.fillStyle = '#4ade80'; // Green
-                ctx.beginPath();
-                ctx.arc(nextPt.x, nextPt.y, pulse, 0, Math.PI*2);
-                ctx.fill();
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#fff';
-                ctx.stroke();
+                ctx.fillStyle = '#4ade80'; 
+                ctx.beginPath(); ctx.arc(nextPt.x, nextPt.y, pulse, 0, Math.PI*2); ctx.fill();
+                ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
             }
         }
     }
 
-    // --- INPUT HANDLING ---
+    // --- INPUT & UTILS (Standard) ---
     startDraw(e) {
         this.isDrawing = true;
         this.canvas.setPointerCapture(e.pointerId);
         this.lastPos = this.getPos(e);
         this.checkPoint(this.lastPos);
     }
-
     moveDraw(e) {
         if (!this.isDrawing) return;
         const newPos = this.getPos(e);
-        
-        // Interpolate input for fast swipes
         if (this.lastPos) {
             const dist = Math.hypot(newPos.x - this.lastPos.x, newPos.y - this.lastPos.y);
-            const stepSize = 5; 
-            const steps = Math.ceil(dist / stepSize);
+            const steps = Math.ceil(dist / 5);
             for (let i = 1; i <= steps; i++) {
                 const t = i / steps;
                 const interpX = this.lastPos.x + (newPos.x - this.lastPos.x) * t;
@@ -270,61 +323,35 @@ class LetterGame {
         this.lastPos = newPos;
         this.draw();
     }
-
-    endDraw() {
-        this.isDrawing = false;
-        this.lastPos = null;
-    }
+    endDraw() { this.isDrawing = false; this.lastPos = null; }
 
     checkPoint(pos) {
-        // Logic depends on Mode
         if (this.guidanceMode === 'loose') {
-            this.checkLoose(pos);
-        } else {
-            this.checkStrict(pos);
-        }
-    }
-
-    checkStrict(pos) {
-        // Find FIRST unfinished stroke
-        const sIdx = this.strokeDone.findIndex(d => !d);
-        if (sIdx === -1) return; // All done
-
-        const stroke = this.strokes[sIdx];
-        const pIdx = this.strokeProgress[sIdx];
-        
-        // Check surrounding points (Look ahead for corner cutting)
-        const LOOKAHEAD = 3;
-        const maxCheck = Math.min(pIdx + LOOKAHEAD, stroke.length - 1);
-
-        for (let i = pIdx; i <= maxCheck; i++) {
-            const target = this.toPixels(stroke[i]);
-            const dist = Math.hypot(pos.x - target.x, pos.y - target.y);
-            
-            if (dist < 45) { // Hit!
-                this.strokeProgress[sIdx] = i + 1; // Advance
-                if (this.strokeProgress[sIdx] >= stroke.length) {
-                    this.strokeDone[sIdx] = true;
-                    this.checkWin();
+            this.strokes.forEach((stroke, sIdx) => {
+                if (this.strokeDone[sIdx]) return;
+                const pIdx = this.strokeProgress[sIdx];
+                const maxCheck = Math.min(pIdx + 3, stroke.length - 1);
+                for (let i = pIdx; i <= maxCheck; i++) {
+                    const target = this.toPixels(stroke[i]);
+                    if (Math.hypot(pos.x - target.x, pos.y - target.y) < 45) {
+                        this.strokeProgress[sIdx] = i + 1;
+                        if (this.strokeProgress[sIdx] >= stroke.length) {
+                            this.strokeDone[sIdx] = true;
+                            this.checkWin();
+                        }
+                        return;
+                    }
                 }
-                return; // Only update one point per check
-            }
-        }
-    }
-
-    checkLoose(pos) {
-        // Check ALL unfinished strokes
-        this.strokes.forEach((stroke, sIdx) => {
-            if (this.strokeDone[sIdx]) return;
-
+            });
+        } else {
+            const sIdx = this.strokeDone.findIndex(d => !d);
+            if (sIdx === -1) return;
+            const stroke = this.strokes[sIdx];
             const pIdx = this.strokeProgress[sIdx];
             const maxCheck = Math.min(pIdx + 3, stroke.length - 1);
-
             for (let i = pIdx; i <= maxCheck; i++) {
                 const target = this.toPixels(stroke[i]);
-                const dist = Math.hypot(pos.x - target.x, pos.y - target.y);
-
-                if (dist < 45) {
+                if (Math.hypot(pos.x - target.x, pos.y - target.y) < 45) {
                     this.strokeProgress[sIdx] = i + 1;
                     if (this.strokeProgress[sIdx] >= stroke.length) {
                         this.strokeDone[sIdx] = true;
@@ -333,62 +360,9 @@ class LetterGame {
                     return;
                 }
             }
-        });
-    }
-
-    // Update the Win Logic for Slower Speech + Random Words
-    checkWin() {
-        if (this.strokeDone.every(d => d === true)) {
-            
-            // 1. PREFIXES
-            const prefixes = ["Great Job", "Way to go", "Awesome", "Super", "Nice work"];
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-
-            // 2. GET DATA
-            // Handle both Old (Array) and New (Object) formats
-            const data = this.currentPack.items[this.currentLetter];
-            let spokenName = this.currentLetter;
-            let exampleWords = [];
-
-            if (!Array.isArray(data)) {
-                if (data.name) spokenName = data.name;
-                if (data.words) exampleWords = data.words;
-            }
-
-            // 3. BUILD TEXT
-            let fullText = "";
-            
-            if (exampleWords.length > 0) {
-                // RICH MODE: "Great Job! S is for Snake, and Spider."
-                // Shuffle and pick 2
-                const shuffled = exampleWords.sort(() => 0.5 - Math.random());
-                const selected = shuffled.slice(0, 2);
-                
-                // logic: Prefix + "!" + Name + " is for " + Word1 + ", and " + Word2.
-                fullText = `${prefix}! ${spokenName} is for ${selected[0]} and ${selected[1]}.`;
-            } else {
-                // SIMPLE MODE: "Great Job S!"
-                fullText = `${prefix} ${spokenName}!`;
-            }
-
-            // 4. DISPLAY & SPEAK
-            this.msgEl.classList.remove('hidden'); 
-            this.msgEl.textContent = fullText;
-            
-            if ('speechSynthesis' in window) { 
-                window.speechSynthesis.cancel();
-                const utter = new SpeechSynthesisUtterance(fullText);
-                utter.pitch = 1.1; 
-                utter.rate = 0.9; 
-                window.speechSynthesis.speak(utter); 
-            }
-            
-            const center = this.toPixels({x:50, y:50}); 
-            this.createParticles(center.x, center.y);
         }
     }
 
-    // --- UTILITIES (Same as before) ---
     generatePoints(instruction) {
         const points = []; const DENSITY = 4;
         if (instruction.type === 'complex') {
