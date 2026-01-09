@@ -1,0 +1,226 @@
+:root {
+    --paper-bg: #fffbe6;
+    --line-blue: #a3c4dc;
+    --line-red: #ffb7b2;
+    --ink-color: #4a90e2;
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --text-dark: #333;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f7f9fc;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    touch-action: none; /* Prevent scrolling while playing */
+    overflow: hidden;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* --- HEADER (UPDATED FOR BETTER LAYOUT) --- */
+.header {
+    padding: 10px 15px;
+    background: var(--secondary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Allow height to adjust if items wrap on tiny screens */
+    height: auto; 
+    min-height: 60px;
+    gap: 8px;
+    flex-wrap: wrap; 
+}
+
+.back-btn {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+    /* Keep button size static */
+    flex-shrink: 0; 
+}
+
+/* UPDATED SELECTOR STYLE */
+.pack-selector {
+    background: white;
+    border: 2px solid #3eb8b0;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: bold;
+    color: var(--text-dark);
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+    
+    /* FIX: Remove fixed width and let it grow */
+    max-width: none; 
+    flex: 1; /* Grow to fill available space */
+    min-width: 160px; /* Don't get too small */
+}
+
+.pack-selector:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.message {
+    background: #ffe66d;
+    color: var(--text-dark);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Ensure message doesn't shrink */
+    flex-shrink: 0;
+}
+
+.hidden {
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none; /* Prevent clicking when hidden */
+}
+
+/* --- CANVAS AREA --- */
+.canvas-wrapper {
+    flex: 1;
+    background-color: var(--paper-bg);
+    position: relative;
+    border-bottom: 4px solid #eee;
+    cursor: crosshair;
+    /* Prevent selection on mobile tap */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+.hint-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0;
+    pointer-events: none;
+    animation: float 2s infinite;
+}
+
+/* --- LETTER GRID --- */
+.letter-grid {
+    height: 35vh; /* Takes up bottom 35% of screen */
+    overflow-y: auto;
+    padding: 10px;
+    background: #f0f3f5;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+    /* Smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+}
+
+.letter-btn {
+    aspect-ratio: 1;
+    background: white;
+    border: 3px solid #ddd;
+    border-radius: 15px;
+    font-size: 1.8rem;
+    font-family: inherit;
+    color: #555;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.1s;
+    box-shadow: 0 4px 0 #ccc;
+    /* Centering text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.letter-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #ccc;
+}
+
+.letter-btn.active {
+    border-color: var(--secondary);
+    background: #e6fffa;
+    color: var(--secondary);
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #ccc;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, -60%); }
+}
+
+/* --- MOBILE TWEAKS --- */
+@media (max-width: 400px) {
+    .header {
+        padding: 5px 10px;
+        gap: 8px;
+    }
+    
+    .back-btn {
+        font-size: 0.9rem;
+    }
+
+    .pack-selector {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        min-width: 120px;
+    }
+    
+    .message {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+}
+
+
+/* New Mode Selector (Compact) */
+.mode-selector {
+    background: #fff;
+    border: 2px solid #3eb8b0;
+    border-radius: 15px;
+    padding: 8px 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    min-width: 80px; /* Width for emojis */
+}
+
+/* Mobile Tweaks */
+@media (max-width: 400px) {
+    .pack-selector { flex: 2; min-width: 0; } /* Let pack name shrink */
+    .mode-selector { flex: 1; min-width: 0; }
+}
+
+/* Animations not needed in CSS for Canvas, but good for HTML overlays if used later */

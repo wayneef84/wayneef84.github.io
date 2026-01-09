@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad's Casino</title>
+    <title>Fong Family Arcade</title>
     <style>
         * {
             box-sizing: border-box;
@@ -41,7 +41,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 20px;
-            max-width: 500px;
+            max-width: 600px; /* Slightly wider to fit 3 cards */
             width: 100%;
         }
         
@@ -79,7 +79,7 @@
             font-weight: bold;
             font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
         
         .game-status {
@@ -97,21 +97,22 @@
             color: #555;
             font-size: 0.75rem;
         }
-        
-        .footer a {
-            color: #b8860b;
-            text-decoration: none;
-        }
     </style>
 </head>
 <body>
-    <h1>🎰 Dad's Casino</h1>
-    <p class="subtitle">Version 3.2 • Pick Your Game</p>
+    <h1>🕹️ Fong Family Arcade</h1>
+    <p class="subtitle">Version 4.0 • The Family Collection</p>
     
     <div class="game-grid">
-        <a href="games/slots.html" class="game-card">
+        <a href="games/letters/index.html" class="game-card">
+            <span class="game-icon">✏️</span>
+            <span class="game-name">Learn Letters</span>
+            <span class="game-status">● New!</span>
+        </a>
+
+        <a href="games/slots/index.html" class="game-card">
             <span class="game-icon">🎰</span>
-            <span class="game-name">Slots</span>
+            <span class="game-name">Dad's Slots</span>
             <span class="game-status">● Play Now</span>
         </a>
 
@@ -132,16 +133,10 @@
             <span class="game-name">Blackjack</span>
             <span class="game-status">Coming Soon</span>
         </div>
-
-        <div class="game-card disabled">
-            <span class="game-icon">🎲</span>
-            <span class="game-name">Craps</span>
-            <span class="game-status">Coming Soon</span>
-        </div>
     </div>
     
     <div class="footer">
-        Made with ❤️ for Dad
+        Made with ❤️ by Dad
     </div>
 </body>
 </html>

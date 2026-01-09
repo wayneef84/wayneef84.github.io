@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dad's Letter Tracer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="header">
+            <a href="../../index.html" class="back-btn">🏠</a>
+            
+            <select id="packSelect" class="pack-selector">
+                </select>
+
+            <select id="guidanceSelect" class="mode-selector" title="Game Mode">
+                <option value="ghost">👻 Guide</option>
+                <option value="ghost_plus">👻+ Help</option>
+                <option value="strict">🟢 Strict</option>
+                <option value="loose">🎨 Loose</option>
+                <option value="off">❌ Hard</option>
+            </select>
+
+            <div id="message-area" class="message hidden">Great!</div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="traceCanvas"></canvas>
+            <div class="hint-icon" id="handHint">👆</div>
+        </div>
+
+        <div class="letter-grid" id="letterGrid"></div>
+    </div>
+
+    <script src="assets/content.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

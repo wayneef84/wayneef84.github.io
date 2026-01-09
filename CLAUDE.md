@@ -553,3 +553,114 @@ This is different from Slots which uses a continuous coordinate system. Always w
 - Animations use requestAnimationFrame loops
 - Audio respects browser autoplay policies (requires user gesture)
 - No external dependencies (vanilla JS, Web Audio API, Canvas 2D)
+
+
+---
+
+## Letter Tracing Game - Development Guide
+
+### Project Goals
+Educational letter tracing app for a 4-year-old. Help learn uppercase and lowercase letters through guided tracing with positive reinforcement.
+
+### Target User
+Young child (pre-K) - UI must be simple, colorful, touch-friendly, and forgiving.
+
+### Architecture
+
+| Component | Description |
+|-----------|-------------|
+| Letter Selector | A-Z displayed as tappable buttons (upper + lower pairs), 2-3 rows |
+| Tracing Canvas | 3-line writing guide (solid-dotted-solid) like handwriting paper |
+| Trace Validator | Tracks finger/mouse path, compares to letter outline |
+| Reward System | Positive reinforcement animation on completion |
+
+### File Structure
+```
+games/lettertracing/
+├── index.html
+├── css/
+│   └── style.css      # Bright, kid-friendly colors
+└── js/
+    ├── letters.js     # Letter path data (SVG paths or point arrays)
+    └── game.js        # Main loop, touch tracking, validation
+```
+
+### Core Features
+
+**Letter Selector:**
+- Grid of A-Z buttons showing "Aa", "Bb", etc.
+- Large touch targets (min 48px, preferably bigger for small fingers)
+- Visual feedback on tap (bounce/glow)
+- Pressing any letter resets the tracing canvas
+
+**3-Line Writing Guide:**
+- Top solid line (cap height)
+- Middle dotted line (x-height for lowercase)
+- Bottom solid line (baseline)
+- Letter outline appears as gray/light guide when selected
+
+**Tracing System:**
+- Touch/mouse tracking on canvas
+- Draw user's stroke in a bright color (crayon-style?)
+- Tolerance for imperfect tracing (kids won't be precise)
+- Detect "close enough" completion
+
+**Completion Reward:**
+- Celebratory animation (stars, confetti, character cheering)
+- Audio praise ("Great job!", "You did it!")
+- Option to try again or pick new letter
+
+### Development Phases
+
+**Phase 1: Layout & Letter Selection**
+- Build responsive layout (selector + canvas areas)
+- Create A-Z button grid with Aa/Bb pairs
+- Tapping a letter logs to console (no tracing yet)
+
+**Phase 2: 3-Line Canvas & Letter Outlines**
+- Draw the 3-line writing guide
+- Create letter outline data (start with A, B, C)
+- Display selected letter as traceable outline
+
+**Phase 3: Touch Tracking**
+- Capture touch/mouse events on canvas
+- Draw strokes following finger
+- Basic "did they trace it?" detection
+
+**Phase 4: Polish & Rewards**
+- Completion detection with tolerance
+- Celebration animations
+- Sound effects (optional, respect autoplay)
+- Expand to full A-Z letter set
+
+### Technical Considerations
+- **Touch events**: Use pointer events for unified mouse/touch handling
+- **Letter paths**: Could use SVG path data or simplified point arrays
+- **Tolerance**: Compare user stroke to target path with distance threshold
+- **Mobile-first**: Portrait orientation, large touch targets
+```
+
+---
+
+Want me to generate the full updated `CLAUDE.md` file with this merged in, or are you good to copy/paste this section yourself?
+
+Then your CLI prompt would be:
+```
+Start Letter Tracing Phase 1: Create games/lettertracing/ folder and build 
+the layout with A-Z letter selector grid (showing Aa, Bb, etc.) and a 
+placeholder canvas area below. Large colorful buttons, mobile-friendly. 
+Tapping a letter logs to console for now.
+
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+**Fong Family Arcade** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+- **Letter Tracing** (v1.0): Educational app with 5 guidance modes, particle rewards, and rigorous stroke validation.
+- **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
+- **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
+- **Xiangqi** (v0.3.1): Fully playable Chinese Chess with AI opponent.
+
+---
