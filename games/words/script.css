@@ -1,0 +1,195 @@
+body {
+    margin: 0;
+    font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    background-color: #2c3e50; /* Dark background for desktop */
+    overflow: hidden;
+    touch-action: none;
+    
+    /* Center the game on the screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* --- MAIN CONTAINER --- */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    
+    /* DEFAULT (Mobile): Fill the screen */
+    width: 100%;
+    height: 100%;
+}
+
+/* --- DESKTOP SPECIFIC OVERRIDES --- */
+/* If the screen is wider than a tablet (768px), force 'Phone Mode' */
+@media (min-width: 768px) {
+    .game-container {
+        width: 400px;       /* Fixed width like a large phone */
+        height: 750px;      /* Fixed height */
+        max-height: 90vh;   /* Don't go taller than the monitor */
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* Strong shadow */
+        border: 8px solid #34495e; /* Nice bezel border */
+    }
+}
+
+/* --- HEADER / CONTROLS --- */
+.header {
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 10;
+}
+
+.back-btn, .icon-btn {
+    background: white;
+    border: 1px solid #ccc;
+    font-size: 1.2rem;
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.back-btn:hover, .icon-btn:hover {
+    background: #eee;
+}
+
+.pack-selector, .mode-selector {
+    padding: 8px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: white;
+    flex-grow: 1; 
+    width: 100%;
+}
+
+/* --- CANVAS AREA --- */
+.canvas-wrapper {
+    flex-grow: 1;
+    position: relative;
+    background: white;
+    overflow: hidden; 
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+/* The Helper Hand Icon */
+.hint-icon {
+    position: absolute;
+    pointer-events: none;
+    font-size: 3rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 5;
+}
+
+/* --- SETTINGS PANEL --- */
+.settings-panel {
+    position: absolute;
+    top: 65px;
+    right: 15px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 50;
+    width: 220px;
+    border: 1px solid #eee;
+}
+
+.settings-panel.hidden {
+    display: none;
+}
+
+.settings-panel label {
+    font-weight: bold;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* --- LETTER GRID --- */
+.letter-grid {
+    height: 180px; 
+    flex-shrink: 0; 
+    overflow-y: auto;
+    background: #f1f3f5;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid #ddd;
+}
+
+.letter-btn {
+    aspect-ratio: 1;
+    border: 1px solid #ced4da;
+    background: white;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.letter-btn:active {
+    transform: scale(0.95);
+}
+
+.letter-btn.active {
+    background: #4a90e2;
+    color: white;
+    border-color: #357abd;
+    box-shadow: 0 2px 5px rgba(74, 144, 226, 0.4);
+}
+
+/* --- MESSAGE / WIN OVERLAY --- */
+.message {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.5s;
+    z-index: 20;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.message.hidden {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8);
+}

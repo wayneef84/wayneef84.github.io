@@ -664,3 +664,131 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Xiangqi** (v0.3.1): Fully playable Chinese Chess with AI opponent.
 
 ---
+
+From Google's Gemini -- Update and merge please
+
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+**Fong Family Arcade** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+- **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
+- **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
+- **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
+- **Xiangqi** (v0.3.1): Fully playable Chinese Chess with AI opponent.
+
+---
+
+## Letter Tracing - Development Guide
+
+### Architecture
+
+**Core Engine:** `games/letters/js/game.js`
+- **Class:** `LetterGame`
+- **Responsibility:** Manages canvas rendering, stroke validation, audio playback, and UI state.
+- **Guidance Modes:**
+  - `Guide` (Default): Shows ghost dot + green target dot.
+  - `Strict`: No ghost dot, only green target.
+  - `Loose`: Forgiving distance check, no visual cues.
+  - `Hard`: No assistance.
+
+**Data Layer:** `games/letters/assets/content.js`
+- **Structure:** Cascading Config System (Item > Pack > Global).
+- **Rich Item Format:**
+
+    "A": {
+        "name": "A",
+        "words": ["Apple", "Ant", "Astronaut"], // Used for dynamic audio
+        "strokes": [ ... ] // Geometry data
+    }
+
+- **Stroke Types:** `line` (start/end), `arc` (cx, cy, rx, ry, start, end), `complex` (nested parts).
+
+**Audio Architecture (A+B+C System):**
+Voice feedback is constructed dynamically using three components:
+1. **Component A (Prefix):** Random praise (e.g., "Wow!", "Great Job").
+2. **Component B (Content):** Educational context (e.g., "A is for Apple, and Ant").
+3. **Component C (Suffix):** Personalization (e.g., "Go Kenzie!").
+
+**Resolution Logic:**
+- System checks `audioOverride` (Item level) → `audioDefaults` (Pack level) → `globalAudio` (Global level).
+- Speed is controlled via a slider (0.25x to 2.0x) modifying the `SpeechSynthesisUtterance.rate`.
+
+### Mobile Layout & Scaling (Critical)
+
+The layout uses a specific CSS strategy to handle mobile browser address bars and ensure options remain visible:
+
+1. **Viewport Height:** Uses `height: 100dvh` (Dynamic Viewport Height) on `body` to adapt to mobile browser chrome.
+2. **Flexbox Locking:**
+   - Header: `flex-shrink: 0` (Never collapse).
+   - Grid: `flex-shrink: 0` (Always visible at bottom).
+3. **Canvas Trick:**
+   - Wrapper uses `flex-grow: 1` and **`height: 0`**.
+   - This forces the canvas container to calculate size based on *remaining* space, rather than pushing the container boundaries outward.
+
+---
+
+## Slots Game - Development Guide
+
+**Core Engine:** `js/slots.js` - The main game engine (SlotMachine class)
+- **Scale Manager**: Handles responsive scaling. Uses a fixed reference resolution (480x850).
+- **Rendering Pipeline**: Layer 1 (Backgrounds) → Layer 2 (Win Lines) → Layer 3 (Symbols) → Layer 4 (Particles).
+
+**Theme System:** `js/themes.js`
+- 20 themes configured with symbols, weights, and colors.
+- **Dad Mode**: Adjustable win chance favors high-value symbols.
+
+---
+
+## Xiangqi (Chinese Chess) - Development Guide
+
+**Three-Layer Architecture:**
+1. **rules.js (The Referee):** Pure logic, stateless validation. Handles Flying General and blocking rules.
+2. **ai.js (The Brain):** Minimax with alpha-beta pruning. Depth-based difficulty (1, 2, 4).
+3. **game.js (The Painter):** Canvas rendering, click handling, and UI integration.
+
+**Coordinates:**
+- Uses intersection-based coordinates (0-9 rows, 0-8 cols).
+- Click detection snaps to nearest intersection using `Math.round()`.
+
+---
+
+## Sprunki Mixer - Development Guide
+
+**Configuration:** `games/sprunki/config.json`
+- Defines packs, characters, and asset paths.
+- **CORS Warning:** Must be served via HTTP server (not file://) due to Web Audio API restrictions.
+
+---
+
+## Common Development Tasks
+
+### Adding a New Letter/Shape
+1. Edit `games/letters/assets/content.js`.
+2. Define the geometry in `strokes`.
+   - **Tip:** For "humps" (m, n, h), use `180 -> 360` degrees to arc *over* the top.
+   - **Tip:** For descenders (g, j, p, q, y), cap vertical lines at `Y=120` to prevent overshooting the writing lines.
+   - **Tip:** For shoulders (r), ensure retrace goes high (Y=60) before arcing to create a distinct stem.
+3. Add `words` array for audio context.
+
+### Adjusting Letter Audio
+1. To change global praise, edit `AUDIO_LIB.PREFIXES` in `content.js`.
+2. To change a specific letter, add `"audioOverride": { "A": ["..."], "C": ["..."] }` to the item object.
+
+---
+
+## Documentation Standards
+
+### Changelog Management
+**Do not** append version history to this `CLAUDE.md` file.
+1. Create/Update a file named `CHANGELOG.md` in the root directory.
+2. Log all significant changes, bug fixes, and version bumps there.
+3. Keep `CLAUDE.md` reserved for architectural guidance, code patterns, and "How-To" reference.
+
+### Code Style
+- **JS:** ES6 Classes for engines, Vanilla JS, no build steps.
+- **CSS:** Flexbox for layout, `dvh` for mobile heights.
+- **Canvas:** Use `requestAnimationFrame` for loops.
+- **Comments:** Comment complex math (especially geometry in Letters/Xiangqi).
