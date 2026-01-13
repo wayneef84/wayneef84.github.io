@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Engine Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2d5a27;
+            color: white;
+            padding: 20px;
+        }
+        h1 { margin-bottom: 10px; }
+        .section {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .section h2 {
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px;
+        }
+        #cardDisplay {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #cardDisplay canvas {
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        }
+        button {
+            background: #4a7c4e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5a9c5e;
+        }
+        pre {
+            background: rgba(0,0,0,0.4);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .log {
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🃏 Card Engine Test</h1>
+    <p>Testing the Card Engine logic with G's CardAssets renderer.</p>
+
+    <div class="section">
+        <h2>1. Basic Card Creation</h2>
+        <button onclick="testCardCreation()">Create Cards</button>
+        <pre id="cardCreationLog"></pre>
+    </div>
+
+    <div class="section">
+        <h2>2. Deck & Pile Operations</h2>
+        <button onclick="testDeckCreation()">Create Standard Deck</button>
+        <button onclick="testShuffle()">Shuffle</button>
+        <button onclick="testDeal()">Deal 5 Cards</button>
+        <button onclick="testReset()">Reset Deck</button>
+        <pre id="deckLog"></pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Visual Rendering (G's CardAssets)</h2>
+        <button onclick="testRendering()">Render Current Hand</button>
+        <button onclick="renderDeckTop()">Show Top 10 of Deck</button>
+        <div id="cardDisplay"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. Advanced Operations</h2>
+        <button onclick="testRemoveFilter()">Remove All Hearts</button>
+        <button onclick="testWildDeck()">Create Wild Deck</button>
+        <button onclick="testMultiDeck()">6-Deck Shoe</button>
+        <pre id="advancedLog"></pre>
+    </div>
+
+    <!-- Load the card engine modules -->
+    <script src="shared/enums.js"></script>
+    <script src="shared/card.js"></script>
+    <script src="shared/deck.js"></script>
+    <script src="shared/pile.js"></script>
+    <script src="shared/player.js"></script>
+    <script src="shared/card-assets.js"></script>
+
+    <script>
+        // Global state for testing
+        let drawPile = null;
+        let playerHand = null;
+        let discardPile = null;
+
+        // Initialize CardAssets on load
+        CardAssets.init();
+
+        // ========================================
+        // Test 1: Basic Card Creation
+        // ========================================
+        function testCardCreation() {
+            const log = document.getElementById('cardCreationLog');
+            Card.resetUuidCounter(); // Reset for clean test
+            
+            const card1 = new Card(Suit.HEARTS, Rank.ACE, 'standard');
+            const card2 = new Card(Suit.SPADES, Rank.KING, 'standard');
+            const card3 = new Card(Suit.DIAMONDS, Rank.TEN, 'wild');
+            
+            log.textContent = `Created 3 cards:
+            
+Card 1: ${card1.toString()}
+  - suit: ${card1.suit}
+  - rank: ${card1.rank}
+  - id: ${card1.id}
+  - deckId: ${card1.deckId}
+  - uuid: ${card1.uuid}
+  - assetKey: ${JSON.stringify(card1.getAssetKey())}
+
+Card 2: ${card2.toString()}
+  - uuid: ${card2.uuid}
+
+Card 3: ${card3.toString()}
+  - deckId: ${card3.deckId} (marked as wild!)
+
+✓ Each card has a unique UUID for animation tracking.`;
+        }
+
+        // ========================================
+        // Test 2: Deck & Pile Operations
+        // ========================================
+        function testDeckCreation() {
+            const log = document.getElementById('deckLog');
+            Card.resetUuidCounter();
+            
+            drawPile = Pile.createFrom(StandardDeck, 1);
+            playerHand = new Pile();
+            discardPile = new Pile();
+            
+            log.textContent = `Created Standard Deck:
+${StandardDeck.toString()}
+
+Draw Pile: ${drawPile.toString()}
+Player Hand: ${playerHand.toString()}
+Discard Pile: ${discardPile.toString()}
+
+✓ 52 cards created, each with unique UUID.`;
+        }
+
+        function testShuffle() {
+            const log = document.getElementById('deckLog');
+            if (!drawPile) {
+                log.textContent = 'Create a deck first!';
+                return;
+            }
+            
+            const before = drawPile.contents.slice(0, 5).map(c => c.id).join(', ');
+            drawPile.shuffle();
+            const after = drawPile.contents.slice(0, 5).map(c => c.id).join(', ');
+            
+            log.textContent = `Shuffled!
+
+Before (top 5): ${before}
+After (top 5): ${after}
+
+${drawPile.toString()}`;
+        }
+
+        function testDeal() {
+            const log = document.getElementById('deckLog');
+            if (!drawPile) {
+                log.textContent = 'Create a deck first!';
+                return;
+            }
+            
+            // Deal 5 cards from draw pile to player hand
+            for (let i = 0; i < 5 && drawPile.count > 0; i++) {
+                const card = drawPile.give(0); // Take from top
+                playerHand.receive(card, -1);  // Add to bottom of hand
+            }
+            
+            log.textContent = `Dealt 5 cards!
+
+Draw Pile: ${drawPile.toString()}
+Player Hand: ${playerHand.toString()}
+
+Cards in hand:
+${playerHand.contents.map((c, i) => `  [${i}] ${c.toString()}`).join('\n')}`;
+        }
+
+        function testReset() {
+            const log = document.getElementById('deckLog');
+            if (!drawPile) {
+                log.textContent = 'Create a deck first!';
+                return;
+            }
+            
+            drawPile.reset();
+            playerHand.clear();
+            discardPile.clear();
+            
+            log.textContent = `Reset complete!
+
+Draw Pile: ${drawPile.toString()}
+Player Hand: ${playerHand.toString()}
+Discard Pile: ${discardPile.toString()}
+
+✓ Deck restored from template (new UUIDs generated).`;
+        }
+
+        // ========================================
+        // Test 3: Visual Rendering
+        // ========================================
+        function testRendering() {
+            const display = document.getElementById('cardDisplay');
+            display.innerHTML = '';
+            
+            if (!playerHand || playerHand.count === 0) {
+                display.innerHTML = '<p>Deal some cards first!</p>';
+                return;
+            }
+            
+            playerHand.contents.forEach(card => {
+                const [rank, suit] = card.getAssetKey();
+                const canvas = CardAssets.getAsset(rank, suit);
+                
+                // Clone the canvas for display
+                const clone = document.createElement('canvas');
+                clone.width = canvas.width;
+                clone.height = canvas.height;
+                clone.getContext('2d').drawImage(canvas, 0, 0);
+                clone.title = `${card.toString()}`;
+                
+                display.appendChild(clone);
+            });
+        }
+
+        function renderDeckTop() {
+            const display = document.getElementById('cardDisplay');
+            display.innerHTML = '';
+            
+            if (!drawPile || drawPile.count === 0) {
+                display.innerHTML = '<p>Create a deck first!</p>';
+                return;
+            }
+            
+            // Show top 10 cards (or fewer if deck is small)
+            const count = Math.min(10, drawPile.count);
+            for (let i = 0; i < count; i++) {
+                const card = drawPile.peek(i);
+                const [rank, suit] = card.getAssetKey();
+                const canvas = CardAssets.getAsset(rank, suit);
+                
+                const clone = document.createElement('canvas');
+                clone.width = canvas.width;
+                clone.height = canvas.height;
+                clone.getContext('2d').drawImage(canvas, 0, 0);
+                clone.title = `${card.toString()}`;
+                
+                display.appendChild(clone);
+            }
+        }
+
+        // ========================================
+        // Test 4: Advanced Operations
+        // ========================================
+        function testRemoveFilter() {
+            const log = document.getElementById('advancedLog');
+            if (!drawPile) {
+                log.textContent = 'Create a deck first!';
+                return;
+            }
+            
+            const hearts = drawPile.remove({ suit: [Suit.HEARTS] });
+            
+            log.textContent = `Removed all Hearts!
+
+Removed: ${hearts.toString()}
+Remaining in deck: ${drawPile.toString()}
+
+Removed cards:
+${hearts.contents.map(c => c.id).join(', ')}`;
+        }
+
+        function testWildDeck() {
+            const log = document.getElementById('advancedLog');
+            Card.resetUuidCounter();
+            
+            // Create a wild deck: standard deck minus 2s and 3s
+            const wildPile = Pile.createFrom(StandardDeck, 1);
+            const removed = wildPile.remove({ rank: [Rank.TWO, Rank.THREE] });
+            wildPile.setDeckId('wild');
+            
+            log.textContent = `Created Wild Deck!
+
+Removed 2s and 3s: ${removed.count} cards
+Wild deck: ${wildPile.count} cards
+
+First 5 cards (note deckId = 'wild'):
+${wildPile.contents.slice(0, 5).map(c => `  ${c.id} (deckId: ${c.deckId})`).join('\n')}
+
+✓ Games can check card.deckId === 'wild' for special rules.`;
+        }
+
+        function testMultiDeck() {
+            const log = document.getElementById('advancedLog');
+            Card.resetUuidCounter();
+            
+            // Create a 6-deck Blackjack shoe
+            const shoe = Pile.createFrom(StandardDeck, 6);
+            shoe.shuffle();
+            
+            // Find all Kings of Hearts
+            const kingsOfHearts = shoe.contents.filter(
+                c => c.rank === Rank.KING && c.suit === Suit.HEARTS
+            );
+            
+            log.textContent = `Created 6-Deck Blackjack Shoe!
+
+Total cards: ${shoe.count}
+Kings of Hearts: ${kingsOfHearts.length}
+
+Each K♥ has a unique UUID:
+${kingsOfHearts.map(c => `  ${c.uuid}`).join('\n')}
+
+✓ Frontend can animate each specific card instance!`;
+        }
+
+        // Run initial test
+        console.log('[Card Engine] Test page loaded');
+        console.log('[Card Engine] Enums:', { Suit, Rank });
+        console.log('[Card Engine] Decks:', { StandardDeck, EuchreDeck });
+    </script>
+</body>
+</html>

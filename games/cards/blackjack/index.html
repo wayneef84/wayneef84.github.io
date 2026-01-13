@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blackjack - Fong Family Arcade</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%;
+            overflow: hidden; /* Main container logic */
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: 
+                radial-gradient(circle at 50% 30%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 60%),
+                radial-gradient(ellipse at center, #27773f 0%, #154622 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 10;
+            height: 50px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.1em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .balance {
+            font-family: "Courier New", monospace;
+            font-weight: bold;
+            color: #ffd700;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #ffd700;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* --- TABLE AREA (Scrollable) --- */
+        .table {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Start from top */
+            padding: 15px;
+            padding-bottom: 200px; /* IMPORTANT: Extra padding so cards don't hide behind footer */
+            overflow-y: auto; /* Allow scrolling if dealer has many cards */
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        
+        /* Message Overlay */
+        .message-container {
+            position: absolute;
+            top: 40%; /* Moved up slightly */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            text-align: center;
+            pointer-events: none;
+            width: 100%;
+        }
+        
+        .message {
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            padding: 15px 30px;
+            border-radius: 12px;
+            display: inline-block;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.8);
+        }
+        
+        /* Message Animations */
+        .message.visible { opacity: 1; transform: scale(1); }
+        .message.win { color: #fff; background: rgba(34, 197, 94, 0.95); border: 2px solid #86efac; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+        .message.lose { color: #fff; background: rgba(239, 68, 68, 0.95); border: 2px solid #fca5a5; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .message.push { color: #fff; background: rgba(234, 179, 8, 0.95); border: 2px solid #fde047; }
+        .message.blackjack { color: #000; background: linear-gradient(135deg, #ffd700, #fbbf24); border: 3px solid #fff; font-size: 2.5em; text-shadow: none; }
+
+        /* Hand Areas */
+        .hand-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 140px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .hand-area h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            height: 120px;
+            position: relative;
+        }
+        
+        /* Card Slots */
+        .card-slot {
+            width: 86px;
+            height: 120px;
+            margin: 0 -25px; /* Overlap */
+            transition: margin 0.3s;
+            position: relative;
+        }
+
+        .card-slot.placeholder {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 5px; 
+        }
+        
+        .card-slot canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            box-shadow: -2px 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .hand-value {
+            margin-top: 8px;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .hand-value.bust { background: #ef4444; border-color: #ff0000; }
+        .hand-value.blackjack { background: #ffd700; color: #000; border-color: #fff; }
+        .hand-value.max { background: #3b82f6; border-color: #60a5fa; box-shadow: 0 0 10px #3b82f6; } 
+
+        /* --- FIXED FOOTER CONTROLS --- */
+        .controls {
+            position: fixed; /* PINNED TO BOTTOM */
+            bottom: 0; left: 0; right: 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(15px);
+            padding: 15px;
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            z-index: 1000;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* CHIP UI */
+        .chip-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .chip {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 4px dashed rgba(255,255,255,0.5);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .chip:active { transform: scale(0.9); }
+        
+        .chip-1 { background: #ef4444; border-color: #fca5a5; }
+        .chip-5 { background: #3b82f6; border-color: #93c5fd; }
+        .chip-25 { background: #10b981; border-color: #86efac; }
+        .chip-50 { background: #f97316; border-color: #fdba74; }
+        
+        /* Gold $100 Chip */
+        .chip-100 { 
+            background: radial-gradient(circle, #ffd700 20%, #b8860b 100%);
+            border: 3px solid #fff;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Clear X Chip */
+        .chip-clear {
+            background: #334155;
+            border-color: #475569;
+            color: #f87171;
+            font-size: 1.2rem;
+        }
+
+        .bet-display {
+            color: #ffd700;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        /* ACTION BUTTONS */
+        button.action-btn {
+            background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
+            border: 1px solid #94a3b8;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0f172a;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #94a3b8;
+            transition: all 0.1s;
+            flex: 1;
+            text-transform: uppercase;
+            touch-action: manipulation;
+        }
+        
+        button.action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #94a3b8; }
+        
+        button.primary {
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+            border-color: #b45309;
+            box-shadow: 0 4px 0 #b45309;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        button.primary:active { box-shadow: 0 0 0 #b45309; }
+        
+        button.danger {
+            background: linear-gradient(180deg, #f87171 0%, #dc2626 100%);
+            border-color: #991b1b;
+            box-shadow: 0 4px 0 #991b1b;
+            color: white;
+        }
+        button.danger:active { box-shadow: 0 0 0 #991b1b; }
+
+        button:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #475569;
+        }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .setting-row label { color: #e2e8f0; }
+        .setting-row input { background: #0f172a; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; width: 80px; text-align: center; }
+        .full-btn { width: 100%; margin-top: 10px; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .reset-funds { background: #ef4444; color: white; }
+        .close-btn { background: #ffd700; color: black; }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <button id="btnSettings" class="settings-btn">⚙️</button>
+            Blackjack
+        </h1>
+        <div class="balance">$<span id="balance">1000</span></div>
+    </header>
+
+    <main class="table">
+        <div class="hand-area" id="dealerArea">
+            <h3>Dealer</h3>
+            <div class="cards-container" id="dealerCards"></div>
+            <div class="hand-value" id="dealerValue">-</div>
+        </div>
+
+        <div class="message-container">
+            <div id="message" class="message"></div>
+        </div>
+
+        <div class="hand-area" id="playerArea">
+            <h3>You</h3>
+            <div class="cards-container" id="playerCards"></div>
+            <div class="hand-value" id="playerValue">-</div>
+        </div>
+    </main>
+
+    <footer class="controls">
+        <div id="bettingRow" class="control-row" style="flex-direction: column; align-items: center;">
+            <div class="bet-display">Bet: $<span id="currentBetDisplay">25</span></div>
+            
+            <div class="chip-container">
+                <div class="chip chip-1" data-val="1">1</div>
+                <div class="chip chip-5" data-val="5">5</div>
+                <div class="chip chip-25" data-val="25">25</div>
+                <div class="chip chip-50" data-val="50">50</div>
+                <div class="chip chip-100" data-val="100">100</div>
+                <div class="chip chip-clear" id="btnClearBet">✕</div>
+            </div>
+            
+            <button id="btnDeal" class="action-btn primary" style="width: 100%; max-width: 400px;">DEAL HAND</button>
+        </div>
+
+        <div id="actionRow" class="control-row hidden">
+            <button id="btnHit" class="action-btn primary">HIT</button>
+            <button id="btnStand" class="action-btn danger">STAND</button>
+            <button id="btnDouble" class="action-btn">DOUBLE</button>
+        </div>
+
+        <div id="gameOverRow" class="control-row hidden">
+            <button id="btnNew" class="action-btn primary" style="width: 100%; max-width: 400px;">NEW HAND</button>
+        </div>
+    </footer>
+
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Game Settings</h2>
+            <div class="setting-row"><label>Decks</label><input type="number" id="cfgDecks" value="6" min="1" max="8"></div>
+            <div class="setting-row"><label>Target Score</label><input type="number" id="cfgTarget" value="21" min="10" max="50"></div>
+            <div class="setting-row"><label>Dealer Stands</label><input type="number" id="cfgDealerStand" value="17" min="10" max="25"></div>
+            <button id="btnResetFunds" class="full-btn reset-funds">Reset Funds ($1000)</button>
+            <button id="btnResetRules" class="full-btn reset-rules">Restore Default Rules</button>
+            <button id="btnCloseSettings" class="full-btn close-btn">Save & Close</button>
+        </div>
+    </div>
+
+    <script src="../shared/enums.js"></script>
+    <script src="../shared/card-assets.js"></script>
+    <script src="../shared/card.js"></script>
+    <script src="../shared/deck.js"></script>
+    <script src="../shared/pile.js"></script>
+    <script src="../shared/player.js"></script>
+    <script src="../shared/engine.js"></script>
+    <script src="ruleset.js"></script>
+
+    <script>
+        class BlackjackUI {
+            constructor() {
+                CardAssets.init();
+                // DEBUG ON to help identify states if needed
+                this.engine = new GameEngine(BlackjackRuleset, { debug: true });
+                this.wager = 25;
+                this.holeCardHidden = true;
+
+                this.el = {
+                    balance: document.getElementById('balance'),
+                    dealerCards: document.getElementById('dealerCards'),
+                    playerCards: document.getElementById('playerCards'),
+                    dealerValue: document.getElementById('dealerValue'),
+                    playerValue: document.getElementById('playerValue'),
+                    message: document.getElementById('message'),
+                    betDisplay: document.getElementById('currentBetDisplay'),
+                    bettingRow: document.getElementById('bettingRow'),
+                    actionRow: document.getElementById('actionRow'),
+                    gameOverRow: document.getElementById('gameOverRow'),
+                    btnDeal: document.getElementById('btnDeal'),
+                    btnHit: document.getElementById('btnHit'),
+                    btnStand: document.getElementById('btnStand'),
+                    btnDouble: document.getElementById('btnDouble'),
+                    btnNew: document.getElementById('btnNew'),
+                    btnClearBet: document.getElementById('btnClearBet'),
+                    settingsModal: document.getElementById('settingsModal'),
+                    btnSettings: document.getElementById('btnSettings'),
+                    btnCloseSettings: document.getElementById('btnCloseSettings'),
+                    btnResetFunds: document.getElementById('btnResetFunds'),
+                    btnResetRules: document.getElementById('btnResetRules'),
+                    cfgDecks: document.getElementById('cfgDecks'),
+                    cfgTarget: document.getElementById('cfgTarget'),
+                    cfgDealerStand: document.getElementById('cfgDealerStand')
+                };
+
+                this._bindEvents();
+                this._subscribeToEngine();
+                this._loadSettings();
+                this._initGame();
+            }
+
+            _bindEvents() {
+                this.el.btnSettings.onclick = () => this.el.settingsModal.classList.remove('hidden');
+                this.el.btnCloseSettings.onclick = () => this._saveSettings();
+                this.el.btnResetFunds.onclick = () => this._resetFunds();
+                this.el.btnResetRules.onclick = () => this._resetRules();
+
+                document.querySelectorAll('.chip:not(#btnClearBet)').forEach(btn => {
+                    btn.onclick = () => {
+                        this.wager += parseInt(btn.dataset.val);
+                        this._updateBetDisplay();
+                    };
+                });
+                this.el.btnClearBet.onclick = () => {
+                    this.wager = 0;
+                    this._updateBetDisplay();
+                };
+
+                this.el.btnDeal.onclick = () => this.deal();
+                this.el.btnHit.onclick = () => this.engine.submitAction('player1', 'hit');
+                this.el.btnStand.onclick = () => this.engine.submitAction('player1', 'stand');
+                this.el.btnDouble.onclick = () => this.engine.submitAction('player1', 'double');
+                this.el.btnNew.onclick = () => this.newHand();
+            }
+
+            _subscribeToEngine() {
+                this.engine.on('*', (event) => {
+                    switch (event.type) {
+                        case 'DEAL': this._handleDealEvent(event); break;
+                        case 'TURN_START': this._handleTurnStart(event); break;
+                        case 'REVEAL': this._handleReveal(); break;
+                        case 'RESOLUTION': this._handleResolution(event); break;
+                        case 'GAME_OVER': this._handleGameOver(); break;
+                        case 'PAYOUT': this._updateBalance(); break;
+                    }
+                });
+            }
+
+            _initGame() {
+                const storedBalance = parseInt(localStorage.getItem('family_arcade_balance')) || 1000;
+                this.engine.init([{ id: 'player1', type: 'human', name: 'You', balance: storedBalance }]);
+                this._updateBalance();
+                this._updateBetDisplay();
+                this._resetTableVisuals();
+            }
+
+            _loadSettings() {
+                const savedJson = localStorage.getItem('blackjack_config');
+                if (savedJson) {
+                    try {
+                        const saved = JSON.parse(savedJson);
+                        BlackjackRuleset.deckCount = saved.deckCount;
+                        BlackjackRuleset.targetScore = saved.targetScore;
+                        BlackjackRuleset.dealerStandThreshold = saved.dealerStandThreshold;
+                    } catch(e) {}
+                }
+                this.el.cfgDecks.value = BlackjackRuleset.deckCount;
+                this.el.cfgTarget.value = BlackjackRuleset.targetScore;
+                this.el.cfgDealerStand.value = BlackjackRuleset.dealerStandThreshold;
+            }
+
+            _saveSettings() {
+                BlackjackRuleset.deckCount = parseInt(this.el.cfgDecks.value) || 6;
+                BlackjackRuleset.targetScore = parseInt(this.el.cfgTarget.value) || 21;
+                BlackjackRuleset.dealerStandThreshold = parseInt(this.el.cfgDealerStand.value) || 17;
+                localStorage.setItem('blackjack_config', JSON.stringify({
+                    deckCount: BlackjackRuleset.deckCount,
+                    targetScore: BlackjackRuleset.targetScore,
+                    dealerStandThreshold: BlackjackRuleset.dealerStandThreshold
+                }));
+                this.el.settingsModal.classList.add('hidden');
+            }
+
+            _resetRules() {
+                if(confirm("Restore default rules?")) {
+                    this.el.cfgDecks.value = 6;
+                    this.el.cfgTarget.value = 21;
+                    this.el.cfgDealerStand.value = 17;
+                    this._saveSettings();
+                }
+            }
+
+            _resetFunds() {
+                if(confirm("Reset funds to $1000?")) {
+                    localStorage.setItem('family_arcade_balance', 1000);
+                    const player = this.engine.players[0];
+                    player.balance = 1000;
+                    this._updateBalance();
+                    this.el.settingsModal.classList.add('hidden');
+                }
+            }
+
+            _updateBetDisplay() {
+                this.el.betDisplay.textContent = this.wager;
+            }
+
+            deal() {
+                const player = this.engine.players[0];
+                if (this.wager === 0) {
+                    this._showMessage('Place a bet!', 'push');
+                    return;
+                }
+                if (this.wager > player.balance) {
+                    this._showMessage('Not enough chips!', 'lose');
+                    return;
+                }
+                
+                this._resetTableVisuals();
+                this._showControls('none');
+                
+                this.engine.startRound();
+                this.engine.placeBet('player1', this.wager);
+                this.engine.confirmBets();
+            }
+
+            _resetTableVisuals() {
+                this.holeCardHidden = true;
+                this.el.dealerCards.innerHTML = '<div class="card-slot placeholder"></div><div class="card-slot placeholder"></div>';
+                this.el.playerCards.innerHTML = '<div class="card-slot placeholder"></div><div class="card-slot placeholder"></div>';
+                this.el.dealerValue.textContent = '-';
+                this.el.playerValue.textContent = '-';
+                this.el.playerValue.className = 'hand-value';
+                this.el.dealerValue.className = 'hand-value';
+                this._showMessage('');
+            }
+
+            newHand() {
+                this.engine.players[0]._hasStood = false;
+                this._showControls('betting');
+                this._showMessage('Place your bet!');
+            }
+
+            _handleDealEvent(event) {
+                const container = event.to.id === 'dealer' ? this.el.dealerCards : this.el.playerCards;
+                const faceUp = event.faceUp;
+                const placeholder = container.querySelector('.placeholder');
+                if(placeholder) placeholder.remove();
+                this._flyCard(event.card, container, faceUp);
+            }
+
+            _flyCard(cardData, container, faceUp) {
+                const landingPad = this._createCardElement(cardData, faceUp);
+                landingPad.style.opacity = '0';
+                container.appendChild(landingPad);
+                
+                const endRect = landingPad.getBoundingClientRect();
+                const startX = window.innerWidth - 50;
+                const startY = -100;
+
+                const flyer = this._createCardElement(cardData, faceUp);
+                flyer.style.position = 'fixed';
+                flyer.style.left = `${startX}px`;
+                flyer.style.top = `${startY}px`;
+                flyer.style.zIndex = '1000';
+                flyer.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                flyer.style.pointerEvents = 'none';
+                flyer.style.width = getComputedStyle(landingPad.firstChild).width;
+                document.body.appendChild(flyer);
+
+                requestAnimationFrame(() => {
+                    flyer.style.left = `${endRect.left}px`;
+                    flyer.style.top = `${endRect.top}px`;
+                    flyer.style.transform = `rotate(${(Math.random() * 6) - 3}deg)`;
+                });
+
+                setTimeout(() => {
+                    flyer.remove();
+                    landingPad.style.opacity = '1';
+                    this._updateValues();
+                }, 500);
+            }
+
+            _createCardElement(cardData, faceUp) {
+                const slot = document.createElement('div');
+                slot.className = 'card-slot';
+                slot.dataset.uuid = cardData.uuid;
+                let canvas;
+                if (faceUp) {
+                    const rankKey = RankToAsset[cardData.rank];
+                    const suitKey = SuitToAsset[cardData.suit];
+                    canvas = CardAssets.getAsset(rankKey, suitKey);
+                } else {
+                    canvas = CardAssets.getAsset();
+                }
+                const clone = document.createElement('canvas');
+                clone.width = canvas.width;
+                clone.height = canvas.height;
+                clone.getContext('2d').drawImage(canvas, 0, 0);
+                slot.appendChild(clone);
+                return slot;
+            }
+
+            _handleTurnStart(event) {
+                if (event.actorId === 'player1') {
+                    this._showControls('action');
+                    this._showMessage('Your turn');
+                    this._disableActionButtons(false);
+                    const canDouble = event.availableActions && event.availableActions.includes('double');
+                    this.el.btnDouble.disabled = !canDouble;
+                } else if (event.actorId === 'dealer') {
+                    this._showControls('none');
+                    this._showMessage("Dealer's turn...");
+                    this.holeCardHidden = false;
+                    this._redrawDealer();
+                }
+            }
+
+            _handleReveal() {
+                this.holeCardHidden = false;
+                this._redrawDealer();
+            }
+
+            _handleResolution(event) {
+                const result = event.playerResults[0];
+                let msg = '', cls = '';
+                const target = BlackjackRuleset.targetScore;
+                if (result.outcome === 'blackjack') { msg = 'BLACKJACK!'; cls = 'blackjack'; }
+                else if (result.outcome === 'win') { msg = 'You Win!'; cls = 'win'; }
+                else if (result.outcome === 'push') { msg = 'Push'; cls = 'push'; }
+                else { msg = result.playerValue > target ? 'Bust!' : 'Dealer Wins'; cls = 'lose'; }
+                this._showMessage(msg, cls);
+            }
+
+            _handleGameOver() {
+                // FORCE controls visible even if logic tried to hide them
+                this._showControls('gameover');
+                this._updateBalance();
+                localStorage.setItem('family_arcade_balance', this.engine.players[0].balance);
+            }
+
+            _redrawDealer() {
+                const dealer = this.engine.dealer;
+                if (!dealer) return;
+                this.el.dealerCards.innerHTML = ''; 
+                dealer.hand.contents.forEach((card, i) => {
+                    const faceUp = i === 0 || !this.holeCardHidden;
+                    const slot = this._createCardElement(card, faceUp);
+                    this.el.dealerCards.appendChild(slot);
+                });
+                this._updateValues();
+            }
+
+            _updateValues() {
+                const target = BlackjackRuleset.targetScore;
+                const player = this.engine.players[0];
+                if (player && player.hand.count > 0) {
+                    const pv = BlackjackRuleset.evaluateHand(player.hand.contents);
+                    this.el.playerValue.textContent = pv.best;
+                    let cls = 'hand-value';
+                    if (pv.best > target) {
+                        cls += ' bust';
+                        this._disableActionButtons(true); // Disable if bust
+                    } else if (pv.isBlackjack) {
+                        cls += ' blackjack';
+                    } else if (pv.best === target) {
+                        cls += ' max';
+                        this.el.btnHit.disabled = true; // Disable hit on 21
+                        this.el.btnDouble.disabled = true;
+                    }
+                    this.el.playerValue.className = cls;
+                }
+                
+                const dealer = this.engine.dealer;
+                if (dealer && dealer.hand.count > 0) {
+                    if (this.holeCardHidden && dealer.hand.count >= 1) {
+                        const v = BlackjackRuleset._getCardValue(dealer.hand.contents[0]);
+                        this.el.dealerValue.textContent = v === 11 ? 'A' : v;
+                    } else {
+                        const dv = BlackjackRuleset.evaluateHand(dealer.hand.contents);
+                        this.el.dealerValue.textContent = dv.best;
+                        this.el.dealerValue.className = 'hand-value' + (dv.best > target ? ' bust' : '');
+                    }
+                }
+            }
+
+            _disableActionButtons(disabled) {
+                this.el.btnHit.disabled = disabled;
+                this.el.btnStand.disabled = disabled;
+                this.el.btnDouble.disabled = disabled;
+            }
+
+            _updateBalance() {
+                const player = this.engine.players[0];
+                if (player) this.el.balance.textContent = player.balance;
+            }
+
+            _showControls(phase) {
+                ['bettingRow', 'actionRow', 'gameOverRow'].forEach(id => this.el[id].classList.add('hidden'));
+                if (phase === 'betting') this.el.bettingRow.classList.remove('hidden');
+                if (phase === 'action') this.el.actionRow.classList.remove('hidden');
+                if (phase === 'gameover') this.el.gameOverRow.classList.remove('hidden');
+            }
+            
+            _showMessage(text, className = '') {
+                this.el.message.textContent = text;
+                this.el.message.className = 'message visible ' + className;
+                // Auto-fade logic could go here, but stickiness is better for game over
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new BlackjackUI());
+    </script>
+</body>
+</html>
