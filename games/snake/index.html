@@ -17,7 +17,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Dynamic Viewport Height for Mobile Browsers */
             height: 100vh;
             height: 100dvh; 
             margin: 0;
@@ -36,6 +35,7 @@
             border-bottom: 1px solid currentColor;
             flex-shrink: 0;
             z-index: 10;
+            height: 60px; /* Fixed height for calc */
         }
         
         .back-btn {
@@ -70,6 +70,7 @@
             width: 100%;
             position: relative;
             min-height: 0; 
+            z-index: 1;
         }
 
         .canvas-wrapper {
@@ -94,16 +95,17 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 30px;
-            /* iPhone Home Bar Safety */
+            /* Extra padding for iPhone Home Bar */
             padding-bottom: env(safe-area-inset-bottom, 20px); 
+            box-sizing: content-box; /* Ensures padding adds to height */
             flex-shrink: 0;
-            z-index: 5;
+            z-index: 100;
         }
 
-        /* DESKTOP MODE: Hide controls on wide screens */
-        @media (min-width: 800px) {
+        /* DESKTOP MODE: Hide controls on screens wider than 1024px */
+        @media (min-width: 1024px) {
             .controls-area {
-                display: none;
+                display: none !important;
             }
         }
 
@@ -210,8 +212,6 @@
         }
 
         /* --- THEMES --- */
-        
-        /* 1. NEON */
         body.theme-neon { background-color: #240a1e; color: #ff66ff; }
         .theme-neon .canvas-wrapper { background: linear-gradient(135deg, #ff00cc, #9900ff); }
         .theme-neon canvas { 
@@ -221,7 +221,6 @@
         .theme-neon .start-btn { background: #ff00cc; color: #fff; box-shadow: 0 0 20px #ff00cc; }
         .theme-neon .control-btn { border-color: #ff00cc; color: #ff00cc; }
 
-        /* 2. RETRO */
         body.theme-retro { background-color: #333; color: #fff; font-family: 'Courier New', monospace; }
         .theme-retro .game-header { background: #000; border-color: #fff; }
         .theme-retro .canvas-wrapper { background: #fff; padding: 2px; box-shadow: none; border-radius: 0; }
@@ -231,7 +230,6 @@
         .theme-retro .control-btn { border: 2px solid #fff; color: #fff; border-radius: 0; background: #000; }
         .theme-retro .mode-btn.active { background: #fff; color: #000; }
 
-        /* 3. CHAMELEON */
         body.theme-chameleon { background-color: #0a1e24; color: #00ffcc; }
         .theme-chameleon .canvas-wrapper { background: linear-gradient(135deg, #00ffcc, #00ff66); }
         .theme-chameleon canvas { 
@@ -299,7 +297,6 @@
         const controlsArea = document.querySelector('.controls-area');
         const body = document.body;
 
-        // Variables
         let snake, direction, food, score, gameLoop, isGameOver;
         let isAttractMode = false; 
         let pendingDirection;
@@ -316,21 +313,20 @@
             retro: "Old school purity. No effects, just skill."
         };
 
-        // --- RESIZE LOGIC ---
         function resize() {
-            // Check if controls are hidden (Desktop Mode)
+            // Logic Check: Are buttons hidden?
             const controlsHidden = getComputedStyle(controlsArea).display === 'none';
             
-            // Calculate available height
-            // Header(~50) + Padding(~40) + Controls (if visible)
+            // Calculate height buffers
             const headerHeight = 60;
-            const controlsHeight = controlsHidden ? 0 : 120;
-            const padding = 40;
+            // IMPORTANT: Increased buffer from 120 -> 160 to account for Safe Area Inset padding
+            const controlsHeight = controlsHidden ? 0 : 160; 
+            const padding = 20;
 
             const availableHeight = window.innerHeight - (headerHeight + controlsHeight + padding);
             const availableWidth = window.innerWidth - 40;
             
-            // Allow larger max size on desktop
+            // Max size limit
             const maxSize = controlsHidden ? 600 : 400;
 
             const size = Math.min(availableWidth, availableHeight, maxSize); 
@@ -344,7 +340,6 @@
         window.addEventListener('resize', resize);
         resize(); 
 
-        // --- MODE SELECTION ---
         window.setMode = function(mode) {
             currentMode = mode;
             body.className = `theme-${mode}`;
@@ -365,7 +360,6 @@
             startAttractMode();
         }
 
-        // --- GAME ENGINE ---
         function resetState() {
             const startColor = currentMode === 'chameleon' ? '#ffffff' : null;
             snake = [
@@ -385,10 +379,8 @@
         function initGame() {
             isAttractMode = false; 
             resetState();
-            
             gameOverScreen.classList.remove('active');
             startScreen.classList.remove('active');
-            
             if (gameLoop) clearInterval(gameLoop);
             gameLoop = setInterval(gameTick, 110); 
         }
@@ -414,7 +406,6 @@
             }
         }
 
-        // --- BOT LOGIC ---
         function getBotMove() {
             const head = snake[0];
             const moves = [
@@ -428,9 +419,7 @@
                 if (m.x === -direction.x && m.y === -direction.y) return false;
                 return true;
             });
-
             if (validMoves.length === 0) return direction; 
-
             validMoves.sort((a, b) => {
                 const distA = Math.abs((head.x + a.x) - food.x) + Math.abs((head.y + a.y) - food.y);
                 const distB = Math.abs((head.x + b.x) - food.x) + Math.abs((head.y + b.y) - food.y);
@@ -470,7 +459,6 @@
                     scoreEl.textContent = score;
                     if(navigator.vibrate) navigator.vibrate(50);
                 }
-                
                 if (currentMode === 'chameleon') {
                     activeColor = food.color;
                     snake[0].color = activeColor; 
@@ -486,10 +474,8 @@
         function draw() {
             if(!snake) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             snake.forEach((seg, i) => {
                 let fill, blur, shadowColor;
-
                 if (currentMode === 'retro') {
                     fill = '#ffffff'; blur = 0;
                 } else if (currentMode === 'chameleon') {
@@ -503,19 +489,12 @@
                         blur = 10; shadowColor = fill;
                     }
                 }
-
                 ctx.fillStyle = fill;
                 if(currentMode !== 'retro') {
                     ctx.shadowBlur = blur;
                     ctx.shadowColor = shadowColor;
                 }
-
-                ctx.fillRect(
-                    seg.x * gridSize + 1, 
-                    seg.y * gridSize + 1, 
-                    gridSize - 2, 
-                    gridSize - 2
-                );
+                ctx.fillRect(seg.x * gridSize + 1, seg.y * gridSize + 1, gridSize - 2, gridSize - 2);
             });
 
             ctx.shadowBlur = 0;
@@ -531,7 +510,6 @@
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = "#00ffff";
             }
-
             ctx.fillStyle = foodFill;
             if (currentMode === 'retro') {
                 if(food) ctx.fillRect(food.x * gridSize + 4, food.y * gridSize + 4, gridSize - 8, gridSize - 8);
