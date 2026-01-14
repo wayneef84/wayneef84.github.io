@@ -74,20 +74,20 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Start from top */
+            justify-content: space-between; /* Space between dealer (top) and player (bottom) */
             padding: 15px;
             padding-bottom: 200px; /* IMPORTANT: Extra padding so cards don't hide behind footer */
             overflow-y: auto; /* Allow scrolling if dealer has many cards */
             -webkit-overflow-scrolling: touch;
             position: relative;
         }
-        
-        /* Message Overlay - Positioned at top to avoid covering player cards */
+
+        /* Message Overlay - Positioned in center/middle */
         .message-container {
             position: absolute;
-            top: 20%; /* Moved to upper third */
+            top: 50%; /* Center vertically */
             left: 50%;
-            transform: translate(-50%, 0);
+            transform: translate(-50%, -50%);
             z-index: 100;
             text-align: center;
             pointer-events: none;
@@ -120,12 +120,21 @@
             flex-direction: column;
             align-items: center;
             min-height: 140px;
-            margin-bottom: 20px;
             position: relative;
         }
-        
+
+        /* Dealer area anchored at top */
+        .dealer-area {
+            margin-bottom: auto; /* Push to top */
+        }
+
+        /* Player area anchored at bottom */
+        .player-area {
+            margin-top: auto; /* Push to bottom */
+        }
+
         .hand-area h3 {
-            margin: 0 0 10px 0;
+            margin: 10px 0;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -163,13 +172,18 @@
         }
         
         .hand-value {
-            margin-top: 8px;
+            margin: 8px 0;
             background: rgba(0,0,0,0.5);
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: bold;
             border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Hide value bubble when empty/no value */
+        .hand-value.hidden-value {
+            display: none;
         }
 
         /* Hide value bubble if no cards or value is 0 */
@@ -470,20 +484,23 @@
     </header>
 
     <main class="table">
-        <div class="hand-area" id="dealerArea">
+        <!-- Dealer Section (anchored at top) -->
+        <div class="hand-area dealer-area" id="dealerArea">
             <h3>Dealer</h3>
-            <div class="cards-container" id="dealerCards"></div>
             <div class="hand-value" id="dealerValue">-</div>
+            <div class="cards-container" id="dealerCards"></div>
         </div>
 
+        <!-- Message (center/middle) -->
         <div class="message-container">
             <div id="message" class="message"></div>
         </div>
 
-        <div class="hand-area" id="playerArea">
+        <!-- Player Section (anchored at bottom) -->
+        <div class="hand-area player-area" id="playerArea">
             <div class="cards-container" id="playerCards"></div>
-            <div class="hand-value" id="playerValue">-</div>
             <h3>You</h3>
+            <div class="hand-value" id="playerValue">-</div>
         </div>
     </main>
 
