@@ -134,11 +134,16 @@
         }
 
         .hand-area h3 {
-            margin: 10px 0;
+            margin: 0;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: rgba(255,255,255,0.5);
+        }
+
+        /* Dealer label spacing - match player spacing */
+        .dealer-area h3 {
+            margin-bottom: 10px;
         }
 
         .cards-container {
@@ -197,7 +202,7 @@
         }
 
         #playerArea h3 {
-            margin: 10px 0 0 0; /* Flip margin for bottom label */
+            margin-top: 10px; /* Space above "You" label */
         }
 
         #playerArea .hand-value {
@@ -526,9 +531,9 @@
             <button id="btnDouble" class="action-btn">DOUBLE</button>
         </div>
 
-        <div id="gameOverRow" class="control-row hidden" style="flex-direction: column; gap: 10px;">
-            <button id="btnPlayAgain" class="action-btn primary" style="width: 100%; max-width: 400px;">PLAY AGAIN (<span id="lastBetAmount">$25</span>)</button>
-            <button id="btnNew" class="action-btn" style="width: 100%; max-width: 400px;">CHANGE BET</button>
+        <div id="gameOverRow" class="control-row hidden">
+            <button id="btnPlayAgain" class="action-btn primary">PLAY AGAIN (<span id="lastBetAmount">$25</span>)</button>
+            <button id="btnNew" class="action-btn">CHANGE BET</button>
         </div>
     </footer>
 
