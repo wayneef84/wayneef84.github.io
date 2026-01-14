@@ -114,18 +114,18 @@ var WarRuleset = {
         // In War, we handle both players flipping together
         var player1 = gameState.players[0];
         var player2 = gameState.players[1];
-        
+
         // Check for game end
         if (player1.hand.count === 0 || player2.hand.count === 0) {
-            return { nextState: GameState.RESOLUTION };
+            return { nextState: 'RESOLUTION' };
         }
         
         // Each player flips top card
         var card1 = player1.hand.give(0);
         var card2 = player2.hand.give(0);
-        
+
         if (!card1 || !card2) {
-            return { nextState: GameState.RESOLUTION };
+            return { nextState: 'RESOLUTION' };
         }
         
         // Add to war pot
@@ -137,39 +137,39 @@ var WarRuleset = {
         
         var actions = [
             {
-                type: ActionType.MESSAGE,
+                type: 'MESSAGE',
                 text: player1.name + ': ' + this._getCardName(card1) + ' vs ' + player2.name + ': ' + this._getCardName(card2)
             }
         ];
-        
+
         if (value1 > value2) {
             // Player 1 wins
             this._giveWarPotToPlayer(player1);
             actions.push({
-                type: ActionType.MESSAGE,
+                type: 'MESSAGE',
                 text: player1.name + ' wins the round!'
             });
             this._warMode = false;
             return {
                 actions: actions,
-                nextState: this._checkGameEnd(gameState) ? GameState.RESOLUTION : GameState.DEALING
+                nextState: this._checkGameEnd(gameState) ? 'RESOLUTION' : 'DEALING'
             };
         } else if (value2 > value1) {
             // Player 2 wins
             this._giveWarPotToPlayer(player2);
             actions.push({
-                type: ActionType.MESSAGE,
+                type: 'MESSAGE',
                 text: player2.name + ' wins the round!'
             });
             this._warMode = false;
             return {
                 actions: actions,
-                nextState: this._checkGameEnd(gameState) ? GameState.RESOLUTION : GameState.DEALING
+                nextState: this._checkGameEnd(gameState) ? 'RESOLUTION' : 'DEALING'
             };
         } else {
             // WAR!
             actions.push({
-                type: ActionType.MESSAGE,
+                type: 'MESSAGE',
                 text: 'WAR! Cards tied at ' + value1 + '!'
             });
             
@@ -198,13 +198,13 @@ var WarRuleset = {
                 }
                 return {
                     actions: actions,
-                    nextState: GameState.RESOLUTION
+                    nextState: 'RESOLUTION'
                 };
             }
-            
+
             return {
                 actions: actions,
-                nextState: GameState.DEALING // Will flip again
+                nextState: 'DEALING' // Will flip again
             };
         }
     },

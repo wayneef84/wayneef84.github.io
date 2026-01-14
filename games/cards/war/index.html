@@ -245,179 +245,152 @@
     <script src="../shared/deck.js"></script>
     <script src="../shared/pile.js"></script>
     <script src="../shared/player.js"></script>
+    <script src="../shared/engine.js"></script>
     <script src="../shared/card-assets.js"></script>
     <script src="ruleset.js"></script>
     
     <script>
         (function() {
             'use strict';
-            
+
             CardAssets.init();
-            
-            var els = {
-                oppCount: document.getElementById('oppCount'),
-                yourCount: document.getElementById('yourCount'),
-                oppDeck: document.getElementById('oppDeck'),
-                yourDeck: document.getElementById('yourDeck'),
-                oppCard: document.getElementById('oppCard'),
-                yourCard: document.getElementById('yourCard'),
-                message: document.getElementById('message'),
-                warPot: document.getElementById('warPot'),
-                playRow: document.getElementById('playRow'),
-                gameOverRow: document.getElementById('gameOverRow'),
-                btnFlip: document.getElementById('btnFlip'),
-                btnNew: document.getElementById('btnNew')
-            };
-            
-            var player1, player2, warPot, gameOver;
-            
-            function initGame() {
-                var deck = Pile.createFrom(StandardDeck, 1);
-                deck.shuffle();
-                
-                player1 = { name: 'You', hand: new Pile() };
-                player2 = { name: 'Opponent', hand: new Pile() };
-                warPot = new Pile();
-                gameOver = false;
-                
-                for (var i = 0; i < 52; i++) {
-                    var card = deck.give(0);
-                    if (i % 2 === 0) {
-                        player1.hand.receive(card, -1);
-                    } else {
-                        player2.hand.receive(card, -1);
-                    }
-                }
-                
-                updateCounts();
-                renderDecks();
-                clearBattle();
-                showMessage('Flip a card!', '');
-                els.playRow.classList.remove('hidden');
-                els.gameOverRow.classList.add('hidden');
-                els.warPot.classList.add('hidden');
-            }
-            
-            function getCardValue(card) {
-                var values = {
-                    'TWO': 2, 'THREE': 3, 'FOUR': 4, 'FIVE': 5, 'SIX': 6,
-                    'SEVEN': 7, 'EIGHT': 8, 'NINE': 9, 'TEN': 10,
-                    'JACK': 11, 'QUEEN': 12, 'KING': 13, 'ACE': 14
+
+            var WarUI = function() {
+                this.engine = new GameEngine(WarRuleset);
+                this.currentPlayer1Card = null;
+                this.currentPlayer2Card = null;
+
+                this.el = {
+                    oppCount: document.getElementById('oppCount'),
+                    yourCount: document.getElementById('yourCount'),
+                    oppDeck: document.getElementById('oppDeck'),
+                    yourDeck: document.getElementById('yourDeck'),
+                    oppCard: document.getElementById('oppCard'),
+                    yourCard: document.getElementById('yourCard'),
+                    message: document.getElementById('message'),
+                    warPot: document.getElementById('warPot'),
+                    playRow: document.getElementById('playRow'),
+                    gameOverRow: document.getElementById('gameOverRow'),
+                    btnFlip: document.getElementById('btnFlip'),
+                    btnNew: document.getElementById('btnNew')
                 };
-                return values[card.rank] || 0;
-            }
-            
-            function flip() {
-                if (gameOver) return;
+
+                this._bindEvents();
+                this._subscribeToEngine();
+                this._initGame();
+            };
+
+            WarUI.prototype._bindEvents = function() {
+                var self = this;
+                this.el.btnFlip.onclick = function() { self._flip(); };
+                this.el.btnNew.onclick = function() { self._initGame(); };
+            };
+
+            WarUI.prototype._subscribeToEngine = function() {
+                var self = this;
+                this.engine.on('*', function(event) {
+                    switch (event.type) {
+                        case 'MESSAGE':
+                            self._handleMessage(event);
+                            break;
+                        case 'RESOLUTION':
+                            self._handleResolution(event);
+                            break;
+                        case 'GAME_OVER':
+                            self._handleGameOver();
+                            break;
+                    }
+                });
+            };
+
+            WarUI.prototype._initGame = function() {
+                this.engine.init([
+                    { id: 'player1', type: 'human', name: 'You' },
+                    { id: 'player2', type: 'ai', name: 'Opponent' }
+                ]);
+
+                this._clearBattle();
+                this._updateCounts();
+                this._showMessage('Flip a card!', '');
+                this.el.playRow.classList.remove('hidden');
+                this.el.gameOverRow.classList.add('hidden');
+                this.el.warPot.classList.add('hidden');
+
+                this.currentPlayer1Card = null;
+                this.currentPlayer2Card = null;
+            };
+
+            WarUI.prototype._flip = function() {
+                var state = this.engine.getGameState();
+                if (state.state === 'GAME_OVER' || state.state === 'RESOLUTION') return;
+
+                var player1 = state.players[0];
+                var player2 = state.players[1];
+
                 if (player1.hand.count === 0 || player2.hand.count === 0) {
-                    endGame();
+                    this.engine.transitionTo('RESOLUTION');
                     return;
                 }
-                
-                var card1 = player1.hand.give(0);
-                var card2 = player2.hand.give(0);
-                
-                warPot.receive(card1, -1);
-                warPot.receive(card2, -1);
-                
-                renderBattleCard(card1, els.yourCard);
-                renderBattleCard(card2, els.oppCard);
-                
-                var v1 = getCardValue(card1);
-                var v2 = getCardValue(card2);
-                
-                updateCounts();
-                updateWarPot();
-                
+
+                // Store cards before they're moved
+                this.currentPlayer1Card = player1.hand.contents[0];
+                this.currentPlayer2Card = player2.hand.contents[0];
+
+                // Render cards immediately
+                this._renderCard(this.currentPlayer1Card, this.el.yourCard);
+                this._renderCard(this.currentPlayer2Card, this.el.oppCard);
+
+                // Submit action to engine
+                this.engine.submitAction('player1', 'flip');
+            };
+
+            WarUI.prototype._handleMessage = function(event) {
+                this._showMessage(event.text, this._getMessageClass(event.text));
+                this._updateCounts();
+                this._updateWarPot();
+            };
+
+            WarUI.prototype._handleResolution = function(event) {
+                var self = this;
                 setTimeout(function() {
-                    if (v1 > v2) {
-                        showMessage('You win this round!', 'win');
-                        giveCardsTo(player1);
-                    } else if (v2 > v1) {
-                        showMessage('Opponent wins!', 'lose');
-                        giveCardsTo(player2);
-                    } else {
-                        showMessage('WAR!', 'war');
-                        doWar();
-                        return;
-                    }
-                    
-                    setTimeout(function() {
-                        updateCounts();
-                        els.warPot.classList.add('hidden');
-                        checkGameEnd();
-                    }, 800);
-                }, 600);
-            }
-            
-            function doWar() {
-                els.warPot.classList.remove('hidden');
-                
-                var cardsToAdd1 = Math.min(3, player1.hand.count);
-                var cardsToAdd2 = Math.min(3, player2.hand.count);
-                
-                for (var i = 0; i < cardsToAdd1; i++) {
-                    var c = player1.hand.give(0);
-                    if (c) warPot.receive(c, -1);
-                }
-                for (var j = 0; j < cardsToAdd2; j++) {
-                    var c2 = player2.hand.give(0);
-                    if (c2) warPot.receive(c2, -1);
-                }
-                
-                updateCounts();
-                updateWarPot();
-                
-                if (player1.hand.count === 0 || player2.hand.count === 0) {
-                    if (player1.hand.count > 0) {
-                        giveCardsTo(player1);
-                    } else {
-                        giveCardsTo(player2);
-                    }
-                    setTimeout(endGame, 500);
-                }
-            }
-            
-            function giveCardsTo(player) {
-                warPot.shuffle();
-                while (warPot.count > 0) {
-                    var c = warPot.give(0);
-                    player.hand.receive(c, -1);
-                }
-            }
-            
-            function checkGameEnd() {
-                if (player1.hand.count === 0 || player2.hand.count === 0) {
-                    endGame();
-                }
-            }
-            
-            function endGame() {
-                gameOver = true;
+                    self.engine.transitionTo('GAME_OVER');
+                }, 800);
+            };
+
+            WarUI.prototype._handleGameOver = function() {
+                var state = this.engine.getGameState();
+                var resolution = state.resolution;
+
+                if (!resolution) return;
+
+                var player1 = state.players[0];
+                var player2 = state.players[1];
+
                 if (player1.hand.count > player2.hand.count) {
-                    showMessage('🎉 You Win the War!', 'win');
+                    this._showMessage('🎉 You Win the War!', 'win');
                 } else {
-                    showMessage('Opponent Wins', 'lose');
+                    this._showMessage('Opponent Wins', 'lose');
                 }
-                els.playRow.classList.add('hidden');
-                els.gameOverRow.classList.remove('hidden');
-            }
-            
-            function renderCard(card, container) {
+
+                this.el.playRow.classList.add('hidden');
+                this.el.gameOverRow.classList.remove('hidden');
+            };
+
+            WarUI.prototype._renderCard = function(card, container) {
                 var rankKey = RankToAsset[card.rank];
                 var suitKey = SuitToAsset[card.suit];
                 var canvas = CardAssets.getAsset(rankKey, suitKey);
-                
+
                 var clone = document.createElement('canvas');
                 clone.width = canvas.width;
                 clone.height = canvas.height;
                 clone.getContext('2d').drawImage(canvas, 0, 0);
-                
+
                 container.innerHTML = '';
                 container.appendChild(clone);
-            }
-            
-            function renderCardBack(container) {
+            };
+
+            WarUI.prototype._renderCardBack = function(container) {
                 var canvas = CardAssets.getAsset();
                 var clone = document.createElement('canvas');
                 clone.width = canvas.width;
@@ -425,52 +398,63 @@
                 clone.getContext('2d').drawImage(canvas, 0, 0);
                 container.innerHTML = '';
                 container.appendChild(clone);
-            }
-            
-            function renderBattleCard(card, container) {
-                renderCard(card, container);
-            }
-            
-            function renderDecks() {
+            };
+
+            WarUI.prototype._renderDecks = function() {
+                var state = this.engine.getGameState();
+                var player1 = state.players[0];
+                var player2 = state.players[1];
+
                 if (player1.hand.count > 0) {
-                    renderCardBack(els.yourDeck);
+                    this._renderCardBack(this.el.yourDeck);
                 } else {
-                    els.yourDeck.innerHTML = '';
+                    this.el.yourDeck.innerHTML = '';
                 }
                 if (player2.hand.count > 0) {
-                    renderCardBack(els.oppDeck);
+                    this._renderCardBack(this.el.oppDeck);
                 } else {
-                    els.oppDeck.innerHTML = '';
+                    this.el.oppDeck.innerHTML = '';
                 }
-            }
-            
-            function clearBattle() {
-                els.yourCard.innerHTML = '';
-                els.oppCard.innerHTML = '';
-            }
-            
-            function updateCounts() {
-                els.yourCount.textContent = player1.hand.count;
-                els.oppCount.textContent = player2.hand.count;
-                renderDecks();
-            }
-            
-            function updateWarPot() {
-                els.warPot.querySelector('span').textContent = warPot.count;
-                if (warPot.count > 0) {
-                    els.warPot.classList.remove('hidden');
+            };
+
+            WarUI.prototype._clearBattle = function() {
+                this.el.yourCard.innerHTML = '';
+                this.el.oppCard.innerHTML = '';
+            };
+
+            WarUI.prototype._updateCounts = function() {
+                var state = this.engine.getGameState();
+                var player1 = state.players[0];
+                var player2 = state.players[1];
+
+                this.el.yourCount.textContent = player1.hand.count;
+                this.el.oppCount.textContent = player2.hand.count;
+                this._renderDecks();
+            };
+
+            WarUI.prototype._updateWarPot = function() {
+                var potSize = WarRuleset._warPot.count;
+                this.el.warPot.querySelector('span').textContent = potSize;
+                if (potSize > 0) {
+                    this.el.warPot.classList.remove('hidden');
+                } else {
+                    this.el.warPot.classList.add('hidden');
                 }
-            }
-            
-            function showMessage(text, cls) {
-                els.message.textContent = text;
-                els.message.className = 'message ' + (cls || '');
-            }
-            
-            els.btnFlip.addEventListener('click', flip);
-            els.btnNew.addEventListener('click', initGame);
-            
-            initGame();
+            };
+
+            WarUI.prototype._showMessage = function(text, cls) {
+                this.el.message.textContent = text;
+                this.el.message.className = 'message ' + (cls || '');
+            };
+
+            WarUI.prototype._getMessageClass = function(text) {
+                if (text.indexOf('You win') !== -1 || text.indexOf('Win') !== -1) return 'win';
+                if (text.indexOf('Opponent wins') !== -1) return 'lose';
+                if (text.indexOf('WAR') !== -1) return 'war';
+                return '';
+            };
+
+            new WarUI();
         })();
     </script>
 </body>
