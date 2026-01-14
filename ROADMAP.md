@@ -2,7 +2,7 @@
 
 ## Blackjack - Next Features
 
-### 1. Shoe Rebuild Threshold ⚙️
+### 1. Shoe Reshuffle System ⚙️
 **Status:** Planned
 **Priority:** Medium
 
@@ -12,31 +12,37 @@
 - No automatic reshuffling
 
 **Proposed Feature:**
-- Add configurable "Reshuffle Threshold" in Settings (default: 20%)
-- When remaining cards < threshold, trigger automatic reshuffle
-- Visual feedback: "Shuffling shoe..." message
-- Reset card count tracker on reshuffle
-- Setting range: 10% - 50% (increments of 5%)
+- Add configurable "Cards Remaining Before Reshuffle" in Settings (default: 52 cards)
+- When `shoe.count < reshuffleThreshold`, trigger automatic reshuffle **before next hand**
+- Visual feedback: Toast message "🔄 Shuffling shoe..." (2 second display)
+- Reset card count tracker to zero on reshuffle
+- Setting range: 26 - 156 cards (increments of 26 = 1/2 deck)
 
 **Implementation Notes:**
 ```javascript
-// In ruleset.js or engine.js
-if (shoe.count < (totalCards * reshuffleThreshold)) {
-    this._reshuffleDeck();
-    this._emit({ type: 'SHOE_RESHUFFLED' });
+// In index.html, check before dealing (not mid-hand)
+_startNewHand() {
+    const threshold = this.reshuffleThreshold || 52; // Default 1 deck
+    if (this.engine.piles.shoe.count < threshold) {
+        this._reshuffleDeck(); // Rebuild shoe, shuffle, reset count
+        this._showMessage('🔄 Shuffling shoe...', 'info');
+        setTimeout(() => this._continueNewHand(), 2000);
+    } else {
+        this._continueNewHand();
+    }
 }
 ```
 
 **UI Updates:**
-- Add slider to Settings modal: "Reshuffle at: [20%]"
-- Show "🔄 Shuffling..." overlay when triggered
-- Optional: Show reshuffle count in History modal
+- Add input to Settings modal: "Reshuffle when cards remaining < [52]"
+- Show brief toast overlay when reshuffle occurs
+- Card count tab resets to zero after reshuffle
 
 ---
 
 ### 2. Card Themes / Visual Packs 🎨
-**Status:** Planned
-**Priority:** High
+**Status:** Planned (Deferred to v2.0)
+**Priority:** Low (Nice-to-have)
 
 **Goal:**
 Allow user to change card appearance (suits + backing) with live toggle.
@@ -49,12 +55,8 @@ Allow user to change card appearance (suits + backing) with live toggle.
     - backing.svg    # Red checkered pattern
     - config.json    # Theme metadata
   /neon/
-    - suits.svg      # Glowing modern suits
+    - suits.svg      # Glowing modern suits (cyberpunk aesthetic)
     - backing.svg    # Circuit board pattern
-    - config.json
-  /retro/
-    - suits.svg      # Pixel art suits
-    - backing.svg    # 8-bit pattern
     - config.json
 ```
 
@@ -82,60 +84,81 @@ Allow user to change card appearance (suits + backing) with live toggle.
 4. Store theme preference in localStorage
 5. Support live theme switching (re-render all cards)
 
-**Included Themes (v1.0):**
-- Classic (current default)
-- Neon (cyberpunk)
-- Retro (pixel art)
-- Minimalist (flat colors)
+**Planned Themes:**
+- Classic (current default) - v1.0
+- Neon/Cyberpunk - Future
+- Retro (pixel art) - Future
+- Minimalist (flat colors) - Future
+
+**Note:** Neon/cyberpunk is a good option but deferred until core gameplay is polished.
 
 ---
 
 ### 3. Loading Screen / Splash Animation 🎬
-**Status:** Planned
+**Status:** Planned (Return to later)
 **Priority:** Low
 
 **Options:**
 
-**Option A: CSS-Only Fake Loader**
+**Option A: CSS Progress Bar (Preferred)**
+```html
+<div class="loader-overlay">
+  <div class="progress-bar-container">
+    <div class="progress-bar" style="width: 0%"></div>
+  </div>
+  <p>Loading...</p>
+</div>
+```
+- Animate width 0% → 100% over 800ms
+- Fade out when complete
+- Visual polish only (no actual asset loading)
+
+**Option B: Progressive Asset Loading**
+- Load theme images asynchronously
+- Show real progress: "Loading cards... 45%"
+- Actually wait for assets before game starts
+- Only needed if themes become large/slow
+
+**Option C: Spinning Card Icon**
 ```html
 <div class="loader-overlay">
   <div class="spinning-card">🂠</div>
   <p>Shuffling deck...</p>
 </div>
 ```
-- Fade out after 800ms
-- No actual loading logic
-- Pure visual polish
+- Rotate animation
+- Simple and fast
 
-**Option B: Progressive Asset Loading**
-- Load theme images asynchronously
-- Show progress bar: "Loading cards... 45%"
-- Actually wait for assets before game starts
-
-**Recommendation:** Start with Option A (fake loader) for MVP, upgrade to Option B when adding multiple themes.
+**Recommendation:** Start with Option A (progress bar) for MVP, upgrade to Option B only if performance issues arise with themes.
 
 ---
 
-### 4. Card Count Tab Visibility Toggle
-**Status:** Under Review
-**Priority:** Low
+### 4. Card Count Tab Handling
+**Status:** Needs Decision
+**Priority:** Medium
 
-**Question:** Should card counting feature be removed or made optional?
+**Question:** What to do with card counting when deck reshuffles?
 
-**Arguments for Removal:**
-- Deck reshuffles make counting useless
-- Takes up UI space in History modal
-- Not relevant to casual play
+**Option A: Keep Visible, Reset on Reshuffle**
+- Card Count tab stays visible
+- When reshuffle occurs, counts reset to 0
+- Toast message: "🔄 Shoe reshuffled - counts reset"
+- Educational value preserved (teaches basics until reshuffle)
 
-**Arguments for Keeping:**
-- Educational value (teaches card counting basics)
-- Can be kept if reshuffle threshold is high (50%+)
-- Useful for tracking "hot/cold" decks
-
-**Proposed Compromise:**
+**Option B: Hide by Default, Toggle in Settings**
 - Hide Card Count tab by default
 - Add Settings toggle: "Show Card Counter (Educational)"
-- When enabled, appears as 3rd tab in History modal
+- When enabled, appears in History modal
+- Resets on reshuffle
+
+**Option C: Remove Entirely**
+- Delete Card Count tab
+- Only keep Hand History
+- Simplifies UI
+
+**User Input Needed:** Which option do you prefer?
+
+**Recommendation:** Option A (Keep visible, reset on reshuffle) - maintains educational value while being honest about deck reshuffling making it less useful for strategy.
 
 ---
 
@@ -197,10 +220,18 @@ Build partner AI and trick-taking logic.
 
 ## Questions for User
 
-1. **Card Count Tab:** Remove entirely, or keep as optional toggle?
+1. **Card Count Tab:** Keep visible with reset on reshuffle (Option A), hide by default with toggle (Option B), or remove entirely (Option C)?
 2. **Reshuffle Threshold:** Should it apply to all card games or just Blackjack?
-3. **Theme Priority:** Which 4 themes should ship in v1.0?
-4. **Loading Screen:** Fake loader (fast) or real asset preloading (slower but accurate)?
+3. **Loading Screen Priority:** Implement now or defer until themes are added?
+
+## User Feedback Summary (2026-01-14)
+
+- ✅ **Payout in history:** Implemented (v1.2.2)
+- ✅ **Hole card tracking:** Already working correctly
+- 🔄 **Deck reshuffle:** Should trigger before dealing when `remaining < threshold` (default: 52 cards / 1 deck)
+- 🎨 **Neon/Cyberpunk theme:** Good option but deferred to later
+- 📊 **Loading bar:** "like a bar I guess" - Progress bar preferred, defer implementation
+- ❓ **Card count visibility:** Awaiting decision on how to handle with reshuffles
 
 ---
 
