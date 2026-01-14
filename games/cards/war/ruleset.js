@@ -33,40 +33,55 @@ var WarRuleset = {
     // War state tracking
     _warMode: false,
     _warPot: null,
-    
+    _graveyard: null,
+
+    // Configuration options
+    deckCount: 1,
+    twosHigh: false,
+    neverending: true,
+
     // ========================================================================
     // DECK BUILDING
     // ========================================================================
-    
+
     buildPiles: function() {
         var deck = Pile.createFrom(StandardDeck, 1);
         deck.shuffle();
-        
+
         // Split deck between two players - handled in init
         return {
             center: new Pile(),   // Cards played this round
             warPot: new Pile()    // Cards in war pot
         };
     },
-    
+
     // ========================================================================
     // GAME INITIALIZATION (Called by engine after buildPiles)
     // ========================================================================
-    
+
     initializeGame: function(gameState) {
-        var deck = Pile.createFrom(StandardDeck, 1);
+        var deckCount = this.deckCount || 1;
+        var deck = Pile.createFrom(StandardDeck, deckCount);
         deck.shuffle();
-        
-        // Deal 26 cards to each player
+
+        // IMPORTANT: Clear existing hands first to prevent card duplication
         var players = gameState.players;
-        for (var i = 0; i < 52; i++) {
+        players[0].hand.contents = [];
+        players[1].hand.contents = [];
+
+        // Deal cards evenly to both players
+        var totalCards = deck.count;
+        for (var i = 0; i < totalCards; i++) {
             var card = deck.give(0);
             var targetPlayer = players[i % 2];
             targetPlayer.hand.receive(card, -1);
         }
-        
+
         this._warMode = false;
         this._warPot = new Pile();
+        this._graveyard = new Pile();
+
+        console.log('[WAR INIT] Dealt', totalCards, 'cards. P1:', players[0].hand.count, 'P2:', players[1].hand.count);
     },
     
     // ========================================================================
@@ -74,10 +89,11 @@ var WarRuleset = {
     // ========================================================================
     
     getDealSequence: function(gameState) {
-        // First round, initialize
+        // War is continuous - only initialize on first round
         if (gameState.roundNumber === 1) {
             this.initializeGame(gameState);
         }
+        // Don't deal any cards - players keep their existing hands
         return [];
     },
     
@@ -144,27 +160,35 @@ var WarRuleset = {
 
         if (value1 > value2) {
             // Player 1 wins
-            this._giveWarPotToPlayer(player1);
+            this._giveWarPotToPlayer(player1, gameState);
             actions.push({
                 type: 'MESSAGE',
                 text: player1.name + ' win the round!'
             });
-            this._warMode = false;
-            return {
-                actions: actions,
-                nextState: this._checkGameEnd(gameState) ? 'RESOLUTION' : 'DEALING'
-            };
-        } else if (value2 > value1) {
-            // Player 2 wins
-            this._giveWarPotToPlayer(player2);
             actions.push({
-                type: 'MESSAGE',
-                text: player2.name + ' wins the round!'
+                type: 'ROUND_WIN',
+                winner: player1.id
             });
             this._warMode = false;
             return {
                 actions: actions,
-                nextState: this._checkGameEnd(gameState) ? 'RESOLUTION' : 'DEALING'
+                nextState: 'PLAYER_TURN' // Stay in game loop, don't go to DEALING
+            };
+        } else if (value2 > value1) {
+            // Player 2 wins
+            this._giveWarPotToPlayer(player2, gameState);
+            actions.push({
+                type: 'MESSAGE',
+                text: player2.name + ' wins the round!'
+            });
+            actions.push({
+                type: 'ROUND_WIN',
+                winner: player2.id
+            });
+            this._warMode = false;
+            return {
+                actions: actions,
+                nextState: 'PLAYER_TURN' // Stay in game loop, don't go to DEALING
             };
         } else {
             // WAR!
@@ -192,9 +216,9 @@ var WarRuleset = {
             if (player1.hand.count === 0 || player2.hand.count === 0) {
                 // Give pot to player with cards remaining
                 if (player1.hand.count > 0) {
-                    this._giveWarPotToPlayer(player1);
+                    this._giveWarPotToPlayer(player1, gameState);
                 } else {
-                    this._giveWarPotToPlayer(player2);
+                    this._giveWarPotToPlayer(player2, gameState);
                 }
                 return {
                     actions: actions,
@@ -204,17 +228,43 @@ var WarRuleset = {
 
             return {
                 actions: actions,
-                nextState: 'DEALING' // Will flip again
+                nextState: 'PLAYER_TURN' // Will flip again, stay in game loop
             };
         }
     },
     
-    _giveWarPotToPlayer: function(player) {
-        // Shuffle the war pot cards and add to bottom of player's hand
-        this._warPot.shuffle();
-        while (this._warPot.count > 0) {
-            var card = this._warPot.give(0);
-            player.hand.receive(card, -1);
+    _giveWarPotToPlayer: function(player, gameState) {
+        // In neverending mode, cards go to graveyard instead of player's hand
+        if (this.neverending) {
+            while (this._warPot.count > 0) {
+                var card = this._warPot.give(0);
+                this._graveyard.receive(card, -1);
+            }
+
+            // Check if either player is out of cards and needs reshuffle
+            var player1 = gameState.players[0];
+            var player2 = gameState.players[1];
+
+            if (player1.hand.count === 0 && this._graveyard.count > 0) {
+                this._graveyard.shuffle();
+                while (this._graveyard.count > 0) {
+                    var c1 = this._graveyard.give(0);
+                    player1.hand.receive(c1, -1);
+                }
+            } else if (player2.hand.count === 0 && this._graveyard.count > 0) {
+                this._graveyard.shuffle();
+                while (this._graveyard.count > 0) {
+                    var c2 = this._graveyard.give(0);
+                    player2.hand.receive(c2, -1);
+                }
+            }
+        } else {
+            // Normal mode: shuffle and give to winner
+            this._warPot.shuffle();
+            while (this._warPot.count > 0) {
+                var card = this._warPot.give(0);
+                player.hand.receive(card, -1);
+            }
         }
     },
     
@@ -237,7 +287,7 @@ var WarRuleset = {
     
     _getCardValue: function(card) {
         switch (card.rank) {
-            case Rank.TWO: return 2;
+            case Rank.TWO: return this.twosHigh ? 15 : 2;
             case Rank.THREE: return 3;
             case Rank.FOUR: return 4;
             case Rank.FIVE: return 5;

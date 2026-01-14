@@ -37,8 +37,26 @@
             align-items: center;
             flex-shrink: 0;
         }
-        
-        .header h1 { margin: 0; font-size: 1.3em; }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .settings-btn:active { color: #ffd700; }
         
         .game-area {
             flex: 1;
@@ -66,18 +84,31 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
-        
+
         .player-name { font-weight: 600; }
-        
-        .card-count {
-            background: rgba(0,0,0,0.3);
-            padding: 4px 12px;
-            border-radius: 10px;
-            font-size: 0.9em;
+
+        .score-display {
+            display: flex;
+            gap: 8px;
         }
-        
-        .card-count span { color: #fbbf24; font-weight: bold; }
+
+        .score-item {
+            background: rgba(0,0,0,0.3);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .score-item:active {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .score-item span { color: #fbbf24; font-weight: bold; }
         
         .deck-preview canvas {
             width: 50px;
@@ -93,6 +124,23 @@
             justify-content: center;
             align-items: center;
             gap: 16px;
+        }
+
+        .shared-deck-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .deck-label {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+        }
+
+        .deck-label span {
+            color: #fbbf24;
         }
         
         .battle-cards {
@@ -220,23 +268,170 @@
         }
         
         .hidden { display: none !important; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #ffd700;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #ffd700;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0;
+        }
+
+        .setting-row label {
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .setting-row input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ffd700;
+            background: rgba(0,0,0,0.4);
+            color: #fff;
+            text-align: center;
+        }
+
+        .setting-row input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .full-btn {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            font-size: 1em;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.15s ease;
+        }
+
+        .full-btn:active { transform: scale(0.95); }
+
+        .full-btn.primary-btn {
+            background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+            color: #000;
+        }
+
+        .full-btn.secondary-btn {
+            background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .full-btn.close-btn {
+            background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+
+        .history-entry {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-entry.win { border-left: 4px solid #4ade80; }
+        .history-entry.lose { border-left: 4px solid #ef4444; }
+
+        .history-stats {
+            background: rgba(255,215,0,0.1);
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .history-stats h3 {
+            margin: 0 0 12px 0;
+            color: #ffd700;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 8px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>⚔️ War</h1>
+        <h1>
+            <button id="btnHistory" class="settings-btn">📊</button>
+            <button id="btnSettings" class="settings-btn">⚙️</button>
+            ⚔️ War
+        </h1>
     </div>
     
     <div class="game-area">
         <div class="player-zone opponent">
             <div class="player-info">
                 <span class="player-name">Opponent</span>
-                <span class="card-count"><span id="oppCount">26</span> cards</span>
+                <div class="score-display">
+                    <span class="score-item" id="oppWinDisplay" title="Click to toggle endless mode"><span id="oppWins">0</span></span>
+                    <span class="score-item" id="oppRoundsDisplay" title="Tap to see total rounds">Rounds: <span id="oppRounds">0</span></span>
+                </div>
             </div>
-            <div class="deck-preview" id="oppDeck"></div>
         </div>
-        
+
         <div class="battle-zone">
+            <div class="shared-deck-container">
+                <div class="deck-preview" id="sharedDeck"></div>
+                <div class="deck-label">Shared Deck: <span id="deckCount">52</span></div>
+            </div>
+
             <div class="battle-cards" id="battleArea">
                 <div class="battle-card">
                     <div id="oppCard"></div>
@@ -251,13 +446,15 @@
             <div class="message" id="message">Flip a card!</div>
             <div class="war-pot hidden" id="warPot">War pot: <span>0</span> cards</div>
         </div>
-        
+
         <div class="player-zone">
             <div class="player-info">
                 <span class="player-name">You</span>
-                <span class="card-count"><span id="yourCount">26</span> cards</span>
+                <div class="score-display">
+                    <span class="score-item" id="yourWinDisplay" title="Click to toggle endless mode"><span id="yourWins">0</span></span>
+                    <span class="score-item" id="yourRoundsDisplay" title="Tap to see total rounds">Rounds: <span id="yourRounds">0</span></span>
+                </div>
             </div>
-            <div class="deck-preview" id="yourDeck"></div>
         </div>
     </div>
     
@@ -267,6 +464,63 @@
         </div>
         <div class="control-row hidden" id="gameOverRow">
             <button class="btn btn-new" id="btnNew">Play Again</button>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Game History</h2>
+
+            <div class="history-stats">
+                <h3>Statistics</h3>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalWins">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalLosses">0</div>
+                        <div class="stat-label">Losses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="winRate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historyList"></div>
+
+            <button id="btnClearHistory" class="full-btn secondary-btn">Clear History</button>
+            <button id="btnCloseHistory" class="full-btn close-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Game Settings</h2>
+
+            <div class="setting-row">
+                <label>Decks</label>
+                <input type="number" id="cfgDecks" value="1" min="1" max="8" step="1">
+            </div>
+
+            <div class="setting-row">
+                <label>2 beats Ace</label>
+                <input type="checkbox" id="cfgTwosHigh">
+            </div>
+
+            <div class="setting-row">
+                <label>Never-ending</label>
+                <input type="checkbox" id="cfgNeverending">
+            </div>
+
+            <button id="btnNewGame" class="full-btn secondary-btn">New Game</button>
+            <button id="btnResetRules" class="full-btn secondary-btn">Reset to Defaults</button>
+            <button id="btnCloseSettings" class="full-btn primary-btn">Save & Close</button>
+            <button id="btnCancelSettings" class="full-btn close-btn">Cancel</button>
         </div>
     </div>
 
@@ -289,12 +543,25 @@
                 this.engine = new GameEngine(WarRuleset);
                 this.currentPlayer1Card = null;
                 this.currentPlayer2Card = null;
+                this.gameHistory = [];
+                this.player1Wins = 0;
+                this.player2Wins = 0;
+                this.player1Rounds = 0;
+                this.player2Rounds = 0;
+                this.totalRounds = 0;
+                this.isEndlessMode = true; // Default to endless
 
                 this.el = {
-                    oppCount: document.getElementById('oppCount'),
-                    yourCount: document.getElementById('yourCount'),
-                    oppDeck: document.getElementById('oppDeck'),
-                    yourDeck: document.getElementById('yourDeck'),
+                    oppWins: document.getElementById('oppWins'),
+                    yourWins: document.getElementById('yourWins'),
+                    oppRounds: document.getElementById('oppRounds'),
+                    yourRounds: document.getElementById('yourRounds'),
+                    oppWinDisplay: document.getElementById('oppWinDisplay'),
+                    yourWinDisplay: document.getElementById('yourWinDisplay'),
+                    oppRoundsDisplay: document.getElementById('oppRoundsDisplay'),
+                    yourRoundsDisplay: document.getElementById('yourRoundsDisplay'),
+                    sharedDeck: document.getElementById('sharedDeck'),
+                    deckCount: document.getElementById('deckCount'),
                     oppCard: document.getElementById('oppCard'),
                     yourCard: document.getElementById('yourCard'),
                     message: document.getElementById('message'),
@@ -302,11 +569,30 @@
                     playRow: document.getElementById('playRow'),
                     gameOverRow: document.getElementById('gameOverRow'),
                     btnFlip: document.getElementById('btnFlip'),
-                    btnNew: document.getElementById('btnNew')
+                    btnNew: document.getElementById('btnNew'),
+                    btnHistory: document.getElementById('btnHistory'),
+                    btnSettings: document.getElementById('btnSettings'),
+                    historyModal: document.getElementById('historyModal'),
+                    settingsModal: document.getElementById('settingsModal'),
+                    btnCloseHistory: document.getElementById('btnCloseHistory'),
+                    btnClearHistory: document.getElementById('btnClearHistory'),
+                    btnCloseSettings: document.getElementById('btnCloseSettings'),
+                    btnCancelSettings: document.getElementById('btnCancelSettings'),
+                    btnNewGame: document.getElementById('btnNewGame'),
+                    btnResetRules: document.getElementById('btnResetRules'),
+                    cfgDecks: document.getElementById('cfgDecks'),
+                    cfgTwosHigh: document.getElementById('cfgTwosHigh'),
+                    cfgNeverending: document.getElementById('cfgNeverending'),
+                    historyList: document.getElementById('historyList'),
+                    totalWins: document.getElementById('totalWins'),
+                    totalLosses: document.getElementById('totalLosses'),
+                    winRate: document.getElementById('winRate')
                 };
 
                 this._bindEvents();
                 this._subscribeToEngine();
+                this._loadSettings();
+                this._loadHistory();
                 this._initGame();
             };
 
@@ -314,14 +600,91 @@
                 var self = this;
                 this.el.btnFlip.onclick = function() { self._flip(); };
                 this.el.btnNew.onclick = function() { self._initGame(); };
+
+                // Toggle endless mode on win display click
+                this.el.yourWinDisplay.onclick = function() {
+                    self.isEndlessMode = !self.isEndlessMode;
+                    WarRuleset.neverending = self.isEndlessMode;
+                    self._updateWins();
+                };
+                this.el.oppWinDisplay.onclick = function() {
+                    self.isEndlessMode = !self.isEndlessMode;
+                    WarRuleset.neverending = self.isEndlessMode;
+                    self._updateWins();
+                };
+
+                // Show total rounds on rounds display tap
+                this.el.yourRoundsDisplay.onclick = function() {
+                    self._showMessage('Total rounds played: ' + self.totalRounds, '');
+                };
+                this.el.oppRoundsDisplay.onclick = function() {
+                    self._showMessage('Total rounds played: ' + self.totalRounds, '');
+                };
+
+                // History Modal
+                this.el.btnHistory.onclick = function() {
+                    self._updateHistoryDisplay();
+                    self.el.historyModal.classList.remove('hidden');
+                };
+                this.el.btnCloseHistory.onclick = function() {
+                    self.el.historyModal.classList.add('hidden');
+                };
+                this.el.btnClearHistory.onclick = function() {
+                    if (confirm('Clear all game history?')) {
+                        self.gameHistory = [];
+                        self._saveHistory();
+                        self._updateHistoryDisplay();
+                    }
+                };
+                this.el.historyModal.onclick = function(e) {
+                    if (e.target === self.el.historyModal) {
+                        self.el.historyModal.classList.add('hidden');
+                    }
+                };
+
+                // Settings Modal
+                this.el.btnSettings.onclick = function() {
+                    self._loadSettings();
+                    self.el.settingsModal.classList.remove('hidden');
+                };
+                this.el.btnCloseSettings.onclick = function() {
+                    self._saveSettings();
+                };
+                this.el.btnCancelSettings.onclick = function() {
+                    self._loadSettings();
+                    self.el.settingsModal.classList.add('hidden');
+                };
+                this.el.btnNewGame.onclick = function() {
+                    if (confirm('Start a new game? Current game will be lost.')) {
+                        self.el.settingsModal.classList.add('hidden');
+                        self._initGame();
+                    }
+                };
+                this.el.btnResetRules.onclick = function() {
+                    if (confirm('Reset to default settings?')) {
+                        self.el.cfgDecks.value = 1;
+                        self._saveSettings();
+                    }
+                };
+                this.el.settingsModal.onclick = function(e) {
+                    if (e.target === self.el.settingsModal) {
+                        self._loadSettings();
+                        self.el.settingsModal.classList.add('hidden');
+                    }
+                };
             };
 
             WarUI.prototype._subscribeToEngine = function() {
                 var self = this;
                 this.engine.on('*', function(event) {
+                    console.log('[ALL EVENTS]', event.type, event);
+
                     switch (event.type) {
                         case 'MESSAGE':
                             self._handleMessage(event);
+                            break;
+                        case 'ROUND_WIN':
+                            self._handleRoundWin(event);
                             break;
                         case 'RESOLUTION':
                             self._handleResolution(event);
@@ -343,7 +706,7 @@
                 this.engine.startRound();
 
                 this._clearBattle();
-                this._updateCounts();
+                this._updateSharedDeck();
                 this._showMessage('Draw a card!', '');
                 this._updateButtonText();
                 this.el.playRow.classList.remove('hidden');
@@ -352,6 +715,12 @@
 
                 this.currentPlayer1Card = null;
                 this.currentPlayer2Card = null;
+                this.player1Wins = 0;
+                this.player2Wins = 0;
+                this.player1Rounds = 0;
+                this.player2Rounds = 0;
+                this._updateWins();
+                this._updateRounds();
             };
 
             WarUI.prototype._flip = function() {
@@ -362,17 +731,15 @@
                 var player2 = state.players[1];
 
                 if (player1.hand.count === 0 || player2.hand.count === 0) {
-                    // Don't transition directly - let the engine handle it through action
                     return;
                 }
 
-                // Store cards before they're moved
-                this.currentPlayer1Card = player1.hand.contents[0];
-                this.currentPlayer2Card = player2.hand.contents[0];
+                // Store and render cards BEFORE they move to war pot
+                var card1 = player1.hand.contents[0];
+                var card2 = player2.hand.contents[0];
 
-                // Render cards with animation
-                this._renderCard(this.currentPlayer1Card, this.el.yourCard, true);
-                this._renderCard(this.currentPlayer2Card, this.el.oppCard, true);
+                this._renderCard(card1, this.el.yourCard, true);
+                this._renderCard(card2, this.el.oppCard, true);
 
                 // Submit action to engine
                 this.engine.submitAction('player1', 'flip');
@@ -380,9 +747,32 @@
 
             WarUI.prototype._handleMessage = function(event) {
                 this._showMessage(event.text, this._getMessageClass(event.text));
-                this._updateCounts();
+                this._updateSharedDeck();
                 this._updateWarPot();
                 this._updateButtonText();
+            };
+
+            WarUI.prototype._handleRoundWin = function(event) {
+                console.log('[DEBUG] ROUND_WIN event received:', event);
+                if (!event || !event.winner) {
+                    console.log('[DEBUG] Invalid event - no winner');
+                    return;
+                }
+
+                this.totalRounds++;
+
+                if (event.winner === 'player1') {
+                    this.player1Wins++;
+                    this.player1Rounds++;
+                } else if (event.winner === 'player2') {
+                    this.player2Wins++;
+                    this.player2Rounds++;
+                }
+
+                this._updateWins();
+                this._updateRounds();
+
+                console.log('[DEBUG] After update - P1 wins:', this.player1Wins, 'P1 rounds:', this.player1Rounds, 'Total:', this.totalRounds);
             };
 
             WarUI.prototype._handleResolution = function(event) {
@@ -401,12 +791,16 @@
                 var player1 = state.players[0];
                 var player2 = state.players[1];
 
+                var result;
                 if (player1.hand.count > player2.hand.count) {
                     this._showMessage('🎉 You Win the War!', 'win');
+                    result = 'win';
                 } else {
                     this._showMessage('Opponent Wins', 'lose');
+                    result = 'lose';
                 }
 
+                this._addHistoryEntry(result);
                 this.el.playRow.classList.add('hidden');
                 this.el.gameOverRow.classList.remove('hidden');
             };
@@ -421,6 +815,9 @@
                 clone.height = canvas.height;
                 clone.getContext('2d').drawImage(canvas, 0, 0);
 
+                // Clear container first to prevent accumulation
+                container.innerHTML = '';
+
                 // Add animation class if requested
                 if (animate) {
                     if (container === this.el.oppCard) {
@@ -428,9 +825,14 @@
                     } else if (container === this.el.yourCard) {
                         clone.classList.add('slide-in-from-bottom');
                     }
+
+                    // Remove animation class after it completes to prevent issues
+                    clone.addEventListener('animationend', function() {
+                        clone.classList.remove('slide-in-from-top');
+                        clone.classList.remove('slide-in-from-bottom');
+                    });
                 }
 
-                container.innerHTML = '';
                 container.appendChild(clone);
             };
 
@@ -444,20 +846,23 @@
                 container.appendChild(clone);
             };
 
-            WarUI.prototype._renderDecks = function() {
+            WarUI.prototype._updateSharedDeck = function() {
                 var state = this.engine.getGameState();
                 var player1 = state.players[0];
                 var player2 = state.players[1];
 
-                if (player1.hand.count > 0) {
-                    this._renderCardBack(this.el.yourDeck);
+                // Shared deck shows only cards in players' hands (drawable cards)
+                var totalCards = player1.hand.count + player2.hand.count;
+
+                console.log('[DECK UPDATE] P1:', player1.hand.count, 'P2:', player2.hand.count, 'Total:', totalCards, 'Graveyard:', WarRuleset._graveyard ? WarRuleset._graveyard.count : 0, 'WarPot:', WarRuleset._warPot ? WarRuleset._warPot.count : 0);
+
+                this.el.deckCount.textContent = totalCards;
+
+                // Render shared deck if there are cards
+                if (totalCards > 0) {
+                    this._renderCardBack(this.el.sharedDeck);
                 } else {
-                    this.el.yourDeck.innerHTML = '';
-                }
-                if (player2.hand.count > 0) {
-                    this._renderCardBack(this.el.oppDeck);
-                } else {
-                    this.el.oppDeck.innerHTML = '';
+                    this.el.sharedDeck.innerHTML = '';
                 }
             };
 
@@ -466,14 +871,20 @@
                 this.el.oppCard.innerHTML = '';
             };
 
-            WarUI.prototype._updateCounts = function() {
-                var state = this.engine.getGameState();
-                var player1 = state.players[0];
-                var player2 = state.players[1];
+            WarUI.prototype._updateWins = function() {
+                // Update win display (show infinity symbol if endless mode)
+                if (this.isEndlessMode) {
+                    this.el.yourWins.innerHTML = '&infin;';
+                    this.el.oppWins.innerHTML = '&infin;';
+                } else {
+                    this.el.yourWins.textContent = this.player1Wins;
+                    this.el.oppWins.textContent = this.player2Wins;
+                }
+            };
 
-                this.el.yourCount.textContent = player1.hand.count;
-                this.el.oppCount.textContent = player2.hand.count;
-                this._renderDecks();
+            WarUI.prototype._updateRounds = function() {
+                this.el.yourRounds.textContent = this.player1Rounds;
+                this.el.oppRounds.textContent = this.player2Rounds;
             };
 
             WarUI.prototype._updateWarPot = function() {
@@ -501,6 +912,100 @@
             WarUI.prototype._updateButtonText = function() {
                 var isWar = WarRuleset._warMode;
                 this.el.btnFlip.textContent = isWar ? 'War!' : 'Draw!';
+            };
+
+            // Settings Management
+            WarUI.prototype._loadSettings = function() {
+                var savedJson = localStorage.getItem('war_config');
+                if (savedJson) {
+                    try {
+                        var saved = JSON.parse(savedJson);
+                        WarRuleset.deckCount = saved.deckCount || 1;
+                        WarRuleset.twosHigh = saved.twosHigh || false;
+                        WarRuleset.neverending = saved.neverending || false;
+                    } catch(e) {}
+                }
+                this.el.cfgDecks.value = WarRuleset.deckCount || 1;
+                this.el.cfgTwosHigh.checked = WarRuleset.twosHigh || false;
+                this.el.cfgNeverending.checked = WarRuleset.neverending || false;
+            };
+
+            WarUI.prototype._saveSettings = function() {
+                var deckValue = parseInt(this.el.cfgDecks.value);
+                if (isNaN(deckValue) || deckValue <= 0) {
+                    deckValue = 1;
+                }
+                WarRuleset.deckCount = deckValue;
+                WarRuleset.twosHigh = this.el.cfgTwosHigh.checked;
+                WarRuleset.neverending = this.el.cfgNeverending.checked;
+
+                localStorage.setItem('war_config', JSON.stringify({
+                    deckCount: WarRuleset.deckCount,
+                    twosHigh: WarRuleset.twosHigh,
+                    neverending: WarRuleset.neverending
+                }));
+
+                this.el.settingsModal.classList.add('hidden');
+            };
+
+            // History Management
+            WarUI.prototype._loadHistory = function() {
+                var savedJson = localStorage.getItem('war_history');
+                if (savedJson) {
+                    try {
+                        this.gameHistory = JSON.parse(savedJson);
+                    } catch(e) {
+                        this.gameHistory = [];
+                    }
+                }
+            };
+
+            WarUI.prototype._saveHistory = function() {
+                localStorage.setItem('war_history', JSON.stringify(this.gameHistory));
+            };
+
+            WarUI.prototype._addHistoryEntry = function(result) {
+                var entry = {
+                    date: new Date().toLocaleString(),
+                    result: result,
+                    playerCards: this.engine.getGameState().players[0].hand.count,
+                    opponentCards: this.engine.getGameState().players[1].hand.count
+                };
+                this.gameHistory.unshift(entry);
+                if (this.gameHistory.length > 50) {
+                    this.gameHistory.pop();
+                }
+                this._saveHistory();
+            };
+
+            WarUI.prototype._updateHistoryDisplay = function() {
+                var wins = 0;
+                var losses = 0;
+
+                for (var i = 0; i < this.gameHistory.length; i++) {
+                    if (this.gameHistory[i].result === 'win') wins++;
+                    else if (this.gameHistory[i].result === 'lose') losses++;
+                }
+
+                var total = wins + losses;
+                var winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+
+                this.el.totalWins.textContent = wins;
+                this.el.totalLosses.textContent = losses;
+                this.el.winRate.textContent = winRate + '%';
+
+                var html = '';
+                for (var j = 0; j < Math.min(this.gameHistory.length, 20); j++) {
+                    var entry = this.gameHistory[j];
+                    var resultClass = entry.result === 'win' ? 'win' : 'lose';
+                    var resultText = entry.result === 'win' ? '✓ Win' : '✗ Loss';
+                    html += '<div class="history-entry ' + resultClass + '">';
+                    html += '<div>' + resultText + '</div>';
+                    html += '<div>' + entry.date + '</div>';
+                    html += '</div>';
+                }
+
+                this.el.historyList.innerHTML = html || '<p style="text-align: center; color: #888;">No games played yet</p>';
             };
 
             new WarUI();

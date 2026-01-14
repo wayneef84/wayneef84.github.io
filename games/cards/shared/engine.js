@@ -38,6 +38,7 @@ const ActionType = Object.freeze({
     PAYOUT: 'PAYOUT',       // Credit currency
     DEDUCT: 'DEDUCT',       // Deduct currency
     MESSAGE: 'MESSAGE',     // Display message to UI
+    ROUND_WIN: 'ROUND_WIN', // Round winner determined (War game)
     STATE_CHANGE: 'STATE_CHANGE' // Internal state transition
 });
 
@@ -487,6 +488,9 @@ class GameEngine {
                 break;
             case ActionType.MESSAGE:
                 this._emit({ type: ActionType.MESSAGE, text: action.text });
+                break;
+            case ActionType.ROUND_WIN:
+                this._emit({ type: ActionType.ROUND_WIN, winner: action.winner });
                 break;
             case ActionType.SHUFFLE:
                 this.piles[action.pile]?.shuffle();
