@@ -55,6 +55,72 @@ if (playerValue.best > 21) {
 **Rule:** Double Down only available on player's FIRST move (2 cards in hand).
 **Action:** Deduct 1x bet, deal exactly 1 card, force Stand immediately.
 
+#### 5. Multi-Hand Architecture (MAJOR - Future Priority)
+**Goal:** Support multiple hands per player (split, multi-player, future multiplayer via SQL).
+**Status:** Defer until post-v1.0, but design decisions should consider this.
+
+**Current Limitation:**
+- Player has single `hand: Pile` property
+- Engine assumes 1 hand per player
+- UI renders 1 hand per player
+
+**Proposed Multi-Hand System:**
+
+```javascript
+// Player structure (future)
+{
+    id: 'player1',
+    type: 'human',
+    hands: [
+        { id: 'hand1', pile: Pile, bet: 25, status: 'active' },
+        { id: 'hand2', pile: Pile, bet: 25, status: 'active' } // After split
+    ],
+    activeHandIndex: 0,
+    balance: 1000
+}
+```
+
+**Actor ID Convention:**
+- Current: `'player1'` refers to the player
+- Future: `'player1:hand1'` refers to specific hand
+- Engine tracks `activeActorId = 'player1:hand2'`
+
+**Engine Changes Needed:**
+1. **getNextActor()**: Return `'player1:hand2'` after `'player1:hand1'` finishes
+2. **resolveAction()**: Accept hand-specific actor IDs
+3. **Deal sequencing**: Support dealing to specific hands
+4. **Resolution**: Evaluate each hand independently against dealer
+
+**UI Changes Needed:**
+1. Render N hands per player (side-by-side or stacked)
+2. Highlight active hand during play
+3. Show bet amount per hand
+4. Separate value bubbles per hand
+
+**Split Implementation (when ready):**
+- Player action: `'split'` creates 2nd hand
+- Original hand → `hands[0]`, new hand → `hands[1]`
+- Copy bet from original hand, deduct from balance
+- Move 1 card to new hand, deal 1 card to each
+- Play hand 0 → completion, then hand 1 → completion
+
+**Multiplayer Considerations (SQL future):**
+- Each hand becomes a row in `game_hands` table
+- `player_id`, `hand_id`, `bet`, `cards_json`, `status`
+- Server-side validation of actions per hand
+- Real-time sync via WebSocket when hand state changes
+
+**Games That Benefit:**
+- Blackjack: Split pairs
+- Poker: Side pots (each pot = virtual "hand")
+- Big 2: No multi-hand, but multi-player critical
+- Euchre: Partnerships (2v2), 4 players but 2 logical "teams"
+
+**Animation Note (Current Bug):**
+- Card appears at final position before flying animation
+- Need to spawn card at shoe position (invisible or face-down) BEFORE animation
+- See "Animation Issues" section below
+
 ---
 
 ## Card Engine Architecture
@@ -335,3 +401,68 @@ When implementing fixes, follow this order:
 - **CSS:** Flexbox, `dvh` for mobile heights, safe-area-inset
 - **Canvas:** `requestAnimationFrame` for loops
 - **No build tools:** Vanilla JS, direct script loading
+
+---
+
+## Known Issues & Fixes
+
+### Animation Bug: Card Preview Before Flying (Blackjack)
+
+**Problem:**
+When dealing cards, the following sequence occurs incorrectly:
+1. Card appears at final destination (player/dealer hand) immediately
+2. Card element is created at shoe position (top-right)
+3. Animation flies card from shoe → destination
+4. User sees card "preview" at destination before animation starts
+
+**User Report:**
+> "the card appears where it will be at the end, then is flipped upside down at the shoe and flies to the hand and revealed back at the spot"
+
+**Root Cause:**
+In `games/cards/blackjack/index.html` `_handleDealEvent()` method:
+1. Card is added to DOM at landing pad (lines 790-795)
+2. Landing pad made invisible (`opacity: '0'`)
+3. Flying card animates from shoe → landing pad
+4. Landing pad becomes visible after animation completes
+
+The issue: The card is briefly visible at the landing pad BEFORE being hidden, creating a "preview" flash.
+
+**Fix Strategy:**
+```javascript
+// Current (buggy):
+landingPad.appendChild(slot);          // Card visible briefly
+landingPad.style.opacity = '0';       // Then hidden
+const flyer = _createCardElement(...); // Create flying copy
+flyer.style.position = 'fixed';
+flyer.style.left = startX;            // Start at shoe
+// Animate flyer → landingPad
+
+// Proposed fix:
+landingPad.style.opacity = '0';       // Hide FIRST
+landingPad.appendChild(slot);          // Then add card (invisible)
+const flyer = _createCardElement(...); // Create flying copy
+flyer.style.position = 'fixed';
+flyer.style.left = startX;
+// Animate flyer → landingPad
+```
+
+**Alternative Fix (Better):**
+Don't add card to DOM until AFTER animation completes:
+```javascript
+// Don't add to landing pad yet
+const landingPadRect = landingPad.getBoundingClientRect();
+const flyer = _createCardElement(cardData, faceUp);
+// ... position at shoe, animate to landingPadRect
+setTimeout(() => {
+    flyer.remove();
+    landingPad.appendChild(slot); // Add AFTER animation
+    landingPad.style.opacity = '1';
+}, 500);
+```
+
+**When to Fix:**
+- Low priority (cosmetic issue, game is playable)
+- Fix alongside other animation improvements
+- Test thoroughly to ensure card always appears in correct final position
+
+---
