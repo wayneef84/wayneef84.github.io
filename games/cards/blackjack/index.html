@@ -873,6 +873,11 @@
                 let msg = '', cls = '';
                 const target = BlackjackRuleset.targetScore;
 
+                // CRITICAL: Reveal dealer's hole card at resolution
+                this.holeCardHidden = false;
+                this._redrawDealer();
+                this._updateValues();
+
                 // Check for insurance payout
                 if (this.insuranceBet > 0) {
                     const dealer = this.engine.dealer;
@@ -898,6 +903,15 @@
             }
 
             _handleGameOver() {
+                // CRITICAL: Reveal dealer's hole card if still hidden
+                if (this.holeCardHidden) {
+                    this.holeCardHidden = false;
+                    this._redrawDealer();
+                }
+
+                // Update final values
+                this._updateValues();
+
                 // FORCE controls visible even if logic tried to hide them
                 this._showControls('gameover');
                 this._updateBalance();

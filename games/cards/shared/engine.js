@@ -380,6 +380,11 @@ class GameEngine {
     _handleAITurn(actor, availableActions) {
         // Small delay for visual feedback
         setTimeout(() => {
+            // Safety check: Don't act if game already ended
+            if (this.state === GameState.RESOLUTION || this.state === GameState.GAME_OVER || this.state === GameState.PAYOUT) {
+                return;
+            }
+
             const action = this.ruleset.getAiAction(this.getGameState(), actor);
             this.submitAction(actor.id, action);
         }, 500);
@@ -391,11 +396,17 @@ class GameEngine {
      * @param {string} action - The action name (e.g., 'hit', 'stand')
      */
     submitAction(actorId, action) {
+        // Safety check: Don't accept actions if game already ended
+        if (this.state === GameState.RESOLUTION || this.state === GameState.GAME_OVER || this.state === GameState.PAYOUT) {
+            this._log('Game already ended, ignoring action', { state: this.state, action }, 'warn');
+            return false;
+        }
+
         if (actorId !== this.activeActorId) {
             this._log('Not this actor\'s turn', { expected: this.activeActorId, got: actorId }, 'warn');
             return false;
         }
-        
+
         const availableActions = this.ruleset.getAvailableActions(this.getGameState(), actorId);
         if (!availableActions.includes(action)) {
             this._log('Invalid action', { action, available: availableActions }, 'warn');
@@ -427,6 +438,9 @@ class GameEngine {
             } else if (result.nextActor) {
                 this.activeActorId = result.nextActor;
                 this._handleTurnStart();
+            } else if (result.nextActor === null) {
+                // Explicitly null means no more actors - go to resolution
+                this.transitionTo(GameState.RESOLUTION);
             }
         }
         
