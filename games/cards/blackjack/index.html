@@ -830,16 +830,18 @@
             }
 
             _flyCard(cardData, container, faceUp) {
-                const landingPad = this._createCardElement(cardData, faceUp);
-                // CRITICAL: Use visibility:hidden to prevent flash before animation
-                landingPad.style.visibility = 'hidden';
-                landingPad.style.opacity = '0';
-                container.appendChild(landingPad);
+                // Create invisible placeholder to calculate destination coordinates
+                const tempSlot = document.createElement('div');
+                tempSlot.className = 'card-slot';
+                tempSlot.style.opacity = '0';
+                tempSlot.style.pointerEvents = 'none';
+                container.appendChild(tempSlot);
 
-                const endRect = landingPad.getBoundingClientRect();
+                const endRect = tempSlot.getBoundingClientRect();
                 const startX = window.innerWidth - 50;
                 const startY = -100;
 
+                // Create flying card
                 const flyer = this._createCardElement(cardData, faceUp);
                 flyer.style.position = 'fixed';
                 flyer.style.left = `${startX}px`;
@@ -847,19 +849,23 @@
                 flyer.style.zIndex = '1000';
                 flyer.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 flyer.style.pointerEvents = 'none';
-                flyer.style.width = getComputedStyle(landingPad.firstChild).width;
                 document.body.appendChild(flyer);
 
+                // Start animation on next frame
                 requestAnimationFrame(() => {
                     flyer.style.left = `${endRect.left}px`;
                     flyer.style.top = `${endRect.top}px`;
                     flyer.style.transform = `rotate(${(Math.random() * 6) - 3}deg)`;
                 });
 
+                // After animation completes, replace temp with real card
                 setTimeout(() => {
                     flyer.remove();
-                    landingPad.style.visibility = 'visible';
-                    landingPad.style.opacity = '1';
+                    tempSlot.remove();
+
+                    // NOW add the actual card (no preview flash)
+                    const landingPad = this._createCardElement(cardData, faceUp);
+                    container.appendChild(landingPad);
                     this._updateValues();
                 }, 500);
             }
