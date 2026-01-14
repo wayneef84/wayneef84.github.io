@@ -6,6 +6,12 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Blackjack v1.2.2] - 2026-01-14
+### Added
+- **Hand History Payout:** Shows net gain/loss for each hand (+$X / -$X) with color coding
+  - Green for wins, red for losses, gray for pushes
+  - Displayed alongside outcome in hand history header
+
 ## [Blackjack v1.2.1] - 2026-01-13
 ### Fixed
 - **Card Counter:** Fixed rank conversion bug - now properly converts 'ACE' to 'A', 'TWO' to '2', etc.
@@ -14,7 +20,7 @@ All notable changes to the Fong Family Arcade project will be documented in this
   - Cards shown as chips with rank + suit symbol (e.g., "A♥", "K♠")
   - Color-coded: Red suits (♥♦) in red, black suits (♣♠) in black
   - Card-style blocks with better visual hierarchy
-  - Removed bet/payout columns (not needed for history review)
+  - Initially removed bet/payout (restored in v1.2.2)
 
 ## [Blackjack v1.2.0] - 2026-01-13
 ### Added

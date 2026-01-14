@@ -538,6 +538,13 @@
         .history-hand-result.lose { color: #f87171; }
         .history-hand-result.push { color: #fbbf24; }
         .history-hand-result.blackjack { color: #ffd700; }
+        .history-hand-payout {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .history-hand-payout.win { color: #4ade80; }
+        .history-hand-payout.lose { color: #f87171; }
+        .history-hand-payout.push { color: #94a3b8; }
         .history-cards-row {
             margin-bottom: 8px;
         }
@@ -1125,7 +1132,8 @@
                 const dealer = this.engine.dealer;
                 if (dealer && dealer.hand.count >= 2) {
                     const holeCard = dealer.hand.contents[1];
-                    this._trackCard(holeCard.toJSON ? holeCard.toJSON() : holeCard);
+                    const cardData = holeCard.toJSON ? holeCard.toJSON() : holeCard;
+                    this._trackCard(cardData);
                 }
 
                 this.holeCardHidden = false;
@@ -1598,11 +1606,20 @@
                             `<span class="history-card ${this._isRedSuit(c.suit) ? 'red' : ''}">${c.rank}${this._getSuitSymbol(c.suit)}</span>`
                         ).join('');
 
+                        // Format payout with + or - and color
+                        const payoutFormatted = hand.payout > 0 ? `+$${hand.payout}` :
+                                               hand.payout < 0 ? `-$${Math.abs(hand.payout)}` :
+                                               '$0';
+                        const payoutClass = hand.payout > 0 ? 'win' : hand.payout < 0 ? 'lose' : 'push';
+
                         return `
                             <div class="history-hand">
                                 <div class="history-hand-header">
                                     <span class="history-hand-num">Hand #${hand.number}</span>
-                                    <span class="history-hand-result ${hand.outcome}">${this._formatOutcome(hand.outcome)}</span>
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                                        <span class="history-hand-result ${hand.outcome}">${this._formatOutcome(hand.outcome)}</span>
+                                        <span class="history-hand-payout ${payoutClass}">${payoutFormatted}</span>
+                                    </div>
                                 </div>
                                 <div class="history-cards-row">
                                     <div class="history-cards-label">Dealer (${hand.dealerValue})</div>
@@ -1659,19 +1676,25 @@
                     suit: c.suit
                 }));
 
+                // Calculate payout (net gain/loss)
+                const payout = Math.floor(result.bet * result.multiplier) - result.bet;
+
                 this.handHistory.push({
                     number: this.handNumber,
                     outcome: result.outcome,
                     playerValue: result.playerValue,
                     dealerValue: result.dealerValue,
                     playerCards: playerCards,
-                    dealerCards: dealerCards
+                    dealerCards: dealerCards,
+                    bet: result.bet,
+                    payout: payout
                 });
 
                 console.log(`[History] Hand #${this.handNumber} logged:`, {
                     outcome: result.outcome,
                     playerCards: playerCards.length,
-                    dealerCards: dealerCards.length
+                    dealerCards: dealerCards.length,
+                    payout: payout
                 });
             }
         }
