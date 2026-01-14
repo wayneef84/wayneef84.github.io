@@ -6,6 +6,12 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Arcade v1.4] - 2026-01-14 (Gemini with the patchwork)
+### Changed
+- **Main Menu:** Complete reorganization of game grid.
+- **Branding:** Simplified game titles (e.g., "S Mixer", "Slots") and cleaner footer.
+- **Priority:** Moved Card Games, Magic 8 Ball, and Snake to the top row.
+
 ## [Blackjack v1.3.0] - 2026-01-14
 ### Added
 - **Card Probabilities:** Card count display now shows percentage chance of drawing each rank based on remaining cards

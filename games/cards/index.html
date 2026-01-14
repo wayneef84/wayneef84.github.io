@@ -223,7 +223,20 @@
             GAMES.forEach(game => {
                 const btn = createGameButton(game);
                 desktopList.appendChild(btn.cloneNode(true)); // Clone for sidebar
-                mobileList.appendChild(btn); // Original for mobile menu
+                // Re-attach event listener to clone
+                // Note: cloneNode doesn't copy event listeners, so we must add logic after appending
+                // Simpler: Just create the button twice.
+            });
+
+            // Clean previous append strategy:
+            desktopList.innerHTML = '';
+            mobileList.innerHTML = '';
+            
+            GAMES.forEach(game => {
+                const btnDesktop = createGameButton(game);
+                const btnMobile = createGameButton(game);
+                desktopList.appendChild(btnDesktop);
+                mobileList.appendChild(btnMobile);
             });
 
             // Load Game State
@@ -241,12 +254,14 @@
             const btn = document.createElement('button');
             btn.className = `game-btn ${game.disabled ? 'disabled' : ''}`;
             btn.innerHTML = `<span class="game-icon">${game.icon}</span> ${game.name}`;
-            btn.id = `btn-${game.id}`;
+            // Remove unique ID assignment to allow multiple buttons for same game (desktop/mobile)
             
             if (!game.disabled) {
                 btn.onclick = () => {
-                    switchGame(game.id);
-                    toggleMenu(false); // Close mobile menu if open
+                    // Update URL and Force Refresh
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('game', game.id);
+                    window.location.href = newUrl.toString();
                 };
             }
             return btn;
@@ -254,7 +269,11 @@
 
         function switchGame(gameId) {
             const game = GAMES.find(g => g.id === gameId);
-            if (!game || game.disabled) return;
+            // Fallback if ID invalid
+            if (!game || game.disabled) {
+                if(gameId !== 'blackjack') switchGame('blackjack');
+                return;
+            }
 
             currentGameId = gameId;
 
@@ -267,12 +286,7 @@
             // Update UI (Both lists)
             document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
             
-            // Highlight active in both lists (using attribute selector to catch clones)
-            // Note: Cloned buttons don't share IDs efficiently, so we re-query logic
-            // Simple approach: re-render or just look for text match?
-            // Better: Add IDs to clones with suffix?
-            // Simplest: Just use the querySelectorAll we did above, but we need to target specific ones.
-            // Let's iterate:
+            // Highlight active in both lists by matching text content
             const allButtons = document.querySelectorAll('button');
             allButtons.forEach(btn => {
                 if (btn.innerText.includes(game.name)) btn.classList.add('active');
@@ -281,11 +295,8 @@
             // Update Title
             document.getElementById('mobile-title').textContent = game.name;
 
-            // Persist
+            // Persist (Local Storage only, URL handled by reload)
             localStorage.setItem('last_card_game', gameId);
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set('game', gameId);
-            window.history.replaceState({}, '', newUrl);
         }
 
         function toggleMenu(forceState) {
