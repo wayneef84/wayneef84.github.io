@@ -503,58 +503,71 @@
             color: #fbbf24;
             font-weight: bold;
         }
-        .hand-history-table {
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            border: 1px solid #334155;
-            overflow: hidden;
-        }
-        .history-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1.5fr 1fr;
-            gap: 10px;
-            background: rgba(0,0,0,0.5);
-            padding: 10px;
-            font-weight: bold;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            border-bottom: 1px solid #475569;
-        }
         .history-list {
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
-        .history-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1.5fr 1fr;
-            gap: 10px;
-            padding: 10px;
-            border-bottom: 1px solid #334155;
-            font-size: 0.9rem;
+        .history-hand {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
-        .history-row:last-child {
-            border-bottom: none;
+        .history-hand:last-child {
+            margin-bottom: 0;
         }
-        .history-row .hand-num {
+        .history-hand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #475569;
+        }
+        .history-hand-num {
             color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
-        .history-row .bet {
+        .history-hand-result {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .history-hand-result.win { color: #4ade80; }
+        .history-hand-result.lose { color: #f87171; }
+        .history-hand-result.push { color: #fbbf24; }
+        .history-hand-result.blackjack { color: #ffd700; }
+        .history-cards-row {
+            margin-bottom: 8px;
+        }
+        .history-cards-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .history-cards {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .history-card {
+            background: #fff;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #334155;
+        }
+        .history-card.red {
+            color: #dc2626;
+        }
+        .history-value {
             color: #e2e8f0;
-        }
-        .history-row .result {
-            font-weight: bold;
-        }
-        .history-row .result.win { color: #4ade80; }
-        .history-row .result.lose { color: #f87171; }
-        .history-row .result.push { color: #fbbf24; }
-        .history-row .result.blackjack { color: #ffd700; }
-        .history-row .payout {
-            color: #4ade80;
-            font-weight: bold;
-        }
-        .history-row .payout.negative {
-            color: #f87171;
+            font-size: 0.85rem;
+            margin-top: 4px;
         }
         .no-history {
             padding: 40px;
@@ -694,16 +707,8 @@
             </div>
 
             <div id="handHistoryPanel" class="history-panel hidden">
-                <div class="hand-history-table">
-                    <div class="history-header">
-                        <span>Hand</span>
-                        <span>Bet</span>
-                        <span>Result</span>
-                        <span>Payout</span>
-                    </div>
-                    <div id="handHistoryList" class="history-list">
-                        <div class="no-history">No hands played yet</div>
-                    </div>
+                <div id="handHistoryList" class="history-list">
+                    <div class="no-history">No hands played yet</div>
                 </div>
             </div>
 
@@ -1543,7 +1548,8 @@
                     }
                 }
 
-                const rank = cardData.rank;
+                // Convert rank from 'ACE' to 'A', 'TWO' to '2', etc.
+                const rank = RankToAsset[cardData.rank];
                 if (this.cardCounts[rank] !== undefined) {
                     this.cardCounts[rank]++;
                     this.totalCardsDealt++;
@@ -1583,15 +1589,47 @@
                 if (this.handHistory.length === 0) {
                     this.el.handHistoryList.innerHTML = '<div class="no-history">No hands played yet</div>';
                 } else {
-                    const rows = this.handHistory.map(hand => `
-                        <div class="history-row">
-                            <span class="hand-num">#${hand.number}</span>
-                            <span class="bet">$${hand.bet}</span>
-                            <span class="result ${hand.outcome}">${this._formatOutcome(hand.outcome)}</span>
-                            <span class="payout ${hand.payout < 0 ? 'negative' : ''}">$${hand.payout}</span>
-                        </div>
-                    `).reverse().join(''); // Reverse to show most recent first
-                    this.el.handHistoryList.innerHTML = rows;
+                    const hands = this.handHistory.map(hand => {
+                        const playerCardsHTML = hand.playerCards.map(c =>
+                            `<span class="history-card ${this._isRedSuit(c.suit) ? 'red' : ''}">${c.rank}${this._getSuitSymbol(c.suit)}</span>`
+                        ).join('');
+
+                        const dealerCardsHTML = hand.dealerCards.map(c =>
+                            `<span class="history-card ${this._isRedSuit(c.suit) ? 'red' : ''}">${c.rank}${this._getSuitSymbol(c.suit)}</span>`
+                        ).join('');
+
+                        return `
+                            <div class="history-hand">
+                                <div class="history-hand-header">
+                                    <span class="history-hand-num">Hand #${hand.number}</span>
+                                    <span class="history-hand-result ${hand.outcome}">${this._formatOutcome(hand.outcome)}</span>
+                                </div>
+                                <div class="history-cards-row">
+                                    <div class="history-cards-label">Dealer (${hand.dealerValue})</div>
+                                    <div class="history-cards">${dealerCardsHTML}</div>
+                                </div>
+                                <div class="history-cards-row">
+                                    <div class="history-cards-label">You (${hand.playerValue})</div>
+                                    <div class="history-cards">${playerCardsHTML}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).reverse().join(''); // Reverse to show most recent first
+                    this.el.handHistoryList.innerHTML = hands;
+                }
+            }
+
+            _isRedSuit(suit) {
+                return suit === 'HEARTS' || suit === 'DIAMONDS';
+            }
+
+            _getSuitSymbol(suit) {
+                switch(suit) {
+                    case 'HEARTS': return '♥';
+                    case 'DIAMONDS': return '♦';
+                    case 'CLUBS': return '♣';
+                    case 'SPADES': return '♠';
+                    default: return '';
                 }
             }
 
@@ -1608,23 +1646,32 @@
             _logHandResult(result) {
                 this.handNumber++;
                 const player = this.engine.players[0];
+                const dealer = this.engine.dealer;
 
-                // Calculate net payout (payout - bet)
-                const netPayout = (result.multiplier * result.bet) - result.bet;
+                // Capture the actual cards from hands
+                const playerCards = player.hand.contents.map(c => ({
+                    rank: RankToAsset[c.rank],
+                    suit: c.suit
+                }));
+
+                const dealerCards = dealer.hand.contents.map(c => ({
+                    rank: RankToAsset[c.rank],
+                    suit: c.suit
+                }));
 
                 this.handHistory.push({
                     number: this.handNumber,
-                    bet: result.bet,
                     outcome: result.outcome,
-                    payout: Math.floor(netPayout),
                     playerValue: result.playerValue,
-                    dealerValue: result.dealerValue
+                    dealerValue: result.dealerValue,
+                    playerCards: playerCards,
+                    dealerCards: dealerCards
                 });
 
                 console.log(`[History] Hand #${this.handNumber} logged:`, {
-                    bet: result.bet,
                     outcome: result.outcome,
-                    netPayout: Math.floor(netPayout)
+                    playerCards: playerCards.length,
+                    dealerCards: dealerCards.length
                 });
             }
         }
