@@ -3,6 +3,15 @@
 All notable changes to the Fong Family Arcade project will be documented in this file.
 
 ## [Unreleased]
+### Planned Features
+- **History Mode:** Card tracking log with hand history and wager summary (accessible via header button like Settings)
+- **God Mode:** Card counting overlay showing probability of next card value (educational feature)
+
+## [Blackjack v1.1.1] - 2026-01-13
+### Fixed
+- **Animation Flash:** Eliminated card preview flash before flying animation by using placeholder positioning
+- **Button Layout:** Changed Play Again/Change Bet buttons to 50/50 horizontal layout with equal widths
+- **Spacing Consistency:** Fixed dealer label/value spacing to match player spacing (10px margins)
 
 ## [Blackjack v1.1.0] - 2026-01-13
 ### Added
