@@ -881,17 +881,14 @@
                 this._redrawDealer();
                 this._updateValues();
 
-                // Check for insurance payout
+                // Check for insurance (already paid in _acceptInsurance if dealer had BJ, just show message)
                 if (this.insuranceBet > 0) {
                     const dealer = this.engine.dealer;
                     const dealerValue = BlackjackRuleset.evaluateHand(dealer.hand.contents);
 
                     if (dealerValue.isBlackjack) {
-                        // Insurance pays 2:1
-                        const insurancePayout = BlackjackRuleset.calculateInsurancePayout(this.insuranceBet);
-                        const player = this.engine.players[0];
-                        player.balance += insurancePayout;
-                        console.log(`[Insurance] Dealer has Blackjack! Insurance paid $${insurancePayout}`);
+                        // Insurance was already paid in _acceptInsurance, just show message
+                        console.log(`[Insurance] Insurance already paid when dealer revealed Blackjack`);
                         msg = 'Insurance Paid! ';
                     } else {
                         console.log(`[Insurance] Dealer does not have Blackjack. Insurance lost.`);
@@ -1054,12 +1051,32 @@
 
                 console.log(`[Insurance] Player bought insurance for $${halfBet}`);
 
-                // Show normal controls
-                this._showControls('action');
-                this._showMessage('Your turn (Insurance Active)');
-                this._disableActionButtons(false);
-                const canDouble = this.engine.getGameState().activeActorId === 'player1';
-                this.el.btnDouble.disabled = !canDouble;
+                // CRITICAL: Check for dealer blackjack immediately
+                const dealer = this.engine.dealer;
+                const dealerValue = BlackjackRuleset.evaluateHand(dealer.hand.contents);
+
+                if (dealerValue.isBlackjack) {
+                    // Dealer has blackjack - reveal hole card and end round immediately
+                    console.log('[Insurance] Dealer has Blackjack! Revealing and resolving...');
+                    this.holeCardHidden = false;
+                    this._redrawDealer();
+
+                    // Insurance pays 2:1
+                    const insurancePayout = BlackjackRuleset.calculateInsurancePayout(this.insuranceBet);
+                    player.balance += insurancePayout;
+                    console.log(`[Insurance] Insurance paid $${insurancePayout}`);
+
+                    // Force transition to resolution (dealer blackjack ends the round)
+                    this.engine.transitionTo(GameState.RESOLUTION);
+                } else {
+                    // Dealer doesn't have blackjack - continue with player's turn
+                    console.log('[Insurance] Dealer does not have Blackjack. Continuing play...');
+                    this._showControls('action');
+                    this._showMessage('Your turn (Insurance Active)');
+                    this._disableActionButtons(false);
+                    const canDouble = this.engine.getGameState().activeActorId === 'player1';
+                    this.el.btnDouble.disabled = !canDouble;
+                }
             }
 
             _declineInsurance() {
@@ -1070,12 +1087,28 @@
 
                 console.log('[Insurance] Player declined insurance');
 
-                // Show normal controls
-                this._showControls('action');
-                this._showMessage('Your turn');
-                this._disableActionButtons(false);
-                const canDouble = this.engine.getGameState().activeActorId === 'player1';
-                this.el.btnDouble.disabled = !canDouble;
+                // CRITICAL: Check for dealer blackjack immediately
+                const dealer = this.engine.dealer;
+                const dealerValue = BlackjackRuleset.evaluateHand(dealer.hand.contents);
+
+                if (dealerValue.isBlackjack) {
+                    // Dealer has blackjack - reveal hole card and end round immediately
+                    console.log('[Insurance] Dealer has Blackjack! Revealing and resolving...');
+                    this.holeCardHidden = false;
+                    this._redrawDealer();
+
+                    // No insurance, so player loses bet (unless they also have blackjack)
+                    // Force transition to resolution
+                    this.engine.transitionTo(GameState.RESOLUTION);
+                } else {
+                    // Dealer doesn't have blackjack - continue with player's turn
+                    console.log('[Insurance] Dealer does not have Blackjack. Continuing play...');
+                    this._showControls('action');
+                    this._showMessage('Your turn');
+                    this._disableActionButtons(false);
+                    const canDouble = this.engine.getGameState().activeActorId === 'player1';
+                    this.el.btnDouble.disabled = !canDouble;
+                }
             }
 
             // ================================================================
