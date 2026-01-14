@@ -162,11 +162,16 @@
             position: relative;
         }
 
+        /* Face-up (revealed) cards move 1/8 card closer to player (downward) */
+        #dealerCards .card-slot:not(.face-down) {
+            margin-top: 15px; /* 1/8 of 120px card height */
+        }
+
         .card-slot.placeholder {
             border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 6px;
             background: rgba(0, 0, 0, 0.1);
-            margin: 0 5px; 
+            margin: 0 5px;
         }
         
         .card-slot canvas {
@@ -476,19 +481,29 @@
             margin-bottom: 15px;
         }
         .count-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            align-items: center;
             background: rgba(0,0,0,0.3);
             padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid #334155;
+            gap: 12px;
         }
-        .count-row span:first-child {
+        .count-row .count-label {
             color: #94a3b8;
+            font-weight: bold;
+            text-align: left;
         }
-        .count-row span:last-child {
+        .count-row .count-value {
             color: #fbbf24;
             font-weight: bold;
+            text-align: center;
+        }
+        .count-row .count-prob {
+            color: #4ade80;
+            font-size: 0.85rem;
+            text-align: center;
         }
         .shoe-info {
             background: rgba(0,0,0,0.3);
@@ -693,19 +708,20 @@
 
             <div id="cardCountPanel" class="history-panel">
                 <div class="card-count-grid">
-                    <div class="count-row"><span>Ace:</span><span id="countA">0</span></div>
-                    <div class="count-row"><span>2:</span><span id="count2">0</span></div>
-                    <div class="count-row"><span>3:</span><span id="count3">0</span></div>
-                    <div class="count-row"><span>4:</span><span id="count4">0</span></div>
-                    <div class="count-row"><span>5:</span><span id="count5">0</span></div>
-                    <div class="count-row"><span>6:</span><span id="count6">0</span></div>
-                    <div class="count-row"><span>7:</span><span id="count7">0</span></div>
-                    <div class="count-row"><span>8:</span><span id="count8">0</span></div>
-                    <div class="count-row"><span>9:</span><span id="count9">0</span></div>
-                    <div class="count-row"><span>10:</span><span id="count10">0</span></div>
-                    <div class="count-row"><span>J:</span><span id="countJ">0</span></div>
-                    <div class="count-row"><span>Q:</span><span id="countQ">0</span></div>
-                    <div class="count-row"><span>K:</span><span id="countK">0</span></div>
+                    <div class="count-row"><span class="count-label">A:</span><span class="count-value" id="countA">0</span><span class="count-prob" id="probA">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">2:</span><span class="count-value" id="count2">0</span><span class="count-prob" id="prob2">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">3:</span><span class="count-value" id="count3">0</span><span class="count-prob" id="prob3">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">4:</span><span class="count-value" id="count4">0</span><span class="count-prob" id="prob4">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">5:</span><span class="count-value" id="count5">0</span><span class="count-prob" id="prob5">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">6:</span><span class="count-value" id="count6">0</span><span class="count-prob" id="prob6">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">7:</span><span class="count-value" id="count7">0</span><span class="count-prob" id="prob7">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">8:</span><span class="count-value" id="count8">0</span><span class="count-prob" id="prob8">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">9:</span><span class="count-value" id="count9">0</span><span class="count-prob" id="prob9">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">10:</span><span class="count-value" id="count10">0</span><span class="count-prob" id="prob10">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">J:</span><span class="count-value" id="countJ">0</span><span class="count-prob" id="probJ">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">Q:</span><span class="count-value" id="countQ">0</span><span class="count-prob" id="probQ">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">K:</span><span class="count-value" id="countK">0</span><span class="count-prob" id="probK">0.000%</span></div>
+                    <div class="count-row"><span class="count-label">Σ10:</span><span class="count-value" id="count10val">0</span><span class="count-prob" id="prob10val">0.000%</span></div>
                 </div>
                 <div class="shoe-info">
                     <strong>Total Cards Dealt:</strong> <span id="totalDealt">0</span><br>
@@ -726,12 +742,15 @@
     <div id="settingsModal" class="modal-overlay hidden">
         <div class="modal">
             <h2>Game Settings</h2>
-            <div class="setting-row"><label>Decks</label><input type="number" id="cfgDecks" value="6" min="1" max="8"></div>
+            <div class="setting-row"><label>Decks</label><input type="number" id="cfgDecks" value="6" min="0.5" max="8" step="any"></div>
             <div class="setting-row"><label>Target Score</label><input type="number" id="cfgTarget" value="21" min="10" max="50"></div>
             <div class="setting-row"><label>Dealer Stands</label><input type="number" id="cfgDealerStand" value="17" min="10" max="25"></div>
+            <div class="setting-row"><label>Reshuffle at % Left</label><input type="number" id="cfgReshuffle" value="20" min="5" max="50" step="5"></div>
+            <button id="btnForceReshuffle" class="full-btn">🔄 Force Reshuffle Shoe</button>
             <button id="btnResetFunds" class="full-btn reset-funds">Reset Funds ($1000)</button>
             <button id="btnResetRules" class="full-btn reset-rules">Restore Default Rules</button>
             <button id="btnCloseSettings" class="full-btn close-btn">Save & Close</button>
+            <button id="btnCancelSettings" class="full-btn">Cancel</button>
         </div>
     </div>
 
@@ -744,6 +763,7 @@
                 <button class="debug-btn" id="debugPlayerBust">💥 Force Player Bust (Next Hit)</button>
                 <button class="debug-btn" id="debugDealerBust">💀 Force Dealer Bust</button>
                 <button class="debug-btn" id="debugTie">🤝 Force Tie (Match Scores)</button>
+                <button class="debug-btn" id="debugReshuffle">🔄 Force Reshuffle Shoe</button>
                 <button class="debug-btn danger" id="debugResetBank">💰 Reset Bank to $1000</button>
             </div>
             <button class="debug-close" id="debugClose">Close Debug Console</button>
@@ -780,6 +800,7 @@
                 this.engine = new GameEngine(BlackjackRuleset, { debug: true });
                 this.wager = 25;
                 this.holeCardHidden = true;
+                this.reshuffleThreshold = 20; // Default 20% of cards remaining
 
                 // History tracking
                 this.cardCounts = this._initCardCounts();
@@ -809,17 +830,21 @@
                     settingsModal: document.getElementById('settingsModal'),
                     btnSettings: document.getElementById('btnSettings'),
                     btnCloseSettings: document.getElementById('btnCloseSettings'),
+                    btnCancelSettings: document.getElementById('btnCancelSettings'),
+                    btnForceReshuffle: document.getElementById('btnForceReshuffle'),
                     btnResetFunds: document.getElementById('btnResetFunds'),
                     btnResetRules: document.getElementById('btnResetRules'),
                     cfgDecks: document.getElementById('cfgDecks'),
                     cfgTarget: document.getElementById('cfgTarget'),
                     cfgDealerStand: document.getElementById('cfgDealerStand'),
+                    cfgReshuffle: document.getElementById('cfgReshuffle'),
                     debugOverlay: document.getElementById('debugOverlay'),
                     debugClose: document.getElementById('debugClose'),
                     debugPlayerBJ: document.getElementById('debugPlayerBJ'),
                     debugPlayerBust: document.getElementById('debugPlayerBust'),
                     debugDealerBust: document.getElementById('debugDealerBust'),
                     debugTie: document.getElementById('debugTie'),
+                    debugReshuffle: document.getElementById('debugReshuffle'),
                     debugResetBank: document.getElementById('debugResetBank'),
                     header: document.querySelector('.header'),
                     insuranceModal: document.getElementById('insuranceModal'),
@@ -862,11 +887,34 @@
                 this.el.tabCardCount.onclick = () => this._showHistoryTab('cardCount');
                 this.el.tabHandHistory.onclick = () => this._showHistoryTab('handHistory');
 
+                // Click outside history modal to close
+                this.el.historyModal.onclick = (e) => {
+                    if (e.target === this.el.historyModal) {
+                        this.el.historyModal.classList.add('hidden');
+                    }
+                };
+
                 // Settings Modal
-                this.el.btnSettings.onclick = () => this.el.settingsModal.classList.remove('hidden');
+                this.el.btnSettings.onclick = () => {
+                    this._loadSettings();
+                    this.el.settingsModal.classList.remove('hidden');
+                };
                 this.el.btnCloseSettings.onclick = () => this._saveSettings();
+                this.el.btnCancelSettings.onclick = () => {
+                    this._loadSettings(); // Restore original values
+                    this.el.settingsModal.classList.add('hidden');
+                };
+                this.el.btnForceReshuffle.onclick = () => this._forceReshuffleFromSettings();
                 this.el.btnResetFunds.onclick = () => this._resetFunds();
                 this.el.btnResetRules.onclick = () => this._resetRules();
+
+                // Click outside settings modal to close
+                this.el.settingsModal.onclick = (e) => {
+                    if (e.target === this.el.settingsModal) {
+                        this._loadSettings(); // Restore original values
+                        this.el.settingsModal.classList.add('hidden');
+                    }
+                };
 
                 document.querySelectorAll('.chip:not(#btnClearBet)').forEach(btn => {
                     btn.onclick = () => {
@@ -904,6 +952,7 @@
                 this.el.debugPlayerBust.onclick = () => this._debugForcePlayerBust();
                 this.el.debugDealerBust.onclick = () => this._debugForceDealerBust();
                 this.el.debugTie.onclick = () => this._debugForceTie();
+                this.el.debugReshuffle.onclick = () => this._debugForceReshuffle();
                 this.el.debugResetBank.onclick = () => this._debugResetBank();
 
                 // Insurance Handlers
@@ -943,21 +992,35 @@
                         BlackjackRuleset.deckCount = saved.deckCount;
                         BlackjackRuleset.targetScore = saved.targetScore;
                         BlackjackRuleset.dealerStandThreshold = saved.dealerStandThreshold;
+                        if (saved.reshuffleThreshold !== undefined) {
+                            this.reshuffleThreshold = saved.reshuffleThreshold;
+                        }
                     } catch(e) {}
                 }
                 this.el.cfgDecks.value = BlackjackRuleset.deckCount;
                 this.el.cfgTarget.value = BlackjackRuleset.targetScore;
                 this.el.cfgDealerStand.value = BlackjackRuleset.dealerStandThreshold;
+                this.el.cfgReshuffle.value = this.reshuffleThreshold;
             }
 
             _saveSettings() {
-                BlackjackRuleset.deckCount = parseInt(this.el.cfgDecks.value) || 6;
+                // Validate and parse deck count (supports decimals like 6.5)
+                var deckValue = parseFloat(this.el.cfgDecks.value);
+                if (isNaN(deckValue) || deckValue <= 0) {
+                    deckValue = 1; // Default to 1 if invalid
+                }
+                // Round to nearest 0.5 for clean values
+                deckValue = Math.round(deckValue * 2) / 2;
+                BlackjackRuleset.deckCount = deckValue;
+
                 BlackjackRuleset.targetScore = parseInt(this.el.cfgTarget.value) || 21;
                 BlackjackRuleset.dealerStandThreshold = parseInt(this.el.cfgDealerStand.value) || 17;
+                this.reshuffleThreshold = parseInt(this.el.cfgReshuffle.value) || 20;
                 localStorage.setItem('blackjack_config', JSON.stringify({
                     deckCount: BlackjackRuleset.deckCount,
                     targetScore: BlackjackRuleset.targetScore,
-                    dealerStandThreshold: BlackjackRuleset.dealerStandThreshold
+                    dealerStandThreshold: BlackjackRuleset.dealerStandThreshold,
+                    reshuffleThreshold: this.reshuffleThreshold
                 }));
                 this.el.settingsModal.classList.add('hidden');
             }
@@ -967,6 +1030,7 @@
                     this.el.cfgDecks.value = 6;
                     this.el.cfgTarget.value = 21;
                     this.el.cfgDealerStand.value = 17;
+                    this.el.cfgReshuffle.value = 20;
                     this._saveSettings();
                 }
             }
@@ -995,13 +1059,43 @@
                     this._showMessage('Not enough chips!', 'lose');
                     return;
                 }
-                
+
+                // Check if we need to reshuffle before dealing
+                this._checkAndReshuffle();
+
                 this._resetTableVisuals();
                 this._showControls('none');
-                
+
                 this.engine.startRound();
                 this.engine.placeBet('player1', this.wager);
                 this.engine.confirmBets();
+            }
+
+            _checkAndReshuffle() {
+                const totalCards = BlackjackRuleset.deckCount * 52;
+                const remaining = totalCards - this.totalCardsDealt;
+                const percentRemaining = (remaining / totalCards) * 100;
+
+                if (percentRemaining < this.reshuffleThreshold) {
+                    console.log(`[Reshuffle] Triggered at ${percentRemaining.toFixed(1)}% remaining (threshold: ${this.reshuffleThreshold}%)`);
+
+                    // Rebuild the shoe (destroy and recreate)
+                    this.engine.piles.shoe = Pile.createFrom(StandardDeck, BlackjackRuleset.deckCount);
+                    this.engine.piles.shoe.shuffle();
+
+                    // Reset card tracking
+                    this.totalCardsDealt = 0;
+                    this.cardCounts = {
+                        'A': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0,
+                        '7': 0, '8': 0, '9': 0, '10': 0, 'J': 0, 'Q': 0, 'K': 0
+                    };
+
+                    // Show toast message
+                    this._showMessage('🔄 Shuffling shoe...', 'info');
+
+                    // Update history display to show reset counts
+                    this._updateHistoryDisplay();
+                }
             }
 
             _resetTableVisuals() {
@@ -1088,6 +1182,9 @@
             _createCardElement(cardData, faceUp) {
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
+                if (!faceUp) {
+                    slot.classList.add('face-down');
+                }
                 slot.dataset.uuid = cardData.uuid;
                 let canvas;
                 if (faceUp) {
@@ -1122,21 +1219,39 @@
                 } else if (event.actorId === 'dealer') {
                     this._showControls('none');
                     this._showMessage("Dealer's turn...");
-                    this.holeCardHidden = false;
+
+                    // Track hole card before revealing it
+                    // Hole card is FIRST card (index 0) in shoe dealing
+                    if (this.holeCardHidden) {
+                        const dealer = this.engine.dealer;
+                        if (dealer && dealer.hand.count >= 1) {
+                            const holeCard = dealer.hand.contents[0];
+                            console.log('[TurnStart] Tracking dealer hole card before reveal:', holeCard.rank);
+                            // Set flag false FIRST so _trackCard won't skip it
+                            this.holeCardHidden = false;
+                            this._trackCard(holeCard.toJSON ? holeCard.toJSON() : holeCard);
+                        } else {
+                            this.holeCardHidden = false;
+                        }
+                    }
+
                     this._redrawDealer();
                 }
             }
 
             _handleReveal() {
                 // Count hole card now that it's revealed
+                // Hole card is FIRST card (index 0) in shoe dealing
+                // MUST set flag to false BEFORE tracking, otherwise _trackCard will skip it
+                this.holeCardHidden = false;
+
                 const dealer = this.engine.dealer;
-                if (dealer && dealer.hand.count >= 2) {
-                    const holeCard = dealer.hand.contents[1];
+                if (dealer && dealer.hand.count >= 1) {
+                    const holeCard = dealer.hand.contents[0];
                     const cardData = holeCard.toJSON ? holeCard.toJSON() : holeCard;
                     this._trackCard(cardData);
                 }
 
-                this.holeCardHidden = false;
                 this._redrawDealer();
             }
 
@@ -1147,15 +1262,23 @@
 
                 // CRITICAL: Reveal dealer's hole card at resolution
                 // Track hole card if it wasn't already counted
+                // Hole card is FIRST card (index 0) in shoe dealing
                 if (this.holeCardHidden) {
+                    console.log('[Resolution] Hole card is still hidden, revealing and tracking...');
+                    // MUST set flag to false BEFORE tracking, otherwise _trackCard will skip it
+                    this.holeCardHidden = false;
+
                     const dealer = this.engine.dealer;
-                    if (dealer && dealer.hand.count >= 2) {
-                        const holeCard = dealer.hand.contents[1];
+                    if (dealer && dealer.hand.count >= 1) {
+                        const holeCard = dealer.hand.contents[0];
+                        console.log('[Resolution] Tracking hole card:', holeCard);
                         this._trackCard(holeCard.toJSON ? holeCard.toJSON() : holeCard);
                     }
+                } else {
+                    console.log('[Resolution] Hole card was already revealed (holeCardHidden was false)');
+                    this.holeCardHidden = false;
                 }
 
-                this.holeCardHidden = false;
                 this._redrawDealer();
                 this._updateValues();
 
@@ -1205,9 +1328,11 @@
             _redrawDealer() {
                 const dealer = this.engine.dealer;
                 if (!dealer) return;
-                this.el.dealerCards.innerHTML = ''; 
+                this.el.dealerCards.innerHTML = '';
                 dealer.hand.contents.forEach((card, i) => {
-                    const faceUp = i === 0 || !this.holeCardHidden;
+                    // First card (index 0) is hole card, face-down unless revealed
+                    // Second card (index 1) and beyond are always face-up
+                    const faceUp = i !== 0 || !this.holeCardHidden;
                     const slot = this._createCardElement(card, faceUp);
                     this.el.dealerCards.appendChild(slot);
                 });
@@ -1249,8 +1374,9 @@
                 const dealer = this.engine.dealer;
                 // Dealer value bubble logic
                 if (dealer && dealer.hand.count > 0) {
-                    if (this.holeCardHidden && dealer.hand.count >= 1) {
-                        const v = BlackjackRuleset._getCardValue(dealer.hand.contents[0]);
+                    if (this.holeCardHidden && dealer.hand.count >= 2) {
+                        // Show UP card value (second card, index 1) while hole card is hidden
+                        const v = BlackjackRuleset._getCardValue(dealer.hand.contents[1]);
                         this.el.dealerValue.textContent = v === 11 ? 'A' : v;
                         this.el.dealerValue.className = 'hand-value';
                     } else {
@@ -1520,6 +1646,46 @@
                 console.log(`[DEBUG] Forced tie at ${playerValue}`);
             }
 
+            _forceReshuffleFromSettings() {
+                if (confirm('Force reshuffle? This will reset the shoe and card count history.')) {
+                    // Reset the shoe
+                    this.engine.shoe.reset();
+                    this.engine.shoe.shuffle();
+
+                    // Reset card count history only (not hand history)
+                    this.cardCounts = {
+                        [Rank.ACE]: 0, [Rank.TWO]: 0, [Rank.THREE]: 0, [Rank.FOUR]: 0,
+                        [Rank.FIVE]: 0, [Rank.SIX]: 0, [Rank.SEVEN]: 0, [Rank.EIGHT]: 0,
+                        [Rank.NINE]: 0, [Rank.TEN]: 0, [Rank.JACK]: 0, [Rank.QUEEN]: 0, [Rank.KING]: 0
+                    };
+
+                    // Update the display
+                    this._updateCardCountDisplay();
+                    this._showMessage('🔄 Shoe reshuffled!', 'push');
+                    console.log('[SETTINGS] Forced reshuffle - shoe reset and card count cleared');
+                }
+            }
+
+            _debugForceReshuffle() {
+                if (confirm('Force reshuffle? This will reset the shoe and card count history.')) {
+                    // Reset the shoe
+                    this.engine.shoe.reset();
+                    this.engine.shoe.shuffle();
+
+                    // Reset card count history only (not hand history)
+                    this.cardCounts = {
+                        [Rank.ACE]: 0, [Rank.TWO]: 0, [Rank.THREE]: 0, [Rank.FOUR]: 0,
+                        [Rank.FIVE]: 0, [Rank.SIX]: 0, [Rank.SEVEN]: 0, [Rank.EIGHT]: 0,
+                        [Rank.NINE]: 0, [Rank.TEN]: 0, [Rank.JACK]: 0, [Rank.QUEEN]: 0, [Rank.KING]: 0
+                    };
+
+                    // Update the display
+                    this._updateCardCountDisplay();
+                    this.el.debugOverlay.classList.add('hidden');
+                    console.log('[DEBUG] Forced reshuffle - shoe reset and card count cleared');
+                }
+            }
+
             _debugResetBank() {
                 if (confirm('Reset bank to $1000?')) {
                     const player = this.engine.players[0];
@@ -1546,11 +1712,11 @@
 
             _trackCard(cardData) {
                 // Exclude dealer's hole card from count until revealed
-                // Hole card is 2nd dealer card (index 1)
+                // Hole card is FIRST dealer card (index 0) in shoe dealing
                 const dealer = this.engine.dealer;
                 if (dealer && this.holeCardHidden) {
                     const dealerCards = dealer.hand.contents;
-                    if (dealerCards.length === 2 && dealerCards[1].uuid === cardData.uuid) {
+                    if (dealerCards.length >= 1 && dealerCards[0].uuid === cardData.uuid) {
                         console.log('[History] Skipping hole card from count:', cardData.rank);
                         return; // Don't count hole card yet
                     }
@@ -1561,7 +1727,7 @@
                 if (this.cardCounts[rank] !== undefined) {
                     this.cardCounts[rank]++;
                     this.totalCardsDealt++;
-                    console.log(`[History] Card tracked: ${rank} (Total: ${this.totalCardsDealt})`);
+                    console.log(`[History] Card tracked: ${rank} (UUID: ${cardData.uuid}, holeCardHidden: ${this.holeCardHidden}, Total: ${this.totalCardsDealt})`);
                 }
             }
 
@@ -1580,17 +1746,53 @@
             }
 
             _updateHistoryDisplay() {
-                // Update card count display
-                Object.keys(this.cardCounts).forEach(rank => {
-                    const el = document.getElementById(`count${rank}`);
-                    if (el) el.textContent = this.cardCounts[rank];
-                });
-
-                this.el.totalDealt.textContent = this.totalCardsDealt;
-
                 // Calculate cards remaining (6 decks = 312 cards)
                 const totalCards = BlackjackRuleset.deckCount * 52;
                 const remaining = totalCards - this.totalCardsDealt;
+
+                // Update card count display with probabilities
+                Object.keys(this.cardCounts).forEach(rank => {
+                    const countEl = document.getElementById(`count${rank}`);
+                    const probEl = document.getElementById(`prob${rank}`);
+
+                    if (countEl) countEl.textContent = this.cardCounts[rank];
+
+                    if (probEl && remaining > 0) {
+                        // Calculate how many of this rank are left in the shoe
+                        const cardsPerRank = BlackjackRuleset.deckCount * 4; // 4 of each rank per deck
+                        const dealt = this.cardCounts[rank];
+                        const leftInShoe = cardsPerRank - dealt;
+                        const probability = (leftInShoe / remaining) * 100;
+
+                        probEl.textContent = probability.toFixed(3) + '%';
+                    } else if (probEl) {
+                        probEl.textContent = '0.000%';
+                    }
+                });
+
+                // Calculate combined 10-value probability (10, J, Q, K)
+                const count10valEl = document.getElementById('count10val');
+                const prob10valEl = document.getElementById('prob10val');
+
+                if (count10valEl && prob10valEl) {
+                    // Sum up dealt cards for 10, J, Q, K
+                    const dealt10val = (this.cardCounts['10'] || 0) + (this.cardCounts['J'] || 0) +
+                                      (this.cardCounts['Q'] || 0) + (this.cardCounts['K'] || 0);
+                    count10valEl.textContent = dealt10val;
+
+                    if (remaining > 0) {
+                        // Calculate how many 10-value cards are left (4 ranks × 4 per deck per rank)
+                        const total10val = BlackjackRuleset.deckCount * 4 * 4; // 4 ranks, 4 of each per deck
+                        const left10val = total10val - dealt10val;
+                        const probability = (left10val / remaining) * 100;
+
+                        prob10valEl.textContent = probability.toFixed(3) + '%';
+                    } else {
+                        prob10valEl.textContent = '0.000%';
+                    }
+                }
+
+                this.el.totalDealt.textContent = this.totalCardsDealt;
                 this.el.cardsRemaining.textContent = remaining;
 
                 // Update hand history list

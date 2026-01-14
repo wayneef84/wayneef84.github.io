@@ -51,42 +51,50 @@ var BlackjackRuleset = {
     /**
      * Defines the order cards are dealt.
      * FIX: Includes 'from' and 'toPlayer' flags for Engine compatibility
+     * SHOE DEALING: Dealer gets first card face-down (unless single deck), second card face-up
      */
     getDealSequence: function(gameState) {
         var sequence = [];
-        
-        // Round 1: Face Up for everyone
+
+        // Single deck detection: if 1 deck or less, deal face-up (hand-dealt style)
+        var isSingleDeck = this.deckCount <= 1;
+
+        // Round 1: Dealer gets FIRST card (face-down if shoe, face-up if single deck)
+        sequence.push({
+            from: 'shoe',
+            to: 'dealer',
+            toPlayer: true,
+            faceUp: isSingleDeck
+        }); // Dealer Hole Card (first card in shoe dealing)
+
+        // Round 1: Players get first card face-up
         gameState.players.forEach(function(p) {
-            sequence.push({ 
+            sequence.push({
                 from: 'shoe',
-                to: p.id, 
+                to: p.id,
                 toPlayer: true,
-                faceUp: true 
+                faceUp: true
             });
         });
-        sequence.push({ 
+
+        // Round 2: Dealer gets SECOND card face-up
+        sequence.push({
             from: 'shoe',
-            to: 'dealer', 
+            to: 'dealer',
             toPlayer: true,
-            faceUp: true 
-        }); // Dealer Up Card
-        
-        // Round 2: Face Up for players, Face Down for Dealer
+            faceUp: true
+        }); // Dealer Up Card (second card)
+
+        // Round 2: Players get second card face-up
         gameState.players.forEach(function(p) {
-            sequence.push({ 
+            sequence.push({
                 from: 'shoe',
-                to: p.id, 
+                to: p.id,
                 toPlayer: true,
-                faceUp: true 
+                faceUp: true
             });
         });
-        sequence.push({ 
-            from: 'shoe',
-            to: 'dealer', 
-            toPlayer: true,
-            faceUp: false 
-        }); // Dealer Hole Card
-        
+
         return sequence;
     },
     
@@ -346,15 +354,16 @@ var BlackjackRuleset = {
     /**
      * Check if insurance should be offered to players.
      * Insurance is offered when dealer's up card is an Ace.
+     * In shoe dealing, up card is the SECOND card (index 1).
      */
     shouldOfferInsurance: function(gameState) {
         if (!this.insuranceEnabled) return false;
 
         var dealer = gameState.dealer;
-        if (!dealer || dealer.hand.count < 1) return false;
+        if (!dealer || dealer.hand.count < 2) return false;
 
-        // Check if dealer's up card is an Ace
-        var upCard = dealer.hand.contents[0];
+        // Check if dealer's up card (second card) is an Ace
+        var upCard = dealer.hand.contents[1];
         return upCard.rank === Rank.ACE;
     },
 
