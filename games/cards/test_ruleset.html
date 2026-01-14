@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleset Test Runner</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* Control Panel */
+        .controls {
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .controls h2 {
+            color: #4CAF50;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .control-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        select {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:active {
+            background: #3d8b40;
+        }
+        button.secondary {
+            background: #555;
+        }
+        button.secondary:hover {
+            background: #666;
+        }
+
+        /* Test Results */
+        .results {
+            background: #242424;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .results h2 {
+            color: #4CAF50;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .test-case {
+            background: #1a1a1a;
+            border-left: 4px solid #444;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .test-case.pass {
+            border-left-color: #4CAF50;
+        }
+        .test-case.fail {
+            border-left-color: #f44336;
+        }
+        .test-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .test-status {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .test-status.pass {
+            color: #4CAF50;
+        }
+        .test-status.fail {
+            color: #f44336;
+        }
+        .test-name {
+            font-weight: bold;
+            color: #fff;
+        }
+        .test-desc {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .test-details {
+            background: #0d0d0d;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        .test-detail-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .test-detail-label {
+            color: #888;
+            min-width: 100px;
+        }
+        .test-detail-value {
+            color: #e0e0e0;
+        }
+        .test-detail-value.fail {
+            color: #f44336;
+        }
+
+        /* Summary */
+        .summary {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: #0d0d0d;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            flex: 1;
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .summary-value.pass {
+            color: #4CAF50;
+        }
+        .summary-value.fail {
+            color: #f44336;
+        }
+        .summary-value.total {
+            color: #2196F3;
+        }
+        .summary-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* Error */
+        .error {
+            background: #2a1a1a;
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Ruleset Test Runner</h1>
+        <p class="subtitle">Headless validator for Card Engine rulesets • Verify game logic with automated test cases</p>
+
+        <div class="controls">
+            <h2>Test Configuration</h2>
+            <div class="control-row">
+                <label>
+                    <select id="rulesetSelect">
+                        <option value="">Select Ruleset...</option>
+                        <option value="blackjack">Blackjack</option>
+                        <option value="war">War</option>
+                        <option value="big2">Big 2</option>
+                    </select>
+                </label>
+                <label>
+                    <select id="testSetSelect" disabled>
+                        <option value="">Select Test Set...</option>
+                    </select>
+                </label>
+            </div>
+            <div class="control-row">
+                <button id="runBtn" disabled onclick="runTests()">▶ Run Tests</button>
+                <button class="secondary" onclick="runAllTests()">▶▶ Run All Tests</button>
+                <button class="secondary" onclick="clearResults()">Clear Results</button>
+            </div>
+        </div>
+
+        <div class="results" id="resultsContainer" style="display: none;">
+            <h2 id="resultsTitle">Test Results</h2>
+            <div class="summary" id="summary"></div>
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <!-- Load Card Engine -->
+    <script src="shared/enums.js"></script>
+    <script src="shared/card.js"></script>
+    <script src="shared/deck.js"></script>
+    <script src="shared/pile.js"></script>
+    <script src="shared/player.js"></script>
+    <script src="shared/engine.js"></script>
+
+    <!-- Load Rulesets -->
+    <script src="blackjack/ruleset.js"></script>
+    <!-- Add more rulesets as needed -->
+
+    <script>
+        // ====================================================================
+        // TEST DEFINITIONS
+        // ====================================================================
+
+        const TEST_SUITES = {
+            blackjack: {
+                name: 'Blackjack',
+                ruleset: BlackjackRuleset,
+                testSets: {
+                    'bust-bypass': {
+                        name: 'BJ-01: Bust Bypass',
+                        description: 'Player busts → getNextActor returns null → Dealer never draws',
+                        tests: [
+                            {
+                                name: 'Single Player Bust',
+                                setup: (engine) => {
+                                    // Setup: Player has 15, Dealer has 10 (showing)
+                                    const player = engine.players[0];
+                                    const dealer = engine.dealer;
+
+                                    // Give player cards totaling 15
+                                    player.hand.receive(new Card(Suit.HEARTS, Rank.TEN, 'standard'), -1);
+                                    player.hand.receive(new Card(Suit.SPADES, Rank.FIVE, 'standard'), -1);
+
+                                    // Give dealer cards totaling 10 (one face down)
+                                    dealer.hand.receive(new Card(Suit.DIAMONDS, Rank.TEN, 'standard'), -1);
+                                    dealer.hand.receive(new Card(Suit.CLUBS, Rank.KING, 'standard'), -1);
+
+                                    engine.activeActorId = player.id;
+                                },
+                                action: (engine) => {
+                                    // Action: Hit and receive a 10 (bust to 25)
+                                    const player = engine.players[0];
+                                    player.hand.receive(new Card(Suit.HEARTS, Rank.TEN, 'standard'), -1);
+                                },
+                                expect: (engine) => {
+                                    const nextActor = engine.ruleset.getNextActor(engine.getGameState());
+                                    return {
+                                        pass: nextActor === null,
+                                        expected: 'null (skip dealer)',
+                                        actual: nextActor,
+                                        reason: 'Player busted, dealer turn should be skipped'
+                                    };
+                                }
+                            }
+                        ]
+                    },
+                    'double-down': {
+                        name: 'BJ-02: Double Down',
+                        description: 'Double down increases bet, deals 1 card, forces stand',
+                        tests: [
+                            {
+                                name: 'Double Down Mechanics',
+                                setup: (engine) => {
+                                    const player = engine.players[0];
+                                    player.balance = 1000;
+                                    player.placeBet(100);
+
+                                    // Give player 11 (good doubling hand)
+                                    player.hand.receive(new Card(Suit.HEARTS, Rank.SIX, 'standard'), -1);
+                                    player.hand.receive(new Card(Suit.SPADES, Rank.FIVE, 'standard'), -1);
+
+                                    engine.activeActorId = player.id;
+                                },
+                                action: (engine) => {
+                                    const player = engine.players[0];
+                                    const gameState = engine.getGameState();
+
+                                    // Check if double is available
+                                    const availableActions = engine.ruleset.getAvailableActions(gameState, player.id);
+                                    if (!availableActions.includes('double')) {
+                                        throw new Error('Double action not available');
+                                    }
+
+                                    // Execute double down
+                                    const result = engine.ruleset.resolveAction(gameState, player.id, 'double', engine);
+
+                                    // Deal the one card
+                                    player.hand.receive(new Card(Suit.DIAMONDS, Rank.TEN, 'standard'), -1);
+
+                                    return result;
+                                },
+                                expect: (engine) => {
+                                    const player = engine.players[0];
+                                    const gameState = engine.getGameState();
+                                    const nextActor = engine.ruleset.getNextActor(gameState);
+
+                                    // Player should have 3 cards and be marked as stood
+                                    const hasStood = player._hasStood === true;
+                                    const cardCount = player.hand.count;
+                                    const nextIsDealer = nextActor === 'dealer' || nextActor === null;
+
+                                    return {
+                                        pass: hasStood && cardCount === 3 && nextIsDealer,
+                                        expected: 'Player stood=true, 3 cards, next=dealer',
+                                        actual: `stood=${hasStood}, ${cardCount} cards, next=${nextActor}`,
+                                        reason: 'Double should deal 1 card and force stand'
+                                    };
+                                }
+                            }
+                        ]
+                    },
+                    'dealer-blackjack': {
+                        name: 'BJ-03: Dealer Blackjack',
+                        description: 'Dealer blackjack ends round immediately',
+                        tests: [
+                            {
+                                name: 'Immediate Win on Dealer BJ',
+                                setup: (engine) => {
+                                    const player = engine.players[0];
+                                    const dealer = engine.dealer;
+
+                                    // Player has 20
+                                    player.hand.receive(new Card(Suit.HEARTS, Rank.TEN, 'standard'), -1);
+                                    player.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'standard'), -1);
+
+                                    // Dealer has Blackjack
+                                    dealer.hand.receive(new Card(Suit.DIAMONDS, Rank.ACE, 'standard'), -1);
+                                    dealer.hand.receive(new Card(Suit.CLUBS, Rank.KING, 'standard'), -1);
+                                },
+                                action: (engine) => {
+                                    // No action needed
+                                },
+                                expect: (engine) => {
+                                    const gameState = engine.getGameState();
+                                    const winCondition = engine.ruleset.checkWinCondition(gameState);
+
+                                    const isImmediate = winCondition && winCondition.immediate === true;
+                                    const skipPlayers = winCondition && winCondition.skipPlayerTurns === true;
+
+                                    return {
+                                        pass: isImmediate && skipPlayers,
+                                        expected: '{immediate: true, skipPlayerTurns: true}',
+                                        actual: JSON.stringify(winCondition),
+                                        reason: 'Dealer blackjack should end round immediately'
+                                    };
+                                }
+                            }
+                        ]
+                    },
+                    'hand-evaluation': {
+                        name: 'BJ-04: Hand Evaluation',
+                        description: 'Verify correct hand value calculations',
+                        tests: [
+                            {
+                                name: 'Soft 17',
+                                setup: (engine) => {},
+                                action: (engine) => {},
+                                expect: (engine) => {
+                                    const hand = [
+                                        new Card(Suit.HEARTS, Rank.ACE, 'standard'),
+                                        new Card(Suit.SPADES, Rank.SIX, 'standard')
+                                    ];
+                                    const result = engine.ruleset.evaluateHand(hand);
+
+                                    return {
+                                        pass: result.best === 17 && result.isSoft === true,
+                                        expected: '{best: 17, isSoft: true}',
+                                        actual: JSON.stringify(result),
+                                        reason: 'Ace + 6 should be soft 17'
+                                    };
+                                }
+                            },
+                            {
+                                name: 'Hard 17 (Ace counted as 1)',
+                                setup: (engine) => {},
+                                action: (engine) => {},
+                                expect: (engine) => {
+                                    const hand = [
+                                        new Card(Suit.HEARTS, Rank.ACE, 'standard'),
+                                        new Card(Suit.SPADES, Rank.SIX, 'standard'),
+                                        new Card(Suit.DIAMONDS, Rank.TEN, 'standard')
+                                    ];
+                                    const result = engine.ruleset.evaluateHand(hand);
+
+                                    return {
+                                        pass: result.best === 17 && result.isSoft === false,
+                                        expected: '{best: 17, isSoft: false}',
+                                        actual: JSON.stringify(result),
+                                        reason: 'Ace + 6 + 10 should be hard 17 (Ace=1)'
+                                    };
+                                }
+                            },
+                            {
+                                name: 'Blackjack',
+                                setup: (engine) => {},
+                                action: (engine) => {},
+                                expect: (engine) => {
+                                    const hand = [
+                                        new Card(Suit.HEARTS, Rank.ACE, 'standard'),
+                                        new Card(Suit.SPADES, Rank.KING, 'standard')
+                                    ];
+                                    const result = engine.ruleset.evaluateHand(hand);
+
+                                    return {
+                                        pass: result.best === 21 && result.isBlackjack === true,
+                                        expected: '{best: 21, isBlackjack: true}',
+                                        actual: JSON.stringify(result),
+                                        reason: 'Ace + King should be blackjack'
+                                    };
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+            // More rulesets can be added here (war, big2, etc.)
+        };
+
+        // ====================================================================
+        // UI STATE
+        // ====================================================================
+
+        let currentResults = [];
+
+        // ====================================================================
+        // UI HANDLERS
+        // ====================================================================
+
+        document.getElementById('rulesetSelect').addEventListener('change', (e) => {
+            const rulesetId = e.target.value;
+            const testSetSelect = document.getElementById('testSetSelect');
+            const runBtn = document.getElementById('runBtn');
+
+            testSetSelect.innerHTML = '<option value="">Select Test Set...</option>';
+
+            if (rulesetId && TEST_SUITES[rulesetId]) {
+                const suite = TEST_SUITES[rulesetId];
+                Object.keys(suite.testSets).forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = suite.testSets[key].name;
+                    testSetSelect.appendChild(option);
+                });
+                testSetSelect.disabled = false;
+            } else {
+                testSetSelect.disabled = true;
+                runBtn.disabled = true;
+            }
+        });
+
+        document.getElementById('testSetSelect').addEventListener('change', (e) => {
+            const runBtn = document.getElementById('runBtn');
+            runBtn.disabled = !e.target.value;
+        });
+
+        // ====================================================================
+        // TEST EXECUTION
+        // ====================================================================
+
+        function runTests() {
+            const rulesetId = document.getElementById('rulesetSelect').value;
+            const testSetId = document.getElementById('testSetSelect').value;
+
+            if (!rulesetId || !testSetId) return;
+
+            const suite = TEST_SUITES[rulesetId];
+            const testSet = suite.testSets[testSetId];
+
+            currentResults = [];
+
+            testSet.tests.forEach(test => {
+                const result = executeTest(suite.ruleset, test);
+                currentResults.push(result);
+            });
+
+            displayResults(suite.name, testSet.name, testSet.description);
+        }
+
+        function runAllTests() {
+            currentResults = [];
+
+            Object.keys(TEST_SUITES).forEach(rulesetId => {
+                const suite = TEST_SUITES[rulesetId];
+                Object.keys(suite.testSets).forEach(testSetId => {
+                    const testSet = suite.testSets[testSetId];
+                    testSet.tests.forEach(test => {
+                        const result = executeTest(suite.ruleset, test);
+                        result.suiteName = suite.name;
+                        result.setName = testSet.name;
+                        currentResults.push(result);
+                    });
+                });
+            });
+
+            displayResults('All Rulesets', 'Complete Test Suite', 'Running all available tests');
+        }
+
+        function executeTest(ruleset, test) {
+            const startTime = performance.now();
+
+            try {
+                // Create engine with test ruleset
+                const engine = new GameEngine(ruleset, { debug: false });
+
+                // Initialize with single player
+                engine.init([
+                    { id: 'player1', name: 'Test Player', type: 'human', balance: 1000 }
+                ]);
+
+                // Run setup
+                test.setup(engine);
+
+                // Execute action
+                const actionResult = test.action(engine);
+
+                // Check expectations
+                const expectation = test.expect(engine);
+
+                const endTime = performance.now();
+
+                return {
+                    name: test.name,
+                    pass: expectation.pass,
+                    expected: expectation.expected,
+                    actual: expectation.actual,
+                    reason: expectation.reason,
+                    duration: (endTime - startTime).toFixed(2)
+                };
+
+            } catch (error) {
+                const endTime = performance.now();
+                return {
+                    name: test.name,
+                    pass: false,
+                    expected: 'No error',
+                    actual: `ERROR: ${error.message}`,
+                    reason: error.stack,
+                    duration: (endTime - startTime).toFixed(2)
+                };
+            }
+        }
+
+        function clearResults() {
+            currentResults = [];
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        // ====================================================================
+        // DISPLAY
+        // ====================================================================
+
+        function displayResults(suiteName, setName, description) {
+            const container = document.getElementById('resultsContainer');
+            const title = document.getElementById('resultsTitle');
+            const summary = document.getElementById('summary');
+            const results = document.getElementById('testResults');
+
+            container.style.display = 'block';
+            title.textContent = `${suiteName} → ${setName}`;
+
+            // Calculate summary
+            const total = currentResults.length;
+            const passed = currentResults.filter(r => r.pass).length;
+            const failed = total - passed;
+
+            summary.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-value total">${total}</div>
+                    <div class="summary-label">Total Tests</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value pass">${passed}</div>
+                    <div class="summary-label">Passed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value fail">${failed}</div>
+                    <div class="summary-label">Failed</div>
+                </div>
+            `;
+
+            // Display test results
+            results.innerHTML = '';
+
+            currentResults.forEach(result => {
+                const testCase = document.createElement('div');
+                testCase.className = `test-case ${result.pass ? 'pass' : 'fail'}`;
+
+                testCase.innerHTML = `
+                    <div class="test-header">
+                        <span class="test-status ${result.pass ? 'pass' : 'fail'}">
+                            ${result.pass ? '✓ PASS' : '✗ FAIL'}
+                        </span>
+                        <span class="test-name">${result.name}</span>
+                        ${result.suiteName ? `<span style="color: #666;">• ${result.suiteName}</span>` : ''}
+                    </div>
+                    <div class="test-desc">${result.reason}</div>
+                    <div class="test-details">
+                        <div class="test-detail-row">
+                            <span class="test-detail-label">Expected:</span>
+                            <span class="test-detail-value">${result.expected}</span>
+                        </div>
+                        <div class="test-detail-row">
+                            <span class="test-detail-label">Actual:</span>
+                            <span class="test-detail-value ${result.pass ? '' : 'fail'}">${result.actual}</span>
+                        </div>
+                        <div class="test-detail-row">
+                            <span class="test-detail-label">Duration:</span>
+                            <span class="test-detail-value">${result.duration}ms</span>
+                        </div>
+                    </div>
+                `;
+
+                results.appendChild(testCase);
+            });
+
+            // Scroll to results
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

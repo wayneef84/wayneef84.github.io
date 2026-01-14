@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>War - Fong Family Arcade</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            height: 100dvh;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.4);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .header h1 { margin: 0; font-size: 1.3em; }
+        
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            gap: 8px;
+            overflow: hidden;
+        }
+        
+        .player-zone {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-zone.opponent {
+            background: rgba(239,68,68,0.1);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .player-name { font-weight: 600; }
+        
+        .card-count {
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+        
+        .card-count span { color: #fbbf24; font-weight: bold; }
+        
+        .deck-preview canvas {
+            width: 50px;
+            height: 70px;
+            border-radius: 4px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .battle-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .battle-cards {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .battle-card {
+            text-align: center;
+        }
+        
+        .battle-card canvas {
+            width: 90px;
+            height: 126px;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+        
+        .battle-card .label {
+            font-size: 0.8em;
+            color: rgba(255,255,255,0.6);
+            margin-top: 6px;
+        }
+        
+        .vs-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ef4444;
+        }
+        
+        .message {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            min-height: 40px;
+        }
+        
+        .message.war {
+            color: #ef4444;
+            text-transform: uppercase;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+        
+        .message.win { color: #4ade80; }
+        .message.lose { color: #f87171; }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .war-pot {
+            background: rgba(239,68,68,0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            background: rgba(0,0,0,0.4);
+            padding: 16px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            flex-shrink: 0;
+        }
+        
+        .control-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 16px 48px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.15s ease;
+        }
+        
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn:not(:disabled):active { transform: scale(0.95); }
+        
+        .btn-flip {
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-new {
+            background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚔️ War</h1>
+    </div>
+    
+    <div class="game-area">
+        <div class="player-zone opponent">
+            <div class="player-info">
+                <span class="player-name">Opponent</span>
+                <span class="card-count"><span id="oppCount">26</span> cards</span>
+            </div>
+            <div class="deck-preview" id="oppDeck"></div>
+        </div>
+        
+        <div class="battle-zone">
+            <div class="battle-cards" id="battleArea">
+                <div class="battle-card">
+                    <div id="oppCard"></div>
+                    <div class="label">Opponent</div>
+                </div>
+                <div class="vs-text">VS</div>
+                <div class="battle-card">
+                    <div id="yourCard"></div>
+                    <div class="label">You</div>
+                </div>
+            </div>
+            <div class="message" id="message">Flip a card!</div>
+            <div class="war-pot hidden" id="warPot">War pot: <span>0</span> cards</div>
+        </div>
+        
+        <div class="player-zone">
+            <div class="player-info">
+                <span class="player-name">You</span>
+                <span class="card-count"><span id="yourCount">26</span> cards</span>
+            </div>
+            <div class="deck-preview" id="yourDeck"></div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="control-row" id="playRow">
+            <button class="btn btn-flip" id="btnFlip">Flip!</button>
+        </div>
+        <div class="control-row hidden" id="gameOverRow">
+            <button class="btn btn-new" id="btnNew">Play Again</button>
+        </div>
+    </div>
+
+    <script src="../shared/enums.js"></script>
+    <script src="../shared/card.js"></script>
+    <script src="../shared/deck.js"></script>
+    <script src="../shared/pile.js"></script>
+    <script src="../shared/player.js"></script>
+    <script src="../shared/card-assets.js"></script>
+    <script src="ruleset.js"></script>
+    
+    <script>
+        (function() {
+            'use strict';
+            
+            CardAssets.init();
+            
+            var els = {
+                oppCount: document.getElementById('oppCount'),
+                yourCount: document.getElementById('yourCount'),
+                oppDeck: document.getElementById('oppDeck'),
+                yourDeck: document.getElementById('yourDeck'),
+                oppCard: document.getElementById('oppCard'),
+                yourCard: document.getElementById('yourCard'),
+                message: document.getElementById('message'),
+                warPot: document.getElementById('warPot'),
+                playRow: document.getElementById('playRow'),
+                gameOverRow: document.getElementById('gameOverRow'),
+                btnFlip: document.getElementById('btnFlip'),
+                btnNew: document.getElementById('btnNew')
+            };
+            
+            var player1, player2, warPot, gameOver;
+            
+            function initGame() {
+                var deck = Pile.createFrom(StandardDeck, 1);
+                deck.shuffle();
+                
+                player1 = { name: 'You', hand: new Pile() };
+                player2 = { name: 'Opponent', hand: new Pile() };
+                warPot = new Pile();
+                gameOver = false;
+                
+                for (var i = 0; i < 52; i++) {
+                    var card = deck.give(0);
+                    if (i % 2 === 0) {
+                        player1.hand.receive(card, -1);
+                    } else {
+                        player2.hand.receive(card, -1);
+                    }
+                }
+                
+                updateCounts();
+                renderDecks();
+                clearBattle();
+                showMessage('Flip a card!', '');
+                els.playRow.classList.remove('hidden');
+                els.gameOverRow.classList.add('hidden');
+                els.warPot.classList.add('hidden');
+            }
+            
+            function getCardValue(card) {
+                var values = {
+                    'TWO': 2, 'THREE': 3, 'FOUR': 4, 'FIVE': 5, 'SIX': 6,
+                    'SEVEN': 7, 'EIGHT': 8, 'NINE': 9, 'TEN': 10,
+                    'JACK': 11, 'QUEEN': 12, 'KING': 13, 'ACE': 14
+                };
+                return values[card.rank] || 0;
+            }
+            
+            function flip() {
+                if (gameOver) return;
+                if (player1.hand.count === 0 || player2.hand.count === 0) {
+                    endGame();
+                    return;
+                }
+                
+                var card1 = player1.hand.give(0);
+                var card2 = player2.hand.give(0);
+                
+                warPot.receive(card1, -1);
+                warPot.receive(card2, -1);
+                
+                renderBattleCard(card1, els.yourCard);
+                renderBattleCard(card2, els.oppCard);
+                
+                var v1 = getCardValue(card1);
+                var v2 = getCardValue(card2);
+                
+                updateCounts();
+                updateWarPot();
+                
+                setTimeout(function() {
+                    if (v1 > v2) {
+                        showMessage('You win this round!', 'win');
+                        giveCardsTo(player1);
+                    } else if (v2 > v1) {
+                        showMessage('Opponent wins!', 'lose');
+                        giveCardsTo(player2);
+                    } else {
+                        showMessage('WAR!', 'war');
+                        doWar();
+                        return;
+                    }
+                    
+                    setTimeout(function() {
+                        updateCounts();
+                        els.warPot.classList.add('hidden');
+                        checkGameEnd();
+                    }, 800);
+                }, 600);
+            }
+            
+            function doWar() {
+                els.warPot.classList.remove('hidden');
+                
+                var cardsToAdd1 = Math.min(3, player1.hand.count);
+                var cardsToAdd2 = Math.min(3, player2.hand.count);
+                
+                for (var i = 0; i < cardsToAdd1; i++) {
+                    var c = player1.hand.give(0);
+                    if (c) warPot.receive(c, -1);
+                }
+                for (var j = 0; j < cardsToAdd2; j++) {
+                    var c2 = player2.hand.give(0);
+                    if (c2) warPot.receive(c2, -1);
+                }
+                
+                updateCounts();
+                updateWarPot();
+                
+                if (player1.hand.count === 0 || player2.hand.count === 0) {
+                    if (player1.hand.count > 0) {
+                        giveCardsTo(player1);
+                    } else {
+                        giveCardsTo(player2);
+                    }
+                    setTimeout(endGame, 500);
+                }
+            }
+            
+            function giveCardsTo(player) {
+                warPot.shuffle();
+                while (warPot.count > 0) {
+                    var c = warPot.give(0);
+                    player.hand.receive(c, -1);
+                }
+            }
+            
+            function checkGameEnd() {
+                if (player1.hand.count === 0 || player2.hand.count === 0) {
+                    endGame();
+                }
+            }
+            
+            function endGame() {
+                gameOver = true;
+                if (player1.hand.count > player2.hand.count) {
+                    showMessage('🎉 You Win the War!', 'win');
+                } else {
+                    showMessage('Opponent Wins', 'lose');
+                }
+                els.playRow.classList.add('hidden');
+                els.gameOverRow.classList.remove('hidden');
+            }
+            
+            function renderCard(card, container) {
+                var rankKey = RankToAsset[card.rank];
+                var suitKey = SuitToAsset[card.suit];
+                var canvas = CardAssets.getAsset(rankKey, suitKey);
+                
+                var clone = document.createElement('canvas');
+                clone.width = canvas.width;
+                clone.height = canvas.height;
+                clone.getContext('2d').drawImage(canvas, 0, 0);
+                
+                container.innerHTML = '';
+                container.appendChild(clone);
+            }
+            
+            function renderCardBack(container) {
+                var canvas = CardAssets.getAsset();
+                var clone = document.createElement('canvas');
+                clone.width = canvas.width;
+                clone.height = canvas.height;
+                clone.getContext('2d').drawImage(canvas, 0, 0);
+                container.innerHTML = '';
+                container.appendChild(clone);
+            }
+            
+            function renderBattleCard(card, container) {
+                renderCard(card, container);
+            }
+            
+            function renderDecks() {
+                if (player1.hand.count > 0) {
+                    renderCardBack(els.yourDeck);
+                } else {
+                    els.yourDeck.innerHTML = '';
+                }
+                if (player2.hand.count > 0) {
+                    renderCardBack(els.oppDeck);
+                } else {
+                    els.oppDeck.innerHTML = '';
+                }
+            }
+            
+            function clearBattle() {
+                els.yourCard.innerHTML = '';
+                els.oppCard.innerHTML = '';
+            }
+            
+            function updateCounts() {
+                els.yourCount.textContent = player1.hand.count;
+                els.oppCount.textContent = player2.hand.count;
+                renderDecks();
+            }
+            
+            function updateWarPot() {
+                els.warPot.querySelector('span').textContent = warPot.count;
+                if (warPot.count > 0) {
+                    els.warPot.classList.remove('hidden');
+                }
+            }
+            
+            function showMessage(text, cls) {
+                els.message.textContent = text;
+                els.message.className = 'message ' + (cls || '');
+            }
+            
+            els.btnFlip.addEventListener('click', flip);
+            els.btnNew.addEventListener('click', initGame);
+            
+            initGame();
+        })();
+    </script>
+</body>
+</html>

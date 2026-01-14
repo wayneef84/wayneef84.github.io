@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Card Table - Fong Family Arcade</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            margin: 0; padding: 0;
+            background: #0f172a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            height: 100dvh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- DESKTOP SIDEBAR (Visible on Large Screens) --- */
+        .sidebar {
+            width: 260px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: none; /* Hidden on mobile */
+            flex-direction: column;
+            padding: 20px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- MOBILE HEADER (Visible on Small Screens) --- */
+        .mobile-header {
+            display: flex;
+            height: 60px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            width: 100%;
+            position: fixed;
+            top: 0; left: 0; z-index: 10;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+
+        /* --- MENU MODULE (Mobile Overlay) --- */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-content {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* --- SHARED BUTTON STYLES --- */
+        .game-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.1s, background 0.2s;
+            width: 100%;
+        }
+
+        .game-btn:active { transform: scale(0.98); }
+        .game-btn:hover { background: #475569; }
+
+        .game-btn.active {
+            background: #ffd700;
+            color: #000;
+            border-color: #ffd700;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .game-btn.disabled {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .game-icon { font-size: 1.5rem; }
+
+        /* --- VIEWPORT --- */
+        .viewport {
+            flex: 1;
+            background: #000;
+            position: relative;
+            margin-top: 60px; /* Mobile header height */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* --- RESPONSIVE LOGIC --- */
+        @media (min-width: 768px) {
+            .sidebar { display: flex; }
+            .mobile-header { display: none; }
+            .viewport { margin-top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">Card Games</div>
+        <a href="../../index.html" class="game-btn" style="margin-bottom: 20px; background: rgba(255,255,255,0.05);">
+            <span class="game-icon">⬅</span> Back to Arcade
+        </a>
+        <div id="desktop-list" style="display: flex; flex-direction: column; gap: 10px;">
+            </div>
+    </nav>
+
+    <header class="mobile-header">
+        <a href="../../index.html" class="back-btn">Exit</a>
+        <span class="mobile-title" id="mobile-title">Card Games</span>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <div class="menu-overlay" id="mobile-menu">
+        <button class="menu-close" onclick="toggleMenu()">×</button>
+        <div class="menu-content">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #94a3b8;">Select Game</h2>
+            <div id="mobile-list" style="display: flex; flex-direction: column; gap: 10px;">
+                </div>
+        </div>
+    </div>
+
+    <main class="viewport">
+        <iframe id="gameFrame" src=""></iframe>
+    </main>
+
+    <script>
+        // --- CONFIGURATION ---
+        const GAMES = [
+            { id: 'blackjack', name: 'Blackjack', icon: '🃏', path: 'blackjack/index.html' },
+            { id: 'war', name: 'War', icon: '⚔️', path: 'war/index.html' },
+            { id: 'euchre', name: 'Euchre', icon: '🃏', path: '', disabled: true },
+            { id: 'poker', name: 'Poker', icon: '♣️', path: '', disabled: true }
+        ];
+
+        let currentGameId = '';
+
+        function init() {
+            // Render Lists (Desktop & Mobile)
+            const desktopList = document.getElementById('desktop-list');
+            const mobileList = document.getElementById('mobile-list');
+
+            GAMES.forEach(game => {
+                const btn = createGameButton(game);
+                desktopList.appendChild(btn.cloneNode(true)); // Clone for sidebar
+                mobileList.appendChild(btn); // Original for mobile menu
+            });
+
+            // Load Game State
+            const urlParams = new URLSearchParams(window.location.search);
+            let gameId = urlParams.get('game') || localStorage.getItem('last_card_game') || 'blackjack';
+            
+            // Handle integer input legacy
+            if (gameId === '1') gameId = 'blackjack';
+            if (gameId === '2') gameId = 'war';
+
+            switchGame(gameId);
+        }
+
+        function createGameButton(game) {
+            const btn = document.createElement('button');
+            btn.className = `game-btn ${game.disabled ? 'disabled' : ''}`;
+            btn.innerHTML = `<span class="game-icon">${game.icon}</span> ${game.name}`;
+            btn.id = `btn-${game.id}`;
+            
+            if (!game.disabled) {
+                btn.onclick = () => {
+                    switchGame(game.id);
+                    toggleMenu(false); // Close mobile menu if open
+                };
+            }
+            return btn;
+        }
+
+        function switchGame(gameId) {
+            const game = GAMES.find(g => g.id === gameId);
+            if (!game || game.disabled) return;
+
+            currentGameId = gameId;
+
+            // Update Iframe
+            const iframe = document.getElementById('gameFrame');
+            if (!iframe.src.endsWith(game.path)) {
+                iframe.src = game.path;
+            }
+
+            // Update UI (Both lists)
+            document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+            
+            // Highlight active in both lists (using attribute selector to catch clones)
+            // Note: Cloned buttons don't share IDs efficiently, so we re-query logic
+            // Simple approach: re-render or just look for text match?
+            // Better: Add IDs to clones with suffix?
+            // Simplest: Just use the querySelectorAll we did above, but we need to target specific ones.
+            // Let's iterate:
+            const allButtons = document.querySelectorAll('button');
+            allButtons.forEach(btn => {
+                if (btn.innerText.includes(game.name)) btn.classList.add('active');
+            });
+
+            // Update Title
+            document.getElementById('mobile-title').textContent = game.name;
+
+            // Persist
+            localStorage.setItem('last_card_game', gameId);
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('game', gameId);
+            window.history.replaceState({}, '', newUrl);
+        }
+
+        function toggleMenu(forceState) {
+            const menu = document.getElementById('mobile-menu');
+            const isActive = menu.classList.contains('active');
+            const newState = forceState !== undefined ? forceState : !isActive;
+            
+            if (newState) {
+                menu.classList.add('active');
+            } else {
+                menu.classList.remove('active');
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
