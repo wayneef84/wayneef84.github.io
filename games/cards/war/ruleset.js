@@ -86,12 +86,12 @@ var WarRuleset = {
     // ========================================================================
     
     getNextActor: function(gameState) {
-        // Both players act simultaneously
-        return { 
-            actorId: 'simultaneous', 
-            type: 'simultaneous',
-            actors: [gameState.players[0].id, gameState.players[1].id]
-        };
+        // In War, player1 triggers the action for both players
+        // Check if game is over
+        if (gameState.players[0].hand.count === 0 || gameState.players[1].hand.count === 0) {
+            return null;
+        }
+        return 'player1';
     },
     
     getAvailableActions: function(gameState, actorId) {
