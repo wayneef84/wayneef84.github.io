@@ -252,6 +252,9 @@ var BlackjackRuleset = {
      * Helper: Can the dealer still act?
      */
     _canDealerAct: function(dealer) {
+        // Dealer MUST stop if already stood
+        if (dealer._hasStood) return false;
+
         var val = this.evaluateHand(dealer.hand.contents);
 
         // Dealer MUST stop if busted

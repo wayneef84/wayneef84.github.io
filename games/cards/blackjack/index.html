@@ -777,6 +777,9 @@
 
             newHand() {
                 this.engine.players[0]._hasStood = false;
+                if (this.engine.dealer) {
+                    this.engine.dealer._hasStood = false;
+                }
                 this._showControls('betting');
                 this._showMessage('Place your bet!');
             }
