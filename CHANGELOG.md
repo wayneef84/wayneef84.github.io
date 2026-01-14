@@ -6,6 +6,47 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Blackjack v1.3.0] - 2026-01-14
+### Added
+- **Card Probabilities:** Card count display now shows percentage chance of drawing each rank based on remaining cards
+  - Formula: (cards left in shoe / total remaining) × 100
+  - Updates dynamically as cards are dealt
+  - Percentage display with 3 decimal precision (no leading zeros)
+  - "Ace" label shortened to "A", "10-val" changed to "Σ10" (sigma symbol for sum)
+  - **3-column layout:** Card label (bold) | Count (centered) | Probability (centered)
+  - Added Σ10 row showing combined probability of drawing any 10-value card (10, J, Q, K)
+- **Automatic Reshuffle System:** Configurable threshold triggers shoe rebuild when cards run low
+  - Default threshold: 20% of cards remaining
+  - Adjustable in Settings (5-50% in 5% increments)
+  - Toast message "🔄 Shuffling shoe..." when triggered
+  - Resets all card counts and total dealt cards
+  - Setting persisted to localStorage
+- **Manual Reshuffle:** Added "🔄 Force Reshuffle Shoe" button to Settings menu
+  - Resets shoe and card count history
+  - Preserves hand history
+  - Useful for testing with fractional decks (e.g., 6.5 decks)
+  - Also available in debug menu (triple-tap header)
+- **Modal Improvements:** Enhanced UX for Settings and History modals
+  - Click outside modal to close (cancels changes for Settings)
+  - Added Cancel button to Settings modal
+  - Cancel button restores original values without saving
+- **Shoe-Style Dealing:** Authentic casino shoe dealing mechanics
+  - Dealer receives FIRST card face-down (hole card), SECOND card face-up
+  - Face-up (revealed) cards positioned 1/8 card closer to player (15px downward)
+  - Single-deck mode: If 1 deck or fewer, dealer's first card is dealt face-up (hand-dealt style)
+  - Updated insurance logic to check second card (up card) instead of first
+- **Fractional Deck Support:** Deck count now accepts decimal values (e.g., 6.5, 4.25)
+  - Input validation: Invalid values default to 1 deck
+  - Rounded to nearest 0.5 for clean internal values
+  - Step="any" to allow any decimal input
+  - Min 0.5, max 8 decks
+
+### Fixed
+- **Dealer Hole Card Tracking Bug:** Hole card now properly tracked in card count when revealed
+  - Fixed race condition in `_handleTurnStart()` where flag was set before tracking
+  - Applied same fix pattern to `_handleReveal()` for consistency
+  - Hole card now correctly appears in card count history at end of game
+
 ## [Blackjack v1.2.2] - 2026-01-14
 ### Added
 - **Hand History Payout:** Shows net gain/loss for each hand (+$X / -$X) with color coding
