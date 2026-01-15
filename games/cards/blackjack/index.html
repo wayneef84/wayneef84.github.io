@@ -365,6 +365,9 @@
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; border-bottom: 1px solid #334155; padding-bottom: 15px; }
         .setting-row label { color: #e2e8f0; }
         .setting-row input { background: #0f172a; color: white; border: 1px solid #475569; padding: 8px; border-radius: 6px; width: 80px; text-align: center; }
+        .button-row { display: flex; gap: 10px; margin-top: 10px; }
+        .half-btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: #3b82f6; color: white; }
+        .half-btn:active { transform: scale(0.98); }
         .full-btn { width: 100%; margin-top: 10px; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .reset-funds { background: #ef4444; color: white; }
         .close-btn { background: #ffd700; color: black; }
@@ -746,7 +749,10 @@
             <div class="setting-row"><label>Target Score</label><input type="number" id="cfgTarget" value="21" min="10" max="50"></div>
             <div class="setting-row"><label>Dealer Stands</label><input type="number" id="cfgDealerStand" value="17" min="10" max="25"></div>
             <div class="setting-row"><label>Reshuffle at % Left</label><input type="number" id="cfgReshuffle" value="20" min="5" max="50" step="5"></div>
-            <button id="btnForceReshuffle" class="full-btn">🔄 Force Reshuffle Shoe</button>
+            <div class="button-row">
+                <button id="btnResetDeck" class="half-btn">🔄 Reset Deck</button>
+                <button id="btnReshuffle" class="half-btn">🔀 Re-shuffle</button>
+            </div>
             <button id="btnResetFunds" class="full-btn reset-funds">Reset Funds ($1000)</button>
             <button id="btnResetRules" class="full-btn reset-rules">Restore Default Rules</button>
             <button id="btnCloseSettings" class="full-btn close-btn">Save & Close</button>
@@ -831,7 +837,8 @@
                     btnSettings: document.getElementById('btnSettings'),
                     btnCloseSettings: document.getElementById('btnCloseSettings'),
                     btnCancelSettings: document.getElementById('btnCancelSettings'),
-                    btnForceReshuffle: document.getElementById('btnForceReshuffle'),
+                    btnResetDeck: document.getElementById('btnResetDeck'),
+                    btnReshuffle: document.getElementById('btnReshuffle'),
                     btnResetFunds: document.getElementById('btnResetFunds'),
                     btnResetRules: document.getElementById('btnResetRules'),
                     cfgDecks: document.getElementById('cfgDecks'),
@@ -904,7 +911,8 @@
                     this._loadSettings(); // Restore original values
                     this.el.settingsModal.classList.add('hidden');
                 };
-                this.el.btnForceReshuffle.onclick = () => this._forceReshuffleFromSettings();
+                this.el.btnResetDeck.onclick = () => this._resetDeck();
+                this.el.btnReshuffle.onclick = () => this._reshuffle();
                 this.el.btnResetFunds.onclick = () => this._resetFunds();
                 this.el.btnResetRules.onclick = () => this._resetRules();
 
@@ -952,7 +960,7 @@
                 this.el.debugPlayerBust.onclick = () => this._debugForcePlayerBust();
                 this.el.debugDealerBust.onclick = () => this._debugForceDealerBust();
                 this.el.debugTie.onclick = () => this._debugForceTie();
-                this.el.debugReshuffle.onclick = () => this._debugForceReshuffle();
+                this.el.debugReshuffle.onclick = () => this._resetDeck();
                 this.el.debugResetBank.onclick = () => this._debugResetBank();
 
                 // Insurance Handlers
@@ -1646,9 +1654,9 @@
                 console.log(`[DEBUG] Forced tie at ${playerValue}`);
             }
 
-            _forceReshuffleFromSettings() {
-                if (confirm('Force reshuffle? This will reset the shoe and card count history.')) {
-                    // Reset the shoe
+            _resetDeck() {
+                if (confirm('Reset Deck? This will create a new deck and reset card count history.')) {
+                    // Reset the shoe (creates new deck from template)
                     this.engine.shoe.reset();
                     this.engine.shoe.shuffle();
 
@@ -1661,30 +1669,20 @@
 
                     // Update the display
                     this._updateCardCountDisplay();
-                    this._showMessage('🔄 Shoe reshuffled!', 'push');
-                    console.log('[SETTINGS] Forced reshuffle - shoe reset and card count cleared');
+                    this._showMessage('🔄 Deck reset!', 'push');
+                    console.log('[SETTINGS] Deck reset - new deck created and card count cleared');
                 }
             }
 
-            _debugForceReshuffle() {
-                if (confirm('Force reshuffle? This will reset the shoe and card count history.')) {
-                    // Reset the shoe
-                    this.engine.shoe.reset();
+            _reshuffle() {
+                if (confirm('Re-shuffle current cards? This will shuffle the remaining cards in the shoe without resetting card counts.')) {
+                    // Shuffle current cards without resetting
                     this.engine.shoe.shuffle();
-
-                    // Reset card count history only (not hand history)
-                    this.cardCounts = {
-                        [Rank.ACE]: 0, [Rank.TWO]: 0, [Rank.THREE]: 0, [Rank.FOUR]: 0,
-                        [Rank.FIVE]: 0, [Rank.SIX]: 0, [Rank.SEVEN]: 0, [Rank.EIGHT]: 0,
-                        [Rank.NINE]: 0, [Rank.TEN]: 0, [Rank.JACK]: 0, [Rank.QUEEN]: 0, [Rank.KING]: 0
-                    };
-
-                    // Update the display
-                    this._updateCardCountDisplay();
-                    this.el.debugOverlay.classList.add('hidden');
-                    console.log('[DEBUG] Forced reshuffle - shoe reset and card count cleared');
+                    this._showMessage('🔀 Shoe re-shuffled!', 'push');
+                    console.log('[SETTINGS] Re-shuffle - current shoe shuffled without reset');
                 }
             }
+
 
             _debugResetBank() {
                 if (confirm('Reset bank to $1000?')) {
