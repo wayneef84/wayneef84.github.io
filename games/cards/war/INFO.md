@@ -13,7 +13,7 @@
 
 | Library | Version | Status | Notes |
 |---------|---------|--------|-------|
-| `games/cards/shared` | **v1.0.0** | ✅ Up-to-date | Card engine (stable) |
+| `games/cards/shared` | **v1.0.1** | ✅ Up-to-date | Card engine (stable) |
 
 ---
 
@@ -21,11 +21,11 @@
 
 **Last Checked:** 2026-01-17
 **Available Upgrades:** None
-**Current Version Rationale:** Shared v1.0.0 is stable and meets all current needs.
+**Current Version Rationale:** Upgraded to v1.0.1 for documentation improvements.
 
 ### Upgrade History
+- **2026-01-17:** Upgraded Shared v1.0.0 → v1.0.1 (patch - documentation update)
 - **2026-01-17:** Initial registration - War on Shared v1.0.0
-- (No upgrades yet)
 
 ---
 
