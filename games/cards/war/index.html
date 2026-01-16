@@ -1554,6 +1554,14 @@
 
             WarUI.prototype._renderCurrentMatchTab = function() {
                 var currentMatch = this._getCurrentMatch();
+
+                // If no current match exists, try to start one
+                if (!currentMatch) {
+                    console.log('[BATTLE HISTORY] No current match found, starting new one');
+                    this._startNewMatch();
+                    currentMatch = this._getCurrentMatch();
+                }
+
                 if (!currentMatch || !currentMatch.rounds || currentMatch.rounds.length === 0) {
                     this.el.currentMatchRoundsList.innerHTML = '<p class="no-history">No rounds played yet.</p>';
                     this.el.currentMatchRoundsCount.textContent = '0';
@@ -1831,6 +1839,7 @@
                 var currentMatch = this._getCurrentMatch();
                 if (!currentMatch) {
                     // No current match - start one
+                    console.log('[BATTLE HISTORY] No current match in _addRoundEntry, starting new one');
                     this._startNewMatch();
                     currentMatch = this._getCurrentMatch();
                 }
@@ -1840,6 +1849,8 @@
                 roundData.timestamp = Date.now();
                 currentMatch.rounds.push(roundData);
                 currentMatch.totalRounds++;
+
+                console.log('[BATTLE HISTORY] Round #' + roundData.roundId + ' added. Total rounds:', currentMatch.totalRounds);
 
                 // Check if we need to prune old match histories
                 this._pruneRoundHistoryIfNeeded();
