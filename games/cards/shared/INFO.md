@@ -19,16 +19,27 @@ This library follows [Semantic Versioning](https://semver.org/):
 
 ---
 
-## Current Version: v1.0.0
+## Current Version: v1.0.1
 
-**Released:** 2026-01-15
+**Released:** 2026-01-17
 **Status:** ✅ Stable
 
-This is the initial stable release of the Shared Card Engine.
+Minor documentation update.
 
 ---
 
 ## Changelog
+
+### v1.0.1 (2026-01-17)
+**Type:** Patch - Documentation Update
+
+**Fixed:**
+- Added version annotation to pile.js header comment
+- Minor whitespace normalization in documentation
+
+**Breaking Changes:** None
+
+---
 
 ### v1.0.0 (2026-01-15)
 **Type:** Major - Initial Release
@@ -254,4 +265,4 @@ GameState = { IDLE, BETTING, DEALING, PLAYER_TURN, ... }
 
 **INFO Version:** v1.0
 **Last Updated By:** Claude Sonnet 4.5
-**Last Updated:** 2026-01-17
+**Last Updated:** 2026-01-17 (v1.0.1 release)

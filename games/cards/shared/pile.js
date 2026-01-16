@@ -1,16 +1,18 @@
 /**
  * pile.js
  * Universal card container for the Card Engine.
- * 
+ *
  * Everything that holds cards is a Pile:
  * - Draw pile, discard pile, player hands, community cards, etc.
- * 
+ *
  * Position logic uses Python-style indexing:
  * - 0 = top (first element)
  * - 1 = second from top
  * - -1 = bottom (last element)
  * - -2 = second from bottom
  * - Wraps around for out-of-bounds indices
+ *
+ * @version 1.0.1
  */
 
 class Pile {
