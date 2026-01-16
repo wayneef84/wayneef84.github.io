@@ -786,6 +786,7 @@
                 this._updateWins();
                 this._showMessage(message, winner === 'player1' ? 'win' : (winner === 'player2' ? 'lose' : ''));
 
+                // Add history entry BEFORE resetting points
                 if (winner) {
                     this._addHistoryEntry(winner === 'player1' ? 'win' : 'lose');
                 }
@@ -833,6 +834,8 @@
                 }
 
                 this._updateWins();
+
+                // Add history entry BEFORE resetting points
                 this._addHistoryEntry(winner === 'player1' ? 'win' : 'lose');
 
                 // Reset points for new game
@@ -1066,11 +1069,13 @@
                     player2Points: this.player2Points,
                     endReason: 'deck_depletion'
                 };
+                console.log('[HISTORY] Adding entry:', entry);
                 this.gameHistory.unshift(entry);
                 if (this.gameHistory.length > 50) {
                     this.gameHistory.pop();
                 }
                 this._saveHistory();
+                console.log('[HISTORY] Total matches:', this.gameHistory.length);
             };
 
             WarUI.prototype._updateHistoryDisplay = function() {
