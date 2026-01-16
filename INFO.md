@@ -21,7 +21,7 @@ What version each game/application is currently using:
 
 | Project | Type | Shared Library | Status | Last Updated | Notes |
 |---------|------|----------------|--------|--------------|-------|
-| `games/cards/war` | Game | v1.0.0 | ⚠️ v1.0.1 available | 2026-01-17 | Battle history complete |
+| `games/cards/war` | Game | v1.0.1 | ✅ Up-to-date | 2026-01-17 | Battle history complete |
 | `games/cards/blackjack` | Game | v1.0.0 | ⚠️ v1.0.1 available | 2026-01-17 | Reset deck feature |
 
 ---
@@ -154,6 +154,11 @@ games/cards/blackjack/
 ---
 
 ## Version History
+
+### 2026-01-17: War Upgraded to Shared v1.0.1
+- War upgraded to Shared v1.0.1 (tested and working)
+- Blackjack remains on v1.0.0 (upgrade available)
+- Federated architecture upgrade workflow validated
 
 ### 2026-01-17: Shared v1.0.1 Released
 - Updated Shared library to v1.0.1 (patch - documentation update)
