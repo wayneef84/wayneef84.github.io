@@ -992,8 +992,15 @@
 
                 this.currentPlayer1Card = null;
                 this.currentPlayer2Card = null;
-                this.player1Wins = 0;
-                this.player2Wins = 0;
+
+                // Only reset wins on very first initialization, not on "Play Again"
+                // Check if wins are already set (if both are 0, might be first time)
+                if (typeof this.player1Wins === 'undefined') {
+                    this.player1Wins = 0;
+                    this.player2Wins = 0;
+                }
+
+                // Always reset points for new game
                 this.player1Points = 0;
                 this.player2Points = 0;
                 this._updateWins();
@@ -1117,11 +1124,9 @@
                 this.player2Points = 0;
                 this._updatePoints();
 
-                // Auto-reset deck and continue game after short delay
-                var self = this;
-                setTimeout(function() {
-                    self._resetDeckAndContinue();
-                }, 2000);
+                // Show "Play Again" button instead of auto-restarting
+                this.el.playRow.classList.add('hidden');
+                this.el.gameOverRow.classList.remove('hidden');
             };
 
             WarUI.prototype._handleResolution = function(event) {
@@ -1142,35 +1147,43 @@
                     return;
                 }
 
-                // Non-endless mode: Award win point, reset rounds, reset deck
+                // Non-endless mode: Determine winner based on points
                 var winner;
-                if (player1.hand.count > player2.hand.count) {
-                    this._showMessage('🎉 You Win the Game! (+1 win)', 'win');
+                var message;
+
+                if (this.player1Points > this.player2Points) {
                     this.player1Wins++;
                     winner = 'player1';
-                } else {
-                    this._showMessage('Opponent Wins the Game! (+1 win)', 'lose');
+                    message = '🎉 You Win! (' + this.player1Points + ' points vs ' + this.player2Points + ')';
+                } else if (this.player2Points > this.player1Points) {
                     this.player2Wins++;
                     winner = 'player2';
+                    message = 'Opponent Wins! (' + this.player2Points + ' points vs ' + this.player1Points + ')';
+                } else {
+                    // Tie - no win awarded
+                    message = 'Tie Game! Both had ' + this.player1Points + ' points';
                 }
 
                 this._updateWins();
+                this._showMessage(message, winner === 'player1' ? 'win' : (winner === 'player2' ? 'lose' : ''));
 
                 // Add history entry BEFORE resetting points
-                this._addHistoryEntry(winner === 'player1' ? 'win' : 'lose');
-                // FIX: Update the history modal now that we added a new entry
-                this._updateHistoryDisplay();
+                if (winner) {
+                    this._addHistoryEntry(winner === 'player1' ? 'win' : 'lose');
+                    // End current match
+                    this._endCurrentMatch(winner === 'player1' ? 'you' : 'opponent');
+                    // Update the history modal now that we added a new entry
+                    this._updateHistoryDisplay();
+                }
 
                 // Reset points for new game
                 this.player1Points = 0;
                 this.player2Points = 0;
                 this._updatePoints();
 
-                // Auto-reset deck and continue game after short delay
-                var self = this;
-                setTimeout(function() {
-                    self._resetDeckAndContinue();
-                }, 2000);
+                // Show "Play Again" button instead of auto-restarting
+                this.el.playRow.classList.add('hidden');
+                this.el.gameOverRow.classList.remove('hidden');
             };
 
             WarUI.prototype._resetDeckAndContinue = function() {

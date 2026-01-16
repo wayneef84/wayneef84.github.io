@@ -232,26 +232,27 @@ var WarRuleset = {
     },
     
     _giveWarPotToPlayer: function(player, gameState) {
-        // Step 1: ALWAYS move won cards to graveyard (out of hands)
-        // This ensures the "Shared Deck" count decreases in both modes
+        var player1 = gameState.players[0];
+        var player2 = gameState.players[1];
+
+        // Step 1: Move war pot to graveyard (always happens in both modes)
         while (this._warPot.count > 0) {
             var card = this._warPot.give(0);
             this._graveyard.receive(card, -1);
         }
 
-        // Step 2: Only reshuffle if Auto-Shuffle (neverending) is ON
+        // Step 2: In endless mode, reshuffle graveyard when a player runs out
         if (this.neverending) {
-            var player1 = gameState.players[0];
-            var player2 = gameState.players[1];
-
-            // If a player is out of cards, shuffle the graveyard and fill them back up
+            // Check if either player is out of cards
             if (player1.hand.count === 0 && this._graveyard.count > 0) {
                 this._graveyard.shuffle();
                 while (this._graveyard.count > 0) {
                     var c1 = this._graveyard.give(0);
                     player1.hand.receive(c1, -1);
                 }
-            } else if (player2.hand.count === 0 && this._graveyard.count > 0) {
+            }
+
+            if (player2.hand.count === 0 && this._graveyard.count > 0) {
                 this._graveyard.shuffle();
                 while (this._graveyard.count > 0) {
                     var c2 = this._graveyard.give(0);
@@ -259,7 +260,7 @@ var WarRuleset = {
                 }
             }
         }
-        // If !neverending, we do nothing. The hands remain empty, triggering Game Over.
+        // NON-ENDLESS MODE: Cards stay in graveyard, game ends when both players are empty
     },
     
     _checkGameEnd: function(gameState) {
