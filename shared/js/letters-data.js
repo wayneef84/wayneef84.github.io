@@ -539,8 +539,82 @@ const PACK_SHAPES = {
     }
 };
 
+// --- PACK 5: WORDS ---
+const PACK_WORDS = {
+    "id": "words",
+    "name": "🔤 Words",
+
+    "audioDefaults": {
+        "A": AUDIO_LIB.PREFIXES.EXCITED,
+        "C": [] // No suffix for middle letters in word mode
+    },
+
+    "items": {
+        "Kenzie": {
+            "name": "Kenzie",
+            "letters": ["K", "e", "n", "z", "i", "e"],
+            "image": "assets/images/kenzie.jpg",
+            "audioOverride": {
+                "C": ["Go Kenzie!", "Kenzilla!", "Nuggie!", "Golden!"]
+            }
+        },
+        "Dad": {
+            "name": "Dad",
+            "letters": ["D", "a", "d"],
+            "image": "assets/images/dad.jpg",
+            "audioOverride": {
+                "C": ["Love you Dad!", "Great job!", "You did it!"]
+            }
+        },
+        "Mom": {
+            "name": "Mom",
+            "letters": ["M", "o", "m"],
+            "image": "assets/images/mom.jpg",
+            "audioOverride": {
+                "C": ["Love you Mom!", "Amazing!", "You're the best!"]
+            }
+        },
+        "Dog": {
+            "name": "Dog",
+            "letters": ["D", "o", "g"],
+            "image": "assets/images/dog.jpg"
+        },
+        "Cat": {
+            "name": "Cat",
+            "letters": ["C", "a", "t"],
+            "image": "assets/images/cat.jpg"
+        },
+        "Butterfly": {
+            "name": "Butterfly",
+            "letters": ["B", "u", "t", "t", "e", "r", "f", "l", "y"],
+            "image": "assets/images/butterfly.jpg"
+        },
+        "Giraffe": {
+            "name": "Giraffe",
+            "letters": ["G", "i", "r", "a", "f", "f", "e"],
+            "image": "assets/images/giraffe.jpg"
+        },
+        "Elephant": {
+            "name": "Elephant",
+            "letters": ["E", "l", "e", "p", "h", "a", "n", "t"],
+            "image": "assets/images/elephant.jpg"
+        },
+        "Rainbow": {
+            "name": "Rainbow",
+            "letters": ["R", "a", "i", "n", "b", "o", "w"],
+            "image": "assets/images/rainbow.jpg"
+        },
+        "Unicorn": {
+            "name": "Unicorn",
+            "letters": ["U", "n", "i", "c", "o", "r", "n"],
+            "image": "assets/images/unicorn.jpg"
+        }
+    }
+};
+
 // 3. ASSEMBLE PACKS
 window.GAME_CONTENT.packs.push(PACK_UPPERCASE);
 window.GAME_CONTENT.packs.push(PACK_LOWERCASE);
 window.GAME_CONTENT.packs.push(PACK_NUMBERS);
 window.GAME_CONTENT.packs.push(PACK_SHAPES);
+window.GAME_CONTENT.packs.push(PACK_WORDS);

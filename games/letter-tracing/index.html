@@ -11,15 +11,17 @@
     <div class="game-container">
         <div class="header">
             <a href="../../index.html" class="back-btn">🏠</a>
-            
+
             <select id="packSelect" class="pack-selector"></select>
 
             <select id="guidanceSelect" class="mode-selector" title="Game Mode">
-                <option value="ghost_plus">👻 Guide</option> 
+                <option value="ghost_plus">👻 Guide</option>
                 <option value="strict">🟢 Strict</option>
                 <option value="loose">🎨 Loose</option>
                 <option value="off">❌ Hard</option>
             </select>
+
+            <button id="wordModeBtn" class="icon-btn hidden" title="Word Mode">🔤</button>
 
             <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
 
@@ -33,9 +35,32 @@
                     <option value="1.5"></option>
                     <option value="2.0"></option>
                 </datalist>
+
+                <div class="settings-section hidden" id="wordModeSettings">
+                    <label class="section-header">WORD MODE</label>
+                    <label>Visible Letters: <span id="visibleDisplay">5</span></label>
+                    <input type="range" id="visibleSlider" min="3" max="9" step="1" value="5">
+                    <div class="preview-text">Mobile: <span id="mobilePreview">5</span> | Desktop: <span id="desktopPreview">7</span></div>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showImagesCheckbox" checked>
+                        <span>Show Images</span>
+                    </label>
+                </div>
             </div>
 
             <div id="message-area" class="message hidden">Great!</div>
+        </div>
+
+        <div id="imageArea" class="image-area hidden">
+            <div class="image-container">
+                <div class="image-fallback" id="imageFallback">🦒</div>
+                <img id="wordImage" class="word-image hidden" alt="">
+            </div>
+        </div>
+
+        <div id="wordProgressBar" class="word-progress-bar hidden">
+            <!-- Dynamically populated by JS -->
         </div>
 
         <div class="canvas-wrapper">

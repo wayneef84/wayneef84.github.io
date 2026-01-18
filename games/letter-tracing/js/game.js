@@ -6,27 +6,51 @@ class LetterGame {
         this.msgEl = document.getElementById('message-area');
         this.packSelectEl = document.getElementById('packSelect');
         this.modeSelectEl = document.getElementById('guidanceSelect');
-        
+
         // Settings UI
         this.settingsBtn = document.getElementById('settingsBtn');
         this.settingsPanel = document.getElementById('settingsPanel');
         this.speedSlider = document.getElementById('voiceSpeed');
         this.speedDisplay = document.getElementById('speedDisplay');
 
+        // Word Mode UI Elements
+        this.wordModeBtn = document.getElementById('wordModeBtn');
+        this.wordModeSettings = document.getElementById('wordModeSettings');
+        this.visibleSlider = document.getElementById('visibleSlider');
+        this.visibleDisplay = document.getElementById('visibleDisplay');
+        this.mobilePreview = document.getElementById('mobilePreview');
+        this.desktopPreview = document.getElementById('desktopPreview');
+        this.showImagesCheckbox = document.getElementById('showImagesCheckbox');
+        this.imageArea = document.getElementById('imageArea');
+        this.wordImage = document.getElementById('wordImage');
+        this.imageFallback = document.getElementById('imageFallback');
+        this.progressBar = document.getElementById('wordProgressBar');
+
         // State
         this.allPacks = [];
         this.currentPack = null;
         this.currentLetter = null;
         this.globalConfig = {}; // For global audio
-        
+
+        // Word Mode State
+        this.wordMode = false;
+        this.currentWord = null;
+        this.currentLetterIndex = 0;
+        this.wordConfig = {
+            mobile: { maxVisible: 5, centerPosition: 3 },
+            desktop: { maxVisible: 7, centerPosition: 4 },
+            breakpoint: 768,
+            showImages: true
+        };
+
         // Path Data
-        this.strokes = [];       
-        this.userStrokes = [];   
-        
+        this.strokes = [];
+        this.userStrokes = [];
+
         // Progress Tracking
-        this.strokeProgress = []; 
-        this.strokeDone = [];     
-        
+        this.strokeProgress = [];
+        this.strokeDone = [];
+
         // Game Logic
         this.isDrawing = false;
         this.lastPos = null;
@@ -61,11 +85,67 @@ class LetterGame {
             this.settingsPanel.classList.toggle('hidden');
         };
 
-        // Slider Logic
+        // Voice Speed Slider
         this.speedSlider.oninput = (e) => {
             this.voiceRate = parseFloat(e.target.value);
             this.speedDisplay.textContent = this.voiceRate + "x";
         };
+
+        // Word Mode Toggle Button
+        this.wordModeBtn.onclick = () => {
+            if (this.wordMode) {
+                this.exitWordMode();
+            } else {
+                this.enterWordMode();
+            }
+        };
+
+        // Visible Letters Slider
+        var isMobile = window.innerWidth < this.wordConfig.breakpoint;
+        this.visibleSlider.oninput = (e) => {
+            var value = parseInt(e.target.value);
+            this.visibleDisplay.textContent = value;
+
+            if (isMobile) {
+                this.wordConfig.mobile.maxVisible = value;
+                this.wordConfig.mobile.centerPosition = Math.floor(value / 2) + 1;
+                this.mobilePreview.textContent = value;
+            } else {
+                this.wordConfig.desktop.maxVisible = value;
+                this.wordConfig.desktop.centerPosition = Math.floor(value / 2) + 1;
+                this.desktopPreview.textContent = value;
+            }
+
+            if (this.wordMode && this.currentWord) {
+                this.updateProgressBar();
+            }
+        };
+
+        // Show Images Checkbox
+        this.showImagesCheckbox.onchange = (e) => {
+            this.wordConfig.showImages = e.target.checked;
+            if (this.wordMode) {
+                this.updateImageDisplay();
+            }
+        };
+
+        // Update slider on window resize
+        window.addEventListener('resize', () => {
+            var wasMobile = isMobile;
+            isMobile = window.innerWidth < this.wordConfig.breakpoint;
+            if (wasMobile !== isMobile) {
+                var config = this.getWordConfig();
+                this.visibleSlider.value = config.maxVisible;
+                this.visibleDisplay.textContent = config.maxVisible;
+                this.mobilePreview.textContent = this.wordConfig.mobile.maxVisible;
+                this.desktopPreview.textContent = this.wordConfig.desktop.maxVisible;
+            }
+        });
+    }
+
+    getWordConfig() {
+        var isMobile = window.innerWidth < this.wordConfig.breakpoint;
+        return isMobile ? this.wordConfig.mobile : this.wordConfig.desktop;
     }
 
     setupModeSelector() {
@@ -90,20 +170,61 @@ class LetterGame {
         if (index < 0 || index >= this.allPacks.length) return;
         this.currentPack = this.allPacks[index];
         this.packSelectEl.value = index;
+
+        // Check if this is a word pack
+        var isWordPack = this.isWordPack(this.currentPack);
+
+        // Show/hide word mode button
+        if (isWordPack) {
+            this.wordModeBtn.classList.remove('hidden');
+            this.wordModeSettings.classList.remove('hidden');
+        } else {
+            this.wordModeBtn.classList.add('hidden');
+            this.wordModeSettings.classList.add('hidden');
+            if (this.wordMode) {
+                this.exitWordMode();
+            }
+        }
+
         this.setupGrid();
-        
-        const firstKey = Object.keys(this.currentPack.items)[0];
-        if (firstKey) this.selectLetter(firstKey);
+
+        var firstKey = Object.keys(this.currentPack.items)[0];
+        if (firstKey) {
+            if (isWordPack && this.wordMode) {
+                this.selectWord(firstKey);
+            } else {
+                this.selectLetter(firstKey);
+            }
+        }
+    }
+
+    isWordPack(pack) {
+        if (!pack || !pack.items) return false;
+        var firstKey = Object.keys(pack.items)[0];
+        var firstItem = pack.items[firstKey];
+        return firstItem && firstItem.hasOwnProperty('letters');
     }
 
     setupGrid() {
         this.gridEl.innerHTML = '';
-        const items = this.currentPack.items;
+        var items = this.currentPack.items;
+        var isWordPack = this.isWordPack(this.currentPack);
+
         Object.keys(items).forEach(key => {
-            const btn = document.createElement('button');
+            var btn = document.createElement('button');
             btn.className = 'letter-btn';
-            btn.textContent = key;
-            btn.onclick = () => this.selectLetter(key);
+
+            if (isWordPack && this.wordMode) {
+                // Word mode: Show full word names
+                btn.classList.add('word-btn');
+                btn.textContent = key;
+                btn.onclick = () => this.selectWord(key);
+            } else {
+                // Letter mode: Show single letters
+                btn.textContent = key;
+                btn.onclick = () => this.selectLetter(key);
+            }
+
             this.gridEl.appendChild(btn);
         });
     }
@@ -135,9 +256,260 @@ class LetterGame {
     resetProgress() {
         this.strokeProgress = this.strokes.map(() => 0);
         this.strokeDone = this.strokes.map(() => false);
-        this.userStrokes = this.strokes.map(() => []); 
+        this.userStrokes = this.strokes.map(() => []);
         this.isDrawing = false;
         this.lastPos = null;
+    }
+
+    // --- WORD MODE METHODS ---
+    enterWordMode() {
+        this.wordMode = true;
+        this.wordModeBtn.style.background = '#e3f2fd';
+        this.wordModeBtn.style.borderColor = '#2196f3';
+        this.setupGrid(); // Refresh grid to show words
+
+        // If current pack is word pack, select first word
+        if (this.isWordPack(this.currentPack)) {
+            var firstKey = Object.keys(this.currentPack.items)[0];
+            this.selectWord(firstKey);
+        }
+    }
+
+    exitWordMode() {
+        this.wordMode = false;
+        this.currentWord = null;
+        this.currentLetterIndex = 0;
+        this.wordModeBtn.style.background = 'white';
+        this.wordModeBtn.style.borderColor = '#ccc';
+
+        // Hide word mode UI
+        this.imageArea.classList.add('hidden');
+        this.progressBar.classList.add('hidden');
+
+        this.setupGrid(); // Refresh grid to show letters
+
+        // Select first letter if available
+        var firstKey = Object.keys(this.currentPack.items)[0];
+        if (firstKey) this.selectLetter(firstKey);
+    }
+
+    selectWord(wordName) {
+        var wordData = this.currentPack.items[wordName];
+        if (!wordData || !wordData.letters) return;
+
+        this.currentWord = wordData;
+        this.currentLetterIndex = 0;
+
+        // Update active button
+        document.querySelectorAll('.letter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent === wordName) btn.classList.add('active');
+        });
+
+        // Show word mode UI
+        this.updateImageDisplay();
+        this.updateProgressBar();
+        this.progressBar.classList.remove('hidden');
+
+        // Load first letter
+        this.loadLetterInWord(0);
+    }
+
+    loadLetterInWord(index) {
+        if (!this.currentWord || index >= this.currentWord.letters.length) return;
+
+        this.currentLetterIndex = index;
+        var letterChar = this.currentWord.letters[index];
+
+        // Find letter definition in uppercase/lowercase packs
+        var letterPack = this.findLetterPack(letterChar);
+        if (!letterPack) {
+            console.error('Could not find letter definition for:', letterChar);
+            return;
+        }
+
+        var letterData = letterPack.items[letterChar];
+        this.currentLetter = letterChar;
+
+        // Load strokes
+        var instructionData = [];
+        if (Array.isArray(letterData)) {
+            instructionData = letterData;
+        } else if (letterData && letterData.strokes) {
+            instructionData = letterData.strokes;
+        }
+
+        this.strokes = instructionData.map(instr => this.generatePoints(instr));
+        this.resetProgress();
+        this.msgEl.classList.add('hidden');
+        this.updateProgressBar();
+        this.draw();
+    }
+
+    findLetterPack(letterChar) {
+        // Check if uppercase
+        if (letterChar === letterChar.toUpperCase() && letterChar !== letterChar.toLowerCase()) {
+            var pack = this.allPacks.find(p => p.id === 'uppercase');
+            if (pack && pack.items[letterChar]) return pack;
+        }
+        // Check if lowercase
+        if (letterChar === letterChar.toLowerCase() && letterChar !== letterChar.toUpperCase()) {
+            var pack = this.allPacks.find(p => p.id === 'lowercase');
+            if (pack && pack.items[letterChar]) return pack;
+        }
+        return null;
+    }
+
+    advanceToNextLetter() {
+        if (!this.currentWord) return;
+
+        var nextIndex = this.currentLetterIndex + 1;
+        if (nextIndex < this.currentWord.letters.length) {
+            this.loadLetterInWord(nextIndex);
+        } else {
+            // Word completed!
+            this.onWordComplete();
+        }
+    }
+
+    onWordComplete() {
+        this.msgEl.textContent = `You spelled ${this.currentWord.name}! 🎉`;
+        this.msgEl.classList.remove('hidden');
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            var utter = new SpeechSynthesisUtterance(`Amazing! You spelled ${this.currentWord.name}!`);
+            utter.pitch = 1.2;
+            utter.rate = this.voiceRate;
+            window.speechSynthesis.speak(utter);
+        }
+
+        var center = this.toPixels({x:50, y:50});
+        this.createParticles(center.x, center.y);
+
+        // Return to word grid after 2 seconds
+        setTimeout(() => {
+            this.msgEl.classList.add('hidden');
+            this.currentWord = null;
+            this.currentLetterIndex = 0;
+            this.setupGrid();
+        }, 2000);
+    }
+
+    updateImageDisplay() {
+        if (!this.currentWord || !this.wordConfig.showImages) {
+            this.imageArea.classList.add('hidden');
+            return;
+        }
+
+        var imagePath = this.currentWord.image;
+        if (!imagePath) {
+            this.imageArea.classList.add('hidden');
+            return;
+        }
+
+        this.imageArea.classList.remove('hidden');
+
+        // Try to load image
+        this.wordImage.onload = () => {
+            this.wordImage.classList.remove('hidden');
+            this.imageFallback.style.display = 'none';
+        };
+
+        this.wordImage.onerror = () => {
+            // Image failed to load - show emoji fallback
+            this.wordImage.classList.add('hidden');
+            this.imageFallback.style.display = 'block';
+            this.imageFallback.textContent = this.getEmojiForWord(this.currentWord.name);
+        };
+
+        this.wordImage.src = imagePath;
+    }
+
+    getEmojiForWord(wordName) {
+        var emojiMap = {
+            'Kenzie': '👧',
+            'Dad': '👨',
+            'Mom': '👩',
+            'Dog': '🐕',
+            'Cat': '🐱',
+            'Butterfly': '🦋',
+            'Giraffe': '🦒',
+            'Elephant': '🐘',
+            'Rainbow': '🌈',
+            'Unicorn': '🦄'
+        };
+        return emojiMap[wordName] || '✨';
+    }
+
+    updateProgressBar() {
+        if (!this.currentWord) return;
+
+        var config = this.getWordConfig();
+        var maxVisible = config.maxVisible;
+        var centerPos = config.centerPosition;
+        var letters = this.currentWord.letters;
+        var totalLetters = letters.length;
+        var currentIndex = this.currentLetterIndex;
+
+        // Calculate visible window
+        var window = this.getVisibleWindow(currentIndex, totalLetters, maxVisible, centerPos);
+
+        // Build progress bar HTML
+        this.progressBar.innerHTML = '';
+
+        for (var i = window.start; i < window.end; i++) {
+            var bubble = document.createElement('div');
+            bubble.className = 'letter-bubble';
+            bubble.textContent = letters[i];
+
+            if (i < currentIndex) {
+                bubble.classList.add('completed');
+            } else if (i === currentIndex) {
+                bubble.classList.add('active');
+            } else {
+                bubble.classList.add('pending');
+            }
+
+            this.progressBar.appendChild(bubble);
+        }
+    }
+
+    getVisibleWindow(currentIndex, totalLetters, maxVisible, centerPos) {
+        // Short words - show all
+        if (totalLetters <= maxVisible) {
+            return {
+                start: 0,
+                end: totalLetters,
+                highlightPos: currentIndex
+            };
+        }
+
+        // Beginning: Don't scroll yet
+        if (currentIndex < centerPos) {
+            return {
+                start: 0,
+                end: maxVisible,
+                highlightPos: currentIndex
+            };
+        }
+
+        // End: Lock to last N letters
+        var lettersRemaining = totalLetters - currentIndex;
+        if (lettersRemaining <= maxVisible - centerPos) {
+            return {
+                start: totalLetters - maxVisible,
+                end: totalLetters,
+                highlightPos: maxVisible - lettersRemaining
+            };
+        }
+
+        // Middle: Scroll left, keep highlight centered
+        return {
+            start: currentIndex - centerPos + 1,
+            end: currentIndex - centerPos + 1 + maxVisible,
+            highlightPos: centerPos - 1
+        };
     }
 
     // --- AUDIO RESOLUTION SYSTEM ---
@@ -166,47 +538,112 @@ class LetterGame {
 
     checkWin() {
         if (this.strokeDone.every(d => d === true)) {
-            
+
+            // WORD MODE: Different audio logic
+            if (this.wordMode && this.currentWord) {
+                var isLastLetter = (this.currentLetterIndex === this.currentWord.letters.length - 1);
+
+                if (isLastLetter) {
+                    // Last letter: Full message
+                    var aList = this.resolveAudioList('A');
+                    var partA = aList.length > 0 ? aList[Math.floor(Math.random() * aList.length)] : "";
+                    var partB = `Letter ${this.currentLetter}. That spells ${this.currentWord.name}!`;
+                    var cList = this.resolveAudioList('C');
+                    var partC = cList.length > 0 ? cList[Math.floor(Math.random() * cList.length)] : "";
+
+                    var fullText = [partA, partB, partC].filter(s => s.length > 0).join(". ");
+
+                    this.msgEl.classList.remove('hidden');
+                    this.msgEl.textContent = fullText;
+
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        var utter = new SpeechSynthesisUtterance(fullText);
+                        utter.pitch = 1.1;
+                        utter.rate = this.voiceRate;
+                        window.speechSynthesis.speak(utter);
+                    }
+
+                    var center = this.toPixels({x:50, y:50});
+                    this.createParticles(center.x, center.y);
+
+                    // Advance after short delay
+                    setTimeout(() => {
+                        this.msgEl.classList.add('hidden');
+                        this.advanceToNextLetter();
+                    }, 1500);
+                } else {
+                    // Middle letter: Just say letter name
+                    var aList = this.resolveAudioList('A');
+                    var partA = aList.length > 0 ? aList[Math.floor(Math.random() * aList.length)] : "";
+                    var partB = `Letter ${this.currentLetter}`;
+
+                    var fullText = [partA, partB].filter(s => s.length > 0).join(". ");
+
+                    this.msgEl.classList.remove('hidden');
+                    this.msgEl.textContent = fullText;
+
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        var utter = new SpeechSynthesisUtterance(fullText);
+                        utter.pitch = 1.1;
+                        utter.rate = this.voiceRate;
+                        window.speechSynthesis.speak(utter);
+                    }
+
+                    var center = this.toPixels({x:50, y:50});
+                    this.createParticles(center.x, center.y);
+
+                    // Auto-advance after 1 second
+                    setTimeout(() => {
+                        this.msgEl.classList.add('hidden');
+                        this.advanceToNextLetter();
+                    }, 1000);
+                }
+                return;
+            }
+
+            // NORMAL MODE: Original logic
             // COMPONENT A: PREFIX
-            const aList = this.resolveAudioList('A');
-            const partA = aList.length > 0 ? aList[Math.floor(Math.random() * aList.length)] : "";
+            var aList = this.resolveAudioList('A');
+            var partA = aList.length > 0 ? aList[Math.floor(Math.random() * aList.length)] : "";
 
             // COMPONENT B: CONTENT (Name + Words)
-            const item = this.currentPack.items[this.currentLetter];
-            let partB = "";
-            
+            var item = this.currentPack.items[this.currentLetter];
+            var partB = "";
+
             if (item.hasOwnProperty('words') && item.words.length > 0) {
-                const name = item.name || this.currentLetter;
+                var name = item.name || this.currentLetter;
                 // Shuffle words to pick 2 random ones
-                const shuffled = [...item.words].sort(() => 0.5 - Math.random());
-                const selected = shuffled.slice(0, 2);
+                var shuffled = [...item.words].sort(() => 0.5 - Math.random());
+                var selected = shuffled.slice(0, 2);
                 partB = `${name} is for ${selected[0]}, and ${selected[1]}`;
             } else {
                 // Fallback for simple items
-                const name = item.name || `Letter ${this.currentLetter}`;
+                var name = item.name || `Letter ${this.currentLetter}`;
                 partB = name;
             }
 
             // COMPONENT C: SUFFIX
-            const cList = this.resolveAudioList('C');
-            const partC = cList.length > 0 ? cList[Math.floor(Math.random() * cList.length)] : "";
+            var cList = this.resolveAudioList('C');
+            var partC = cList.length > 0 ? cList[Math.floor(Math.random() * cList.length)] : "";
 
             // ASSEMBLE
-            const fullText = [partA, partB, partC].filter(s => s.length > 0).join(". ");
+            var fullText = [partA, partB, partC].filter(s => s.length > 0).join(". ");
 
             // DISPLAY & SPEAK
-            this.msgEl.classList.remove('hidden'); 
+            this.msgEl.classList.remove('hidden');
             this.msgEl.textContent = fullText;
-            
-            if ('speechSynthesis' in window) { 
+
+            if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utter = new SpeechSynthesisUtterance(fullText);
-                utter.pitch = 1.1; 
+                var utter = new SpeechSynthesisUtterance(fullText);
+                utter.pitch = 1.1;
                 utter.rate = this.voiceRate;
-                window.speechSynthesis.speak(utter); 
+                window.speechSynthesis.speak(utter);
             }
-            
-            const center = this.toPixels({x:50, y:50}); 
+
+            var center = this.toPixels({x:50, y:50});
             this.createParticles(center.x, center.y);
         }
     }
