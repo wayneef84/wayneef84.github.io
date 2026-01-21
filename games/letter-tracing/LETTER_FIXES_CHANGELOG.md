@@ -586,3 +586,49 @@ Total: 15 letter geometry improvements (net after reverts)
 ```
 
 **Impact:** Heart shape now has proper rounded humps at top instead of inverted curves
+
+---
+
+## Round 6 (Lowercase 'e' Fixes - 2026-01-20)
+
+### 26. Lowercase e - Arc Symmetry and Opening Gap
+**Issue:** Top portion of arc was wider than bottom portion, creating asymmetric 'e' shape
+**Fix:** Adjusted arc to span from 0° to -330° with proper opening gap
+
+**Evolution of fixes:**
+1. First attempt: Moved line from y=75 to y=65 (WRONG - line should stay at center)
+2. Second attempt: Changed arc to 0° to -360° (WRONG - created complete circle like theta θ)
+3. Third attempt: Changed arc to 0° to -300° (WRONG - still asymmetric portions)
+4. Fourth attempt: Changed arc to -30° to -330° (WRONG - arc didn't start at line)
+5. **Final fix:** Changed arc to 0° to -330° (CORRECT)
+
+**Before (complete circle):**
+```javascript
+"e": [
+    { "type": "line", "start": [25, 75], "end": [75, 75] },
+    { "type": "arc", "cx": 50, "cy": 75, "rx": 25, "ry": 25, "start": 0, "end": -360 }
+]
+```
+
+**After (proper 'e' with gap):**
+```javascript
+"e": [
+    { "type": "line", "start": [25, 75], "end": [75, 75] },
+    { "type": "arc", "cx": 50, "cy": 75, "rx": 25, "ry": 25, "start": 0, "end": -330 }
+]
+```
+
+**Arc breakdown:**
+- Starts at 0° (right side, where horizontal line is at (75, 75))
+- Goes clockwise to -330° (stops just before completing circle)
+- Bottom portion: 0° to -180° = 180° of arc
+- Top portion: -180° to -330° = 150° of arc
+- Gap: -330° to 0° = 30° opening at right side
+
+**Impact:**
+- Arc now starts exactly where horizontal line ends
+- Proper 'e' shape with opening gap on right side
+- Horizontal line cuts through at middle (y=75)
+- Arc portions are more balanced (180° bottom, 150° top)
+
+**Testing:** Verified in both Letter Tracing game (lowercase pack → 'e') and Words game (words containing 'e' like "Kenzie", "Love", "Jennie")
