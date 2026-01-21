@@ -13,6 +13,11 @@ class WordGame {
         this.modeSelectEl = document.getElementById('guidanceSelect');
         this.backToMenuBtn = document.getElementById('back-to-menu');
 
+        // Image UI
+        this.imageArea = document.getElementById('imageArea');
+        this.wordImage = document.getElementById('wordImage');
+        this.imageFallback = document.getElementById('imageFallback');
+
         // Modal Elements
         this.modal = document.getElementById('add-modal');
         this.inputEl = document.getElementById('new-word-input');
@@ -145,17 +150,56 @@ class WordGame {
 
     // --- GAME START ---
     startWord(word) {
-        this.currentWord = word; 
+        this.currentWord = word;
         this.letterIndex = 0;
-        
+
         this.menuView.style.display = 'none';
         this.gameView.classList.add('active');
-        
+
+        this.updateImageDisplay();
+
         setTimeout(() => {
             this.resize();
             this.loadLetter(this.currentWord[0]);
             this.updateProgressBar();
         }, 50);
+    }
+
+    updateImageDisplay() {
+        if (!this.currentWord) {
+            this.imageArea.classList.add('hidden');
+            return;
+        }
+
+        // Show emoji fallback for the word
+        this.imageFallback.textContent = this.getEmojiForWord(this.currentWord);
+        this.imageFallback.style.display = 'block';
+        this.wordImage.classList.add('hidden');
+        this.imageArea.classList.remove('hidden');
+    }
+
+    getEmojiForWord(word) {
+        const emojiMap = {
+            'Kenzie': '👧',
+            'Kenzi': '👧',
+            'Jennie': '👩',
+            'Jenny': '👩',
+            'Wayne': '👨',
+            'Dad': '👨',
+            'Mom': '👩',
+            'Dog': '🐕',
+            'Cat': '🐱',
+            'Butterfly': '🦋',
+            'Giraffe': '🦒',
+            'Elephant': '🐘',
+            'Rainbow': '🌈',
+            'Unicorn': '🦄',
+            'Love': '❤️',
+            'Hi': '👋',
+            'Hello': '👋',
+            'Bye': '👋'
+        };
+        return emojiMap[word] || '✨';
     }
 
     backToMenu() {
