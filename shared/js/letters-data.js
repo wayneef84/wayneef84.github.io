@@ -207,8 +207,8 @@ const PACK_LOWERCASE = {
             { "type": "line", "start": [75, 0], "end": [75, 100] }
         ],
         "e": [
-            { "type": "line", "start": [27, 65], "end": [73, 65] },
-            { "type": "arc", "cx": 50, "cy": 75, "rx": 25, "ry": 25, "start": 0, "end": -315 }
+            { "type": "line", "start": [25, 75], "end": [75, 75] },
+            { "type": "arc", "cx": 50, "cy": 75, "rx": 25, "ry": 25, "start": 0, "end": -360 }
         ],
         "f": [
             { "type": "complex", "parts": [
