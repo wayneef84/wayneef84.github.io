@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+        }
+        .info { margin: 10px 0; padding: 10px; border: 1px solid #0f0; }
+        .mobile { background: #003300; }
+        .desktop { background: #330000; }
+    </style>
+</head>
+<body>
+    <h1>Mobile Detection Test</h1>
+    <div id="result"></div>
+
+    <script>
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const result = document.getElementById('result');
+
+        result.innerHTML = `
+            <div class="info ${isMobile ? 'mobile' : 'desktop'}">
+                <strong>Device Type:</strong> ${isMobile ? 'MOBILE' : 'DESKTOP'}
+            </div>
+            <div class="info">
+                <strong>User Agent:</strong><br>${navigator.userAgent}
+            </div>
+            <div class="info">
+                <strong>Screen:</strong> ${window.innerWidth} x ${window.innerHeight}
+            </div>
+            <div class="info">
+                <strong>Device Pixel Ratio:</strong> ${window.devicePixelRatio}
+            </div>
+            <div class="info">
+                <strong>Touch Support:</strong> ${'ontouchstart' in window ? 'YES' : 'NO'}
+            </div>
+        `;
+
+        console.log('Mobile detected:', isMobile);
+        console.log('User Agent:', navigator.userAgent);
+    </script>
+</body>
+</html>

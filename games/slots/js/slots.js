@@ -15,7 +15,27 @@ class SlotMachine {
     constructor() {
         this.canvas = document.getElementById('slotCanvas');
         this.ctx = this.canvas.getContext('2d');
-        
+
+        // Mobile Detection & Performance Config
+        this.isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        this.targetFPS = this.isMobile ? 30 : 60;
+        this.frameInterval = 1000 / this.targetFPS;
+        this.lastFrameTime = 0;
+        this.enableShadows = !this.isMobile;
+        this.maxParticles = this.isMobile ? 30 : 100;
+
+        // Log detection for debugging
+        console.log('[Slots] Mobile detected:', this.isMobile);
+        console.log('[Slots] User Agent:', navigator.userAgent);
+        console.log('[Slots] Target FPS:', this.targetFPS);
+        console.log('[Slots] Shadows enabled:', this.enableShadows);
+
+        // Debug & Performance Tracking
+        this.debugEnabled = false;
+        this.frameCount = 0;
+        this.fpsUpdateTime = Date.now();
+        this.currentFPS = 0;
+
         // Audio Link
         this.audio = typeof SlotAudio !== 'undefined' ? new SlotAudio() : null;
         if(this.audio) this.audio.init();
@@ -270,6 +290,25 @@ class SlotMachine {
 
     animate() {
         const now = Date.now();
+        const elapsed = now - this.lastFrameTime;
+
+        // Throttle frame rate - skip frame if not enough time has passed
+        if (elapsed < this.frameInterval) {
+            requestAnimationFrame(() => this.animate());
+            return;
+        }
+
+        this.lastFrameTime = now - (elapsed % this.frameInterval);
+
+        // FPS Tracking
+        this.frameCount++;
+        if (now - this.fpsUpdateTime >= 1000) {
+            this.currentFPS = this.frameCount;
+            this.frameCount = 0;
+            this.fpsUpdateTime = now;
+            if (this.debugEnabled) this.updateDebugOverlay();
+        }
+
         let active = false;
 
         for(let i=0; i<5; i++) {
@@ -389,7 +428,8 @@ class SlotMachine {
             if(this.audio) isBig ? this.audio.playBigWin() : this.audio.playWin(winAmount);
 
             if(isBig) {
-                for(let k=0; k<50; k++) this.particles.push(new Particle(240, 425, '#ffd700'));
+                const particleCount = this.isMobile ? 20 : 50;
+                for(let k=0; k<particleCount; k++) this.particles.push(new Particle(240, 425, '#ffd700'));
             }
         }
     }
@@ -418,7 +458,8 @@ class SlotMachine {
         if(this.audio) this.audio.playBigWin();
 
         // Particle explosion
-        for(let k=0; k<100; k++) {
+        const freeSpinParticleCount = this.isMobile ? 30 : 100;
+        for(let k=0; k<freeSpinParticleCount; k++) {
             this.particles.push(new Particle(240, 425, '#ffd700'));
             this.particles.push(new SparkleParticle(240, 425, '#ff69b4'));
         }
@@ -457,7 +498,8 @@ class SlotMachine {
             this.showToast(`🦄 EXPANDING WILDS! 🦄`, "win");
 
             // Visual effects
-            for(let k=0; k<30; k++) {
+            const wildParticleCount = this.isMobile ? 15 : 30;
+            for(let k=0; k<wildParticleCount; k++) {
                 this.particles.push(new SparkleParticle(240, 425, '#ff69b4'));
             }
         }
@@ -597,23 +639,92 @@ class SlotMachine {
 
         // 2. Win Lines (On Top) - Enhanced Animations with Left-to-Right Progress
         if(!this.isSpinning && this.winningLines.length > 0) {
-            const time = Date.now()/20;
-            const pulseTime = Date.now() / 300;
-            const pulse = Math.sin(pulseTime) * 0.3 + 1;
-            const glowPulse = Math.sin(pulseTime * 2) * 0.4 + 0.6;
+            // Use simplified rendering on mobile for better performance
+            if (this.isMobile) {
+                this.drawWinLinesMobile();
+            } else {
+                this.drawWinLinesDesktop();
+            }
+        }
 
-            // Calculate animation progress (0 to 1) - loops every 2 seconds
-            const animTime = (Date.now() - this.winTimestamp) % 2000;
-            const progress = animTime / 2000;
-
-            this.winningLines.forEach((w, lineIndex) => {
-                const linePoints = [];
-                for(let c=0; c<5; c++) {
-                    const r = w.path[c];
-                    const cx = (c*this.colWidth) + this.colWidth/2;
-                    const cy = (r*this.rowHeight) + this.rowHeight/2;
-                    linePoints.push({x: cx, y: cy});
+        // 3. Symbol Text (On Top of Lines)
+        for(let x=0; x<5; x++) {
+            for(let y=0; y<5; y++) {
+                if(this.reelData[x][y]) {
+                    const s = this.reelData[x][y];
+                    const px = x * this.colWidth;
+                    const py = (y * this.rowHeight) + this.reelOffsets[x] - this.rowHeight;
+                    const isWin = this.winningCells.has(`${x},${y-1}`);
+                    this.drawText(s, px, py, isWin);
                 }
+            }
+        }
+
+        // 4. Particles
+        this.particles.forEach(p => p.draw(this.ctx));
+    }
+
+    // Simplified win line rendering for mobile (2 layers, no shadows)
+    drawWinLinesMobile() {
+        const pulseTime = Date.now() / 300;
+        const pulse = Math.sin(pulseTime) * 0.3 + 1;
+
+        this.winningLines.forEach((w, lineIndex) => {
+            const linePoints = [];
+            for(let c=0; c<5; c++) {
+                const r = w.path[c];
+                const cx = (c*this.colWidth) + this.colWidth/2;
+                const cy = (r*this.rowHeight) + this.rowHeight/2;
+                linePoints.push({x: cx, y: cy});
+            }
+
+            // Layer 1: Thick colored line
+            this.ctx.beginPath();
+            linePoints.forEach((pt, i) => {
+                if(i===0) this.ctx.moveTo(pt.x, pt.y);
+                else this.ctx.lineTo(pt.x, pt.y);
+            });
+            this.ctx.lineCap = 'round';
+            this.ctx.lineJoin = 'round';
+            this.ctx.lineWidth = 10 * pulse;
+            this.ctx.strokeStyle = w.color;
+            this.ctx.globalAlpha = 0.8;
+            this.ctx.stroke();
+
+            // Layer 2: Thin white center line
+            this.ctx.beginPath();
+            linePoints.forEach((pt, i) => {
+                if(i===0) this.ctx.moveTo(pt.x, pt.y);
+                else this.ctx.lineTo(pt.x, pt.y);
+            });
+            this.ctx.lineWidth = 4;
+            this.ctx.strokeStyle = '#fff';
+            this.ctx.globalAlpha = 0.9;
+            this.ctx.stroke();
+
+            this.ctx.globalAlpha = 1.0;
+        });
+    }
+
+    // Full desktop win line rendering with all effects
+    drawWinLinesDesktop() {
+        const time = Date.now()/20;
+        const pulseTime = Date.now() / 300;
+        const pulse = Math.sin(pulseTime) * 0.3 + 1;
+        const glowPulse = Math.sin(pulseTime * 2) * 0.4 + 0.6;
+
+        // Calculate animation progress (0 to 1) - loops every 2 seconds
+        const animTime = (Date.now() - this.winTimestamp) % 2000;
+        const progress = animTime / 2000;
+
+        this.winningLines.forEach((w, lineIndex) => {
+            const linePoints = [];
+            for(let c=0; c<5; c++) {
+                const r = w.path[c];
+                const cx = (c*this.colWidth) + this.colWidth/2;
+                const cy = (r*this.rowHeight) + this.rowHeight/2;
+                linePoints.push({x: cx, y: cy});
+            }
 
                 // Calculate which segments to draw based on progress
                 const totalSegments = linePoints.length - 1;
@@ -758,8 +869,8 @@ class SlotMachine {
 
                 this.ctx.globalAlpha = 1.0;
 
-                // Add sparkle particles along the animated portion
-                if(Math.random() < 0.2 && segmentsToShow > 0) {
+                // Add sparkle particles along the animated portion (desktop only for performance)
+                if(!this.isMobile && Math.random() < 0.2 && segmentsToShow > 0) {
                     const randomSegment = Math.random() * segmentsToShow;
                     const segIdx = Math.floor(randomSegment);
                     if(segIdx < linePoints.length - 1) {
@@ -772,23 +883,6 @@ class SlotMachine {
                     }
                 }
             });
-        }
-
-        // 3. Symbol Text (On Top of Lines)
-        for(let x=0; x<5; x++) {
-            for(let y=0; y<5; y++) {
-                if(this.reelData[x][y]) {
-                    const s = this.reelData[x][y];
-                    const px = x * this.colWidth;
-                    const py = (y * this.rowHeight) + this.reelOffsets[x] - this.rowHeight;
-                    const isWin = this.winningCells.has(`${x},${y-1}`);
-                    this.drawText(s, px, py, isWin);
-                }
-            }
-        }
-
-        // 4. Particles
-        this.particles.forEach(p => p.draw(this.ctx));
     }
 
     drawCard(s, x, y, win) {
@@ -807,10 +901,14 @@ class SlotMachine {
             this.ctx.fillRect(x+p, y+p, w, h);
             this.ctx.strokeStyle = `rgba(255, 105, 180, ${0.8 + pulse * 0.2})`;
             this.ctx.lineWidth = 4;
-            this.ctx.shadowBlur = 20;
-            this.ctx.shadowColor = '#ff69b4';
+            if (this.enableShadows) {
+                this.ctx.shadowBlur = 20;
+                this.ctx.shadowColor = '#ff69b4';
+            }
             this.ctx.strokeRect(x+p, y+p, w, h);
-            this.ctx.shadowBlur = 0;
+            if (this.enableShadows) {
+                this.ctx.shadowBlur = 0;
+            }
         } else if(win) {
             const scale = 1 + Math.sin((Date.now()-this.winTimestamp)/100)*0.05;
             // Background Highlight
@@ -846,9 +944,11 @@ class SlotMachine {
         const isExpandedWild = this.expandedWildReels.has(reelIndex);
 
         if(s.isWild || s.isScatter) {
-            const pulse = Math.sin(Date.now() / 300) * 0.5 + 0.5;
-            this.ctx.shadowBlur = 15 + pulse * 10;
-            this.ctx.shadowColor = s.isWild ? '#ff69b4' : '#ffd700';
+            if (this.enableShadows) {
+                const pulse = Math.sin(Date.now() / 300) * 0.5 + 0.5;
+                this.ctx.shadowBlur = 15 + pulse * 10;
+                this.ctx.shadowColor = s.isWild ? '#ff69b4' : '#ffd700';
+            }
         }
 
         if(win) {
@@ -866,8 +966,10 @@ class SlotMachine {
             this.ctx.translate(cx, cy);
             this.ctx.scale(scale, scale);
             this.ctx.fillStyle = '#fff';
-            this.ctx.shadowBlur = 25;
-            this.ctx.shadowColor = '#ff69b4';
+            if (this.enableShadows) {
+                this.ctx.shadowBlur = 25;
+                this.ctx.shadowColor = '#ff69b4';
+            }
             this.ctx.fillText(s.name, 0, 0);
             this.ctx.restore();
         } else {
@@ -877,7 +979,9 @@ class SlotMachine {
             this.ctx.globalAlpha = 1.0;
         }
 
-        this.ctx.shadowBlur = 0;
+        if (this.enableShadows) {
+            this.ctx.shadowBlur = 0;
+        }
     }
 
     // --- PERSISTENCE ---
@@ -902,6 +1006,41 @@ class SlotMachine {
             const state = this.audio.toggle();
             document.getElementById('audioButton').textContent = state ? '🔊' : '🔇';
         }
+    }
+
+    toggleDebug() {
+        this.debugEnabled = !this.debugEnabled;
+        const overlay = document.getElementById('debugOverlay');
+        const btn = document.getElementById('debugButton');
+        if (this.debugEnabled) {
+            overlay.style.display = 'block';
+            btn.style.background = '#0f0';
+            btn.style.color = '#000';
+            this.updateDebugOverlay();
+        } else {
+            overlay.style.display = 'none';
+            btn.style.background = '';
+            btn.style.color = '';
+        }
+    }
+
+    updateDebugOverlay() {
+        if (!this.debugEnabled) return;
+        const mode = document.getElementById('debugMode');
+        const fps = document.getElementById('debugFPS');
+        const target = document.getElementById('debugTargetFPS');
+        const shadows = document.getElementById('debugShadows');
+        const particles = document.getElementById('debugParticles');
+        const winLines = document.getElementById('debugWinLines');
+        const spinning = document.getElementById('debugSpinning');
+
+        if (mode) mode.textContent = this.isMobile ? 'Mobile' : 'Desktop';
+        if (fps) fps.textContent = this.currentFPS;
+        if (target) target.textContent = this.targetFPS;
+        if (shadows) shadows.textContent = this.enableShadows ? 'ON' : 'OFF';
+        if (particles) particles.textContent = this.particles ? this.particles.length : 0;
+        if (winLines) winLines.textContent = this.winningLines ? this.winningLines.length : 0;
+        if (spinning) spinning.textContent = this.isSpinning ? 'YES' : 'NO';
     }
     updateUI() {
         document.getElementById('coinCount').textContent = `$${this.playerBalance.toFixed(2)}`;
@@ -1023,10 +1162,52 @@ class SparkleParticle {
 }
 
 let game;
-window.onload = () => { game = new SlotMachine(); };
-function spin() { game.spin(); }
-function changeBet(v) { game.changeBet(v); }
-function changePaylines(v) { game.changePaylines(v); }
-function toggleRules() { game.toggleRules(); }
-function toggleAudio() { game.toggleAudio(); }
-function changeTheme(v) { game.changeTheme(v); }
+
+// Initialize game when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+} else {
+    initGame();
+}
+
+function initGame() {
+    try {
+        console.log('[Slots] Initializing game...');
+        console.log('[Slots] Canvas element:', document.getElementById('slotCanvas'));
+        game = new SlotMachine();
+        console.log('[Slots] Game initialized successfully');
+    } catch (error) {
+        console.error('[Slots] Failed to initialize:', error);
+        console.error('[Slots] Stack trace:', error.stack);
+        alert('Failed to load game: ' + error.message);
+    }
+}
+
+function spin() {
+    if (!game) { console.error('[Slots] Game not initialized'); return; }
+    game.spin();
+}
+function changeBet(v) {
+    if (!game) return;
+    game.changeBet(v);
+}
+function changePaylines(v) {
+    if (!game) return;
+    game.changePaylines(v);
+}
+function toggleRules() {
+    if (!game) return;
+    game.toggleRules();
+}
+function toggleAudio() {
+    if (!game) return;
+    game.toggleAudio();
+}
+function toggleDebug() {
+    if (!game) return;
+    game.toggleDebug();
+}
+function changeTheme(v) {
+    if (!game) return;
+    game.changeTheme(v);
+}
