@@ -259,8 +259,30 @@ class SlotMachine {
 
     spin() {
         if(this.isSpinning) {
-            this.reelSpeeds.fill(0); this.reelOffsets.fill(0); // Quick Stop
+            // Quick Stop - complete the spin instantly
+            if (this.enable3D) {
+                // Snap all reels to final positions
+                for(let i = 0; i < 5; i++) {
+                    this.snapReelToSymbol(i);
+                    this.reelAngularVelocity[i] = 0;
+                    if(this.audio) this.audio.playReelStop();
+                }
+            } else {
+                // 2D mode - snap to aligned positions
+                this.reelSpeeds.fill(0);
+                this.reelOffsets.fill(0);
+            }
+            // End the spin immediately
+            this.isSpinning = false;
+            this.endSpin();
             return;
+        }
+
+        // Trigger lever pull animation
+        const spinBtn = document.getElementById('spinButton');
+        if(spinBtn) {
+            spinBtn.classList.add('lever-pull');
+            setTimeout(() => spinBtn.classList.remove('lever-pull'), 600);
         }
 
         // Check if we're in free spins mode
@@ -350,7 +372,7 @@ class SlotMachine {
                         if(this.reelAngularVelocity[i] < 0.02) {
                             this.reelAngularVelocity[i] = 0;
                             this.snapReelToSymbol(i);
-                            if(this.audio) this.audio.playClick(); // Stop sound
+                            if(this.audio) this.audio.playReelStop(); // Mechanical stop sound
                         } else {
                             active = true;
                         }
@@ -369,9 +391,9 @@ class SlotMachine {
                         this.reelData[i].pop();
                     }
 
-                    // Play tick sound at intervals
+                    // Play mechanical tick sound at intervals
                     if(this.shouldPlayTick(i)) {
-                        if(this.audio) this.audio.playClick(); // Tick sound
+                        if(this.audio) this.audio.playSpinTick(); // Mechanical tick sound
                     }
                 }
             } else {
@@ -861,13 +883,13 @@ class SlotMachine {
 
         // No back-face culling in fixed grid mode - all 4 rows must always be visible
 
-        // Subtle perspective scaling based on depth
-        const perspectiveFactor = 0.2;
+        // Enhanced perspective scaling based on depth
+        const perspectiveFactor = 0.5; // Increased from 0.2 to 0.5 for more pronounced 3D effect
         const scale = 1 - (zDepth / this.cylinderRadius) * perspectiveFactor;
 
         // Calculate lighting (directional light from top-left)
         const lightAngle = Math.PI * 0.75;
-        const lightIntensity = Math.max(0.4, Math.cos(currentAngle - lightAngle) * 0.5 + 0.5);
+        const lightIntensity = Math.max(0.3, Math.cos(currentAngle - lightAngle) * 0.7 + 0.5); // Increased contrast from 0.5 to 0.7
 
         // Draw at FIXED grid position (no yOffset)
         this.drawCylinderSegment(
@@ -922,20 +944,32 @@ class SlotMachine {
             return;
         }
 
-        // Metallic gradient background
+        // Add shadow for depth perception
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.shadowBlur = 8;
+        this.ctx.shadowOffsetX = 4;
+        this.ctx.shadowOffsetY = 4;
+
+        // Metallic gradient background with enhanced contrast
         const gradient = this.ctx.createLinearGradient(x + p, scaledY, x + p + w, scaledY + h);
 
-        // Base color influenced by light
-        const baseGray = Math.floor(80 + lightIntensity * 120);
-        gradient.addColorStop(0, `rgb(${baseGray + 40}, ${baseGray + 40}, ${baseGray + 40})`);
+        // Base color influenced by light - increased dynamic range
+        const baseGray = Math.floor(60 + lightIntensity * 140); // Changed from 80+120 to 60+140 for more contrast
+        gradient.addColorStop(0, `rgb(${baseGray + 60}, ${baseGray + 60}, ${baseGray + 60})`); // Brighter highlights
         gradient.addColorStop(0.5, `rgb(${baseGray}, ${baseGray}, ${baseGray})`);
-        gradient.addColorStop(1, `rgb(${baseGray - 40}, ${baseGray - 40}, ${baseGray - 40})`);
+        gradient.addColorStop(1, `rgb(${baseGray - 50}, ${baseGray - 50}, ${baseGray - 50})`); // Darker shadows
 
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(x + p, scaledY, w, h);
 
-        // Add metallic edge highlight
-        this.ctx.strokeStyle = `rgba(255, 255, 255, ${lightIntensity * 0.3})`;
+        // Reset shadow for edge highlight
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
+
+        // Add stronger metallic edge highlight
+        this.ctx.strokeStyle = `rgba(255, 255, 255, ${lightIntensity * 0.5})`; // Increased from 0.3 to 0.5
         this.ctx.lineWidth = 2;
         this.ctx.strokeRect(x + p, scaledY, w, h);
 
