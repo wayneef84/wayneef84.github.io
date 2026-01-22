@@ -747,9 +747,9 @@ class SlotMachine {
     }
 
     draw3DReels() {
-        // Draw each reel as a 3D cylinder
+        // Hybrid approach: Fixed 4-row grid with 3D rotation effects
         for (let x = 0; x < 5; x++) {
-            // First, draw cylinder background/base (fills the entire reel area)
+            // Draw cylinder background
             const gradient = this.ctx.createLinearGradient(
                 x * this.colWidth, 0,
                 (x + 1) * this.colWidth, 0
@@ -761,34 +761,44 @@ class SlotMachine {
             this.ctx.fillRect(x * this.colWidth, 0, this.colWidth, this.canvas.height);
 
             const reelSymbols = this.reelData[x];
+            const rotationAngle = this.reelRotations[x];
+            const totalSymbols = reelSymbols.length;
+            const anglePerSymbol = (Math.PI * 2) / totalSymbols;
 
-            // Sort symbols by depth (back to front) for proper layering
-            const symbolsWithDepth = [];
-            for (let y = 0; y < reelSymbols.length; y++) {
-                const symbol = reelSymbols[y];
+            // Calculate rotation offset in symbol units
+            const symbolOffset = rotationAngle / anglePerSymbol;
+
+            // We want to display 4 visible rows (index 1-4, skipping 0 which is buffer)
+            const visibleSymbols = [];
+
+            for (let row = 1; row <= 4; row++) {
+                // Calculate which symbol should be in this row
+                const symbolIndex = Math.floor((row - symbolOffset) % totalSymbols);
+                const normalizedIndex = symbolIndex >= 0 ? symbolIndex : symbolIndex + totalSymbols;
+
+                const symbol = reelSymbols[normalizedIndex];
                 if (!symbol) continue;
 
-                const rotationAngle = this.reelRotations[x];
-                const anglePerSymbol = (Math.PI * 2) / reelSymbols.length;
-                const baseAngle = y * anglePerSymbol;
+                // Calculate this symbol's angle on the cylinder
+                const baseAngle = normalizedIndex * anglePerSymbol;
                 const currentAngle = (rotationAngle + baseAngle) % (Math.PI * 2);
                 const zDepth = Math.sin(currentAngle) * this.cylinderRadius;
 
-                // Use the same positioning as 2D mode for consistency
-                const baseY = (y * this.rowHeight) - this.rowHeight;
+                // Fixed grid position - matches 2D formula: (row * rowHeight) - rowHeight
+                // When row=1: 1*212.5 - 212.5 = 0 (top of visible area)
+                // When row=4: 4*212.5 - 212.5 = 637.5 (bottom row)
+                const py = (row * this.rowHeight) - this.rowHeight;
 
-                symbolsWithDepth.push({ symbol, y, zDepth, baseY });
+                visibleSymbols.push({ symbol, row, zDepth, py });
             }
 
-            // Sort by depth (furthest first)
-            symbolsWithDepth.sort((a, b) => a.zDepth - b.zDepth);
+            // Sort by depth (back to front)
+            visibleSymbols.sort((a, b) => a.zDepth - b.zDepth);
 
             // Draw symbols in depth order
-            for (const item of symbolsWithDepth) {
+            for (const item of visibleSymbols) {
                 const px = x * this.colWidth;
-                const py = item.baseY;
-
-                this.drawCylinder3D(item.symbol, px, py, x, item.y);
+                this.drawCylinder3D(item.symbol, px, item.py, x, item.row);
             }
 
             // Divider Lines between reels
@@ -828,35 +838,41 @@ class SlotMachine {
         this.drawWinLinesAndEffects();
     }
 
-    drawCylinder3D(symbol, x, y, reelIndex, symbolIndex) {
+    drawCylinder3D(symbol, x, y, reelIndex, row) {
+        // In this hybrid approach, y is already the fixed grid position
+        // row is the actual row index (1-4) passed from draw3DReels
+        // We just need to calculate depth effects for this symbol
+
         const rotationAngle = this.reelRotations[reelIndex];
         const symbolsPerReel = this.reelData[reelIndex].length;
         const anglePerSymbol = (Math.PI * 2) / symbolsPerReel;
 
-        // Calculate this symbol's angle based on its position
-        const baseAngle = symbolIndex * anglePerSymbol;
+        // Calculate which "slot" this visible row maps to on the cylinder
+        const symbolOffset = rotationAngle / anglePerSymbol;
+        const symbolIndex = Math.floor((row - symbolOffset) % symbolsPerReel);
+        const normalizedIndex = symbolIndex >= 0 ? symbolIndex : symbolIndex + symbolsPerReel;
+
+        // Calculate this symbol's angle on the cylinder
+        const baseAngle = normalizedIndex * anglePerSymbol;
         const currentAngle = (rotationAngle + baseAngle) % (Math.PI * 2);
 
-        // Depth calculation (how far back the symbol is)
+        // Depth calculation
         const zDepth = Math.sin(currentAngle) * this.cylinderRadius;
-        const yOffset = Math.cos(currentAngle) * this.cylinderRadius;
 
-        // Skip if symbol is on back of cylinder (more aggressive culling)
-        // Only render symbols facing forward (cos > 0 means front-facing)
-        if (Math.cos(currentAngle) < 0.1) return;
+        // No back-face culling in fixed grid mode - all 4 rows must always be visible
 
-        // Perspective scaling
-        const perspectiveFactor = 0.5;
+        // Subtle perspective scaling based on depth
+        const perspectiveFactor = 0.2;
         const scale = 1 - (zDepth / this.cylinderRadius) * perspectiveFactor;
 
         // Calculate lighting (directional light from top-left)
-        const lightAngle = Math.PI * 0.75; // 135 degrees
-        const lightIntensity = Math.max(0.3, Math.cos(currentAngle - lightAngle) * 0.5 + 0.5);
+        const lightAngle = Math.PI * 0.75;
+        const lightIntensity = Math.max(0.4, Math.cos(currentAngle - lightAngle) * 0.5 + 0.5);
 
-        // Draw the cylinder segment
+        // Draw at FIXED grid position (no yOffset)
         this.drawCylinderSegment(
             x,
-            y + yOffset,
+            y,
             scale,
             symbol,
             lightIntensity,
@@ -895,10 +911,9 @@ class SlotMachine {
     }
 
     drawCylinderSegment(x, y, scale, symbol, lightIntensity, angle) {
-        const p = 2; // Reduced padding for better coverage
+        const p = 4; // Standard padding
         const w = this.colWidth - p * 2;
-        // Make segments taller to fill gaps (1.5x height)
-        const h = (this.rowHeight * 1.5 - p * 2) * scale;
+        const h = (this.rowHeight - p * 2) * scale; // Normal height, scaled
         const centerY = y + (this.rowHeight / 2);
         const scaledY = centerY - (h / 2);
 
