@@ -888,10 +888,37 @@
             // Show panel
             document.getElementById('detailPanel').classList.remove('hidden');
 
+            // Setup back to top button
+            this.setupBackToTop();
+
         } catch (err) {
             console.error('[App] Failed to show detail:', err);
             this.showToast('Failed to load details: ' + err.message, 'error');
         }
+    };
+
+    ShipmentTrackerApp.prototype.setupBackToTop = function() {
+        var detailPanel = document.getElementById('detailPanel');
+        var backToTopBtn = document.getElementById('detailBackToTop');
+
+        if (!detailPanel || !backToTopBtn) return;
+
+        // Show/hide button based on scroll position
+        detailPanel.onscroll = function() {
+            if (detailPanel.scrollTop > 200) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        };
+
+        // Scroll to top when clicked
+        backToTopBtn.onclick = function() {
+            detailPanel.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
     };
 
     ShipmentTrackerApp.prototype.addDetailRow = function(container, label, value) {
