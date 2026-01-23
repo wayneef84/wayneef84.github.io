@@ -266,6 +266,64 @@
         }
     };
 
+    ShipmentTrackerApp.prototype.clearAllData = async function() {
+        console.log('[App] Clear all data requested');
+
+        var confirmed = confirm(
+            '⚠️ Clear All Data?\n\n' +
+            'This will permanently delete:\n' +
+            '- All tracking records\n' +
+            '- All API payloads\n' +
+            '- All settings (API keys, preferences)\n\n' +
+            'This action cannot be undone.\n\n' +
+            'Are you sure you want to continue?'
+        );
+
+        if (!confirmed) {
+            this.showToast('Clear all data cancelled', 'info');
+            return;
+        }
+
+        // Double confirmation for safety
+        var doubleConfirmed = confirm(
+            'Final confirmation: Delete everything?\n\n' +
+            'Click OK to permanently delete all data.'
+        );
+
+        if (!doubleConfirmed) {
+            this.showToast('Clear all data cancelled', 'info');
+            return;
+        }
+
+        try {
+            await this.db.clearAll();
+
+            // Reset app state
+            this.allTrackings = [];
+            this.filteredTrackings = [];
+            this.settings = {
+                apiKeys: {},
+                queryEngine: {
+                    cooldownMinutes: 10,
+                    skipDelivered: true,
+                    enableForceRefresh: false
+                }
+            };
+
+            // Reload UI
+            await this.loadTrackings();
+            this.updateStats();
+            this.closeDetail();
+            this.closeSettings();
+
+            this.showToast('✅ All data cleared successfully', 'success');
+
+        } catch (err) {
+            console.error('[App] Failed to clear all data:', err);
+            this.showToast('Failed to clear data: ' + err.message, 'error');
+        }
+    };
+
     // ============================================================
     // TABLE RENDERING
     // ============================================================
@@ -777,6 +835,10 @@
 
         document.getElementById('closeSettingsBtn').onclick = function() {
             self.closeSettings();
+        };
+
+        document.getElementById('clearAllDataBtn').onclick = function() {
+            self.clearAllData();
         };
 
         // Force refresh toggle - warn when enabling
