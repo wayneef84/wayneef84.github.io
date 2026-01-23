@@ -958,6 +958,13 @@
                     cls = 'json-key';
                 } else {
                     cls = 'json-string';
+
+                    // Check if string value is a URL and make it clickable
+                    var urlMatch = match.match(/^"(https?:\/\/[^"]+)"$/);
+                    if (urlMatch) {
+                        var url = urlMatch[1];
+                        return '<span class="' + cls + '"><a href="' + url + '" target="_blank" rel="noopener noreferrer">"' + url + '"</a></span>';
+                    }
                 }
             } else if (/true|false/.test(match)) {
                 cls = 'json-boolean';
