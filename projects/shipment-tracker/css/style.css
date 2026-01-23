@@ -1191,20 +1191,28 @@ textarea,
         display: flex;
     }
 
-    /* TODO: Implement split view in future PR */
-    /* .container {
+    /* Split view: Table on left, detail panel on right */
+    .container {
         flex-direction: row;
     }
 
     .table-container {
-        flex: 0 0 60%;
+        flex: 1;
+        min-width: 0; /* Allow flex shrinking */
     }
 
     .detail-panel {
         position: relative;
         flex: 0 0 40%;
-        transform: none;
+        max-width: 500px;
+        transform: none !important;
         box-shadow: none;
         border-left: 2px solid var(--border-color);
-    } */
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .detail-panel.hidden {
+        display: none;
+    }
 }

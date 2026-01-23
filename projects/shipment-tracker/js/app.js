@@ -89,6 +89,11 @@
                 await this.pruneOldShipments(true);
             }
 
+            // Initialize detail panel for desktop split view
+            if (window.innerWidth >= 1024) {
+                this.showEmptyDetailState();
+            }
+
             // Open detail from URL if specified
             this.openDetailFromURL();
 
@@ -872,6 +877,14 @@
                 self.downloadPayload(tracking);
             };
 
+            // Show action buttons
+            var deleteBtn = document.getElementById('deleteTrackingBtn');
+            var forceRefreshBtn = document.getElementById('forceRefreshBtn');
+            var downloadBtn = document.getElementById('downloadPayloadBtn');
+            if (deleteBtn) deleteBtn.style.display = '';
+            if (forceRefreshBtn) forceRefreshBtn.style.display = '';
+            if (downloadBtn) downloadBtn.style.display = '';
+
             // Show panel
             document.getElementById('detailPanel').classList.remove('hidden');
 
@@ -1040,7 +1053,37 @@
     };
 
     ShipmentTrackerApp.prototype.closeDetail = function() {
-        document.getElementById('detailPanel').classList.add('hidden');
+        // On desktop (1024px+), keep panel open but show empty state
+        // On mobile/tablet, hide panel completely
+        if (window.innerWidth >= 1024) {
+            this.showEmptyDetailState();
+        } else {
+            document.getElementById('detailPanel').classList.add('hidden');
+        }
+    };
+
+    ShipmentTrackerApp.prototype.showEmptyDetailState = function() {
+        var panel = document.getElementById('detailPanel');
+        panel.classList.remove('hidden');
+
+        // Show placeholder content
+        document.getElementById('detailAWB').textContent = 'No selection';
+        document.getElementById('detailCarrier').textContent = '';
+        document.getElementById('detailStatus').textContent = '';
+        document.getElementById('detailOrigin').textContent = '';
+        document.getElementById('detailDestination').textContent = '';
+        document.getElementById('detailEstDelivery').textContent = '';
+        document.getElementById('detailLastUpdated').textContent = '';
+        document.getElementById('detailEvents').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Click a shipment from the table to view details</p>';
+        document.getElementById('payloadViewer').innerHTML = '';
+
+        // Hide action buttons
+        var deleteBtn = document.getElementById('deleteTrackingBtn');
+        var forceRefreshBtn = document.getElementById('forceRefreshBtn');
+        var downloadBtn = document.getElementById('downloadPayloadBtn');
+        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (forceRefreshBtn) forceRefreshBtn.style.display = 'none';
+        if (downloadBtn) downloadBtn.style.display = 'none';
     };
 
     // ============================================================
@@ -1378,6 +1421,24 @@
         document.getElementById('closeDetailBtn').onclick = function() {
             self.closeDetail();
         };
+
+        // Window resize handler for split view
+        window.addEventListener('resize', function() {
+            var detailPanel = document.getElementById('detailPanel');
+            var hasContent = document.getElementById('detailAWB').textContent !== 'No selection';
+
+            if (window.innerWidth >= 1024) {
+                // Desktop: Always show panel (empty or with content)
+                if (!hasContent) {
+                    self.showEmptyDetailState();
+                }
+            } else {
+                // Mobile/Tablet: Hide panel unless it has content
+                if (!hasContent) {
+                    detailPanel.classList.add('hidden');
+                }
+            }
+        });
     };
 
     // ============================================================
