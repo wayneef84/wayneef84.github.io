@@ -949,6 +949,18 @@ textarea,
 .status-failed { background: var(--status-failed); color: white; }
 
 /* ============================================================
+   CONTENT WRAPPER (for split view on desktop)
+   ============================================================ */
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ============================================================
    MOBILE CARDS (< 768px)
    ============================================================ */
 
@@ -1187,18 +1199,20 @@ textarea,
         display: none;
     }
 
-    .table-container {
+    /* Split view: content-wrapper holds table and detail panel side-by-side */
+    .content-wrapper {
         display: flex;
-    }
-
-    /* Split view: Table on left, detail panel on right */
-    .container {
         flex-direction: row;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
     }
 
     .table-container {
         flex: 1;
-        min-width: 0; /* Allow flex shrinking */
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     .detail-panel {
@@ -1208,7 +1222,6 @@ textarea,
         transform: none !important;
         box-shadow: none;
         border-left: 2px solid var(--border-color);
-        height: 100%;
         overflow-y: auto;
     }
 
