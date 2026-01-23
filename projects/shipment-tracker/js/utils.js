@@ -499,7 +499,97 @@
 
         // Performance
         debounce: debounce,
-        throttle: throttle
+        throttle: throttle,
+
+        // Mobile UI
+        truncateAWB: truncateAWB,
+        getStatusIcon: getStatusIcon,
+        getStatusColor: getStatusColor
     };
+
+    // ============================================================
+    // MOBILE UI HELPERS
+    // ============================================================
+
+    /**
+     * Truncate AWB for mobile display
+     * Format: "1...23456" (first digit + last 5 digits)
+     * @param {string} awb - Full tracking number
+     * @returns {string} Truncated AWB
+     */
+    function truncateAWB(awb) {
+        if (!awb || typeof awb !== 'string') {
+            return '';
+        }
+
+        awb = awb.trim();
+
+        // If AWB is 7 characters or less, show full
+        if (awb.length <= 7) {
+            return awb;
+        }
+
+        // Get first character and last 5 characters
+        var first = awb.charAt(0);
+        var last = awb.slice(-5);
+
+        return first + '...' + last;
+    }
+
+    /**
+     * Get status icon emoji
+     * @param {string} signal - Delivery signal
+     * @returns {string} Emoji icon
+     */
+    function getStatusIcon(signal) {
+        if (!signal) {
+            return '📦';
+        }
+
+        switch (signal.toUpperCase()) {
+            case 'DELIVERY':
+                return '✅'; // Delivered (green)
+            case 'IN_TRANSIT':
+                return '🚚'; // In Transit (blue)
+            case 'OUT_FOR_DELIVERY':
+                return '🏠'; // Out for Delivery (purple)
+            case 'PICKUP':
+                return '📦'; // Pickup (orange)
+            case 'EXCEPTION':
+                return '⚠️'; // Exception (red)
+            case 'FAILED':
+                return '❌'; // Failed (dark red)
+            default:
+                return '📦'; // Default
+        }
+    }
+
+    /**
+     * Get status color for CSS
+     * @param {string} signal - Delivery signal
+     * @returns {string} CSS color value
+     */
+    function getStatusColor(signal) {
+        if (!signal) {
+            return '#6b7280'; // Gray
+        }
+
+        switch (signal.toUpperCase()) {
+            case 'DELIVERY':
+                return '#10b981'; // Green
+            case 'IN_TRANSIT':
+                return '#3b82f6'; // Blue
+            case 'OUT_FOR_DELIVERY':
+                return '#8b5cf6'; // Purple
+            case 'PICKUP':
+                return '#f59e0b'; // Orange
+            case 'EXCEPTION':
+                return '#ef4444'; // Red
+            case 'FAILED':
+                return '#991b1b'; // Dark Red
+            default:
+                return '#6b7280'; // Gray
+        }
+    }
 
 })(window);

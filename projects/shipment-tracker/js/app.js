@@ -184,6 +184,7 @@
             console.log('[App] Loaded', this.trackings.length, 'trackings');
 
             this.renderTable();
+            this.renderMobileCards();
 
         } catch (err) {
             console.error('[App] Failed to load trackings:', err);
@@ -420,6 +421,173 @@
     };
 
     // ============================================================
+    // MOBILE CARDS RENDERING
+    // ============================================================
+
+    ShipmentTrackerApp.prototype.renderMobileCards = function() {
+        var container = document.getElementById('mobileCardsContainer');
+
+        // Clear existing cards
+        container.innerHTML = '';
+
+        if (this.filteredTrackings.length === 0) {
+            // Show empty state
+            var emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-state';
+            emptyDiv.style.textAlign = 'center';
+            emptyDiv.style.padding = '2rem';
+            emptyDiv.innerHTML = '<div class="empty-icon">📦</div><h3>No Tracking Data</h3><p>Add your first tracking number above to get started.</p>';
+            container.appendChild(emptyDiv);
+            return;
+        }
+
+        // Detect duplicate AWBs (after truncation)
+        var truncatedMap = {};
+        for (var i = 0; i < this.filteredTrackings.length; i++) {
+            var awb = this.filteredTrackings[i].awb;
+            var truncated = TrackingUtils.truncateAWB(awb);
+            if (!truncatedMap[truncated]) {
+                truncatedMap[truncated] = [];
+            }
+            truncatedMap[truncated].push(awb);
+        }
+
+        // Render cards
+        for (var j = 0; j < this.filteredTrackings.length; j++) {
+            var tracking = this.filteredTrackings[j];
+            var card = this.createMobileCard(tracking, truncatedMap);
+            container.appendChild(card);
+        }
+    };
+
+    ShipmentTrackerApp.prototype.createMobileCard = function(tracking, truncatedMap) {
+        var self = this;
+        var card = document.createElement('div');
+        card.className = 'shipment-card';
+        card.dataset.awb = tracking.awb;
+
+        // Detect if truncated AWB has duplicates
+        var truncated = TrackingUtils.truncateAWB(tracking.awb);
+        var hasDuplicates = truncatedMap[truncated] && truncatedMap[truncated].length > 1;
+
+        // Card Header
+        var header = document.createElement('div');
+        header.className = 'card-header';
+
+        // Status Icon
+        var iconDiv = document.createElement('div');
+        iconDiv.className = 'card-status-icon';
+        iconDiv.style.backgroundColor = TrackingUtils.getStatusColor(tracking.deliverySignal);
+        iconDiv.textContent = TrackingUtils.getStatusIcon(tracking.deliverySignal);
+        header.appendChild(iconDiv);
+
+        // Card Info
+        var info = document.createElement('div');
+        info.className = 'card-info';
+
+        var awbDiv = document.createElement('div');
+        awbDiv.className = 'card-awb';
+        awbDiv.textContent = truncated;
+
+        // Add duplicate badge if needed
+        if (hasDuplicates) {
+            var badge = document.createElement('span');
+            badge.className = 'card-duplicate-badge';
+            badge.textContent = truncatedMap[truncated].length + 'x';
+            badge.title = 'Multiple AWBs with similar numbers';
+            awbDiv.appendChild(badge);
+        }
+
+        info.appendChild(awbDiv);
+
+        var carrierDiv = document.createElement('div');
+        carrierDiv.className = 'card-carrier';
+        carrierDiv.textContent = tracking.carrier + ' • ' + tracking.status;
+        info.appendChild(carrierDiv);
+
+        header.appendChild(info);
+
+        // Expand Icon
+        var expandIcon = document.createElement('div');
+        expandIcon.className = 'card-expand-icon';
+        expandIcon.textContent = '⌄';
+        header.appendChild(expandIcon);
+
+        card.appendChild(header);
+
+        // Card Body (Collapsed by default)
+        var body = document.createElement('div');
+        body.className = 'card-body';
+
+        var details = document.createElement('div');
+        details.className = 'card-details';
+
+        // Full AWB
+        this.addCardDetailRow(details, 'Full AWB', tracking.awb);
+
+        // Origin → Destination
+        var route = this.formatLocation(tracking.origin) + ' → ' + this.formatLocation(tracking.destination);
+        this.addCardDetailRow(details, 'Route', route);
+
+        // Est. Delivery
+        this.addCardDetailRow(details, 'Est. Delivery', tracking.estimatedDelivery || 'N/A');
+
+        // Last Updated
+        this.addCardDetailRow(details, 'Last Updated', this.formatDate(tracking.lastUpdated));
+
+        body.appendChild(details);
+
+        // Card Actions
+        var actions = document.createElement('div');
+        actions.className = 'card-actions';
+
+        var viewBtn = document.createElement('button');
+        viewBtn.className = 'btn-secondary';
+        viewBtn.textContent = '📋 Details';
+        viewBtn.onclick = function(e) {
+            e.stopPropagation();
+            self.showDetail(tracking.awb);
+        };
+        actions.appendChild(viewBtn);
+
+        var deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-danger';
+        deleteBtn.textContent = '🗑️ Delete';
+        deleteBtn.onclick = function(e) {
+            e.stopPropagation();
+            self.deleteTracking(tracking.awb);
+        };
+        actions.appendChild(deleteBtn);
+
+        body.appendChild(actions);
+        card.appendChild(body);
+
+        // Toggle expand/collapse
+        header.onclick = function() {
+            card.classList.toggle('expanded');
+        };
+
+        return card;
+    };
+
+    ShipmentTrackerApp.prototype.addCardDetailRow = function(container, label, value) {
+        var row = document.createElement('div');
+        row.className = 'card-detail-row';
+
+        var labelDiv = document.createElement('div');
+        labelDiv.className = 'card-detail-label';
+        labelDiv.textContent = label + ':';
+        row.appendChild(labelDiv);
+
+        var valueDiv = document.createElement('div');
+        valueDiv.className = 'card-detail-value';
+        valueDiv.textContent = value;
+        row.appendChild(valueDiv);
+
+        container.appendChild(row);
+    };
+
+    // ============================================================
     // FILTERING
     // ============================================================
 
@@ -436,6 +604,7 @@
         }.bind(this));
 
         this.renderTable();
+        this.renderMobileCards();
     };
 
     // ============================================================
