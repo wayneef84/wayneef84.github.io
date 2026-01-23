@@ -285,6 +285,13 @@ class SlotMachine {
             setTimeout(() => spinBtn.classList.remove('lever-pull'), 600);
         }
 
+        // Animate physical lever arm
+        const leverArm = document.querySelector('.lever-arm');
+        if(leverArm) {
+            leverArm.classList.add('pulling');
+            setTimeout(() => leverArm.classList.remove('pulling'), 600);
+        }
+
         // Check if we're in free spins mode
         const isFreeSpins = this.freeSpinsRemaining > 0;
 
@@ -307,6 +314,12 @@ class SlotMachine {
         this.particles = [];
         this.cascadeMultiplier = 1; // Reset cascade multiplier
         this.bonusTriggered = false;
+
+        // Speed up marquee lights during spin
+        const marquee = document.querySelector('.marquee-lights');
+        if(marquee) {
+            marquee.classList.add('spinning');
+        }
 
         const overlay = document.getElementById('winOverlay');
         if(overlay) overlay.classList.remove('active');
@@ -425,6 +438,13 @@ class SlotMachine {
 
     endSpin() {
         this.isSpinning = false;
+
+        // Slow down marquee lights when spin ends
+        const marquee = document.querySelector('.marquee-lights');
+        if(marquee) {
+            marquee.classList.remove('spinning');
+        }
+
         this.checkExpandingWilds(); // Check for expanding wilds first
         this.evaluateWins();
         this.updateUI();

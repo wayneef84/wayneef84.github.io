@@ -509,6 +509,169 @@ canvas {
     pointer-events: none;
 }
 
+/* Physical Slot Machine Lever */
+.slot-lever {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+}
+
+.lever-ball {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000, #aa0000);
+    box-shadow:
+        0 4px 8px rgba(0,0,0,0.5),
+        inset -2px -2px 8px rgba(0,0,0,0.3),
+        inset 2px 2px 4px rgba(255,100,100,0.4);
+    position: absolute;
+    top: -20px;
+    left: 10px;
+}
+
+.lever-arm {
+    width: 8px;
+    height: 180px;
+    background: linear-gradient(to right, #888, #ccc, #888);
+    border-radius: 4px;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.4);
+    transform-origin: top center;
+}
+
+.lever-base {
+    width: 60px;
+    height: 30px;
+    background: linear-gradient(to bottom, #666, #333);
+    border-radius: 8px;
+    position: absolute;
+    bottom: -30px;
+    left: -26px;
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.6),
+        inset 0 -1px 3px rgba(0,0,0,0.5);
+}
+
+/* Lever swing animation */
+@keyframes lever-swing {
+    0% { transform: rotate(0deg); }
+    30% { transform: rotate(25deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.lever-arm.pulling {
+    animation: lever-swing 600ms ease-out;
+}
+
+/* Hide lever on small screens */
+@media (max-width: 600px) {
+    .slot-lever {
+        display: none;
+    }
+}
+
+/* Marquee Lights Top Cabinet */
+.marquee-lights {
+    position: absolute;
+    top: -80px;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: linear-gradient(to bottom, #8b4513, #654321);
+    border: 3px solid #c0c0c0;
+    border-bottom: none;
+    border-radius: 15px 15px 0 0;
+    box-shadow:
+        inset 0 2px 8px rgba(255,255,255,0.3),
+        0 -4px 12px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.marquee-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow:
+        0 0 10px #ffd700,
+        0 0 20px #ffa500,
+        2px 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 8px;
+}
+
+.light-strip {
+    display: flex;
+    gap: 15px;
+}
+
+.light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff, #ffd700, #ff8800);
+    box-shadow:
+        0 0 8px #ffd700,
+        0 0 15px #ffa500,
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+}
+
+/* Chase light animation */
+@keyframes chase-lights {
+    0%, 100% {
+        opacity: 0.3;
+        box-shadow: 0 0 2px #666;
+        transform: scale(0.9);
+    }
+    12.5% {
+        opacity: 1;
+        box-shadow:
+            0 0 15px #ffd700,
+            0 0 25px #ffa500,
+            0 0 35px #ff8800;
+        transform: scale(1.1);
+    }
+}
+
+.light:nth-child(1) { animation: chase-lights 2s infinite; animation-delay: 0s; }
+.light:nth-child(2) { animation: chase-lights 2s infinite; animation-delay: 0.25s; }
+.light:nth-child(3) { animation: chase-lights 2s infinite; animation-delay: 0.5s; }
+.light:nth-child(4) { animation: chase-lights 2s infinite; animation-delay: 0.75s; }
+.light:nth-child(5) { animation: chase-lights 2s infinite; animation-delay: 1s; }
+.light:nth-child(6) { animation: chase-lights 2s infinite; animation-delay: 1.25s; }
+.light:nth-child(7) { animation: chase-lights 2s infinite; animation-delay: 1.5s; }
+.light:nth-child(8) { animation: chase-lights 2s infinite; animation-delay: 1.75s; }
+
+/* Speed up chase lights during spin */
+.spinning .light {
+    animation-duration: 0.8s !important;
+}
+
+/* Simplify marquee on mobile */
+@media (max-width: 600px) {
+    .marquee-lights {
+        top: -60px;
+        height: 55px;
+        padding: 0 10px;
+    }
+
+    .marquee-title {
+        font-size: 24px;
+        letter-spacing: 4px;
+    }
+
+    .light-strip .light:nth-child(n+5) {
+        display: none; /* Show only 4 lights on mobile */
+    }
+
+    .light-strip {
+        gap: 10px;
+    }
+}
+
 /* D. Controls (Bottom) */
 .controls {
     background: linear-gradient(180deg, #4a0080 0%, #2d0052 50%, #1a0033 100%);
