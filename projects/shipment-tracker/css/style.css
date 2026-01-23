@@ -534,13 +534,13 @@ textarea,
 .stat-value {
     font-size: 2rem;
     font-weight: bold;
-    color: #1e40af; /* Darker blue for better contrast */
+    color: rgba(255, 255, 255, 0.95); /* White for contrast */
     margin-bottom: 0.25rem;
 }
 
 .stat-label {
     font-size: 0.85rem;
-    color: #374151; /* Darker gray for better readability */
+    color: rgba(255, 255, 255, 0.85); /* Light white */
     font-weight: 600;
 }
 
