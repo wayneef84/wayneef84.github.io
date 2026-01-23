@@ -4,12 +4,150 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Fong Family Arcade** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+This repository contains two types of projects:
+
+### 🎮 Games (`/games/`)
+**Fong Family Arcade** - A browser-based game collection for the whole family:
 - **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
 - **Xiangqi** (v0.3.1): Fully playable Chinese Chess with AI opponent.
 - **Card Games** (In Progress): Blackjack, War, Euchre, Big 2 — built on shared Card Engine.
+
+### 🛠️ Utility Projects (`/projects/`)
+Non-game applications and tools:
+- **Shipment Tracker** (v1.1.0): Multi-carrier shipment tracking with IndexedDB storage, mobile-first card layout, AWB truncation, duplicate detection, and export capabilities (DHL, FedEx, UPS).
+  - **Documentation:** `projects/shipment-tracker/ARCHITECTURE.md` (comprehensive guide)
+  - **Current Priority:** Mobile UX overhaul (Priority 0 from TODO.md)
+
+**Key Distinction:**
+- `/games/` = Entertainment, interactive experiences
+- `/projects/` = Productivity tools, utilities, applications
+
+---
+
+## 📚 Documentation Maintenance Policy
+
+**CRITICAL:** When making changes to ANY project, you MUST update related documentation files.
+
+### Documentation Structure
+
+Each project has its own documentation suite:
+
+```
+/projects/[project-name]/
+├── ARCHITECTURE.md    # System design, how it works
+├── TODO.md           # Feature roadmap, priorities
+├── CHANGELOG.md      # Version history
+├── README.md         # Getting started, overview
+├── CONFIG.md         # Configuration guide
+└── TESTING.md        # Testing procedures
+```
+
+### Update Rules
+
+**When you make code changes:**
+
+1. **ARCHITECTURE.md** - Update if:
+   - Adding new modules/files
+   - Changing data structures
+   - Modifying API integrations
+   - Altering data flow
+   - Adding new dependencies
+   - Changing design patterns
+
+2. **TODO.md** - Update if:
+   - Completing tasks (mark with ✅)
+   - Adding new features to roadmap
+   - Reprioritizing items
+   - Discovering bugs
+
+3. **CHANGELOG.md** - Update if:
+   - Releasing new version
+   - Making breaking changes
+   - Adding significant features
+   - Fixing important bugs
+
+4. **README.md** - Update if:
+   - Changing setup instructions
+   - Adding new features users should know about
+   - Modifying quick start guide
+
+5. **CONFIG.md** - Update if:
+   - Adding new configuration options
+   - Changing settings structure
+   - Adding API key requirements
+
+### Shipment Tracker Specific Rules
+
+**File Relationships:**
+
+- **js/api/[carrier].js** → Update ARCHITECTURE.md "API Integration" section
+- **js/db.js** → Update ARCHITECTURE.md "Storage System" section
+- **css/style.css (breakpoints)** → Update ARCHITECTURE.md "Mobile-First Design"
+- **index.html (new features)** → Update TODO.md (mark completed), CHANGELOG.md
+- **js/utils.js (new helpers)** → Update ARCHITECTURE.md "Utilities" section
+
+**Example Workflow:**
+
+```
+1. User asks: "Add OnTrac carrier support"
+
+2. You implement:
+   - Create js/api/ontrac.js
+   - Update js/utils.js (detectCarrier)
+   - Update js/normalizer.js
+   - Update index.html (settings)
+
+3. You MUST update docs:
+   - ARCHITECTURE.md → Add OnTrac to "API Integration" section
+   - ARCHITECTURE.md → Update "Adding New Carrier" example
+   - TODO.md → Mark "Add OnTrac" as completed ✅
+   - CHANGELOG.md → Add to "Unreleased" section
+
+4. You commit:
+   git commit -m "feat: Add OnTrac carrier support
+
+   - Add OnTrac API adapter
+   - Update carrier detection
+   - Update normalizer
+   - Update documentation (ARCHITECTURE.md, TODO.md)
+
+   Refs: TODO.md Priority 1"
+```
+
+### Documentation First Approach
+
+For MAJOR features (Priority 0-1):
+1. Update ARCHITECTURE.md with design FIRST
+2. Get user approval
+3. Implement code
+4. Update TODO.md and CHANGELOG.md
+
+For MINOR features (Priority 2+):
+1. Implement code
+2. Update docs immediately after
+3. Commit code + docs together
+
+### Validation Checklist
+
+Before committing, ask yourself:
+
+- [ ] Did I add new files? → Update ARCHITECTURE.md file structure
+- [ ] Did I change data structures? → Update ARCHITECTURE.md schemas
+- [ ] Did I complete a TODO item? → Mark as ✅ in TODO.md
+- [ ] Is this a new version? → Update CHANGELOG.md
+- [ ] Did I change how users configure the app? → Update CONFIG.md
+- [ ] Will users notice this change? → Update README.md
+
+### LLM Context Preservation
+
+**For future LLMs:**
+- Always read ARCHITECTURE.md at session start for Shipment Tracker work
+- ARCHITECTURE.md contains critical design decisions (ES5, BYOK, offline-first)
+- TODO.md shows current priorities - check before suggesting features
+- When in doubt about "how things work", consult ARCHITECTURE.md first
+- NEVER implement features that contradict ARCHITECTURE.md design principles
 
 ---
 
