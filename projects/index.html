@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Projects - Fong Family Arcade</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .project-card {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-right: 15px;
+        }
+
+        .project-title-group h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #667eea;
+        }
+
+        .project-version {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .project-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.in-development {
+            background: #f59e0b;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .features-list li {
+            padding: 5px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .features-list li:before {
+            content: '✓ ';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .updates-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .updates-section h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .update-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .update-date {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .update-changes {
+            list-style: none;
+            padding: 0;
+        }
+
+        .update-changes li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .update-changes li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .back-link a:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ Projects</h1>
+            <p class="subtitle">Utility tools and applications</p>
+        </header>
+
+        <div class="projects-grid">
+            <!-- Shipment Tracker -->
+            <div class="project-card">
+                <div class="project-header">
+                    <div class="project-icon">📦</div>
+                    <div class="project-title-group">
+                        <h2>Shipment Tracker</h2>
+                        <div class="project-version">v1.0.0</div>
+                    </div>
+                </div>
+
+                <p class="project-description">
+                    Multi-carrier shipment tracking with smart API rate limiting. Track packages from DHL, FedEx, UPS, and USPS in one place with offline-first storage and beautiful analytics.
+                </p>
+
+                <div class="project-meta">
+                    <span class="status-badge">✓ Production Ready</span>
+                    <span class="meta-badge">📱 Mobile First</span>
+                    <span class="meta-badge">🌙 Dark Mode</span>
+                </div>
+
+                <ul class="features-list">
+                    <li>Auto-detect carrier from tracking number</li>
+                    <li>IndexedDB offline storage</li>
+                    <li>JSON payload viewer & download</li>
+                    <li>Export to JSON/CSV/Excel</li>
+                    <li>Smart rate limiting (10min cooldown)</li>
+                    <li>Cloudflare Worker proxy support</li>
+                </ul>
+
+                <div class="project-links">
+                    <a href="shipment-tracker/" class="btn btn-primary">🚀 Launch App</a>
+                    <a href="shipment-tracker/CHANGELOG.md" class="btn btn-secondary">📋 Changelog</a>
+                    <a href="shipment-tracker/README.md" class="btn btn-secondary">📖 Docs</a>
+                </div>
+            </div>
+
+            <!-- Future Projects Placeholder -->
+            <div class="project-card" style="opacity: 0.6;">
+                <div class="project-header">
+                    <div class="project-icon">💰</div>
+                    <div class="project-title-group">
+                        <h2>Budget Tracker</h2>
+                        <div class="project-version">Coming Soon</div>
+                    </div>
+                </div>
+
+                <p class="project-description">
+                    Personal finance management tool with expense tracking, budget planning, and financial insights.
+                </p>
+
+                <div class="project-meta">
+                    <span class="status-badge in-development">🚧 Planned</span>
+                </div>
+
+                <ul class="features-list">
+                    <li>Expense categorization</li>
+                    <li>Budget alerts & notifications</li>
+                    <li>Visual charts & reports</li>
+                    <li>Multi-currency support</li>
+                </ul>
+            </div>
+
+            <div class="project-card" style="opacity: 0.6;">
+                <div class="project-header">
+                    <div class="project-icon">📝</div>
+                    <div class="project-title-group">
+                        <h2>Task Manager</h2>
+                        <div class="project-version">Coming Soon</div>
+                    </div>
+                </div>
+
+                <p class="project-description">
+                    Simple, beautiful task management with projects, tags, and priorities. Built for speed and clarity.
+                </p>
+
+                <div class="project-meta">
+                    <span class="status-badge in-development">🚧 Planned</span>
+                </div>
+
+                <ul class="features-list">
+                    <li>Project organization</li>
+                    <li>Kanban board view</li>
+                    <li>Due date reminders</li>
+                    <li>Collaborative features</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Recent Updates -->
+        <div class="updates-section">
+            <h2>📰 Recent Updates</h2>
+
+            <div class="update-item">
+                <div class="update-date">January 23, 2026 - Shipment Tracker v1.0.0</div>
+                <ul class="update-changes">
+                    <li>🎉 Initial release with DHL, FedEx, UPS support</li>
+                    <li>✨ Auto-detect carrier from tracking number</li>
+                    <li>🔍 JSON payload viewer with syntax highlighting</li>
+                    <li>📥 Download raw payloads as JSON files</li>
+                    <li>🛡️ Force refresh with confirmation (off by default)</li>
+                    <li>📱 Mobile-first responsive design</li>
+                    <li>🌙 Dark mode support</li>
+                </ul>
+            </div>
+
+            <div class="update-item">
+                <div class="update-date">January 23, 2026 - Bug Fixes</div>
+                <ul class="update-changes">
+                    <li>🐛 Fixed Unix epoch date display (now shows "Not yet checked")</li>
+                    <li>🎨 Improved payload viewer styling</li>
+                    <li>⚙️ Fixed force refresh button behavior</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Upcoming Features -->
+        <div class="updates-section">
+            <h2>🚀 Upcoming Features</h2>
+
+            <div class="update-item">
+                <div class="update-date">Shipment Tracker - Planned Features</div>
+                <ul class="update-changes">
+                    <li>🤖 Query engine for smart batching & auto-refresh</li>
+                    <li>🔔 Push notifications for delivered shipments</li>
+                    <li>☁️ Cloud sync with Firebase/Supabase</li>
+                    <li>📊 Analytics dashboard (delivery times, carrier performance)</li>
+                    <li>🔗 Webhooks support for carrier callbacks</li>
+                    <li>📧 Email notifications</li>
+                    <li>🎯 Advanced filtering (date ranges, custom queries)</li>
+                    <li>🔄 Import from CSV/JSON</li>
+                    <li>📈 Excel export with charts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="../">← Back to Games</a>
+        </div>
+    </div>
+</body>
+</html>
