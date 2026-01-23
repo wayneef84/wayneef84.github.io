@@ -1064,18 +1064,26 @@
 
     ShipmentTrackerApp.prototype.showEmptyDetailState = function() {
         var panel = document.getElementById('detailPanel');
+        if (!panel) return;
+
         panel.classList.remove('hidden');
 
         // Show placeholder content
-        document.getElementById('detailAWB').textContent = 'No selection';
-        document.getElementById('detailCarrier').textContent = '';
-        document.getElementById('detailStatus').textContent = '';
-        document.getElementById('detailOrigin').textContent = '';
-        document.getElementById('detailDestination').textContent = '';
-        document.getElementById('detailEstDelivery').textContent = '';
-        document.getElementById('detailLastUpdated').textContent = '';
-        document.getElementById('detailEvents').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Click a shipment from the table to view details</p>';
-        document.getElementById('payloadViewer').innerHTML = '';
+        var awbEl = document.getElementById('detailAWB');
+        if (awbEl) awbEl.textContent = 'No selection';
+
+        var detailInfo = document.getElementById('detailInfo');
+        if (detailInfo) {
+            detailInfo.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 1rem;">Select a shipment from the table</p>';
+        }
+
+        var eventsEl = document.getElementById('detailEvents');
+        if (eventsEl) {
+            eventsEl.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Click a shipment from the table to view details</p>';
+        }
+
+        var payloadEl = document.getElementById('payloadViewer');
+        if (payloadEl) payloadEl.innerHTML = '';
 
         // Hide action buttons
         var deleteBtn = document.getElementById('deleteTrackingBtn');
