@@ -529,8 +529,8 @@
             return awb;
         }
 
-        // Get first character and last 5 characters
-        var first = awb.charAt(0);
+        // Get first 2 characters and last 5 characters
+        var first = awb.substring(0, 2);
         var last = awb.slice(-5);
 
         return first + '...' + last;

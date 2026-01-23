@@ -1246,7 +1246,7 @@
     ShipmentTrackerApp.prototype.truncateAWB = function(awb) {
         if (!awb) return 'N/A';
         if (awb.length <= 10) return awb;
-        return awb.substring(0, 6) + '...' + awb.substring(awb.length - 4);
+        return awb.substring(0, 2) + '...' + awb.substring(awb.length - 5);
     };
 
     ShipmentTrackerApp.prototype.formatLocation = function(loc) {
