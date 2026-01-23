@@ -152,7 +152,7 @@
                         autocomplete="off"
                         oninput="window.app && window.app.detectCarrierFromAWB && window.app.detectCarrierFromAWB()">
 
-                    <select id="carrierSelect" required>
+                    <select id="carrierSelect">
                         <option value="">Auto-Detect Carrier</option>
                         <option value="DHL">DHL Express</option>
                         <option value="FedEx">FedEx</option>
@@ -173,25 +173,28 @@
 
             <div class="bulk-import">
                 <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
-                <button id="importBtn" class="btn-secondary">📥 Import from File</button>
+                <button id="importBtn" class="btn-secondary btn-icon-expand" title="Import from File">
+                    <span class="icon">📥</span>
+                    <span class="text">Import from File</span>
+                </button>
             </div>
         </div>
 
         <!-- Statistics Dashboard -->
         <div id="statsContainer" class="stats-container hidden">
-            <div class="stat-card">
+            <div class="stat-card" data-filter="total" id="statCardTotal">
                 <div class="stat-value" id="statTotal">0</div>
                 <div class="stat-label">Total</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-filter="active" id="statCardActive">
                 <div class="stat-value" id="statActive">0</div>
                 <div class="stat-label">Active</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-filter="delivered" id="statCardDelivered">
                 <div class="stat-value" id="statDelivered">0</div>
                 <div class="stat-label">Delivered</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" data-filter="exception" id="statCardException">
                 <div class="stat-value" id="statException">0</div>
                 <div class="stat-label">Issues</div>
             </div>
@@ -285,7 +288,10 @@
                 <div class="detail-section">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>Raw Payload</h3>
-                        <button id="downloadPayloadBtn" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">📥 Download JSON</button>
+                        <button id="downloadPayloadBtn" class="btn-secondary btn-icon-expand" title="Download JSON">
+                            <span class="icon">📥</span>
+                            <span class="text">Download JSON</span>
+                        </button>
                     </div>
                     <div id="payloadViewer" class="payload-viewer">
                         <!-- Populated by JavaScript -->

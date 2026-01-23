@@ -25,7 +25,8 @@
         this.currentFilters = {
             carrier: '',
             status: '',
-            search: ''
+            search: '',
+            statFilter: 'total' // 'total', 'active', 'delivered', 'exception'
         };
 
         // Settings
@@ -359,9 +360,10 @@
             row.classList.add('delivered');
         }
 
-        // AWB
+        // AWB (truncated)
         var awbCell = document.createElement('td');
-        awbCell.textContent = tracking.awb;
+        awbCell.textContent = this.truncateAWB(tracking.awb);
+        awbCell.title = tracking.awb; // Full AWB on hover
         row.appendChild(awbCell);
 
         // Carrier
@@ -369,11 +371,15 @@
         carrierCell.textContent = tracking.carrier;
         row.appendChild(carrierCell);
 
-        // Status
+        // Status (with icon)
         var statusCell = document.createElement('td');
+        var statusIcon = document.createElement('span');
+        statusIcon.textContent = this.getStatusIcon(tracking.deliverySignal) + ' ';
+        statusIcon.style.marginRight = '0.25rem';
         var statusBadge = document.createElement('span');
         statusBadge.className = 'status-badge status-' + tracking.deliverySignal.toLowerCase();
         statusBadge.textContent = tracking.status;
+        statusCell.appendChild(statusIcon);
         statusCell.appendChild(statusBadge);
         row.appendChild(statusCell);
 
@@ -591,16 +597,53 @@
     // FILTERING
     // ============================================================
 
+    ShipmentTrackerApp.prototype.toggleStatFilter = function(filterType) {
+        // If clicking same filter, toggle off (back to total)
+        if (this.currentFilters.statFilter === filterType && filterType !== 'total') {
+            this.currentFilters.statFilter = 'total';
+        } else {
+            this.currentFilters.statFilter = filterType;
+        }
+
+        // Update UI: highlight active card
+        var allCards = document.querySelectorAll('.stat-card');
+        for (var i = 0; i < allCards.length; i++) {
+            allCards[i].classList.remove('active');
+        }
+
+        if (this.currentFilters.statFilter === 'total') {
+            document.getElementById('statCardTotal').classList.add('active');
+        } else {
+            var activeCard = document.querySelector('.stat-card[data-filter="' + this.currentFilters.statFilter + '"]');
+            if (activeCard) {
+                activeCard.classList.add('active');
+            }
+        }
+
+        this.applyFilters();
+    };
+
     ShipmentTrackerApp.prototype.applyFilters = function() {
         console.log('[App] Applying filters:', this.currentFilters);
 
         this.filteredTrackings = this.trackings.filter(function(t) {
+            // Stat filter
+            var matchesStatFilter = true;
+            if (this.currentFilters.statFilter === 'active') {
+                matchesStatFilter = !t.delivered;
+            } else if (this.currentFilters.statFilter === 'delivered') {
+                matchesStatFilter = t.delivered;
+            } else if (this.currentFilters.statFilter === 'exception') {
+                matchesStatFilter = t.deliverySignal === 'EXCEPTION' || t.deliverySignal === 'FAILED';
+            }
+            // total = show all, no filter
+
             var matchesCarrier = !this.currentFilters.carrier || t.carrier === this.currentFilters.carrier;
             var matchesStatus = !this.currentFilters.status || t.deliverySignal === this.currentFilters.status;
             var matchesSearch = !this.currentFilters.search ||
                                 t.awb.toLowerCase().includes(this.currentFilters.search.toLowerCase());
 
-            return matchesCarrier && matchesStatus && matchesSearch;
+            return matchesStatFilter && matchesCarrier && matchesStatus && matchesSearch;
         }.bind(this));
 
         this.renderTable();
@@ -725,6 +768,36 @@
 
         this.downloadFile(jsonStr, filename, 'application/json');
         this.showToast('Downloaded payload for ' + tracking.awb, 'success');
+    };
+
+    ShipmentTrackerApp.prototype.refreshAllTrackings = async function() {
+        console.log('[App] Refreshing all trackings');
+
+        try {
+            var activeTrackings = this.trackings.filter(function(t) {
+                return !t.delivered;
+            });
+
+            if (activeTrackings.length === 0) {
+                this.showToast('No active trackings to refresh', 'info');
+                return;
+            }
+
+            // TODO: Implement actual API refresh
+            // For now, just show a message
+            this.showToast('🔄 Refresh all coming soon! (' + activeTrackings.length + ' active trackings)', 'info');
+
+            // Future implementation:
+            // 1. Loop through active trackings
+            // 2. Call carrier adapter for each
+            // 3. Update IndexedDB with new data
+            // 4. Refresh UI
+            // 5. Show success summary
+
+        } catch (err) {
+            console.error('[App] Refresh all failed:', err);
+            this.showToast('Refresh failed: ' + err.message, 'error');
+        }
     };
 
     ShipmentTrackerApp.prototype.forceRefreshTracking = async function(awb) {
@@ -915,6 +988,25 @@
     // UI HELPERS
     // ============================================================
 
+    ShipmentTrackerApp.prototype.getStatusIcon = function(deliverySignal) {
+        var icons = {
+            'IN_TRANSIT': '🚚',
+            'OUT_FOR_DELIVERY': '📦',
+            'DELIVERED': '✅',
+            'EXCEPTION': '⚠️',
+            'FAILED': '❌',
+            'PENDING': '⏳',
+            'UNKNOWN': '❓'
+        };
+        return icons[deliverySignal] || icons.UNKNOWN;
+    };
+
+    ShipmentTrackerApp.prototype.truncateAWB = function(awb) {
+        if (!awb) return 'N/A';
+        if (awb.length <= 10) return awb;
+        return awb.substring(0, 6) + '...' + awb.substring(awb.length - 4);
+    };
+
     ShipmentTrackerApp.prototype.formatLocation = function(loc) {
         var parts = [];
         if (loc.city) parts.push(loc.city);
@@ -986,7 +1078,7 @@
 
         // Header buttons
         document.getElementById('refreshBtn').onclick = function() {
-            self.showToast('Refresh not yet implemented', 'info');
+            self.refreshAllTrackings();
         };
 
         document.getElementById('exportBtn').onclick = function() {
@@ -1084,6 +1176,15 @@
             self.currentFilters.search = this.value;
             self.applyFilters();
         };
+
+        // Stat card filters
+        var statCards = document.querySelectorAll('.stat-card');
+        for (var k = 0; k < statCards.length; k++) {
+            statCards[k].onclick = function() {
+                var filterType = this.getAttribute('data-filter');
+                self.toggleStatFilter(filterType);
+            };
+        }
 
         // Export panel
         document.getElementById('closeExportBtn').onclick = function() {

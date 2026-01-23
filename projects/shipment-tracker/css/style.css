@@ -419,6 +419,42 @@ textarea,
     flex: 1;
 }
 
+/* Icon-expand button (shows icon only, expands on hover/click) */
+.btn-icon-expand {
+    padding: 0.5rem;
+    flex: initial;
+    width: auto;
+    max-width: 44px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.3s ease, padding 0.3s ease;
+}
+
+.btn-icon-expand .icon {
+    display: inline-block;
+    font-size: 1.2rem;
+}
+
+.btn-icon-expand .text {
+    display: inline-block;
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-icon-expand:hover,
+.btn-icon-expand:focus,
+.btn-icon-expand.expanded {
+    max-width: 300px;
+    padding: 0.5rem 1rem;
+}
+
+.btn-icon-expand:hover .text,
+.btn-icon-expand:focus .text,
+.btn-icon-expand.expanded .text {
+    opacity: 1;
+}
+
 .btn-primary {
     background: var(--primary-color);
     color: white;
@@ -479,6 +515,24 @@ textarea,
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.stat-card.active {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.stat-card.active .stat-value,
+.stat-card.active .stat-label {
+    color: white;
 }
 
 .stat-value {
@@ -908,6 +962,8 @@ textarea,
     gap: 1rem;
     padding: 1rem;
     overflow-y: auto;
+    flex: 1;
+    min-height: 0; /* Critical for flexbox overflow */
 }
 
 .shipment-card {
