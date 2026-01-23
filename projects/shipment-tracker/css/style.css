@@ -1,0 +1,858 @@
+/**
+ * Shipment Tracker - Main Styles
+ * Mobile-First Responsive Layout
+ *
+ * @author Wayne Fong (wayneef84)
+ * @version 1.0.0
+ */
+
+/* ============================================================
+   RESET & BASE STYLES
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    /* Use dynamic viewport height for mobile */
+    height: 100dvh;
+    height: 100vh; /* Fallback */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+                 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-gradient);
+    height: 100dvh;
+    height: 100vh; /* Fallback */
+    overflow: hidden;
+
+    /* Safe area insets for notched devices */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+             env(safe-area-inset-bottom) env(safe-area-inset-left);
+
+    /* Touch optimization */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+/* Allow text selection in specific areas */
+input,
+textarea,
+.selectable {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* ============================================================
+   LAYOUT CONTAINER
+   ============================================================ */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--bg-primary);
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--header-bg);
+    border-bottom: 3px solid var(--primary-color);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.header-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Icon Buttons */
+.icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: var(--btn-bg);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.icon-btn:hover {
+    background: var(--btn-hover);
+    transform: scale(1.05);
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+
+.toast-container {
+    position: fixed;
+    top: calc(20px + env(safe-area-inset-top));
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.toast {
+    background: var(--toast-bg);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease-out;
+    font-size: 0.9rem;
+}
+
+.toast.toast-success { background: var(--success-color); }
+.toast.toast-error { background: var(--error-color); }
+.toast.toast-info { background: var(--info-color); }
+.toast.toast-warning { background: var(--warning-color); }
+
+.toast.fade-out {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ============================================================
+   PANELS (Settings, Export)
+   ============================================================ */
+
+.settings-panel,
+.export-panel {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    background: var(--panel-bg);
+    border: 3px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    z-index: 200;
+    max-width: 400px;
+    width: calc(100vw - 40px);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    animation: popIn 0.2s ease-out;
+}
+
+.settings-panel.hidden,
+.export-panel.hidden {
+    display: none;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.settings-panel h2,
+.export-panel h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.settings-section {
+    margin-bottom: 1.5rem;
+}
+
+.settings-section h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.settings-panel label,
+.export-panel label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.75rem;
+}
+
+.settings-panel label span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.settings-panel input[type="password"],
+.settings-panel input[type="text"],
+.settings-panel input[type="number"] {
+    padding: 0.6rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--input-bg);
+    color: var(--text-primary);
+}
+
+.settings-panel input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.checkbox-label {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.toggle-visibility {
+    margin-left: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border-color);
+    background: var(--btn-bg);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.settings-actions,
+.export-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* ============================================================
+   EXPORT PANEL
+   ============================================================ */
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.export-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--btn-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.export-option:hover {
+    border-color: var(--primary-color);
+    background: var(--btn-hover);
+    transform: translateX(5px);
+}
+
+.export-icon {
+    font-size: 2rem;
+}
+
+.export-label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.export-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.export-filters {
+    margin-bottom: 1rem;
+}
+
+/* ============================================================
+   ADD TRACKING SECTION
+   ============================================================ */
+
+.add-tracking-section {
+    padding: 1.5rem 1rem;
+    background: var(--section-bg);
+    border-bottom: 2px solid var(--border-light);
+    flex-shrink: 0;
+}
+
+.add-tracking-section h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.add-tracking-form {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.form-row input,
+.form-row select {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--input-bg);
+    color: var(--text-primary);
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-options {
+    margin-top: 0.75rem;
+}
+
+.form-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.form-options input[type="date"] {
+    padding: 0.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+}
+
+.bulk-import {
+    margin-top: 1rem;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-dark);
+}
+
+.btn-danger {
+    background: var(--error-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+    transform: translateY(0);
+}
+
+/* ============================================================
+   STATISTICS DASHBOARD
+   ============================================================ */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--section-bg);
+    border-bottom: 2px solid var(--border-light);
+    flex-shrink: 0;
+}
+
+.stats-container.hidden {
+    display: none;
+}
+
+.stat-card {
+    background: var(--stat-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+
+.filter-bar {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--section-bg);
+    border-bottom: 2px solid var(--border-light);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.filter-group select,
+.filter-group input {
+    flex: 1;
+    padding: 0.6rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+/* ============================================================
+   TRACKING TABLE
+   ============================================================ */
+
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+}
+
+#trackingTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#trackingTable thead {
+    position: sticky;
+    top: 0;
+    background: var(--table-header-bg);
+    z-index: 10;
+}
+
+#trackingTable th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--primary-color);
+    white-space: nowrap;
+}
+
+#trackingTable td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary);
+}
+
+#trackingTable tbody tr {
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+#trackingTable tbody tr:hover {
+    background: var(--row-hover);
+}
+
+#trackingTable tbody tr.delivered {
+    opacity: 0.7;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.empty-state.hidden {
+    display: none;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+/* ============================================================
+   DETAIL PANEL (Slide-in)
+   ============================================================ */
+
+.detail-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background: var(--panel-bg);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+    z-index: 300;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-panel:not(.hidden) {
+    transform: translateX(0);
+}
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--header-bg);
+    border-bottom: 3px solid var(--primary-color);
+    flex-shrink: 0;
+}
+
+.detail-header h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.detail-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.detail-section {
+    margin-bottom: 2rem;
+}
+
+.detail-section h3 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.detail-section dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+}
+
+.detail-section dt {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.detail-section dd {
+    color: var(--text-primary);
+}
+
+.event-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.event-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.event-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.event-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.25rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: 2px solid var(--panel-bg);
+}
+
+.event-time {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.event-desc {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.event-location {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.footer {
+    padding: 1rem;
+    text-align: center;
+    background: var(--footer-bg);
+    border-top: 2px solid var(--border-light);
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.footer p {
+    margin: 0.25rem 0;
+}
+
+.footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer .legal {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN (Tablet & Desktop)
+   ============================================================ */
+
+@media (min-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .settings-panel,
+    .export-panel {
+        width: 400px;
+    }
+
+    .add-tracking-section {
+        padding: 1.5rem 2rem;
+    }
+
+    .stats-container {
+        padding: 1.5rem 2rem;
+    }
+
+    .filter-bar {
+        padding: 1rem 2rem;
+    }
+
+    .table-container {
+        padding: 1.5rem 2rem;
+    }
+
+    #trackingTable {
+        font-size: 1rem;
+    }
+
+    .detail-panel {
+        max-width: 600px;
+    }
+
+    .toast-container {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .form-row {
+        flex-wrap: nowrap;
+    }
+
+    .export-options {
+        flex-direction: row;
+    }
+
+    .export-option {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-pickup { background: var(--status-pickup); color: white; }
+.status-transit { background: var(--status-transit); color: white; }
+.status-delivery { background: var(--status-delivery); color: white; }
+.status-delivered { background: var(--status-delivered); color: white; }
+.status-exception { background: var(--status-exception); color: white; }
+.status-failed { background: var(--status-failed); color: white; }

@@ -1,0 +1,215 @@
+MIT License
+
+Copyright (c) 2026 Wayne Fong (wayneef84)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+
+THIRD-PARTY API TERMS AND CONDITIONS
+
+This software integrates with third-party carrier APIs. Users of this software
+MUST comply with the terms of service of each carrier API they use:
+
+1. DHL Express Tracking API
+   - Terms: https://developer.dhl.com/legal
+   - Users must obtain their own API keys from DHL
+   - Users are responsible for compliance with DHL API terms
+   - DHL trademarks and data remain property of DHL
+
+2. FedEx Track API
+   - Terms: https://developer.fedex.com/terms
+   - Users must obtain their own API credentials from FedEx
+   - Users are responsible for compliance with FedEx API terms
+   - FedEx trademarks and data remain property of FedEx Corporation
+
+3. UPS Tracking API
+   - Terms: https://www.ups.com/upsdeveloperkit/downloadresource/agreementhtml
+   - Users must obtain their own API credentials from UPS
+   - Users are responsible for compliance with UPS API terms
+   - UPS trademarks and data remain property of United Parcel Service
+
+BY USING THIS SOFTWARE WITH ANY CARRIER API, YOU AGREE TO:
+- Obtain proper authorization and API keys from each carrier
+- Comply with rate limits and usage restrictions
+- Honor carrier terms of service and data usage policies
+- Not use the software for unauthorized commercial purposes without carrier approval
+- Indemnify the software authors from any API terms violations
+
+DISCLAIMER:
+The authors of this software are not affiliated with DHL, FedEx, UPS, or any
+carrier. This software is provided as a tool to help users access carrier APIs
+they are authorized to use. The authors assume no responsibility for misuse of
+carrier APIs or violations of carrier terms of service.
+
+================================================================================
+
+CREDITS AND ACKNOWLEDGMENTS
+
+Primary Author:
+- Wayne Fong (wayneef84) - https://github.com/wayneef84
+
+Development Assistance:
+- Claude Code by Anthropic - AI-assisted development tool
+  https://claude.ai/code
+
+Third-Party Libraries (Optional):
+- SheetJS (xlsx.js) - Excel export functionality
+  Apache License 2.0 - https://sheetjs.com
+
+UI Design Patterns:
+- Adapted from Fong Family Arcade games
+  https://github.com/wayneef84/fong-family-arcade
+
+================================================================================
+
+PRIVACY NOTICE
+
+This software stores all data locally in your browser using IndexedDB.
+
+- No data is sent to external servers (except carrier APIs)
+- API keys are stored in browser localStorage
+- Users control their own data
+- No analytics or tracking implemented
+- Optional cloud sync (Firebase/Supabase) requires user opt-in
+
+Users are responsible for:
+- Protecting their own API keys
+- Understanding carrier data policies
+- Managing their own stored shipment data
+- Ensuring compliance with applicable privacy laws (GDPR, CCPA, etc.)
+
+================================================================================
+
+DATA USAGE AND RETENTION
+
+This software is designed for personal and business use to track shipments.
+
+PERMITTED USES:
+- Personal shipment tracking
+- Business logistics management
+- Internal company tracking dashboards
+- Educational purposes
+- Development and testing
+
+PROHIBITED USES:
+- Commercial resale of carrier data without authorization
+- Competitive intelligence gathering
+- Automated scraping at scale
+- Violation of carrier API rate limits
+- Sharing API keys across multiple users/organizations
+- Using data for purposes outside carrier API terms
+
+DATA RETENTION:
+- Users control retention periods for stored tracking data
+- Raw API payloads can be pruned manually or automatically
+- No automated data deletion (user discretion)
+- Export functionality allows data portability
+
+================================================================================
+
+LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW:
+
+1. The authors provide this software "AS IS" without warranty of any kind
+2. The authors are not responsible for:
+   - API downtime or changes by carriers
+   - Data loss due to browser cache clearing
+   - Incorrect tracking information from carrier APIs
+   - Rate limit violations or API access revocation
+   - Financial losses from delayed shipments
+   - Privacy breaches from improper API key handling
+
+3. Users acknowledge that:
+   - Carrier APIs may change without notice
+   - This software may require updates to maintain compatibility
+   - API keys must be kept confidential
+   - Carrier data accuracy is not guaranteed by this software
+
+4. Maximum liability limited to amount paid for software (free = $0)
+
+================================================================================
+
+EXPORT COMPLIANCE
+
+Users must comply with applicable export control laws and regulations when using
+this software internationally, including but not limited to:
+
+- U.S. Export Administration Regulations (EAR)
+- International Traffic in Arms Regulations (ITAR)
+- Sanctions programs administered by OFAC
+
+Users are solely responsible for determining applicability of export laws to
+their use case.
+
+================================================================================
+
+MODIFICATIONS AND CONTRIBUTIONS
+
+MODIFICATIONS:
+- Users may modify this software for personal/internal use
+- Modified versions should credit original author (wayneef84)
+- Modifications shared publicly must retain MIT License terms
+- Changes should be documented in derivative works
+
+CONTRIBUTIONS:
+- Contributions welcome via GitHub pull requests
+- Contributors grant MIT License to their contributions
+- Contributors must own copyright to contributed code
+- Contributors affirm code does not violate third-party rights
+
+================================================================================
+
+TRADEMARK NOTICE
+
+"Shipment Tracker" is not a registered trademark.
+
+Third-party trademarks mentioned in this software:
+- DHL® is a registered trademark of DHL International GmbH
+- FedEx® is a registered trademark of Federal Express Corporation
+- UPS® is a registered trademark of United Parcel Service of America, Inc.
+
+Use of carrier trademarks is for identification purposes only and does not
+imply endorsement or affiliation.
+
+================================================================================
+
+SEVERABILITY
+
+If any provision of this license is found unenforceable, the remaining
+provisions shall continue in full force and effect.
+
+================================================================================
+
+GOVERNING LAW
+
+This license shall be governed by and construed in accordance with the laws
+applicable in the jurisdiction where the software is used, without regard to
+conflict of law principles.
+
+================================================================================
+
+For questions or issues, please contact:
+- GitHub: https://github.com/wayneef84
+- Project: https://github.com/wayneef84/fong-family-arcade
+- License Questions: Create an issue on GitHub
+
+Last Updated: January 22, 2026
+Version: 1.0

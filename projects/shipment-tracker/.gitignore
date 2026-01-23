@@ -1,0 +1,40 @@
+# Shipment Tracker - Git Ignore File
+# Prevents sensitive data from being committed
+
+# API Keys and Secrets
+*.key
+*.pem
+.env
+.env.local
+.env.production
+secrets.json
+api-keys.json
+
+# Development
+node_modules/
+.DS_Store
+.vscode/
+.idea/
+
+# Testing
+coverage/
+*.log
+
+# Build artifacts (if added later)
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# User-specific data (don't commit these)
+user-data/
+backups/
+exports/
+
+# Cloudflare Worker local config (if using Wrangler CLI)
+wrangler.toml
+.wrangler/

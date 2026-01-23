@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipment Tracker - Quick Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .info-box code {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .test-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button.secondary {
+            background: #6c757d;
+        }
+
+        button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .result.error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .result pre {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .detected-carrier {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .sample-awbs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .sample-awbs button {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Shipment Tracker - Quick Test</h1>
+        <p class="subtitle">Test API integration without modifying code</p>
+
+        <div class="info-box">
+            <h3>💡 URL Parameters</h3>
+            <p>You can pre-fill values using URL parameters:</p>
+            <code>?dhl=YOUR_KEY&awb=1234567890</code><br>
+            <code>?ups=YOUR_KEY&usps=YOUR_KEY&fedex_client=ID&fedex_secret=SECRET</code>
+        </div>
+
+        <!-- API Keys Section -->
+        <div class="test-section">
+            <h2>1️⃣ API Keys (Optional - stored in session only)</h2>
+
+            <label>DHL API Key:</label>
+            <input type="password" id="dhlKey" placeholder="Enter DHL API key">
+
+            <label>FedEx Client ID:</label>
+            <input type="password" id="fedexClient" placeholder="Enter FedEx client ID">
+
+            <label>FedEx Client Secret:</label>
+            <input type="password" id="fedexSecret" placeholder="Enter FedEx client secret">
+
+            <label>UPS API Key:</label>
+            <input type="password" id="upsKey" placeholder="Enter UPS API key">
+
+            <label>USPS API Key:</label>
+            <input type="password" id="uspsKey" placeholder="Enter USPS API key">
+
+            <button onclick="saveKeys()">💾 Save Keys (Session Only)</button>
+            <button class="secondary" onclick="clearKeys()">🗑️ Clear Keys</button>
+        </div>
+
+        <!-- Tracking Test Section -->
+        <div class="test-section">
+            <h2>2️⃣ Test Tracking</h2>
+
+            <label>
+                Tracking Number (AWB):
+                <span id="detectedCarrier"></span>
+            </label>
+            <input type="text" id="awbInput" placeholder="Enter tracking number" oninput="detectCarrier()">
+
+            <div class="sample-awbs">
+                <button class="secondary" onclick="useSampleAWB('1234567890')">DHL Sample</button>
+                <button class="secondary" onclick="useSampleAWB('123456789012')">FedEx Sample</button>
+                <button class="secondary" onclick="useSampleAWB('1Z999AA10123456784')">UPS Sample</button>
+            </div>
+
+            <label>Carrier:</label>
+            <select id="carrierSelect">
+                <option value="">Auto-Detect</option>
+                <option value="DHL">DHL Express</option>
+                <option value="FedEx">FedEx</option>
+                <option value="UPS">UPS</option>
+                <option value="USPS">USPS</option>
+            </select>
+
+            <button onclick="testTracking()">🔍 Track Shipment</button>
+            <button class="secondary" onclick="testValidation()">✅ Validate AWB Only</button>
+
+            <div id="result" class="result"></div>
+        </div>
+
+        <!-- Direct Mode Toggle -->
+        <div class="test-section">
+            <h2>3️⃣ API Mode</h2>
+            <label>
+                <input type="checkbox" id="useDirectMode" onchange="toggleAPIMode()">
+                Use Direct API Mode (no proxy - API keys visible in Network tab)
+            </label>
+            <p style="margin-top: 10px; font-size: 13px; color: #666;">
+                ℹ️ Proxy mode is more secure but requires Cloudflare Worker deployment.
+                Direct mode works immediately but exposes API keys in browser DevTools.
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/db.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/normalizer.js"></script>
+    <script src="js/api/base.js"></script>
+    <script src="js/api/dhl.js"></script>
+
+    <script>
+        // Parse URL parameters on load
+        window.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+
+            // Pre-fill API keys from URL
+            if (params.get('dhl')) {
+                document.getElementById('dhlKey').value = params.get('dhl');
+            }
+            if (params.get('fedex_client')) {
+                document.getElementById('fedexClient').value = params.get('fedex_client');
+            }
+            if (params.get('fedex_secret')) {
+                document.getElementById('fedexSecret').value = params.get('fedex_secret');
+            }
+            if (params.get('ups')) {
+                document.getElementById('upsKey').value = params.get('ups');
+            }
+            if (params.get('usps')) {
+                document.getElementById('uspsKey').value = params.get('usps');
+            }
+
+            // Pre-fill AWB from URL
+            if (params.get('awb')) {
+                document.getElementById('awbInput').value = params.get('awb');
+                detectCarrier();
+            }
+
+            // Auto-save keys if provided via URL
+            if (params.get('dhl') || params.get('ups') || params.get('usps') || params.get('fedex_client')) {
+                saveKeys();
+            }
+
+            // Load saved keys from sessionStorage
+            loadSavedKeys();
+        });
+
+        function loadSavedKeys() {
+            var keys = sessionStorage.getItem('testAPIKeys');
+            if (keys) {
+                keys = JSON.parse(keys);
+                if (keys.DHL) document.getElementById('dhlKey').value = keys.DHL;
+                if (keys.FedExClient) document.getElementById('fedexClient').value = keys.FedExClient;
+                if (keys.FedExSecret) document.getElementById('fedexSecret').value = keys.FedExSecret;
+                if (keys.UPS) document.getElementById('upsKey').value = keys.UPS;
+                if (keys.USPS) document.getElementById('uspsKey').value = keys.USPS;
+                showResult('✅ Loaded saved keys from session', 'success');
+            }
+        }
+
+        function saveKeys() {
+            var keys = {
+                DHL: document.getElementById('dhlKey').value,
+                FedExClient: document.getElementById('fedexClient').value,
+                FedExSecret: document.getElementById('fedexSecret').value,
+                UPS: document.getElementById('upsKey').value,
+                USPS: document.getElementById('uspsKey').value
+            };
+
+            // Save to sessionStorage (cleared when browser closes)
+            sessionStorage.setItem('testAPIKeys', JSON.stringify(keys));
+
+            // Create mock app object for API adapters
+            window.app = {
+                settings: {
+                    apiKeys: {
+                        DHL: keys.DHL,
+                        FedEx: {
+                            clientId: keys.FedExClient,
+                            clientSecret: keys.FedExSecret
+                        },
+                        UPS: {
+                            apiKey: keys.UPS
+                        },
+                        USPS: keys.USPS
+                    }
+                }
+            };
+
+            showResult('✅ Keys saved to session (cleared when browser closes)', 'success');
+        }
+
+        function clearKeys() {
+            sessionStorage.removeItem('testAPIKeys');
+            document.getElementById('dhlKey').value = '';
+            document.getElementById('fedexClient').value = '';
+            document.getElementById('fedexSecret').value = '';
+            document.getElementById('upsKey').value = '';
+            document.getElementById('uspsKey').value = '';
+            window.app = null;
+            showResult('🗑️ Keys cleared', 'success');
+        }
+
+        function detectCarrier() {
+            var awb = document.getElementById('awbInput').value.trim();
+            var carrierSelect = document.getElementById('carrierSelect');
+            var detectedSpan = document.getElementById('detectedCarrier');
+
+            if (!awb) {
+                detectedSpan.innerHTML = '';
+                return;
+            }
+
+            var detected = TrackingUtils.detectCarrier(awb);
+
+            if (detected) {
+                detectedSpan.innerHTML = '<span class="detected-carrier">🎯 Detected: ' + detected + '</span>';
+                carrierSelect.value = detected;
+            } else {
+                detectedSpan.innerHTML = '<span style="color: #f59e0b;">⚠️ Unknown format</span>';
+                carrierSelect.value = '';
+            }
+        }
+
+        function useSampleAWB(awb) {
+            document.getElementById('awbInput').value = awb;
+            detectCarrier();
+        }
+
+        function testValidation() {
+            var awb = document.getElementById('awbInput').value.trim();
+            var carrier = document.getElementById('carrierSelect').value;
+
+            if (!awb) {
+                showResult('❌ Please enter a tracking number', 'error');
+                return;
+            }
+
+            var validation = TrackingUtils.validateAWB(awb, carrier);
+            var detected = TrackingUtils.detectCarrier(awb);
+
+            var result = '<strong>Validation Result:</strong><br>';
+            result += 'Valid: ' + (validation.valid ? '✅ Yes' : '❌ No') + '<br>';
+            if (!validation.valid) {
+                result += 'Error: ' + validation.error + '<br>';
+            }
+            result += 'Detected Carrier: ' + (detected || 'Unknown') + '<br>';
+            result += 'Length: ' + awb.length + ' characters';
+
+            showResult(result, validation.valid ? 'success' : 'error');
+        }
+
+        function testTracking() {
+            var awb = document.getElementById('awbInput').value.trim();
+            var carrier = document.getElementById('carrierSelect').value;
+
+            if (!awb) {
+                showResult('❌ Please enter a tracking number', 'error');
+                return;
+            }
+
+            // Auto-detect if not specified
+            if (!carrier) {
+                carrier = TrackingUtils.detectCarrier(awb);
+                if (!carrier) {
+                    showResult('❌ Could not detect carrier. Please select manually.', 'error');
+                    return;
+                }
+            }
+
+            // Validate AWB
+            var validation = TrackingUtils.validateAWB(awb, carrier);
+            if (!validation.valid) {
+                showResult('❌ Invalid AWB: ' + validation.error, 'error');
+                return;
+            }
+
+            // Check if API key is configured
+            if (!window.app || !window.app.settings || !window.app.settings.apiKeys[carrier]) {
+                showResult('❌ ' + carrier + ' API key not configured. Please enter and save keys above.', 'error');
+                return;
+            }
+
+            showResult('⏳ Tracking ' + awb + ' via ' + carrier + '...', 'success');
+
+            // Call appropriate adapter
+            var promise;
+            switch (carrier) {
+                case 'DHL':
+                    promise = DHLAdapter.trackShipment(awb);
+                    break;
+                case 'FedEx':
+                    showResult('❌ FedEx adapter not implemented yet', 'error');
+                    return;
+                case 'UPS':
+                    showResult('❌ UPS adapter not implemented yet', 'error');
+                    return;
+                case 'USPS':
+                    showResult('❌ USPS adapter not implemented yet', 'error');
+                    return;
+                default:
+                    showResult('❌ Unknown carrier: ' + carrier, 'error');
+                    return;
+            }
+
+            promise
+                .then(function(data) {
+                    var result = '<strong>✅ Tracking Data Retrieved!</strong><br><br>';
+                    result += '<strong>AWB:</strong> ' + data.awb + '<br>';
+                    result += '<strong>Carrier:</strong> ' + data.carrier + '<br>';
+                    result += '<strong>Status:</strong> ' + data.status + '<br>';
+                    result += '<strong>Delivery Signal:</strong> ' + TrackingUtils.getStatusIcon(data.deliverySignal) + ' ' + TrackingUtils.getStatusText(data.deliverySignal) + '<br>';
+                    result += '<strong>Delivered:</strong> ' + (data.delivered ? 'Yes' : 'No') + '<br>';
+                    result += '<strong>Origin:</strong> ' + TrackingUtils.formatLocation(data.origin) + '<br>';
+                    result += '<strong>Destination:</strong> ' + TrackingUtils.formatLocation(data.destination) + '<br>';
+                    result += '<strong>Events:</strong> ' + (data.events ? data.events.length : 0) + '<br>';
+                    result += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    showResult(result, 'success');
+                })
+                .catch(function(error) {
+                    var result = '<strong>❌ Error:</strong><br>';
+                    result += error.message || 'Unknown error';
+                    if (error.status) {
+                        result += '<br><strong>Status:</strong> ' + error.status;
+                    }
+                    if (error.details) {
+                        result += '<pre>' + JSON.stringify(error.details, null, 2) + '</pre>';
+                    }
+                    showResult(result, 'error');
+                    console.error('Tracking error:', error);
+                });
+        }
+
+        function toggleAPIMode() {
+            var useDirectMode = document.getElementById('useDirectMode').checked;
+            APIBase.config.useProxy = !useDirectMode;
+
+            var mode = useDirectMode ? 'Direct API' : 'Proxy';
+            showResult('🔄 Switched to ' + mode + ' mode', 'success');
+        }
+
+        function showResult(message, type) {
+            var resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = 'result show ' + type;
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

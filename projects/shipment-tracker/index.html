@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Multi-carrier shipment tracking with smart API rate limiting">
+    <meta name="author" content="Wayne Fong (wayneef84)">
+    <title>Shipment Tracker</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <!-- Toast Container for Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+            <h1>📦 Shipment Tracker</h1>
+            <div class="header-controls">
+                <button id="refreshBtn" class="icon-btn" title="Refresh All">🔄</button>
+                <button id="exportBtn" class="icon-btn" title="Export Data">📤</button>
+                <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Settings Panel (Hidden by default) -->
+        <div id="settingsPanel" class="settings-panel hidden">
+            <h2>Settings</h2>
+
+            <div class="settings-section">
+                <h3>API Keys</h3>
+                <p class="help-text">Enter your carrier API credentials. Keys are stored locally in your browser.</p>
+
+                <label for="dhlApiKey">
+                    <span>DHL API Key:</span>
+                    <input type="password" id="dhlApiKey" placeholder="Enter DHL API key">
+                    <button type="button" class="toggle-visibility" data-target="dhlApiKey">👁️</button>
+                </label>
+
+                <label for="fedexClientId">
+                    <span>FedEx Client ID:</span>
+                    <input type="password" id="fedexClientId" placeholder="Enter FedEx client ID">
+                    <button type="button" class="toggle-visibility" data-target="fedexClientId">👁️</button>
+                </label>
+
+                <label for="fedexClientSecret">
+                    <span>FedEx Client Secret:</span>
+                    <input type="password" id="fedexClientSecret" placeholder="Enter FedEx client secret">
+                    <button type="button" class="toggle-visibility" data-target="fedexClientSecret">👁️</button>
+                </label>
+
+                <label for="upsApiKey">
+                    <span>UPS API Key:</span>
+                    <input type="password" id="upsApiKey" placeholder="Enter UPS API key">
+                    <button type="button" class="toggle-visibility" data-target="upsApiKey">👁️</button>
+                </label>
+
+                <label for="upsUsername">
+                    <span>UPS Username:</span>
+                    <input type="text" id="upsUsername" placeholder="Enter UPS username">
+                </label>
+            </div>
+
+            <div class="settings-section">
+                <h3>Query Engine</h3>
+
+                <label for="cooldownMinutes">
+                    <span>Cooldown (minutes):</span>
+                    <input type="number" id="cooldownMinutes" min="1" max="60" value="10">
+                </label>
+
+                <label class="checkbox-label">
+                    <input type="checkbox" id="skipDelivered" checked>
+                    <span>Skip delivered shipments</span>
+                </label>
+
+                <label class="checkbox-label">
+                    <input type="checkbox" id="enableForceRefresh">
+                    <span>Enable force refresh (ignores cooldown - uses more API calls)</span>
+                </label>
+            </div>
+
+            <div class="settings-actions">
+                <button id="saveSettingsBtn" class="btn-primary">Save Settings</button>
+                <button id="closeSettingsBtn" class="btn-secondary">Close</button>
+            </div>
+        </div>
+
+        <!-- Export Panel (Hidden by default) -->
+        <div id="exportPanel" class="export-panel hidden">
+            <h2>Export Data</h2>
+
+            <div class="export-options">
+                <button class="export-option" data-format="json">
+                    <span class="export-icon">📄</span>
+                    <span class="export-label">JSON</span>
+                    <span class="export-desc">Full backup with metadata</span>
+                </button>
+
+                <button class="export-option" data-format="csv">
+                    <span class="export-icon">📊</span>
+                    <span class="export-label">CSV</span>
+                    <span class="export-desc">Simple spreadsheet format</span>
+                </button>
+
+                <button class="export-option" data-format="excel">
+                    <span class="export-icon">📈</span>
+                    <span class="export-label">Excel</span>
+                    <span class="export-desc">Multi-sheet workbook</span>
+                </button>
+            </div>
+
+            <div class="export-filters">
+                <h3>Filter Options</h3>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="exportOnlyActive">
+                    <span>Export only active shipments</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="exportRawPayloads">
+                    <span>Include raw API payloads (JSON only)</span>
+                </label>
+            </div>
+
+            <div class="export-actions">
+                <button id="closeExportBtn" class="btn-secondary">Close</button>
+            </div>
+        </div>
+
+        <!-- Add Tracking Form -->
+        <div class="add-tracking-section">
+            <h2>Add Tracking Number</h2>
+
+            <form id="addTrackingForm" class="add-tracking-form">
+                <div class="form-row">
+                    <input
+                        type="text"
+                        id="awbInput"
+                        placeholder="Enter tracking number (AWB)"
+                        required
+                        autocomplete="off"
+                        oninput="window.app && window.app.detectCarrierFromAWB && window.app.detectCarrierFromAWB()">
+
+                    <select id="carrierSelect" required>
+                        <option value="">Auto-Detect Carrier</option>
+                        <option value="DHL">DHL Express</option>
+                        <option value="FedEx">FedEx</option>
+                        <option value="UPS">UPS</option>
+                        <option value="USPS">USPS</option>
+                    </select>
+
+                    <button type="submit" class="btn-primary">Add</button>
+                </div>
+
+                <div class="form-options">
+                    <label for="dateShipped">
+                        <span>Date Shipped (optional):</span>
+                        <input type="date" id="dateShipped">
+                    </label>
+                </div>
+            </form>
+
+            <div class="bulk-import">
+                <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
+                <button id="importBtn" class="btn-secondary">📥 Import from File</button>
+            </div>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div id="statsContainer" class="stats-container hidden">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statActive">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statDelivered">0</div>
+                <div class="stat-label">Delivered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statException">0</div>
+                <div class="stat-label">Issues</div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="filterCarrier">Carrier:</label>
+                <select id="filterCarrier">
+                    <option value="">All</option>
+                    <option value="DHL">DHL</option>
+                    <option value="FedEx">FedEx</option>
+                    <option value="UPS">UPS</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterStatus">Status:</label>
+                <select id="filterStatus">
+                    <option value="">All</option>
+                    <option value="PICKUP">Awaiting Pickup</option>
+                    <option value="IN_TRANSIT">In Transit</option>
+                    <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
+                    <option value="DELIVERY">Delivered</option>
+                    <option value="EXCEPTION">Exception</option>
+                    <option value="FAILED">Failed</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Search AWB...">
+            </div>
+        </div>
+
+        <!-- Tracking Table -->
+        <div class="table-container">
+            <table id="trackingTable">
+                <thead>
+                    <tr>
+                        <th>AWB</th>
+                        <th>Carrier</th>
+                        <th>Status</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Est. Delivery</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="trackingTableBody">
+                    <!-- Rows populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">📦</div>
+                <h3>No Tracking Data</h3>
+                <p>Add your first tracking number above to get started.</p>
+            </div>
+        </div>
+
+        <!-- Detail Panel (Slide-in) -->
+        <div id="detailPanel" class="detail-panel hidden">
+            <div class="detail-header">
+                <h2 id="detailAWB">Tracking Details</h2>
+                <button id="closeDetailBtn" class="icon-btn">✕</button>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-section">
+                    <h3>Shipment Info</h3>
+                    <dl id="detailInfo">
+                        <!-- Populated by JavaScript -->
+                    </dl>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Event History</h3>
+                    <div id="detailEvents" class="event-timeline">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button id="forceRefreshBtn" class="btn-primary">Force Refresh</button>
+                    <button id="deleteTrackingBtn" class="btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            Created by <a href="https://github.com/wayneef84" target="_blank">Wayne Fong (wayneef84)</a>
+            with <a href="https://claude.ai/code" target="_blank">Claude Code</a>
+        </p>
+        <p class="legal">
+            <a href="LICENSE" target="_blank">License</a> |
+            <a href="https://developer.dhl.com/legal" target="_blank">DHL Terms</a> |
+            <a href="https://developer.fedex.com/terms" target="_blank">FedEx Terms</a> |
+            <a href="https://www.ups.com/upsdeveloperkit" target="_blank">UPS Terms</a>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/db.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/normalizer.js"></script>
+    <script src="js/api/base.js"></script>
+    <script src="js/api/dhl.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

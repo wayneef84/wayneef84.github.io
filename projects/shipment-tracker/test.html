@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB Adapter Test - Shipment Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.danger {
+            background: #ef4444;
+        }
+
+        button.danger:hover {
+            background: #dc2626;
+        }
+
+        #output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #output:empty::before {
+            content: 'Console output will appear here...';
+            color: #888;
+            font-style: italic;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .pass {
+            color: #22c55e;
+        }
+
+        .fail {
+            color: #ef4444;
+        }
+
+        .info {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Shipment Tracker</h1>
+        <p class="subtitle">IndexedDB Adapter Test Suite</p>
+
+        <div id="statsContainer" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">Total Trackings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statActive">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statDelivered">0</div>
+                    <div class="stat-label">Delivered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statPayloads">0</div>
+                    <div class="stat-label">Raw Payloads</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="runTests()">🧪 Run All Tests</button>
+            <button onclick="showStats()">📊 Show Stats</button>
+            <button onclick="clearConsole()">🗑️ Clear Console</button>
+            <button onclick="cleanup()" class="danger">⚠️ Clear Database</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="js/db.js"></script>
+    <script src="js/db-test.js"></script>
+
+    <script>
+        // Capture console output to page
+        var outputDiv = document.getElementById('output');
+        var originalLog = console.log;
+        var originalError = console.error;
+
+        console.log = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var message = args.join(' ');
+
+            // Style based on content
+            var className = '';
+            if (message.includes('✅') || message.includes('PASS')) {
+                className = 'pass';
+            } else if (message.includes('❌') || message.includes('FAIL')) {
+                className = 'fail';
+            } else if (message.includes('[TEST]') || message.includes('===')) {
+                className = 'info';
+            }
+
+            var line = document.createElement('div');
+            line.className = className;
+            line.textContent = message;
+            outputDiv.appendChild(line);
+
+            // Auto-scroll to bottom
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+
+            // Also log to real console
+            originalLog.apply(console, arguments);
+        };
+
+        console.error = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var message = args.join(' ');
+
+            var line = document.createElement('div');
+            line.className = 'fail';
+            line.textContent = '❌ ' + message;
+            outputDiv.appendChild(line);
+
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+
+            originalError.apply(console, arguments);
+        };
+
+        // Test runner functions
+        async function runTests() {
+            clearConsole();
+            await TestRunner.runAll();
+            await showStats();
+        }
+
+        async function showStats() {
+            if (!TestRunner.db || !TestRunner.db.isReady) {
+                console.log('Database not initialized. Run tests first.');
+                return;
+            }
+
+            try {
+                var stats = await TestRunner.db.getStats();
+
+                document.getElementById('statTotal').textContent = stats.totalTrackings;
+                document.getElementById('statActive').textContent = stats.activeCount;
+                document.getElementById('statDelivered').textContent = stats.deliveredCount;
+                document.getElementById('statPayloads').textContent = stats.totalRawPayloads;
+
+                document.getElementById('statsContainer').style.display = 'block';
+
+                console.log('📊 Database Statistics Updated');
+
+            } catch (err) {
+                console.error('Failed to fetch stats:', err);
+            }
+        }
+
+        function clearConsole() {
+            outputDiv.innerHTML = '';
+        }
+
+        async function cleanup() {
+            if (!confirm('⚠️ This will delete ALL test data. Continue?')) {
+                return;
+            }
+
+            clearConsole();
+            console.log('Cleaning up test data...');
+
+            try {
+                await TestRunner.cleanup();
+                document.getElementById('statsContainer').style.display = 'none';
+                console.log('✅ Cleanup complete!');
+            } catch (err) {
+                console.error('Cleanup failed:', err);
+            }
+        }
+
+        // Welcome message
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('='.repeat(60));
+            console.log('SHIPMENT TRACKER - INDEXEDDB ADAPTER TEST PAGE');
+            console.log('='.repeat(60));
+            console.log('');
+            console.log('Click "Run All Tests" to start the test suite.');
+            console.log('');
+            console.log('Available commands:');
+            console.log('- runTests()     : Run full test suite');
+            console.log('- showStats()    : Display database statistics');
+            console.log('- clearConsole() : Clear console output');
+            console.log('- cleanup()      : Delete all test data');
+            console.log('');
+            console.log('You can also use TestRunner methods directly:');
+            console.log('- TestRunner.db  : Access database instance');
+            console.log('');
+        });
+    </script>
+</body>
+</html>
