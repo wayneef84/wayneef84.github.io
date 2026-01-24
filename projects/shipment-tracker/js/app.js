@@ -1451,7 +1451,7 @@
             self.closeDetail();
         };
 
-        // Search toggle
+        // Search toggle (desktop)
         document.getElementById('searchToggleBtn').onclick = function() {
             var searchContainer = document.getElementById('searchContainer');
             searchContainer.classList.toggle('hidden');
@@ -1459,6 +1459,30 @@
                 document.getElementById('searchInput').focus();
             }
         };
+
+        // Mobile filter toggle
+        var mobileFilterToggle = document.getElementById('mobileFilterToggle');
+        if (mobileFilterToggle) {
+            mobileFilterToggle.onclick = function() {
+                var filterBar = document.querySelector('.filter-bar');
+                filterBar.classList.toggle('visible');
+            };
+        }
+
+        // Mobile add tracking toggle
+        var mobileAddToggle = document.getElementById('mobileAddToggle');
+        if (mobileAddToggle) {
+            mobileAddToggle.onclick = function() {
+                var addTrackingSection = document.querySelector('.add-tracking-section');
+                addTrackingSection.classList.toggle('visible-mobile');
+                // Auto-focus AWB input when opening
+                if (addTrackingSection.classList.contains('visible-mobile')) {
+                    setTimeout(function() {
+                        document.getElementById('awbInput').focus();
+                    }, 100);
+                }
+            };
+        }
 
         // Window resize handler for split view
         window.addEventListener('resize', function() {

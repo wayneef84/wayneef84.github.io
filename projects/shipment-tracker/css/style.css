@@ -940,6 +940,12 @@ textarea,
     .toast-container {
         max-width: 400px;
     }
+
+    /* Hide mobile FABs on tablet and up */
+    .mobile-filter-toggle,
+    .mobile-add-toggle {
+        display: none !important;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -1226,8 +1232,25 @@ textarea,
         display: none;
     }
 
-    /* Fix stats dashboard contrast on mobile */
+    /* Hide add tracking form on mobile (FAB replaces it) */
+    .add-tracking-section {
+        display: none;
+    }
+
+    /* Move stats to bottom on portrait mobile */
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
     .stats-container {
+        order: 999; /* Push to bottom */
+        margin-top: auto;
+        position: sticky;
+        bottom: 0;
+        background: var(--bg-primary);
+        border-top: 2px solid var(--border-color);
+        z-index: 50;
         gap: 0.5rem;
         padding: 0.75rem;
     }
@@ -1238,20 +1261,60 @@ textarea,
         padding: 0.75rem;
     }
 
+    .stat-value-compact,
     .stat-value {
-        color: var(--primary-color);
+        color: var(--primary-color) !important;
         text-shadow: none;
     }
 
+    .stat-label-compact,
     .stat-label {
-        color: var(--text-secondary);
+        color: var(--text-secondary) !important;
     }
 
-    /* Fix filter bar on mobile */
+    /* Hide filter bar on mobile by default */
     .filter-bar {
+        display: none;
         flex-direction: column;
         gap: 0.75rem;
         padding: 1rem;
+    }
+
+    .filter-bar.visible {
+        display: flex;
+    }
+
+    /* Mobile FABs (Floating Action Buttons) */
+    .mobile-filter-toggle,
+    .mobile-add-toggle {
+        display: block !important;
+        position: fixed;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 100;
+        cursor: pointer;
+    }
+
+    .mobile-filter-toggle:active,
+    .mobile-add-toggle:active {
+        transform: scale(0.95);
+    }
+
+    /* Position FABs vertically stacked on right side */
+    .mobile-filter-toggle {
+        bottom: 90px; /* Above Add button */
+        right: 20px;
+    }
+
+    .mobile-add-toggle {
+        bottom: 20px;
+        right: 20px;
     }
 
     .filter-group {
