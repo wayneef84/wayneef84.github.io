@@ -254,6 +254,8 @@
     <script src="js/normalizer.js"></script>
     <script src="js/api/base.js"></script>
     <script src="js/api/dhl.js"></script>
+    <script src="js/api/fedex.js"></script>
+    <script src="js/api/ups.js"></script>
 
     <script>
         // Parse URL parameters on load
@@ -437,11 +439,11 @@
                     promise = DHLAdapter.trackShipment(awb);
                     break;
                 case 'FedEx':
-                    showResult('❌ FedEx adapter not implemented yet', 'error');
-                    return;
+                    promise = FedExAdapter.trackShipment(awb);
+                    break;
                 case 'UPS':
-                    showResult('❌ UPS adapter not implemented yet', 'error');
-                    return;
+                    promise = UPSAdapter.trackShipment(awb);
+                    break;
                 case 'USPS':
                     showResult('❌ USPS adapter not implemented yet', 'error');
                     return;
