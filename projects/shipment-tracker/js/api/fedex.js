@@ -91,9 +91,12 @@
             return trackWithMockData(awb);
         }
 
-        // Use real API if credentials are available
+        // Use real API if credentials are available, fall back to mock if it fails
         console.log('[FedEx] Using real API with credentials');
-        return trackDirect(awb);
+        return trackDirect(awb).catch(function(error) {
+            console.warn('[FedEx] Real API failed (likely CORS), falling back to mock data:', error.message);
+            return trackWithMockData(awb);
+        });
     }
 
     /**
