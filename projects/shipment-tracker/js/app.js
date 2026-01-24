@@ -28,6 +28,10 @@
             search: '',
             statFilter: 'total' // 'total', 'active', 'delivered', 'exception'
         };
+        this.currentSort = {
+            field: 'lastUpdated',
+            direction: 'desc' // 'asc' or 'desc'
+        };
 
         // Settings
         this.settings = {
@@ -129,6 +133,20 @@
             if (validFilters.indexOf(filterParam) !== -1) {
                 this.currentFilters.statFilter = filterParam;
                 console.log('[App] Loaded filter from URL:', filterParam);
+            }
+        }
+
+        // Sort parameters
+        var sortParam = urlParams.get('sort');
+        var directionParam = urlParams.get('direction');
+        if (sortParam) {
+            var validSortFields = ['awb', 'carrier', 'status', 'origin', 'destination', 'estimatedDelivery', 'lastUpdated'];
+            if (validSortFields.indexOf(sortParam) !== -1) {
+                this.currentSort.field = sortParam;
+                if (directionParam === 'asc' || directionParam === 'desc') {
+                    this.currentSort.direction = directionParam;
+                }
+                console.log('[App] Loaded sort from URL:', sortParam, this.currentSort.direction);
             }
         }
 
@@ -988,8 +1006,125 @@
             return matchesStatFilter && matchesCarrier && matchesStatus && matchesSearch;
         }.bind(this));
 
+        // Apply sorting
+        this.applySorting();
+
         this.renderTable();
         this.renderMobileCards();
+    };
+
+    /**
+     * Apply current sort to filteredTrackings
+     */
+    ShipmentTrackerApp.prototype.applySorting = function() {
+        var self = this;
+        var field = this.currentSort.field;
+        var direction = this.currentSort.direction;
+
+        this.filteredTrackings.sort(function(a, b) {
+            var aVal, bVal;
+
+            // Get values based on field
+            switch (field) {
+                case 'awb':
+                    aVal = a.awb || '';
+                    bVal = b.awb || '';
+                    break;
+                case 'carrier':
+                    aVal = a.carrier || '';
+                    bVal = b.carrier || '';
+                    break;
+                case 'status':
+                    aVal = a.status || '';
+                    bVal = b.status || '';
+                    break;
+                case 'origin':
+                    aVal = self.formatLocation(a.origin);
+                    bVal = self.formatLocation(b.origin);
+                    break;
+                case 'destination':
+                    aVal = self.formatLocation(a.destination);
+                    bVal = self.formatLocation(b.destination);
+                    break;
+                case 'estimatedDelivery':
+                    aVal = a.estimatedDelivery ? new Date(a.estimatedDelivery).getTime() : 0;
+                    bVal = b.estimatedDelivery ? new Date(b.estimatedDelivery).getTime() : 0;
+                    break;
+                case 'lastUpdated':
+                    aVal = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0;
+                    bVal = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0;
+                    break;
+                default:
+                    return 0;
+            }
+
+            // Compare values
+            var comparison = 0;
+            if (typeof aVal === 'string') {
+                comparison = aVal.localeCompare(bVal);
+            } else {
+                comparison = aVal - bVal;
+            }
+
+            // Apply direction
+            return direction === 'asc' ? comparison : -comparison;
+        });
+    };
+
+    /**
+     * Set sort field and direction
+     */
+    ShipmentTrackerApp.prototype.setSorting = function(field, direction) {
+        console.log('[App] Setting sort:', field, direction);
+
+        this.currentSort.field = field;
+        this.currentSort.direction = direction;
+
+        // Update URL parameter
+        var newUrl = new URL(window.location);
+        newUrl.searchParams.set('sort', field);
+        newUrl.searchParams.set('direction', direction);
+        window.history.pushState({}, '', newUrl);
+
+        // Update UI indicators
+        this.updateSortIndicators();
+
+        // Re-apply filters (which will also sort)
+        this.applyFilters();
+    };
+
+    /**
+     * Update sort indicator arrows in table headers
+     */
+    ShipmentTrackerApp.prototype.updateSortIndicators = function() {
+        var headers = document.querySelectorAll('th.sortable');
+        for (var i = 0; i < headers.length; i++) {
+            var header = headers[i];
+            var sortField = header.getAttribute('data-sort');
+            var indicator = header.querySelector('.sort-indicator');
+
+            if (sortField === this.currentSort.field) {
+                header.classList.add('sorted');
+                indicator.textContent = this.currentSort.direction === 'asc' ? ' ▲' : ' ▼';
+            } else {
+                header.classList.remove('sorted');
+                indicator.textContent = '';
+            }
+        }
+
+        // Update mobile sort menu
+        var sortOptions = document.querySelectorAll('.sort-option');
+        for (var j = 0; j < sortOptions.length; j++) {
+            var option = sortOptions[j];
+            var optionField = option.getAttribute('data-sort');
+            var optionDirection = option.getAttribute('data-direction');
+
+            if (optionField === this.currentSort.field && optionDirection === this.currentSort.direction) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        }
     };
 
     // ============================================================
@@ -1902,6 +2037,58 @@
             activeBtn.classList.add('active');
         }
 
+        // Desktop table header sorting
+        var sortableHeaders = document.querySelectorAll('th.sortable');
+        for (var s = 0; s < sortableHeaders.length; s++) {
+            sortableHeaders[s].onclick = function() {
+                var field = this.getAttribute('data-sort');
+                var currentDirection = self.currentSort.field === field ? self.currentSort.direction : 'asc';
+                var newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                self.setSorting(field, newDirection);
+            };
+        }
+
+        // Mobile sort toggle
+        var mobileSortToggle = document.getElementById('mobileSortToggle');
+        if (mobileSortToggle) {
+            mobileSortToggle.onclick = function() {
+                var sortMenu = document.getElementById('mobileSortMenu');
+                sortMenu.style.display = 'block';
+                setTimeout(function() {
+                    sortMenu.classList.add('visible');
+                }, 10);
+            };
+        }
+
+        // Mobile sort menu close
+        var closeSortMenuBtn = document.getElementById('closeSortMenuBtn');
+        if (closeSortMenuBtn) {
+            closeSortMenuBtn.onclick = function() {
+                var sortMenu = document.getElementById('mobileSortMenu');
+                sortMenu.classList.remove('visible');
+                setTimeout(function() {
+                    sortMenu.style.display = 'none';
+                }, 300);
+            };
+        }
+
+        // Mobile sort options
+        var sortOptions = document.querySelectorAll('.sort-option');
+        for (var so = 0; so < sortOptions.length; so++) {
+            sortOptions[so].onclick = function() {
+                var field = this.getAttribute('data-sort');
+                var direction = this.getAttribute('data-direction');
+                self.setSorting(field, direction);
+
+                // Close menu
+                var sortMenu = document.getElementById('mobileSortMenu');
+                sortMenu.classList.remove('visible');
+                setTimeout(function() {
+                    sortMenu.style.display = 'none';
+                }, 300);
+            };
+        }
+
         // Window resize handler for split view
         window.addEventListener('resize', function() {
             var detailPanel = document.getElementById('detailPanel');
@@ -1945,6 +2132,9 @@
             // Click outside - close detail
             self.closeDetail();
         });
+
+        // Initialize sort indicators after DOM is ready
+        self.updateSortIndicators();
     };
 
     // ============================================================

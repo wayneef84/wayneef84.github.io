@@ -329,6 +329,40 @@
                     <span class="btn-icon">🔍</span>
                     <span class="btn-label">Filter</span>
                 </button>
+                <button type="button" class="bottom-bar-btn action-btn" id="mobileSortToggle">
+                    <span class="btn-icon">↕️</span>
+                    <span class="btn-label">Sort</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Sort Menu (slides up from bottom) -->
+        <div id="mobileSortMenu" class="mobile-sort-menu" style="display: none;">
+            <div class="sort-menu-header">
+                <h3>Sort By</h3>
+                <button type="button" id="closeSortMenuBtn" class="close-btn">✕</button>
+            </div>
+            <div class="sort-menu-options">
+                <button type="button" class="sort-option" data-sort="awb" data-direction="asc">
+                    <span class="sort-label">AWB</span>
+                    <span class="sort-direction">A → Z</span>
+                </button>
+                <button type="button" class="sort-option" data-sort="carrier" data-direction="asc">
+                    <span class="sort-label">Carrier</span>
+                    <span class="sort-direction">A → Z</span>
+                </button>
+                <button type="button" class="sort-option" data-sort="status" data-direction="asc">
+                    <span class="sort-label">Status</span>
+                    <span class="sort-direction">A → Z</span>
+                </button>
+                <button type="button" class="sort-option" data-sort="estimatedDelivery" data-direction="asc">
+                    <span class="sort-label">Est. Delivery</span>
+                    <span class="sort-direction">Soonest First</span>
+                </button>
+                <button type="button" class="sort-option" data-sort="lastUpdated" data-direction="desc">
+                    <span class="sort-label">Last Updated</span>
+                    <span class="sort-direction">Newest First</span>
+                </button>
             </div>
         </div>
 
@@ -344,14 +378,14 @@
             <table id="trackingTable">
                 <thead>
                     <tr>
-                        <th>AWB</th>
-                        <th>Carrier</th>
+                        <th data-sort="awb" class="sortable">AWB <span class="sort-indicator"></span></th>
+                        <th data-sort="carrier" class="sortable">Carrier <span class="sort-indicator"></span></th>
                         <th class="status-icon-column"></th>
-                        <th class="status-text-column">Status</th>
-                        <th>Origin</th>
-                        <th>Destination</th>
-                        <th>Est. Delivery</th>
-                        <th>Last Updated</th>
+                        <th data-sort="status" class="status-text-column sortable">Status <span class="sort-indicator"></span></th>
+                        <th data-sort="origin" class="sortable">Origin <span class="sort-indicator"></span></th>
+                        <th data-sort="destination" class="sortable">Destination <span class="sort-indicator"></span></th>
+                        <th data-sort="estimatedDelivery" class="sortable">Est. Delivery <span class="sort-indicator"></span></th>
+                        <th data-sort="lastUpdated" class="sortable">Last Updated <span class="sort-indicator"></span></th>
                         <th class="actions-column">Actions</th>
                     </tr>
                 </thead>
