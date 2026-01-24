@@ -1092,8 +1092,9 @@ kbd {
     background: var(--bg-primary);
     border: 2px solid var(--border-color);
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.2s ease;
+    flex-shrink: 0; /* Prevent cards from shrinking */
 }
 
 .shipment-card:hover {

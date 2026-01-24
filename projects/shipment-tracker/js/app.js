@@ -697,12 +697,16 @@
 
         // Make AWB a clickable link to carrier website
         var trackingURL = TrackingUtils.getCarrierTrackingURL(tracking.carrier, tracking.awb);
+        var isMobile = window.innerWidth < 768;
+        var displayAWB = TrackingUtils.truncateAWB(tracking.awb, isMobile);
+
         if (trackingURL) {
             var awbLink = document.createElement('a');
             awbLink.href = trackingURL;
             awbLink.target = '_blank';
             awbLink.rel = 'noopener noreferrer';
-            awbLink.textContent = tracking.awb;
+            awbLink.textContent = displayAWB;
+            awbLink.title = tracking.awb; // Show full AWB on hover
             awbLink.style.color = 'inherit';
             awbLink.style.textDecoration = 'none';
             awbLink.onclick = function(e) {
@@ -710,7 +714,8 @@
             };
             awbDiv.appendChild(awbLink);
         } else {
-            awbDiv.textContent = tracking.awb; // Show full AWB on mobile
+            awbDiv.textContent = displayAWB;
+            awbDiv.title = tracking.awb; // Show full AWB on hover
         }
 
         // Add duplicate badge if needed

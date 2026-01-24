@@ -240,6 +240,40 @@
         return urls[carrier] || null;
     }
 
+    /**
+     * Truncate AWB for mobile display with tiered thresholds
+     * Formula: first 3 chars + "..." + last X chars
+     * Where X = threshold - 3 - 2 (3 for prefix, 2 for "...")
+     *
+     * @param {string} awb - Tracking number
+     * @param {boolean} isMobile - Whether to apply mobile truncation
+     * @returns {string} Truncated or full AWB
+     */
+    function truncateAWB(awb, isMobile) {
+        if (!awb || !isMobile) {
+            return awb;
+        }
+
+        var length = awb.length;
+
+        // Tiered truncation based on length
+        if (length <= 12) {
+            // Short enough - show full (DHL: 10-11, FedEx: 12)
+            return awb;
+        } else if (length <= 16) {
+            // Medium length - show first 3 + last 9
+            // Threshold 16: X = 16 - 3 - 2 = 11, but cap at 9 for readability
+            return awb.substring(0, 3) + '...' + awb.substring(length - 9);
+        } else if (length <= 20) {
+            // Long - show first 3 + last 7 (UPS: 18 chars)
+            // Threshold 20: X = 20 - 3 - 2 = 15, but cap at 7
+            return awb.substring(0, 3) + '...' + awb.substring(length - 7);
+        } else {
+            // Very long - show first 3 + last 5
+            return awb.substring(0, 3) + '...' + awb.substring(length - 5);
+        }
+    }
+
     // ============================================================
     // STATUS FORMATTING
     // ============================================================
@@ -500,6 +534,7 @@
         validateAWB: validateAWB,
         detectCarrier: detectCarrier,
         getCarrierTrackingURL: getCarrierTrackingURL,
+        truncateAWB: truncateAWB,
 
         // Status
         getStatusBadgeClass: getStatusBadgeClass,
