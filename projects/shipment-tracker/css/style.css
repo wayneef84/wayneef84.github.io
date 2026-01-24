@@ -203,11 +203,8 @@ textarea,
     }
 }
 
-/* Panel header with sticky save/close buttons */
+/* Panel header (sticky title) */
 .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 1rem;
     border-bottom: 2px solid var(--border-color);
     position: sticky;
@@ -223,46 +220,6 @@ textarea,
     color: var(--primary-color);
     margin: 0;
     font-size: 1.3rem;
-}
-
-.panel-header-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.panel-header-actions .icon-btn {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    border-radius: 8px;
-    border: 2px solid var(--border-color);
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.panel-header-actions .icon-btn:hover {
-    background: var(--hover-color);
-    transform: scale(1.05);
-}
-
-.panel-header-actions .icon-btn:active {
-    transform: scale(0.95);
-}
-
-.panel-header-actions .save-btn {
-    background: #10b981;
-    border-color: #10b981;
-    color: white;
-    font-weight: bold;
-}
-
-.panel-header-actions .save-btn:hover {
-    background: #059669;
-    border-color: #059669;
 }
 
 /* Scrollable content area */

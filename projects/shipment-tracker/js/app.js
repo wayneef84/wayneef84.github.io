@@ -1850,15 +1850,6 @@
             self.cancelSettings();
         };
 
-        // Settings panel - header buttons
-        document.getElementById('saveSettingsHeaderBtn').onclick = function() {
-            self.saveSettings();
-        };
-
-        document.getElementById('closeSettingsHeaderBtn').onclick = function() {
-            self.cancelSettings();
-        };
-
         document.getElementById('pruneNowBtn').onclick = function() {
             self.pruneOldShipments(false);
         };
