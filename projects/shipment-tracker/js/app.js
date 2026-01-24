@@ -245,22 +245,22 @@
             var apiKeys = await this.db.getSetting('apiKeys');
             if (apiKeys) {
                 this.settings.apiKeys = apiKeys;
-                this.populateAPIKeyFields();
             }
+            this.populateAPIKeyFields();
 
             // Load query engine config
             var queryEngine = await this.db.getSetting('queryEngine');
             if (queryEngine) {
                 this.settings.queryEngine = queryEngine;
-                this.populateQueryEngineFields();
             }
+            this.populateQueryEngineFields();
 
             // Load data management config
             var dataManagement = await this.db.getSetting('dataManagement');
             if (dataManagement) {
                 this.settings.dataManagement = dataManagement;
-                this.populateDataManagementFields();
             }
+            this.populateDataManagementFields();
 
         } catch (err) {
             console.error('[App] Failed to load settings:', err);
@@ -318,7 +318,11 @@
     };
 
     ShipmentTrackerApp.prototype.populateAPIKeyFields = function() {
-        // Ensure apiKeys structure is correct (migration from old format)
+        // Ensure apiKeys structure exists
+        if (!this.settings.apiKeys) {
+            this.settings.apiKeys = { DHL: '', FedEx: { clientId: '', clientSecret: '' }, UPS: { apiKey: '', username: '' } };
+        }
+        // Ensure nested structures are correct (migration from old format)
         if (typeof this.settings.apiKeys.FedEx !== 'object' || !this.settings.apiKeys.FedEx) {
             this.settings.apiKeys.FedEx = { clientId: '', clientSecret: '' };
         }
@@ -334,15 +338,21 @@
     };
 
     ShipmentTrackerApp.prototype.populateQueryEngineFields = function() {
-        document.getElementById('cooldownMinutes').value = this.settings.queryEngine.cooldownMinutes;
-        document.getElementById('skipDelivered').checked = this.settings.queryEngine.skipDelivered;
-        document.getElementById('enableForceRefresh').checked = this.settings.queryEngine.enableForceRefresh;
+        if (!this.settings.queryEngine) {
+            this.settings.queryEngine = { cooldownMinutes: 720, skipDelivered: true, enableForceRefresh: true, skipRefreshConfirmation: false };
+        }
+        document.getElementById('cooldownMinutes').value = this.settings.queryEngine.cooldownMinutes || 720;
+        document.getElementById('skipDelivered').checked = this.settings.queryEngine.skipDelivered !== false;
+        document.getElementById('enableForceRefresh').checked = this.settings.queryEngine.enableForceRefresh !== false;
         document.getElementById('skipRefreshConfirmation').checked = this.settings.queryEngine.skipRefreshConfirmation || false;
     };
 
     ShipmentTrackerApp.prototype.populateDataManagementFields = function() {
-        document.getElementById('pruneAfterDays').value = this.settings.dataManagement.pruneAfterDays;
-        document.getElementById('autoPruneEnabled').checked = this.settings.dataManagement.autoPruneEnabled;
+        if (!this.settings.dataManagement) {
+            this.settings.dataManagement = { pruneAfterDays: 90, autoPruneEnabled: false };
+        }
+        document.getElementById('pruneAfterDays').value = this.settings.dataManagement.pruneAfterDays || 90;
+        document.getElementById('autoPruneEnabled').checked = this.settings.dataManagement.autoPruneEnabled || false;
     };
 
     // ============================================================
