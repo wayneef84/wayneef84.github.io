@@ -1239,6 +1239,10 @@ kbd {
 
 /* Mobile: Show cards, hide table */
 @media (max-width: 767px) {
+    body {
+        padding-bottom: 0; /* Bottom bar handles safe area inset */
+    }
+
     .mobile-cards-container {
         display: flex;
     }
@@ -1303,7 +1307,7 @@ kbd {
 
     /* Add padding to mobile cards container to account for bottom bar */
     .mobile-cards-container {
-        padding: 1rem 1rem 150px 1rem; /* Extra bottom padding for 2-row bottom bar */
+        padding: 1rem 1rem 120px 1rem; /* Extra bottom padding for 2-row bottom bar */
     }
 
     /* Hide filter bar on mobile by default */
