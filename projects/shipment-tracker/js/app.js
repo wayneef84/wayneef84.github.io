@@ -1337,30 +1337,74 @@
     ShipmentTrackerApp.prototype.refreshAllTrackings = async function() {
         console.log('[App] Refreshing all trackings');
 
-        try {
-            var activeTrackings = this.trackings.filter(function(t) {
-                return !t.delivered;
-            });
+        // Check if force refresh is enabled in settings
+        if (!this.settings.queryEngine.enableForceRefresh) {
+            this.showToast('⚠️ Force refresh is disabled. Enable in Settings first.', 'warning');
+            return;
+        }
 
-            if (activeTrackings.length === 0) {
-                this.showToast('No active trackings to refresh', 'info');
+        try {
+            // Filter active trackings based on skipDelivered setting
+            var trackingsToRefresh = this.trackings;
+            if (this.settings.queryEngine.skipDelivered) {
+                trackingsToRefresh = this.trackings.filter(function(t) {
+                    return !t.delivered;
+                });
+            }
+
+            if (trackingsToRefresh.length === 0) {
+                this.showToast('No trackings to refresh', 'info');
                 return;
             }
 
-            // TODO: Implement actual API refresh
-            // For now, just show a message
-            this.showToast('🔄 Refresh all coming soon! (' + activeTrackings.length + ' active trackings)', 'info');
+            // Ask for confirmation unless skipRefreshConfirmation is enabled
+            if (!this.settings.queryEngine.skipRefreshConfirmation) {
+                var message = 'Refresh all ' + trackingsToRefresh.length + ' tracking(s)?\n\n' +
+                             'This will make ' + trackingsToRefresh.length + ' API call(s) and may count against rate limits.';
+                if (!confirm(message)) {
+                    return;
+                }
+            }
 
-            // Future implementation:
-            // 1. Loop through active trackings
-            // 2. Call carrier adapter for each
-            // 3. Update IndexedDB with new data
-            // 4. Refresh UI
-            // 5. Show success summary
+            // Show progress
+            this.showToast('🔄 Refreshing ' + trackingsToRefresh.length + ' tracking(s)...', 'info');
+
+            var successCount = 0;
+            var failCount = 0;
+
+            // Refresh each tracking sequentially to avoid rate limit issues
+            for (var i = 0; i < trackingsToRefresh.length; i++) {
+                var tracking = trackingsToRefresh[i];
+                try {
+                    console.log('[App] Refreshing ' + (i + 1) + '/' + trackingsToRefresh.length + ':', tracking.awb, tracking.carrier);
+
+                    // Call query engine to get fresh data
+                    var freshData = await this.queryEngine(tracking.awb, tracking.carrier);
+
+                    // Update database
+                    await this.db.saveTracking(freshData);
+                    successCount++;
+
+                } catch (err) {
+                    console.error('[App] Failed to refresh', tracking.awb, ':', err);
+                    failCount++;
+                }
+            }
+
+            // Reload all trackings to update UI
+            await this.loadTrackings();
+            this.updateStats();
+
+            // Show summary
+            var summary = '✅ Refreshed ' + successCount + ' tracking(s)';
+            if (failCount > 0) {
+                summary += ' (' + failCount + ' failed)';
+            }
+            this.showToast(summary, successCount > 0 ? 'success' : 'error');
 
         } catch (err) {
             console.error('[App] Refresh all failed:', err);
-            this.showToast('Refresh failed: ' + err.message, 'error');
+            this.showToast('Refresh all failed: ' + err.message, 'error');
         }
     };
 
