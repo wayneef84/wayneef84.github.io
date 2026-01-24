@@ -30,7 +30,15 @@
 
         <!-- Settings Panel (Hidden by default) -->
         <div id="settingsPanel" class="settings-panel hidden">
-            <h2>Settings</h2>
+            <div class="panel-header">
+                <h2>Settings</h2>
+                <div class="panel-header-actions">
+                    <button id="saveSettingsHeaderBtn" class="icon-btn save-btn" title="Save Settings">✓</button>
+                    <button id="closeSettingsHeaderBtn" class="icon-btn" title="Cancel">✕</button>
+                </div>
+            </div>
+
+            <div class="settings-content">
 
             <div class="settings-section">
                 <h3>API Keys</h3>
@@ -119,7 +127,8 @@
 
             <div class="settings-actions">
                 <button id="saveSettingsBtn" class="btn-primary">Save Settings</button>
-                <button id="closeSettingsBtn" class="btn-secondary">Close</button>
+                <button id="closeSettingsBtn" class="btn-secondary">Cancel</button>
+            </div>
             </div>
         </div>
 
@@ -293,45 +302,41 @@
             </div>
         </div>
 
-        <!-- Mobile Bottom Bar (2 rows: stat filters + actions) -->
+        <!-- Mobile Bottom Bar (2 rows: actions top, stat filters bottom) -->
         <div id="mobileBottomBar" class="mobile-bottom-bar" style="display: none;">
-            <!-- Row 1: Stat Filters -->
-            <div class="bottom-bar-row stat-filters">
-                <button type="button" class="bottom-bar-btn" data-filter="active" id="filterActive">
-                    <span class="btn-icon">🚚</span>
-                    <span class="btn-label">Active</span>
-                    <span class="btn-count" id="countActive">0</span>
-                </button>
-                <button type="button" class="bottom-bar-btn" data-filter="delivered" id="filterDelivered">
-                    <span class="btn-icon">✅</span>
-                    <span class="btn-label">Delivered</span>
-                    <span class="btn-count" id="countDelivered">0</span>
-                </button>
-                <button type="button" class="bottom-bar-btn" data-filter="exception" id="filterIssues">
-                    <span class="btn-icon">⚠️</span>
-                    <span class="btn-label">Issues</span>
-                    <span class="btn-count" id="countIssues">0</span>
-                </button>
-            </div>
-
-            <!-- Row 2: Actions -->
+            <!-- Row 1: Actions (Add, Filter, Sort) -->
             <div class="bottom-bar-row actions">
-                <button type="button" class="bottom-bar-btn action-btn" data-filter="total" id="filterTotal">
-                    <span class="btn-icon">📦</span>
-                    <span class="btn-label">Total</span>
-                    <span class="btn-count" id="countTotal">0</span>
-                </button>
-                <button type="button" class="bottom-bar-btn action-btn" id="mobileAddToggle">
+                <button type="button" class="bottom-bar-btn action-btn" id="mobileAddToggle" title="Add Tracking">
                     <span class="btn-icon">➕</span>
                     <span class="btn-label">Add</span>
                 </button>
-                <button type="button" class="bottom-bar-btn action-btn" id="mobileFilterToggle">
+                <button type="button" class="bottom-bar-btn action-btn" id="mobileFilterToggle" title="Search & Filter">
                     <span class="btn-icon">🔍</span>
                     <span class="btn-label">Filter</span>
                 </button>
-                <button type="button" class="bottom-bar-btn action-btn" id="mobileSortToggle">
+                <button type="button" class="bottom-bar-btn action-btn" id="mobileSortToggle" title="Sort By">
                     <span class="btn-icon">↕️</span>
                     <span class="btn-label">Sort</span>
+                </button>
+            </div>
+
+            <!-- Row 2: Stat Filters (Active, Delivered, Issues, Total) -->
+            <div class="bottom-bar-row stat-filters">
+                <button type="button" class="bottom-bar-btn stat-filter-btn" data-filter="active" id="filterActive" title="Active Shipments">
+                    <span class="btn-icon">🚚</span>
+                    <span class="btn-count" id="countActive">0</span>
+                </button>
+                <button type="button" class="bottom-bar-btn stat-filter-btn" data-filter="delivered" id="filterDelivered" title="Delivered">
+                    <span class="btn-icon">✅</span>
+                    <span class="btn-count" id="countDelivered">0</span>
+                </button>
+                <button type="button" class="bottom-bar-btn stat-filter-btn" data-filter="exception" id="filterIssues" title="Issues & Exceptions">
+                    <span class="btn-icon">⚠️</span>
+                    <span class="btn-count" id="countIssues">0</span>
+                </button>
+                <button type="button" class="bottom-bar-btn stat-filter-btn" data-filter="total" id="filterTotal" title="Total Shipments">
+                    <span class="btn-icon">📦</span>
+                    <span class="btn-count" id="countTotal">0</span>
                 </button>
             </div>
         </div>

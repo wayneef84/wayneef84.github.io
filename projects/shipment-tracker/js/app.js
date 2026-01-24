@@ -1786,11 +1786,30 @@
 
     ShipmentTrackerApp.prototype.toggleSettings = function() {
         var panel = document.getElementById('settingsPanel');
+        var wasHidden = panel.classList.contains('hidden');
+
+        if (wasHidden) {
+            // Opening - populate with current saved settings
+            this.populateAPIKeyFields();
+            this.populateQueryEngineFields();
+            this.populateDataManagementFields();
+        }
+
         panel.classList.toggle('hidden');
     };
 
     ShipmentTrackerApp.prototype.closeSettings = function() {
         document.getElementById('settingsPanel').classList.add('hidden');
+    };
+
+    ShipmentTrackerApp.prototype.cancelSettings = function() {
+        // Reset form to current saved settings
+        this.populateAPIKeyFields();
+        this.populateQueryEngineFields();
+        this.populateDataManagementFields();
+
+        // Close panel
+        this.closeSettings();
     };
 
     ShipmentTrackerApp.prototype.toggleExport = function() {
@@ -1822,13 +1841,22 @@
             self.toggleSettings();
         };
 
-        // Settings panel
+        // Settings panel - bottom buttons
         document.getElementById('saveSettingsBtn').onclick = function() {
             self.saveSettings();
         };
 
         document.getElementById('closeSettingsBtn').onclick = function() {
-            self.closeSettings();
+            self.cancelSettings();
+        };
+
+        // Settings panel - header buttons
+        document.getElementById('saveSettingsHeaderBtn').onclick = function() {
+            self.saveSettings();
+        };
+
+        document.getElementById('closeSettingsHeaderBtn').onclick = function() {
+            self.cancelSettings();
         };
 
         document.getElementById('pruneNowBtn').onclick = function() {
