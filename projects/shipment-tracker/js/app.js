@@ -1735,13 +1735,14 @@
                 // If wasn't active, activate this one and apply filter
                 if (!wasActive) {
                     btn.classList.add('active');
-                    window.app.currentFilter = filter;
+                    self.currentFilters.statFilter = filter;
                 } else {
-                    window.app.currentFilter = null;
+                    // Clicked active button - clear filter (show all)
+                    self.currentFilters.statFilter = 'total';
                 }
 
                 // Re-render with filter
-                window.app.renderTrackings();
+                self.applyFilters();
             };
         });
 
