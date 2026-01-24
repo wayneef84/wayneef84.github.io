@@ -59,16 +59,22 @@
             return Promise.reject(new Error(rateLimitCheck.reason));
         }
 
-        // For now, return mock data since user doesn't have FedEx dev account
-        return trackWithMockData(awb);
+        // Check if API credentials are available
+        var hasCredentials = window.app &&
+                            window.app.settings &&
+                            window.app.settings.apiKeys &&
+                            window.app.settings.apiKeys.FedEx &&
+                            window.app.settings.apiKeys.FedEx.clientId &&
+                            window.app.settings.apiKeys.FedEx.clientSecret;
 
-        // Uncomment below when API keys are available:
-        // var useProxy = APIBase.shouldUseProxy('FedEx');
-        // if (useProxy) {
-        //     return trackViaProxy(awb);
-        // } else {
-        //     return trackDirect(awb);
-        // }
+        if (!hasCredentials) {
+            console.log('[FedEx] No API credentials found, using mock data');
+            return trackWithMockData(awb);
+        }
+
+        // Use real API if credentials are available
+        console.log('[FedEx] Using real API with credentials');
+        return trackDirect(awb);
     }
 
     /**
@@ -274,7 +280,12 @@
      * @returns {Promise<Object>}
      */
     function trackDirect(awb) {
-        var apiKey = APIBase.getAPIKey('FedEx');
+        // Get credentials from app settings
+        var credentials = {
+            clientId: window.app.settings.apiKeys.FedEx.clientId,
+            clientSecret: window.app.settings.apiKeys.FedEx.clientSecret
+        };
+
         var endpoint = FEDEX_CONFIG.useSandbox ? FEDEX_CONFIG.apiUrl.sandbox : FEDEX_CONFIG.apiUrl.production;
 
         console.log('[FedEx] Direct API call:', endpoint);
@@ -282,7 +293,7 @@
         APIBase.recordRequest('FedEx');
 
         // FedEx requires OAuth token first
-        return getOAuthToken(apiKey)
+        return getOAuthToken(credentials)
             .then(function(token) {
                 return APIBase.request(endpoint, {
                     method: 'POST',
@@ -318,15 +329,22 @@
     function getOAuthToken(credentials) {
         var endpoint = FEDEX_CONFIG.useSandbox ? FEDEX_CONFIG.oauthUrl.sandbox : FEDEX_CONFIG.oauthUrl.production;
 
+        console.log('[FedEx] Requesting OAuth token from:', endpoint);
+
         return APIBase.request(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: 'grant_type=client_credentials&client_id=' + credentials.apiKey + '&client_secret=' + credentials.secretKey
+            body: 'grant_type=client_credentials&client_id=' + encodeURIComponent(credentials.clientId) + '&client_secret=' + encodeURIComponent(credentials.clientSecret)
         })
             .then(function(response) {
+                console.log('[FedEx] OAuth token received');
                 return response.access_token;
+            })
+            .catch(function(error) {
+                console.error('[FedEx] OAuth token request failed:', error);
+                throw new Error('FedEx OAuth failed: ' + error.message);
             });
     }
 

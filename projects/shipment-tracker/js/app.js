@@ -1097,21 +1097,94 @@
                 throw new Error('Tracking not found');
             }
 
-            // TODO: Implement actual API refresh
-            // For now, just show a message
-            this.showToast('🔄 Force refresh coming soon! (Query engine needed)', 'info');
+            // Show loading state
+            this.showToast('🔄 Refreshing tracking data...', 'info');
 
-            // Future implementation:
-            // 1. Call DHLAdapter.trackShipment(awb) with force flag
-            // 2. Update IndexedDB with new data
-            // 3. Refresh detail panel
-            // 4. Show success message
+            // Call query engine to get fresh data
+            var freshData = await this.queryEngine(tracking.awb, tracking.carrier);
+
+            // Update database
+            await this.db.saveTracking(freshData);
+
+            // Reload all trackings
+            await this.loadTrackings();
+
+            // Refresh detail panel if it's still showing this tracking
+            var currentDetailAWB = document.getElementById('detailAWB').textContent;
+            if (currentDetailAWB === awb) {
+                this.showDetail(awb);
+            }
+
+            this.showToast('✅ Tracking refreshed successfully!', 'success');
 
         } catch (err) {
             console.error('[App] Force refresh failed:', err);
             this.showToast('Force refresh failed: ' + err.message, 'error');
         }
     };
+
+    // ============================================================
+    // QUERY ENGINE
+    // ============================================================
+
+    /**
+     * Query engine - routes AWB to correct carrier adapter
+     * @param {string} awb - Tracking number
+     * @param {string} carrier - Carrier name (optional, will auto-detect if missing)
+     * @returns {Promise<Object>} Fresh tracking data
+     */
+    ShipmentTrackerApp.prototype.queryEngine = async function(awb, carrier) {
+        console.log('[Query Engine] Fetching data for:', awb, 'Carrier:', carrier);
+
+        // Auto-detect carrier if not provided
+        if (!carrier) {
+            carrier = TrackingUtils.detectCarrier(awb);
+            console.log('[Query Engine] Auto-detected carrier:', carrier);
+        }
+
+        if (!carrier) {
+            throw new Error('Unable to detect carrier for AWB: ' + awb);
+        }
+
+        // Route to correct adapter based on carrier
+        var adapter;
+        switch (carrier.toUpperCase()) {
+            case 'DHL':
+                if (!window.DHLAdapter) {
+                    throw new Error('DHL adapter not loaded');
+                }
+                adapter = window.DHLAdapter;
+                break;
+
+            case 'FEDEX':
+                if (!window.FedExAdapter) {
+                    throw new Error('FedEx adapter not loaded');
+                }
+                adapter = window.FedExAdapter;
+                break;
+
+            case 'UPS':
+                if (!window.UPSAdapter) {
+                    throw new Error('UPS adapter not loaded');
+                }
+                adapter = window.UPSAdapter;
+                break;
+
+            default:
+                throw new Error('Unsupported carrier: ' + carrier);
+        }
+
+        // Call adapter's trackShipment method
+        console.log('[Query Engine] Calling', carrier, 'adapter...');
+        var trackingData = await adapter.trackShipment(awb);
+
+        console.log('[Query Engine] Received data:', trackingData);
+        return trackingData;
+    };
+
+    // ============================================================
+    // EVENT RENDERING
+    // ============================================================
 
     ShipmentTrackerApp.prototype.renderEvents = function(events) {
         var timeline = document.getElementById('detailEvents');
