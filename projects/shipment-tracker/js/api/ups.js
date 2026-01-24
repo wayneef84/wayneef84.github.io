@@ -59,16 +59,28 @@
             return Promise.reject(new Error(rateLimitCheck.reason));
         }
 
-        // For now, return mock data since user doesn't have UPS dev account
-        return trackWithMockData(awb);
+        // Check if we have API credentials
+        var hasCredentials = window.app &&
+                            window.app.settings &&
+                            window.app.settings.apiKeys &&
+                            window.app.settings.apiKeys.UPS &&
+                            window.app.settings.apiKeys.UPS.apiKey &&
+                            window.app.settings.apiKeys.UPS.username;
 
-        // Uncomment below when API keys are available:
-        // var useProxy = APIBase.shouldUseProxy('UPS');
-        // if (useProxy) {
-        //     return trackViaProxy(awb);
-        // } else {
-        //     return trackDirect(awb);
-        // }
+        if (!hasCredentials) {
+            console.log('[UPS] No API credentials found, using mock data');
+            return trackWithMockData(awb);
+        }
+
+        // Use real API if credentials are available, fall back to mock on failure
+        console.log('[UPS] Using real API with credentials');
+        var useProxy = APIBase.shouldUseProxy('UPS');
+        var trackingPromise = useProxy ? trackViaProxy(awb) : trackDirect(awb);
+
+        return trackingPromise.catch(function(error) {
+            console.warn('[UPS] Real API failed, falling back to mock data:', error.message);
+            return trackWithMockData(awb);
+        });
     }
 
     /**
