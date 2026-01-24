@@ -77,6 +77,9 @@
             // Load settings
             await this.loadSettings();
 
+            // Migrate old trackings to add trackingId field if missing
+            await this.migrateTrackings();
+
             // Check URL parameters for initial filter
             this.loadURLParams();
 
@@ -381,6 +384,37 @@
     // ============================================================
     // TRACKING DATA MANAGEMENT
     // ============================================================
+
+    ShipmentTrackerApp.prototype.migrateTrackings = async function() {
+        console.log('[App] Checking for tracking migrations...');
+
+        try {
+            var trackings = await this.db.getAllTrackings();
+            var migratedCount = 0;
+
+            for (var i = 0; i < trackings.length; i++) {
+                var tracking = trackings[i];
+
+                // Migrate: Add trackingId if missing
+                if (!tracking.trackingId && tracking.awb && tracking.carrier) {
+                    console.log('[App] Migrating tracking:', tracking.awb, tracking.carrier);
+                    tracking.trackingId = tracking.awb + '_' + tracking.carrier;
+                    await this.db.saveTracking(tracking);
+                    migratedCount++;
+                }
+            }
+
+            if (migratedCount > 0) {
+                console.log('[App] Migrated', migratedCount, 'tracking(s) to add trackingId field');
+            } else {
+                console.log('[App] No migrations needed');
+            }
+
+        } catch (err) {
+            console.error('[App] Migration failed:', err);
+            // Don't block app initialization on migration failure
+        }
+    };
 
     ShipmentTrackerApp.prototype.loadTrackings = async function() {
         console.log('[App] Loading trackings...');
