@@ -558,6 +558,41 @@ kbd {
     transform: translateY(0);
 }
 
+/* Icon-only buttons (for table actions) */
+.btn-icon-only {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-only:hover {
+    background: var(--hover-color);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn-icon-only:active {
+    transform: scale(0.95);
+}
+
+.btn-icon-only.btn-danger {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.btn-icon-only.btn-danger:hover {
+    background: #fecaca;
+}
+
 /* ============================================================
    STATISTICS DASHBOARD
    ============================================================ */
