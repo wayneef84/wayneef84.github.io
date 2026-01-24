@@ -387,11 +387,10 @@
 
         try {
             this.trackings = await this.db.getAllTrackings();
-            this.filteredTrackings = this.trackings.slice(); // Copy
-            console.log('[App] Loaded', this.trackings.length, 'trackings');
+            console.log('[App] Loaded', this.trackings.length, 'trackings from database');
 
-            this.renderTable();
-            this.renderMobileCards();
+            // Apply filters (which will also update filteredTrackings and render)
+            this.applyFilters();
 
         } catch (err) {
             console.error('[App] Failed to load trackings:', err);
