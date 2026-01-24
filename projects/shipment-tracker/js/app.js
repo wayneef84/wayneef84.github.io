@@ -611,11 +611,17 @@
         destCell.textContent = this.formatLocation(tracking.destination);
         row.appendChild(destCell);
 
-        // Est. Delivery (date only, no time)
+        // Est. Delivery (date only, no time) with conditional styling
         var deliveryCell = document.createElement('td');
         if (tracking.estimatedDelivery) {
             var estDate = new Date(tracking.estimatedDelivery);
+            var etaStyle = this.getETAStyle(tracking.estimatedDelivery, tracking.deliverySignal, tracking.status);
+
             deliveryCell.textContent = (estDate.getMonth() + 1) + '/' + estDate.getDate();
+            deliveryCell.style.color = etaStyle.color;
+            deliveryCell.style.fontWeight = etaStyle.bold ? 'bold' : 'normal';
+            deliveryCell.style.textDecoration = etaStyle.underline ? 'underline' : 'none';
+            deliveryCell.className = etaStyle.className;
         } else {
             deliveryCell.textContent = 'N/A';
         }
@@ -717,12 +723,36 @@
         var header = document.createElement('div');
         header.className = 'card-header';
 
-        // Status Icon
+        // Status Icon with ETA
+        var iconContainer = document.createElement('div');
+        iconContainer.style.display = 'flex';
+        iconContainer.style.flexDirection = 'column';
+        iconContainer.style.alignItems = 'center';
+        iconContainer.style.gap = '0.25rem';
+
         var iconDiv = document.createElement('div');
         iconDiv.className = 'card-status-icon';
         iconDiv.style.backgroundColor = TrackingUtils.getStatusColor(tracking.deliverySignal);
         iconDiv.textContent = TrackingUtils.getStatusIcon(tracking.deliverySignal);
-        header.appendChild(iconDiv);
+        iconContainer.appendChild(iconDiv);
+
+        // Add ETA display under icon
+        if (tracking.estimatedDelivery) {
+            var etaDiv = document.createElement('div');
+            etaDiv.className = 'card-eta';
+            var etaStyle = this.getETAStyle(tracking.estimatedDelivery, tracking.deliverySignal, tracking.status);
+            etaDiv.className += ' ' + etaStyle.className;
+            etaDiv.style.fontSize = '0.75rem';
+            etaDiv.style.fontWeight = etaStyle.bold ? 'bold' : 'normal';
+            etaDiv.style.color = etaStyle.color;
+            etaDiv.style.textDecoration = etaStyle.underline ? 'underline' : 'none';
+
+            var etaDate = new Date(tracking.estimatedDelivery);
+            etaDiv.textContent = (etaDate.getMonth() + 1) + '/' + etaDate.getDate();
+            iconContainer.appendChild(etaDiv);
+        }
+
+        header.appendChild(iconContainer);
 
         // Card Info
         var info = document.createElement('div');
@@ -1495,6 +1525,75 @@
         }
 
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+
+    /**
+     * Determine ETA styling based on delivery date and status
+     * @param {string} estimatedDelivery - ISO date string
+     * @param {string} deliverySignal - Status signal (delivered, active, exception)
+     * @param {string} status - Full status text
+     * @returns {Object} Style configuration {color, bold, underline, className}
+     */
+    ShipmentTrackerApp.prototype.getETAStyle = function(estimatedDelivery, deliverySignal, status) {
+        var style = {
+            color: '#000',
+            bold: false,
+            underline: false,
+            className: 'eta-normal'
+        };
+
+        if (!estimatedDelivery) return style;
+
+        var etaDate = new Date(estimatedDelivery);
+        var now = new Date();
+
+        // Reset time to midnight for accurate day comparison
+        etaDate.setHours(0, 0, 0, 0);
+        now.setHours(0, 0, 0, 0);
+
+        var daysUntil = Math.ceil((etaDate - now) / (1000 * 60 * 60 * 24));
+        var isDelivered = deliverySignal === 'delivered';
+
+        // Check for customs/exception issues
+        var hasException = deliverySignal === 'exception' ||
+                          (status && (status.toLowerCase().indexOf('customs') !== -1 ||
+                                     status.toLowerCase().indexOf('held') !== -1 ||
+                                     status.toLowerCase().indexOf('clearance') !== -1));
+
+        // Apply styling rules
+        if (hasException) {
+            // Customs/exception: always bold, underlined, red
+            style.color = '#e53e3e';
+            style.bold = true;
+            style.underline = true;
+            style.className = 'eta-exception';
+        } else if (isDelivered) {
+            // Delivered: black, normal, underline
+            style.color = '#000';
+            style.bold = false;
+            style.underline = true;
+            style.className = 'eta-delivered';
+        } else if (daysUntil < 1) {
+            // Less than 1 day out and not delivered: red & bold
+            style.color = '#e53e3e';
+            style.bold = true;
+            style.underline = false;
+            style.className = 'eta-urgent';
+        } else if (daysUntil >= 1 && daysUntil < 2) {
+            // 1-2 days out and not delivered: black & bold
+            style.color = '#000';
+            style.bold = true;
+            style.underline = false;
+            style.className = 'eta-soon';
+        } else {
+            // 2+ days out: black, normal
+            style.color = '#000';
+            style.bold = false;
+            style.underline = false;
+            style.className = 'eta-normal';
+        }
+
+        return style;
     };
 
     ShipmentTrackerApp.prototype.showToast = function(message, type) {
