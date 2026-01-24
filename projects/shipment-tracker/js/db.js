@@ -17,7 +17,7 @@
 
     var DB_CONFIG = {
         name: 'ShipmentTrackerDB',
-        version: 2, // Increment version for schema change
+        version: 3, // Increment version to force recreation of stores with new keyPath
         stores: {
             trackings: {
                 keyPath: 'trackingId', // Composite key: awb + carrier
@@ -181,6 +181,7 @@
     IndexedDBAdapter.prototype._upgradeDatabase = function(event) {
         var db = event.target.result;
         var transaction = event.target.transaction;
+        var oldVersion = event.oldVersion;
 
         var storeNames = Object.keys(this.config.stores);
 
@@ -190,8 +191,55 @@
 
             var objectStore;
 
-            // Create store if it doesn't exist
-            if (!db.objectStoreNames.contains(storeName)) {
+            // Special migration for version 3: recreate trackings store with new keyPath
+            if (storeName === 'trackings' && oldVersion < 3 && db.objectStoreNames.contains(storeName)) {
+                console.log('[IndexedDB] Migrating trackings store to use trackingId keyPath...');
+
+                // Get old data
+                var oldStore = transaction.objectStore(storeName);
+                var oldData = [];
+                var cursorRequest = oldStore.openCursor();
+
+                cursorRequest.onsuccess = function(e) {
+                    var cursor = e.target.result;
+                    if (cursor) {
+                        var record = cursor.value;
+                        // Add trackingId if missing
+                        if (!record.trackingId && record.awb && record.carrier) {
+                            record.trackingId = record.awb + '_' + record.carrier;
+                        }
+                        oldData.push(record);
+                        cursor.continue();
+                    }
+                };
+
+                // Delete old store
+                db.deleteObjectStore(storeName);
+                console.log('[IndexedDB] Deleted old trackings store');
+
+                // Create new store with trackingId keyPath
+                objectStore = db.createObjectStore(storeName, {
+                    keyPath: storeConfig.keyPath,
+                    autoIncrement: storeConfig.autoIncrement
+                });
+                console.log('[IndexedDB] Created new trackings store with keyPath:', storeConfig.keyPath);
+
+                // Re-add data after transaction completes
+                transaction.oncomplete = function() {
+                    console.log('[IndexedDB] Re-adding', oldData.length, 'records to new store');
+                    var newTransaction = db.transaction([storeName], 'readwrite');
+                    var newStore = newTransaction.objectStore(storeName);
+
+                    for (var k = 0; k < oldData.length; k++) {
+                        newStore.put(oldData[k]);
+                    }
+
+                    newTransaction.oncomplete = function() {
+                        console.log('[IndexedDB] Migration complete');
+                    };
+                };
+            } else if (!db.objectStoreNames.contains(storeName)) {
+                // Create store if it doesn't exist
                 console.log('[IndexedDB] Creating object store:', storeName);
                 objectStore = db.createObjectStore(storeName, {
                     keyPath: storeConfig.keyPath,
@@ -202,16 +250,18 @@
             }
 
             // Create indexes
-            for (var j = 0; j < storeConfig.indexes.length; j++) {
-                var indexConfig = storeConfig.indexes[j];
+            if (objectStore) {
+                for (var j = 0; j < storeConfig.indexes.length; j++) {
+                    var indexConfig = storeConfig.indexes[j];
 
-                if (!objectStore.indexNames.contains(indexConfig.name)) {
-                    console.log('[IndexedDB] Creating index:', indexConfig.name, 'on', storeName);
-                    objectStore.createIndex(
-                        indexConfig.name,
-                        indexConfig.keyPath,
-                        { unique: indexConfig.unique }
-                    );
+                    if (!objectStore.indexNames.contains(indexConfig.name)) {
+                        console.log('[IndexedDB] Creating index:', indexConfig.name, 'on', storeName);
+                        objectStore.createIndex(
+                            indexConfig.name,
+                            indexConfig.keyPath,
+                            { unique: indexConfig.unique }
+                        );
+                    }
                 }
             }
         }
