@@ -372,10 +372,10 @@
                 throw new Error('AWB and carrier are required');
             }
 
-            // Check if already exists
-            var existing = await this.db.getTracking(awb);
+            // Check if already exists for this carrier
+            var existing = await this.db.getTracking(awb, carrier);
             if (existing) {
-                throw new Error('Tracking number already exists');
+                throw new Error('Tracking number already exists for ' + carrier);
             }
 
             // Create new tracking record
@@ -430,15 +430,24 @@
         }
     };
 
-    ShipmentTrackerApp.prototype.deleteTracking = async function(awb) {
-        console.log('[App] Deleting tracking:', awb);
+    ShipmentTrackerApp.prototype.deleteTracking = async function(awb, carrier) {
+        console.log('[App] Deleting tracking:', awb, carrier);
 
-        if (!confirm('Delete tracking ' + awb + '?')) {
+        // If carrier not provided, get it from the tracking record
+        if (!carrier) {
+            var tracking = await this.db.getTracking(awb);
+            if (tracking) {
+                carrier = tracking.carrier;
+            }
+        }
+
+        var displayName = carrier ? (awb + ' (' + carrier + ')') : awb;
+        if (!confirm('Delete tracking ' + displayName + '?')) {
             return;
         }
 
         try {
-            await this.db.deleteTracking(awb);
+            await this.db.deleteTracking(awb, carrier);
             await this.loadTrackings();
             this.updateStats();
             this.closeDetail();
@@ -505,7 +514,7 @@
 
             // Delete pruned shipments from database
             for (var i = 0; i < toPrune.length; i++) {
-                await this.db.deleteTracking(toPrune[i].awb);
+                await this.db.deleteTracking(toPrune[i].awb, toPrune[i].carrier);
             }
 
             // Reload data
@@ -912,7 +921,7 @@
         deleteBtn.innerHTML = '<span class="btn-icon">🗑️</span><span class="btn-text">Delete</span>';
         deleteBtn.onclick = function(e) {
             e.stopPropagation();
-            self.deleteTracking(tracking.awb);
+            self.deleteTracking(tracking.awb, tracking.carrier);
         };
         actions.appendChild(deleteBtn);
 
@@ -1165,7 +1174,7 @@
             // Setup delete button
             var self = this;
             document.getElementById('deleteTrackingBtn').onclick = function() {
-                self.deleteTracking(awb);
+                self.deleteTracking(awb, tracking.carrier);
             };
 
             // Setup force refresh button

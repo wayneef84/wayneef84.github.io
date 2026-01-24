@@ -17,12 +17,13 @@
 
     var DB_CONFIG = {
         name: 'ShipmentTrackerDB',
-        version: 1,
+        version: 2, // Increment version for schema change
         stores: {
             trackings: {
-                keyPath: 'awb',
+                keyPath: 'trackingId', // Composite key: awb + carrier
                 autoIncrement: false,
                 indexes: [
+                    { name: 'awb', keyPath: 'awb', unique: false },
                     { name: 'carrier', keyPath: 'carrier', unique: false },
                     { name: 'delivered', keyPath: 'delivered', unique: false },
                     { name: 'lastChecked', keyPath: 'lastChecked', unique: false },
@@ -248,30 +249,55 @@
      * @param {string} awb - Air waybill number
      * @returns {Promise<Object|null>} Tracking record or null if not found
      */
-    IndexedDBAdapter.prototype.getTracking = function(awb) {
+    /**
+     * Get tracking record by AWB and carrier
+     * @param {string} awb - Air waybill number
+     * @param {string} carrier - Carrier name (optional, returns first match if omitted)
+     * @returns {Promise<Object|null>}
+     */
+    IndexedDBAdapter.prototype.getTracking = function(awb, carrier) {
         var self = this;
         this._checkReady();
 
         return new Promise(function(resolve, reject) {
-            var transaction = self.db.transaction(['trackings'], 'readonly');
-            var store = transaction.objectStore('trackings');
-            var request = store.get(awb);
+            if (carrier) {
+                // Get specific tracking by composite key
+                var trackingId = awb + '_' + carrier;
+                var transaction = self.db.transaction(['trackings'], 'readonly');
+                var store = transaction.objectStore('trackings');
+                var request = store.get(trackingId);
 
-            request.onsuccess = function(event) {
-                resolve(event.target.result || null);
-            };
+                request.onsuccess = function(event) {
+                    resolve(event.target.result || null);
+                };
 
-            request.onerror = function(event) {
-                console.error('[IndexedDB] Failed to get tracking:', awb, event.target.error);
-                reject(event.target.error);
-            };
+                request.onerror = function(event) {
+                    console.error('[IndexedDB] Failed to get tracking:', trackingId, event.target.error);
+                    reject(event.target.error);
+                };
+            } else {
+                // Get first matching AWB (for backward compatibility)
+                var transaction = self.db.transaction(['trackings'], 'readonly');
+                var store = transaction.objectStore('trackings');
+                var index = store.index('awb');
+                var request = index.get(awb);
+
+                request.onsuccess = function(event) {
+                    resolve(event.target.result || null);
+                };
+
+                request.onerror = function(event) {
+                    console.error('[IndexedDB] Failed to get tracking:', awb, event.target.error);
+                    reject(event.target.error);
+                };
+            }
         });
     };
 
     /**
      * Save tracking record (insert or update)
      * @param {Object} tracking - Tracking record object
-     * @returns {Promise<string>} AWB of saved record
+     * @returns {Promise<string>} trackingId of saved record
      */
     IndexedDBAdapter.prototype.saveTracking = function(tracking) {
         var self = this;
@@ -279,22 +305,25 @@
 
         return new Promise(function(resolve, reject) {
             // Validate required fields
-            if (!tracking.awb) {
-                reject(new Error('Tracking record must have an AWB'));
+            if (!tracking.awb || !tracking.carrier) {
+                reject(new Error('Tracking record must have AWB and carrier'));
                 return;
             }
+
+            // Generate composite key
+            tracking.trackingId = tracking.awb + '_' + tracking.carrier;
 
             var transaction = self.db.transaction(['trackings'], 'readwrite');
             var store = transaction.objectStore('trackings');
             var request = store.put(tracking);
 
             request.onsuccess = function(event) {
-                console.log('[IndexedDB] Saved tracking:', tracking.awb);
-                resolve(tracking.awb);
+                console.log('[IndexedDB] Saved tracking:', tracking.trackingId);
+                resolve(tracking.trackingId);
             };
 
             request.onerror = function(event) {
-                console.error('[IndexedDB] Failed to save tracking:', tracking.awb, event.target.error);
+                console.error('[IndexedDB] Failed to save tracking:', tracking.trackingId, event.target.error);
                 reject(event.target.error);
             };
         });
@@ -303,26 +332,54 @@
     /**
      * Delete tracking record
      * @param {string} awb - Air waybill number
+     * @param {string} carrier - Carrier name (optional, deletes first match if omitted)
      * @returns {Promise<void>}
      */
-    IndexedDBAdapter.prototype.deleteTracking = function(awb) {
+    IndexedDBAdapter.prototype.deleteTracking = function(awb, carrier) {
         var self = this;
         this._checkReady();
 
         return new Promise(function(resolve, reject) {
-            var transaction = self.db.transaction(['trackings'], 'readwrite');
-            var store = transaction.objectStore('trackings');
-            var request = store.delete(awb);
+            if (carrier) {
+                // Delete specific tracking by composite key
+                var trackingId = awb + '_' + carrier;
+                var transaction = self.db.transaction(['trackings'], 'readwrite');
+                var store = transaction.objectStore('trackings');
+                var request = store.delete(trackingId);
 
-            request.onsuccess = function(event) {
-                console.log('[IndexedDB] Deleted tracking:', awb);
-                resolve();
-            };
+                request.onsuccess = function(event) {
+                    console.log('[IndexedDB] Deleted tracking:', trackingId);
+                    resolve();
+                };
 
-            request.onerror = function(event) {
-                console.error('[IndexedDB] Failed to delete tracking:', awb, event.target.error);
-                reject(event.target.error);
-            };
+                request.onerror = function(event) {
+                    console.error('[IndexedDB] Failed to delete tracking:', trackingId, event.target.error);
+                    reject(event.target.error);
+                };
+            } else {
+                // Delete first matching AWB (for backward compatibility)
+                // First get the tracking to find its trackingId
+                self.getTracking(awb).then(function(tracking) {
+                    if (!tracking) {
+                        reject(new Error('Tracking not found: ' + awb));
+                        return;
+                    }
+
+                    var transaction = self.db.transaction(['trackings'], 'readwrite');
+                    var store = transaction.objectStore('trackings');
+                    var request = store.delete(tracking.trackingId);
+
+                    request.onsuccess = function(event) {
+                        console.log('[IndexedDB] Deleted tracking:', tracking.trackingId);
+                        resolve();
+                    };
+
+                    request.onerror = function(event) {
+                        console.error('[IndexedDB] Failed to delete tracking:', tracking.trackingId, event.target.error);
+                        reject(event.target.error);
+                    };
+                }).catch(reject);
+            }
         });
     };
 
