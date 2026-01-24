@@ -337,18 +337,31 @@
      */
     IndexedDBAdapter.prototype.deleteTracking = function(awb, carrier) {
         var self = this;
+        console.log('[IndexedDB] deleteTracking called with awb:', awb, 'carrier:', carrier);
         this._checkReady();
 
         return new Promise(function(resolve, reject) {
             if (carrier) {
                 // Delete specific tracking by composite key
                 var trackingId = awb + '_' + carrier;
+                console.log('[IndexedDB] Attempting to delete tracking with ID:', trackingId);
+
                 var transaction = self.db.transaction(['trackings'], 'readwrite');
                 var store = transaction.objectStore('trackings');
+
+                transaction.oncomplete = function() {
+                    console.log('[IndexedDB] Delete transaction completed successfully');
+                };
+
+                transaction.onerror = function(event) {
+                    console.error('[IndexedDB] Delete transaction error:', event.target.error);
+                    reject(event.target.error);
+                };
+
                 var request = store.delete(trackingId);
 
                 request.onsuccess = function(event) {
-                    console.log('[IndexedDB] Deleted tracking:', trackingId);
+                    console.log('[IndexedDB] Successfully deleted tracking:', trackingId);
                     resolve();
                 };
 
@@ -358,12 +371,15 @@
                 };
             } else {
                 // Delete first matching AWB (for backward compatibility)
-                // First get the tracking to find its trackingId
+                console.log('[IndexedDB] No carrier provided, looking up tracking by AWB');
                 self.getTracking(awb).then(function(tracking) {
                     if (!tracking) {
+                        console.error('[IndexedDB] Tracking not found for AWB:', awb);
                         reject(new Error('Tracking not found: ' + awb));
                         return;
                     }
+
+                    console.log('[IndexedDB] Found tracking, deleting:', tracking.trackingId);
 
                     var transaction = self.db.transaction(['trackings'], 'readwrite');
                     var store = transaction.objectStore('trackings');
@@ -378,7 +394,10 @@
                         console.error('[IndexedDB] Failed to delete tracking:', tracking.trackingId, event.target.error);
                         reject(event.target.error);
                     };
-                }).catch(reject);
+                }).catch(function(err) {
+                    console.error('[IndexedDB] Error in getTracking:', err);
+                    reject(err);
+                });
             }
         });
     };

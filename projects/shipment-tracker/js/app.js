@@ -467,32 +467,44 @@
     };
 
     ShipmentTrackerApp.prototype.deleteTracking = async function(awb, carrier) {
-        console.log('[App] Deleting tracking:', awb, carrier);
-
-        // If carrier not provided, get it from the tracking record
-        if (!carrier) {
-            var tracking = await this.db.getTracking(awb);
-            if (tracking) {
-                carrier = tracking.carrier;
-            }
-        }
-
-        var displayName = carrier ? (awb + ' (' + carrier + ')') : awb;
-        if (!confirm('Delete tracking ' + displayName + '?')) {
-            return;
-        }
+        console.log('[App] Deleting tracking:', awb, 'carrier:', carrier);
 
         try {
+            // If carrier not provided, get it from the tracking record
+            if (!carrier) {
+                console.log('[App] No carrier provided, fetching tracking record');
+                var tracking = await this.db.getTracking(awb);
+                if (tracking) {
+                    carrier = tracking.carrier;
+                    console.log('[App] Found carrier:', carrier);
+                } else {
+                    console.error('[App] Tracking not found:', awb);
+                    this.showToast('Tracking not found', 'error');
+                    return;
+                }
+            }
+
+            var displayName = carrier ? (awb + ' (' + carrier + ')') : awb;
+            console.log('[App] Confirming delete for:', displayName);
+
+            if (!confirm('Delete tracking ' + displayName + '?')) {
+                console.log('[App] Delete cancelled by user');
+                return;
+            }
+
+            console.log('[App] Calling db.deleteTracking with awb:', awb, 'carrier:', carrier);
             await this.db.deleteTracking(awb, carrier);
+            console.log('[App] Delete successful, reloading trackings');
+
             await this.loadTrackings();
             this.updateStats();
             this.closeDetail();
 
-            this.showToast('Tracking deleted', 'success');
+            this.showToast('✅ Tracking deleted', 'success');
 
         } catch (err) {
             console.error('[App] Failed to delete tracking:', err);
-            this.showToast('Failed to delete: ' + err.message, 'error');
+            this.showToast('❌ Failed to delete: ' + err.message, 'error');
         }
     };
 
