@@ -773,7 +773,8 @@
             trackBtn.href = trackingURL;
             trackBtn.target = '_blank';
             trackBtn.rel = 'noopener noreferrer';
-            trackBtn.textContent = '🔗 Track on ' + tracking.carrier;
+            // Mobile: "Track on", Desktop: "Track on {Carrier}"
+            trackBtn.textContent = window.innerWidth < 768 ? '🔗 Track on' : '🔗 Track on ' + tracking.carrier;
             trackBtn.style.textDecoration = 'none';
             trackBtn.onclick = function(e) {
                 e.stopPropagation();
