@@ -890,6 +890,15 @@
             }
         }
 
+        // Update URL parameter
+        var newUrl = new URL(window.location);
+        if (this.currentFilters.statFilter === 'total') {
+            newUrl.searchParams.delete('filter');
+        } else {
+            newUrl.searchParams.set('filter', this.currentFilters.statFilter);
+        }
+        window.history.pushState({}, '', newUrl);
+
         this.applyFilters();
     };
 
@@ -1740,16 +1749,25 @@
                     self.currentFilters.statFilter = 'total';
                 }
 
+                // Update URL parameter
+                var newUrl = new URL(window.location);
+                if (self.currentFilters.statFilter === 'total') {
+                    newUrl.searchParams.delete('filter');
+                } else {
+                    newUrl.searchParams.set('filter', self.currentFilters.statFilter);
+                }
+                window.history.pushState({}, '', newUrl);
+
                 // Re-render with filter
                 self.applyFilters();
             };
         });
 
-        // Set "Total" as active by default
-        var totalBtn = document.getElementById('filterTotal');
-        if (totalBtn) {
-            totalBtn.classList.add('active');
-            window.app.currentFilter = 'total';
+        // Set active button based on currentFilters.statFilter (respects URL param)
+        var activeFilter = self.currentFilters.statFilter || 'total';
+        var activeBtn = document.querySelector('.bottom-bar-btn[data-filter="' + activeFilter + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active');
         }
 
         // Window resize handler for split view
