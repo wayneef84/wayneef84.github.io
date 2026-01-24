@@ -41,6 +41,12 @@
         }
     };
 
+    // OAuth token cache
+    var oauthTokenCache = {
+        token: null,
+        expiresAt: null
+    };
+
     // ============================================================
     // TRACK SHIPMENT
     // ============================================================
@@ -322,14 +328,22 @@
     }
 
     /**
-     * Get OAuth token for FedEx API
+     * Get OAuth token for FedEx API (with caching)
      * @param {Object} credentials - API credentials
      * @returns {Promise<string>}
      */
     function getOAuthToken(credentials) {
+        // Check if we have a valid cached token
+        var now = Date.now();
+        if (oauthTokenCache.token && oauthTokenCache.expiresAt && now < oauthTokenCache.expiresAt) {
+            console.log('[FedEx] Using cached OAuth token (expires in ' + Math.round((oauthTokenCache.expiresAt - now) / 1000) + 's)');
+            return Promise.resolve(oauthTokenCache.token);
+        }
+
+        // Request new token
         var endpoint = FEDEX_CONFIG.useSandbox ? FEDEX_CONFIG.oauthUrl.sandbox : FEDEX_CONFIG.oauthUrl.production;
 
-        console.log('[FedEx] Requesting OAuth token from:', endpoint);
+        console.log('[FedEx] Requesting new OAuth token from:', endpoint);
 
         return APIBase.request(endpoint, {
             method: 'POST',
@@ -339,7 +353,13 @@
             body: 'grant_type=client_credentials&client_id=' + encodeURIComponent(credentials.clientId) + '&client_secret=' + encodeURIComponent(credentials.clientSecret)
         })
             .then(function(response) {
-                console.log('[FedEx] OAuth token received');
+                var expiresIn = response.expires_in || 3600; // Default 1 hour
+                var bufferTime = 300; // Refresh 5 minutes early to be safe
+
+                oauthTokenCache.token = response.access_token;
+                oauthTokenCache.expiresAt = Date.now() + ((expiresIn - bufferTime) * 1000);
+
+                console.log('[FedEx] OAuth token received and cached (expires in ' + expiresIn + 's)');
                 return response.access_token;
             })
             .catch(function(error) {
