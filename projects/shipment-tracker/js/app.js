@@ -3,7 +3,7 @@
  * Connects UI to IndexedDB adapter
  *
  * @author Wayne Fong (wayneef84)
- * @version 1.0.0
+ * @version 1.0.1 (Patched)
  */
 
 (function(window) {
@@ -445,7 +445,9 @@
             // Auto-refresh to fetch tracking data
             try {
                 console.log('[App] Auto-refreshing new tracking:', awb);
-                var freshData = await this.queryEngine(awb, carrier);
+                var useMock = this.settings.development ? this.settings.development.useMockData : false;
+                var freshData = await this.queryEngine(awb, carrier, useMock);
+                
                 await this.db.saveTracking(freshData);
                 await this.loadTrackings();
                 this.updateStats();
@@ -715,7 +717,10 @@
         var statusCell = document.createElement('td');
         statusCell.className = 'status-text-column';
         var statusBadge = document.createElement('span');
-        statusBadge.className = 'status-badge status-' + tracking.deliverySignal.toLowerCase();
+        
+        // FIX: Safety check for deliverySignal
+        var signal = tracking.deliverySignal ? tracking.deliverySignal.toLowerCase() : 'unknown';
+        statusBadge.className = 'status-badge status-' + signal;
         statusBadge.textContent = tracking.status;
         statusCell.appendChild(statusBadge);
         row.appendChild(statusCell);
@@ -1629,6 +1634,9 @@
             var successCount = 0;
             var failCount = 0;
 
+            // FIX: Pass useMock setting
+            var useMock = this.settings.development ? this.settings.development.useMockData : false;
+
             // Refresh each tracking sequentially to avoid rate limit issues
             for (var i = 0; i < staleTrackings.length; i++) {
                 var tracking = staleTrackings[i];
@@ -1636,7 +1644,7 @@
                     console.log('[App] Refreshing ' + (i + 1) + '/' + staleTrackings.length + ':', tracking.awb, tracking.carrier);
 
                     // Call query engine to get fresh data
-                    var freshData = await this.queryEngine(tracking.awb, tracking.carrier);
+                    var freshData = await this.queryEngine(tracking.awb, tracking.carrier, useMock);
 
                     // Update database
                     await this.db.saveTracking(freshData);
@@ -1744,8 +1752,11 @@
             // Show loading state
             this.showToast('🔄 Refreshing tracking data...', 'info');
 
+            // FIX: Pass useMock setting
+            var useMock = this.settings.development ? this.settings.development.useMockData : false;
+
             // Call query engine to get fresh data
-            var freshData = await this.queryEngine(tracking.awb, tracking.carrier);
+            var freshData = await this.queryEngine(tracking.awb, tracking.carrier, useMock);
 
             // Update database
             await this.db.saveTracking(freshData);
@@ -1775,10 +1786,11 @@
      * Query engine - routes AWB to correct carrier adapter
      * @param {string} awb - Tracking number
      * @param {string} carrier - Carrier name (optional, will auto-detect if missing)
+     * @param {boolean} useMock - Whether to force mock data (optional)
      * @returns {Promise<Object>} Fresh tracking data
      */
-    ShipmentTrackerApp.prototype.queryEngine = async function(awb, carrier) {
-        console.log('[Query Engine] Fetching data for:', awb, 'Carrier:', carrier);
+    ShipmentTrackerApp.prototype.queryEngine = async function(awb, carrier, useMock) {
+        console.log('[Query Engine] Fetching data for:', awb, 'Carrier:', carrier, 'Mock:', useMock);
 
         // Auto-detect carrier if not provided
         if (!carrier) {
@@ -1820,7 +1832,8 @@
 
         // Call adapter's trackShipment method
         console.log('[Query Engine] Calling', carrier, 'adapter...');
-        var trackingData = await adapter.trackShipment(awb);
+        // FIX: Pass useMock argument
+        var trackingData = await adapter.trackShipment(awb, useMock);
 
         console.log('[Query Engine] Received data:', trackingData);
         return trackingData;
