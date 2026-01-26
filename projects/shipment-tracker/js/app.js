@@ -422,7 +422,8 @@
                 status: 'Pending',
                 deliverySignal: 'UNKNOWN',
                 delivered: false,
-                lastChecked: new Date(0).toISOString(), // Force refresh
+                lastChecked: new Date().toISOString(), // Adds current. date to the last checked
+                // lastChecked: new Date(0).toISOString(), // Force refresh
                 lastUpdated: new Date().toISOString(),
                 origin: { city: null, state: null, country: null, postalCode: null },
                 destination: { city: null, state: null, country: null, postalCode: null },
@@ -690,13 +691,15 @@
             awbLink.href = trackingURL;
             awbLink.target = '_blank';
             awbLink.rel = 'noopener noreferrer';
-            awbLink.textContent = this.truncateAWB(tracking.awb);
+            awbLink.textContent = tracking.awb;
+            // awbLink.textContent = this.truncateAWB(tracking.awb);
             awbLink.title = tracking.awb + ' (click to track on ' + tracking.carrier + ' site)';
             awbLink.style.textDecoration = 'none';
             awbLink.style.color = 'var(--primary-color)';
             awbCell.appendChild(awbLink);
         } else {
-            awbCell.textContent = this.truncateAWB(tracking.awb);
+            awbCell.textContent = tracking.awb;
+            // awbCell.textContent = this.truncateAWB(tracking.awb);
             awbCell.title = tracking.awb; // Full AWB on hover
         }
         row.appendChild(awbCell);
@@ -776,7 +779,8 @@
 
         // Details button
         var detailsBtn = document.createElement('button');
-        detailsBtn.innerHTML = '<span class="btn-icon">📋</span><span class="btn-text">Details</span>';
+        detailsBtn.innerHTML = '<span class="btn-icon">📋</span>';
+        // detailsBtn.innerHTML = '<span class="btn-icon">📋</span><span class="btn-text">Details</span>';
         detailsBtn.className = 'btn-secondary btn-details';
         detailsBtn.onclick = function(e) {
             e.stopPropagation(); // Prevent row click
@@ -2543,7 +2547,8 @@
                 }
             }
 
-            var dateShipped = document.getElementById('dateShipped').value;
+            // var dateShipped = document.getElementById('dateShipped').value;
+            var dateShipped = null;
             self.addTracking(awb, carrier, dateShipped);
         };
 

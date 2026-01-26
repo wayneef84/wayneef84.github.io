@@ -214,7 +214,7 @@
                         autocomplete="off"
                         oninput="window.app && window.app.detectCarrierFromAWB && window.app.detectCarrierFromAWB()">
 
-                    <select id="carrierSelect">
+                    <select id="carrierSelect" style="flex: 0; min-width: 200px;">
                         <option value="">Auto-Detect Carrier</option>
                         <option value="DHL">DHL Express</option>
                         <option value="FedEx">FedEx</option>
@@ -222,9 +222,9 @@
                         <option value="USPS">USPS</option>
                     </select>
 
-                    <button type="submit" class="btn-primary">Add</button>
+                    <button type="submit" class="btn-primary" style="flex:0; ">Add</button>
 
-                    <input type="date" id="dateShipped" placeholder="Date Shipped">
+                    <!-- <input type="date" id="dateShipped" placeholder="Date Shipped"> -->
 
                     <!-- Hidden file inputs for Data Management Modal -->
                     <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
@@ -474,7 +474,7 @@
                     <tr>
                         <th data-sort="awb" class="sortable">AWB <span class="sort-indicator"></span></th>
                         <th data-sort="carrier" class="sortable">Carrier <span class="sort-indicator"></span></th>
-                        <th class="status-icon-column"></th>
+                        <th class="status-icon-column">ℹ️</th>
                         <th data-sort="status" class="status-text-column sortable">Status <span class="sort-indicator"></span></th>
                         <th data-sort="origin" class="sortable">Origin <span class="sort-indicator"></span></th>
                         <th data-sort="destination" class="sortable">Destination <span class="sort-indicator"></span></th>

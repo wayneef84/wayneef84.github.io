@@ -24,6 +24,10 @@ The Shipment Tracker project was conceived as a utility tool to aggregate shipme
 ---
 
 ## Version History
+### v1.2.0 (2026-01-26) - Data Management & Professional Polish
+
+**🎯 Focus: Data Portability, Legal Compliance, and "Quality of Life" UX**
+
 
 ### v1.2.0 (2026-01-25) - Data Management & UX Improvements
 
