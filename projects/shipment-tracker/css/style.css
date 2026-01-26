@@ -1878,3 +1878,146 @@ kbd {
     background: rgba(0, 0, 0, 0.5);
     z-index: 9998;
 }
+
+/* ============================================================
+   ICON COLOR DIFFERENTIATION (v1.2.0)
+   ============================================================ */
+
+/* Import button - green tint */
+.btn-import {
+    filter: hue-rotate(90deg) saturate(1.2);
+}
+
+/* Export button - blue tint */
+.btn-export {
+    filter: hue-rotate(200deg) saturate(1.2);
+}
+
+/* ============================================================
+   DATA MANAGEMENT MODAL (v1.2.0)
+   ============================================================ */
+
+.data-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.data-modal.hidden {
+    display: none;
+}
+
+.data-modal-content {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.data-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+}
+
+.data-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.25rem;
+    line-height: 1;
+}
+
+.data-modal-close:hover {
+    color: var(--text-primary);
+}
+
+.data-modal-body {
+    padding: 1.25rem;
+}
+
+.data-modal-section {
+    margin-bottom: 1.5rem;
+}
+
+.data-modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.data-modal-section h4 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.data-modal-btn {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.5rem;
+    background: var(--btn-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.data-modal-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--hover-color);
+}
+
+.data-modal-btn:last-child {
+    margin-bottom: 0;
+}
+
+.data-modal-btn .btn-icon {
+    font-size: 1.25rem;
+}
+
+.data-modal-btn .btn-label {
+    flex: 1;
+}
+
+.data-modal-btn .btn-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 0.125rem;
+}
+
+.data-modal-btn.btn-warning {
+    border-color: var(--warning-color);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.data-modal-btn.btn-warning:hover {
+    background: rgba(245, 158, 11, 0.2);
+}

@@ -25,6 +25,67 @@ The Shipment Tracker project was conceived as a utility tool to aggregate shipme
 
 ## Version History
 
+### v1.2.0 (2026-01-25) - Data Management & UX Improvements
+
+**🎯 Focus: Import/Export Overhaul + Form UX Improvements**
+
+#### 📁 Data Management Modal (NEW)
+- **Unified Import/Export Interface** - New "Data Management" button in header (📁)
+  - Replaces separate Import/Export buttons with single modal
+  - Clean, organized sections for Import, Export, and Templates
+  - Descriptive labels for each action
+
+- **Import Options:**
+  - **Import (Add)** - Append new records to existing data
+  - **Import (Replace)** - Clear all data first, then import (with confirmation)
+  - Supports both CSV and JSON formats
+
+- **Export Options:**
+  - **Export CSV** - Filter-aware export (exports only currently visible/filtered shipments)
+  - **Export JSON** - Full backup with metadata
+  - Export description updates dynamically based on active filter
+
+- **Templates:**
+  - **Download Template** - CSV template with instructional header rows
+  - Comment lines (`#`) are skipped by parser
+  - Example rows show proper format
+
+#### ⌨️ Form UX Improvements
+- **Enter Key Support** - Press Enter in any form field to submit
+  - Works in AWB input, carrier dropdown, and date field
+  - No need to click "Add" button manually
+
+- **Form Auto-Reset** - Form clears after successful submission
+  - AWB input, carrier dropdown, and date field all reset
+  - Ready for next entry immediately
+
+#### 🎨 Visual Improvements
+- **Icon Color Differentiation** - Import (green tint) vs Export (blue tint)
+  - Uses CSS `hue-rotate` filter for emoji color shifting
+  - Better visual distinction between actions
+
+#### 🐛 Bug Fixes
+- **Mock Data Refresh Fix** - Mock carrier shipments no longer trigger stale refresh
+  - `refreshAllTrackings()` now skips carriers named "Mock" or "mock"
+  - Prevents unnecessary API calls for test data
+
+#### 📝 Documentation
+- **NEW: LLM_GUIDE.md** - Quick reference guide for AI assistants
+  - ES5 pattern cheat sheet (DO vs DON'T examples)
+  - File reference with one-line descriptions
+  - Common task templates (copy-paste code patterns)
+  - Current sprint tasks with implementation hints
+  - Testing checklist
+
+#### 🔧 Modified Files
+- `index.html` - Added Data Management Modal, updated header buttons
+- `css/style.css` - Added modal styles, icon color classes
+- `js/app.js` - Data modal handlers, Enter key support, filter-aware export, mock data fix
+- `ARCHITECTURE.md` - Added link to LLM_GUIDE.md
+- `LLM_GUIDE.md` - NEW file for AI assistant guidance
+
+---
+
 ### v1.1.0 (2026-01-23) - Mobile UX Overhaul
 
 **🎯 Focus: Enhanced Mobile Experience + Multi-Carrier Support**
@@ -286,6 +347,6 @@ Users must comply with third-party carrier API terms:
 
 ---
 
-*Last Updated: 2026-01-22*
-*Version: 1.0.0-alpha*
+*Last Updated: 2026-01-25*
+*Version: 1.2.0*
 *Status: In Development*

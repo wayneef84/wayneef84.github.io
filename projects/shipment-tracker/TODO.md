@@ -1,6 +1,6 @@
 # Shipment Tracker - TODO List
 
-**Last Updated:** 2026-01-23
+**Last Updated:** 2026-01-25
 
 ---
 
@@ -269,13 +269,16 @@
 ## 📦 PRIORITY 8: Import/Export Features
 
 ### Import
-- [ ] CSV import with column mapping
-- [ ] JSON import with validation
+- [x] ~~**CSV import with column mapping**~~ (Fixed: 2026-01-25 - Template with headers)
+- [x] ~~**JSON import with validation**~~ (Fixed: 2026-01-25)
+- [x] ~~**Import Template Download**~~ (Fixed: 2026-01-25 - With instructional comments)
+- [x] ~~**Import (Replace All) option**~~ (Fixed: 2026-01-25 - Data Management Modal)
 - [ ] Bulk add from clipboard (paste AWB list)
 - [ ] Import from email (parse tracking emails)
 - [ ] Import from Amazon orders page (browser extension)
 
 ### Export
+- [x] ~~**Filter-Aware Export**~~ (Fixed: 2026-01-25 - Exports only visible/filtered items)
 - [ ] Excel export with charts (SheetJS)
 - [ ] PDF export with formatting
 - [ ] Print-friendly view
@@ -523,6 +526,6 @@ const STATUS_COLORS = {
 
 *This TODO list is a living document and will be updated as features are completed or priorities change.*
 
-**Current Version:** v1.0.0
-**Next Version:** v1.1.0 (Mobile UX Overhaul)
-**Contributors:** Wayne Fong (wayneef84), Claude Sonnet 4.5
+**Current Version:** v1.2.0
+**Next Version:** v1.3.0 (Carrier Expansion)
+**Contributors:** Wayne Fong (wayneef84), Claude Sonnet 4.5, Claude Opus 4.5

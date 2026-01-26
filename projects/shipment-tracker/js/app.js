@@ -1402,24 +1402,60 @@
         this.showToast('Downloaded payload for ' + tracking.awb, 'success');
     };
 
-    ShipmentTrackerApp.prototype.downloadImportTemplate = function() {
-        var csv = 'AWB,Carrier,Date Shipped (Optional)\n';
-        csv += '# Example rows:\n';
-        csv += '1234567890,DHL,2026-01-15\n';
-        csv += '111111111111,FedEx,2026-01-20\n';
-        csv += '1Z999AA10123456784,UPS,\n';
-        csv += '420123459400110200000000000000,USPS,2026-01-22\n';
-        csv += '\n';
-        csv += '# Instructions:\n';
-        csv += '# - First row must be the header (AWB,Carrier,Date Shipped)\n';
-        csv += '# - Lines starting with # are comments and will be ignored\n';
-        csv += '# - Carrier must be one of: DHL, FedEx, UPS, USPS\n';
-        csv += '# - Date Shipped is optional (format: YYYY-MM-DD)\n';
-        csv += '# - Remove example rows and add your tracking numbers below\n';
+    ShipmentTrackerApp.prototype.downloadImportTemplate = function(includeData) {
+        var self = this;
+        var lines = [];
 
-        var filename = 'shipment_tracker_import_template.csv';
+        // Instructions block (comments ignored by parser)
+        lines.push('# ============================================');
+        lines.push('# SHIPMENT TRACKER - IMPORT TEMPLATE');
+        lines.push('# ============================================');
+        lines.push('#');
+        lines.push('# INSTRUCTIONS:');
+        lines.push('# - Lines starting with # are ignored');
+        lines.push('# - Carrier must be: DHL, FedEx, UPS, or USPS');
+        lines.push('# - Date format: YYYY-MM-DD (optional)');
+        lines.push('#');
+        lines.push('# EXAMPLE:');
+        lines.push('# 1234567890,DHL,2026-01-15');
+        lines.push('#');
+        lines.push('# ============================================');
+        lines.push('');
+
+        // Header row (required)
+        lines.push('AWB,Carrier,DateShipped');
+
+        // If includeData, add current filtered trackings
+        if (includeData) {
+            var filter = this.currentFilters.statFilter;
+            var trackingsToExport = (filter === 'total' || !filter)
+                ? this.trackings
+                : this.filteredTrackings;
+
+            trackingsToExport.forEach(function(t) {
+                var dateShipped = t.dateShipped || '';
+                lines.push(t.awb + ',' + t.carrier + ',' + dateShipped);
+            });
+        }
+
+        // Add blank line at end for easy data entry
+        lines.push('');
+
+        var csv = lines.join('\n');
+        var filename = includeData
+            ? 'shipment_tracker_export_template.csv'
+            : 'shipment_tracker_template.csv';
+
         this.downloadFile(csv, filename, 'text/csv');
-        this.showToast('📄 Download template - add your tracking numbers and import', 'success');
+
+        if (includeData) {
+            var count = (this.currentFilters.statFilter === 'total' || !this.currentFilters.statFilter)
+                ? this.trackings.length
+                : this.filteredTrackings.length;
+            this.showToast('📄 Exported ' + count + ' shipment(s) as template', 'success');
+        } else {
+            this.showToast('📄 Blank template ready - add your tracking numbers', 'success');
+        }
     };
 
     ShipmentTrackerApp.prototype.handleImportFile = async function(file) {
@@ -1640,6 +1676,13 @@
             // Refresh each tracking sequentially to avoid rate limit issues
             for (var i = 0; i < staleTrackings.length; i++) {
                 var tracking = staleTrackings[i];
+
+                // Task 4: Skip mock carrier data (should not trigger real API refreshes)
+                if (tracking.carrier === 'Mock' || tracking.carrier === 'mock') {
+                    console.log('[App] Skipping mock tracking:', tracking.awb);
+                    continue;
+                }
+
                 try {
                     console.log('[App] Refreshing ' + (i + 1) + '/' + staleTrackings.length + ':', tracking.awb, tracking.carrier);
 
@@ -2256,6 +2299,122 @@
     };
 
     // ============================================================
+    // DATA MANAGEMENT MODAL (v1.2.0)
+    // ============================================================
+
+    ShipmentTrackerApp.prototype.openDataModal = function() {
+        var modal = document.getElementById('dataModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            // Update export description based on current filter
+            this.updateExportDescription();
+        }
+    };
+
+    ShipmentTrackerApp.prototype.closeDataModal = function() {
+        var modal = document.getElementById('dataModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    };
+
+    ShipmentTrackerApp.prototype.updateExportDescription = function() {
+        var count = this.getFilteredExportCount();
+        var filter = this.currentFilters.statFilter;
+        var isFiltered = filter && filter !== 'total';
+
+        // Update CSV export description
+        var csvDesc = document.getElementById('exportFilteredDesc');
+        if (csvDesc) {
+            if (isFiltered) {
+                csvDesc.textContent = 'Export ' + count + ' filtered shipment(s)';
+            } else {
+                csvDesc.textContent = 'Export all ' + count + ' shipment(s)';
+            }
+        }
+
+        // Update Template with Data description
+        var templateDesc = document.getElementById('templateDataDesc');
+        if (templateDesc) {
+            if (isFiltered) {
+                templateDesc.textContent = 'Include ' + count + ' filtered shipment(s)';
+            } else {
+                templateDesc.textContent = 'Include all ' + count + ' shipment(s)';
+            }
+        }
+    };
+
+    ShipmentTrackerApp.prototype.getFilteredExportCount = function() {
+        var filter = this.currentFilters.statFilter;
+
+        if (filter === 'total' || !filter) {
+            return this.trackings.length;
+        }
+
+        return this.filteredTrackings.length;
+    };
+
+    ShipmentTrackerApp.prototype.exportFilteredCSV = function() {
+        var self = this;
+        var filter = this.currentFilters.statFilter;
+
+        // Use filtered trackings if filter is active
+        var trackingsToExport = (filter === 'total' || !filter)
+            ? this.trackings
+            : this.filteredTrackings;
+
+        if (trackingsToExport.length === 0) {
+            this.showToast('No shipments to export', 'warning');
+            return;
+        }
+
+        this.exportCSV(trackingsToExport);
+        this.closeDataModal();
+    };
+
+    ShipmentTrackerApp.prototype.exportFilteredJSON = function() {
+        var self = this;
+        var filter = this.currentFilters.statFilter;
+
+        // Use filtered trackings if filter is active
+        var trackingsToExport = (filter === 'total' || !filter)
+            ? this.trackings
+            : this.filteredTrackings;
+
+        if (trackingsToExport.length === 0) {
+            this.showToast('No shipments to export', 'warning');
+            return;
+        }
+
+        this.exportJSON(trackingsToExport, false);
+        this.closeDataModal();
+    };
+
+    ShipmentTrackerApp.prototype.importWithReplace = async function(file) {
+        var self = this;
+
+        if (!confirm('⚠️ This will DELETE all existing data before importing.\n\nAre you sure you want to replace all data?')) {
+            return;
+        }
+
+        try {
+            // Clear all existing data
+            await this.db.clearAll();
+            this.trackings = [];
+            this.filteredTrackings = [];
+            console.log('[App] All data cleared for replace import');
+
+            // Now import the file
+            await this.handleImportFile(file);
+
+            this.showToast('✅ Data replaced successfully', 'success');
+        } catch (err) {
+            console.error('[App] Replace import failed:', err);
+            this.showToast('Replace import failed: ' + err.message, 'error');
+        }
+    };
+
+    // ============================================================
     // EVENT LISTENERS SETUP
     // ============================================================
 
@@ -2267,9 +2426,21 @@
             self.refreshAllTrackings();
         };
 
-        document.getElementById('exportBtn').onclick = function() {
-            self.toggleExport();
-        };
+        // Data Management Modal button (replaces old export button)
+        var dataManagementBtn = document.getElementById('dataManagementBtn');
+        if (dataManagementBtn) {
+            dataManagementBtn.onclick = function() {
+                self.openDataModal();
+            };
+        }
+
+        // Legacy export button (if still present)
+        var exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.onclick = function() {
+                self.toggleExport();
+            };
+        }
 
         document.getElementById('settingsBtn').onclick = function() {
             self.toggleSettings();
@@ -2376,20 +2547,32 @@
             self.addTracking(awb, carrier, dateShipped);
         };
 
-        // Import button
-        document.getElementById('importBtn').onclick = function() {
-            document.getElementById('importFile').click();
-        };
-
-        document.getElementById('importFile').onchange = function(e) {
-            var file = e.target.files[0];
-            if (file) {
-                self.handleImportFile(file);
+        // Task 2: Enter key support for form fields
+        var formFields = ['awbInput', 'carrierSelect', 'dateShipped'];
+        formFields.forEach(function(fieldId) {
+            var field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        document.getElementById('addTrackingForm').dispatchEvent(new Event('submit'));
+                    }
+                });
             }
-            // Reset file input so same file can be imported again
-            e.target.value = '';
-            e.target.value = '';
-        };
+        });
+
+        // Import file handlers (triggered by Data Management Modal)
+        var importFile = document.getElementById('importFile');
+        if (importFile) {
+            importFile.onchange = function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    self.handleImportFile(file);
+                }
+                // Reset file input so same file can be imported again
+                e.target.value = '';
+            };
+        }
 
         // Filters
         document.getElementById('filterCarrier').onchange = function() {
@@ -2569,6 +2752,100 @@
                 setTimeout(function() {
                     sortMenu.style.display = 'none';
                 }, 300);
+            };
+        }
+
+        // ============================================================
+        // DATA MANAGEMENT MODAL EVENT LISTENERS (v1.2.0)
+        // ============================================================
+
+        // Data Modal close button
+        var dataModalClose = document.getElementById('dataModalClose');
+        if (dataModalClose) {
+            dataModalClose.onclick = function() {
+                self.closeDataModal();
+            };
+        }
+
+        // Click outside modal to close
+        var dataModal = document.getElementById('dataModal');
+        if (dataModal) {
+            dataModal.onclick = function(e) {
+                if (e.target === dataModal) {
+                    self.closeDataModal();
+                }
+            };
+        }
+
+        // Import (Append) button
+        var importAppendBtn = document.getElementById('importAppendBtn');
+        if (importAppendBtn) {
+            importAppendBtn.onclick = function() {
+                self.closeDataModal();
+                document.getElementById('importFile').click();
+            };
+        }
+
+        // Import (Replace) button
+        var importReplaceBtn = document.getElementById('importReplaceBtn');
+        if (importReplaceBtn) {
+            importReplaceBtn.onclick = function() {
+                self.closeDataModal();
+                document.getElementById('importReplaceFile').click();
+            };
+        }
+
+        // Import Replace file handler
+        var importReplaceFile = document.getElementById('importReplaceFile');
+        if (importReplaceFile) {
+            importReplaceFile.onchange = function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    self.importWithReplace(file);
+                }
+                e.target.value = '';
+            };
+        }
+
+        // Export Filtered CSV button
+        var exportFilteredCsvBtn = document.getElementById('exportFilteredCsvBtn');
+        if (exportFilteredCsvBtn) {
+            exportFilteredCsvBtn.onclick = function() {
+                self.exportFilteredCSV();
+            };
+        }
+
+        // Export JSON button
+        var exportJsonBtn = document.getElementById('exportJsonBtn');
+        if (exportJsonBtn) {
+            exportJsonBtn.onclick = function() {
+                self.exportFilteredJSON();
+            };
+        }
+
+        // Download Blank Template button
+        var downloadBlankTemplateBtn = document.getElementById('downloadBlankTemplateBtn');
+        if (downloadBlankTemplateBtn) {
+            downloadBlankTemplateBtn.onclick = function() {
+                self.downloadImportTemplate(false);
+                self.closeDataModal();
+            };
+        }
+
+        // Download Template with Data button
+        var downloadDataTemplateBtn = document.getElementById('downloadDataTemplateBtn');
+        if (downloadDataTemplateBtn) {
+            downloadDataTemplateBtn.onclick = function() {
+                self.downloadImportTemplate(true);
+                self.closeDataModal();
+            };
+        }
+
+        // Legacy: Download Template button (in settings, if exists)
+        var downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+        if (downloadTemplateBtn) {
+            downloadTemplateBtn.onclick = function() {
+                self.downloadImportTemplate(false);
             };
         }
 

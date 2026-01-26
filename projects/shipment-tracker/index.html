@@ -23,7 +23,7 @@
             <h1>📦 Shipment Tracker</h1>
             <div class="header-controls">
                 <button id="refreshBtn" class="icon-btn" title="Refresh All">🔄</button>
-                <button id="exportBtn" class="icon-btn" title="Export Data">📤</button>
+                <button id="dataManagementBtn" class="icon-btn" title="Import/Export Data">📁</button>
                 <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
             </div>
         </header>
@@ -226,11 +226,9 @@
 
                     <input type="date" id="dateShipped" placeholder="Date Shipped">
 
+                    <!-- Hidden file inputs for Data Management Modal -->
                     <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
-                    <button type="button" id="importBtn" class="btn-secondary btn-icon-expand" title="Import from File">
-                        <span class="icon">📥</span>
-                        <span class="text">Import</span>
-                    </button>
+                    <input type="file" id="importReplaceFile" accept=".json,.csv" style="display: none;">
                 </div>
             </form>
         </div>
@@ -366,6 +364,69 @@
                     <span class="btn-icon">⚠️</span>
                     <span class="btn-count" id="countIssues">0</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Data Management Modal (v1.2.0) -->
+        <div id="dataModal" class="data-modal hidden">
+            <div class="data-modal-content">
+                <div class="data-modal-header">
+                    <h3>📁 Data Management</h3>
+                    <button type="button" id="dataModalClose" class="data-modal-close">✕</button>
+                </div>
+                <div class="data-modal-body">
+                    <div class="data-modal-section">
+                        <h4>Import</h4>
+                        <button type="button" id="importAppendBtn" class="data-modal-btn">
+                            <span class="btn-icon">📥</span>
+                            <span class="btn-label">
+                                Import (Add)
+                                <span class="btn-desc">Add to existing data</span>
+                            </span>
+                        </button>
+                        <button type="button" id="importReplaceBtn" class="data-modal-btn btn-warning">
+                            <span class="btn-icon">🔄</span>
+                            <span class="btn-label">
+                                Import (Replace)
+                                <span class="btn-desc">Clear all data first</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="data-modal-section">
+                        <h4>Export</h4>
+                        <button type="button" id="exportFilteredCsvBtn" class="data-modal-btn">
+                            <span class="btn-icon">📊</span>
+                            <span class="btn-label">
+                                Export CSV
+                                <span class="btn-desc" id="exportFilteredDesc">Export all shipments</span>
+                            </span>
+                        </button>
+                        <button type="button" id="exportJsonBtn" class="data-modal-btn">
+                            <span class="btn-icon">📄</span>
+                            <span class="btn-label">
+                                Export JSON
+                                <span class="btn-desc">Full backup with metadata</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="data-modal-section">
+                        <h4>Templates</h4>
+                        <button type="button" id="downloadBlankTemplateBtn" class="data-modal-btn">
+                            <span class="btn-icon">📋</span>
+                            <span class="btn-label">
+                                Blank Template
+                                <span class="btn-desc">Empty CSV with instructions</span>
+                            </span>
+                        </button>
+                        <button type="button" id="downloadDataTemplateBtn" class="data-modal-btn">
+                            <span class="btn-icon">📊</span>
+                            <span class="btn-label">
+                                Template with Data
+                                <span class="btn-desc" id="templateDataDesc">Export current data as template</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 

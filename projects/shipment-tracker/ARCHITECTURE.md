@@ -6,6 +6,10 @@
 
 ---
 
+> **🤖 For AI Assistants:** Start with [LLM_GUIDE.md](./LLM_GUIDE.md) for a quick-reference cheat sheet of patterns, constraints, and current sprint tasks. This Architecture doc contains comprehensive details.
+
+---
+
 ## 📋 Table of Contents
 
 1. [Overview](#overview)
