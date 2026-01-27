@@ -1,6 +1,34 @@
 # Shipment Tracker - TODO List
 
-**Last Updated:** 2026-01-25
+**Last Updated:** 2026-01-26
+
+---
+
+## ✅ Recently Completed
+
+### Trade Compliance Document Linking (v1.2.0 - 2026-01-26)
+- [x] **Document Manager module** - `js/document-manager.js`
+  - Document type definitions with semantic emojis
+  - Compliance status calculation (CI + PL = complete)
+  - CRUD operations for documents on trackings
+
+- [x] **Desktop Table - Compliance Column**
+  - Shows ✅ if CI + PL present, ⚠️ if missing
+  - Shows 🔋 if UN38.3 battery cert attached
+
+- [x] **Detail Panel - Documents Section**
+  - Collapsible section showing attached documents
+  - Add/Remove document functionality
+  - Launch button to open Google Drive links
+
+- [x] **Import/Export Support**
+  - CSV exports include `documents` column as JSON
+  - JSON exports include full documents array
+  - Imports merge documents (add missing, don't overwrite)
+
+- [x] **Database Migration (v4)**
+  - Non-breaking schema update
+  - Existing trackings gain `documents` array when edited
 
 ---
 

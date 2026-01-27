@@ -16,8 +16,8 @@
     // ============================================================
 
     var DB_CONFIG = {
-        name: 'ShipmentTrackerDB',
-        version: 3, // Increment version to force recreation of stores with new keyPath
+        name: 'ShipmentTrackerDatabase',
+        version: 4, // v4: Added documents array support - delete old DB
         stores: {
             trackings: {
                 keyPath: 'trackingId', // Composite key: awb + carrier
@@ -191,13 +191,14 @@
 
             var objectStore;
 
-            // Special migration for version 3: recreate trackings store with new keyPath
-            if (storeName === 'trackings' && oldVersion < 3 && db.objectStoreNames.contains(storeName)) {
-                console.warn('[IndexedDB] ⚠️ MIGRATION: Recreating trackings store with correct keyPath');
-                console.warn('[IndexedDB] ⚠️ All existing tracking data will be cleared');
-                console.warn('[IndexedDB] ⚠️ Please use Export feature before upgrading if you want to preserve data');
+            // Migration: recreate trackings store when upgrading
+            // v3: new keyPath, v4: documents array support
+            if (storeName === 'trackings' && oldVersion < 4 && db.objectStoreNames.contains(storeName)) {
+                console.warn('[IndexedDB] MIGRATION v' + oldVersion + ' -> v4: Recreating trackings store');
+                console.warn('[IndexedDB] All existing tracking data will be cleared');
+                console.warn('[IndexedDB] Use Export feature before upgrading to preserve data');
 
-                // Delete old store with incorrect keyPath
+                // Delete old store
                 db.deleteObjectStore('trackings');
                 console.log('[IndexedDB] Deleted old trackings store');
 

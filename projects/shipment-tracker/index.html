@@ -480,6 +480,7 @@
                         <th data-sort="destination" class="sortable">Destination <span class="sort-indicator"></span></th>
                         <th data-sort="estimatedDelivery" class="sortable">Est. Delivery <span class="sort-indicator"></span></th>
                         <th data-sort="lastUpdated" class="sortable">Last Updated <span class="sort-indicator"></span></th>
+                        <th class="compliance-column">Docs</th>
                         <th class="actions-column">Actions</th>
                     </tr>
                 </thead>
@@ -509,6 +510,17 @@
                     <dl id="detailInfo">
                         <!-- Populated by JavaScript -->
                     </dl>
+                </div>
+
+                <div class="detail-section">
+                    <h3 class="collapsible-header" data-target="documentsContent">
+                        <span class="expand-icon">&#9654;</span> Documents
+                        <span class="doc-icons-preview" id="detailDocIcons"></span>
+                    </h3>
+                    <div id="documentsContent" class="collapsible-content">
+                        <div id="documentsList"></div>
+                        <button id="addDocumentBtn" class="btn-secondary" style="margin-top: 0.5rem;">+ Add Document</button>
+                    </div>
                 </div>
 
                 <div class="detail-section">
@@ -544,6 +556,27 @@
 
     </div>
 
+    <!-- Document Modal -->
+    <div id="documentModal" class="document-modal hidden">
+        <div class="document-modal-content">
+            <h3 id="documentModalTitle">Add Document</h3>
+            <div class="form-group">
+                <label for="documentTypeSelect">Document Type</label>
+                <select id="documentTypeSelect">
+                    <!-- Populated by JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="documentUrlInput">Document URL</label>
+                <input type="url" id="documentUrlInput" placeholder="https://drive.google.com/...">
+            </div>
+            <div class="document-modal-actions">
+                <button id="cancelDocumentBtn" class="btn-secondary">Cancel</button>
+                <button id="saveDocumentBtn" class="btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <p>
@@ -560,6 +593,7 @@
 
     <!-- Scripts -->
     <script src="js/db.js"></script>
+    <script src="js/document-manager.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/normalizer.js"></script>
     <script src="js/api/base.js"></script>

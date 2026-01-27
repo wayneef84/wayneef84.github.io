@@ -1,7 +1,7 @@
 # Shipment Tracker - Architecture & Configuration Guide
 
-**Version:** 1.1.0
-**Last Updated:** 2026-01-23
+**Version:** 1.2.0
+**Last Updated:** 2026-01-26
 **Authors:** Wayne Fong (wayneef84), Claude Sonnet 4.5
 
 ---
@@ -255,7 +255,8 @@ User types in search → debounced input event
 │
 ├── js/
 │   ├── app.js                # Main application controller
-│   ├── db.js                 # IndexedDB adapter
+│   ├── db.js                 # IndexedDB adapter (v4)
+│   ├── document-manager.js   # Trade compliance document types & CRUD
 │   ├── utils.js              # Utility functions
 │   ├── normalizer.js         # Response normalizer
 │   │
@@ -498,14 +499,15 @@ function normalize(data, carrier) {
 ### IndexedDB Schema
 
 **Database Name:** `ShipmentTrackerDB`
-**Version:** 1
+**Version:** 4 (v4 added documents array support)
 
 **Stores:**
 
-#### 1. `trackings` (keyPath: `awb`)
+#### 1. `trackings` (keyPath: `trackingId`)
 ```javascript
 {
-    awb: '1234567890',              // Primary key
+    trackingId: '1234567890_DHL',   // Composite: awb + '_' + carrier
+    awb: '1234567890',
     carrier: 'DHL',
     status: 'In Transit',
     deliverySignal: 'IN_TRANSIT',
@@ -516,7 +518,16 @@ function normalize(data, carrier) {
     lastUpdated: '2026-01-23T10:00:00Z',
     lastChecked: '2026-01-23T10:00:00Z',
     delivered: false,
-    events: [ /* array of events */ ]
+    events: [ /* array of events */ ],
+    documents: [                    // v4: Trade compliance documents
+        {
+            type: 'COMMERCIAL_INVOICE',
+            icon: '🧾',
+            label: 'Commercial Invoice',
+            url: 'https://drive.google.com/...',
+            addedDate: '2026-01-26T10:00:00Z'
+        }
+    ]
 }
 ```
 
@@ -572,6 +583,70 @@ var apiKeys = await db.getSetting('apiKeys');
 
 // Clear all
 await db.clearAll();
+```
+
+---
+
+## Trade Compliance Document Linking
+
+**Added in:** v1.2.0
+
+### Overview
+
+Shipments can have trade compliance documents attached via Google Drive URLs. This helps track whether required documents (Commercial Invoice, Packing List) are linked before export.
+
+### Document Types
+
+```javascript
+// Core documents (checked for compliance status)
+COMMERCIAL_INVOICE: { icon: '🧾', label: 'Commercial Invoice', required: true }
+PACKING_LIST:       { icon: '📦', label: 'Packing List', required: true }
+SLI_AWB:            { icon: '✈️', label: 'SLI / AWB', required: false }
+
+// Compliance documents (conditional)
+UN38_3:             { icon: '🔋', label: 'UN38.3 Test Summary' }
+MSDS:               { icon: '⚠️', label: 'MSDS / SDS' }
+ECCN_LICENSE:       { icon: '⚖️', label: 'ECCN / License Info' }
+FCC_CE_GRANT:       { icon: '📜', label: 'FCC / CE Grant' }
+POA:                { icon: '📜', label: 'Power of Attorney' }
+OTHER:              { icon: '📎', label: 'Other' }
+```
+
+### UI Components
+
+1. **Desktop Table - Compliance Column**
+   - Shows ✅ if CI + PL both present
+   - Shows ⚠️ if CI or PL missing
+   - Appends 🔋 if UN38.3 present
+
+2. **Detail Panel - Documents Section**
+   - Collapsible section showing attached documents
+   - Add/Remove document functionality
+   - Launch button to open document URL
+
+3. **Import/Export**
+   - CSV exports include `documents` column as JSON
+   - JSON exports include full documents array
+   - Imports merge documents (add missing, don't overwrite)
+
+### DocumentManager API
+
+```javascript
+// Initialize
+var docManager = new DocumentManager();
+
+// Get compliance status
+var status = docManager.getComplianceStatus(tracking);
+// Returns: { hasCI, hasPL, hasUN383, coreComplete, status }
+
+// Add document
+docManager.addDocument(tracking, 'COMMERCIAL_INVOICE', 'https://...');
+
+// Remove document
+docManager.removeDocument(tracking, 'COMMERCIAL_INVOICE');
+
+// Merge documents from import
+docManager.mergeDocuments(existingTracking, importDocuments);
 ```
 
 ---

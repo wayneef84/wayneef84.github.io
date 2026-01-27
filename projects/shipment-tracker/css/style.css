@@ -2033,3 +2033,140 @@ kbd {
 .data-modal-btn.btn-warning:hover {
     background: rgba(245, 158, 11, 0.2);
 }
+
+/* ============================================================
+   DOCUMENT MANAGEMENT STYLES
+   ============================================================ */
+
+/* Compliance column in table */
+.compliance-column {
+    text-align: center;
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+/* Documents section in detail panel */
+.doc-icons-preview {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.no-documents {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 0.5rem 0;
+}
+
+.document-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+}
+
+.document-icon {
+    font-size: 1.25rem;
+}
+
+.document-label {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.document-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.document-actions .btn-icon-only {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Document Modal */
+.document-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.document-modal.hidden {
+    display: none;
+}
+
+.document-modal-content {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.document-modal-content h3 {
+    margin-bottom: 1rem;
+}
+
+.document-modal-content .form-group {
+    margin-bottom: 1rem;
+}
+
+.document-modal-content label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.document-modal-content select,
+.document-modal-content input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.document-modal-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.document-modal-actions button {
+    padding: 0.5rem 1rem;
+}
+
+/* Collapsible header for documents section */
+.collapsible-header .expand-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    margin-right: 0.25rem;
+}
+
+.collapsible-header.expanded .expand-icon {
+    transform: rotate(90deg);
+}
+
+/* Default: collapsed */
+.collapsible-content {
+    display: none;
+}
+
+.collapsible-header.expanded + .collapsible-content {
+    display: block;
+}

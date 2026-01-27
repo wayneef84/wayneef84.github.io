@@ -19,6 +19,9 @@
         // Database adapter
         this.db = null;
 
+        // Document manager
+        this.documentManager = window.DocumentManager ? new window.DocumentManager() : null;
+
         // Current state
         this.trackings = [];
         this.filteredTrackings = [];
@@ -71,6 +74,7 @@
         try {
             // Initialize database
             this.db = new IndexedDBAdapter();
+
             await this.db.init();
             console.log('[App] Database initialized');
 
@@ -770,6 +774,16 @@
         }
         row.appendChild(updatedCell);
 
+        // Compliance Status (Docs column)
+        var complianceCell = document.createElement('td');
+        complianceCell.className = 'compliance-column';
+        if (this.documentManager) {
+            complianceCell.textContent = this.documentManager.getComplianceIcon(tracking);
+        } else {
+            complianceCell.textContent = '';
+        }
+        row.appendChild(complianceCell);
+
         // Actions
         var actionsCell = document.createElement('td');
         actionsCell.className = 'actions-column';
@@ -1267,6 +1281,10 @@
             this.addDetailRow(detailInfo, 'Destination', this.formatLocation(tracking.destination));
             this.addDetailRow(detailInfo, 'Last Updated', this.formatDate(tracking.lastUpdated));
             this.addDetailRow(detailInfo, 'Last Checked', this.formatDate(tracking.lastChecked));
+
+            // Render documents
+            this.currentDetailTracking = tracking;
+            this.renderDocuments(tracking);
 
             // Render events
             this.renderEvents(tracking.events);
@@ -2900,6 +2918,225 @@
 
         // Initialize sort indicators after DOM is ready
         self.updateSortIndicators();
+
+        // Document management listeners
+        this.setupDocumentListeners();
+    };
+
+    // ============================================================
+    // DOCUMENT MANAGEMENT
+    // ============================================================
+
+    ShipmentTrackerApp.prototype.setupDocumentListeners = function() {
+        var self = this;
+
+        // Add document button
+        var addDocBtn = document.getElementById('addDocumentBtn');
+        if (addDocBtn) {
+            addDocBtn.onclick = function() {
+                self.showAddDocumentModal();
+            };
+        }
+
+        // Cancel document modal
+        var cancelDocBtn = document.getElementById('cancelDocumentBtn');
+        if (cancelDocBtn) {
+            cancelDocBtn.onclick = function() {
+                self.hideDocumentModal();
+            };
+        }
+
+        // Save document button
+        var saveDocBtn = document.getElementById('saveDocumentBtn');
+        if (saveDocBtn) {
+            saveDocBtn.onclick = function() {
+                self.saveDocument();
+            };
+        }
+
+        // Close modal on backdrop click
+        var docModal = document.getElementById('documentModal');
+        if (docModal) {
+            docModal.onclick = function(e) {
+                if (e.target === docModal) {
+                    self.hideDocumentModal();
+                }
+            };
+        }
+
+        // Populate document type dropdown
+        this.populateDocumentTypeDropdown();
+    };
+
+    ShipmentTrackerApp.prototype.populateDocumentTypeDropdown = function() {
+        var select = document.getElementById('documentTypeSelect');
+        if (!select || !this.documentManager) return;
+
+        select.innerHTML = '';
+        var types = this.documentManager.getAllTypes();
+        for (var i = 0; i < types.length; i++) {
+            var opt = document.createElement('option');
+            opt.value = types[i].type;
+            opt.textContent = types[i].icon + ' ' + types[i].label;
+            select.appendChild(opt);
+        }
+    };
+
+    ShipmentTrackerApp.prototype.showAddDocumentModal = function() {
+        var modal = document.getElementById('documentModal');
+        var urlInput = document.getElementById('documentUrlInput');
+        var typeSelect = document.getElementById('documentTypeSelect');
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.getElementById('documentModalTitle').textContent = 'Add Document';
+            if (urlInput) urlInput.value = '';
+            if (typeSelect) typeSelect.selectedIndex = 0;
+            this.editingDocumentType = null;
+        }
+    };
+
+    ShipmentTrackerApp.prototype.hideDocumentModal = function() {
+        var modal = document.getElementById('documentModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+        this.editingDocumentType = null;
+    };
+
+    ShipmentTrackerApp.prototype.saveDocument = function() {
+        var self = this;
+        var typeSelect = document.getElementById('documentTypeSelect');
+        var urlInput = document.getElementById('documentUrlInput');
+
+        if (!typeSelect || !urlInput || !this.currentDetailTracking) {
+            this.showToast('Cannot save document', 'error');
+            return;
+        }
+
+        var docType = typeSelect.value;
+        var url = urlInput.value.trim();
+
+        if (!url) {
+            this.showToast('Please enter a URL', 'error');
+            return;
+        }
+
+        // Validate URL
+        if (this.documentManager) {
+            var validation = this.documentManager.validateUrl(url);
+            if (!validation.isValid) {
+                this.showToast(validation.error, 'error');
+                return;
+            }
+        }
+
+        // Add document to tracking
+        if (this.documentManager) {
+            this.documentManager.addDocument(this.currentDetailTracking, docType, url);
+        }
+
+        // Save to database
+        this.db.saveTracking(this.currentDetailTracking).then(function() {
+            self.hideDocumentModal();
+            self.renderDocuments(self.currentDetailTracking);
+            self.loadTrackings(); // Refresh table
+            self.showToast('Document saved', 'success');
+        }).catch(function(err) {
+            console.error('[App] Failed to save document:', err);
+            self.showToast('Failed to save document: ' + err.message, 'error');
+        });
+    };
+
+    ShipmentTrackerApp.prototype.removeDocument = function(docType) {
+        var self = this;
+        if (!this.currentDetailTracking || !this.documentManager) return;
+
+        var docTypeInfo = this.documentManager.getType(docType);
+        var label = docTypeInfo ? docTypeInfo.label : docType;
+
+        if (!confirm('Remove ' + label + '?')) return;
+
+        this.documentManager.removeDocument(this.currentDetailTracking, docType);
+
+        this.db.saveTracking(this.currentDetailTracking).then(function() {
+            self.renderDocuments(self.currentDetailTracking);
+            self.loadTrackings(); // Refresh table
+            self.showToast('Document removed', 'success');
+        }).catch(function(err) {
+            console.error('[App] Failed to remove document:', err);
+            self.showToast('Failed to remove document: ' + err.message, 'error');
+        });
+    };
+
+    ShipmentTrackerApp.prototype.renderDocuments = function(tracking) {
+        var container = document.getElementById('documentsList');
+        var iconPreview = document.getElementById('detailDocIcons');
+
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        var documents = tracking.documents || [];
+
+        if (documents.length === 0) {
+            container.innerHTML = '<p class="no-documents">No documents attached</p>';
+            if (iconPreview) iconPreview.textContent = '';
+            return;
+        }
+
+        // Update icon preview
+        if (iconPreview && this.documentManager) {
+            iconPreview.textContent = this.documentManager.getDocumentIcons(tracking);
+        }
+
+        // Render each document
+        var self = this;
+        for (var i = 0; i < documents.length; i++) {
+            var doc = documents[i];
+            var row = document.createElement('div');
+            row.className = 'document-row';
+
+            var icon = document.createElement('span');
+            icon.className = 'document-icon';
+            icon.textContent = doc.icon || '';
+            row.appendChild(icon);
+
+            var label = document.createElement('span');
+            label.className = 'document-label';
+            label.textContent = doc.label || doc.type;
+            row.appendChild(label);
+
+            var actions = document.createElement('span');
+            actions.className = 'document-actions';
+
+            // Open link button
+            var openBtn = document.createElement('button');
+            openBtn.className = 'btn-icon-only';
+            openBtn.textContent = '\u2197\uFE0F'; // ↗️
+            openBtn.title = 'Open document';
+            openBtn.setAttribute('data-url', doc.url);
+            openBtn.onclick = function() {
+                var url = this.getAttribute('data-url');
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+            actions.appendChild(openBtn);
+
+            // Remove button
+            var removeBtn = document.createElement('button');
+            removeBtn.className = 'btn-icon-only btn-danger';
+            removeBtn.textContent = '\uD83D\uDDD1\uFE0F'; // 🗑️
+            removeBtn.title = 'Remove document';
+            removeBtn.setAttribute('data-type', doc.type);
+            removeBtn.onclick = function() {
+                var type = this.getAttribute('data-type');
+                self.removeDocument(type);
+            };
+            actions.appendChild(removeBtn);
+
+            row.appendChild(actions);
+            container.appendChild(row);
+        }
     };
 
     // ============================================================
