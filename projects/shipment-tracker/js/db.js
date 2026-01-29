@@ -692,6 +692,78 @@
         });
     };
 
+    /**
+     * Smart Save: Overwrites data but preserves the earliest valid Date Shipped.
+     * Logic:
+     * 1. If existing date is N/A and new is valid -> Use New
+     * 2. If existing date is valid and new is N/A -> Use Old
+     * 3. If both valid -> Use the EARLIEST date
+     * 4. In all other cases (docs, status, etc.) -> New data overwrites Old
+     * * @param {Object} newRecord - The new tracking object to save
+     * @returns {Promise<string>} The trackingId
+     */
+    IndexedDBAdapter.prototype.saveSmartTracking = function(newRecord) {
+        var self = this;
+        this._checkReady();
+
+        return new Promise(function(resolve, reject) {
+            var awb = newRecord.awb;
+            var carrier = newRecord.carrier;
+
+            if (!awb || !carrier) {
+                reject(new Error('Cannot save: Missing AWB or Carrier'));
+                return;
+            }
+
+            // 1. Check for existing record
+            self.getTracking(awb, carrier).then(function(existing) {
+                // Default: New record completely overwrites everything
+                var finalRecord = newRecord;
+
+                // 2. Apply Date Logic if record exists
+                if (existing) {
+                    var oldDate = existing.dateShipped;
+                    var newDate = newRecord.dateShipped;
+
+                    // Helper: Check if date is "real"
+                    var isValid = function(d) {
+                        return d && d !== 'N/A' && d !== 'null' && d !== '' && new Date(d).toString() !== 'Invalid Date';
+                    };
+
+                    if (isValid(oldDate)) {
+                        if (!isValid(newDate)) {
+                            // Old is valid, New is garbage -> Keep Old
+                            finalRecord.dateShipped = oldDate;
+                        } else {
+                            // Both valid -> Compare timestamps
+                            var tOld = new Date(oldDate).getTime();
+                            var tNew = new Date(newDate).getTime();
+                            
+                            // "First looks for earliest date"
+                            if (tOld < tNew) {
+                                finalRecord.dateShipped = oldDate;
+                            }
+                            // If tNew <= tOld (Tie or New is earlier), we keep New (which is already set)
+                        }
+                    }
+                    // If Old was invalid, we keep New (default)
+
+                    // Critical: Ensure we maintain the database Key (trackingId)
+                    if (existing.trackingId) {
+                        finalRecord.trackingId = existing.trackingId;
+                    }
+                    
+                    // Note: We intentionally let newRecord.documents overwrite existing.documents
+                    // per your requirement to "pull all data over like json export".
+                }
+
+                // 3. Save the result
+                self.saveTracking(finalRecord).then(resolve).catch(reject);
+
+            }).catch(reject);
+        });
+    };
+
     // ============================================================
     // SETTINGS - KEY-VALUE STORAGE
     // ============================================================

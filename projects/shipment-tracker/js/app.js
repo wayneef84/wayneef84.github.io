@@ -1537,6 +1537,7 @@
                 // Check if already exists
                 var existing = await this.db.getTracking(awb, carrier);
                 if (existing) {
+                    // TODO: Update data to existing AWB instead of skipping? this.updateTracking(awb, carrier, { dateShipped: dateShipped });
                     skipped++;
                     continue;
                 }
@@ -1583,6 +1584,14 @@
             var text = await this.readFileAsText(file);
             var data = JSON.parse(text);
 
+            if(!data.trackings && Array.isArray(data)) {
+                this.showToast('JSON has no trackings', 'error');
+                return;
+            }
+
+            console.log(data);
+            data = data.trackings;
+
             if (!Array.isArray(data)) {
                 this.showToast('JSON must be an array of tracking objects', 'error');
                 return;
@@ -1601,6 +1610,7 @@
                 // Check if already exists
                 var existing = await this.db.getTracking(tracking.awb, tracking.carrier);
                 if (existing) {
+                    // TODO: Update data to existing AWB instead of skipping? this.db.updateTracking(tracking.awb, tracking.carrier, tracking);
                     skipped++;
                     continue;
                 }
@@ -2089,9 +2099,33 @@
     };
 
     ShipmentTrackerApp.prototype.exportCSV = function(trackings) {
-        var headers = ['AWB', 'Carrier', 'Status', 'Delivered', 'Date Shipped', 'Est. Delivery', 'Last Updated'];
+        var headers = ['AWB', 'Carrier', 'Status', 'Delivered', 'Date Shipped', 'Est. Delivery', 'Last Updated', 'Commerical Invoice', 'Packing List', 'Documents',];
+
 
         var rows = trackings.map(function(t) {
+            // console.log('t',t);
+
+            var documents_json = '';
+            var url_commercial_invoice = '';
+            var url_packing_list = '';
+
+
+            if(t.documents) {
+                documents_json = JSON.stringify(t.documents);
+
+                url_commercial_invoice = findType(t.documents, 'COMMERCIAL_INVOICE') || '';
+                url_packing_list = findType(t.documents, 'PACKING_LIST') || '';
+
+                // for (var documents of t.documents) { if(documents.type == 'COMMERCIAL_INVOICE'){url_commercial_invoice = documents.url; break;}}
+                // for (var documents of t.documents) { if(documents.type == 'PACKING_LIST'){url_packing_list = documents.url; break;}}
+            }
+
+            function findType(documents, type) {
+                for(var document of documents) if(document.type == type) return document.url;
+                
+                return false;
+            }
+
             return [
                 t.awb,
                 t.carrier,
@@ -2099,7 +2133,11 @@
                 t.delivered ? 'Yes' : 'No',
                 t.dateShipped,
                 t.estimatedDelivery || '',
-                t.lastUpdated
+                t.lastUpdated,
+                url_commercial_invoice,
+                url_packing_list,
+                documents_json,
+                // t.documents ? JSON.stringify(t.documents) : '{}'
             ];
         });
 
