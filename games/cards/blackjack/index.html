@@ -1873,7 +1873,7 @@
                 document.getElementById('rulesDecks').textContent = BlackjackRuleset.deckCount;
                 document.getElementById('rulesTargetSetting').textContent = BlackjackRuleset.targetScore;
                 document.getElementById('rulesDealerStandSetting').textContent = BlackjackRuleset.dealerStandThreshold;
-                document.getElementById('rulesReshuffle').textContent = BlackjackRuleset.reshuffleThreshold;
+                document.getElementById('rulesReshuffle').textContent = this.reshuffleThreshold || 20;
             }
 
             _updateHistoryDisplay() {
