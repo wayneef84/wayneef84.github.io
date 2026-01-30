@@ -222,6 +222,35 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+
+        /* Win/Lose Animations */
+        @keyframes winPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes loseShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+        @keyframes warFlash {
+            0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            50% { transform: scale(1.15) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .message.win-anim {
+            animation: winPulse 0.5s ease-out;
+        }
+        .message.lose-anim {
+            animation: loseShake 0.4s ease-out;
+        }
+        .message.war-anim {
+            animation: warFlash 0.4s ease-out;
+        }
         
         .war-pot {
             background: rgba(239,68,68,0.2);
@@ -875,6 +904,80 @@
         (function() {
             'use strict';
 
+            // Sound Effects System
+            var GameSounds = {
+                ctx: null,
+                enabled: true,
+                init: function() {
+                    try {
+                        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    } catch(e) {
+                        console.log('[SOUND] Web Audio not supported');
+                        this.enabled = false;
+                    }
+                },
+                _playTone: function(freq, duration, type, volume) {
+                    if (!this.enabled || !this.ctx) return;
+                    type = type || 'sine';
+                    volume = volume !== undefined ? volume : 0.3;
+                    try {
+                        if (this.ctx.state === 'suspended') {
+                            this.ctx.resume();
+                        }
+                        var osc = this.ctx.createOscillator();
+                        var gain = this.ctx.createGain();
+                        osc.type = type;
+                        osc.frequency.value = freq;
+                        gain.gain.value = volume;
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start();
+                        osc.stop(this.ctx.currentTime + duration);
+                    } catch(e) {}
+                },
+                win: function() {
+                    var self = this;
+                    // Ascending arpeggio for victory
+                    this._playTone(523, 0.15, 'sine', 0.25); // C5
+                    setTimeout(function() { self._playTone(659, 0.15, 'sine', 0.25); }, 100); // E5
+                    setTimeout(function() { self._playTone(784, 0.2, 'sine', 0.3); }, 200); // G5
+                },
+                war: function() {
+                    var self = this;
+                    // Dramatic war sound - low rumble with rising tension
+                    this._playTone(110, 0.3, 'sawtooth', 0.2); // Low A
+                    setTimeout(function() { self._playTone(147, 0.25, 'sawtooth', 0.25); }, 150); // D
+                    setTimeout(function() { self._playTone(220, 0.3, 'square', 0.2); }, 300); // A3
+                },
+                lose: function() {
+                    var self = this;
+                    // Descending tones for loss
+                    this._playTone(392, 0.2, 'sine', 0.25); // G4
+                    setTimeout(function() { self._playTone(330, 0.25, 'sine', 0.2); }, 150); // E4
+                },
+                flip: function() {
+                    // Quick card flip sound
+                    this._playTone(800, 0.05, 'square', 0.1);
+                },
+                gameWin: function() {
+                    var self = this;
+                    // Celebratory fanfare for game victory
+                    this._playTone(523, 0.12, 'sine', 0.25);
+                    setTimeout(function() { self._playTone(659, 0.12, 'sine', 0.25); }, 100);
+                    setTimeout(function() { self._playTone(784, 0.12, 'sine', 0.25); }, 200);
+                    setTimeout(function() { self._playTone(1047, 0.3, 'sine', 0.35); }, 300);
+                },
+                gameLose: function() {
+                    var self = this;
+                    // Sad descending tones for game loss
+                    this._playTone(392, 0.2, 'sine', 0.2);
+                    setTimeout(function() { self._playTone(330, 0.2, 'sine', 0.2); }, 200);
+                    setTimeout(function() { self._playTone(262, 0.3, 'sine', 0.15); }, 400);
+                }
+            };
+            GameSounds.init();
+
             CardAssets.init();
 
             var WarUI = function() {
@@ -1123,6 +1226,9 @@
                 var card1 = player1.hand.contents[0];
                 var card2 = player2.hand.contents[0];
 
+                // Play card flip sound
+                GameSounds.flip();
+
                 this._renderCard(card1, this.el.yourCard, true);
                 this._renderCard(card2, this.el.oppCard, true);
 
@@ -1131,7 +1237,10 @@
             };
 
             WarUI.prototype._handleMessage = function(event) {
-                this._showMessage(event.text, this._getMessageClass(event.text));
+                var msgClass = this._getMessageClass(event.text);
+                // Play sound for round results and war
+                var playSound = msgClass === 'win' || msgClass === 'lose' || msgClass === 'war';
+                this._showMessage(event.text, msgClass, playSound);
                 this._updateSharedDeck();
                 this._updateWarPot();
                 this._updateButtonText();
@@ -1203,7 +1312,17 @@
                 }
 
                 this._updateWins();
-                this._showMessage(message, winner === 'player1' ? 'win' : (winner === 'player2' ? 'lose' : ''));
+
+                // Play game end sounds and show message with animation
+                if (winner === 'player1') {
+                    GameSounds.gameWin();
+                    this._showMessage(message, 'win', false); // Don't play win sound, gameWin is better
+                } else if (winner === 'player2') {
+                    GameSounds.gameLose();
+                    this._showMessage(message, 'lose', false);
+                } else {
+                    this._showMessage(message, '', false);
+                }
 
                 // Add history entry BEFORE resetting points
                 if (winner) {
@@ -1260,7 +1379,17 @@
                 }
 
                 this._updateWins();
-                this._showMessage(message, winner === 'player1' ? 'win' : (winner === 'player2' ? 'lose' : ''));
+
+                // Play game end sounds and show message with animation
+                if (winner === 'player1') {
+                    GameSounds.gameWin();
+                    this._showMessage(message, 'win', false);
+                } else if (winner === 'player2') {
+                    GameSounds.gameLose();
+                    this._showMessage(message, 'lose', false);
+                } else {
+                    this._showMessage(message, '', false);
+                }
 
                 // Add history entry BEFORE resetting points
                 if (winner) {
@@ -1495,9 +1624,23 @@
                 }
             };
 
-            WarUI.prototype._showMessage = function(text, cls) {
+            WarUI.prototype._showMessage = function(text, cls, playSound) {
                 this.el.message.textContent = text;
-                this.el.message.className = 'message ' + (cls || '');
+
+                // Add animation class based on type
+                var animClass = '';
+                if (cls === 'win') {
+                    animClass = ' win-anim';
+                    if (playSound) GameSounds.win();
+                } else if (cls === 'lose') {
+                    animClass = ' lose-anim';
+                    if (playSound) GameSounds.lose();
+                } else if (cls === 'war') {
+                    animClass = ' war-anim';
+                    if (playSound) GameSounds.war();
+                }
+
+                this.el.message.className = 'message ' + (cls || '') + animClass;
             };
 
             WarUI.prototype._getMessageClass = function(text) {

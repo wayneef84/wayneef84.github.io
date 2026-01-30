@@ -214,6 +214,40 @@ theme = {
 
 ---
 
+## Card Games Priority
+
+### TODO: Add Rules Editing in Rules Modal
+**Status:** Not Started
+**Games Affected:** Blackjack, War
+
+**Description:**
+Currently the Rules modal (📖) shows current settings but doesn't allow changing them. Add the ability to edit game rules directly from the Rules modal instead of only in Settings.
+
+**Requirements:**
+- Add inline edit controls to Rules modal
+- Changes apply immediately (or on close)
+- Sync with Settings modal values
+
+---
+
+### TODO: Words - Cursive Mode
+**Status:** Not Started
+**Game:** Words (new feature)
+
+**Description:**
+Add a Cursive Mode to the Words game that teaches cursive letter formation. Consider creating a new game grouping called "ABCs" that contains:
+- Letter Tracing (existing - print letters)
+- Words (existing - word tracing)
+- Cursive Mode (new - cursive letter formation)
+
+**Requirements:**
+- Cursive letter geometry data (different strokes than print)
+- Possibly new stroke types (connected letters, loops)
+- Toggle between print and cursive modes
+- Consider separate game or mode within Words
+
+---
+
 ## Low Priority / Future Ideas
 
 ### 4. Multiplayer Support (SQL Backend)
