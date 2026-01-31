@@ -1367,43 +1367,49 @@
 
             _flyCard(cardData, container, faceUp) {
                 // Create invisible placeholder to calculate destination coordinates
-                const tempSlot = document.createElement('div');
+                // Use visibility:hidden instead of opacity:0 to ensure no flash
+                var tempSlot = document.createElement('div');
                 tempSlot.className = 'card-slot';
-                tempSlot.style.opacity = '0';
+                tempSlot.style.visibility = 'hidden';
                 tempSlot.style.pointerEvents = 'none';
                 container.appendChild(tempSlot);
 
-                const endRect = tempSlot.getBoundingClientRect();
-                const startX = window.innerWidth - 50;
-                const startY = -100;
+                var endRect = tempSlot.getBoundingClientRect();
+                var startX = window.innerWidth - 50;
+                var startY = -100;
 
-                // Create flying card
+                // Create flying card at shoe position (off-screen top-right)
                 GameSounds.flip();
-                const flyer = this._createCardElement(cardData, faceUp);
+                var flyer = this._createCardElement(cardData, faceUp);
                 flyer.style.position = 'fixed';
-                flyer.style.left = `${startX}px`;
-                flyer.style.top = `${startY}px`;
+                flyer.style.left = startX + 'px';
+                flyer.style.top = startY + 'px';
+                flyer.style.width = '86px';
+                flyer.style.height = '120px';
                 flyer.style.zIndex = '1000';
                 flyer.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 flyer.style.pointerEvents = 'none';
                 document.body.appendChild(flyer);
 
-                // Start animation on next frame
-                requestAnimationFrame(() => {
-                    flyer.style.left = `${endRect.left}px`;
-                    flyer.style.top = `${endRect.top}px`;
-                    flyer.style.transform = `rotate(${(Math.random() * 6) - 3}deg)`;
+                // Capture references for setTimeout closure
+                var self = this;
+
+                // Start animation on next frame (ensures initial position is rendered first)
+                requestAnimationFrame(function() {
+                    flyer.style.left = endRect.left + 'px';
+                    flyer.style.top = endRect.top + 'px';
+                    flyer.style.transform = 'rotate(' + ((Math.random() * 6) - 3) + 'deg)';
                 });
 
                 // After animation completes, replace temp with real card
-                setTimeout(() => {
+                setTimeout(function() {
                     flyer.remove();
                     tempSlot.remove();
 
                     // NOW add the actual card (no preview flash)
-                    const landingPad = this._createCardElement(cardData, faceUp);
+                    var landingPad = self._createCardElement(cardData, faceUp);
                     container.appendChild(landingPad);
-                    this._updateValues();
+                    self._updateValues();
                 }, 500);
             }
 
@@ -1592,6 +1598,11 @@
                         this.el.btnHit.disabled = true; // Disable hit on 21
                         this.el.btnDouble.disabled = true;
                     }
+
+                    // FIX: Double Down only available on first move (2 cards)
+                    if (player.hand.count > 2) {
+                        this.el.btnDouble.disabled = true;
+                    }
                     this.el.playerValue.className = cls;
                 } else {
                     // BUBBLE LOGIC: Hide if no cards
@@ -1712,7 +1723,9 @@
                     this._showControls('action');
                     this._showMessage('Your turn (Insurance Active)');
                     this._disableActionButtons(false);
-                    const canDouble = this.engine.getGameState().activeActorId === 'player1';
+                    // FIX: Check available actions from ruleset, not just active actor
+                    var availableActions = BlackjackRuleset.getAvailableActions(this.engine.getGameState(), 'player1');
+                    var canDouble = availableActions.includes('double');
                     this.el.btnDouble.disabled = !canDouble;
                 }
             }
@@ -1744,7 +1757,9 @@
                     this._showControls('action');
                     this._showMessage('Your turn');
                     this._disableActionButtons(false);
-                    const canDouble = this.engine.getGameState().activeActorId === 'player1';
+                    // FIX: Check available actions from ruleset, not just active actor
+                    var availableActions = BlackjackRuleset.getAvailableActions(this.engine.getGameState(), 'player1');
+                    var canDouble = availableActions.includes('double');
                     this.el.btnDouble.disabled = !canDouble;
                 }
             }

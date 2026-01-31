@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Engine Test Suite</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+            border: 1px solid #1d4ed8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button.secondary {
+            background: linear-gradient(180deg, #475569 0%, #334155 100%);
+            border-color: #64748b;
+        }
+        select {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+        .stat.pass .stat-value { color: #4ade80; }
+        .stat.fail .stat-value { color: #f87171; }
+        .stat.total .stat-value { color: #fbbf24; }
+
+        .test-results {
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+        .test-group {
+            border-bottom: 1px solid #334155;
+        }
+        .test-group:last-child {
+            border-bottom: none;
+        }
+        .test-group-header {
+            background: #334155;
+            padding: 10px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-group-header .badge {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .test-group-header .badge.pass {
+            background: #166534;
+            color: #4ade80;
+        }
+        .test-group-header .badge.fail {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+        .test-case {
+            padding: 12px 15px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .test-case:last-child {
+            border-bottom: none;
+        }
+        .test-case .icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+        .test-case.pass .icon { color: #4ade80; }
+        .test-case.fail .icon { color: #f87171; }
+        .test-case.pending .icon { color: #94a3b8; }
+        .test-case .name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .test-case .details {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .test-case.fail .details {
+            color: #fca5a5;
+        }
+        .test-case .duration {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .log {
+            margin-top: 20px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-entry.info { color: #60a5fa; }
+        .log-entry.pass { color: #4ade80; }
+        .log-entry.fail { color: #f87171; }
+        .log-entry.warn { color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <h1>Card Engine Test Suite</h1>
+    <p class="subtitle">Headless testing for ruleset logic verification</p>
+
+    <div class="controls">
+        <select id="gameSelect">
+            <option value="blackjack">Blackjack</option>
+            <option value="war" disabled>War (Coming Soon)</option>
+            <option value="big2" disabled>Big 2 (Coming Soon)</option>
+        </select>
+        <button id="btnRunAll">Run All Tests</button>
+        <button id="btnRunFailed" class="secondary">Re-run Failed</button>
+        <button id="btnClear" class="secondary">Clear Results</button>
+    </div>
+
+    <div class="summary">
+        <div class="stat pass">
+            <div class="stat-value" id="passCount">0</div>
+            <div class="stat-label">Passed</div>
+        </div>
+        <div class="stat fail">
+            <div class="stat-value" id="failCount">0</div>
+            <div class="stat-label">Failed</div>
+        </div>
+        <div class="stat total">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
+        </div>
+    </div>
+
+    <div id="testResults" class="test-results">
+        <div class="test-case pending">
+            <span class="icon">○</span>
+            <span class="name">Click "Run All Tests" to start</span>
+        </div>
+    </div>
+
+    <div id="logContainer" class="log"></div>
+
+    <!-- Load shared engine files -->
+    <script src="shared/enums.js"></script>
+    <script src="shared/card.js"></script>
+    <script src="shared/deck.js"></script>
+    <script src="shared/pile.js"></script>
+    <script src="shared/player.js"></script>
+    <script src="shared/engine.js"></script>
+
+    <!-- Load rulesets -->
+    <script src="blackjack/ruleset.js"></script>
+
+    <script>
+        // ============================================================================
+        // TEST FRAMEWORK
+        // ============================================================================
+
+        var TestRunner = {
+            results: [],
+            logs: [],
+            currentTest: null,
+
+            log: function(msg, type) {
+                type = type || 'info';
+                this.logs.push({ message: msg, type: type });
+                var container = document.getElementById('logContainer');
+                var entry = document.createElement('div');
+                entry.className = 'log-entry ' + type;
+                entry.textContent = '[' + type.toUpperCase() + '] ' + msg;
+                container.appendChild(entry);
+                container.scrollTop = container.scrollHeight;
+            },
+
+            assert: function(condition, message) {
+                if (!condition) {
+                    throw new Error(message || 'Assertion failed');
+                }
+            },
+
+            assertEqual: function(actual, expected, message) {
+                if (actual !== expected) {
+                    throw new Error((message || 'Assertion failed') +
+                        ': Expected ' + JSON.stringify(expected) +
+                        ' but got ' + JSON.stringify(actual));
+                }
+            },
+
+            assertNull: function(value, message) {
+                if (value !== null) {
+                    throw new Error((message || 'Expected null') +
+                        ': Got ' + JSON.stringify(value));
+                }
+            },
+
+            assertNotNull: function(value, message) {
+                if (value === null || value === undefined) {
+                    throw new Error(message || 'Expected non-null value');
+                }
+            },
+
+            runTest: function(test) {
+                var startTime = performance.now();
+                var result = {
+                    id: test.id,
+                    name: test.name,
+                    group: test.group,
+                    passed: false,
+                    error: null,
+                    duration: 0
+                };
+
+                try {
+                    this.currentTest = test;
+                    this.log('Running: ' + test.id + ' - ' + test.name);
+                    test.run(this);
+                    result.passed = true;
+                    this.log('PASS: ' + test.id, 'pass');
+                } catch (e) {
+                    result.passed = false;
+                    result.error = e.message;
+                    this.log('FAIL: ' + test.id + ' - ' + e.message, 'fail');
+                }
+
+                result.duration = performance.now() - startTime;
+                this.results.push(result);
+                return result;
+            },
+
+            runAll: function(tests) {
+                this.results = [];
+                this.logs = [];
+                document.getElementById('logContainer').innerHTML = '';
+
+                this.log('Starting test suite with ' + tests.length + ' tests');
+
+                var self = this;
+                tests.forEach(function(test) {
+                    self.runTest(test);
+                });
+
+                this.displayResults();
+            },
+
+            runFailed: function(tests) {
+                var failedIds = this.results
+                    .filter(function(r) { return !r.passed; })
+                    .map(function(r) { return r.id; });
+
+                var failedTests = tests.filter(function(t) {
+                    return failedIds.indexOf(t.id) !== -1;
+                });
+
+                if (failedTests.length === 0) {
+                    this.log('No failed tests to re-run', 'info');
+                    return;
+                }
+
+                this.results = this.results.filter(function(r) { return r.passed; });
+
+                var self = this;
+                failedTests.forEach(function(test) {
+                    self.runTest(test);
+                });
+
+                this.displayResults();
+            },
+
+            displayResults: function() {
+                var passed = this.results.filter(function(r) { return r.passed; }).length;
+                var failed = this.results.filter(function(r) { return !r.passed; }).length;
+                var total = this.results.length;
+
+                document.getElementById('passCount').textContent = passed;
+                document.getElementById('failCount').textContent = failed;
+                document.getElementById('totalCount').textContent = total;
+
+                // Group results
+                var groups = {};
+                this.results.forEach(function(r) {
+                    if (!groups[r.group]) {
+                        groups[r.group] = [];
+                    }
+                    groups[r.group].push(r);
+                });
+
+                // Render
+                var container = document.getElementById('testResults');
+                container.innerHTML = '';
+
+                for (var groupName in groups) {
+                    var groupResults = groups[groupName];
+                    var groupPassed = groupResults.filter(function(r) { return r.passed; }).length;
+                    var groupTotal = groupResults.length;
+                    var allPassed = groupPassed === groupTotal;
+
+                    var groupDiv = document.createElement('div');
+                    groupDiv.className = 'test-group';
+
+                    var header = document.createElement('div');
+                    header.className = 'test-group-header';
+                    header.innerHTML = '<span>' + groupName + '</span>' +
+                        '<span class="badge ' + (allPassed ? 'pass' : 'fail') + '">' +
+                        groupPassed + '/' + groupTotal + '</span>';
+                    groupDiv.appendChild(header);
+
+                    groupResults.forEach(function(r) {
+                        var testDiv = document.createElement('div');
+                        testDiv.className = 'test-case ' + (r.passed ? 'pass' : 'fail');
+                        testDiv.innerHTML =
+                            '<span class="icon">' + (r.passed ? '✓' : '✗') + '</span>' +
+                            '<span class="name">' + r.id + ': ' + r.name + '</span>' +
+                            '<span class="details">' + (r.error || '') + '</span>' +
+                            '<span class="duration">' + r.duration.toFixed(1) + 'ms</span>';
+                        groupDiv.appendChild(testDiv);
+                    });
+
+                    container.appendChild(groupDiv);
+                }
+
+                this.log('Tests complete: ' + passed + ' passed, ' + failed + ' failed',
+                    failed > 0 ? 'warn' : 'pass');
+            }
+        };
+
+        // ============================================================================
+        // TEST HELPER: Create mock game state
+        // ============================================================================
+
+        function createMockGameState(config) {
+            config = config || {};
+
+            // Create player
+            var player = new PlayerWithCurrency({
+                id: 'player1',
+                type: 'human',
+                name: 'Test Player',
+                balance: config.balance || 1000
+            });
+
+            // Set player hand
+            if (config.playerCards) {
+                config.playerCards.forEach(function(cardDef) {
+                    var card = new Card(cardDef.suit || Suit.SPADES, cardDef.rank, 'test');
+                    player.hand.receive(card, -1);
+                });
+            }
+
+            // Place bet
+            if (config.bet) {
+                player.placeBet(config.bet);
+            }
+
+            // Create dealer
+            var dealer = new Dealer();
+            if (config.dealerCards) {
+                config.dealerCards.forEach(function(cardDef) {
+                    var card = new Card(cardDef.suit || Suit.HEARTS, cardDef.rank, 'test');
+                    dealer.hand.receive(card, -1);
+                });
+            }
+
+            // Create shoe
+            var shoe = new Pile();
+            if (config.shoeCards) {
+                config.shoeCards.forEach(function(cardDef) {
+                    var card = new Card(cardDef.suit || Suit.CLUBS, cardDef.rank, 'test');
+                    shoe.receive(card, -1);
+                });
+            }
+
+            return {
+                state: config.state || 'PLAYER_TURN',
+                players: [player],
+                dealer: dealer,
+                piles: { shoe: shoe, discard: new Pile() },
+                activeActorId: config.activeActorId || 'player1',
+                turnHistory: [],
+                roundNumber: 1,
+                pot: config.bet || 0
+            };
+        }
+
+        // ============================================================================
+        // BLACKJACK TEST CASES
+        // ============================================================================
+
+        var BlackjackTests = [
+            // ===== BUST SUPPRESSION TESTS =====
+            {
+                id: 'BJ-01',
+                name: 'Bust Bypass - Player busts, dealer should not draw',
+                group: 'Bust Suppression',
+                run: function(t) {
+                    // Setup: Player has 22 (busted), dealer has 10
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.FIVE },
+                            { rank: Rank.SEVEN }  // 10+5+7 = 22 (bust)
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN }
+                        ],
+                        bet: 25
+                    });
+
+                    // getNextActor should return null (skip dealer)
+                    var nextActor = BlackjackRuleset.getNextActor(state);
+                    t.assertNull(nextActor, 'getNextActor should return null when player busted');
+                }
+            },
+            {
+                id: 'BJ-02',
+                name: 'Player under 21 - Dealer should get turn',
+                group: 'Bust Suppression',
+                run: function(t) {
+                    // Setup: Player has 19, dealer has 10
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.NINE }  // 19
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX }
+                        ],
+                        bet: 25
+                    });
+                    state.players[0]._hasStood = true;
+
+                    // getNextActor should return 'dealer'
+                    var nextActor = BlackjackRuleset.getNextActor(state);
+                    t.assertEqual(nextActor, 'dealer', 'getNextActor should return dealer when player has valid hand');
+                }
+            },
+            {
+                id: 'BJ-03',
+                name: 'checkWinCondition detects all players busted',
+                group: 'Bust Suppression',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT },
+                            { rank: Rank.FIVE }  // 23 (bust)
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SEVEN }
+                        ]
+                    });
+
+                    var result = BlackjackRuleset.checkWinCondition(state);
+                    t.assertNotNull(result, 'checkWinCondition should return result for bust');
+                    t.assertEqual(result.immediate, true, 'immediate should be true');
+                    t.assertEqual(result.skipDealerTurn, true, 'skipDealerTurn should be true');
+                }
+            },
+
+            // ===== DOUBLE DOWN TESTS =====
+            {
+                id: 'BJ-04',
+                name: 'Double Down available with 2 cards',
+                group: 'Double Down',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.FIVE },
+                            { rank: Rank.SIX }  // 11 - perfect double down hand
+                        ],
+                        bet: 25,
+                        balance: 1000
+                    });
+
+                    var actions = BlackjackRuleset.getAvailableActions(state, 'player1');
+                    t.assert(actions.indexOf('double') !== -1, 'Double should be available with 2 cards');
+                }
+            },
+            {
+                id: 'BJ-05',
+                name: 'Double Down NOT available with 3+ cards',
+                group: 'Double Down',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TWO },
+                            { rank: Rank.THREE },
+                            { rank: Rank.FOUR }  // 3 cards
+                        ],
+                        bet: 25
+                    });
+
+                    var actions = BlackjackRuleset.getAvailableActions(state, 'player1');
+                    t.assert(actions.indexOf('double') === -1, 'Double should NOT be available with 3+ cards');
+                }
+            },
+            {
+                id: 'BJ-06',
+                name: 'Double Down resolves to one card and stand',
+                group: 'Double Down',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.FIVE },
+                            { rank: Rank.SIX }
+                        ],
+                        shoeCards: [
+                            { rank: Rank.TEN }
+                        ],
+                        bet: 25,
+                        balance: 1000
+                    });
+
+                    var result = BlackjackRuleset.resolveAction(state, 'player1', 'double', null);
+
+                    // Should have DEDUCT and DEAL actions
+                    t.assert(result.actions.length >= 1, 'Should have actions');
+
+                    var hasDeduct = result.actions.some(function(a) { return a.type === ActionType.DEDUCT; });
+                    var hasDeal = result.actions.some(function(a) { return a.type === ActionType.DEAL; });
+
+                    t.assert(hasDeduct, 'Should have DEDUCT action');
+                    t.assert(hasDeal, 'Should have DEAL action');
+
+                    // Player should be marked as stood
+                    t.assertEqual(state.players[0]._hasStood, true, 'Player should be marked as stood after double');
+                }
+            },
+
+            // ===== HAND EVALUATION TESTS =====
+            {
+                id: 'BJ-07',
+                name: 'Ace counted as 11 when safe',
+                group: 'Hand Evaluation',
+                run: function(t) {
+                    var cards = [
+                        new Card(Suit.SPADES, Rank.ACE, 'test'),
+                        new Card(Suit.HEARTS, Rank.SEVEN, 'test')
+                    ];
+
+                    var result = BlackjackRuleset.evaluateHand(cards);
+                    t.assertEqual(result.best, 18, 'Ace + 7 should equal 18');
+                    t.assertEqual(result.isSoft, true, 'Should be a soft hand');
+                }
+            },
+            {
+                id: 'BJ-08',
+                name: 'Ace counted as 1 when 11 would bust',
+                group: 'Hand Evaluation',
+                run: function(t) {
+                    var cards = [
+                        new Card(Suit.SPADES, Rank.ACE, 'test'),
+                        new Card(Suit.HEARTS, Rank.SEVEN, 'test'),
+                        new Card(Suit.CLUBS, Rank.EIGHT, 'test')
+                    ];
+
+                    var result = BlackjackRuleset.evaluateHand(cards);
+                    t.assertEqual(result.best, 16, 'Ace + 7 + 8 should equal 16 (ace as 1)');
+                }
+            },
+            {
+                id: 'BJ-09',
+                name: 'Blackjack detected (Ace + 10)',
+                group: 'Hand Evaluation',
+                run: function(t) {
+                    var cards = [
+                        new Card(Suit.SPADES, Rank.ACE, 'test'),
+                        new Card(Suit.HEARTS, Rank.KING, 'test')
+                    ];
+
+                    var result = BlackjackRuleset.evaluateHand(cards);
+                    t.assertEqual(result.best, 21, 'Blackjack should equal 21');
+                    t.assertEqual(result.isBlackjack, true, 'Should be detected as blackjack');
+                }
+            },
+            {
+                id: 'BJ-10',
+                name: '21 with 3+ cards is NOT blackjack',
+                group: 'Hand Evaluation',
+                run: function(t) {
+                    var cards = [
+                        new Card(Suit.SPADES, Rank.SEVEN, 'test'),
+                        new Card(Suit.HEARTS, Rank.SEVEN, 'test'),
+                        new Card(Suit.CLUBS, Rank.SEVEN, 'test')
+                    ];
+
+                    var result = BlackjackRuleset.evaluateHand(cards);
+                    t.assertEqual(result.best, 21, 'Should equal 21');
+                    t.assertEqual(result.isBlackjack, false, 'Should NOT be blackjack with 3 cards');
+                }
+            },
+            {
+                id: 'BJ-11',
+                name: 'Multiple aces handled correctly',
+                group: 'Hand Evaluation',
+                run: function(t) {
+                    var cards = [
+                        new Card(Suit.SPADES, Rank.ACE, 'test'),
+                        new Card(Suit.HEARTS, Rank.ACE, 'test'),
+                        new Card(Suit.CLUBS, Rank.NINE, 'test')
+                    ];
+
+                    var result = BlackjackRuleset.evaluateHand(cards);
+                    t.assertEqual(result.best, 21, 'Ace + Ace + 9 should equal 21');
+                }
+            },
+
+            // ===== DEALER AI TESTS =====
+            {
+                id: 'BJ-12',
+                name: 'Dealer hits on 16',
+                group: 'Dealer AI',
+                run: function(t) {
+                    var dealer = new Dealer();
+                    dealer.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'test'), -1);
+                    dealer.hand.receive(new Card(Suit.HEARTS, Rank.SIX, 'test'), -1);
+
+                    var action = BlackjackRuleset.getAiAction({}, dealer);
+                    t.assertEqual(action, 'hit', 'Dealer should hit on 16');
+                }
+            },
+            {
+                id: 'BJ-13',
+                name: 'Dealer stands on 17',
+                group: 'Dealer AI',
+                run: function(t) {
+                    var dealer = new Dealer();
+                    dealer.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'test'), -1);
+                    dealer.hand.receive(new Card(Suit.HEARTS, Rank.SEVEN, 'test'), -1);
+
+                    var action = BlackjackRuleset.getAiAction({}, dealer);
+                    t.assertEqual(action, 'stand', 'Dealer should stand on 17');
+                }
+            },
+            {
+                id: 'BJ-14',
+                name: 'Dealer stands on soft 17',
+                group: 'Dealer AI',
+                run: function(t) {
+                    var dealer = new Dealer();
+                    dealer.hand.receive(new Card(Suit.SPADES, Rank.ACE, 'test'), -1);
+                    dealer.hand.receive(new Card(Suit.HEARTS, Rank.SIX, 'test'), -1);
+
+                    var action = BlackjackRuleset.getAiAction({}, dealer);
+                    t.assertEqual(action, 'stand', 'Dealer should stand on soft 17');
+                }
+            },
+
+            // ===== RESOLUTION TESTS =====
+            {
+                id: 'BJ-15',
+                name: 'Player win - higher score than dealer',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.NINE }  // 19
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SEVEN }  // 17
+                        ],
+                        bet: 25
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.playerResults[0].outcome, 'win', 'Player should win');
+                    t.assertEqual(result.playerResults[0].multiplier, 2, 'Win multiplier should be 2');
+                }
+            },
+            {
+                id: 'BJ-16',
+                name: 'Player loses - lower score than dealer',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX }  // 16
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }  // 18
+                        ],
+                        bet: 25
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.playerResults[0].outcome, 'lose', 'Player should lose');
+                    t.assertEqual(result.playerResults[0].multiplier, 0, 'Lose multiplier should be 0');
+                }
+            },
+            {
+                id: 'BJ-17',
+                name: 'Push - same score as dealer',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }  // 18
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }  // 18
+                        ],
+                        bet: 25
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.playerResults[0].outcome, 'push', 'Should be a push');
+                    t.assertEqual(result.playerResults[0].multiplier, 1, 'Push multiplier should be 1 (bet returned)');
+                }
+            },
+            {
+                id: 'BJ-18',
+                name: 'Blackjack pays 3:2',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.ACE },
+                            { rank: Rank.KING }  // Blackjack
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }  // 18
+                        ],
+                        bet: 100
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.playerResults[0].outcome, 'blackjack', 'Should be blackjack');
+                    t.assertEqual(result.playerResults[0].multiplier, 2.5, 'Blackjack multiplier should be 2.5 (bet + 1.5x)');
+                }
+            },
+            {
+                id: 'BJ-19',
+                name: 'Player wins when dealer busts',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX }  // 16
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX },
+                            { rank: Rank.TEN }  // 26 (bust)
+                        ],
+                        bet: 25
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.dealerBust, true, 'Dealer should be busted');
+                    t.assertEqual(result.playerResults[0].outcome, 'win', 'Player should win');
+                }
+            },
+            {
+                id: 'BJ-20',
+                name: 'Player loses when busted (even if dealer busts)',
+                group: 'Resolution',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX },
+                            { rank: Rank.TEN }  // 26 (bust)
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.SIX },
+                            { rank: Rank.TEN }  // 26 (bust)
+                        ],
+                        bet: 25
+                    });
+
+                    var result = BlackjackRuleset.resolveRound(state);
+                    t.assertEqual(result.playerResults[0].outcome, 'lose', 'Player should lose (busted first)');
+                }
+            },
+
+            // ===== INSURANCE TESTS =====
+            {
+                id: 'BJ-21',
+                name: 'Insurance offered when dealer shows Ace',
+                group: 'Insurance',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }
+                        ],
+                        dealerCards: [
+                            { rank: Rank.TEN },  // Hole card
+                            { rank: Rank.ACE }   // Up card (shows Ace)
+                        ]
+                    });
+
+                    var shouldOffer = BlackjackRuleset.shouldOfferInsurance(state);
+                    t.assertEqual(shouldOffer, true, 'Should offer insurance when dealer shows Ace');
+                }
+            },
+            {
+                id: 'BJ-22',
+                name: 'Insurance NOT offered when dealer shows 10',
+                group: 'Insurance',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [
+                            { rank: Rank.TEN },
+                            { rank: Rank.EIGHT }
+                        ],
+                        dealerCards: [
+                            { rank: Rank.ACE },  // Hole card
+                            { rank: Rank.TEN }   // Up card (shows 10)
+                        ]
+                    });
+
+                    var shouldOffer = BlackjackRuleset.shouldOfferInsurance(state);
+                    t.assertEqual(shouldOffer, false, 'Should NOT offer insurance when dealer shows 10');
+                }
+            },
+            {
+                id: 'BJ-23',
+                name: 'Insurance payout calculation (2:1)',
+                group: 'Insurance',
+                run: function(t) {
+                    var payout = BlackjackRuleset.calculateInsurancePayout(50);
+                    t.assertEqual(payout, 100, 'Insurance should pay 2:1 (50 * 2 = 100)');
+                }
+            },
+
+            // ===== PLAYER CAN ACT TESTS =====
+            {
+                id: 'BJ-24',
+                name: 'Player can act with hand under 21',
+                group: 'Turn Logic',
+                run: function(t) {
+                    var player = new PlayerWithCurrency({ id: 'test', type: 'human' });
+                    player.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'test'), -1);
+                    player.hand.receive(new Card(Suit.HEARTS, Rank.FIVE, 'test'), -1);
+
+                    var canAct = BlackjackRuleset._canPlayerAct(player);
+                    t.assertEqual(canAct, true, 'Player with 15 should be able to act');
+                }
+            },
+            {
+                id: 'BJ-25',
+                name: 'Player cannot act at 21',
+                group: 'Turn Logic',
+                run: function(t) {
+                    var player = new PlayerWithCurrency({ id: 'test', type: 'human' });
+                    player.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'test'), -1);
+                    player.hand.receive(new Card(Suit.HEARTS, Rank.ACE, 'test'), -1);
+
+                    var canAct = BlackjackRuleset._canPlayerAct(player);
+                    t.assertEqual(canAct, false, 'Player with 21 should not be able to act');
+                }
+            },
+            {
+                id: 'BJ-26',
+                name: 'Player cannot act after standing',
+                group: 'Turn Logic',
+                run: function(t) {
+                    var player = new PlayerWithCurrency({ id: 'test', type: 'human' });
+                    player.hand.receive(new Card(Suit.SPADES, Rank.TEN, 'test'), -1);
+                    player.hand.receive(new Card(Suit.HEARTS, Rank.FIVE, 'test'), -1);
+                    player._hasStood = true;
+
+                    var canAct = BlackjackRuleset._canPlayerAct(player);
+                    t.assertEqual(canAct, false, 'Player who stood should not be able to act');
+                }
+            }
+        ];
+
+        // ============================================================================
+        // UI BINDINGS
+        // ============================================================================
+
+        document.getElementById('btnRunAll').onclick = function() {
+            TestRunner.runAll(BlackjackTests);
+        };
+
+        document.getElementById('btnRunFailed').onclick = function() {
+            TestRunner.runFailed(BlackjackTests);
+        };
+
+        document.getElementById('btnClear').onclick = function() {
+            TestRunner.results = [];
+            TestRunner.logs = [];
+            document.getElementById('logContainer').innerHTML = '';
+            document.getElementById('testResults').innerHTML =
+                '<div class="test-case pending">' +
+                '<span class="icon">○</span>' +
+                '<span class="name">Click "Run All Tests" to start</span>' +
+                '</div>';
+            document.getElementById('passCount').textContent = '0';
+            document.getElementById('failCount').textContent = '0';
+            document.getElementById('totalCount').textContent = '0';
+        };
+
+        // Log startup
+        console.log('[Test Suite] Card Engine Test Suite loaded');
+        console.log('[Test Suite] Available tests:', BlackjackTests.length);
+    </script>
+</body>
+</html>

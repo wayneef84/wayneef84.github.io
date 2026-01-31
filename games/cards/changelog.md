@@ -14,6 +14,15 @@
 
 ## Version History
 
+### v1.0.5-C (Claude) - 2026-01-31 UTC
+**Reasoning:** Bug fixes for Blackjack gameplay and creation of comprehensive test suite.
+* **[FIXED] games/cards/blackjack/index.html:** Fixed card animation preview bug - cards no longer flash at destination before flying animation. Changed `opacity: '0'` to `visibility: 'hidden'` for tempSlot element.
+* **[FIXED] games/cards/blackjack/index.html:** Fixed Double Down button availability - now correctly disabled after player has more than 2 cards. Fixed insurance code paths that bypassed the check.
+* **[FIXED] games/cards/blackjack/ruleset.js:** Removed dealer blackjack check from `checkWinCondition` - this was causing the game to end before insurance could be offered. Insurance flow now handles dealer blackjack detection.
+* **[CHANGED] games/cards/blackjack/index.html:** Converted arrow functions to regular functions in `_flyCard` for Safari ES5 compatibility.
+* **[ADDED] games/cards/test-suite.html:** Created comprehensive headless test suite with 26 test cases covering Bust Suppression, Double Down, Hand Evaluation, Dealer AI, Resolution, Insurance, and Turn Logic.
+* **Lesson Learned:** The Terminal Check Gate must be careful not to trigger win conditions prematurely. Dealer blackjack detection should be deferred to UI layer after insurance is offered/declined. Test suites help catch these edge cases.
+
 ### v1.0.4-G (Gemini) - 2026-01-13 19:10 UTC
 **Reasoning:** Critical fix for Blackjack engine crash and adding rules persistence.
 * **[FIXED] games/cards/blackjack/ruleset.js:** Added missing `getDealSequence` method. The Engine requires this to know how to distribute cards (User -> Dealer -> User -> Dealer Hole).

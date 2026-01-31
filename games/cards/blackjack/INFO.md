@@ -62,6 +62,19 @@ Classic casino Blackjack (21) with betting, currency management, and dealer AI.
 
 **Recent Changes:**
 
+- **[2026-01-31]** fix: Double Down only available on first move (2 cards)
+  - Fixed getAvailableActions in ruleset
+  - Fixed insurance code paths that bypassed the check
+  - Added explicit disable in _updateValues when player.hand.count > 2
+
+- **[2026-01-31]** fix: Card animation preview bug
+  - Changed visibility:hidden instead of opacity:0 for tempSlot
+  - Converted arrow functions to regular functions for Safari compatibility
+
+- **[2026-01-31]** fix: Dealer blackjack check removed from checkWinCondition
+  - Prevents game from ending before insurance is offered
+  - Insurance flow now handles dealer blackjack detection
+
 - **[2026-01-15]** feat: Add Reset Deck button to betting area
   - Quick access during betting phase
   - Indigo gradient styling
@@ -109,14 +122,14 @@ Classic casino Blackjack (21) with betting, currency management, and dealer AI.
 
 ## Known Issues
 
-- [ ] **Double Down**: Currently available anytime, should only be first move (High priority)
-- [ ] **Animation Preview Bug**: Card appears at destination before flying animation (Low priority, cosmetic)
+- [x] **Double Down**: Fixed - Only available on first move (2 cards) ✅
+- [x] **Animation Preview Bug**: Fixed - Using visibility:hidden instead of opacity:0 ✅
 
 ---
 
 ## Future Enhancements
 
-- [ ] **Fix Double Down**: Only available on first move (2 cards in hand)
+- [x] ~~**Fix Double Down**: Only available on first move (2 cards in hand)~~ (DONE)
 - [ ] **Split**: Allow splitting pairs into two hands
 - [ ] **Insurance**: Offer insurance bet when dealer shows Ace
 - [ ] **Surrender**: Allow early fold for half bet

@@ -380,20 +380,17 @@ var BlackjackRuleset = {
     // ========================================================================
 
     checkWinCondition: function(gameState) {
-        // 1. Dealer Blackjack
-        var dealer = gameState.dealer;
-        if (dealer.hand.count === 2) {
-            var dealerValue = this.evaluateHand(dealer.hand.contents);
-            if (dealerValue.isBlackjack) {
-                return { 
-                    immediate: true, 
-                    reason: 'Dealer Blackjack',
-                    skipPlayerTurns: true
-                };
-            }
-        }
+        // NOTE: Dealer blackjack is NOT checked here during initial deal.
+        // The UI handles this via insurance flow (shouldOfferInsurance + manual check).
+        // This prevents the game from ending before insurance is offered.
 
-        // 2. All Players Busted
+        // Dealer blackjack should only trigger resolution if:
+        // 1. Dealer shows Ace (insurance offered)
+        // 2. Player accepts/declines insurance
+        // 3. THEN UI checks for dealer blackjack and transitions to resolution
+        // This flow is handled in _acceptInsurance and _declineInsurance in the UI.
+
+        // 1. All Players Busted (primary check during gameplay)
         var activePlayers = gameState.players;
         var allBusted = true;
         var hasActiveHumans = false;
