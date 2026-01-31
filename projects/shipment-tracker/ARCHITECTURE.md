@@ -1,8 +1,8 @@
 # Shipment Tracker - Architecture & Configuration Guide
 
-**Version:** 1.2.0
-**Last Updated:** 2026-01-26
-**Authors:** Wayne Fong (wayneef84), Claude Sonnet 4.5
+**Version:** 1.3.0
+**Last Updated:** 2026-01-29
+**Authors:** Wayne Fong (wayneef84), Claude Sonnet 4.5, Claude Opus 4.5
 
 ---
 
@@ -356,19 +356,21 @@ If proxy URL provided → Proxy mode (key on server)
 
 ## API Integration
 
-### Supported Carriers (v1.1.0)
+### Supported Carriers (v1.3.0)
 
 | Carrier | Status | Mock Data | Real API | Test AWBs |
 |---------|--------|-----------|----------|-----------|
 | DHL | ✅ Active | ✅ Yes | ✅ Ready | 6 sandbox AWBs |
 | FedEx | ✅ Active | ✅ Yes | ⚠️ Stubbed | `111111111111`, `222222222222` |
 | UPS | ✅ Active | ✅ Yes | ⚠️ Stubbed | `1Z999AA10123456780`, `1Z999AA10123456784` |
+| Custom | ✅ Active | N/A | N/A | Manual entry only |
 
 **Notes:**
 - All carriers have mock data generators for testing without API keys
 - FedEx and UPS have OAuth 2.0 implementations stubbed (ready when user provides keys)
 - Test tracking numbers documented in `TEST_DATA.md`
 - Real API adapters will activate automatically when user configures API keys in Settings
+- **Custom carrier** is for manual tracking entries - no API calls, status must be updated manually
 
 ### Adapter Pattern
 
@@ -648,6 +650,125 @@ docManager.removeDocument(tracking, 'COMMERCIAL_INVOICE');
 // Merge documents from import
 docManager.mergeDocuments(existingTracking, importDocuments);
 ```
+
+---
+
+## Import/Export System
+
+**Added in:** v1.3.0
+
+### Overview
+
+The import/export system supports CSV and JSON formats with full document support. Imports use **Update mode** by default (updates existing records instead of skipping).
+
+### CSV Export Format
+
+Full CSV export includes all tracking fields and document columns:
+
+```csv
+awb,carrier,status,deliverySignal,delivered,dateShipped,origin_city,origin_state,origin_country,origin_postalCode,destination_city,destination_state,destination_country,destination_postalCode,estimatedDelivery,lastUpdated,lastChecked,note,tags,documents,doc_CI,doc_PL,doc_SLI,doc_UN383,doc_MSDS,doc_OTHER
+```
+
+**Document Columns:**
+- `documents` - Full JSON array of all documents
+- `doc_CI` - Commercial Invoice URL
+- `doc_PL` - Packing List URL
+- `doc_SLI` - SLI/AWB URL
+- `doc_UN383` - UN38.3 Battery Certificate URL
+- `doc_MSDS` - MSDS/SDS URL
+- `doc_OTHER` - JSON array of other document types
+
+### CSV Import Parsing
+
+**Simple Format** (3 columns):
+```csv
+AWB,Carrier,DateShipped
+1234567890,DHL,2026-01-20
+```
+
+**Full Format** (27+ columns):
+Parses all columns from export format, including:
+- Individual `doc_*` columns merged into `documents` array
+- `documents` JSON column parsed
+- Origin/destination fields mapped to nested objects
+
+### Import Modes
+
+**Add New Mode** (Default - Data Management Modal → Import Add New):
+- New records are added
+- Existing records are **skipped**
+- Safe for adding new trackings without affecting existing data
+
+**Update Mode** (Data Management Modal → Import Update):
+- New records are added
+- Existing records are **updated** (status, dates, etc. overwritten)
+- Documents are merged using `mergeDocuments()`
+- Uses `saveSmartTracking()` to preserve earliest date shipped
+- Shows warning confirmation before executing
+
+**Replace All Mode** (Data Management Modal → Import Replace All):
+- **All existing data is deleted first** (with warning confirmation)
+- Then imports all records as new
+- Use for full database restore from backup
+
+### Document Merge Logic
+
+```javascript
+// mergeDocuments(existing, incoming)
+// - Incoming overwrites same document type
+// - Preserves document types not in incoming
+
+var existing = [
+    { type: 'COMMERCIAL_INVOICE', url: 'https://old-ci.com' },
+    { type: 'PACKING_LIST', url: 'https://pl.com' }
+];
+var incoming = [
+    { type: 'COMMERCIAL_INVOICE', url: 'https://new-ci.com' },
+    { type: 'UN38_3', url: 'https://battery.com' }
+];
+
+var result = mergeDocuments(existing, incoming);
+// Result:
+// [
+//     { type: 'COMMERCIAL_INVOICE', url: 'https://new-ci.com' },  // Overwritten
+//     { type: 'PACKING_LIST', url: 'https://pl.com' },            // Preserved
+//     { type: 'UN38_3', url: 'https://battery.com' }              // Added
+// ]
+```
+
+### Custom Carrier Support
+
+**Purpose:** Track shipments from carriers without API integration (e.g., local couriers, freight forwarders).
+
+**Behavior:**
+- No API calls on add or refresh
+- Returns stub data for new trackings
+- Status must be updated manually
+- Documents can be attached normally
+
+```javascript
+// When adding a Custom carrier tracking:
+var tracking = {
+    awb: 'CUSTOM-001',
+    carrier: 'Custom',
+    status: 'Manual Tracking',
+    deliverySignal: 'UNKNOWN',
+    // ... stub data
+};
+```
+
+### Documents List Modal
+
+**Purpose:** Manage documents for a tracking without opening the detail panel.
+
+**Access:** Click the docs button (📄/✅/⚠️) in the Actions column.
+
+**Features:**
+- View all attached documents
+- Open document in new window
+- Edit document URL
+- Remove document
+- Add new document
 
 ---
 

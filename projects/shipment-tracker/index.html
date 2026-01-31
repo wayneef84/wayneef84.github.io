@@ -220,6 +220,7 @@
                         <option value="FedEx">FedEx</option>
                         <option value="UPS">UPS</option>
                         <option value="USPS">USPS</option>
+                        <option value="Custom">Custom (Manual)</option>
                     </select>
 
                     <button type="submit" class="btn-primary" style="flex:0; ">Add</button>
@@ -228,6 +229,7 @@
 
                     <!-- Hidden file inputs for Data Management Modal -->
                     <input type="file" id="importFile" accept=".json,.csv" style="display: none;">
+                    <input type="file" id="importUpdateFile" accept=".json,.csv" style="display: none;">
                     <input type="file" id="importReplaceFile" accept=".json,.csv" style="display: none;">
                 </div>
             </form>
@@ -380,15 +382,22 @@
                         <button type="button" id="importAppendBtn" class="data-modal-btn">
                             <span class="btn-icon">📥</span>
                             <span class="btn-label">
-                                Import (Add)
-                                <span class="btn-desc">Add to existing data</span>
+                                Import (Add New)
+                                <span class="btn-desc">Add new records, skip existing</span>
+                            </span>
+                        </button>
+                        <button type="button" id="importUpdateBtn" class="data-modal-btn btn-caution">
+                            <span class="btn-icon">🔀</span>
+                            <span class="btn-label">
+                                Import (Update)
+                                <span class="btn-desc">Add new + update existing records</span>
                             </span>
                         </button>
                         <button type="button" id="importReplaceBtn" class="data-modal-btn btn-warning">
                             <span class="btn-icon">🔄</span>
                             <span class="btn-label">
-                                Import (Replace)
-                                <span class="btn-desc">Clear all data first</span>
+                                Import (Replace All)
+                                <span class="btn-desc">Delete all data, then import</span>
                             </span>
                         </button>
                     </div>
@@ -414,15 +423,8 @@
                         <button type="button" id="downloadBlankTemplateBtn" class="data-modal-btn">
                             <span class="btn-icon">📋</span>
                             <span class="btn-label">
-                                Blank Template
-                                <span class="btn-desc">Empty CSV with instructions</span>
-                            </span>
-                        </button>
-                        <button type="button" id="downloadDataTemplateBtn" class="data-modal-btn">
-                            <span class="btn-icon">📊</span>
-                            <span class="btn-label">
-                                Template with Data
-                                <span class="btn-desc" id="templateDataDesc">Export current data as template</span>
+                                Download Import Template
+                                <span class="btn-desc">CSV template with column headers</span>
                             </span>
                         </button>
                     </div>
@@ -480,7 +482,6 @@
                         <th data-sort="destination" class="sortable">Destination <span class="sort-indicator"></span></th>
                         <th data-sort="estimatedDelivery" class="sortable">Est. Delivery <span class="sort-indicator"></span></th>
                         <th data-sort="lastUpdated" class="sortable">Last Updated <span class="sort-indicator"></span></th>
-                        <th class="compliance-column">Docs</th>
                         <th class="actions-column">Actions</th>
                     </tr>
                 </thead>
@@ -556,7 +557,7 @@
 
     </div>
 
-    <!-- Document Modal -->
+    <!-- Document Modal (Add/Edit single document) -->
     <div id="documentModal" class="document-modal hidden">
         <div class="document-modal-content">
             <h3 id="documentModalTitle">Add Document</h3>
@@ -573,6 +574,25 @@
             <div class="document-modal-actions">
                 <button id="cancelDocumentBtn" class="btn-secondary">Cancel</button>
                 <button id="saveDocumentBtn" class="btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents List Modal (Manage all documents for a shipment) -->
+    <div id="documentsListModal" class="documents-list-modal hidden">
+        <div class="documents-list-modal-content">
+            <div class="documents-list-modal-header">
+                <h3 id="documentsListModalTitle">Documents</h3>
+                <button type="button" id="documentsListModalClose" class="documents-list-modal-close">✕</button>
+            </div>
+            <div class="documents-list-modal-body">
+                <div id="documentsListContainer" class="documents-list-container">
+                    <!-- Document rows populated by JavaScript -->
+                </div>
+                <button type="button" id="documentsListAddBtn" class="btn-secondary documents-list-add-btn">+ Add Document</button>
+            </div>
+            <div class="documents-list-modal-footer">
+                <button type="button" id="documentsListCloseBtn" class="btn-secondary">Close</button>
             </div>
         </div>
     </div>

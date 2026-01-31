@@ -1,10 +1,49 @@
 # Shipment Tracker - TODO List
 
-**Last Updated:** 2026-01-26
+**Last Updated:** 2026-01-29
 
 ---
 
 ## ✅ Recently Completed
+
+### Import/Export Overhaul (v1.3.0 - 2026-01-29)
+- [x] **Docs Column → Actions Button**
+  - Moved compliance icon (✅/⚠️/🔋) to Actions column as clickable button
+  - Opens Documents List Modal for standalone document management
+  - Reduces table width
+
+- [x] **Documents List Modal** (new)
+  - Standalone modal to view/edit/remove/add documents
+  - Same functionality as detail panel, but accessible from table
+  - Open/Edit/Remove buttons per document
+
+- [x] **Custom Carrier Support**
+  - Added "Custom (Manual)" to carrier dropdown
+  - Custom carrier skips API refresh (manual updates only)
+  - Returns stub data for new Custom trackings
+
+- [x] **Enhanced CSV Export**
+  - Full column spec with all tracking fields
+  - Individual document columns: `doc_CI`, `doc_PL`, `doc_SLI`, `doc_UN383`, `doc_MSDS`, `doc_OTHER`
+  - `documents` column with full JSON array
+  - Origin/destination split into city/state/country/postalCode columns
+
+- [x] **Enhanced CSV Import**
+  - Parses both simple (AWB,Carrier,DateShipped) and full format
+  - Parses `documents` JSON column
+  - Parses individual `doc_*` columns and merges
+  - Uses `saveSmartTracking()` for smart date handling
+
+- [x] **3 Import Modes with Warnings**
+  - **Add New**: Adds new records, skips existing (safe default)
+  - **Update**: Adds new + updates existing with confirmation warning
+  - **Replace All**: Deletes all data first with danger warning
+  - Each mode shows appropriate confirmation dialog before executing
+
+- [x] **Document Merge Logic**
+  - `mergeDocuments(existing, incoming)` method
+  - Incoming overwrites same document type
+  - Preserves document types not in incoming
 
 ### Trade Compliance Document Linking (v1.2.0 - 2026-01-26)
 - [x] **Document Manager module** - `js/document-manager.js`
@@ -301,12 +340,16 @@
 - [x] ~~**JSON import with validation**~~ (Fixed: 2026-01-25)
 - [x] ~~**Import Template Download**~~ (Fixed: 2026-01-25 - With instructional comments)
 - [x] ~~**Import (Replace All) option**~~ (Fixed: 2026-01-25 - Data Management Modal)
+- [x] ~~**Import with Update mode**~~ (Fixed: 2026-01-29 - Updates existing instead of skipping)
+- [x] ~~**Document parsing from CSV/JSON**~~ (Fixed: 2026-01-29 - Full doc column spec)
+- [x] ~~**Custom carrier support in import**~~ (Fixed: 2026-01-29 - Manual tracking entries)
 - [ ] Bulk add from clipboard (paste AWB list)
 - [ ] Import from email (parse tracking emails)
 - [ ] Import from Amazon orders page (browser extension)
 
 ### Export
 - [x] ~~**Filter-Aware Export**~~ (Fixed: 2026-01-25 - Exports only visible/filtered items)
+- [x] ~~**Full CSV column spec with documents**~~ (Fixed: 2026-01-29 - doc_CI, doc_PL, etc.)
 - [ ] Excel export with charts (SheetJS)
 - [ ] PDF export with formatting
 - [ ] Print-friendly view
@@ -554,6 +597,6 @@ const STATUS_COLORS = {
 
 *This TODO list is a living document and will be updated as features are completed or priorities change.*
 
-**Current Version:** v1.2.0
-**Next Version:** v1.3.0 (Carrier Expansion)
+**Current Version:** v1.3.0
+**Next Version:** v1.4.0 (Carrier Expansion)
 **Contributors:** Wayne Fong (wayneef84), Claude Sonnet 4.5, Claude Opus 4.5

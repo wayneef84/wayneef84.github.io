@@ -774,16 +774,6 @@
         }
         row.appendChild(updatedCell);
 
-        // Compliance Status (Docs column)
-        var complianceCell = document.createElement('td');
-        complianceCell.className = 'compliance-column';
-        if (this.documentManager) {
-            complianceCell.textContent = this.documentManager.getComplianceIcon(tracking);
-        } else {
-            complianceCell.textContent = '';
-        }
-        row.appendChild(complianceCell);
-
         // Actions
         var actionsCell = document.createElement('td');
         actionsCell.className = 'actions-column';
@@ -791,10 +781,21 @@
         actionsCell.style.gap = '0.5rem';
         actionsCell.style.justifyContent = 'center';
 
+        // Docs button (shows compliance icon, opens Documents List Modal)
+        var docsBtn = document.createElement('button');
+        var complianceIcon = this.documentManager ? this.documentManager.getComplianceIcon(tracking) : '';
+        docsBtn.textContent = complianceIcon || '📄';
+        docsBtn.className = 'btn-docs';
+        docsBtn.title = 'Manage Documents';
+        docsBtn.onclick = function(e) {
+            e.stopPropagation();
+            self.showDocumentsListModal(tracking.awb, tracking.carrier);
+        };
+        actionsCell.appendChild(docsBtn);
+
         // Details button
         var detailsBtn = document.createElement('button');
         detailsBtn.innerHTML = '<span class="btn-icon">📋</span>';
-        // detailsBtn.innerHTML = '<span class="btn-icon">📋</span><span class="btn-text">Details</span>';
         detailsBtn.className = 'btn-secondary btn-details';
         detailsBtn.onclick = function(e) {
             e.stopPropagation(); // Prevent row click
@@ -1424,8 +1425,7 @@
         this.showToast('Downloaded payload for ' + tracking.awb, 'success');
     };
 
-    ShipmentTrackerApp.prototype.downloadImportTemplate = function(includeData) {
-        var self = this;
+    ShipmentTrackerApp.prototype.downloadImportTemplate = function() {
         var lines = [];
 
         // Instructions block (comments ignored by parser)
@@ -1435,52 +1435,49 @@
         lines.push('#');
         lines.push('# INSTRUCTIONS:');
         lines.push('# - Lines starting with # are ignored');
-        lines.push('# - Carrier must be: DHL, FedEx, UPS, or USPS');
-        lines.push('# - Date format: YYYY-MM-DD (optional)');
+        lines.push('# - Carrier must be: DHL, FedEx, UPS, USPS, or Custom');
+        lines.push('# - Use SIMPLE format (3 columns) for quick import');
+        lines.push('# - Use FULL format (all columns) to update all fields');
         lines.push('#');
-        lines.push('# EXAMPLE:');
+        lines.push('# SIMPLE FORMAT (add new trackings):');
+        lines.push('# AWB,Carrier,DateShipped');
         lines.push('# 1234567890,DHL,2026-01-15');
+        lines.push('#');
+        lines.push('# FULL FORMAT (update existing trackings):');
+        lines.push('# Use Export CSV to get current data, modify, then import with Update mode');
+        lines.push('#');
+        lines.push('# IMPORT MODES:');
+        lines.push('# - Add New: Adds new records, skips existing');
+        lines.push('# - Update: Adds new + overwrites existing records');
+        lines.push('# - Replace All: Deletes all data first (use for restore)');
         lines.push('#');
         lines.push('# ============================================');
         lines.push('');
 
-        // Header row (required)
+        // Header row - simple format
         lines.push('AWB,Carrier,DateShipped');
 
-        // If includeData, add current filtered trackings
-        if (includeData) {
-            var filter = this.currentFilters.statFilter;
-            var trackingsToExport = (filter === 'total' || !filter)
-                ? this.trackings
-                : this.filteredTrackings;
-
-            trackingsToExport.forEach(function(t) {
-                var dateShipped = t.dateShipped || '';
-                lines.push(t.awb + ',' + t.carrier + ',' + dateShipped);
-            });
-        }
+        // Add example rows
+        lines.push('# Example rows (remove # to use):');
+        lines.push('# 1234567890,DHL,2026-01-15');
+        lines.push('# 123456789012,FedEx,2026-01-16');
+        lines.push('# 1Z999AA10123456784,UPS,2026-01-17');
+        lines.push('# MYCUSTOM001,Custom,2026-01-18');
 
         // Add blank line at end for easy data entry
         lines.push('');
 
         var csv = lines.join('\n');
-        var filename = includeData
-            ? 'shipment_tracker_export_template.csv'
-            : 'shipment_tracker_template.csv';
-
-        this.downloadFile(csv, filename, 'text/csv');
-
-        if (includeData) {
-            var count = (this.currentFilters.statFilter === 'total' || !this.currentFilters.statFilter)
-                ? this.trackings.length
-                : this.filteredTrackings.length;
-            this.showToast('📄 Exported ' + count + ' shipment(s) as template', 'success');
-        } else {
-            this.showToast('📄 Blank template ready - add your tracking numbers', 'success');
-        }
+        this.downloadFile(csv, 'shipment_tracker_import_template.csv', 'text/csv');
+        this.showToast('📄 Import template downloaded', 'success');
     };
 
-    ShipmentTrackerApp.prototype.handleImportFile = async function(file) {
+    /**
+     * Handle import file with specified mode
+     * @param {File} file - The file to import
+     * @param {string} mode - 'add' (skip existing), 'update' (merge existing), 'replace' (overwrite all)
+     */
+    ShipmentTrackerApp.prototype.handleImportFile = async function(file, mode) {
         var self = this;
 
         if (!file) {
@@ -1488,74 +1485,250 @@
             return;
         }
 
+        mode = mode || 'add'; // Default to add mode
+
         var extension = file.name.split('.').pop().toLowerCase();
 
         if (extension === 'csv') {
-            await this.importFromCSV(file);
+            await this.importFromCSV(file, mode);
         } else if (extension === 'json') {
-            await this.importFromJSON(file);
+            await this.importFromJSON(file, mode);
         } else {
             this.showToast('Unsupported file format. Use CSV or JSON.', 'error');
         }
     };
 
-    ShipmentTrackerApp.prototype.importFromCSV = async function(file) {
+    /**
+     * Import from CSV file
+     * @param {File} file - CSV file to import
+     * @param {string} mode - 'add' (skip existing), 'update' (merge existing), 'replace' (overwrite all)
+     */
+    ShipmentTrackerApp.prototype.importFromCSV = async function(file, mode) {
         var self = this;
+        mode = mode || 'add';
 
         try {
             var text = await this.readFileAsText(file);
             var lines = text.split('\n');
 
             var imported = 0;
+            var updated = 0;
             var skipped = 0;
             var errors = [];
 
-            for (var i = 0; i < lines.length; i++) {
+            // Parse header row to get column mapping
+            var headerLine = null;
+            var headerIndex = -1;
+            for (var h = 0; h < lines.length; h++) {
+                var hLine = lines[h].trim();
+                if (!hLine || hLine.startsWith('#')) continue;
+                headerLine = hLine.toLowerCase();
+                headerIndex = h;
+                break;
+            }
+
+            // Create column map from header
+            var columnMap = {};
+            if (headerLine) {
+                var headerParts = this.parseCSVLine(headerLine);
+                for (var c = 0; c < headerParts.length; c++) {
+                    columnMap[headerParts[c].trim()] = c;
+                }
+            }
+
+            // Check if this is a simple (AWB,Carrier,DateShipped) or full format
+            var isSimpleFormat = !columnMap.hasOwnProperty('deliverysignal') && !columnMap.hasOwnProperty('documents');
+
+            for (var i = headerIndex + 1; i < lines.length; i++) {
                 var line = lines[i].trim();
 
-                // Skip empty lines, comments, and header
-                if (!line || line.startsWith('#') || line.toLowerCase().startsWith('awb,')) {
+                // Skip empty lines and comments
+                if (!line || line.startsWith('#')) {
                     continue;
                 }
 
-                var parts = line.split(',');
+                var parts = this.parseCSVLine(line);
                 if (parts.length < 2) {
                     errors.push('Line ' + (i + 1) + ': Invalid format (need at least AWB,Carrier)');
                     continue;
                 }
 
-                var awb = parts[0].trim();
-                var carrier = parts[1].trim();
-                var dateShipped = parts[2] ? parts[2].trim() : '';
+                var awb, carrier, tracking;
 
-                // Validate carrier
-                if (!['DHL', 'FedEx', 'UPS', 'USPS'].includes(carrier)) {
-                    errors.push('Line ' + (i + 1) + ': Invalid carrier "' + carrier + '" (must be DHL, FedEx, UPS, or USPS)');
-                    continue;
+                if (isSimpleFormat) {
+                    // Simple format: AWB,Carrier,DateShipped
+                    awb = parts[0].trim();
+                    carrier = parts[1].trim();
+                    var dateShipped = parts[2] ? parts[2].trim() : '';
+
+                    // Validate carrier
+                    if (!['DHL', 'FedEx', 'UPS', 'USPS', 'Custom'].includes(carrier)) {
+                        errors.push('Line ' + (i + 1) + ': Invalid carrier "' + carrier + '" (must be DHL, FedEx, UPS, USPS, or Custom)');
+                        continue;
+                    }
+
+                    tracking = {
+                        awb: awb,
+                        carrier: carrier,
+                        dateShipped: dateShipped || new Date().toISOString().split('T')[0],
+                        status: 'Pending',
+                        deliverySignal: 'UNKNOWN',
+                        delivered: false,
+                        lastChecked: new Date().toISOString(),
+                        lastUpdated: new Date().toISOString(),
+                        origin: { city: null, state: null, country: null, postalCode: null },
+                        destination: { city: null, state: null, country: null, postalCode: null },
+                        events: [],
+                        estimatedDelivery: null,
+                        note: '',
+                        tags: [],
+                        documents: []
+                    };
+                } else {
+                    // Full format with all columns
+                    var getValue = function(colName) {
+                        var idx = columnMap[colName];
+                        return (idx !== undefined && parts[idx]) ? parts[idx].trim() : '';
+                    };
+
+                    awb = getValue('awb');
+                    carrier = getValue('carrier');
+
+                    if (!awb || !carrier) {
+                        errors.push('Line ' + (i + 1) + ': Missing AWB or Carrier');
+                        continue;
+                    }
+
+                    // Validate carrier
+                    if (!['DHL', 'FedEx', 'UPS', 'USPS', 'Custom'].includes(carrier)) {
+                        errors.push('Line ' + (i + 1) + ': Invalid carrier "' + carrier + '"');
+                        continue;
+                    }
+
+                    // Build tracking object from CSV columns
+                    tracking = {
+                        awb: awb,
+                        carrier: carrier,
+                        status: getValue('status') || 'Pending',
+                        deliverySignal: getValue('deliverysignal') || 'UNKNOWN',
+                        delivered: getValue('delivered') === 'true',
+                        dateShipped: getValue('dateshipped') || '',
+                        origin: {
+                            city: getValue('origin_city') || null,
+                            state: getValue('origin_state') || null,
+                            country: getValue('origin_country') || null,
+                            postalCode: getValue('origin_postalcode') || null
+                        },
+                        destination: {
+                            city: getValue('destination_city') || null,
+                            state: getValue('destination_state') || null,
+                            country: getValue('destination_country') || null,
+                            postalCode: getValue('destination_postalcode') || null
+                        },
+                        estimatedDelivery: getValue('estimateddelivery') || null,
+                        lastUpdated: getValue('lastupdated') || new Date().toISOString(),
+                        lastChecked: getValue('lastchecked') || new Date().toISOString(),
+                        note: getValue('note') || '',
+                        tags: [],
+                        documents: []
+                    };
+
+                    // Parse tags
+                    var tagsStr = getValue('tags');
+                    if (tagsStr) {
+                        try {
+                            tracking.tags = JSON.parse(tagsStr);
+                        } catch (e) {
+                            // Ignore invalid JSON
+                        }
+                    }
+
+                    // Parse documents from JSON column
+                    var docsStr = getValue('documents');
+                    if (docsStr && self.documentManager) {
+                        tracking.documents = self.documentManager.parseDocumentsFromCSV(docsStr);
+                    }
+
+                    // Also parse individual doc_* columns and merge
+                    var docTypes = {
+                        'doc_ci': 'COMMERCIAL_INVOICE',
+                        'doc_pl': 'PACKING_LIST',
+                        'doc_sli': 'SLI_AWB',
+                        'doc_un383': 'UN38_3',
+                        'doc_msds': 'MSDS'
+                    };
+
+                    for (var docCol in docTypes) {
+                        var url = getValue(docCol);
+                        if (url && self.documentManager) {
+                            self.documentManager.addDocument(tracking, docTypes[docCol], url);
+                        }
+                    }
+
+                    // Parse doc_OTHER column (JSON array of other documents)
+                    var otherDocsStr = getValue('doc_other');
+                    if (otherDocsStr && self.documentManager) {
+                        try {
+                            var otherDocs = JSON.parse(otherDocsStr);
+                            for (var od = 0; od < otherDocs.length; od++) {
+                                if (otherDocs[od].type && otherDocs[od].url) {
+                                    self.documentManager.addDocument(tracking, otherDocs[od].type, otherDocs[od].url);
+                                }
+                            }
+                        } catch (e) {
+                            // Ignore invalid JSON
+                        }
+                    }
                 }
 
-                // Check if already exists
-                var existing = await this.db.getTracking(awb, carrier);
-                if (existing) {
-                    // TODO: Update data to existing AWB instead of skipping? this.updateTracking(awb, carrier, { dateShipped: dateShipped });
-                    skipped++;
-                    continue;
-                }
-
-                // Add tracking
+                // Handle based on import mode
                 try {
-                    await this.addTracking(awb, carrier, dateShipped);
-                    imported++;
+                    var existing = await this.db.getTracking(awb, carrier);
+                    console.log('[Import CSV] Processing AWB:', awb, 'Carrier:', carrier, 'Mode:', mode, 'Existing:', !!existing);
+
+                    if (existing) {
+                        if (mode === 'add') {
+                            // Add mode: Skip existing records
+                            skipped++;
+                            console.log('[Import CSV] Skipped (add mode):', awb);
+                        } else if (mode === 'update') {
+                            // Update mode: Merge documents, overwrite all other fields
+                            if (tracking.documents && tracking.documents.length > 0 && self.documentManager) {
+                                tracking.documents = self.mergeDocuments(existing.documents, tracking.documents);
+                            } else if (!tracking.documents || tracking.documents.length === 0) {
+                                tracking.documents = existing.documents || [];
+                            }
+                            // Use saveTracking to completely overwrite (no smart date logic)
+                            console.log('[Import CSV] Updating:', awb, 'New status:', tracking.status, 'New lastUpdated:', tracking.lastUpdated);
+                            await this.db.saveTracking(tracking);
+                            updated++;
+                        } else if (mode === 'replace') {
+                            // Replace mode: Completely overwrite all fields
+                            console.log('[Import CSV] Replacing:', awb, 'New status:', tracking.status);
+                            await this.db.saveTracking(tracking);
+                            updated++;
+                        }
+                    } else {
+                        // New record - save in all modes
+                        console.log('[Import CSV] Adding new:', awb, 'Status:', tracking.status);
+                        await this.db.saveTracking(tracking);
+                        imported++;
+                    }
                 } catch (err) {
+                    console.error('[Import CSV] Error saving:', awb, err);
                     errors.push('Line ' + (i + 1) + ': ' + err.message);
                 }
             }
 
             // Show summary
-            var summary = '✅ Imported ' + imported + ' tracking(s)';
-            if (skipped > 0) {
-                summary += ' (' + skipped + ' skipped - already exist)';
+            var summary = '✅ Imported ' + imported + ' new';
+            if (updated > 0) {
+                summary += ', updated ' + updated + ' existing';
             }
+            if (skipped > 0) {
+                summary += ' (' + skipped + ' skipped)';
+            }
+            summary += ' tracking(s)';
             if (errors.length > 0) {
                 summary += '\n\n⚠️ Errors:\n' + errors.slice(0, 5).join('\n');
                 if (errors.length > 5) {
@@ -1563,13 +1736,13 @@
                 }
             }
 
-            this.showToast(summary, imported > 0 ? 'success' : 'warning');
+            this.showToast(summary, (imported > 0 || updated > 0) ? 'success' : 'warning');
 
-            // Reload trackings
-            if (imported > 0) {
-                await this.loadTrackings();
-                this.updateStats();
-            }
+            // Always reload trackings after import to show changes
+            console.log('[Import CSV] Reloading trackings... imported=' + imported + ', updated=' + updated + ', skipped=' + skipped);
+            await this.loadTrackings();
+            this.updateStats();
+            console.log('[Import CSV] Reload complete. Total trackings:', this.trackings.length);
 
         } catch (err) {
             console.error('[App] Import failed:', err);
@@ -1577,61 +1750,176 @@
         }
     };
 
-    ShipmentTrackerApp.prototype.importFromJSON = async function(file) {
+    /**
+     * Parse a CSV line, handling quoted fields correctly
+     * @param {string} line - CSV line to parse
+     * @returns {Array} Array of field values
+     */
+    ShipmentTrackerApp.prototype.parseCSVLine = function(line) {
+        var result = [];
+        var current = '';
+        var inQuotes = false;
+
+        for (var i = 0; i < line.length; i++) {
+            var char = line[i];
+            var nextChar = line[i + 1];
+
+            if (inQuotes) {
+                if (char === '"') {
+                    if (nextChar === '"') {
+                        // Escaped quote
+                        current += '"';
+                        i++;
+                    } else {
+                        // End of quoted field
+                        inQuotes = false;
+                    }
+                } else {
+                    current += char;
+                }
+            } else {
+                if (char === '"') {
+                    inQuotes = true;
+                } else if (char === ',') {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+        }
+
+        result.push(current);
+        return result;
+    };
+
+    /**
+     * Merge documents from import with existing documents
+     * - If same type exists: Incoming overwrites
+     * - If type doesn't exist: Add from incoming
+     * - Preserve types not in incoming
+     * @param {Array} existing - Existing documents array
+     * @param {Array} incoming - Incoming documents array
+     * @returns {Array} Merged documents array
+     */
+    ShipmentTrackerApp.prototype.mergeDocuments = function(existing, incoming) {
+        existing = existing || [];
+        incoming = incoming || [];
+
+        // Create map of existing documents by type
+        var merged = {};
+        for (var i = 0; i < existing.length; i++) {
+            merged[existing[i].type] = existing[i];
+        }
+
+        // Overwrite/add from incoming
+        for (var j = 0; j < incoming.length; j++) {
+            merged[incoming[j].type] = incoming[j];
+        }
+
+        // Convert back to array
+        var result = [];
+        for (var type in merged) {
+            if (merged.hasOwnProperty(type)) {
+                result.push(merged[type]);
+            }
+        }
+
+        return result;
+    };
+
+    /**
+     * Import from JSON file
+     * @param {File} file - JSON file to import
+     * @param {string} mode - 'add' (skip existing), 'update' (merge existing), 'replace' (overwrite all)
+     */
+    ShipmentTrackerApp.prototype.importFromJSON = async function(file, mode) {
         var self = this;
+        mode = mode || 'add';
 
         try {
             var text = await this.readFileAsText(file);
             var data = JSON.parse(text);
 
-            if(!data.trackings && Array.isArray(data)) {
-                this.showToast('JSON has no trackings', 'error');
-                return;
-            }
-
-            console.log(data);
-            data = data.trackings;
-
-            if (!Array.isArray(data)) {
-                this.showToast('JSON must be an array of tracking objects', 'error');
+            // Handle both array format and {trackings: [...]} format
+            var trackingsArray;
+            if (data.trackings && Array.isArray(data.trackings)) {
+                trackingsArray = data.trackings;
+            } else if (Array.isArray(data)) {
+                trackingsArray = data;
+            } else {
+                this.showToast('JSON must have a trackings array', 'error');
                 return;
             }
 
             var imported = 0;
+            var updated = 0;
             var skipped = 0;
+            var errors = [];
 
-            for (var i = 0; i < data.length; i++) {
-                var tracking = data[i];
+            for (var i = 0; i < trackingsArray.length; i++) {
+                var tracking = trackingsArray[i];
 
                 if (!tracking.awb || !tracking.carrier) {
+                    errors.push('Record ' + (i + 1) + ': Missing AWB or carrier');
                     continue;
                 }
 
-                // Check if already exists
-                var existing = await this.db.getTracking(tracking.awb, tracking.carrier);
-                if (existing) {
-                    // TODO: Update data to existing AWB instead of skipping? this.db.updateTracking(tracking.awb, tracking.carrier, tracking);
-                    skipped++;
-                    continue;
-                }
+                try {
+                    // Check if already exists
+                    var existing = await this.db.getTracking(tracking.awb, tracking.carrier);
 
-                // Save to database
-                await this.db.saveTracking(tracking);
-                imported++;
+                    if (existing) {
+                        if (mode === 'add') {
+                            // Add mode: Skip existing records
+                            skipped++;
+                        } else if (mode === 'update') {
+                            // Update mode: Merge documents, overwrite all other fields
+                            if (tracking.documents && tracking.documents.length > 0) {
+                                tracking.documents = self.mergeDocuments(existing.documents, tracking.documents);
+                            } else if (!tracking.documents || tracking.documents.length === 0) {
+                                tracking.documents = existing.documents || [];
+                            }
+                            // Use saveTracking to completely overwrite (no smart date logic)
+                            await this.db.saveTracking(tracking);
+                            updated++;
+                        } else if (mode === 'replace') {
+                            // Replace mode: Completely overwrite all fields
+                            await this.db.saveTracking(tracking);
+                            updated++;
+                        }
+                    } else {
+                        // New record - save in all modes
+                        await this.db.saveTracking(tracking);
+                        imported++;
+                    }
+                } catch (err) {
+                    errors.push('Record ' + (i + 1) + ': ' + err.message);
+                }
             }
 
-            var summary = '✅ Imported ' + imported + ' tracking(s)';
+            var summary = '✅ Imported ' + imported + ' new';
+            if (updated > 0) {
+                summary += ', updated ' + updated + ' existing';
+            }
             if (skipped > 0) {
-                summary += ' (' + skipped + ' skipped - already exist)';
+                summary += ' (' + skipped + ' skipped)';
+            }
+            summary += ' tracking(s)';
+            if (errors.length > 0) {
+                summary += '\n\n⚠️ Errors:\n' + errors.slice(0, 5).join('\n');
+                if (errors.length > 5) {
+                    summary += '\n... and ' + (errors.length - 5) + ' more errors';
+                }
             }
 
-            this.showToast(summary, 'success');
+            this.showToast(summary, (imported > 0 || updated > 0) ? 'success' : 'warning');
 
-            // Reload trackings
-            if (imported > 0) {
-                await this.loadTrackings();
-                this.updateStats();
-            }
+            // Always reload trackings after import to show changes
+            console.log('[Import JSON] Reloading trackings... imported=' + imported + ', updated=' + updated + ', skipped=' + skipped);
+            await this.loadTrackings();
+            this.updateStats();
+            console.log('[Import JSON] Reload complete. Total trackings:', this.trackings.length);
 
         } catch (err) {
             console.error('[App] Import failed:', err);
@@ -1877,6 +2165,34 @@
             throw new Error('Unable to detect carrier for AWB: ' + awb);
         }
 
+        // Handle Custom carrier - no API call, return existing or stub data
+        if (carrier.toUpperCase() === 'CUSTOM') {
+            console.log('[Query Engine] Custom carrier - skipping API call');
+            // Return existing tracking or create stub
+            var existing = await this.db.getTracking(awb, carrier);
+            if (existing) {
+                existing.lastChecked = new Date().toISOString();
+                return existing;
+            }
+            // Return stub tracking data for new Custom carrier
+            return {
+                awb: awb,
+                carrier: 'Custom',
+                status: 'Manual Tracking',
+                deliverySignal: 'UNKNOWN',
+                delivered: false,
+                lastChecked: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                origin: { city: null, state: null, country: null, postalCode: null },
+                destination: { city: null, state: null, country: null, postalCode: null },
+                events: [],
+                estimatedDelivery: null,
+                note: 'Custom carrier - manual updates only',
+                tags: [],
+                rawPayloadId: null
+            };
+        }
+
         // Route to correct adapter based on carrier
         var adapter;
         switch (carrier.toUpperCase()) {
@@ -2099,45 +2415,94 @@
     };
 
     ShipmentTrackerApp.prototype.exportCSV = function(trackings) {
-        var headers = ['AWB', 'Carrier', 'Status', 'Delivered', 'Date Shipped', 'Est. Delivery', 'Last Updated', 'Commerical Invoice', 'Packing List', 'Documents',];
+        // Full CSV spec with all tracking fields and document columns
+        var headers = [
+            'awb',
+            'carrier',
+            'status',
+            'deliverySignal',
+            'delivered',
+            'dateShipped',
+            'origin_city',
+            'origin_state',
+            'origin_country',
+            'origin_postalCode',
+            'destination_city',
+            'destination_state',
+            'destination_country',
+            'destination_postalCode',
+            'estimatedDelivery',
+            'lastUpdated',
+            'lastChecked',
+            'note',
+            'tags',
+            'documents',
+            'doc_CI',
+            'doc_PL',
+            'doc_SLI',
+            'doc_UN383',
+            'doc_MSDS',
+            'doc_OTHER'
+        ];
 
+        var self = this;
 
         var rows = trackings.map(function(t) {
-            // console.log('t',t);
-
-            var documents_json = '';
-            var url_commercial_invoice = '';
-            var url_packing_list = '';
-
-
-            if(t.documents) {
-                documents_json = JSON.stringify(t.documents);
-
-                url_commercial_invoice = findType(t.documents, 'COMMERCIAL_INVOICE') || '';
-                url_packing_list = findType(t.documents, 'PACKING_LIST') || '';
-
-                // for (var documents of t.documents) { if(documents.type == 'COMMERCIAL_INVOICE'){url_commercial_invoice = documents.url; break;}}
-                // for (var documents of t.documents) { if(documents.type == 'PACKING_LIST'){url_packing_list = documents.url; break;}}
+            // Helper to find document URL by type
+            function findDocUrl(documents, type) {
+                if (!documents) return '';
+                for (var i = 0; i < documents.length; i++) {
+                    if (documents[i].type === type) return documents[i].url || '';
+                }
+                return '';
             }
 
-            function findType(documents, type) {
-                for(var document of documents) if(document.type == type) return document.url;
-                
-                return false;
+            // Get "other" documents (not CI, PL, SLI, UN38.3, MSDS)
+            function getOtherDocs(documents) {
+                if (!documents) return '';
+                var otherTypes = ['COMMERCIAL_INVOICE', 'PACKING_LIST', 'SLI_AWB', 'UN38_3', 'MSDS'];
+                var others = [];
+                for (var i = 0; i < documents.length; i++) {
+                    if (otherTypes.indexOf(documents[i].type) === -1) {
+                        others.push({ type: documents[i].type, url: documents[i].url });
+                    }
+                }
+                return others.length > 0 ? JSON.stringify(others) : '';
+            }
+
+            // Serialize full documents array for the 'documents' column
+            var documentsJson = '';
+            if (self.documentManager && t.documents && t.documents.length > 0) {
+                documentsJson = self.documentManager.serializeDocumentsForCSV(t.documents);
             }
 
             return [
-                t.awb,
-                t.carrier,
-                t.status,
-                t.delivered ? 'Yes' : 'No',
-                t.dateShipped,
+                t.awb || '',
+                t.carrier || '',
+                t.status || '',
+                t.deliverySignal || '',
+                t.delivered ? 'true' : 'false',
+                t.dateShipped || '',
+                t.origin ? (t.origin.city || '') : '',
+                t.origin ? (t.origin.state || '') : '',
+                t.origin ? (t.origin.country || '') : '',
+                t.origin ? (t.origin.postalCode || '') : '',
+                t.destination ? (t.destination.city || '') : '',
+                t.destination ? (t.destination.state || '') : '',
+                t.destination ? (t.destination.country || '') : '',
+                t.destination ? (t.destination.postalCode || '') : '',
                 t.estimatedDelivery || '',
-                t.lastUpdated,
-                url_commercial_invoice,
-                url_packing_list,
-                documents_json,
-                // t.documents ? JSON.stringify(t.documents) : '{}'
+                t.lastUpdated || '',
+                t.lastChecked || '',
+                t.note || '',
+                t.tags ? JSON.stringify(t.tags) : '',
+                documentsJson,
+                findDocUrl(t.documents, 'COMMERCIAL_INVOICE'),
+                findDocUrl(t.documents, 'PACKING_LIST'),
+                findDocUrl(t.documents, 'SLI_AWB'),
+                findDocUrl(t.documents, 'UN38_3'),
+                findDocUrl(t.documents, 'MSDS'),
+                getOtherDocs(t.documents)
             ];
         });
 
@@ -2450,10 +2815,14 @@
         this.closeDataModal();
     };
 
-    ShipmentTrackerApp.prototype.importWithReplace = async function(file) {
+    /**
+     * Import with Replace All mode - deletes all existing data first
+     * @param {File} file - File to import
+     */
+    ShipmentTrackerApp.prototype.importWithReplaceAll = async function(file) {
         var self = this;
 
-        if (!confirm('⚠️ This will DELETE all existing data before importing.\n\nAre you sure you want to replace all data?')) {
+        if (!confirm('⚠️ WARNING: This will DELETE ALL existing tracking data before importing.\n\nThis action cannot be undone!\n\nAre you sure you want to delete all data and replace with import?')) {
             return;
         }
 
@@ -2464,14 +2833,40 @@
             this.filteredTrackings = [];
             console.log('[App] All data cleared for replace import');
 
-            // Now import the file
-            await this.handleImportFile(file);
+            // Now import the file (using 'add' mode since DB is empty)
+            await this.handleImportFile(file, 'add');
 
             this.showToast('✅ Data replaced successfully', 'success');
         } catch (err) {
             console.error('[App] Replace import failed:', err);
             this.showToast('Replace import failed: ' + err.message, 'error');
         }
+    };
+
+    /**
+     * Import with Update mode - updates existing records, adds new ones
+     * @param {File} file - File to import
+     */
+    ShipmentTrackerApp.prototype.importWithUpdate = async function(file) {
+        var self = this;
+
+        if (!confirm('⚠️ Import with Update Mode\n\nThis will:\n• Add new tracking records\n• Overwrite ALL fields on existing records (status, dates, documents)\n• Preserve documents not in import file\n\nContinue with import?')) {
+            return;
+        }
+
+        try {
+            await this.handleImportFile(file, 'update');
+        } catch (err) {
+            console.error('[App] Update import failed:', err);
+            this.showToast('Update import failed: ' + err.message, 'error');
+        }
+    };
+
+    /**
+     * Legacy wrapper for backward compatibility
+     */
+    ShipmentTrackerApp.prototype.importWithReplace = async function(file) {
+        await this.importWithReplaceAll(file);
     };
 
     // ============================================================
@@ -2623,12 +3018,13 @@
         });
 
         // Import file handlers (triggered by Data Management Modal)
+        // Import (Add New) - skips existing records
         var importFile = document.getElementById('importFile');
         if (importFile) {
             importFile.onchange = function(e) {
                 var file = e.target.files[0];
                 if (file) {
-                    self.handleImportFile(file);
+                    self.handleImportFile(file, 'add');
                 }
                 // Reset file input so same file can be imported again
                 e.target.value = '';
@@ -2838,7 +3234,7 @@
             };
         }
 
-        // Import (Append) button
+        // Import (Add New) button - skips existing records
         var importAppendBtn = document.getElementById('importAppendBtn');
         if (importAppendBtn) {
             importAppendBtn.onclick = function() {
@@ -2847,7 +3243,16 @@
             };
         }
 
-        // Import (Replace) button
+        // Import (Update) button - updates existing records with warning
+        var importUpdateBtn = document.getElementById('importUpdateBtn');
+        if (importUpdateBtn) {
+            importUpdateBtn.onclick = function() {
+                self.closeDataModal();
+                document.getElementById('importUpdateFile').click();
+            };
+        }
+
+        // Import (Replace All) button - clears all data first
         var importReplaceBtn = document.getElementById('importReplaceBtn');
         if (importReplaceBtn) {
             importReplaceBtn.onclick = function() {
@@ -2856,13 +3261,25 @@
             };
         }
 
-        // Import Replace file handler
+        // Import Update file handler
+        var importUpdateFile = document.getElementById('importUpdateFile');
+        if (importUpdateFile) {
+            importUpdateFile.onchange = function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    self.importWithUpdate(file);
+                }
+                e.target.value = '';
+            };
+        }
+
+        // Import Replace All file handler
         var importReplaceFile = document.getElementById('importReplaceFile');
         if (importReplaceFile) {
             importReplaceFile.onchange = function(e) {
                 var file = e.target.files[0];
                 if (file) {
-                    self.importWithReplace(file);
+                    self.importWithReplaceAll(file);
                 }
                 e.target.value = '';
             };
@@ -2888,16 +3305,7 @@
         var downloadBlankTemplateBtn = document.getElementById('downloadBlankTemplateBtn');
         if (downloadBlankTemplateBtn) {
             downloadBlankTemplateBtn.onclick = function() {
-                self.downloadImportTemplate(false);
-                self.closeDataModal();
-            };
-        }
-
-        // Download Template with Data button
-        var downloadDataTemplateBtn = document.getElementById('downloadDataTemplateBtn');
-        if (downloadDataTemplateBtn) {
-            downloadDataTemplateBtn.onclick = function() {
-                self.downloadImportTemplate(true);
+                self.downloadImportTemplate();
                 self.closeDataModal();
             };
         }
@@ -2906,7 +3314,7 @@
         var downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
         if (downloadTemplateBtn) {
             downloadTemplateBtn.onclick = function() {
-                self.downloadImportTemplate(false);
+                self.downloadImportTemplate();
             };
         }
 
@@ -3004,6 +3412,9 @@
 
         // Populate document type dropdown
         this.populateDocumentTypeDropdown();
+
+        // Setup Documents List Modal listeners
+        this.setupDocumentsListModalListeners();
     };
 
     ShipmentTrackerApp.prototype.populateDocumentTypeDropdown = function() {
@@ -3036,10 +3447,15 @@
 
     ShipmentTrackerApp.prototype.hideDocumentModal = function() {
         var modal = document.getElementById('documentModal');
+        var typeSelect = document.getElementById('documentTypeSelect');
         if (modal) {
             modal.classList.add('hidden');
         }
+        if (typeSelect) {
+            typeSelect.disabled = false; // Re-enable in case it was disabled
+        }
         this.editingDocumentType = null;
+        this.editingFromListModal = false;
     };
 
     ShipmentTrackerApp.prototype.saveDocument = function() {
@@ -3047,7 +3463,10 @@
         var typeSelect = document.getElementById('documentTypeSelect');
         var urlInput = document.getElementById('documentUrlInput');
 
-        if (!typeSelect || !urlInput || !this.currentDetailTracking) {
+        // Determine which tracking to update (detail panel vs list modal)
+        var tracking = this.editingFromListModal ? this.documentsListTracking : this.currentDetailTracking;
+
+        if (!typeSelect || !urlInput || !tracking) {
             this.showToast('Cannot save document', 'error');
             return;
         }
@@ -3071,18 +3490,31 @@
 
         // Add document to tracking
         if (this.documentManager) {
-            this.documentManager.addDocument(this.currentDetailTracking, docType, url);
+            this.documentManager.addDocument(tracking, docType, url);
         }
 
+        // Re-enable type select (in case it was disabled for edit)
+        typeSelect.disabled = false;
+
         // Save to database
-        this.db.saveTracking(this.currentDetailTracking).then(function() {
+        this.db.saveTracking(tracking).then(function() {
             self.hideDocumentModal();
-            self.renderDocuments(self.currentDetailTracking);
+
+            // Refresh the appropriate UI
+            if (self.editingFromListModal) {
+                self.renderDocumentsListModal(self.documentsListTracking);
+            }
+            if (self.currentDetailTracking && self.currentDetailTracking.awb === tracking.awb) {
+                self.renderDocuments(self.currentDetailTracking);
+            }
+
             self.loadTrackings(); // Refresh table
             self.showToast('Document saved', 'success');
+            self.editingFromListModal = false;
         }).catch(function(err) {
             console.error('[App] Failed to save document:', err);
             self.showToast('Failed to save document: ' + err.message, 'error');
+            self.editingFromListModal = false;
         });
     };
 
@@ -3174,6 +3606,272 @@
 
             row.appendChild(actions);
             container.appendChild(row);
+        }
+    };
+
+    // ============================================================
+    // DOCUMENTS LIST MODAL (Standalone document management)
+    // ============================================================
+
+    /**
+     * Show the Documents List Modal for a specific tracking
+     * @param {string} awb - AWB number
+     * @param {string} carrier - Carrier name
+     */
+    ShipmentTrackerApp.prototype.showDocumentsListModal = async function(awb, carrier) {
+        var self = this;
+
+        try {
+            // Get tracking from database
+            var tracking = await this.db.getTracking(awb, carrier);
+            if (!tracking) {
+                this.showToast('Tracking not found', 'error');
+                return;
+            }
+
+            // Store reference for document operations
+            this.documentsListTracking = tracking;
+
+            // Update modal title
+            var titleEl = document.getElementById('documentsListModalTitle');
+            if (titleEl) {
+                titleEl.textContent = 'Documents - ' + awb;
+            }
+
+            // Render document list
+            this.renderDocumentsListModal(tracking);
+
+            // Show modal
+            var modal = document.getElementById('documentsListModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+
+        } catch (err) {
+            console.error('[App] Failed to show documents list modal:', err);
+            this.showToast('Failed to load documents', 'error');
+        }
+    };
+
+    /**
+     * Hide the Documents List Modal
+     */
+    ShipmentTrackerApp.prototype.hideDocumentsListModal = function() {
+        var modal = document.getElementById('documentsListModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+        this.documentsListTracking = null;
+    };
+
+    /**
+     * Render the documents list inside the modal
+     * @param {Object} tracking - Tracking record
+     */
+    ShipmentTrackerApp.prototype.renderDocumentsListModal = function(tracking) {
+        var self = this;
+        var container = document.getElementById('documentsListContainer');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        var documents = tracking.documents || [];
+
+        if (documents.length === 0) {
+            var emptyDiv = document.createElement('div');
+            emptyDiv.className = 'documents-list-empty';
+            emptyDiv.textContent = 'No documents attached';
+            container.appendChild(emptyDiv);
+            return;
+        }
+
+        // Render each document
+        for (var i = 0; i < documents.length; i++) {
+            var doc = documents[i];
+            var item = document.createElement('div');
+            item.className = 'documents-list-item';
+
+            // Icon
+            var iconDiv = document.createElement('div');
+            iconDiv.className = 'documents-list-item-icon';
+            iconDiv.textContent = doc.icon || '\uD83D\uDCCE'; // 📎
+            item.appendChild(iconDiv);
+
+            // Info
+            var infoDiv = document.createElement('div');
+            infoDiv.className = 'documents-list-item-info';
+
+            var labelDiv = document.createElement('div');
+            labelDiv.className = 'documents-list-item-label';
+            labelDiv.textContent = doc.label || doc.type;
+            infoDiv.appendChild(labelDiv);
+
+            var urlDiv = document.createElement('div');
+            urlDiv.className = 'documents-list-item-url';
+            urlDiv.textContent = doc.url;
+            urlDiv.title = doc.url;
+            infoDiv.appendChild(urlDiv);
+
+            item.appendChild(infoDiv);
+
+            // Actions
+            var actionsDiv = document.createElement('div');
+            actionsDiv.className = 'documents-list-item-actions';
+
+            // Open button
+            var openBtn = document.createElement('button');
+            openBtn.textContent = '\u2197\uFE0F'; // ↗️
+            openBtn.title = 'Open in new window';
+            openBtn.setAttribute('data-url', doc.url);
+            openBtn.onclick = function() {
+                var url = this.getAttribute('data-url');
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+            actionsDiv.appendChild(openBtn);
+
+            // Edit button
+            var editBtn = document.createElement('button');
+            editBtn.textContent = '\u270F\uFE0F'; // ✏️
+            editBtn.title = 'Edit URL';
+            editBtn.setAttribute('data-type', doc.type);
+            editBtn.setAttribute('data-url', doc.url);
+            editBtn.onclick = function() {
+                var type = this.getAttribute('data-type');
+                var url = this.getAttribute('data-url');
+                self.showEditDocumentInListModal(type, url);
+            };
+            actionsDiv.appendChild(editBtn);
+
+            // Remove button
+            var removeBtn = document.createElement('button');
+            removeBtn.className = 'btn-danger';
+            removeBtn.textContent = '\uD83D\uDDD1\uFE0F'; // 🗑️
+            removeBtn.title = 'Remove document';
+            removeBtn.setAttribute('data-type', doc.type);
+            removeBtn.onclick = function() {
+                var type = this.getAttribute('data-type');
+                self.removeDocumentFromListModal(type);
+            };
+            actionsDiv.appendChild(removeBtn);
+
+            item.appendChild(actionsDiv);
+            container.appendChild(item);
+        }
+    };
+
+    /**
+     * Remove a document from the Documents List Modal
+     * @param {string} docType - Document type to remove
+     */
+    ShipmentTrackerApp.prototype.removeDocumentFromListModal = async function(docType) {
+        var self = this;
+        if (!this.documentsListTracking || !this.documentManager) return;
+
+        var docTypeInfo = this.documentManager.getType(docType);
+        var label = docTypeInfo ? docTypeInfo.label : docType;
+
+        if (!confirm('Remove ' + label + '?')) return;
+
+        try {
+            this.documentManager.removeDocument(this.documentsListTracking, docType);
+            await this.db.saveTracking(this.documentsListTracking);
+
+            // Refresh modal
+            this.renderDocumentsListModal(this.documentsListTracking);
+
+            // Refresh table
+            await this.loadTrackings();
+
+            this.showToast('Document removed', 'success');
+
+        } catch (err) {
+            console.error('[App] Failed to remove document:', err);
+            this.showToast('Failed to remove document: ' + err.message, 'error');
+        }
+    };
+
+    /**
+     * Show the edit document modal (reuses the add modal) from Documents List Modal
+     * @param {string} docType - Document type to edit
+     * @param {string} currentUrl - Current URL value
+     */
+    ShipmentTrackerApp.prototype.showEditDocumentInListModal = function(docType, currentUrl) {
+        var modal = document.getElementById('documentModal');
+        var urlInput = document.getElementById('documentUrlInput');
+        var typeSelect = document.getElementById('documentTypeSelect');
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.getElementById('documentModalTitle').textContent = 'Edit Document';
+            if (urlInput) urlInput.value = currentUrl || '';
+            if (typeSelect) {
+                typeSelect.value = docType;
+                typeSelect.disabled = true; // Can't change type when editing
+            }
+            this.editingDocumentType = docType;
+            this.editingFromListModal = true; // Flag to know which tracking to update
+        }
+    };
+
+    /**
+     * Add document from Documents List Modal
+     */
+    ShipmentTrackerApp.prototype.showAddDocumentFromListModal = function() {
+        var modal = document.getElementById('documentModal');
+        var urlInput = document.getElementById('documentUrlInput');
+        var typeSelect = document.getElementById('documentTypeSelect');
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.getElementById('documentModalTitle').textContent = 'Add Document';
+            if (urlInput) urlInput.value = '';
+            if (typeSelect) {
+                typeSelect.selectedIndex = 0;
+                typeSelect.disabled = false;
+            }
+            this.editingDocumentType = null;
+            this.editingFromListModal = true;
+        }
+    };
+
+    /**
+     * Setup Documents List Modal event listeners
+     */
+    ShipmentTrackerApp.prototype.setupDocumentsListModalListeners = function() {
+        var self = this;
+
+        // Close button
+        var closeBtn = document.getElementById('documentsListModalClose');
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                self.hideDocumentsListModal();
+            };
+        }
+
+        // Close footer button
+        var closeFooterBtn = document.getElementById('documentsListCloseBtn');
+        if (closeFooterBtn) {
+            closeFooterBtn.onclick = function() {
+                self.hideDocumentsListModal();
+            };
+        }
+
+        // Add document button
+        var addBtn = document.getElementById('documentsListAddBtn');
+        if (addBtn) {
+            addBtn.onclick = function() {
+                self.showAddDocumentFromListModal();
+            };
+        }
+
+        // Click outside to close
+        var modal = document.getElementById('documentsListModal');
+        if (modal) {
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    self.hideDocumentsListModal();
+                }
+            };
         }
     };
 
