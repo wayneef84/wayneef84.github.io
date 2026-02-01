@@ -8,20 +8,69 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 </head>
 <body>
+    <!-- Main Menu -->
+    <div id="main-menu" class="main-menu">
+        <div class="menu-title">
+            <h1>中文学习</h1>
+            <p class="subtitle">Chinese Character Learning</p>
+        </div>
+        <div class="menu-grid">
+            <div class="menu-item" id="menu-daily">
+                <span class="menu-icon">📅</span>
+                <span class="menu-label">Daily</span>
+            </div>
+            <div class="menu-item" id="menu-characters">
+                <span class="menu-icon">📖</span>
+                <span class="menu-label">Characters</span>
+            </div>
+            <div class="menu-item" id="menu-groups">
+                <span class="menu-icon">📂</span>
+                <span class="menu-label">Groups</span>
+            </div>
+            <div class="menu-item" id="menu-strokes">
+                <span class="menu-icon">❓</span>
+                <span class="menu-label">Stroke Types</span>
+            </div>
+            <div class="menu-item" id="menu-settings">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-label">Settings</span>
+            </div>
+            <a href="../index.html" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span class="menu-label">Back</span>
+            </a>
+        </div>
+        <div class="menu-streak" id="menu-streak">
+            <span class="streak-fire">🔥</span>
+            <span id="streak-text">0 day streak | 0 total days</span>
+        </div>
+    </div>
+
+    <!-- Groups View -->
+    <div id="groups-view" class="groups-view hidden">
+        <div class="groups-header">
+            <button class="groups-back-btn" id="groups-back">←</button>
+            <h2 class="groups-title">Groups</h2>
+        </div>
+        <div class="groups-grid" id="groups-grid">
+            <!-- Groups will be populated by JS -->
+        </div>
+    </div>
+
     <div class="game-container">
         <!-- Header -->
         <header class="header">
-            <a href="../../../index.html" class="home-btn" title="Back to Arcade">
-                <span class="home-icon">🏠</span>
-            </a>
+            <button id="menu-btn" class="home-btn" title="Menu">
+                <span class="home-icon">☰</span>
+            </button>
             <div class="header-controls">
                 <select id="hsk-select" class="hsk-dropdown">
                     <option value="1">HSK 1</option>
                     <option value="2">HSK 2</option>
-                    <option value="3">HSK 3</option>
-                    <option value="4">HSK 4</option>
-                    <option value="5">HSK 5</option>
-                    <option value="6">HSK 6</option>
+                    <option value="3" disabled>HSK 3 (Soon)</option>
+                    <option value="4" disabled>HSK 4 (Soon)</option>
+                    <option value="5" disabled>HSK 5 (Soon)</option>
+                    <option value="6" disabled>HSK 6 (Soon)</option>
                 </select>
                 <button id="help-btn" class="icon-btn" title="Stroke Types">❓</button>
                 <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
@@ -30,6 +79,15 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Daily Progress Bar (shown in daily mode) -->
+            <div id="daily-progress" class="daily-progress hidden">
+                <div class="daily-progress-text"><span id="daily-count">0</span>/15 characters</div>
+                <div class="daily-progress-bar">
+                    <div id="daily-progress-fill" class="daily-progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="daily-streak">🔥 <span id="daily-streak-display">0</span> day streak</div>
+            </div>
+
             <!-- Character Display Area -->
             <div class="character-area">
                 <div id="character-target" class="character-canvas"></div>
@@ -37,9 +95,9 @@
                 <!-- Info Panel -->
                 <div class="info-panel">
                     <div class="info-row primary">
-                        <span class="pinyin" id="pinyin-display">-</span>
+                        <span class="pinyin" id="pinyin-display" title="Tap to hear Mandarin">-</span>
                         <span class="separator">|</span>
-                        <span class="jyutping" id="jyutping-display">-</span>
+                        <span class="jyutping" id="jyutping-display" title="Tap to hear Cantonese">-</span>
                     </div>
                     <div class="info-row secondary">
                         <span class="definition" id="definition-display">Select a character</span>
@@ -120,6 +178,13 @@
                         <label for="audio-enabled">Enable Audio</label>
                         <input type="checkbox" id="audio-enabled" checked>
                     </div>
+                    <div class="setting-row">
+                        <label for="dialect-select">Dialect</label>
+                        <select id="dialect-select" style="padding: 8px; border-radius: 8px; background: var(--surface-light); color: white; border: none;">
+                            <option value="mandarin">Mandarin 普通话</option>
+                            <option value="cantonese">Cantonese 廣東話</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,6 +194,11 @@
             <div class="celebration-content">
                 <span class="celebration-emoji">🎉</span>
                 <span class="celebration-text">Great job!</span>
+                <button id="celebration-next" class="celebration-next-btn">
+                    <span>Next →</span>
+                    <span id="next-char-preview" class="celebration-next-char"></span>
+                </button>
+                <p class="celebration-hint">tap anywhere else to stay</p>
             </div>
         </div>
     </div>

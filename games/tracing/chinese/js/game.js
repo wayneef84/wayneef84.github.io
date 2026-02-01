@@ -10,17 +10,29 @@
     var state = {
         characters: {},
         hskIndex: {},
+        groups: {},
         strokeTypes: [],
         currentHSK: 1,
         currentChar: null,
+        currentChars: [], // Current character list (HSK, daily, or group)
         writer: null,
         isQuizMode: false,
         completedChars: [],
+        currentView: 'menu', // 'menu', 'characters', 'daily', 'groups', 'group'
+        currentGroup: null,
+        daily: {
+            currentStreak: 0,
+            totalDays: 0,
+            lastPracticeDate: null,
+            todaysCharacters: [],
+            todaysProgress: []
+        },
         settings: {
             animationSpeed: 1,
             showOutline: true,
             hintsAfterMistakes: 3,
-            audioEnabled: true
+            audioEnabled: true,
+            dialect: 'mandarin' // 'mandarin' or 'cantonese'
         }
     };
 
@@ -33,11 +45,36 @@
     function init() {
         cacheElements();
         loadSettings();
+        loadDaily();
         loadData();
         bindEvents();
+        updateStreakDisplay();
     }
 
     function cacheElements() {
+        // Main menu
+        elements.mainMenu = document.getElementById('main-menu');
+        elements.menuDaily = document.getElementById('menu-daily');
+        elements.menuCharacters = document.getElementById('menu-characters');
+        elements.menuGroups = document.getElementById('menu-groups');
+        elements.menuStrokes = document.getElementById('menu-strokes');
+        elements.menuSettings = document.getElementById('menu-settings');
+        elements.menuStreak = document.getElementById('menu-streak');
+        elements.streakText = document.getElementById('streak-text');
+
+        // Groups view
+        elements.groupsView = document.getElementById('groups-view');
+        elements.groupsGrid = document.getElementById('groups-grid');
+        elements.groupsBack = document.getElementById('groups-back');
+
+        // Daily progress
+        elements.dailyProgress = document.getElementById('daily-progress');
+        elements.dailyCount = document.getElementById('daily-count');
+        elements.dailyProgressFill = document.getElementById('daily-progress-fill');
+        elements.dailyStreakDisplay = document.getElementById('daily-streak-display');
+
+        // Game elements
+        elements.menuBtn = document.getElementById('menu-btn');
         elements.characterTarget = document.getElementById('character-target');
         elements.pinyinDisplay = document.getElementById('pinyin-display');
         elements.jyutpingDisplay = document.getElementById('jyutping-display');
@@ -58,19 +95,28 @@
         elements.strokeGrid = document.getElementById('stroke-grid');
         elements.strokeDetail = document.getElementById('stroke-detail');
         elements.celebration = document.getElementById('celebration');
+        elements.celebrationNext = document.getElementById('celebration-next');
+        elements.nextCharPreview = document.getElementById('next-char-preview');
         elements.animationSpeed = document.getElementById('animation-speed');
         elements.speedValue = document.getElementById('speed-value');
         elements.showOutline = document.getElementById('show-outline');
         elements.showHints = document.getElementById('show-hints');
         elements.hintsValue = document.getElementById('hints-value');
         elements.audioEnabled = document.getElementById('audio-enabled');
+        elements.dialectSelect = document.getElementById('dialect-select');
     }
 
     function loadSettings() {
         try {
             var saved = localStorage.getItem('chinese-settings');
             if (saved) {
-                state.settings = JSON.parse(saved);
+                var parsed = JSON.parse(saved);
+                // Merge with defaults
+                for (var key in parsed) {
+                    if (parsed.hasOwnProperty(key)) {
+                        state.settings[key] = parsed[key];
+                    }
+                }
             }
             var completed = localStorage.getItem('chinese-completed');
             if (completed) {
@@ -82,11 +128,30 @@
         applySettings();
     }
 
+    function loadDaily() {
+        try {
+            var saved = localStorage.getItem('chinese-daily');
+            if (saved) {
+                state.daily = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.warn('Could not load daily data:', e);
+        }
+    }
+
     function saveSettings() {
         try {
             localStorage.setItem('chinese-settings', JSON.stringify(state.settings));
         } catch (e) {
             console.warn('Could not save settings:', e);
+        }
+    }
+
+    function saveDaily() {
+        try {
+            localStorage.setItem('chinese-daily', JSON.stringify(state.daily));
+        } catch (e) {
+            console.warn('Could not save daily data:', e);
         }
     }
 
@@ -113,6 +178,33 @@
         if (elements.audioEnabled) {
             elements.audioEnabled.checked = state.settings.audioEnabled;
         }
+        if (elements.dialectSelect) {
+            elements.dialectSelect.value = state.settings.dialect;
+        }
+        updateDialectHighlight();
+    }
+
+    function updateDialectHighlight() {
+        if (!elements.pinyinDisplay || !elements.jyutpingDisplay) return;
+
+        elements.pinyinDisplay.classList.remove('active-dialect');
+        elements.jyutpingDisplay.classList.remove('active-dialect');
+
+        if (state.settings.dialect === 'mandarin') {
+            elements.pinyinDisplay.classList.add('active-dialect');
+        } else {
+            elements.jyutpingDisplay.classList.add('active-dialect');
+        }
+    }
+
+    function updateStreakDisplay() {
+        var text = state.daily.currentStreak + ' day streak | ' + state.daily.totalDays + ' total days';
+        if (elements.streakText) {
+            elements.streakText.textContent = text;
+        }
+        if (elements.dailyStreakDisplay) {
+            elements.dailyStreakDisplay.textContent = state.daily.currentStreak;
+        }
     }
 
     function loadData() {
@@ -122,12 +214,8 @@
             .then(function(data) {
                 state.characters = data.characters;
                 state.hskIndex = data.hskIndex;
-                populateGrid();
-                // Select first character
-                var firstChar = state.hskIndex[state.currentHSK][0];
-                if (firstChar) {
-                    selectCharacter(firstChar);
-                }
+                state.groups = data.groups || {};
+                populateGroupsView();
             })
             .catch(function(err) {
                 console.error('Failed to load character data:', err);
@@ -146,14 +234,44 @@
     }
 
     function bindEvents() {
+        // Menu items
+        elements.menuDaily.addEventListener('click', function() {
+            startDailyMode();
+        });
+        elements.menuCharacters.addEventListener('click', function() {
+            showCharactersView();
+        });
+        elements.menuGroups.addEventListener('click', function() {
+            showGroupsView();
+        });
+        elements.menuStrokes.addEventListener('click', function() {
+            elements.mainMenu.classList.add('hidden');
+            elements.helpModal.classList.remove('hidden');
+        });
+        elements.menuSettings.addEventListener('click', function() {
+            elements.mainMenu.classList.add('hidden');
+            elements.settingsModal.classList.remove('hidden');
+        });
+
+        // Menu button in game
+        elements.menuBtn.addEventListener('click', function() {
+            showMainMenu();
+        });
+
+        // Groups view
+        elements.groupsBack.addEventListener('click', function() {
+            elements.groupsView.classList.add('hidden');
+            elements.mainMenu.classList.remove('hidden');
+        });
+
         // HSK Level Selection
         elements.hskSelect.addEventListener('change', function() {
             state.currentHSK = parseInt(this.value, 10);
+            state.currentChars = state.hskIndex[state.currentHSK] || [];
             populateGrid();
-            // Select first character of new level
-            var chars = state.hskIndex[state.currentHSK];
-            if (chars && chars.length > 0) {
-                selectCharacter(chars[0]);
+            if (state.currentChars.length > 0) {
+                selectCharacter(state.currentChars[0]);
+                startPractice();
             }
         });
 
@@ -161,6 +279,20 @@
         elements.animateBtn.addEventListener('click', animateCharacter);
         elements.practiceBtn.addEventListener('click', startPractice);
         elements.nextBtn.addEventListener('click', nextCharacter);
+
+        // Pinyin/Jyutping click for dialect
+        elements.pinyinDisplay.addEventListener('click', function() {
+            state.settings.dialect = 'mandarin';
+            saveSettings();
+            updateDialectHighlight();
+            speakCharacter(state.currentChar, 'mandarin');
+        });
+        elements.jyutpingDisplay.addEventListener('click', function() {
+            state.settings.dialect = 'cantonese';
+            saveSettings();
+            updateDialectHighlight();
+            speakCharacter(state.currentChar, 'cantonese');
+        });
 
         // Modal Controls
         elements.helpBtn.addEventListener('click', function() {
@@ -171,20 +303,32 @@
         });
         elements.closeHelp.addEventListener('click', function() {
             elements.helpModal.classList.add('hidden');
+            if (state.currentView === 'menu') {
+                elements.mainMenu.classList.remove('hidden');
+            }
         });
         elements.closeSettings.addEventListener('click', function() {
             elements.settingsModal.classList.add('hidden');
+            if (state.currentView === 'menu') {
+                elements.mainMenu.classList.remove('hidden');
+            }
         });
 
         // Close modals on backdrop click
         elements.helpModal.addEventListener('click', function(e) {
             if (e.target === elements.helpModal) {
                 elements.helpModal.classList.add('hidden');
+                if (state.currentView === 'menu') {
+                    elements.mainMenu.classList.remove('hidden');
+                }
             }
         });
         elements.settingsModal.addEventListener('click', function(e) {
             if (e.target === elements.settingsModal) {
                 elements.settingsModal.classList.add('hidden');
+                if (state.currentView === 'menu') {
+                    elements.mainMenu.classList.remove('hidden');
+                }
             }
         });
 
@@ -198,7 +342,6 @@
             state.settings.showOutline = this.checked;
             saveSettings();
             if (state.writer && state.currentChar) {
-                // Recreate writer with new outline setting
                 selectCharacter(state.currentChar);
             }
         });
@@ -211,15 +354,213 @@
             state.settings.audioEnabled = this.checked;
             saveSettings();
         });
+        elements.dialectSelect.addEventListener('change', function() {
+            state.settings.dialect = this.value;
+            saveSettings();
+            updateDialectHighlight();
+        });
 
-        // Celebration click to dismiss
-        elements.celebration.addEventListener('click', function() {
+        // Celebration - click Next button to advance
+        elements.celebrationNext.addEventListener('click', function(e) {
+            e.stopPropagation();
             elements.celebration.classList.add('hidden');
+            nextCharacter();
+            setTimeout(function() {
+                startPractice();
+            }, 300);
+        });
+
+        // Celebration - click elsewhere to dismiss and stay
+        elements.celebration.addEventListener('click', function(e) {
+            if (e.target === elements.celebration) {
+                elements.celebration.classList.add('hidden');
+            }
         });
     }
 
+    // ========== VIEW MANAGEMENT ==========
+
+    function showMainMenu() {
+        state.currentView = 'menu';
+        elements.mainMenu.classList.remove('hidden');
+        elements.groupsView.classList.add('hidden');
+        elements.dailyProgress.classList.add('hidden');
+        updateStreakDisplay();
+    }
+
+    function showCharactersView() {
+        state.currentView = 'characters';
+        state.currentChars = state.hskIndex[state.currentHSK] || [];
+        elements.mainMenu.classList.add('hidden');
+        elements.dailyProgress.classList.add('hidden');
+        populateGrid();
+
+        if (state.currentChars.length > 0) {
+            selectCharacter(state.currentChars[0]);
+            setTimeout(function() {
+                startPractice();
+            }, 300);
+        }
+    }
+
+    function showGroupsView() {
+        state.currentView = 'groups';
+        elements.mainMenu.classList.add('hidden');
+        elements.groupsView.classList.remove('hidden');
+    }
+
+    function showGroupCharacters(groupKey) {
+        var group = state.groups[groupKey];
+        if (!group) return;
+
+        state.currentView = 'group';
+        state.currentGroup = groupKey;
+        state.currentChars = group.characters || [];
+
+        elements.groupsView.classList.add('hidden');
+        elements.dailyProgress.classList.add('hidden');
+        populateGrid();
+
+        if (state.currentChars.length > 0) {
+            selectCharacter(state.currentChars[0]);
+            setTimeout(function() {
+                startPractice();
+            }, 300);
+        }
+    }
+
+    function startDailyMode() {
+        state.currentView = 'daily';
+
+        // Check if we need to generate new daily characters
+        var today = new Date().toISOString().split('T')[0];
+
+        if (state.daily.lastPracticeDate !== today || !state.daily.todaysCharacters || state.daily.todaysCharacters.length === 0) {
+            generateDailyCharacters(today);
+        }
+
+        state.currentChars = state.daily.todaysCharacters;
+
+        elements.mainMenu.classList.add('hidden');
+        elements.dailyProgress.classList.remove('hidden');
+        updateDailyProgress();
+        populateGrid();
+
+        // Find first incomplete character
+        var firstIncomplete = null;
+        for (var i = 0; i < state.daily.todaysCharacters.length; i++) {
+            if (!state.daily.todaysProgress[i]) {
+                firstIncomplete = state.daily.todaysCharacters[i];
+                break;
+            }
+        }
+
+        if (firstIncomplete) {
+            selectCharacter(firstIncomplete);
+            setTimeout(function() {
+                startPractice();
+            }, 300);
+        } else if (state.currentChars.length > 0) {
+            selectCharacter(state.currentChars[0]);
+        }
+    }
+
+    function generateDailyCharacters(today) {
+        // Get all available characters
+        var allChars = [];
+        for (var level = 1; level <= 6; level++) {
+            var chars = state.hskIndex[level] || [];
+            allChars = allChars.concat(chars);
+        }
+
+        // Shuffle using date as seed (simple shuffle)
+        var shuffled = allChars.slice();
+        for (var i = shuffled.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = shuffled[i];
+            shuffled[i] = shuffled[j];
+            shuffled[j] = temp;
+        }
+
+        // Take 15 characters
+        var selected = shuffled.slice(0, 15);
+
+        // Update streak
+        var yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        if (state.daily.lastPracticeDate === yesterday) {
+            state.daily.currentStreak++;
+        } else if (state.daily.lastPracticeDate !== today) {
+            state.daily.currentStreak = 1;
+        }
+
+        if (state.daily.lastPracticeDate !== today) {
+            state.daily.totalDays++;
+        }
+
+        state.daily.lastPracticeDate = today;
+        state.daily.todaysCharacters = selected;
+        state.daily.todaysProgress = selected.map(function() { return 0; });
+
+        saveDaily();
+        updateStreakDisplay();
+    }
+
+    function updateDailyProgress() {
+        var completed = state.daily.todaysProgress.filter(function(p) { return p === 1; }).length;
+        var total = state.daily.todaysCharacters.length;
+
+        if (elements.dailyCount) {
+            elements.dailyCount.textContent = completed;
+        }
+        if (elements.dailyProgressFill) {
+            var percent = total > 0 ? (completed / total) * 100 : 0;
+            elements.dailyProgressFill.style.width = percent + '%';
+        }
+    }
+
+    function markDailyCharacterComplete(char) {
+        var index = state.daily.todaysCharacters.indexOf(char);
+        if (index !== -1) {
+            state.daily.todaysProgress[index] = 1;
+            saveDaily();
+            updateDailyProgress();
+        }
+    }
+
+    // ========== GROUPS ==========
+
+    function populateGroupsView() {
+        if (!elements.groupsGrid) return;
+
+        var html = '';
+        for (var key in state.groups) {
+            if (state.groups.hasOwnProperty(key)) {
+                var group = state.groups[key];
+                html += '<div class="group-card" data-group="' + key + '">';
+                html += '<span class="group-icon">' + (group.icon || '📁') + '</span>';
+                html += '<span class="group-name">' + group.name + '</span>';
+                html += '<span class="group-name-zh">' + (group.nameZh || '') + '</span>';
+                html += '<span class="group-count">' + (group.characters ? group.characters.length : 0) + ' chars</span>';
+                html += '</div>';
+            }
+        }
+
+        elements.groupsGrid.innerHTML = html;
+
+        // Bind click events
+        var cards = elements.groupsGrid.querySelectorAll('.group-card');
+        cards.forEach(function(card) {
+            card.addEventListener('click', function() {
+                var groupKey = this.getAttribute('data-group');
+                showGroupCharacters(groupKey);
+            });
+        });
+    }
+
+    // ========== CHARACTER GRID ==========
+
     function populateGrid() {
-        var chars = state.hskIndex[state.currentHSK] || [];
+        var chars = state.currentChars || [];
         var html = '';
 
         chars.forEach(function(char) {
@@ -239,6 +580,7 @@
         cells.forEach(function(cell) {
             cell.addEventListener('click', function() {
                 selectCharacter(this.getAttribute('data-char'));
+                startPractice();
             });
         });
     }
@@ -287,6 +629,9 @@
 
         // HSK Level
         elements.hskDisplay.textContent = 'HSK ' + (data.hskLevel || '-');
+
+        // Update dialect highlight
+        updateDialectHighlight();
     }
 
     function createWriter(char) {
@@ -314,7 +659,6 @@
             highlightOnComplete: true,
             highlightColor: '#2ecc71',
             charDataLoader: function(char, onComplete) {
-                // Use default CDN loader
                 return HanziWriter.loadCharacterData(char).then(onComplete);
             },
             onLoadCharNotFound: function() {
@@ -325,6 +669,8 @@
         // Reset practice button state
         elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
     }
+
+    // ========== PRACTICE & ANIMATION ==========
 
     function animateCharacter() {
         if (!state.writer) return;
@@ -338,7 +684,6 @@
 
         state.writer.animateCharacter({
             onComplete: function() {
-                // Speak the character if audio enabled
                 if (state.settings.audioEnabled && state.currentChar) {
                     speakCharacter(state.currentChar);
                 }
@@ -354,7 +699,6 @@
             state.writer.cancelQuiz();
             state.isQuizMode = false;
             elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
-            // Reset the character display
             createWriter(state.currentChar);
             return;
         }
@@ -377,10 +721,15 @@
                 if (state.completedChars.indexOf(state.currentChar) === -1) {
                     state.completedChars.push(state.currentChar);
                     saveProgress();
-                    populateGrid(); // Update grid to show completion
+                    populateGrid();
                 }
 
-                // Show celebration
+                // Mark daily progress if in daily mode
+                if (state.currentView === 'daily') {
+                    markDailyCharacterComplete(state.currentChar);
+                }
+
+                // Show celebration with next character preview
                 showCelebration();
 
                 // Speak the character
@@ -392,7 +741,6 @@
     }
 
     function showQuizFeedback(message, isCorrect) {
-        // Remove existing feedback
         var existing = elements.characterTarget.querySelector('.quiz-feedback');
         if (existing) existing.remove();
 
@@ -401,46 +749,63 @@
         feedback.textContent = message;
         elements.characterTarget.appendChild(feedback);
 
-        // Remove after animation
         setTimeout(function() {
             feedback.remove();
         }, 1000);
     }
 
     function showCelebration() {
+        // Set next character preview
+        var nextChar = getNextCharacter();
+        if (elements.nextCharPreview) {
+            elements.nextCharPreview.textContent = nextChar || '';
+        }
+
         elements.celebration.classList.remove('hidden');
-        setTimeout(function() {
-            elements.celebration.classList.add('hidden');
-        }, 2000);
+        // No auto-dismiss - user must click Next or tap to dismiss
     }
 
-    function nextCharacter() {
-        var chars = state.hskIndex[state.currentHSK] || [];
+    function getNextCharacter() {
+        var chars = state.currentChars || [];
         var currentIndex = chars.indexOf(state.currentChar);
 
         if (currentIndex === -1 || currentIndex >= chars.length - 1) {
-            // Go back to first character
-            selectCharacter(chars[0]);
-        } else {
-            selectCharacter(chars[currentIndex + 1]);
+            return chars[0];
+        }
+        return chars[currentIndex + 1];
+    }
+
+    function nextCharacter() {
+        var nextChar = getNextCharacter();
+        if (nextChar) {
+            selectCharacter(nextChar);
         }
     }
 
-    function speakCharacter(char) {
-        if (!('speechSynthesis' in window)) return;
+    // ========== AUDIO ==========
 
-        var data = state.characters[char];
-        if (!data || !data.pinyin || data.pinyin.length === 0) return;
+    function speakCharacter(char, forcedDialect) {
+        if (!('speechSynthesis' in window)) return;
+        if (!state.settings.audioEnabled && !forcedDialect) return;
+
+        var dialect = forcedDialect || state.settings.dialect;
 
         // Cancel any ongoing speech
         window.speechSynthesis.cancel();
 
         var utterance = new SpeechSynthesisUtterance(char);
-        utterance.lang = 'zh-CN';
-        utterance.rate = 0.8;
 
+        if (dialect === 'cantonese') {
+            utterance.lang = 'zh-HK';
+        } else {
+            utterance.lang = 'zh-CN';
+        }
+
+        utterance.rate = 0.8;
         window.speechSynthesis.speak(utterance);
     }
+
+    // ========== STROKE HELP ==========
 
     function populateStrokeHelp() {
         if (!state.strokeTypes || state.strokeTypes.length === 0) return;
@@ -456,11 +821,9 @@
 
         elements.strokeGrid.innerHTML = html;
 
-        // Bind click events
         var cards = elements.strokeGrid.querySelectorAll('.stroke-card');
         cards.forEach(function(card) {
             card.addEventListener('click', function() {
-                // Remove selected from all
                 cards.forEach(function(c) { c.classList.remove('selected'); });
                 this.classList.add('selected');
 
