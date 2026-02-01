@@ -1,0 +1,76 @@
+{
+  "strokeTypes": [
+    {
+      "id": "horizontal",
+      "chinese": "横",
+      "pinyin": "héng",
+      "description": "A horizontal stroke drawn from left to right",
+      "direction": "left-to-right",
+      "example": "一",
+      "symbol": "─"
+    },
+    {
+      "id": "vertical",
+      "chinese": "竖",
+      "pinyin": "shù",
+      "description": "A vertical stroke drawn from top to bottom",
+      "direction": "top-to-bottom",
+      "example": "十",
+      "symbol": "│"
+    },
+    {
+      "id": "left-falling",
+      "chinese": "撇",
+      "pinyin": "piě",
+      "description": "A diagonal stroke falling to the lower-left",
+      "direction": "top-right-to-bottom-left",
+      "example": "人",
+      "symbol": "╱"
+    },
+    {
+      "id": "right-falling",
+      "chinese": "捺",
+      "pinyin": "nà",
+      "description": "A diagonal stroke falling to the lower-right, often with a flourish",
+      "direction": "top-left-to-bottom-right",
+      "example": "人",
+      "symbol": "╲"
+    },
+    {
+      "id": "dot",
+      "chinese": "点",
+      "pinyin": "diǎn",
+      "description": "A short stroke, like a small dot or tick",
+      "direction": "varies",
+      "example": "六",
+      "symbol": "•"
+    },
+    {
+      "id": "hook",
+      "chinese": "钩",
+      "pinyin": "gōu",
+      "description": "A stroke with a hook at the end, changing direction sharply",
+      "direction": "varies",
+      "example": "小",
+      "symbol": "亅"
+    },
+    {
+      "id": "turning",
+      "chinese": "折",
+      "pinyin": "zhé",
+      "description": "A bent or turning stroke that changes direction (horizontal to vertical or vice versa)",
+      "direction": "varies",
+      "example": "口",
+      "symbol": "└"
+    },
+    {
+      "id": "lifting",
+      "chinese": "提",
+      "pinyin": "tí",
+      "description": "A short upward stroke, usually at the end of another stroke",
+      "direction": "bottom-left-to-top-right",
+      "example": "打",
+      "symbol": "╱"
+    }
+  ]
+}

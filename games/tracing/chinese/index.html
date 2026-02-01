@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fong Arcade: Chinese Characters</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="header">
+            <a href="../../../index.html" class="home-btn" title="Back to Arcade">
+                <span class="home-icon">🏠</span>
+            </a>
+            <div class="header-controls">
+                <select id="hsk-select" class="hsk-dropdown">
+                    <option value="1">HSK 1</option>
+                    <option value="2">HSK 2</option>
+                    <option value="3">HSK 3</option>
+                    <option value="4">HSK 4</option>
+                    <option value="5">HSK 5</option>
+                    <option value="6">HSK 6</option>
+                </select>
+                <button id="help-btn" class="icon-btn" title="Stroke Types">❓</button>
+                <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Character Display Area -->
+            <div class="character-area">
+                <div id="character-target" class="character-canvas"></div>
+
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <div class="info-row primary">
+                        <span class="pinyin" id="pinyin-display">-</span>
+                        <span class="separator">|</span>
+                        <span class="jyutping" id="jyutping-display">-</span>
+                    </div>
+                    <div class="info-row secondary">
+                        <span class="definition" id="definition-display">Select a character</span>
+                    </div>
+                    <div class="info-row tertiary">
+                        <span class="strokes" id="strokes-display">Strokes: -</span>
+                        <span class="separator">|</span>
+                        <span class="hsk-level" id="hsk-display">HSK -</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="animate-btn" class="action-btn">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">Animate</span>
+                </button>
+                <button id="practice-btn" class="action-btn primary">
+                    <span class="btn-icon">✏️</span>
+                    <span class="btn-text">Practice</span>
+                </button>
+                <button id="next-btn" class="action-btn">
+                    <span class="btn-icon">→</span>
+                    <span class="btn-text">Next</span>
+                </button>
+            </div>
+
+            <!-- Character Grid -->
+            <div class="character-grid-container">
+                <div id="character-grid" class="character-grid">
+                    <!-- Characters will be populated by JS -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Stroke Types <span class="chinese-title">笔画</span></h2>
+                    <button class="close-btn" id="close-help">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="stroke-grid" id="stroke-grid">
+                        <!-- Stroke types will be populated by JS -->
+                    </div>
+                    <div class="stroke-detail" id="stroke-detail">
+                        <p class="hint">Tap a stroke type to see details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button class="close-btn" id="close-settings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-row">
+                        <label for="animation-speed">Animation Speed</label>
+                        <input type="range" id="animation-speed" min="0.5" max="3" step="0.5" value="1">
+                        <span id="speed-value">1x</span>
+                    </div>
+                    <div class="setting-row">
+                        <label for="show-outline">Show Outline</label>
+                        <input type="checkbox" id="show-outline" checked>
+                    </div>
+                    <div class="setting-row">
+                        <label for="show-hints">Show Hints After Mistakes</label>
+                        <input type="range" id="show-hints" min="1" max="5" step="1" value="3">
+                        <span id="hints-value">3</span>
+                    </div>
+                    <div class="setting-row">
+                        <label for="audio-enabled">Enable Audio</label>
+                        <input type="checkbox" id="audio-enabled" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Celebration Overlay -->
+        <div id="celebration" class="celebration hidden">
+            <div class="celebration-content">
+                <span class="celebration-emoji">🎉</span>
+                <span class="celebration-text">Great job!</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

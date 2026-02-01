@@ -1,0 +1,1193 @@
+{
+  "version": "1.0",
+  "sources": {
+    "strokes": "Hanzi Writer / Make Me a Hanzi",
+    "pinyin": "CC-CEDICT",
+    "jyutping": "CC-Canto"
+  },
+  "characters": {
+    "一": {
+      "char": "一",
+      "pinyin": ["yī"],
+      "jyutping": ["jat1"],
+      "hskLevel": 1,
+      "strokeCount": 1,
+      "definition": "one; single; a(n)",
+      "radical": "一"
+    },
+    "二": {
+      "char": "二",
+      "pinyin": ["èr"],
+      "jyutping": ["ji6"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "two; 2",
+      "radical": "二"
+    },
+    "三": {
+      "char": "三",
+      "pinyin": ["sān"],
+      "jyutping": ["saam1"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "three; 3",
+      "radical": "一"
+    },
+    "四": {
+      "char": "四",
+      "pinyin": ["sì"],
+      "jyutping": ["sei3"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "four; 4",
+      "radical": "囗"
+    },
+    "五": {
+      "char": "五",
+      "pinyin": ["wǔ"],
+      "jyutping": ["ng5"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "five; 5",
+      "radical": "二"
+    },
+    "六": {
+      "char": "六",
+      "pinyin": ["liù"],
+      "jyutping": ["luk6"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "six; 6",
+      "radical": "八"
+    },
+    "七": {
+      "char": "七",
+      "pinyin": ["qī"],
+      "jyutping": ["cat1"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "seven; 7",
+      "radical": "一"
+    },
+    "八": {
+      "char": "八",
+      "pinyin": ["bā"],
+      "jyutping": ["baat3"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "eight; 8",
+      "radical": "八"
+    },
+    "九": {
+      "char": "九",
+      "pinyin": ["jiǔ"],
+      "jyutping": ["gau2"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "nine; 9",
+      "radical": "乙"
+    },
+    "十": {
+      "char": "十",
+      "pinyin": ["shí"],
+      "jyutping": ["sap6"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "ten; 10",
+      "radical": "十"
+    },
+    "百": {
+      "char": "百",
+      "pinyin": ["bǎi"],
+      "jyutping": ["baak3"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "hundred; 100",
+      "radical": "白"
+    },
+    "千": {
+      "char": "千",
+      "pinyin": ["qiān"],
+      "jyutping": ["cin1"],
+      "hskLevel": 2,
+      "strokeCount": 3,
+      "definition": "thousand; 1000",
+      "radical": "十"
+    },
+    "人": {
+      "char": "人",
+      "pinyin": ["rén"],
+      "jyutping": ["jan4"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "person; people; human",
+      "radical": "人"
+    },
+    "大": {
+      "char": "大",
+      "pinyin": ["dà"],
+      "jyutping": ["daai6"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "big; large; great",
+      "radical": "大"
+    },
+    "小": {
+      "char": "小",
+      "pinyin": ["xiǎo"],
+      "jyutping": ["siu2"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "small; little; young",
+      "radical": "小"
+    },
+    "中": {
+      "char": "中",
+      "pinyin": ["zhōng"],
+      "jyutping": ["zung1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "middle; center; China",
+      "radical": "丨"
+    },
+    "国": {
+      "char": "国",
+      "pinyin": ["guó"],
+      "jyutping": ["gwok3"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "country; nation; state",
+      "radical": "囗"
+    },
+    "我": {
+      "char": "我",
+      "pinyin": ["wǒ"],
+      "jyutping": ["ngo5"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "I; me; my",
+      "radical": "戈"
+    },
+    "你": {
+      "char": "你",
+      "pinyin": ["nǐ"],
+      "jyutping": ["nei5"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "you (singular)",
+      "radical": "亻"
+    },
+    "他": {
+      "char": "他",
+      "pinyin": ["tā"],
+      "jyutping": ["taa1"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "he; him; other",
+      "radical": "亻"
+    },
+    "她": {
+      "char": "她",
+      "pinyin": ["tā"],
+      "jyutping": ["taa1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "she; her",
+      "radical": "女"
+    },
+    "们": {
+      "char": "们",
+      "pinyin": ["men"],
+      "jyutping": ["mun4"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "plural marker for pronouns",
+      "radical": "亻"
+    },
+    "是": {
+      "char": "是",
+      "pinyin": ["shì"],
+      "jyutping": ["si6"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "to be; is; yes",
+      "radical": "日"
+    },
+    "不": {
+      "char": "不",
+      "pinyin": ["bù"],
+      "jyutping": ["bat1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "not; no",
+      "radical": "一"
+    },
+    "有": {
+      "char": "有",
+      "pinyin": ["yǒu"],
+      "jyutping": ["jau5"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "to have; there is",
+      "radical": "月"
+    },
+    "好": {
+      "char": "好",
+      "pinyin": ["hǎo"],
+      "jyutping": ["hou2"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "good; well; fine",
+      "radical": "女"
+    },
+    "在": {
+      "char": "在",
+      "pinyin": ["zài"],
+      "jyutping": ["zoi6"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "at; in; to exist",
+      "radical": "土"
+    },
+    "这": {
+      "char": "这",
+      "pinyin": ["zhè"],
+      "jyutping": ["ze2"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "this; these",
+      "radical": "辶"
+    },
+    "那": {
+      "char": "那",
+      "pinyin": ["nà"],
+      "jyutping": ["naa5"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "that; those",
+      "radical": "阝"
+    },
+    "什": {
+      "char": "什",
+      "pinyin": ["shén"],
+      "jyutping": ["sam6"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "what (什么)",
+      "radical": "亻"
+    },
+    "么": {
+      "char": "么",
+      "pinyin": ["me"],
+      "jyutping": ["mo1"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "interrogative particle",
+      "radical": "丿"
+    },
+    "谁": {
+      "char": "谁",
+      "pinyin": ["shéi", "shuí"],
+      "jyutping": ["seoi4"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "who; whom",
+      "radical": "讠"
+    },
+    "哪": {
+      "char": "哪",
+      "pinyin": ["nǎ", "něi"],
+      "jyutping": ["naa5"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "which; where",
+      "radical": "口"
+    },
+    "几": {
+      "char": "几",
+      "pinyin": ["jǐ"],
+      "jyutping": ["gei2"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "how many; several",
+      "radical": "几"
+    },
+    "多": {
+      "char": "多",
+      "pinyin": ["duō"],
+      "jyutping": ["do1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "many; much; more",
+      "radical": "夕"
+    },
+    "少": {
+      "char": "少",
+      "pinyin": ["shǎo"],
+      "jyutping": ["siu2"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "few; little; less",
+      "radical": "小"
+    },
+    "很": {
+      "char": "很",
+      "pinyin": ["hěn"],
+      "jyutping": ["han2"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "very; quite",
+      "radical": "彳"
+    },
+    "太": {
+      "char": "太",
+      "pinyin": ["tài"],
+      "jyutping": ["taai3"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "too; very; extremely",
+      "radical": "大"
+    },
+    "也": {
+      "char": "也",
+      "pinyin": ["yě"],
+      "jyutping": ["jaa5"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "also; too",
+      "radical": "乙"
+    },
+    "都": {
+      "char": "都",
+      "pinyin": ["dōu"],
+      "jyutping": ["dou1"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "all; both; already",
+      "radical": "阝"
+    },
+    "和": {
+      "char": "和",
+      "pinyin": ["hé"],
+      "jyutping": ["wo4"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "and; with; harmony",
+      "radical": "口"
+    },
+    "了": {
+      "char": "了",
+      "pinyin": ["le", "liǎo"],
+      "jyutping": ["liu5"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "completion particle; to understand",
+      "radical": "乙"
+    },
+    "的": {
+      "char": "的",
+      "pinyin": ["de"],
+      "jyutping": ["dik1"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "possessive particle; of",
+      "radical": "白"
+    },
+    "吗": {
+      "char": "吗",
+      "pinyin": ["ma"],
+      "jyutping": ["maa1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "question particle",
+      "radical": "口"
+    },
+    "呢": {
+      "char": "呢",
+      "pinyin": ["ne"],
+      "jyutping": ["ne1"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "question particle (how about...?)",
+      "radical": "口"
+    },
+    "吃": {
+      "char": "吃",
+      "pinyin": ["chī"],
+      "jyutping": ["hek3"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "to eat",
+      "radical": "口"
+    },
+    "喝": {
+      "char": "喝",
+      "pinyin": ["hē"],
+      "jyutping": ["hot3"],
+      "hskLevel": 1,
+      "strokeCount": 12,
+      "definition": "to drink",
+      "radical": "口"
+    },
+    "看": {
+      "char": "看",
+      "pinyin": ["kàn"],
+      "jyutping": ["hon3"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "to look; to see; to watch",
+      "radical": "目"
+    },
+    "听": {
+      "char": "听",
+      "pinyin": ["tīng"],
+      "jyutping": ["teng1", "ting1"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "to listen; to hear",
+      "radical": "口"
+    },
+    "说": {
+      "char": "说",
+      "pinyin": ["shuō"],
+      "jyutping": ["syut3"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "to speak; to say",
+      "radical": "讠"
+    },
+    "读": {
+      "char": "读",
+      "pinyin": ["dú"],
+      "jyutping": ["duk6"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "to read; to study",
+      "radical": "讠"
+    },
+    "写": {
+      "char": "写",
+      "pinyin": ["xiě"],
+      "jyutping": ["se2"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "to write",
+      "radical": "冖"
+    },
+    "去": {
+      "char": "去",
+      "pinyin": ["qù"],
+      "jyutping": ["heoi3"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "to go; to leave",
+      "radical": "厶"
+    },
+    "来": {
+      "char": "来",
+      "pinyin": ["lái"],
+      "jyutping": ["loi4"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "to come; to arrive",
+      "radical": "木"
+    },
+    "回": {
+      "char": "回",
+      "pinyin": ["huí"],
+      "jyutping": ["wui4"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "to return; to reply",
+      "radical": "囗"
+    },
+    "住": {
+      "char": "住",
+      "pinyin": ["zhù"],
+      "jyutping": ["zyu6"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "to live; to stay",
+      "radical": "亻"
+    },
+    "坐": {
+      "char": "坐",
+      "pinyin": ["zuò"],
+      "jyutping": ["zo6"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "to sit",
+      "radical": "土"
+    },
+    "做": {
+      "char": "做",
+      "pinyin": ["zuò"],
+      "jyutping": ["zou6"],
+      "hskLevel": 1,
+      "strokeCount": 11,
+      "definition": "to do; to make",
+      "radical": "亻"
+    },
+    "工": {
+      "char": "工",
+      "pinyin": ["gōng"],
+      "jyutping": ["gung1"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "work; worker; craft",
+      "radical": "工"
+    },
+    "作": {
+      "char": "作",
+      "pinyin": ["zuò"],
+      "jyutping": ["zok3"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "to work; to do; work",
+      "radical": "亻"
+    },
+    "学": {
+      "char": "学",
+      "pinyin": ["xué"],
+      "jyutping": ["hok6"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "to learn; to study; school",
+      "radical": "子"
+    },
+    "生": {
+      "char": "生",
+      "pinyin": ["shēng"],
+      "jyutping": ["sang1", "saang1"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "to be born; life; student",
+      "radical": "生"
+    },
+    "老": {
+      "char": "老",
+      "pinyin": ["lǎo"],
+      "jyutping": ["lou5"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "old; aged; teacher",
+      "radical": "老"
+    },
+    "师": {
+      "char": "师",
+      "pinyin": ["shī"],
+      "jyutping": ["si1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "teacher; master",
+      "radical": "巾"
+    },
+    "同": {
+      "char": "同",
+      "pinyin": ["tóng"],
+      "jyutping": ["tung4"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "same; together; with",
+      "radical": "口"
+    },
+    "朋": {
+      "char": "朋",
+      "pinyin": ["péng"],
+      "jyutping": ["pang4"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "friend",
+      "radical": "月"
+    },
+    "友": {
+      "char": "友",
+      "pinyin": ["yǒu"],
+      "jyutping": ["jau5"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "friend",
+      "radical": "又"
+    },
+    "家": {
+      "char": "家",
+      "pinyin": ["jiā"],
+      "jyutping": ["gaa1"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "home; family",
+      "radical": "宀"
+    },
+    "爸": {
+      "char": "爸",
+      "pinyin": ["bà"],
+      "jyutping": ["baa1", "baa4"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "father; dad",
+      "radical": "父"
+    },
+    "妈": {
+      "char": "妈",
+      "pinyin": ["mā"],
+      "jyutping": ["maa1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "mother; mom",
+      "radical": "女"
+    },
+    "儿": {
+      "char": "儿",
+      "pinyin": ["ér"],
+      "jyutping": ["ji4"],
+      "hskLevel": 1,
+      "strokeCount": 2,
+      "definition": "son; child",
+      "radical": "儿"
+    },
+    "子": {
+      "char": "子",
+      "pinyin": ["zǐ"],
+      "jyutping": ["zi2"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "son; child; seed",
+      "radical": "子"
+    },
+    "女": {
+      "char": "女",
+      "pinyin": ["nǚ"],
+      "jyutping": ["neoi5"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "woman; female; daughter",
+      "radical": "女"
+    },
+    "先": {
+      "char": "先",
+      "pinyin": ["xiān"],
+      "jyutping": ["sin1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "first; before; Mr.",
+      "radical": "儿"
+    },
+    "名": {
+      "char": "名",
+      "pinyin": ["míng"],
+      "jyutping": ["ming4"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "name; fame",
+      "radical": "口"
+    },
+    "字": {
+      "char": "字",
+      "pinyin": ["zì"],
+      "jyutping": ["zi6"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "character; word",
+      "radical": "子"
+    },
+    "年": {
+      "char": "年",
+      "pinyin": ["nián"],
+      "jyutping": ["nin4"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "year",
+      "radical": "干"
+    },
+    "月": {
+      "char": "月",
+      "pinyin": ["yuè"],
+      "jyutping": ["jyut6"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "moon; month",
+      "radical": "月"
+    },
+    "日": {
+      "char": "日",
+      "pinyin": ["rì"],
+      "jyutping": ["jat6"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "sun; day; date",
+      "radical": "日"
+    },
+    "今": {
+      "char": "今",
+      "pinyin": ["jīn"],
+      "jyutping": ["gam1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "now; today",
+      "radical": "人"
+    },
+    "天": {
+      "char": "天",
+      "pinyin": ["tiān"],
+      "jyutping": ["tin1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "sky; day; heaven",
+      "radical": "大"
+    },
+    "明": {
+      "char": "明",
+      "pinyin": ["míng"],
+      "jyutping": ["ming4"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "bright; clear; tomorrow",
+      "radical": "日"
+    },
+    "昨": {
+      "char": "昨",
+      "pinyin": ["zuó"],
+      "jyutping": ["zok6", "zok3"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "yesterday",
+      "radical": "日"
+    },
+    "上": {
+      "char": "上",
+      "pinyin": ["shàng"],
+      "jyutping": ["soeng5", "soeng6"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "up; above; on",
+      "radical": "一"
+    },
+    "下": {
+      "char": "下",
+      "pinyin": ["xià"],
+      "jyutping": ["haa5", "haa6"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "down; below; under",
+      "radical": "一"
+    },
+    "前": {
+      "char": "前",
+      "pinyin": ["qián"],
+      "jyutping": ["cin4"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "front; before; ago",
+      "radical": "刂"
+    },
+    "后": {
+      "char": "后",
+      "pinyin": ["hòu"],
+      "jyutping": ["hau6"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "back; behind; after",
+      "radical": "口"
+    },
+    "里": {
+      "char": "里",
+      "pinyin": ["lǐ"],
+      "jyutping": ["lei5"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "inside; Chinese mile",
+      "radical": "里"
+    },
+    "东": {
+      "char": "东",
+      "pinyin": ["dōng"],
+      "jyutping": ["dung1"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "east",
+      "radical": "一"
+    },
+    "西": {
+      "char": "西",
+      "pinyin": ["xī"],
+      "jyutping": ["sai1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "west",
+      "radical": "西"
+    },
+    "北": {
+      "char": "北",
+      "pinyin": ["běi"],
+      "jyutping": ["bak1"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "north",
+      "radical": "匕"
+    },
+    "京": {
+      "char": "京",
+      "pinyin": ["jīng"],
+      "jyutping": ["ging1"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "capital (Beijing)",
+      "radical": "亠"
+    },
+    "书": {
+      "char": "书",
+      "pinyin": ["shū"],
+      "jyutping": ["syu1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "book; to write",
+      "radical": "乛"
+    },
+    "本": {
+      "char": "本",
+      "pinyin": ["běn"],
+      "jyutping": ["bun2"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "book; root; origin",
+      "radical": "木"
+    },
+    "电": {
+      "char": "电",
+      "pinyin": ["diàn"],
+      "jyutping": ["din6"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "electricity; electric",
+      "radical": "田"
+    },
+    "话": {
+      "char": "话",
+      "pinyin": ["huà"],
+      "jyutping": ["waa6"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "speech; words; language",
+      "radical": "讠"
+    },
+    "视": {
+      "char": "视",
+      "pinyin": ["shì"],
+      "jyutping": ["si6"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "to look at; to regard",
+      "radical": "礻"
+    },
+    "脑": {
+      "char": "脑",
+      "pinyin": ["nǎo"],
+      "jyutping": ["nou5"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "brain",
+      "radical": "月"
+    },
+    "影": {
+      "char": "影",
+      "pinyin": ["yǐng"],
+      "jyutping": ["jing2"],
+      "hskLevel": 1,
+      "strokeCount": 15,
+      "definition": "shadow; movie; picture",
+      "radical": "彡"
+    },
+    "车": {
+      "char": "车",
+      "pinyin": ["chē"],
+      "jyutping": ["ce1", "geoi1"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "car; vehicle",
+      "radical": "车"
+    },
+    "飞": {
+      "char": "飞",
+      "pinyin": ["fēi"],
+      "jyutping": ["fei1"],
+      "hskLevel": 1,
+      "strokeCount": 3,
+      "definition": "to fly",
+      "radical": "飞"
+    },
+    "机": {
+      "char": "机",
+      "pinyin": ["jī"],
+      "jyutping": ["gei1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "machine; opportunity",
+      "radical": "木"
+    },
+    "钱": {
+      "char": "钱",
+      "pinyin": ["qián"],
+      "jyutping": ["cin4"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "money",
+      "radical": "钅"
+    },
+    "块": {
+      "char": "块",
+      "pinyin": ["kuài"],
+      "jyutping": ["faai3"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "piece; lump; yuan (RMB)",
+      "radical": "土"
+    },
+    "买": {
+      "char": "买",
+      "pinyin": ["mǎi"],
+      "jyutping": ["maai5"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "to buy",
+      "radical": "乛"
+    },
+    "卖": {
+      "char": "卖",
+      "pinyin": ["mài"],
+      "jyutping": ["maai6"],
+      "hskLevel": 2,
+      "strokeCount": 8,
+      "definition": "to sell",
+      "radical": "十"
+    },
+    "东": {
+      "char": "东",
+      "pinyin": ["dōng"],
+      "jyutping": ["dung1"],
+      "hskLevel": 1,
+      "strokeCount": 5,
+      "definition": "east; thing (东西)",
+      "radical": "一"
+    },
+    "爱": {
+      "char": "爱",
+      "pinyin": ["ài"],
+      "jyutping": ["oi3"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "love; to love",
+      "radical": "爫"
+    },
+    "想": {
+      "char": "想",
+      "pinyin": ["xiǎng"],
+      "jyutping": ["soeng2"],
+      "hskLevel": 1,
+      "strokeCount": 13,
+      "definition": "to think; to want; to miss",
+      "radical": "心"
+    },
+    "会": {
+      "char": "会",
+      "pinyin": ["huì"],
+      "jyutping": ["wui5", "wui6"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "can; to be able; meeting",
+      "radical": "人"
+    },
+    "能": {
+      "char": "能",
+      "pinyin": ["néng"],
+      "jyutping": ["nang4"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "can; to be able",
+      "radical": "月"
+    },
+    "喜": {
+      "char": "喜",
+      "pinyin": ["xǐ"],
+      "jyutping": ["hei2"],
+      "hskLevel": 1,
+      "strokeCount": 12,
+      "definition": "happy; to like",
+      "radical": "口"
+    },
+    "欢": {
+      "char": "欢",
+      "pinyin": ["huān"],
+      "jyutping": ["fun1"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "happy; joyful",
+      "radical": "欠"
+    },
+    "高": {
+      "char": "高",
+      "pinyin": ["gāo"],
+      "jyutping": ["gou1"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "tall; high",
+      "radical": "高"
+    },
+    "兴": {
+      "char": "兴",
+      "pinyin": ["xìng", "xīng"],
+      "jyutping": ["hing1", "hing3"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "interest; excitement",
+      "radical": "八"
+    },
+    "漂": {
+      "char": "漂",
+      "pinyin": ["piào", "piāo"],
+      "jyutping": ["piu1", "piu3"],
+      "hskLevel": 1,
+      "strokeCount": 14,
+      "definition": "pretty; to float",
+      "radical": "氵"
+    },
+    "亮": {
+      "char": "亮",
+      "pinyin": ["liàng"],
+      "jyutping": ["loeng6"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "bright; light",
+      "radical": "亠"
+    },
+    "冷": {
+      "char": "冷",
+      "pinyin": ["lěng"],
+      "jyutping": ["laang5"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "cold",
+      "radical": "冫"
+    },
+    "热": {
+      "char": "热",
+      "pinyin": ["rè"],
+      "jyutping": ["jit6"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "hot; heat",
+      "radical": "灬"
+    },
+    "水": {
+      "char": "水",
+      "pinyin": ["shuǐ"],
+      "jyutping": ["seoi2"],
+      "hskLevel": 1,
+      "strokeCount": 4,
+      "definition": "water",
+      "radical": "水"
+    },
+    "火": {
+      "char": "火",
+      "pinyin": ["huǒ"],
+      "jyutping": ["fo2"],
+      "hskLevel": 2,
+      "strokeCount": 4,
+      "definition": "fire",
+      "radical": "火"
+    },
+    "茶": {
+      "char": "茶",
+      "pinyin": ["chá"],
+      "jyutping": ["caa4"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "tea",
+      "radical": "艹"
+    },
+    "米": {
+      "char": "米",
+      "pinyin": ["mǐ"],
+      "jyutping": ["mai5"],
+      "hskLevel": 1,
+      "strokeCount": 6,
+      "definition": "rice; meter",
+      "radical": "米"
+    },
+    "饭": {
+      "char": "饭",
+      "pinyin": ["fàn"],
+      "jyutping": ["faan6"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "rice; meal; food",
+      "radical": "饣"
+    },
+    "菜": {
+      "char": "菜",
+      "pinyin": ["cài"],
+      "jyutping": ["coi3"],
+      "hskLevel": 1,
+      "strokeCount": 11,
+      "definition": "vegetable; dish; food",
+      "radical": "艹"
+    },
+    "果": {
+      "char": "果",
+      "pinyin": ["guǒ"],
+      "jyutping": ["gwo2"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "fruit; result",
+      "radical": "木"
+    },
+    "苹": {
+      "char": "苹",
+      "pinyin": ["píng"],
+      "jyutping": ["ping4"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "apple (苹果)",
+      "radical": "艹"
+    },
+    "医": {
+      "char": "医",
+      "pinyin": ["yī"],
+      "jyutping": ["ji1"],
+      "hskLevel": 1,
+      "strokeCount": 7,
+      "definition": "doctor; medicine",
+      "radical": "匸"
+    },
+    "院": {
+      "char": "院",
+      "pinyin": ["yuàn"],
+      "jyutping": ["jyun2", "jyun6"],
+      "hskLevel": 1,
+      "strokeCount": 9,
+      "definition": "courtyard; institution",
+      "radical": "阝"
+    },
+    "店": {
+      "char": "店",
+      "pinyin": ["diàn"],
+      "jyutping": ["dim3"],
+      "hskLevel": 1,
+      "strokeCount": 8,
+      "definition": "shop; store",
+      "radical": "广"
+    },
+    "校": {
+      "char": "校",
+      "pinyin": ["xiào"],
+      "jyutping": ["haau6"],
+      "hskLevel": 1,
+      "strokeCount": 10,
+      "definition": "school",
+      "radical": "木"
+    }
+  },
+  "hskIndex": {
+    "1": ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "百", "人", "大", "小", "中", "国", "我", "你", "他", "她", "们", "是", "不", "有", "好", "在", "这", "那", "什", "么", "谁", "哪", "几", "多", "少", "很", "太", "也", "都", "和", "了", "的", "吗", "呢", "吃", "喝", "看", "听", "说", "读", "写", "去", "来", "回", "住", "坐", "做", "工", "作", "学", "生", "老", "师", "同", "朋", "友", "家", "爸", "妈", "儿", "子", "女", "先", "名", "字", "年", "月", "日", "今", "天", "明", "昨", "上", "下", "前", "后", "里", "东", "西", "北", "京", "书", "本", "电", "话", "视", "脑", "影", "车", "飞", "机", "钱", "块", "买", "爱", "想", "会", "能", "喜", "欢", "高", "兴", "漂", "亮", "冷", "热", "水", "茶", "米", "饭", "菜", "果", "苹", "医", "院", "店", "校"],
+    "2": ["千", "卖", "火"]
+  }
+}
