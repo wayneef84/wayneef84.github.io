@@ -84,6 +84,7 @@
         elements.hskDisplay = document.getElementById('hsk-display');
         elements.characterGrid = document.getElementById('character-grid');
         elements.hskSelect = document.getElementById('hsk-select');
+        elements.prevBtn = document.getElementById('prev-btn');
         elements.animateBtn = document.getElementById('animate-btn');
         elements.strokeOrderBtn = document.getElementById('stroke-order-btn');
         elements.practiceBtn = document.getElementById('practice-btn');
@@ -286,6 +287,7 @@
         });
 
         // Action Buttons
+        elements.prevBtn.addEventListener('click', prevCharacter);
         elements.animateBtn.addEventListener('click', animateCharacter);
         elements.strokeOrderBtn.addEventListener('click', showStrokeOrder);
         elements.practiceBtn.addEventListener('click', startPractice);
