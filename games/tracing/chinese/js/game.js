@@ -95,7 +95,11 @@
         elements.strokeGrid = document.getElementById('stroke-grid');
         elements.strokeDetail = document.getElementById('stroke-detail');
         elements.celebration = document.getElementById('celebration');
+        elements.celebrationPrev = document.getElementById('celebration-prev');
+        elements.celebrationRetry = document.getElementById('celebration-retry');
         elements.celebrationNext = document.getElementById('celebration-next');
+        elements.prevCharPreview = document.getElementById('prev-char-preview');
+        elements.retryCharPreview = document.getElementById('retry-char-preview');
         elements.nextCharPreview = document.getElementById('next-char-preview');
         elements.animationSpeed = document.getElementById('animation-speed');
         elements.speedValue = document.getElementById('speed-value');
@@ -358,6 +362,25 @@
             state.settings.dialect = this.value;
             saveSettings();
             updateDialectHighlight();
+        });
+
+        // Celebration - click Prev button to go to previous character
+        elements.celebrationPrev.addEventListener('click', function(e) {
+            e.stopPropagation();
+            elements.celebration.classList.add('hidden');
+            prevCharacter();
+            setTimeout(function() {
+                startPractice();
+            }, 300);
+        });
+
+        // Celebration - click Retry button to retry current character
+        elements.celebrationRetry.addEventListener('click', function(e) {
+            e.stopPropagation();
+            elements.celebration.classList.add('hidden');
+            setTimeout(function() {
+                startPractice();
+            }, 300);
         });
 
         // Celebration - click Next button to advance
@@ -755,6 +778,17 @@
     }
 
     function showCelebration() {
+        // Set previous character preview
+        var prevChar = getPreviousCharacter();
+        if (elements.prevCharPreview) {
+            elements.prevCharPreview.textContent = prevChar || '';
+        }
+
+        // Set current character preview (for retry)
+        if (elements.retryCharPreview) {
+            elements.retryCharPreview.textContent = state.currentChar || '';
+        }
+
         // Set next character preview
         var nextChar = getNextCharacter();
         if (elements.nextCharPreview) {
@@ -762,7 +796,17 @@
         }
 
         elements.celebration.classList.remove('hidden');
-        // No auto-dismiss - user must click Next or tap to dismiss
+        // No auto-dismiss - user must click a button or tap to dismiss
+    }
+
+    function getPreviousCharacter() {
+        var chars = state.currentChars || [];
+        var currentIndex = chars.indexOf(state.currentChar);
+
+        if (currentIndex === -1 || currentIndex <= 0) {
+            return chars[chars.length - 1];
+        }
+        return chars[currentIndex - 1];
     }
 
     function getNextCharacter() {
@@ -773,6 +817,13 @@
             return chars[0];
         }
         return chars[currentIndex + 1];
+    }
+
+    function prevCharacter() {
+        var prevChar = getPreviousCharacter();
+        if (prevChar) {
+            selectCharacter(prevChar);
+        }
     }
 
     function nextCharacter() {

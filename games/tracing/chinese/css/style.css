@@ -537,32 +537,69 @@ html, body {
     color: var(--accent-gold);
 }
 
-.celebration-next-btn {
+.celebration-buttons {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 32px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    background: var(--success);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    margin-top: 16px;
-    transition: transform 0.1s, background 0.2s;
+    gap: 16px;
+    margin-top: 20px;
 }
 
-.celebration-next-btn:active {
+.celebration-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-char {
+    font-size: 2.2rem;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.celebration-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+    min-width: 90px;
+}
+
+.celebration-btn:active {
     transform: scale(0.95);
 }
 
-.celebration-next-btn:hover {
-    background: #27ae60;
+.celebration-btn.prev {
+    background: var(--surface-light);
 }
 
-.celebration-next-char {
-    font-size: 1.5rem;
+.celebration-btn.prev:hover {
+    background: var(--surface);
+}
+
+.celebration-btn.retry {
+    background: var(--primary-color);
+}
+
+.celebration-btn.retry:hover {
+    background: var(--primary-dark);
+}
+
+.celebration-btn.next {
+    background: var(--success);
+}
+
+.celebration-btn.next:hover {
+    background: #27ae60;
 }
 
 .celebration-hint {

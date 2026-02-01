@@ -194,10 +194,20 @@
             <div class="celebration-content">
                 <span class="celebration-emoji">🎉</span>
                 <span class="celebration-text">Great job!</span>
-                <button id="celebration-next" class="celebration-next-btn">
-                    <span>Next →</span>
-                    <span id="next-char-preview" class="celebration-next-char"></span>
-                </button>
+                <div class="celebration-buttons">
+                    <div class="celebration-option">
+                        <span class="option-char" id="prev-char-preview"></span>
+                        <button id="celebration-prev" class="celebration-btn prev">← Prev</button>
+                    </div>
+                    <div class="celebration-option">
+                        <span class="option-char" id="retry-char-preview"></span>
+                        <button id="celebration-retry" class="celebration-btn retry">↻ Retry</button>
+                    </div>
+                    <div class="celebration-option">
+                        <span class="option-char" id="next-char-preview"></span>
+                        <button id="celebration-next" class="celebration-btn next">Next →</button>
+                    </div>
+                </div>
                 <p class="celebration-hint">tap anywhere else to stay</p>
             </div>
         </div>
