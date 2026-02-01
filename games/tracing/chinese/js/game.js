@@ -32,7 +32,8 @@
             showOutline: true,
             hintsAfterMistakes: 3,
             audioEnabled: true,
-            dialect: 'mandarin' // 'mandarin' or 'cantonese'
+            dialect: 'mandarin', // 'mandarin' or 'cantonese'
+            showStrokeNumbers: true
         }
     };
 
@@ -84,6 +85,7 @@
         elements.characterGrid = document.getElementById('character-grid');
         elements.hskSelect = document.getElementById('hsk-select');
         elements.animateBtn = document.getElementById('animate-btn');
+        elements.strokeOrderBtn = document.getElementById('stroke-order-btn');
         elements.practiceBtn = document.getElementById('practice-btn');
         elements.nextBtn = document.getElementById('next-btn');
         elements.helpBtn = document.getElementById('help-btn');
@@ -108,6 +110,7 @@
         elements.hintsValue = document.getElementById('hints-value');
         elements.audioEnabled = document.getElementById('audio-enabled');
         elements.dialectSelect = document.getElementById('dialect-select');
+        elements.showStrokeNumbers = document.getElementById('show-stroke-numbers');
     }
 
     function loadSettings() {
@@ -184,6 +187,9 @@
         }
         if (elements.dialectSelect) {
             elements.dialectSelect.value = state.settings.dialect;
+        }
+        if (elements.showStrokeNumbers) {
+            elements.showStrokeNumbers.checked = state.settings.showStrokeNumbers;
         }
         updateDialectHighlight();
     }
@@ -281,6 +287,7 @@
 
         // Action Buttons
         elements.animateBtn.addEventListener('click', animateCharacter);
+        elements.strokeOrderBtn.addEventListener('click', showStrokeOrder);
         elements.practiceBtn.addEventListener('click', startPractice);
         elements.nextBtn.addEventListener('click', nextCharacter);
 
@@ -362,6 +369,10 @@
             state.settings.dialect = this.value;
             saveSettings();
             updateDialectHighlight();
+        });
+        elements.showStrokeNumbers.addEventListener('change', function() {
+            state.settings.showStrokeNumbers = this.checked;
+            saveSettings();
         });
 
         // Celebration - click Prev button to go to previous character
@@ -714,6 +725,80 @@
         });
     }
 
+    function showStrokeOrder() {
+        if (!state.writer || !state.currentChar) return;
+
+        // Cancel any ongoing quiz
+        if (state.isQuizMode) {
+            state.writer.cancelQuiz();
+            state.isQuizMode = false;
+            elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+        }
+
+        // Get character data for stroke count
+        var charData = state.characters[state.currentChar];
+        var strokeCount = charData ? charData.strokeCount : 0;
+
+        // Clear any existing overlays
+        clearStrokeNumberOverlays();
+
+        // Animate stroke by stroke with number overlay
+        var currentStroke = 0;
+
+        function animateNextStroke() {
+            if (currentStroke >= strokeCount) {
+                // Animation complete
+                if (state.settings.audioEnabled && state.currentChar) {
+                    speakCharacter(state.currentChar);
+                }
+                return;
+            }
+
+            // Add stroke number overlay
+            if (state.settings.showStrokeNumbers) {
+                addStrokeNumberOverlay(currentStroke + 1, strokeCount);
+            }
+
+            // Animate this stroke
+            state.writer.animateStroke(currentStroke, {
+                onComplete: function() {
+                    currentStroke++;
+                    // Small delay between strokes
+                    setTimeout(animateNextStroke, 400);
+                }
+            });
+        }
+
+        // Reset the writer to show empty character, then animate
+        state.writer.hideCharacter();
+        setTimeout(function() {
+            animateNextStroke();
+        }, 200);
+    }
+
+    function addStrokeNumberOverlay(strokeNum, totalStrokes) {
+        var container = elements.characterTarget;
+
+        // Create or update the stroke number display
+        var overlay = container.querySelector('.stroke-number-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'stroke-number-overlay';
+            container.appendChild(overlay);
+        }
+
+        overlay.innerHTML = '<span class="stroke-current">' + strokeNum + '</span><span class="stroke-separator">/</span><span class="stroke-total">' + totalStrokes + '</span>';
+        overlay.classList.add('visible');
+    }
+
+    function clearStrokeNumberOverlays() {
+        var container = elements.characterTarget;
+        var overlay = container.querySelector('.stroke-number-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+
     function startPractice() {
         if (!state.writer) return;
 
@@ -722,6 +807,7 @@
             state.writer.cancelQuiz();
             state.isQuizMode = false;
             elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+            clearStrokeNumberOverlays();
             createWriter(state.currentChar);
             return;
         }
@@ -729,14 +815,35 @@
         state.isQuizMode = true;
         elements.practiceBtn.innerHTML = '<span class="btn-icon">✖</span><span class="btn-text">Cancel</span>';
 
+        // Show initial stroke number
+        if (state.settings.showStrokeNumbers) {
+            var charData = state.characters[state.currentChar];
+            var totalStrokes = charData ? charData.strokeCount : 0;
+            if (totalStrokes > 0) {
+                addStrokeNumberOverlay(1, totalStrokes);
+            }
+        }
+
         state.writer.quiz({
             onMistake: function(strokeData) {
                 showQuizFeedback('Try again', false);
             },
             onCorrectStroke: function(strokeData) {
                 showQuizFeedback('Correct!', true);
+                // Update stroke number overlay if enabled
+                if (state.settings.showStrokeNumbers) {
+                    var charData = state.characters[state.currentChar];
+                    var totalStrokes = charData ? charData.strokeCount : 0;
+                    var completedStrokes = strokeData.strokeNum + 1;
+                    if (completedStrokes < totalStrokes) {
+                        addStrokeNumberOverlay(completedStrokes + 1, totalStrokes);
+                    } else {
+                        clearStrokeNumberOverlays();
+                    }
+                }
             },
             onComplete: function(summaryData) {
+                clearStrokeNumberOverlays();
                 state.isQuizMode = false;
                 elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
 
