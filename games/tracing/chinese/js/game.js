@@ -244,9 +244,9 @@
         elements.hskSelect = document.getElementById('hsk-select');
         elements.prevBtn = document.getElementById('prev-btn');
         elements.animateBtn = document.getElementById('animate-btn');
-        elements.strokeOrderBtn = document.getElementById('stroke-order-btn');
         elements.practiceBtn = document.getElementById('practice-btn');
         elements.nextBtn = document.getElementById('next-btn');
+        elements.resetProgress = document.getElementById('reset-progress');
         elements.helpBtn = document.getElementById('help-btn');
         elements.settingsBtn = document.getElementById('settings-btn');
         elements.helpModal = document.getElementById('help-modal');
@@ -326,6 +326,47 @@
             localStorage.setItem('chinese-completed', JSON.stringify(state.completedChars));
         } catch (e) {
             console.warn('Could not save progress:', e);
+        }
+    }
+
+    function resetAllProgress() {
+        try {
+            // Clear all localStorage for this app
+            localStorage.removeItem('chinese-settings');
+            localStorage.removeItem('chinese-completed');
+            localStorage.removeItem('chinese-daily');
+
+            // Reset state to defaults
+            state.completedChars = [];
+            state.daily = {
+                currentStreak: 0,
+                totalDays: 0,
+                lastPracticeDate: null,
+                todaysCharacters: [],
+                todaysProgress: []
+            };
+            state.settings = {
+                animationSpeed: 1,
+                showOutline: true,
+                hintsAfterMistakes: 3,
+                audioEnabled: true,
+                dialect: 'mandarin',
+                showStrokeNumbers: true
+            };
+
+            // Apply defaults to UI
+            applySettings();
+            updateStreakDisplay();
+            populateGrid();
+
+            // Close settings modal
+            elements.settingsModal.classList.add('hidden');
+
+            // Show confirmation
+            alert('All progress has been reset!');
+        } catch (e) {
+            console.error('Could not reset progress:', e);
+            alert('Error resetting progress. Please try again.');
         }
     }
 
@@ -446,7 +487,6 @@
         // Action Buttons
         elements.prevBtn.addEventListener('click', prevCharacter);
         elements.animateBtn.addEventListener('click', animateCharacter);
-        elements.strokeOrderBtn.addEventListener('click', showStrokeOrder);
         elements.practiceBtn.addEventListener('click', startPractice);
         elements.nextBtn.addEventListener('click', nextCharacter);
 
@@ -523,6 +563,13 @@
         elements.showStrokeNumbers.addEventListener('change', function() {
             state.settings.showStrokeNumbers = this.checked;
             saveSettings();
+        });
+
+        // Reset progress button
+        elements.resetProgress.addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset ALL progress? This will clear:\n• Completed characters\n• Daily streak\n• All settings\n\nThis cannot be undone!')) {
+                resetAllProgress();
+            }
         });
 
         // Celebration - click Prev button to go to previous character
@@ -879,7 +926,7 @@
     // ========== PRACTICE & ANIMATION ==========
 
     function animateCharacter() {
-        if (!state.writer) return;
+        if (!state.writer || !state.currentChar) return;
 
         // Cancel any ongoing quiz
         if (state.isQuizMode) {
@@ -889,15 +936,49 @@
         }
 
         state.isAnimating = true;
+        clearStrokeNumberOverlays();
 
-        state.writer.animateCharacter({
-            onComplete: function() {
-                state.isAnimating = false;
-                if (state.settings.audioEnabled && state.currentChar) {
-                    speakCharacter(state.currentChar);
+        // Get stroke count for number overlay
+        var charData = state.characters[state.currentChar];
+        var strokeCount = charData ? charData.strokeCount : 0;
+
+        if (state.settings.showStrokeNumbers && strokeCount > 0) {
+            // Animate stroke-by-stroke with numbers
+            var currentStroke = 0;
+
+            function animateNextStroke() {
+                if (currentStroke >= strokeCount) {
+                    state.isAnimating = false;
+                    clearStrokeNumberOverlays();
+                    if (state.settings.audioEnabled && state.currentChar) {
+                        speakCharacter(state.currentChar);
+                    }
+                    return;
                 }
+
+                addStrokeNumberOverlay(currentStroke + 1, strokeCount);
+
+                state.writer.animateStroke(currentStroke, {
+                    onComplete: function() {
+                        currentStroke++;
+                        setTimeout(animateNextStroke, 400);
+                    }
+                });
             }
-        });
+
+            state.writer.hideCharacter();
+            setTimeout(animateNextStroke, 200);
+        } else {
+            // Simple animation without stroke numbers
+            state.writer.animateCharacter({
+                onComplete: function() {
+                    state.isAnimating = false;
+                    if (state.settings.audioEnabled && state.currentChar) {
+                        speakCharacter(state.currentChar);
+                    }
+                }
+            });
+        }
     }
 
     function handleCharacterTouch() {
@@ -928,57 +1009,6 @@
             // Could add a toast/popup here showing the definition
             console.log('Definition:', charData.definition);
         }
-    }
-
-    function showStrokeOrder() {
-        if (!state.writer || !state.currentChar) return;
-
-        // Cancel any ongoing quiz
-        if (state.isQuizMode) {
-            state.writer.cancelQuiz();
-            state.isQuizMode = false;
-            elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
-        }
-
-        // Get character data for stroke count
-        var charData = state.characters[state.currentChar];
-        var strokeCount = charData ? charData.strokeCount : 0;
-
-        // Clear any existing overlays
-        clearStrokeNumberOverlays();
-
-        // Animate stroke by stroke with number overlay
-        var currentStroke = 0;
-
-        function animateNextStroke() {
-            if (currentStroke >= strokeCount) {
-                // Animation complete
-                if (state.settings.audioEnabled && state.currentChar) {
-                    speakCharacter(state.currentChar);
-                }
-                return;
-            }
-
-            // Add stroke number overlay
-            if (state.settings.showStrokeNumbers) {
-                addStrokeNumberOverlay(currentStroke + 1, strokeCount);
-            }
-
-            // Animate this stroke
-            state.writer.animateStroke(currentStroke, {
-                onComplete: function() {
-                    currentStroke++;
-                    // Small delay between strokes
-                    setTimeout(animateNextStroke, 400);
-                }
-            });
-        }
-
-        // Reset the writer to show empty character, then animate
-        state.writer.hideCharacter();
-        setTimeout(function() {
-            animateNextStroke();
-        }, 200);
     }
 
     function addStrokeNumberOverlay(strokeNum, totalStrokes) {
