@@ -997,6 +997,19 @@
         }
     }
 
+    function cancelAnimation() {
+        state.isAnimating = false;
+        clearStrokeNumberOverlays();
+
+        // Cancel quiz mode
+        state.writer.cancelQuiz();
+        state.isQuizMode = false;
+        elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+        clearStrokeNumberOverlays();
+        createWriter(state.currentChar);
+        return;
+    }
+
     function speakWithDefinition() {
         if (!state.currentChar) return;
 
