@@ -17,6 +17,7 @@
         currentChars: [], // Current character list (HSK, daily, or group)
         writer: null,
         isQuizMode: false,
+        isAnimating: false, // Track if animation is playing
         completedChars: [],
         currentView: 'menu', // 'menu', 'characters', 'daily', 'groups', 'group'
         currentGroup: null,
@@ -50,6 +51,163 @@
         loadData();
         bindEvents();
         updateStreakDisplay();
+        handleInitialRoute();
+
+        // Listen for browser back/forward
+        window.addEventListener('popstate', handlePopState);
+    }
+
+    // ========== URL & HISTORY MANAGEMENT ==========
+
+    function handleInitialRoute() {
+        var params = new URLSearchParams(window.location.search);
+        var char = params.get('char');
+        var group = params.get('group');
+        var hsk = params.get('hsk');
+        var view = params.get('view');
+
+        // Wait for data to load, then navigate
+        var checkData = setInterval(function() {
+            if (Object.keys(state.characters).length > 0) {
+                clearInterval(checkData);
+
+                if (char && state.characters[char]) {
+                    // Direct character link
+                    navigateToCharacter(char, false);
+                } else if (group && state.groups[group]) {
+                    // Group link
+                    navigateToGroup(group, char, false);
+                } else if (hsk) {
+                    // HSK level link
+                    navigateToHSK(parseInt(hsk, 10), char, false);
+                } else if (view === 'daily') {
+                    startDailyMode(false);
+                } else if (view === 'groups') {
+                    showGroupsView(false);
+                } else if (view === 'characters') {
+                    showCharactersView(false);
+                }
+                // else stay on menu
+            }
+        }, 100);
+    }
+
+    function handlePopState(e) {
+        if (e.state) {
+            // Restore state from history
+            if (e.state.view === 'menu') {
+                showMainMenu(false);
+            } else if (e.state.view === 'groups') {
+                showGroupsView(false);
+            } else if (e.state.view === 'group' && e.state.group) {
+                navigateToGroup(e.state.group, e.state.char, false);
+            } else if (e.state.view === 'characters') {
+                navigateToHSK(e.state.hsk || 1, e.state.char, false);
+            } else if (e.state.view === 'daily') {
+                startDailyMode(false);
+            }
+        } else {
+            showMainMenu(false);
+        }
+    }
+
+    function updateURL(params, pushHistory) {
+        var url = new URL(window.location.href);
+        url.search = '';
+
+        for (var key in params) {
+            if (params[key] !== null && params[key] !== undefined) {
+                url.searchParams.set(key, params[key]);
+            }
+        }
+
+        var historyState = {
+            view: state.currentView,
+            char: state.currentChar,
+            group: state.currentGroup,
+            hsk: state.currentHSK
+        };
+
+        if (pushHistory !== false) {
+            history.pushState(historyState, '', url.toString());
+        } else {
+            history.replaceState(historyState, '', url.toString());
+        }
+    }
+
+    function navigateToCharacter(char, pushHistory) {
+        // Find which list contains this character
+        var found = false;
+
+        // Check current list first
+        if (state.currentChars.indexOf(char) !== -1) {
+            selectCharacter(char);
+            animateCharacter();
+            updateURL({ char: char, view: state.currentView, group: state.currentGroup, hsk: state.currentHSK }, pushHistory);
+            return;
+        }
+
+        // Check HSK levels
+        for (var level = 1; level <= 6; level++) {
+            var chars = state.hskIndex[level] || [];
+            if (chars.indexOf(char) !== -1) {
+                state.currentHSK = level;
+                state.currentChars = chars;
+                state.currentView = 'characters';
+                elements.mainMenu.classList.add('hidden');
+                elements.groupsView.classList.add('hidden');
+                elements.dailyProgress.classList.add('hidden');
+                elements.hskSelect.value = level;
+                populateGrid();
+                selectCharacter(char);
+                animateCharacter();
+                updateURL({ char: char, hsk: level, view: 'characters' }, pushHistory);
+                found = true;
+                break;
+            }
+        }
+    }
+
+    function navigateToGroup(groupKey, char, pushHistory) {
+        var group = state.groups[groupKey];
+        if (!group) return;
+
+        state.currentView = 'group';
+        state.currentGroup = groupKey;
+        state.currentChars = group.characters || [];
+
+        elements.mainMenu.classList.add('hidden');
+        elements.groupsView.classList.add('hidden');
+        elements.dailyProgress.classList.add('hidden');
+        populateGrid();
+
+        var targetChar = char && state.currentChars.indexOf(char) !== -1 ? char : state.currentChars[0];
+        if (targetChar) {
+            selectCharacter(targetChar);
+            animateCharacter();
+        }
+
+        updateURL({ group: groupKey, char: targetChar, view: 'group' }, pushHistory);
+    }
+
+    function navigateToHSK(level, char, pushHistory) {
+        state.currentHSK = level;
+        state.currentChars = state.hskIndex[level] || [];
+        state.currentView = 'characters';
+
+        elements.mainMenu.classList.add('hidden');
+        elements.groupsView.classList.add('hidden');
+        elements.dailyProgress.classList.add('hidden');
+        elements.hskSelect.value = level;
+        populateGrid();
+
+        var targetChar = char && state.currentChars.indexOf(char) !== -1 ? char : state.currentChars[0];
+        if (targetChar) {
+            selectCharacter(targetChar);
+            animateCharacter();
+        }
+
+        updateURL({ hsk: level, char: targetChar, view: 'characters' }, pushHistory);
     }
 
     function cacheElements() {
@@ -247,43 +405,42 @@
     function bindEvents() {
         // Menu items
         elements.menuDaily.addEventListener('click', function() {
-            startDailyMode();
+            startDailyMode(true);
         });
         elements.menuCharacters.addEventListener('click', function() {
-            showCharactersView();
+            showCharactersView(true);
         });
         elements.menuGroups.addEventListener('click', function() {
-            showGroupsView();
+            showGroupsView(true);
         });
         elements.menuStrokes.addEventListener('click', function() {
-            elements.mainMenu.classList.add('hidden');
             elements.helpModal.classList.remove('hidden');
         });
         elements.menuSettings.addEventListener('click', function() {
-            elements.mainMenu.classList.add('hidden');
             elements.settingsModal.classList.remove('hidden');
         });
 
-        // Menu button in game
+        // Menu button in game - go back in history or to menu
         elements.menuBtn.addEventListener('click', function() {
-            showMainMenu();
+            if (history.length > 1) {
+                history.back();
+            } else {
+                showMainMenu(true);
+            }
         });
 
-        // Groups view
+        // Groups view back button
         elements.groupsBack.addEventListener('click', function() {
-            elements.groupsView.classList.add('hidden');
-            elements.mainMenu.classList.remove('hidden');
+            if (history.length > 1) {
+                history.back();
+            } else {
+                showMainMenu(true);
+            }
         });
 
         // HSK Level Selection
         elements.hskSelect.addEventListener('change', function() {
-            state.currentHSK = parseInt(this.value, 10);
-            state.currentChars = state.hskIndex[state.currentHSK] || [];
-            populateGrid();
-            if (state.currentChars.length > 0) {
-                selectCharacter(state.currentChars[0]);
-                startPractice();
-            }
+            navigateToHSK(parseInt(this.value, 10), null, true);
         });
 
         // Action Buttons
@@ -292,6 +449,9 @@
         elements.strokeOrderBtn.addEventListener('click', showStrokeOrder);
         elements.practiceBtn.addEventListener('click', startPractice);
         elements.nextBtn.addEventListener('click', nextCharacter);
+
+        // Touch character during animation to speak and start practice
+        elements.characterTarget.addEventListener('click', handleCharacterTouch);
 
         // Pinyin/Jyutping click for dialect
         elements.pinyinDisplay.addEventListener('click', function() {
@@ -316,32 +476,20 @@
         });
         elements.closeHelp.addEventListener('click', function() {
             elements.helpModal.classList.add('hidden');
-            if (state.currentView === 'menu') {
-                elements.mainMenu.classList.remove('hidden');
-            }
         });
         elements.closeSettings.addEventListener('click', function() {
             elements.settingsModal.classList.add('hidden');
-            if (state.currentView === 'menu') {
-                elements.mainMenu.classList.remove('hidden');
-            }
         });
 
         // Close modals on backdrop click
         elements.helpModal.addEventListener('click', function(e) {
             if (e.target === elements.helpModal) {
                 elements.helpModal.classList.add('hidden');
-                if (state.currentView === 'menu') {
-                    elements.mainMenu.classList.remove('hidden');
-                }
             }
         });
         elements.settingsModal.addEventListener('click', function(e) {
             if (e.target === elements.settingsModal) {
                 elements.settingsModal.classList.add('hidden');
-                if (state.currentView === 'menu') {
-                    elements.mainMenu.classList.remove('hidden');
-                }
             }
         });
 
@@ -383,7 +531,7 @@
             elements.celebration.classList.add('hidden');
             prevCharacter();
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         });
 
@@ -392,7 +540,7 @@
             e.stopPropagation();
             elements.celebration.classList.add('hidden');
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         });
 
@@ -402,7 +550,7 @@
             elements.celebration.classList.add('hidden');
             nextCharacter();
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         });
 
@@ -416,36 +564,46 @@
 
     // ========== VIEW MANAGEMENT ==========
 
-    function showMainMenu() {
+    function showMainMenu(pushHistory) {
         state.currentView = 'menu';
+        state.currentGroup = null;
         elements.mainMenu.classList.remove('hidden');
         elements.groupsView.classList.add('hidden');
         elements.dailyProgress.classList.add('hidden');
         updateStreakDisplay();
+
+        if (pushHistory !== false) {
+            history.pushState({ view: 'menu' }, '', window.location.pathname);
+        }
     }
 
-    function showCharactersView() {
+    function showCharactersView(pushHistory) {
         state.currentView = 'characters';
         state.currentChars = state.hskIndex[state.currentHSK] || [];
         elements.mainMenu.classList.add('hidden');
+        elements.groupsView.classList.add('hidden');
         elements.dailyProgress.classList.add('hidden');
         populateGrid();
 
         if (state.currentChars.length > 0) {
             selectCharacter(state.currentChars[0]);
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         }
+
+        updateURL({ view: 'characters', hsk: state.currentHSK, char: state.currentChars[0] }, pushHistory);
     }
 
-    function showGroupsView() {
+    function showGroupsView(pushHistory) {
         state.currentView = 'groups';
         elements.mainMenu.classList.add('hidden');
         elements.groupsView.classList.remove('hidden');
+
+        updateURL({ view: 'groups' }, pushHistory);
     }
 
-    function showGroupCharacters(groupKey) {
+    function showGroupCharacters(groupKey, pushHistory) {
         var group = state.groups[groupKey];
         if (!group) return;
 
@@ -460,12 +618,14 @@
         if (state.currentChars.length > 0) {
             selectCharacter(state.currentChars[0]);
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         }
+
+        updateURL({ view: 'group', group: groupKey, char: state.currentChars[0] }, pushHistory);
     }
 
-    function startDailyMode() {
+    function startDailyMode(pushHistory) {
         state.currentView = 'daily';
 
         // Check if we need to generate new daily characters
@@ -494,11 +654,13 @@
         if (firstIncomplete) {
             selectCharacter(firstIncomplete);
             setTimeout(function() {
-                startPractice();
+                animateCharacter();
             }, 300);
         } else if (state.currentChars.length > 0) {
             selectCharacter(state.currentChars[0]);
         }
+
+        updateURL({ view: 'daily' }, pushHistory);
     }
 
     function generateDailyCharacters(today) {
@@ -588,7 +750,7 @@
         cards.forEach(function(card) {
             card.addEventListener('click', function() {
                 var groupKey = this.getAttribute('data-group');
-                showGroupCharacters(groupKey);
+                showGroupCharacters(groupKey, true);
             });
         });
     }
@@ -615,8 +777,16 @@
         var cells = elements.characterGrid.querySelectorAll('.char-cell');
         cells.forEach(function(cell) {
             cell.addEventListener('click', function() {
-                selectCharacter(this.getAttribute('data-char'));
-                startPractice();
+                var char = this.getAttribute('data-char');
+                selectCharacter(char);
+                animateCharacter();
+                // Update URL with new character
+                updateURL({
+                    char: char,
+                    view: state.currentView,
+                    group: state.currentGroup,
+                    hsk: state.currentView === 'characters' ? state.currentHSK : null
+                }, true);
             });
         });
     }
@@ -718,13 +888,46 @@
             elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
         }
 
+        state.isAnimating = true;
+
         state.writer.animateCharacter({
             onComplete: function() {
+                state.isAnimating = false;
                 if (state.settings.audioEnabled && state.currentChar) {
                     speakCharacter(state.currentChar);
                 }
             }
         });
+    }
+
+    function handleCharacterTouch() {
+        if (state.isAnimating && state.writer) {
+            // Stop animation and speak
+            state.writer.cancelAnimation();
+            state.isAnimating = false;
+
+            // Speak the character with definition
+            speakWithDefinition();
+
+            // Start practice immediately
+            setTimeout(function() {
+                startPractice();
+            }, 100);
+        }
+    }
+
+    function speakWithDefinition() {
+        if (!state.currentChar) return;
+
+        // Speak the character
+        speakCharacter(state.currentChar);
+
+        // Show definition briefly
+        var charData = state.characters[state.currentChar];
+        if (charData && charData.definition) {
+            // Could add a toast/popup here showing the definition
+            console.log('Definition:', charData.definition);
+        }
     }
 
     function showStrokeOrder() {
