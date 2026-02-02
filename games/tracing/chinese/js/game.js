@@ -998,15 +998,16 @@
     }
 
     function cancelAnimation() {
-        state.isAnimating = false;
-        clearStrokeNumberOverlays();
-
         // Cancel quiz mode
         state.writer.cancelQuiz();
         state.isQuizMode = false;
         elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+
+        state.isAnimating = false;
         clearStrokeNumberOverlays();
-        createWriter(state.currentChar);
+
+        startPractice()
+        
         return;
     }
 
