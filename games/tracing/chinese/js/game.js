@@ -18,6 +18,7 @@
         writer: null,
         isQuizMode: false,
         isAnimating: false, // Track if animation is playing
+        animationTimer: null, // <--- ADDED: Track the loop timer so we can kill it
         completedChars: [],
         currentView: 'menu', // 'menu', 'characters', 'daily', 'groups', 'group'
         currentGroup: null,
@@ -935,6 +936,12 @@
             elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
         }
 
+        // Clear any old zombie timers just in case
+        if (state.animationTimer) {
+            clearTimeout(state.animationTimer);
+            state.animationTimer = null;
+        }
+
         state.isAnimating = true;
         clearStrokeNumberOverlays();
 
@@ -947,6 +954,11 @@
             var currentStroke = 0;
 
             function animateNextStroke() {
+                // SECURITY CHECK: Stop immediately if flag is off or writer is gone
+                if (!state.isAnimating || !state.writer) { 
+                    return; 
+                }
+
                 if (currentStroke >= strokeCount) {
                     state.isAnimating = false;
                     clearStrokeNumberOverlays();
@@ -960,14 +972,20 @@
 
                 state.writer.animateStroke(currentStroke, {
                     onComplete: function() {
+                        // CRITICAL: Check if we are still animating before scheduling next one
+                        if (!state.isAnimating) return;
+
                         currentStroke++;
-                        setTimeout(animateNextStroke, 400);
+                        
+                        // Save the timer ID so we can cancel it later
+                        state.animationTimer = setTimeout(animateNextStroke, 400); 
                     }
                 });
             }
 
             state.writer.hideCharacter();
-            setTimeout(animateNextStroke, 200);
+            // Save initial delay timer
+            state.animationTimer = setTimeout(animateNextStroke, 200);
         } else {
             // Simple animation without stroke numbers
             state.writer.animateCharacter({
@@ -984,35 +1002,45 @@
     function handleCharacterTouch() {
         if (state.isAnimating && state.writer) {
             // Stop animation and speak
-            cancelAnimation();
-            state.isAnimating = false;
+            cancelAnimation(); // FIX: calling local function, not state.writer
 
             // Speak the character with definition
             speakWithDefinition();
 
             // Start practice immediately
             setTimeout(function() {
-                createWriter(state.currentChar);
                 startPractice();
             }, 100);
         }
     }
 
     function cancelAnimation() {
-        // Cancel quiz mode
-        if (state.isQuizMode) {
-            // Cancel quiz mode
-            state.writer.cancelQuiz();
-            state.isQuizMode = false;
-            elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
-            clearStrokeNumberOverlays();
+        // 1. Kill the loop timer immediately
+        if (state.animationTimer) {
+            clearTimeout(state.animationTimer);
+            state.animationTimer = null;
         }
-
+    
+        // 2. Tell the writer to stop whatever single stroke it might be drawing right now
+        if (state.writer) {
+            // Try to cancel quiz/animation via library methods if they exist
+            // (This catches the case where a single stroke is mid-draw)
+            try {
+                state.writer.cancelQuiz();
+            } catch(e) { /* ignore */ }
+        }
+    
         state.isAnimating = false;
+        state.isQuizMode = false;
+        
+        // Reset UI
+        if (elements.practiceBtn) {
+            elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+        }
         clearStrokeNumberOverlays();
 
-        return;
-
+        // Recreate the writer to ensure a clean slate
+        createWriter(state.currentChar);
     }
 
     function speakWithDefinition() {
