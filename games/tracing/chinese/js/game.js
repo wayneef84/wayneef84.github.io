@@ -999,16 +999,20 @@
 
     function cancelAnimation() {
         // Cancel quiz mode
-        state.writer.cancelQuiz();
-        state.isQuizMode = false;
-        elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+        if (state.isQuizMode) {
+            // Cancel quiz mode
+            state.writer.cancelQuiz();
+            state.isQuizMode = false;
+            elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
+            clearStrokeNumberOverlays();
+            createWriter(state.currentChar);
+        }
 
         state.isAnimating = false;
         clearStrokeNumberOverlays();
 
-        startPractice()
-        
         return;
+
     }
 
     function speakWithDefinition() {
