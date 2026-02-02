@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fong Arcade: Chinese Sentences</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Main Menu -->
+    <div id="main-menu" class="main-menu">
+        <div class="menu-title">
+            <h1>造句游戏</h1>
+            <p class="subtitle">Sentence Builder</p>
+        </div>
+        <div class="menu-grid">
+            <div class="menu-item" id="menu-practice">
+                <span class="menu-icon">📝</span>
+                <span class="menu-label">Practice</span>
+            </div>
+            <div class="menu-item" id="menu-groups">
+                <span class="menu-icon">📂</span>
+                <span class="menu-label">Groups</span>
+            </div>
+            <div class="menu-item" id="menu-custom">
+                <span class="menu-icon">✨</span>
+                <span class="menu-label">Custom</span>
+            </div>
+            <div class="menu-item" id="menu-saved">
+                <span class="menu-icon">💾</span>
+                <span class="menu-label">Saved</span>
+            </div>
+            <div class="menu-item" id="menu-settings">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-label">Settings</span>
+            </div>
+            <a href="../index.html" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span class="menu-label">Back</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Groups View -->
+    <div id="groups-view" class="groups-view hidden">
+        <div class="groups-header">
+            <button class="groups-back-btn" id="groups-back">←</button>
+            <h2 class="groups-title">Sentence Groups</h2>
+        </div>
+        <div class="groups-grid" id="groups-grid">
+            <!-- Groups will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Sentence List View (sentences in a group) -->
+    <div id="sentence-list-view" class="groups-view hidden">
+        <div class="groups-header">
+            <button class="groups-back-btn" id="sentence-list-back">←</button>
+            <h2 class="groups-title" id="sentence-list-title">Sentences</h2>
+        </div>
+        <div class="sentence-list" id="sentence-list">
+            <!-- Sentences will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Saved Sentences View -->
+    <div id="saved-view" class="groups-view hidden">
+        <div class="groups-header">
+            <button class="groups-back-btn" id="saved-back">←</button>
+            <h2 class="groups-title">Saved Sentences</h2>
+        </div>
+        <div class="custom-sentences" id="saved-list">
+            <!-- Saved sentences will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container" id="game-container" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <button id="menu-btn" class="home-btn" title="Back">
+                <span class="home-icon">←</span>
+            </button>
+            <span class="header-title" id="header-title">Build a Sentence</span>
+            <div class="header-controls">
+                <button id="speak-btn" class="icon-btn" title="Listen">🔊</button>
+                <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sentence Area -->
+            <div class="sentence-area">
+                <div class="sentence-label">Your sentence:</div>
+                <div class="sentence-display" id="sentence-display">
+                    <span class="empty-hint">Tap words below to build a sentence</span>
+                </div>
+                <div class="sentence-pinyin" id="sentence-pinyin"></div>
+                <div class="sentence-english" id="sentence-english"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="clear-btn" class="action-btn">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Clear</span>
+                </button>
+                <button id="speak-sentence-btn" class="action-btn">
+                    <span class="btn-icon">🔊</span>
+                    <span class="btn-text">Speak</span>
+                </button>
+                <button id="save-btn" class="action-btn primary">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">Save</span>
+                </button>
+                <button id="check-btn" class="action-btn success" style="display: none;">
+                    <span class="btn-icon">✓</span>
+                    <span class="btn-text">Check</span>
+                </button>
+            </div>
+
+            <!-- Word Bank -->
+            <div class="word-bank">
+                <div class="word-bank-label" id="word-bank-label">Word Bank:</div>
+                <div class="word-grid" id="word-grid">
+                    <!-- Words will be populated by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Celebration Overlay -->
+    <div id="celebration" class="celebration hidden">
+        <div class="celebration-content">
+            <span class="celebration-emoji">🎉</span>
+            <span class="celebration-text">Correct!</span>
+            <div class="celebration-sentence" id="celebration-sentence"></div>
+            <div class="celebration-pinyin" id="celebration-pinyin"></div>
+            <div class="celebration-buttons">
+                <button id="celebration-retry" class="celebration-btn retry">↻ Retry</button>
+                <button id="celebration-next" class="celebration-btn next">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-row">
+                    <label for="audio-enabled">Enable Audio</label>
+                    <input type="checkbox" id="audio-enabled" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="show-pinyin">Show Pinyin</label>
+                    <input type="checkbox" id="show-pinyin" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="show-english">Show English</label>
+                    <input type="checkbox" id="show-english" checked>
+                </div>
+                <div class="setting-row" style="margin-top: 20px; border-top: 2px solid var(--error); padding-top: 20px;">
+                    <label>Reset All Progress</label>
+                    <button id="reset-progress" style="padding: 10px 20px; background: var(--error); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
