@@ -59,34 +59,29 @@
     }
 
     // ========== URL & HISTORY MANAGEMENT ==========
+    // Simplified: just ?group=xxx (groups include hsk1, hsk2, daily, custom groups)
 
     function handleInitialRoute() {
         var params = new URLSearchParams(window.location.search);
-        var char = params.get('char');
         var group = params.get('group');
-        var hsk = params.get('hsk');
-        var view = params.get('view');
 
         // Wait for data to load, then navigate
         var checkData = setInterval(function() {
             if (Object.keys(state.characters).length > 0) {
                 clearInterval(checkData);
 
-                if (char && state.characters[char]) {
-                    // Direct character link
-                    navigateToCharacter(char, false);
-                } else if (group && state.groups[group]) {
-                    // Group link
-                    navigateToGroup(group, char, false);
-                } else if (hsk) {
-                    // HSK level link
-                    navigateToHSK(parseInt(hsk, 10), char, false);
-                } else if (view === 'daily') {
-                    startDailyMode(false);
-                } else if (view === 'groups') {
-                    showGroupsView(false);
-                } else if (view === 'characters') {
-                    showCharactersView(false);
+                if (group) {
+                    // Handle special groups
+                    if (group === 'daily') {
+                        startDailyMode(false);
+                    } else if (group.match(/^hsk[1-6]$/)) {
+                        // HSK level groups: hsk1, hsk2, etc.
+                        var level = parseInt(group.charAt(3), 10);
+                        navigateToHSK(level, false);
+                    } else if (state.groups[group]) {
+                        // Custom group
+                        navigateToGroup(group, false);
+                    }
                 }
                 // else stay on menu
             }
@@ -95,38 +90,37 @@
 
     function handlePopState(e) {
         if (e.state) {
-            // Restore state from history
             if (e.state.view === 'menu') {
                 showMainMenu(false);
             } else if (e.state.view === 'groups') {
                 showGroupsView(false);
-            } else if (e.state.view === 'group' && e.state.group) {
-                navigateToGroup(e.state.group, e.state.char, false);
-            } else if (e.state.view === 'characters') {
-                navigateToHSK(e.state.hsk || 1, e.state.char, false);
-            } else if (e.state.view === 'daily') {
-                startDailyMode(false);
+            } else if (e.state.group) {
+                // Restore based on group
+                if (e.state.group === 'daily') {
+                    startDailyMode(false);
+                } else if (e.state.group.match(/^hsk[1-6]$/)) {
+                    var level = parseInt(e.state.group.charAt(3), 10);
+                    navigateToHSK(level, false);
+                } else {
+                    navigateToGroup(e.state.group, false);
+                }
             }
         } else {
             showMainMenu(false);
         }
     }
 
-    function updateURL(params, pushHistory) {
+    function updateURL(group, pushHistory) {
         var url = new URL(window.location.href);
         url.search = '';
 
-        for (var key in params) {
-            if (params[key] !== null && params[key] !== undefined) {
-                url.searchParams.set(key, params[key]);
-            }
+        if (group) {
+            url.searchParams.set('group', group);
         }
 
         var historyState = {
             view: state.currentView,
-            char: state.currentChar,
-            group: state.currentGroup,
-            hsk: state.currentHSK
+            group: group
         };
 
         if (pushHistory !== false) {
@@ -136,40 +130,7 @@
         }
     }
 
-    function navigateToCharacter(char, pushHistory) {
-        // Find which list contains this character
-        var found = false;
-
-        // Check current list first
-        if (state.currentChars.indexOf(char) !== -1) {
-            selectCharacter(char);
-            animateCharacter();
-            updateURL({ char: char, view: state.currentView, group: state.currentGroup, hsk: state.currentHSK }, pushHistory);
-            return;
-        }
-
-        // Check HSK levels
-        for (var level = 1; level <= 6; level++) {
-            var chars = state.hskIndex[level] || [];
-            if (chars.indexOf(char) !== -1) {
-                state.currentHSK = level;
-                state.currentChars = chars;
-                state.currentView = 'characters';
-                elements.mainMenu.classList.add('hidden');
-                elements.groupsView.classList.add('hidden');
-                elements.dailyProgress.classList.add('hidden');
-                elements.hskSelect.value = level;
-                populateGrid();
-                selectCharacter(char);
-                animateCharacter();
-                updateURL({ char: char, hsk: level, view: 'characters' }, pushHistory);
-                found = true;
-                break;
-            }
-        }
-    }
-
-    function navigateToGroup(groupKey, char, pushHistory) {
+    function navigateToGroup(groupKey, pushHistory) {
         var group = state.groups[groupKey];
         if (!group) return;
 
@@ -182,16 +143,15 @@
         elements.dailyProgress.classList.add('hidden');
         populateGrid();
 
-        var targetChar = char && state.currentChars.indexOf(char) !== -1 ? char : state.currentChars[0];
-        if (targetChar) {
-            selectCharacter(targetChar);
+        if (state.currentChars.length > 0) {
+            selectCharacter(state.currentChars[0]);
             animateCharacter();
         }
 
-        updateURL({ group: groupKey, char: targetChar, view: 'group' }, pushHistory);
+        updateURL(groupKey, pushHistory);
     }
 
-    function navigateToHSK(level, char, pushHistory) {
+    function navigateToHSK(level, pushHistory) {
         state.currentHSK = level;
         state.currentChars = state.hskIndex[level] || [];
         state.currentView = 'characters';
@@ -202,13 +162,12 @@
         elements.hskSelect.value = level;
         populateGrid();
 
-        var targetChar = char && state.currentChars.indexOf(char) !== -1 ? char : state.currentChars[0];
-        if (targetChar) {
-            selectCharacter(targetChar);
+        if (state.currentChars.length > 0) {
+            selectCharacter(state.currentChars[0]);
             animateCharacter();
         }
 
-        updateURL({ hsk: level, char: targetChar, view: 'characters' }, pushHistory);
+        updateURL('hsk' + level, pushHistory);
     }
 
     function cacheElements() {
@@ -640,7 +599,7 @@
             }, 300);
         }
 
-        updateURL({ view: 'characters', hsk: state.currentHSK, char: state.currentChars[0] }, pushHistory);
+        updateURL('hsk' + state.currentHSK, pushHistory);
     }
 
     function showGroupsView(pushHistory) {
@@ -648,7 +607,10 @@
         elements.mainMenu.classList.add('hidden');
         elements.groupsView.classList.remove('hidden');
 
-        updateURL({ view: 'groups' }, pushHistory);
+        // Clear URL when viewing groups list
+        if (pushHistory !== false) {
+            history.pushState({ view: 'groups' }, '', window.location.pathname);
+        }
     }
 
     function showGroupCharacters(groupKey, pushHistory) {
@@ -670,7 +632,7 @@
             }, 300);
         }
 
-        updateURL({ view: 'group', group: groupKey, char: state.currentChars[0] }, pushHistory);
+        updateURL(groupKey, pushHistory);
     }
 
     function startDailyMode(pushHistory) {
@@ -708,7 +670,7 @@
             selectCharacter(state.currentChars[0]);
         }
 
-        updateURL({ view: 'daily' }, pushHistory);
+        updateURL('daily', pushHistory);
     }
 
     function generateDailyCharacters(today) {
@@ -828,13 +790,7 @@
                 var char = this.getAttribute('data-char');
                 selectCharacter(char);
                 animateCharacter();
-                // Update URL with new character
-                updateURL({
-                    char: char,
-                    view: state.currentView,
-                    group: state.currentGroup,
-                    hsk: state.currentView === 'characters' ? state.currentHSK : null
-                }, true);
+                // URL doesn't change when selecting characters within a group
             });
         });
     }

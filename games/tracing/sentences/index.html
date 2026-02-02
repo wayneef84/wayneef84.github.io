@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fong Arcade: Chinese Sentences</title>
+    <title>Fong Arcade: Sentence Builder</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- Main Menu -->
     <div id="main-menu" class="main-menu">
         <div class="menu-title">
-            <h1>造句游戏</h1>
-            <p class="subtitle">Sentence Builder</p>
+            <h1>📖 Sentences</h1>
+            <p class="subtitle">Build words & sentences</p>
         </div>
         <div class="menu-grid">
-            <div class="menu-item" id="menu-practice">
-                <span class="menu-icon">📝</span>
-                <span class="menu-label">Practice</span>
+            <div class="menu-item" id="menu-english">
+                <span class="menu-icon">🇺🇸</span>
+                <span class="menu-label">English</span>
             </div>
-            <div class="menu-item" id="menu-groups">
-                <span class="menu-icon">📂</span>
-                <span class="menu-label">Groups</span>
+            <div class="menu-item" id="menu-chinese">
+                <span class="menu-icon">🇨🇳</span>
+                <span class="menu-label">中文</span>
             </div>
             <div class="menu-item" id="menu-custom">
                 <span class="menu-icon">✨</span>
@@ -41,25 +41,14 @@
         </div>
     </div>
 
-    <!-- Groups View -->
+    <!-- Language Groups View -->
     <div id="groups-view" class="groups-view hidden">
         <div class="groups-header">
             <button class="groups-back-btn" id="groups-back">←</button>
-            <h2 class="groups-title">Sentence Groups</h2>
+            <h2 class="groups-title" id="groups-title">Groups</h2>
         </div>
         <div class="groups-grid" id="groups-grid">
             <!-- Groups will be populated by JS -->
-        </div>
-    </div>
-
-    <!-- Sentence List View (sentences in a group) -->
-    <div id="sentence-list-view" class="groups-view hidden">
-        <div class="groups-header">
-            <button class="groups-back-btn" id="sentence-list-back">←</button>
-            <h2 class="groups-title" id="sentence-list-title">Sentences</h2>
-        </div>
-        <div class="sentence-list" id="sentence-list">
-            <!-- Sentences will be populated by JS -->
         </div>
     </div>
 
@@ -84,20 +73,24 @@
             <span class="header-title" id="header-title">Build a Sentence</span>
             <div class="header-controls">
                 <button id="speak-btn" class="icon-btn" title="Listen">🔊</button>
-                <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Sentence Area -->
+            <!-- Target Display (what to build) -->
+            <div class="target-area" id="target-area">
+                <div class="target-label">Build this:</div>
+                <div class="target-display" id="target-display"></div>
+                <div class="target-hint" id="target-hint"></div>
+            </div>
+
+            <!-- Build Area (what user is building) -->
             <div class="sentence-area">
-                <div class="sentence-label">Your sentence:</div>
+                <div class="sentence-label" id="build-label">Your sentence:</div>
                 <div class="sentence-display" id="sentence-display">
-                    <span class="empty-hint">Tap words below to build a sentence</span>
+                    <span class="empty-hint">Tap words below to build</span>
                 </div>
-                <div class="sentence-pinyin" id="sentence-pinyin"></div>
-                <div class="sentence-english" id="sentence-english"></div>
             </div>
 
             <!-- Action Buttons -->
@@ -110,11 +103,7 @@
                     <span class="btn-icon">🔊</span>
                     <span class="btn-text">Speak</span>
                 </button>
-                <button id="save-btn" class="action-btn primary">
-                    <span class="btn-icon">💾</span>
-                    <span class="btn-text">Save</span>
-                </button>
-                <button id="check-btn" class="action-btn success" style="display: none;">
+                <button id="check-btn" class="action-btn success">
                     <span class="btn-icon">✓</span>
                     <span class="btn-text">Check</span>
                 </button>
@@ -122,7 +111,7 @@
 
             <!-- Word Bank -->
             <div class="word-bank">
-                <div class="word-bank-label" id="word-bank-label">Word Bank:</div>
+                <div class="word-bank-label" id="word-bank-label">Words:</div>
                 <div class="word-grid" id="word-grid">
                     <!-- Words will be populated by JS -->
                 </div>
@@ -136,7 +125,7 @@
             <span class="celebration-emoji">🎉</span>
             <span class="celebration-text">Correct!</span>
             <div class="celebration-sentence" id="celebration-sentence"></div>
-            <div class="celebration-pinyin" id="celebration-pinyin"></div>
+            <div class="celebration-hint" id="celebration-hint"></div>
             <div class="celebration-buttons">
                 <button id="celebration-retry" class="celebration-btn retry">↻ Retry</button>
                 <button id="celebration-next" class="celebration-btn next">Next →</button>
@@ -157,12 +146,8 @@
                     <input type="checkbox" id="audio-enabled" checked>
                 </div>
                 <div class="setting-row">
-                    <label for="show-pinyin">Show Pinyin</label>
-                    <input type="checkbox" id="show-pinyin" checked>
-                </div>
-                <div class="setting-row">
-                    <label for="show-english">Show English</label>
-                    <input type="checkbox" id="show-english" checked>
+                    <label for="show-hints">Show Hints</label>
+                    <input type="checkbox" id="show-hints" checked>
                 </div>
                 <div class="setting-row" style="margin-top: 20px; border-top: 2px solid var(--error); padding-top: 20px;">
                     <label>Reset All Progress</label>

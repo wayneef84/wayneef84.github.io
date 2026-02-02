@@ -1,223 +1,156 @@
 {
-  "version": "1.0",
-  "words": {
-    "我": { "pinyin": ["wǒ"], "definition": "I; me", "partOfSpeech": "pronoun" },
-    "你": { "pinyin": ["nǐ"], "definition": "you", "partOfSpeech": "pronoun" },
-    "他": { "pinyin": ["tā"], "definition": "he; him", "partOfSpeech": "pronoun" },
-    "她": { "pinyin": ["tā"], "definition": "she; her", "partOfSpeech": "pronoun" },
-    "们": { "pinyin": ["men"], "definition": "(plural marker)", "partOfSpeech": "suffix" },
-    "是": { "pinyin": ["shì"], "definition": "is; am; are", "partOfSpeech": "verb" },
-    "不": { "pinyin": ["bù"], "definition": "not; no", "partOfSpeech": "adverb" },
-    "很": { "pinyin": ["hěn"], "definition": "very", "partOfSpeech": "adverb" },
-    "好": { "pinyin": ["hǎo"], "definition": "good; well", "partOfSpeech": "adjective" },
-    "吗": { "pinyin": ["ma"], "definition": "(question particle)", "partOfSpeech": "particle" },
-    "的": { "pinyin": ["de"], "definition": "(possessive particle)", "partOfSpeech": "particle" },
-    "了": { "pinyin": ["le"], "definition": "(completed action)", "partOfSpeech": "particle" },
-    "在": { "pinyin": ["zài"], "definition": "at; in; on", "partOfSpeech": "preposition" },
-    "有": { "pinyin": ["yǒu"], "definition": "have; has", "partOfSpeech": "verb" },
-    "没": { "pinyin": ["méi"], "definition": "not have; didn't", "partOfSpeech": "adverb" },
-    "这": { "pinyin": ["zhè"], "definition": "this", "partOfSpeech": "pronoun" },
-    "那": { "pinyin": ["nà"], "definition": "that", "partOfSpeech": "pronoun" },
-    "什么": { "pinyin": ["shén me"], "definition": "what", "partOfSpeech": "pronoun" },
-    "谁": { "pinyin": ["shéi"], "definition": "who", "partOfSpeech": "pronoun" },
-    "哪": { "pinyin": ["nǎ"], "definition": "which", "partOfSpeech": "pronoun" },
-    "里": { "pinyin": ["lǐ"], "definition": "inside; in", "partOfSpeech": "noun" },
-    "呢": { "pinyin": ["ne"], "definition": "(question particle)", "partOfSpeech": "particle" },
-    "吃": { "pinyin": ["chī"], "definition": "eat", "partOfSpeech": "verb" },
-    "喝": { "pinyin": ["hē"], "definition": "drink", "partOfSpeech": "verb" },
-    "去": { "pinyin": ["qù"], "definition": "go", "partOfSpeech": "verb" },
-    "来": { "pinyin": ["lái"], "definition": "come", "partOfSpeech": "verb" },
-    "看": { "pinyin": ["kàn"], "definition": "look; see; read", "partOfSpeech": "verb" },
-    "听": { "pinyin": ["tīng"], "definition": "listen; hear", "partOfSpeech": "verb" },
-    "说": { "pinyin": ["shuō"], "definition": "speak; say", "partOfSpeech": "verb" },
-    "读": { "pinyin": ["dú"], "definition": "read", "partOfSpeech": "verb" },
-    "写": { "pinyin": ["xiě"], "definition": "write", "partOfSpeech": "verb" },
-    "学": { "pinyin": ["xué"], "definition": "learn; study", "partOfSpeech": "verb" },
-    "习": { "pinyin": ["xí"], "definition": "practice", "partOfSpeech": "verb" },
-    "学习": { "pinyin": ["xué xí"], "definition": "study; learn", "partOfSpeech": "verb" },
-    "工作": { "pinyin": ["gōng zuò"], "definition": "work", "partOfSpeech": "verb/noun" },
-    "睡觉": { "pinyin": ["shuì jiào"], "definition": "sleep", "partOfSpeech": "verb" },
-    "起床": { "pinyin": ["qǐ chuáng"], "definition": "get up", "partOfSpeech": "verb" },
-    "回家": { "pinyin": ["huí jiā"], "definition": "go home", "partOfSpeech": "verb" },
-    "爱": { "pinyin": ["ài"], "definition": "love", "partOfSpeech": "verb" },
-    "喜欢": { "pinyin": ["xǐ huān"], "definition": "like", "partOfSpeech": "verb" },
-    "想": { "pinyin": ["xiǎng"], "definition": "want; think; miss", "partOfSpeech": "verb" },
-    "要": { "pinyin": ["yào"], "definition": "want; need; will", "partOfSpeech": "verb" },
-    "能": { "pinyin": ["néng"], "definition": "can; able", "partOfSpeech": "verb" },
-    "会": { "pinyin": ["huì"], "definition": "can; will", "partOfSpeech": "verb" },
-    "可以": { "pinyin": ["kě yǐ"], "definition": "can; may", "partOfSpeech": "verb" },
-    "知道": { "pinyin": ["zhī dào"], "definition": "know", "partOfSpeech": "verb" },
-    "觉得": { "pinyin": ["jué de"], "definition": "think; feel", "partOfSpeech": "verb" },
-    "叫": { "pinyin": ["jiào"], "definition": "call; be called", "partOfSpeech": "verb" },
-    "做": { "pinyin": ["zuò"], "definition": "do; make", "partOfSpeech": "verb" },
-    "人": { "pinyin": ["rén"], "definition": "person; people", "partOfSpeech": "noun" },
-    "家": { "pinyin": ["jiā"], "definition": "home; family", "partOfSpeech": "noun" },
-    "朋友": { "pinyin": ["péng yǒu"], "definition": "friend", "partOfSpeech": "noun" },
-    "老师": { "pinyin": ["lǎo shī"], "definition": "teacher", "partOfSpeech": "noun" },
-    "学生": { "pinyin": ["xué shēng"], "definition": "student", "partOfSpeech": "noun" },
-    "医生": { "pinyin": ["yī shēng"], "definition": "doctor", "partOfSpeech": "noun" },
-    "中国": { "pinyin": ["zhōng guó"], "definition": "China", "partOfSpeech": "noun" },
-    "美国": { "pinyin": ["měi guó"], "definition": "America", "partOfSpeech": "noun" },
-    "北京": { "pinyin": ["běi jīng"], "definition": "Beijing", "partOfSpeech": "noun" },
-    "学校": { "pinyin": ["xué xiào"], "definition": "school", "partOfSpeech": "noun" },
-    "饭店": { "pinyin": ["fàn diàn"], "definition": "restaurant; hotel", "partOfSpeech": "noun" },
-    "商店": { "pinyin": ["shāng diàn"], "definition": "store; shop", "partOfSpeech": "noun" },
-    "书": { "pinyin": ["shū"], "definition": "book", "partOfSpeech": "noun" },
-    "水": { "pinyin": ["shuǐ"], "definition": "water", "partOfSpeech": "noun" },
-    "茶": { "pinyin": ["chá"], "definition": "tea", "partOfSpeech": "noun" },
-    "咖啡": { "pinyin": ["kā fēi"], "definition": "coffee", "partOfSpeech": "noun" },
-    "米饭": { "pinyin": ["mǐ fàn"], "definition": "rice", "partOfSpeech": "noun" },
-    "菜": { "pinyin": ["cài"], "definition": "dish; vegetable", "partOfSpeech": "noun" },
-    "苹果": { "pinyin": ["píng guǒ"], "definition": "apple", "partOfSpeech": "noun" },
-    "电影": { "pinyin": ["diàn yǐng"], "definition": "movie", "partOfSpeech": "noun" },
-    "电视": { "pinyin": ["diàn shì"], "definition": "TV", "partOfSpeech": "noun" },
-    "电脑": { "pinyin": ["diàn nǎo"], "definition": "computer", "partOfSpeech": "noun" },
-    "手机": { "pinyin": ["shǒu jī"], "definition": "phone", "partOfSpeech": "noun" },
-    "钱": { "pinyin": ["qián"], "definition": "money", "partOfSpeech": "noun" },
-    "名字": { "pinyin": ["míng zì"], "definition": "name", "partOfSpeech": "noun" },
-    "中文": { "pinyin": ["zhōng wén"], "definition": "Chinese", "partOfSpeech": "noun" },
-    "英文": { "pinyin": ["yīng wén"], "definition": "English", "partOfSpeech": "noun" },
-    "今天": { "pinyin": ["jīn tiān"], "definition": "today", "partOfSpeech": "noun" },
-    "明天": { "pinyin": ["míng tiān"], "definition": "tomorrow", "partOfSpeech": "noun" },
-    "昨天": { "pinyin": ["zuó tiān"], "definition": "yesterday", "partOfSpeech": "noun" },
-    "现在": { "pinyin": ["xiàn zài"], "definition": "now", "partOfSpeech": "noun" },
-    "时候": { "pinyin": ["shí hòu"], "definition": "time; when", "partOfSpeech": "noun" },
-    "年": { "pinyin": ["nián"], "definition": "year", "partOfSpeech": "noun" },
-    "月": { "pinyin": ["yuè"], "definition": "month; moon", "partOfSpeech": "noun" },
-    "日": { "pinyin": ["rì"], "definition": "day; sun", "partOfSpeech": "noun" },
-    "星期": { "pinyin": ["xīng qī"], "definition": "week", "partOfSpeech": "noun" },
-    "点": { "pinyin": ["diǎn"], "definition": "o'clock; point", "partOfSpeech": "noun" },
-    "大": { "pinyin": ["dà"], "definition": "big; large", "partOfSpeech": "adjective" },
-    "小": { "pinyin": ["xiǎo"], "definition": "small; little", "partOfSpeech": "adjective" },
-    "多": { "pinyin": ["duō"], "definition": "many; much", "partOfSpeech": "adjective" },
-    "少": { "pinyin": ["shǎo"], "definition": "few; little", "partOfSpeech": "adjective" },
-    "高": { "pinyin": ["gāo"], "definition": "tall; high", "partOfSpeech": "adjective" },
-    "漂亮": { "pinyin": ["piào liàng"], "definition": "beautiful", "partOfSpeech": "adjective" },
-    "快": { "pinyin": ["kuài"], "definition": "fast; quick", "partOfSpeech": "adjective" },
-    "慢": { "pinyin": ["màn"], "definition": "slow", "partOfSpeech": "adjective" },
-    "热": { "pinyin": ["rè"], "definition": "hot", "partOfSpeech": "adjective" },
-    "冷": { "pinyin": ["lěng"], "definition": "cold", "partOfSpeech": "adjective" },
-    "忙": { "pinyin": ["máng"], "definition": "busy", "partOfSpeech": "adjective" },
-    "累": { "pinyin": ["lèi"], "definition": "tired", "partOfSpeech": "adjective" },
-    "高兴": { "pinyin": ["gāo xìng"], "definition": "happy", "partOfSpeech": "adjective" },
-    "一": { "pinyin": ["yī"], "definition": "one", "partOfSpeech": "number" },
-    "二": { "pinyin": ["èr"], "definition": "two", "partOfSpeech": "number" },
-    "三": { "pinyin": ["sān"], "definition": "three", "partOfSpeech": "number" },
-    "四": { "pinyin": ["sì"], "definition": "four", "partOfSpeech": "number" },
-    "五": { "pinyin": ["wǔ"], "definition": "five", "partOfSpeech": "number" },
-    "六": { "pinyin": ["liù"], "definition": "six", "partOfSpeech": "number" },
-    "七": { "pinyin": ["qī"], "definition": "seven", "partOfSpeech": "number" },
-    "八": { "pinyin": ["bā"], "definition": "eight", "partOfSpeech": "number" },
-    "九": { "pinyin": ["jiǔ"], "definition": "nine", "partOfSpeech": "number" },
-    "十": { "pinyin": ["shí"], "definition": "ten", "partOfSpeech": "number" },
-    "个": { "pinyin": ["gè"], "definition": "(general measure word)", "partOfSpeech": "measure" },
-    "岁": { "pinyin": ["suì"], "definition": "years old", "partOfSpeech": "measure" },
-    "块": { "pinyin": ["kuài"], "definition": "(money measure)", "partOfSpeech": "measure" },
-    "和": { "pinyin": ["hé"], "definition": "and; with", "partOfSpeech": "conjunction" },
-    "也": { "pinyin": ["yě"], "definition": "also; too", "partOfSpeech": "adverb" },
-    "都": { "pinyin": ["dōu"], "definition": "all; both", "partOfSpeech": "adverb" },
-    "还": { "pinyin": ["hái"], "definition": "still; also", "partOfSpeech": "adverb" },
-    "太": { "pinyin": ["tài"], "definition": "too (excessive)", "partOfSpeech": "adverb" },
-    "真": { "pinyin": ["zhēn"], "definition": "really; truly", "partOfSpeech": "adverb" },
-    "。": { "pinyin": [], "definition": "(period)", "partOfSpeech": "punctuation" },
-    "？": { "pinyin": [], "definition": "(question mark)", "partOfSpeech": "punctuation" },
-    "！": { "pinyin": [], "definition": "(exclamation)", "partOfSpeech": "punctuation" }
-  },
-  "groups": {
-    "greetings": {
-      "name": "Greetings",
-      "nameZh": "问候",
-      "icon": "👋",
-      "sentences": [
-        { "chinese": ["你", "好", "！"], "english": "Hello!", "pinyin": "Nǐ hǎo!" },
-        { "chinese": ["你", "好", "吗", "？"], "english": "How are you?", "pinyin": "Nǐ hǎo ma?" },
-        { "chinese": ["我", "很", "好", "。"], "english": "I'm very good.", "pinyin": "Wǒ hěn hǎo." },
-        { "chinese": ["谢", "谢", "！"], "english": "Thank you!", "pinyin": "Xiè xiè!" },
-        { "chinese": ["再", "见", "！"], "english": "Goodbye!", "pinyin": "Zài jiàn!" }
-      ]
+  "version": "2.0",
+  "languages": {
+    "english": {
+      "name": "English",
+      "icon": "🇺🇸",
+      "groups": {
+        "greetings": {
+          "name": "Greetings",
+          "icon": "👋",
+          "words": ["hello", "hi", "goodbye", "bye", "good", "morning", "night", "how", "are", "you", "fine", "thanks", "please", "sorry", "welcome"],
+          "sentences": [
+            { "words": ["hello"], "display": "Hello!" },
+            { "words": ["good", "morning"], "display": "Good morning!" },
+            { "words": ["good", "night"], "display": "Good night!" },
+            { "words": ["how", "are", "you"], "display": "How are you?" },
+            { "words": ["fine", "thanks"], "display": "Fine, thanks!" },
+            { "words": ["goodbye"], "display": "Goodbye!" }
+          ]
+        },
+        "family": {
+          "name": "Family",
+          "icon": "👨‍👩‍👧",
+          "words": ["I", "you", "he", "she", "we", "they", "mom", "dad", "sister", "brother", "baby", "family", "love", "my", "your", "is", "am", "are"],
+          "sentences": [
+            { "words": ["I", "love", "you"], "display": "I love you!" },
+            { "words": ["my", "mom"], "display": "My mom" },
+            { "words": ["my", "dad"], "display": "My dad" },
+            { "words": ["I", "love", "my", "family"], "display": "I love my family!" },
+            { "words": ["she", "is", "my", "sister"], "display": "She is my sister." },
+            { "words": ["he", "is", "my", "brother"], "display": "He is my brother." }
+          ]
+        },
+        "animals": {
+          "name": "Animals",
+          "icon": "🐕",
+          "words": ["cat", "dog", "bird", "fish", "rabbit", "horse", "cow", "pig", "duck", "the", "a", "is", "big", "small", "cute", "runs", "jumps", "swims"],
+          "sentences": [
+            { "words": ["the", "cat"], "display": "The cat" },
+            { "words": ["a", "big", "dog"], "display": "A big dog" },
+            { "words": ["the", "bird", "is", "small"], "display": "The bird is small." },
+            { "words": ["the", "fish", "swims"], "display": "The fish swims." },
+            { "words": ["the", "rabbit", "jumps"], "display": "The rabbit jumps." },
+            { "words": ["the", "dog", "runs"], "display": "The dog runs." }
+          ]
+        },
+        "colors": {
+          "name": "Colors",
+          "icon": "🌈",
+          "words": ["red", "blue", "green", "yellow", "orange", "purple", "pink", "black", "white", "brown", "the", "is", "ball", "car", "apple", "sky", "sun"],
+          "sentences": [
+            { "words": ["the", "apple", "is", "red"], "display": "The apple is red." },
+            { "words": ["the", "sky", "is", "blue"], "display": "The sky is blue." },
+            { "words": ["the", "sun", "is", "yellow"], "display": "The sun is yellow." },
+            { "words": ["the", "ball", "is", "green"], "display": "The ball is green." },
+            { "words": ["the", "car", "is", "black"], "display": "The car is black." }
+          ]
+        },
+        "food": {
+          "name": "Food",
+          "icon": "🍎",
+          "words": ["apple", "banana", "bread", "milk", "water", "juice", "cake", "cookie", "pizza", "I", "like", "want", "eat", "drink", "the", "a", "is", "yummy"],
+          "sentences": [
+            { "words": ["I", "like", "apple"], "display": "I like apples!" },
+            { "words": ["I", "want", "milk"], "display": "I want milk." },
+            { "words": ["I", "eat", "bread"], "display": "I eat bread." },
+            { "words": ["I", "drink", "water"], "display": "I drink water." },
+            { "words": ["the", "cake", "is", "yummy"], "display": "The cake is yummy!" },
+            { "words": ["I", "like", "pizza"], "display": "I like pizza!" }
+          ]
+        },
+        "actions": {
+          "name": "Actions",
+          "icon": "🏃",
+          "words": ["run", "jump", "walk", "sit", "stand", "sleep", "eat", "drink", "play", "read", "I", "can", "like", "to", "want"],
+          "sentences": [
+            { "words": ["I", "can", "run"], "display": "I can run!" },
+            { "words": ["I", "can", "jump"], "display": "I can jump!" },
+            { "words": ["I", "like", "to", "play"], "display": "I like to play." },
+            { "words": ["I", "want", "to", "read"], "display": "I want to read." },
+            { "words": ["I", "can", "walk"], "display": "I can walk." }
+          ]
+        }
+      }
     },
-    "introductions": {
-      "name": "Introductions",
-      "nameZh": "自我介绍",
-      "icon": "🙋",
-      "sentences": [
-        { "chinese": ["我", "叫", "小", "明", "。"], "english": "My name is Xiaoming.", "pinyin": "Wǒ jiào Xiǎomíng." },
-        { "chinese": ["你", "叫", "什么", "名字", "？"], "english": "What is your name?", "pinyin": "Nǐ jiào shénme míngzì?" },
-        { "chinese": ["我", "是", "学生", "。"], "english": "I am a student.", "pinyin": "Wǒ shì xuéshēng." },
-        { "chinese": ["他", "是", "老师", "。"], "english": "He is a teacher.", "pinyin": "Tā shì lǎoshī." },
-        { "chinese": ["她", "是", "医生", "。"], "english": "She is a doctor.", "pinyin": "Tā shì yīshēng." }
-      ]
-    },
-    "family": {
-      "name": "Family",
-      "nameZh": "家庭",
-      "icon": "👨‍👩‍👧",
-      "sentences": [
-        { "chinese": ["这", "是", "我", "的", "家", "。"], "english": "This is my family.", "pinyin": "Zhè shì wǒ de jiā." },
-        { "chinese": ["我", "爱", "我", "的", "家", "。"], "english": "I love my family.", "pinyin": "Wǒ ài wǒ de jiā." },
-        { "chinese": ["我", "有", "一", "个", "朋友", "。"], "english": "I have a friend.", "pinyin": "Wǒ yǒu yī gè péngyǒu." },
-        { "chinese": ["他", "们", "是", "我", "的", "朋友", "。"], "english": "They are my friends.", "pinyin": "Tāmen shì wǒ de péngyǒu." }
-      ]
-    },
-    "food": {
-      "name": "Food & Drink",
-      "nameZh": "饮食",
-      "icon": "🍚",
-      "sentences": [
-        { "chinese": ["我", "想", "吃", "米饭", "。"], "english": "I want to eat rice.", "pinyin": "Wǒ xiǎng chī mǐfàn." },
-        { "chinese": ["你", "喝", "茶", "吗", "？"], "english": "Do you drink tea?", "pinyin": "Nǐ hē chá ma?" },
-        { "chinese": ["我", "喜欢", "喝", "咖啡", "。"], "english": "I like to drink coffee.", "pinyin": "Wǒ xǐhuān hē kāfēi." },
-        { "chinese": ["这", "个", "菜", "很", "好", "吃", "。"], "english": "This dish is delicious.", "pinyin": "Zhège cài hěn hǎochī." },
-        { "chinese": ["我", "要", "一", "个", "苹果", "。"], "english": "I want an apple.", "pinyin": "Wǒ yào yī gè píngguǒ." }
-      ]
-    },
-    "daily": {
-      "name": "Daily Life",
-      "nameZh": "日常",
-      "icon": "🌅",
-      "sentences": [
-        { "chinese": ["我", "去", "学校", "。"], "english": "I go to school.", "pinyin": "Wǒ qù xuéxiào." },
-        { "chinese": ["他", "在", "工作", "。"], "english": "He is working.", "pinyin": "Tā zài gōngzuò." },
-        { "chinese": ["我", "们", "回家", "了", "。"], "english": "We went home.", "pinyin": "Wǒmen huíjiā le." },
-        { "chinese": ["今天", "我", "很", "忙", "。"], "english": "Today I am very busy.", "pinyin": "Jīntiān wǒ hěn máng." },
-        { "chinese": ["明天", "我", "要", "学习", "。"], "english": "Tomorrow I will study.", "pinyin": "Míngtiān wǒ yào xuéxí." }
-      ]
-    },
-    "questions": {
-      "name": "Questions",
-      "nameZh": "问题",
-      "icon": "❓",
-      "sentences": [
-        { "chinese": ["这", "是", "什么", "？"], "english": "What is this?", "pinyin": "Zhè shì shénme?" },
-        { "chinese": ["你", "在", "哪", "里", "？"], "english": "Where are you?", "pinyin": "Nǐ zài nǎlǐ?" },
-        { "chinese": ["谁", "是", "老师", "？"], "english": "Who is the teacher?", "pinyin": "Shéi shì lǎoshī?" },
-        { "chinese": ["你", "要", "去", "哪", "里", "？"], "english": "Where do you want to go?", "pinyin": "Nǐ yào qù nǎlǐ?" },
-        { "chinese": ["现在", "几", "点", "？"], "english": "What time is it now?", "pinyin": "Xiànzài jǐ diǎn?" }
-      ]
-    },
-    "learning": {
-      "name": "Learning",
-      "nameZh": "学习",
-      "icon": "📚",
-      "sentences": [
-        { "chinese": ["我", "学习", "中文", "。"], "english": "I study Chinese.", "pinyin": "Wǒ xuéxí zhōngwén." },
-        { "chinese": ["他", "会", "说", "英文", "。"], "english": "He can speak English.", "pinyin": "Tā huì shuō yīngwén." },
-        { "chinese": ["我", "在", "看", "书", "。"], "english": "I am reading a book.", "pinyin": "Wǒ zài kàn shū." },
-        { "chinese": ["她", "写", "中文", "很", "好", "。"], "english": "She writes Chinese very well.", "pinyin": "Tā xiě zhōngwén hěn hǎo." },
-        { "chinese": ["我", "听", "不", "懂", "。"], "english": "I don't understand.", "pinyin": "Wǒ tīng bù dǒng." }
-      ]
-    },
-    "feelings": {
-      "name": "Feelings",
-      "nameZh": "感觉",
-      "icon": "😊",
-      "sentences": [
-        { "chinese": ["我", "很", "高兴", "。"], "english": "I am very happy.", "pinyin": "Wǒ hěn gāoxìng." },
-        { "chinese": ["他", "很", "累", "。"], "english": "He is very tired.", "pinyin": "Tā hěn lèi." },
-        { "chinese": ["今天", "很", "热", "。"], "english": "Today is very hot.", "pinyin": "Jīntiān hěn rè." },
-        { "chinese": ["我", "觉得", "很", "好", "。"], "english": "I feel very good.", "pinyin": "Wǒ juéde hěn hǎo." },
-        { "chinese": ["太", "好", "了", "！"], "english": "Great! / Wonderful!", "pinyin": "Tài hǎo le!" }
-      ]
+    "chinese": {
+      "name": "中文",
+      "icon": "🇨🇳",
+      "groups": {
+        "greetings": {
+          "name": "Greetings",
+          "nameZh": "问候",
+          "icon": "👋",
+          "words": ["你", "好", "吗", "我", "很", "再", "见", "谢", "对", "不", "起", "请"],
+          "sentences": [
+            { "words": ["你", "好"], "display": "你好！", "pinyin": "Nǐ hǎo!", "english": "Hello!" },
+            { "words": ["你", "好", "吗"], "display": "你好吗？", "pinyin": "Nǐ hǎo ma?", "english": "How are you?" },
+            { "words": ["我", "很", "好"], "display": "我很好。", "pinyin": "Wǒ hěn hǎo.", "english": "I'm very good." },
+            { "words": ["谢", "谢"], "display": "谢谢！", "pinyin": "Xiè xiè!", "english": "Thank you!" },
+            { "words": ["再", "见"], "display": "再见！", "pinyin": "Zài jiàn!", "english": "Goodbye!" },
+            { "words": ["对", "不", "起"], "display": "对不起。", "pinyin": "Duì bù qǐ.", "english": "Sorry." }
+          ]
+        },
+        "family": {
+          "name": "Family",
+          "nameZh": "家庭",
+          "icon": "👨‍👩‍👧",
+          "words": ["我", "你", "他", "她", "爸", "妈", "哥", "姐", "弟", "妹", "爱", "的", "是", "家"],
+          "sentences": [
+            { "words": ["我", "爱", "你"], "display": "我爱你！", "pinyin": "Wǒ ài nǐ!", "english": "I love you!" },
+            { "words": ["我", "的", "妈", "妈"], "display": "我的妈妈", "pinyin": "Wǒ de māma", "english": "My mom" },
+            { "words": ["我", "的", "爸", "爸"], "display": "我的爸爸", "pinyin": "Wǒ de bàba", "english": "My dad" },
+            { "words": ["我", "爱", "我", "的", "家"], "display": "我爱我的家。", "pinyin": "Wǒ ài wǒ de jiā.", "english": "I love my family." },
+            { "words": ["他", "是", "我", "的", "哥", "哥"], "display": "他是我的哥哥。", "pinyin": "Tā shì wǒ de gēge.", "english": "He is my brother." }
+          ]
+        },
+        "food": {
+          "name": "Food",
+          "nameZh": "饮食",
+          "icon": "🍚",
+          "words": ["我", "想", "吃", "喝", "饭", "水", "茶", "菜", "肉", "鱼", "好", "很"],
+          "sentences": [
+            { "words": ["我", "想", "吃", "饭"], "display": "我想吃饭。", "pinyin": "Wǒ xiǎng chī fàn.", "english": "I want to eat." },
+            { "words": ["我", "想", "喝", "水"], "display": "我想喝水。", "pinyin": "Wǒ xiǎng hē shuǐ.", "english": "I want to drink water." },
+            { "words": ["我", "想", "喝", "茶"], "display": "我想喝茶。", "pinyin": "Wǒ xiǎng hē chá.", "english": "I want to drink tea." },
+            { "words": ["菜", "很", "好", "吃"], "display": "菜很好吃。", "pinyin": "Cài hěn hǎo chī.", "english": "The food is delicious." }
+          ]
+        },
+        "numbers": {
+          "name": "Numbers",
+          "nameZh": "数字",
+          "icon": "🔢",
+          "words": ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "个", "有"],
+          "sentences": [
+            { "words": ["一", "二", "三"], "display": "一二三", "pinyin": "Yī èr sān", "english": "One two three" },
+            { "words": ["四", "五", "六"], "display": "四五六", "pinyin": "Sì wǔ liù", "english": "Four five six" },
+            { "words": ["七", "八", "九", "十"], "display": "七八九十", "pinyin": "Qī bā jiǔ shí", "english": "Seven eight nine ten" },
+            { "words": ["我", "有", "三", "个"], "display": "我有三个。", "pinyin": "Wǒ yǒu sān gè.", "english": "I have three." }
+          ]
+        },
+        "daily": {
+          "name": "Daily Life",
+          "nameZh": "日常",
+          "icon": "🌅",
+          "words": ["我", "你", "去", "来", "在", "学", "校", "家", "工", "作", "想", "要"],
+          "sentences": [
+            { "words": ["我", "去", "学", "校"], "display": "我去学校。", "pinyin": "Wǒ qù xuéxiào.", "english": "I go to school." },
+            { "words": ["我", "在", "家"], "display": "我在家。", "pinyin": "Wǒ zài jiā.", "english": "I'm at home." },
+            { "words": ["我", "要", "工", "作"], "display": "我要工作。", "pinyin": "Wǒ yào gōngzuò.", "english": "I need to work." },
+            { "words": ["你", "来", "我", "家"], "display": "你来我家。", "pinyin": "Nǐ lái wǒ jiā.", "english": "You come to my home." }
+          ]
+        }
+      }
     }
   }
 }

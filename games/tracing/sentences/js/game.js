@@ -1,33 +1,29 @@
 /**
- * Chinese Sentence Builder Game
- * Build sentences from word banks, practice predefined sentences, create custom sentences
+ * Sentence Builder Game
+ * Build sentences from words - supports English and Chinese
+ * URL: ?group=english-greetings or ?group=chinese-food or ?group=custom
  */
 
 (function() {
     'use strict';
 
-    // Game State
     var state = {
-        words: {},
-        groups: {},
-        currentSentence: [],      // Words user has added
-        targetSentence: null,     // Target sentence when practicing
-        currentGroup: null,
+        data: null,
+        currentLanguage: null,     // 'english' or 'chinese'
+        currentGroup: null,        // group key like 'greetings'
         currentSentenceIndex: 0,
-        currentView: 'menu',      // 'menu', 'groups', 'sentences', 'practice', 'custom', 'saved'
+        currentSentence: [],       // words user has added
+        targetSentence: null,      // sentence to build
         savedSentences: [],
-        completedSentences: [],
+        completedCount: {},        // Track completion counts: { 'english-greetings-0': 3 }
         settings: {
             audioEnabled: true,
-            showPinyin: true,
-            showEnglish: true
+            showHints: true
         }
     };
 
-    // DOM Elements
     var elements = {};
 
-    // Initialize on DOM ready
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
@@ -39,36 +35,32 @@
         window.addEventListener('popstate', handlePopState);
     }
 
-    // ========== URL & HISTORY MANAGEMENT ==========
+    // ========== URL NAVIGATION ==========
+    // Simple: ?group=english-greetings or ?group=chinese-food or ?group=custom
 
     function handleInitialRoute() {
         var params = new URLSearchParams(window.location.search);
         var group = params.get('group');
-        var sentence = params.get('sentence');
-        var view = params.get('view');
 
-        // Wait for data to load
         var checkData = setInterval(function() {
-            if (Object.keys(state.words).length > 0) {
+            if (state.data) {
                 clearInterval(checkData);
 
-                if (view === 'custom') {
-                    showCustomMode(false);
-                } else if (view === 'saved') {
-                    showSavedView(false);
-                } else if (group && state.groups[group]) {
-                    if (sentence !== null) {
-                        var idx = parseInt(sentence, 10);
-                        showPracticeMode(group, idx, false);
-                    } else {
-                        showSentenceList(group, false);
+                if (group) {
+                    if (group === 'custom') {
+                        showCustomMode(false);
+                    } else if (group === 'saved') {
+                        showSavedView(false);
+                    } else if (group.indexOf('-') !== -1) {
+                        // Parse: language-groupname
+                        var parts = group.split('-');
+                        var lang = parts[0];
+                        var groupKey = parts.slice(1).join('-');
+                        if (state.data.languages[lang] && state.data.languages[lang].groups[groupKey]) {
+                            showPracticeMode(lang, groupKey, false);
+                        }
                     }
-                } else if (view === 'groups') {
-                    showGroupsView(false);
-                } else if (view === 'practice') {
-                    showRandomPractice(false);
                 }
-                // else stay on menu
             }
         }, 100);
     }
@@ -77,36 +69,34 @@
         if (e.state) {
             if (e.state.view === 'menu') {
                 showMainMenu(false);
-            } else if (e.state.view === 'groups') {
-                showGroupsView(false);
-            } else if (e.state.view === 'sentences' && e.state.group) {
-                showSentenceList(e.state.group, false);
-            } else if (e.state.view === 'practice' && e.state.group) {
-                showPracticeMode(e.state.group, e.state.sentence || 0, false);
-            } else if (e.state.view === 'custom') {
-                showCustomMode(false);
-            } else if (e.state.view === 'saved') {
-                showSavedView(false);
+            } else if (e.state.view === 'groups' && e.state.language) {
+                showLanguageGroups(e.state.language, false);
+            } else if (e.state.group) {
+                if (e.state.group === 'custom') {
+                    showCustomMode(false);
+                } else if (e.state.group === 'saved') {
+                    showSavedView(false);
+                } else {
+                    var parts = e.state.group.split('-');
+                    showPracticeMode(parts[0], parts.slice(1).join('-'), false);
+                }
             }
         } else {
             showMainMenu(false);
         }
     }
 
-    function updateURL(params, pushHistory) {
+    function updateURL(group, pushHistory) {
         var url = new URL(window.location.href);
         url.search = '';
-
-        for (var key in params) {
-            if (params[key] !== null && params[key] !== undefined) {
-                url.searchParams.set(key, params[key]);
-            }
+        if (group) {
+            url.searchParams.set('group', group);
         }
 
         var historyState = {
-            view: state.currentView,
-            group: state.currentGroup,
-            sentence: state.currentSentenceIndex
+            view: state.currentLanguage ? 'practice' : 'menu',
+            group: group,
+            language: state.currentLanguage
         };
 
         if (pushHistory !== false) {
@@ -117,65 +107,49 @@
     }
 
     function cacheElements() {
-        // Main menu
         elements.mainMenu = document.getElementById('main-menu');
-        elements.menuPractice = document.getElementById('menu-practice');
-        elements.menuGroups = document.getElementById('menu-groups');
+        elements.menuEnglish = document.getElementById('menu-english');
+        elements.menuChinese = document.getElementById('menu-chinese');
         elements.menuCustom = document.getElementById('menu-custom');
         elements.menuSaved = document.getElementById('menu-saved');
         elements.menuSettings = document.getElementById('menu-settings');
 
-        // Groups view
         elements.groupsView = document.getElementById('groups-view');
         elements.groupsGrid = document.getElementById('groups-grid');
         elements.groupsBack = document.getElementById('groups-back');
+        elements.groupsTitle = document.getElementById('groups-title');
 
-        // Sentence list view
-        elements.sentenceListView = document.getElementById('sentence-list-view');
-        elements.sentenceList = document.getElementById('sentence-list');
-        elements.sentenceListBack = document.getElementById('sentence-list-back');
-        elements.sentenceListTitle = document.getElementById('sentence-list-title');
-
-        // Saved view
         elements.savedView = document.getElementById('saved-view');
         elements.savedList = document.getElementById('saved-list');
         elements.savedBack = document.getElementById('saved-back');
 
-        // Game container
         elements.gameContainer = document.getElementById('game-container');
         elements.menuBtn = document.getElementById('menu-btn');
         elements.headerTitle = document.getElementById('header-title');
         elements.speakBtn = document.getElementById('speak-btn');
-        elements.settingsBtn = document.getElementById('settings-btn');
 
-        // Sentence area
+        elements.targetArea = document.getElementById('target-area');
+        elements.targetDisplay = document.getElementById('target-display');
+        elements.targetHint = document.getElementById('target-hint');
+        elements.buildLabel = document.getElementById('build-label');
         elements.sentenceDisplay = document.getElementById('sentence-display');
-        elements.sentencePinyin = document.getElementById('sentence-pinyin');
-        elements.sentenceEnglish = document.getElementById('sentence-english');
 
-        // Action buttons
         elements.clearBtn = document.getElementById('clear-btn');
         elements.speakSentenceBtn = document.getElementById('speak-sentence-btn');
-        elements.saveBtn = document.getElementById('save-btn');
         elements.checkBtn = document.getElementById('check-btn');
-
-        // Word bank
         elements.wordBankLabel = document.getElementById('word-bank-label');
         elements.wordGrid = document.getElementById('word-grid');
 
-        // Celebration
         elements.celebration = document.getElementById('celebration');
         elements.celebrationSentence = document.getElementById('celebration-sentence');
-        elements.celebrationPinyin = document.getElementById('celebration-pinyin');
+        elements.celebrationHint = document.getElementById('celebration-hint');
         elements.celebrationRetry = document.getElementById('celebration-retry');
         elements.celebrationNext = document.getElementById('celebration-next');
 
-        // Settings modal
         elements.settingsModal = document.getElementById('settings-modal');
         elements.closeSettings = document.getElementById('close-settings');
         elements.audioEnabled = document.getElementById('audio-enabled');
-        elements.showPinyin = document.getElementById('show-pinyin');
-        elements.showEnglish = document.getElementById('show-english');
+        elements.showHints = document.getElementById('show-hints');
         elements.resetProgress = document.getElementById('reset-progress');
     }
 
@@ -185,9 +159,7 @@
             if (saved) {
                 var parsed = JSON.parse(saved);
                 for (var key in parsed) {
-                    if (parsed.hasOwnProperty(key)) {
-                        state.settings[key] = parsed[key];
-                    }
+                    state.settings[key] = parsed[key];
                 }
             }
             var savedSentences = localStorage.getItem('sentences-saved');
@@ -196,7 +168,7 @@
             }
             var completed = localStorage.getItem('sentences-completed');
             if (completed) {
-                state.completedSentences = JSON.parse(completed);
+                state.completedCount = JSON.parse(completed);
             }
         } catch (e) {
             console.warn('Could not load settings:', e);
@@ -207,59 +179,43 @@
     function saveSettings() {
         try {
             localStorage.setItem('sentences-settings', JSON.stringify(state.settings));
-        } catch (e) {
-            console.warn('Could not save settings:', e);
-        }
+        } catch (e) {}
     }
 
     function saveSavedSentences() {
         try {
             localStorage.setItem('sentences-saved', JSON.stringify(state.savedSentences));
-        } catch (e) {
-            console.warn('Could not save sentences:', e);
-        }
+        } catch (e) {}
     }
 
     function saveCompleted() {
         try {
-            localStorage.setItem('sentences-completed', JSON.stringify(state.completedSentences));
-        } catch (e) {
-            console.warn('Could not save completed:', e);
-        }
+            localStorage.setItem('sentences-completed', JSON.stringify(state.completedCount));
+        } catch (e) {}
     }
 
     function applySettings() {
-        if (elements.audioEnabled) {
-            elements.audioEnabled.checked = state.settings.audioEnabled;
-        }
-        if (elements.showPinyin) {
-            elements.showPinyin.checked = state.settings.showPinyin;
-        }
-        if (elements.showEnglish) {
-            elements.showEnglish.checked = state.settings.showEnglish;
-        }
+        if (elements.audioEnabled) elements.audioEnabled.checked = state.settings.audioEnabled;
+        if (elements.showHints) elements.showHints.checked = state.settings.showHints;
     }
 
     function loadData() {
         fetch('data/sentences.json')
-            .then(function(response) { return response.json(); })
+            .then(function(r) { return r.json(); })
             .then(function(data) {
-                state.words = data.words;
-                state.groups = data.groups;
-                populateGroupsView();
+                state.data = data;
             })
             .catch(function(err) {
-                console.error('Failed to load sentence data:', err);
+                console.error('Failed to load data:', err);
             });
     }
 
     function bindEvents() {
-        // Menu items
-        elements.menuPractice.addEventListener('click', function() {
-            showRandomPractice(true);
+        elements.menuEnglish.addEventListener('click', function() {
+            showLanguageGroups('english', true);
         });
-        elements.menuGroups.addEventListener('click', function() {
-            showGroupsView(true);
+        elements.menuChinese.addEventListener('click', function() {
+            showLanguageGroups('chinese', true);
         });
         elements.menuCustom.addEventListener('click', function() {
             showCustomMode(true);
@@ -271,27 +227,19 @@
             elements.settingsModal.classList.remove('hidden');
         });
 
-        // Back buttons
-        elements.groupsBack.addEventListener('click', function() {
-            history.back();
-        });
-        elements.sentenceListBack.addEventListener('click', function() {
-            history.back();
-        });
-        elements.savedBack.addEventListener('click', function() {
-            history.back();
-        });
-        elements.menuBtn.addEventListener('click', function() {
-            history.back();
-        });
+        elements.groupsBack.addEventListener('click', function() { history.back(); });
+        elements.savedBack.addEventListener('click', function() { history.back(); });
+        elements.menuBtn.addEventListener('click', function() { history.back(); });
 
-        // Action buttons
         elements.clearBtn.addEventListener('click', clearSentence);
         elements.speakSentenceBtn.addEventListener('click', speakCurrentSentence);
-        elements.saveBtn.addEventListener('click', saveCurrentSentence);
         elements.checkBtn.addEventListener('click', checkSentence);
+        elements.speakBtn.addEventListener('click', function() {
+            if (state.targetSentence) {
+                speakText(state.targetSentence.display, state.currentLanguage);
+            }
+        });
 
-        // Celebration
         elements.celebrationRetry.addEventListener('click', function() {
             elements.celebration.classList.add('hidden');
             clearSentence();
@@ -306,7 +254,6 @@
             }
         });
 
-        // Settings
         elements.closeSettings.addEventListener('click', function() {
             elements.settingsModal.classList.add('hidden');
         });
@@ -319,15 +266,10 @@
             state.settings.audioEnabled = this.checked;
             saveSettings();
         });
-        elements.showPinyin.addEventListener('change', function() {
-            state.settings.showPinyin = this.checked;
+        elements.showHints.addEventListener('change', function() {
+            state.settings.showHints = this.checked;
             saveSettings();
-            updateSentenceDisplay();
-        });
-        elements.showEnglish.addEventListener('change', function() {
-            state.settings.showEnglish = this.checked;
-            saveSettings();
-            updateSentenceDisplay();
+            updateTargetDisplay();
         });
         elements.resetProgress.addEventListener('click', function() {
             if (confirm('Reset all progress and saved sentences?')) {
@@ -335,8 +277,8 @@
                 localStorage.removeItem('sentences-saved');
                 localStorage.removeItem('sentences-completed');
                 state.savedSentences = [];
-                state.completedSentences = [];
-                state.settings = { audioEnabled: true, showPinyin: true, showEnglish: true };
+                state.completedCount = {};
+                state.settings = { audioEnabled: true, showHints: true };
                 applySettings();
                 elements.settingsModal.classList.add('hidden');
                 alert('Progress reset!');
@@ -344,18 +286,18 @@
         });
     }
 
-    // ========== VIEW MANAGEMENT ==========
+    // ========== VIEWS ==========
 
     function hideAllViews() {
         elements.mainMenu.classList.add('hidden');
         elements.groupsView.classList.add('hidden');
-        elements.sentenceListView.classList.add('hidden');
         elements.savedView.classList.add('hidden');
         elements.gameContainer.style.display = 'none';
     }
 
     function showMainMenu(pushHistory) {
-        state.currentView = 'menu';
+        state.currentLanguage = null;
+        state.currentGroup = null;
         hideAllViews();
         elements.mainMenu.classList.remove('hidden');
 
@@ -364,162 +306,24 @@
         }
     }
 
-    function showGroupsView(pushHistory) {
-        state.currentView = 'groups';
+    function showLanguageGroups(lang, pushHistory) {
+        var langData = state.data.languages[lang];
+        if (!langData) return;
+
+        state.currentLanguage = lang;
         hideAllViews();
         elements.groupsView.classList.remove('hidden');
-
-        updateURL({ view: 'groups' }, pushHistory);
-    }
-
-    function showSentenceList(groupKey, pushHistory) {
-        var group = state.groups[groupKey];
-        if (!group) return;
-
-        state.currentView = 'sentences';
-        state.currentGroup = groupKey;
-        hideAllViews();
-        elements.sentenceListView.classList.remove('hidden');
-        elements.sentenceListTitle.textContent = group.name + ' ' + group.nameZh;
+        elements.groupsTitle.textContent = langData.name + ' ' + langData.icon;
 
         var html = '';
-        group.sentences.forEach(function(sentence, idx) {
-            var sentenceId = groupKey + '-' + idx;
-            var isCompleted = state.completedSentences.indexOf(sentenceId) !== -1;
-            html += '<div class="sentence-card' + (isCompleted ? ' completed' : '') + '" data-index="' + idx + '">';
-            html += '<div class="sentence-card-chinese">' + sentence.chinese.join('') + '</div>';
-            html += '<div class="sentence-card-pinyin">' + sentence.pinyin + '</div>';
-            html += '<div class="sentence-card-english">' + sentence.english + '</div>';
+        for (var key in langData.groups) {
+            var group = langData.groups[key];
+            var sentenceCount = group.sentences ? group.sentences.length : 0;
+            html += '<div class="group-card" data-group="' + key + '">';
+            html += '<span class="group-icon">' + group.icon + '</span>';
+            html += '<span class="group-name">' + group.name + '</span>';
+            html += '<span class="group-count">' + sentenceCount + ' sentences</span>';
             html += '</div>';
-        });
-        elements.sentenceList.innerHTML = html;
-
-        // Bind click events
-        var cards = elements.sentenceList.querySelectorAll('.sentence-card');
-        cards.forEach(function(card) {
-            card.addEventListener('click', function() {
-                var idx = parseInt(this.getAttribute('data-index'), 10);
-                showPracticeMode(groupKey, idx, true);
-            });
-        });
-
-        updateURL({ group: groupKey, view: 'sentences' }, pushHistory);
-    }
-
-    function showPracticeMode(groupKey, sentenceIndex, pushHistory) {
-        var group = state.groups[groupKey];
-        if (!group || !group.sentences[sentenceIndex]) return;
-
-        state.currentView = 'practice';
-        state.currentGroup = groupKey;
-        state.currentSentenceIndex = sentenceIndex;
-        state.targetSentence = group.sentences[sentenceIndex];
-        state.currentSentence = [];
-
-        hideAllViews();
-        elements.gameContainer.style.display = 'flex';
-        elements.headerTitle.textContent = group.name;
-        elements.saveBtn.style.display = 'none';
-        elements.checkBtn.style.display = 'block';
-
-        // Show target English (as hint)
-        if (state.settings.showEnglish) {
-            elements.sentenceEnglish.textContent = 'Build: "' + state.targetSentence.english + '"';
-        }
-
-        populateWordBank(state.targetSentence.chinese);
-        updateSentenceDisplay();
-
-        updateURL({ group: groupKey, sentence: sentenceIndex, view: 'practice' }, pushHistory);
-    }
-
-    function showRandomPractice(pushHistory) {
-        // Pick a random group and sentence
-        var groupKeys = Object.keys(state.groups);
-        if (groupKeys.length === 0) return;
-
-        var randomGroup = groupKeys[Math.floor(Math.random() * groupKeys.length)];
-        var group = state.groups[randomGroup];
-        var randomIndex = Math.floor(Math.random() * group.sentences.length);
-
-        showPracticeMode(randomGroup, randomIndex, pushHistory);
-    }
-
-    function showCustomMode(pushHistory) {
-        state.currentView = 'custom';
-        state.targetSentence = null;
-        state.currentSentence = [];
-
-        hideAllViews();
-        elements.gameContainer.style.display = 'flex';
-        elements.headerTitle.textContent = 'Custom Sentence';
-        elements.saveBtn.style.display = 'block';
-        elements.checkBtn.style.display = 'none';
-        elements.sentenceEnglish.textContent = '';
-
-        // Show all common words
-        populateFullWordBank();
-        updateSentenceDisplay();
-
-        updateURL({ view: 'custom' }, pushHistory);
-    }
-
-    function showSavedView(pushHistory) {
-        state.currentView = 'saved';
-        hideAllViews();
-        elements.savedView.classList.remove('hidden');
-
-        if (state.savedSentences.length === 0) {
-            elements.savedList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><p>No saved sentences yet.</p><p>Create custom sentences and save them!</p></div>';
-        } else {
-            var html = '';
-            state.savedSentences.forEach(function(sentence, idx) {
-                html += '<div class="custom-sentence-card">';
-                html += '<span class="custom-sentence-text">' + sentence + '</span>';
-                html += '<button class="custom-sentence-delete" data-index="' + idx + '">×</button>';
-                html += '</div>';
-            });
-            elements.savedList.innerHTML = html;
-
-            // Bind delete buttons
-            var deleteButtons = elements.savedList.querySelectorAll('.custom-sentence-delete');
-            deleteButtons.forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var idx = parseInt(this.getAttribute('data-index'), 10);
-                    deleteSavedSentence(idx);
-                });
-            });
-
-            // Bind click to speak
-            var cards = elements.savedList.querySelectorAll('.custom-sentence-card');
-            cards.forEach(function(card) {
-                card.addEventListener('click', function() {
-                    var text = this.querySelector('.custom-sentence-text').textContent;
-                    speakText(text);
-                });
-            });
-        }
-
-        updateURL({ view: 'saved' }, pushHistory);
-    }
-
-    // ========== GROUPS ==========
-
-    function populateGroupsView() {
-        if (!elements.groupsGrid) return;
-
-        var html = '';
-        for (var key in state.groups) {
-            if (state.groups.hasOwnProperty(key)) {
-                var group = state.groups[key];
-                html += '<div class="group-card" data-group="' + key + '">';
-                html += '<span class="group-icon">' + (group.icon || '📁') + '</span>';
-                html += '<span class="group-name">' + group.name + '</span>';
-                html += '<span class="group-name-zh">' + (group.nameZh || '') + '</span>';
-                html += '<span class="group-count">' + group.sentences.length + ' sentences</span>';
-                html += '</div>';
-            }
         }
         elements.groupsGrid.innerHTML = html;
 
@@ -527,79 +331,125 @@
         cards.forEach(function(card) {
             card.addEventListener('click', function() {
                 var groupKey = this.getAttribute('data-group');
-                showSentenceList(groupKey, true);
+                showPracticeMode(lang, groupKey, true);
             });
         });
+
+        if (pushHistory !== false) {
+            history.pushState({ view: 'groups', language: lang }, '', window.location.pathname);
+        }
     }
 
-    // ========== WORD BANK ==========
+    function showPracticeMode(lang, groupKey, pushHistory) {
+        var langData = state.data.languages[lang];
+        if (!langData || !langData.groups[groupKey]) return;
 
-    function populateWordBank(targetWords) {
-        // Include target words plus some distractors
-        var wordSet = {};
-        targetWords.forEach(function(w) { wordSet[w] = true; });
+        var group = langData.groups[groupKey];
+        state.currentLanguage = lang;
+        state.currentGroup = groupKey;
+        state.currentSentenceIndex = 0;
+        state.targetSentence = group.sentences[0];
+        state.currentSentence = [];
 
-        // Add some random distractors
-        var allWords = Object.keys(state.words);
-        var distractorCount = Math.min(5, allWords.length);
-        for (var i = 0; i < distractorCount; i++) {
-            var randomWord = allWords[Math.floor(Math.random() * allWords.length)];
-            if (!wordSet[randomWord]) {
-                wordSet[randomWord] = true;
-            }
+        hideAllViews();
+        elements.gameContainer.style.display = 'flex';
+        elements.headerTitle.textContent = group.name;
+
+        populateWordBank(group.words);
+        updateTargetDisplay();
+        updateSentenceDisplay();
+
+        updateURL(lang + '-' + groupKey, pushHistory);
+    }
+
+    function showCustomMode(pushHistory) {
+        state.currentLanguage = 'english';
+        state.currentGroup = 'custom';
+        state.targetSentence = null;
+        state.currentSentence = [];
+
+        hideAllViews();
+        elements.gameContainer.style.display = 'flex';
+        elements.headerTitle.textContent = 'Custom Sentence';
+        elements.targetArea.style.display = 'none';
+
+        // Show common words
+        var commonWords = ['I', 'you', 'he', 'she', 'we', 'they', 'is', 'am', 'are', 'the', 'a',
+            'like', 'love', 'want', 'have', 'go', 'come', 'eat', 'drink', 'see', 'do',
+            'good', 'big', 'small', 'happy', 'my', 'your', 'to', 'and', 'but'];
+        populateWordBank(commonWords);
+        updateSentenceDisplay();
+
+        updateURL('custom', pushHistory);
+    }
+
+    function showSavedView(pushHistory) {
+        hideAllViews();
+        elements.savedView.classList.remove('hidden');
+
+        if (state.savedSentences.length === 0) {
+            elements.savedList.innerHTML = '<div class="empty-state"><span class="empty-state-icon">📝</span><p>No saved sentences yet.</p></div>';
+        } else {
+            var html = '';
+            state.savedSentences.forEach(function(sentence, idx) {
+                html += '<div class="custom-sentence-card" data-index="' + idx + '">';
+                html += '<span class="custom-sentence-text">' + sentence + '</span>';
+                html += '<button class="custom-sentence-delete" data-index="' + idx + '">×</button>';
+                html += '</div>';
+            });
+            elements.savedList.innerHTML = html;
+
+            elements.savedList.querySelectorAll('.custom-sentence-delete').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var idx = parseInt(this.getAttribute('data-index'), 10);
+                    state.savedSentences.splice(idx, 1);
+                    saveSavedSentences();
+                    showSavedView(false);
+                });
+            });
+
+            elements.savedList.querySelectorAll('.custom-sentence-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var text = this.querySelector('.custom-sentence-text').textContent;
+                    speakText(text, 'english');
+                });
+            });
         }
 
-        var wordList = Object.keys(wordSet);
-        // Shuffle
-        for (var j = wordList.length - 1; j > 0; j--) {
-            var k = Math.floor(Math.random() * (j + 1));
-            var temp = wordList[j];
-            wordList[j] = wordList[k];
-            wordList[k] = temp;
-        }
-
-        renderWordBank(wordList);
+        updateURL('saved', pushHistory);
     }
 
-    function populateFullWordBank() {
-        // Show common words for custom mode
-        var commonWords = ['我', '你', '他', '她', '们', '是', '不', '很', '好', '吗', '的', '了',
-                           '在', '有', '没', '这', '那', '什么', '吃', '喝', '去', '来', '看', '听',
-                           '说', '学习', '工作', '爱', '喜欢', '想', '要', '能', '会', '可以',
-                           '今天', '明天', '昨天', '。', '？', '！'];
-        renderWordBank(commonWords);
-    }
+    // ========== GAME LOGIC ==========
 
-    function renderWordBank(wordList) {
+    function populateWordBank(words) {
         var html = '';
-        wordList.forEach(function(word) {
-            var isUsed = state.currentSentence.indexOf(word) !== -1;
-            html += '<div class="word-chip' + (isUsed ? ' used' : '') + '" data-word="' + word + '">' + word + '</div>';
+        words.forEach(function(word) {
+            html += '<div class="word-chip" data-word="' + word + '">' + word + '</div>';
         });
         elements.wordGrid.innerHTML = html;
 
-        var chips = elements.wordGrid.querySelectorAll('.word-chip');
-        chips.forEach(function(chip) {
+        elements.wordGrid.querySelectorAll('.word-chip').forEach(function(chip) {
             chip.addEventListener('click', function() {
                 var word = this.getAttribute('data-word');
-                addWordToSentence(word);
+                addWord(word);
             });
         });
+
+        updateWordBankUsage();
     }
 
-    // ========== SENTENCE BUILDING ==========
-
-    function addWordToSentence(word) {
+    function addWord(word) {
         state.currentSentence.push(word);
         updateSentenceDisplay();
         updateWordBankUsage();
 
         if (state.settings.audioEnabled) {
-            speakText(word);
+            speakText(word, state.currentLanguage);
         }
     }
 
-    function removeWordFromSentence(index) {
+    function removeWord(index) {
         state.currentSentence.splice(index, 1);
         updateSentenceDisplay();
         updateWordBankUsage();
@@ -613,13 +463,7 @@
 
     function updateSentenceDisplay() {
         if (state.currentSentence.length === 0) {
-            elements.sentenceDisplay.innerHTML = '<span class="empty-hint">Tap words below to build a sentence</span>';
-            elements.sentencePinyin.textContent = '';
-            if (state.targetSentence && state.settings.showEnglish) {
-                elements.sentenceEnglish.textContent = 'Build: "' + state.targetSentence.english + '"';
-            } else if (!state.targetSentence) {
-                elements.sentenceEnglish.textContent = '';
-            }
+            elements.sentenceDisplay.innerHTML = '<span class="empty-hint">Tap words below to build</span>';
             return;
         }
 
@@ -629,38 +473,25 @@
         });
         elements.sentenceDisplay.innerHTML = html;
 
-        // Bind click to remove
-        var words = elements.sentenceDisplay.querySelectorAll('.sentence-word');
-        words.forEach(function(wordEl) {
-            wordEl.addEventListener('click', function() {
+        elements.sentenceDisplay.querySelectorAll('.sentence-word').forEach(function(el) {
+            el.addEventListener('click', function() {
                 var idx = parseInt(this.getAttribute('data-index'), 10);
                 this.classList.add('removing');
                 setTimeout(function() {
-                    removeWordFromSentence(idx);
+                    removeWord(idx);
                 }, 200);
             });
         });
-
-        // Update pinyin
-        if (state.settings.showPinyin) {
-            var pinyinParts = [];
-            state.currentSentence.forEach(function(word) {
-                var wordData = state.words[word];
-                if (wordData && wordData.pinyin && wordData.pinyin.length > 0) {
-                    pinyinParts.push(wordData.pinyin[0]);
-                }
-            });
-            elements.sentencePinyin.textContent = pinyinParts.join(' ');
-        } else {
-            elements.sentencePinyin.textContent = '';
-        }
     }
 
     function updateWordBankUsage() {
-        var chips = elements.wordGrid.querySelectorAll('.word-chip');
-        chips.forEach(function(chip) {
+        elements.wordGrid.querySelectorAll('.word-chip').forEach(function(chip) {
             var word = chip.getAttribute('data-word');
-            if (state.currentSentence.indexOf(word) !== -1) {
+            // Count how many times this word appears in sentence vs target
+            var usedCount = state.currentSentence.filter(function(w) { return w === word; }).length;
+            var targetCount = state.targetSentence ? state.targetSentence.words.filter(function(w) { return w === word; }).length : 999;
+
+            if (usedCount >= targetCount && targetCount > 0) {
                 chip.classList.add('used');
             } else {
                 chip.classList.remove('used');
@@ -668,85 +499,102 @@
         });
     }
 
-    // ========== ACTIONS ==========
+    function updateTargetDisplay() {
+        if (!state.targetSentence) {
+            elements.targetArea.style.display = 'none';
+            return;
+        }
 
-    function speakCurrentSentence() {
-        var text = state.currentSentence.join('');
-        speakText(text);
+        elements.targetArea.style.display = 'block';
+        elements.targetDisplay.textContent = state.targetSentence.display;
+
+        if (state.settings.showHints) {
+            var hint = '';
+            if (state.currentLanguage === 'chinese' && state.targetSentence.english) {
+                hint = state.targetSentence.english;
+            } else if (state.currentLanguage === 'chinese' && state.targetSentence.pinyin) {
+                hint = state.targetSentence.pinyin;
+            }
+            elements.targetHint.textContent = hint;
+        } else {
+            elements.targetHint.textContent = '';
+        }
     }
 
-    function speakText(text) {
+    function checkSentence() {
+        if (!state.targetSentence) {
+            // Custom mode - just save
+            if (state.currentSentence.length > 0) {
+                var sentence = state.currentSentence.join(' ');
+                if (state.savedSentences.indexOf(sentence) === -1) {
+                    state.savedSentences.push(sentence);
+                    saveSavedSentences();
+                    alert('Saved: ' + sentence);
+                }
+            }
+            return;
+        }
+
+        // Check if matches target
+        var userWords = state.currentSentence.join('|');
+        var targetWords = state.targetSentence.words.join('|');
+
+        if (userWords === targetWords) {
+            // Correct!
+            var sentenceId = state.currentLanguage + '-' + state.currentGroup + '-' + state.currentSentenceIndex;
+            state.completedCount[sentenceId] = (state.completedCount[sentenceId] || 0) + 1;
+            saveCompleted();
+
+            elements.celebrationSentence.textContent = state.targetSentence.display;
+            if (state.currentLanguage === 'chinese' && state.targetSentence.pinyin) {
+                elements.celebrationHint.textContent = state.targetSentence.pinyin;
+            } else {
+                elements.celebrationHint.textContent = '';
+            }
+            elements.celebration.classList.remove('hidden');
+
+            if (state.settings.audioEnabled) {
+                speakText(state.targetSentence.display, state.currentLanguage);
+            }
+        } else {
+            alert('Not quite right. Try again!');
+        }
+    }
+
+    function nextSentence() {
+        var langData = state.data.languages[state.currentLanguage];
+        var group = langData.groups[state.currentGroup];
+
+        state.currentSentenceIndex++;
+        if (state.currentSentenceIndex >= group.sentences.length) {
+            state.currentSentenceIndex = 0;
+        }
+
+        state.targetSentence = group.sentences[state.currentSentenceIndex];
+        state.currentSentence = [];
+        updateTargetDisplay();
+        updateSentenceDisplay();
+        updateWordBankUsage();
+    }
+
+    function speakCurrentSentence() {
+        if (state.currentSentence.length === 0) return;
+        var text = state.currentLanguage === 'chinese'
+            ? state.currentSentence.join('')
+            : state.currentSentence.join(' ');
+        speakText(text, state.currentLanguage);
+    }
+
+    function speakText(text, lang) {
         if (!('speechSynthesis' in window)) return;
         if (!state.settings.audioEnabled) return;
         if (!text) return;
 
         window.speechSynthesis.cancel();
-
         var utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
-        utterance.rate = 0.8;
+        utterance.lang = lang === 'chinese' ? 'zh-CN' : 'en-US';
+        utterance.rate = 0.85;
         window.speechSynthesis.speak(utterance);
-    }
-
-    function saveCurrentSentence() {
-        if (state.currentSentence.length === 0) {
-            alert('Build a sentence first!');
-            return;
-        }
-
-        var sentence = state.currentSentence.join('');
-        if (state.savedSentences.indexOf(sentence) === -1) {
-            state.savedSentences.push(sentence);
-            saveSavedSentences();
-            alert('Sentence saved!');
-        } else {
-            alert('This sentence is already saved.');
-        }
-    }
-
-    function deleteSavedSentence(index) {
-        state.savedSentences.splice(index, 1);
-        saveSavedSentences();
-        showSavedView(false);
-    }
-
-    function checkSentence() {
-        if (!state.targetSentence) return;
-
-        var userSentence = state.currentSentence.join('');
-        var targetSentence = state.targetSentence.chinese.join('');
-
-        if (userSentence === targetSentence) {
-            // Correct!
-            var sentenceId = state.currentGroup + '-' + state.currentSentenceIndex;
-            if (state.completedSentences.indexOf(sentenceId) === -1) {
-                state.completedSentences.push(sentenceId);
-                saveCompleted();
-            }
-
-            elements.celebrationSentence.textContent = targetSentence;
-            elements.celebrationPinyin.textContent = state.targetSentence.pinyin;
-            elements.celebration.classList.remove('hidden');
-
-            if (state.settings.audioEnabled) {
-                speakText(targetSentence);
-            }
-        } else {
-            // Incorrect - show hint
-            alert('Not quite! Try again.\nHint: ' + state.targetSentence.english);
-        }
-    }
-
-    function nextSentence() {
-        var group = state.groups[state.currentGroup];
-        if (!group) return;
-
-        var nextIndex = state.currentSentenceIndex + 1;
-        if (nextIndex >= group.sentences.length) {
-            nextIndex = 0;
-        }
-
-        showPracticeMode(state.currentGroup, nextIndex, true);
     }
 
 })();
