@@ -992,6 +992,7 @@
 
             // Start practice immediately
             setTimeout(function() {
+                createWriter(state.currentChar);
                 startPractice();
             }, 100);
         }
@@ -1005,7 +1006,6 @@
             state.isQuizMode = false;
             elements.practiceBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Practice</span>';
             clearStrokeNumberOverlays();
-            createWriter(state.currentChar);
         }
 
         state.isAnimating = false;
