@@ -1000,9 +1000,15 @@
     }
 
     function handleCharacterTouch() {
-        if (state.isAnimating && state.writer) {
+        if (!state.writer || !state.currentChar) return;
+
+        // If already in quiz mode, let the quiz handle the touch
+        if (state.isQuizMode) return;
+
+        if (state.isAnimating) {
             // Stop animation and speak
             cancelAnimation(); // FIX: calling local function, not state.writer
+            clearStrokeNumberOverlays();
 
             // Speak the character with definition
             speakWithDefinition();
@@ -1011,6 +1017,9 @@
             setTimeout(function() {
                 startPractice();
             }, 100);
+        } else {
+            // Not animating - just start practice directly
+            startPractice();
         }
     }
 

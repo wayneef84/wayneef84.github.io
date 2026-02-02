@@ -138,69 +138,6 @@
             </div>
         </main>
 
-        <!-- Help Modal -->
-        <div id="help-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Stroke Types <span class="chinese-title">笔画</span></h2>
-                    <button class="close-btn" id="close-help">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="stroke-grid" id="stroke-grid">
-                        <!-- Stroke types will be populated by JS -->
-                    </div>
-                    <div class="stroke-detail" id="stroke-detail">
-                        <p class="hint">Tap a stroke type to see details</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Settings</h2>
-                    <button class="close-btn" id="close-settings">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="setting-row">
-                        <label for="animation-speed">Animation Speed</label>
-                        <input type="range" id="animation-speed" min="0.5" max="3" step="0.5" value="1">
-                        <span id="speed-value">1x</span>
-                    </div>
-                    <div class="setting-row">
-                        <label for="show-outline">Show Outline</label>
-                        <input type="checkbox" id="show-outline" checked>
-                    </div>
-                    <div class="setting-row">
-                        <label for="show-hints">Show Hints After Mistakes</label>
-                        <input type="range" id="show-hints" min="1" max="5" step="1" value="3">
-                        <span id="hints-value">3</span>
-                    </div>
-                    <div class="setting-row">
-                        <label for="show-stroke-numbers">Show Stroke Numbers</label>
-                        <input type="checkbox" id="show-stroke-numbers" checked>
-                    </div>
-                    <div class="setting-row">
-                        <label for="audio-enabled">Enable Audio</label>
-                        <input type="checkbox" id="audio-enabled" checked>
-                    </div>
-                    <div class="setting-row">
-                        <label for="dialect-select">Dialect</label>
-                        <select id="dialect-select" style="padding: 8px; border-radius: 8px; background: var(--surface-light); color: white; border: none;">
-                            <option value="mandarin">Mandarin 普通话</option>
-                            <option value="cantonese">Cantonese 廣東話</option>
-                        </select>
-                    </div>
-                    <div class="setting-row" style="margin-top: 20px; border-top: 2px solid var(--error); padding-top: 20px;">
-                        <label>Reset All Progress</label>
-                        <button id="reset-progress" style="padding: 10px 20px; background: var(--error); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Reset</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Celebration Overlay -->
         <div id="celebration" class="celebration hidden">
             <div class="celebration-content">
@@ -221,6 +158,68 @@
                     </div>
                 </div>
                 <p class="celebration-hint">tap anywhere else to stay</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Modals (outside game-container for visibility from main menu) -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Stroke Types <span class="chinese-title">笔画</span></h2>
+                <button class="close-btn" id="close-help">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="stroke-grid" id="stroke-grid">
+                    <!-- Stroke types will be populated by JS -->
+                </div>
+                <div class="stroke-detail" id="stroke-detail">
+                    <p class="hint">Tap a stroke type to see details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="close-settings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-row">
+                    <label for="animation-speed">Animation Speed</label>
+                    <input type="range" id="animation-speed" min="0.5" max="3" step="0.5" value="1">
+                    <span id="speed-value">1x</span>
+                </div>
+                <div class="setting-row">
+                    <label for="show-outline">Show Outline</label>
+                    <input type="checkbox" id="show-outline" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="show-hints">Show Hints After Mistakes</label>
+                    <input type="range" id="show-hints" min="1" max="5" step="1" value="3">
+                    <span id="hints-value">3</span>
+                </div>
+                <div class="setting-row">
+                    <label for="show-stroke-numbers">Show Stroke Numbers</label>
+                    <input type="checkbox" id="show-stroke-numbers" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="audio-enabled">Enable Audio</label>
+                    <input type="checkbox" id="audio-enabled" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="dialect-select">Dialect</label>
+                    <select id="dialect-select" style="padding: 8px; border-radius: 8px; background: var(--surface-light); color: white; border: none;">
+                        <option value="mandarin">Mandarin 普通话</option>
+                        <option value="cantonese">Cantonese 廣東話</option>
+                    </select>
+                </div>
+                <div class="setting-row" style="margin-top: 20px; border-top: 2px solid var(--error); padding-top: 20px;">
+                    <label>Reset All Progress</label>
+                    <button id="reset-progress" style="padding: 10px 20px; background: var(--error); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Reset</button>
+                </div>
             </div>
         </div>
     </div>
