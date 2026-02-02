@@ -984,7 +984,7 @@
     function handleCharacterTouch() {
         if (state.isAnimating && state.writer) {
             // Stop animation and speak
-            state.writer.cancelAnimation();
+            cancelAnimation();
             state.isAnimating = false;
 
             // Speak the character with definition
