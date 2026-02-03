@@ -261,6 +261,53 @@ body {
     gap: 12px;
 }
 
+/* ===== MODE INDICATOR ===== */
+.mode-indicator {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mode-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mode-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.mode-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.mode-btn:not(:disabled):active {
+    transform: scale(0.95);
+}
+
+/* ===== UNLOCKED INDICATOR ===== */
+.unlocked-indicator {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.unlocked-indicator #unlocked-count {
+    color: var(--success);
+    font-weight: 700;
+}
+
 /* ===== TARGET AREA ===== */
 .target-area {
     background: var(--secondary);
@@ -291,7 +338,126 @@ body {
     font-style: italic;
 }
 
-/* ===== SENTENCE AREA ===== */
+/* ===== WORD BUILDING AREA (Level 1) ===== */
+.word-build-area {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 80px;
+}
+
+.word-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.word-letter {
+    background: var(--primary);
+    color: white;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    animation: letterPop 0.2s ease;
+}
+
+.word-letter.chinese {
+    width: 56px;
+    height: 56px;
+    font-size: 1.8rem;
+}
+
+@keyframes letterPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.word-letter:active {
+    transform: scale(0.95);
+}
+
+.word-letter.removing {
+    animation: letterRemove 0.2s ease forwards;
+}
+
+@keyframes letterRemove {
+    to {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* ===== LETTER BANK (Level 1) ===== */
+.letter-bank {
+    flex: 1;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.letter-bank-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.letter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.letter-chip {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 10px;
+    background: var(--surface-light);
+    border: 2px solid var(--secondary);
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    text-transform: lowercase;
+}
+
+.letter-chip.uppercase {
+    text-transform: uppercase;
+}
+
+.letter-chip.chinese {
+    width: 56px;
+    height: 56px;
+    font-size: 1.8rem;
+}
+
+.letter-chip:active {
+    transform: scale(0.92);
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.letter-chip.used {
+    opacity: 0.3;
+}
+
+/* ===== SENTENCE AREA (Level 2) ===== */
 .sentence-area {
     background: var(--surface);
     border-radius: 12px;
@@ -447,6 +613,47 @@ body {
     border-color: var(--success);
 }
 
+.word-chip.locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+    border: 2px dashed var(--text-muted);
+}
+
+.word-chip.unlocked {
+    position: relative;
+    border-color: var(--success);
+}
+
+.word-chip.unlocked::after {
+    content: '\2713';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Word unlock celebration animation */
+@keyframes wordUnlock {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.15); }
+    50% { transform: scale(0.95); }
+    75% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.word-chip.just-unlocked {
+    animation: wordUnlock 0.5s ease;
+}
+
 /* ===== MODALS ===== */
 .modal {
     position: fixed;
@@ -510,6 +717,31 @@ body {
 
 .setting-row label {
     font-size: 0.95rem;
+}
+
+.setting-row select {
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--surface-light);
+    color: white;
+    border: none;
+    max-width: 150px;
+}
+
+.slider-with-labels {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.slider-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.slider-with-labels input[type="range"] {
+    width: 70px;
+    accent-color: var(--primary);
 }
 
 /* ===== CELEBRATION ===== */

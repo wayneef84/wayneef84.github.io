@@ -230,6 +230,10 @@
         elements.audioEnabled = document.getElementById('audio-enabled');
         elements.dialectSelect = document.getElementById('dialect-select');
         elements.showStrokeNumbers = document.getElementById('show-stroke-numbers');
+        elements.voiceSpeed = document.getElementById('voice-speed');
+        elements.voicePitch = document.getElementById('voice-pitch');
+        elements.voiceSelect = document.getElementById('voice-select');
+        elements.voiceSelectRow = document.getElementById('voice-select-row');
     }
 
     function loadSettings() {
@@ -311,7 +315,10 @@
                 hintsAfterMistakes: 3,
                 audioEnabled: true,
                 dialect: 'mandarin',
-                showStrokeNumbers: true
+                showStrokeNumbers: true,
+                voiceSpeed: 0.8,
+                voicePitch: 1.0,
+                preferredVoice: 'default'
             };
 
             // Apply defaults to UI
@@ -351,7 +358,17 @@
         if (elements.showStrokeNumbers) {
             elements.showStrokeNumbers.checked = state.settings.showStrokeNumbers;
         }
+        if (elements.voiceSpeed) {
+            elements.voiceSpeed.value = state.settings.voiceSpeed;
+        }
+        if (elements.voicePitch) {
+            elements.voicePitch.value = state.settings.voicePitch;
+        }
+        if (elements.voiceSelect) {
+            elements.voiceSelect.value = state.settings.preferredVoice;
+        }
         updateDialectHighlight();
+        populateVoiceList();
     }
 
     function updateDialectHighlight() {
@@ -524,6 +541,26 @@
             state.settings.showStrokeNumbers = this.checked;
             saveSettings();
         });
+
+        // Voice settings
+        if (elements.voiceSpeed) {
+            elements.voiceSpeed.addEventListener('input', function() {
+                state.settings.voiceSpeed = parseFloat(this.value);
+                saveSettings();
+            });
+        }
+        if (elements.voicePitch) {
+            elements.voicePitch.addEventListener('input', function() {
+                state.settings.voicePitch = parseFloat(this.value);
+                saveSettings();
+            });
+        }
+        if (elements.voiceSelect) {
+            elements.voiceSelect.addEventListener('change', function() {
+                state.settings.preferredVoice = this.value;
+                saveSettings();
+            });
+        }
 
         // Reset progress button
         elements.resetProgress.addEventListener('click', function() {
@@ -1205,8 +1242,55 @@
             utterance.lang = 'zh-CN';
         }
 
-        utterance.rate = 0.8;
+        // Apply voice settings
+        utterance.rate = state.settings.voiceSpeed || 0.8;
+        utterance.pitch = state.settings.voicePitch || 1.0;
+
+        // Try to use preferred voice
+        if (state.settings.preferredVoice && state.settings.preferredVoice !== 'default') {
+            var voices = window.speechSynthesis.getVoices();
+            for (var i = 0; i < voices.length; i++) {
+                if (voices[i].name === state.settings.preferredVoice) {
+                    utterance.voice = voices[i];
+                    break;
+                }
+            }
+        }
+
         window.speechSynthesis.speak(utterance);
+    }
+
+    function populateVoiceList() {
+        if (!('speechSynthesis' in window)) return;
+        if (!elements.voiceSelect || !elements.voiceSelectRow) return;
+
+        var voices = window.speechSynthesis.getVoices();
+        var chineseVoices = [];
+
+        for (var i = 0; i < voices.length; i++) {
+            if (voices[i].lang.indexOf('zh') === 0) {
+                chineseVoices.push(voices[i]);
+            }
+        }
+
+        if (chineseVoices.length === 0) {
+            elements.voiceSelectRow.style.display = 'none';
+            return;
+        }
+
+        elements.voiceSelectRow.style.display = 'flex';
+        var html = '<option value="default">Default</option>';
+        for (var j = 0; j < chineseVoices.length; j++) {
+            var v = chineseVoices[j];
+            var selected = state.settings.preferredVoice === v.name ? ' selected' : '';
+            html += '<option value="' + v.name + '"' + selected + '>' + v.name + '</option>';
+        }
+        elements.voiceSelect.innerHTML = html;
+    }
+
+    // Setup voice list (voices load async)
+    if ('speechSynthesis' in window) {
+        speechSynthesis.onvoiceschanged = populateVoiceList;
     }
 
     // ========== STROKE HELP ==========

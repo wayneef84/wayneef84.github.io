@@ -216,6 +216,28 @@
                         <option value="cantonese">Cantonese 廣東話</option>
                     </select>
                 </div>
+                <div class="setting-row">
+                    <label for="voice-speed">Voice Speed</label>
+                    <div class="slider-with-labels">
+                        <span class="slider-label-left">Slow</span>
+                        <input type="range" id="voice-speed" min="0.5" max="1.5" step="0.1" value="0.8">
+                        <span class="slider-label-right">Fast</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label for="voice-pitch">Voice Pitch</label>
+                    <div class="slider-with-labels">
+                        <span class="slider-label-left">Low</span>
+                        <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="1.0">
+                        <span class="slider-label-right">High</span>
+                    </div>
+                </div>
+                <div class="setting-row" id="voice-select-row" style="display: none;">
+                    <label for="voice-select">Voice</label>
+                    <select id="voice-select" style="padding: 8px; border-radius: 8px; background: var(--surface-light); color: white; border: none; max-width: 180px;">
+                        <option value="default">Default</option>
+                    </select>
+                </div>
                 <div class="setting-row" style="margin-top: 20px; border-top: 2px solid var(--error); padding-top: 20px;">
                     <label>Reset All Progress</label>
                     <button id="reset-progress" style="padding: 10px 20px; background: var(--error); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Reset</button>

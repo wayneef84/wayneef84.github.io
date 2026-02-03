@@ -78,15 +78,41 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Mode Indicator -->
+            <div id="mode-indicator" class="mode-indicator">
+                <button id="mode-word" class="mode-btn active">Build Words</button>
+                <button id="mode-sentence" class="mode-btn" disabled>Build Sentences</button>
+            </div>
+
+            <!-- Unlocked Words Counter -->
+            <div id="unlocked-indicator" class="unlocked-indicator">
+                <span id="unlocked-count">0</span>/<span id="total-words">0</span> words unlocked
+            </div>
+
             <!-- Target Display (what to build) -->
             <div class="target-area" id="target-area">
-                <div class="target-label">Build this:</div>
+                <div class="target-label" id="target-label">Build this word:</div>
                 <div class="target-display" id="target-display"></div>
                 <div class="target-hint" id="target-hint"></div>
             </div>
 
-            <!-- Build Area (what user is building) -->
-            <div class="sentence-area">
+            <!-- Word Building Area (Level 1) -->
+            <div class="word-build-area" id="word-build-area">
+                <div class="word-display" id="word-display">
+                    <span class="empty-hint">Tap letters below</span>
+                </div>
+            </div>
+
+            <!-- Letter/Character Bank (Level 1) -->
+            <div class="letter-bank" id="letter-bank">
+                <div class="letter-bank-label">Letters:</div>
+                <div class="letter-grid" id="letter-grid">
+                    <!-- Letters will be populated by JS -->
+                </div>
+            </div>
+
+            <!-- Sentence Building Area (Level 2) -->
+            <div class="sentence-area" id="sentence-area">
                 <div class="sentence-label" id="build-label">Your sentence:</div>
                 <div class="sentence-display" id="sentence-display">
                     <span class="empty-hint">Tap words below to build</span>
@@ -109,8 +135,8 @@
                 </button>
             </div>
 
-            <!-- Word Bank -->
-            <div class="word-bank">
+            <!-- Word Bank (Level 2) -->
+            <div class="word-bank" id="word-bank">
                 <div class="word-bank-label" id="word-bank-label">Words:</div>
                 <div class="word-grid" id="word-grid">
                     <!-- Words will be populated by JS -->
@@ -144,6 +170,28 @@
                 <div class="setting-row">
                     <label for="audio-enabled">Enable Audio</label>
                     <input type="checkbox" id="audio-enabled" checked>
+                </div>
+                <div class="setting-row">
+                    <label for="voice-speed">Voice Speed</label>
+                    <div class="slider-with-labels">
+                        <span class="slider-label">Slow</span>
+                        <input type="range" id="voice-speed" min="0.5" max="1.5" step="0.1" value="0.85">
+                        <span class="slider-label">Fast</span>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label for="voice-pitch">Voice Pitch</label>
+                    <div class="slider-with-labels">
+                        <span class="slider-label">Low</span>
+                        <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="1.0">
+                        <span class="slider-label">High</span>
+                    </div>
+                </div>
+                <div class="setting-row" id="voice-select-row" style="display: none;">
+                    <label for="voice-select">Voice</label>
+                    <select id="voice-select">
+                        <option value="default">Default</option>
+                    </select>
                 </div>
                 <div class="setting-row">
                     <label for="show-hints">Show Hints</label>

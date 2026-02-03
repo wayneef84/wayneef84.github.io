@@ -597,6 +597,24 @@ html, body {
     font-weight: 600;
 }
 
+/* Slider with labels */
+.slider-with-labels {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.slider-label-left,
+.slider-label-right {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    min-width: auto !important;
+}
+
+.slider-with-labels input[type="range"] {
+    width: 80px;
+}
+
 /* Celebration */
 .celebration {
     position: fixed;

@@ -1,5 +1,5 @@
 {
-  "version": "2.0",
+  "version": "3.0",
   "languages": {
     "english": {
       "name": "English",
@@ -8,7 +8,23 @@
         "greetings": {
           "name": "Greetings",
           "icon": "👋",
-          "words": ["hello", "hi", "goodbye", "bye", "good", "morning", "night", "how", "are", "you", "fine", "thanks", "please", "sorry", "welcome"],
+          "words": [
+            { "word": "hello", "letters": ["h","e","l","l","o"] },
+            { "word": "hi", "letters": ["h","i"] },
+            { "word": "goodbye", "letters": ["g","o","o","d","b","y","e"] },
+            { "word": "bye", "letters": ["b","y","e"] },
+            { "word": "good", "letters": ["g","o","o","d"] },
+            { "word": "morning", "letters": ["m","o","r","n","i","n","g"] },
+            { "word": "night", "letters": ["n","i","g","h","t"] },
+            { "word": "how", "letters": ["h","o","w"] },
+            { "word": "are", "letters": ["a","r","e"] },
+            { "word": "you", "letters": ["y","o","u"] },
+            { "word": "fine", "letters": ["f","i","n","e"] },
+            { "word": "thanks", "letters": ["t","h","a","n","k","s"] },
+            { "word": "please", "letters": ["p","l","e","a","s","e"] },
+            { "word": "sorry", "letters": ["s","o","r","r","y"] },
+            { "word": "welcome", "letters": ["w","e","l","c","o","m","e"] }
+          ],
           "sentences": [
             { "words": ["hello"], "display": "Hello!" },
             { "words": ["good", "morning"], "display": "Good morning!" },
@@ -21,7 +37,26 @@
         "family": {
           "name": "Family",
           "icon": "👨‍👩‍👧",
-          "words": ["I", "you", "he", "she", "we", "they", "mom", "dad", "sister", "brother", "baby", "family", "love", "my", "your", "is", "am", "are"],
+          "words": [
+            { "word": "I", "letters": ["I"] },
+            { "word": "you", "letters": ["y","o","u"] },
+            { "word": "he", "letters": ["h","e"] },
+            { "word": "she", "letters": ["s","h","e"] },
+            { "word": "we", "letters": ["w","e"] },
+            { "word": "they", "letters": ["t","h","e","y"] },
+            { "word": "mom", "letters": ["m","o","m"] },
+            { "word": "dad", "letters": ["d","a","d"] },
+            { "word": "sister", "letters": ["s","i","s","t","e","r"] },
+            { "word": "brother", "letters": ["b","r","o","t","h","e","r"] },
+            { "word": "baby", "letters": ["b","a","b","y"] },
+            { "word": "family", "letters": ["f","a","m","i","l","y"] },
+            { "word": "love", "letters": ["l","o","v","e"] },
+            { "word": "my", "letters": ["m","y"] },
+            { "word": "your", "letters": ["y","o","u","r"] },
+            { "word": "is", "letters": ["i","s"] },
+            { "word": "am", "letters": ["a","m"] },
+            { "word": "are", "letters": ["a","r","e"] }
+          ],
           "sentences": [
             { "words": ["I", "love", "you"], "display": "I love you!" },
             { "words": ["my", "mom"], "display": "My mom" },
@@ -34,7 +69,26 @@
         "animals": {
           "name": "Animals",
           "icon": "🐕",
-          "words": ["cat", "dog", "bird", "fish", "rabbit", "horse", "cow", "pig", "duck", "the", "a", "is", "big", "small", "cute", "runs", "jumps", "swims"],
+          "words": [
+            { "word": "cat", "letters": ["c","a","t"] },
+            { "word": "dog", "letters": ["d","o","g"] },
+            { "word": "bird", "letters": ["b","i","r","d"] },
+            { "word": "fish", "letters": ["f","i","s","h"] },
+            { "word": "rabbit", "letters": ["r","a","b","b","i","t"] },
+            { "word": "horse", "letters": ["h","o","r","s","e"] },
+            { "word": "cow", "letters": ["c","o","w"] },
+            { "word": "pig", "letters": ["p","i","g"] },
+            { "word": "duck", "letters": ["d","u","c","k"] },
+            { "word": "the", "letters": ["t","h","e"] },
+            { "word": "a", "letters": ["a"] },
+            { "word": "is", "letters": ["i","s"] },
+            { "word": "big", "letters": ["b","i","g"] },
+            { "word": "small", "letters": ["s","m","a","l","l"] },
+            { "word": "cute", "letters": ["c","u","t","e"] },
+            { "word": "runs", "letters": ["r","u","n","s"] },
+            { "word": "jumps", "letters": ["j","u","m","p","s"] },
+            { "word": "swims", "letters": ["s","w","i","m","s"] }
+          ],
           "sentences": [
             { "words": ["the", "cat"], "display": "The cat" },
             { "words": ["a", "big", "dog"], "display": "A big dog" },
@@ -47,7 +101,25 @@
         "colors": {
           "name": "Colors",
           "icon": "🌈",
-          "words": ["red", "blue", "green", "yellow", "orange", "purple", "pink", "black", "white", "brown", "the", "is", "ball", "car", "apple", "sky", "sun"],
+          "words": [
+            { "word": "red", "letters": ["r","e","d"] },
+            { "word": "blue", "letters": ["b","l","u","e"] },
+            { "word": "green", "letters": ["g","r","e","e","n"] },
+            { "word": "yellow", "letters": ["y","e","l","l","o","w"] },
+            { "word": "orange", "letters": ["o","r","a","n","g","e"] },
+            { "word": "purple", "letters": ["p","u","r","p","l","e"] },
+            { "word": "pink", "letters": ["p","i","n","k"] },
+            { "word": "black", "letters": ["b","l","a","c","k"] },
+            { "word": "white", "letters": ["w","h","i","t","e"] },
+            { "word": "brown", "letters": ["b","r","o","w","n"] },
+            { "word": "the", "letters": ["t","h","e"] },
+            { "word": "is", "letters": ["i","s"] },
+            { "word": "ball", "letters": ["b","a","l","l"] },
+            { "word": "car", "letters": ["c","a","r"] },
+            { "word": "apple", "letters": ["a","p","p","l","e"] },
+            { "word": "sky", "letters": ["s","k","y"] },
+            { "word": "sun", "letters": ["s","u","n"] }
+          ],
           "sentences": [
             { "words": ["the", "apple", "is", "red"], "display": "The apple is red." },
             { "words": ["the", "sky", "is", "blue"], "display": "The sky is blue." },
@@ -59,7 +131,26 @@
         "food": {
           "name": "Food",
           "icon": "🍎",
-          "words": ["apple", "banana", "bread", "milk", "water", "juice", "cake", "cookie", "pizza", "I", "like", "want", "eat", "drink", "the", "a", "is", "yummy"],
+          "words": [
+            { "word": "apple", "letters": ["a","p","p","l","e"] },
+            { "word": "banana", "letters": ["b","a","n","a","n","a"] },
+            { "word": "bread", "letters": ["b","r","e","a","d"] },
+            { "word": "milk", "letters": ["m","i","l","k"] },
+            { "word": "water", "letters": ["w","a","t","e","r"] },
+            { "word": "juice", "letters": ["j","u","i","c","e"] },
+            { "word": "cake", "letters": ["c","a","k","e"] },
+            { "word": "cookie", "letters": ["c","o","o","k","i","e"] },
+            { "word": "pizza", "letters": ["p","i","z","z","a"] },
+            { "word": "I", "letters": ["I"] },
+            { "word": "like", "letters": ["l","i","k","e"] },
+            { "word": "want", "letters": ["w","a","n","t"] },
+            { "word": "eat", "letters": ["e","a","t"] },
+            { "word": "drink", "letters": ["d","r","i","n","k"] },
+            { "word": "the", "letters": ["t","h","e"] },
+            { "word": "a", "letters": ["a"] },
+            { "word": "is", "letters": ["i","s"] },
+            { "word": "yummy", "letters": ["y","u","m","m","y"] }
+          ],
           "sentences": [
             { "words": ["I", "like", "apple"], "display": "I like apples!" },
             { "words": ["I", "want", "milk"], "display": "I want milk." },
@@ -72,7 +163,23 @@
         "actions": {
           "name": "Actions",
           "icon": "🏃",
-          "words": ["run", "jump", "walk", "sit", "stand", "sleep", "eat", "drink", "play", "read", "I", "can", "like", "to", "want"],
+          "words": [
+            { "word": "run", "letters": ["r","u","n"] },
+            { "word": "jump", "letters": ["j","u","m","p"] },
+            { "word": "walk", "letters": ["w","a","l","k"] },
+            { "word": "sit", "letters": ["s","i","t"] },
+            { "word": "stand", "letters": ["s","t","a","n","d"] },
+            { "word": "sleep", "letters": ["s","l","e","e","p"] },
+            { "word": "eat", "letters": ["e","a","t"] },
+            { "word": "drink", "letters": ["d","r","i","n","k"] },
+            { "word": "play", "letters": ["p","l","a","y"] },
+            { "word": "read", "letters": ["r","e","a","d"] },
+            { "word": "I", "letters": ["I"] },
+            { "word": "can", "letters": ["c","a","n"] },
+            { "word": "like", "letters": ["l","i","k","e"] },
+            { "word": "to", "letters": ["t","o"] },
+            { "word": "want", "letters": ["w","a","n","t"] }
+          ],
           "sentences": [
             { "words": ["I", "can", "run"], "display": "I can run!" },
             { "words": ["I", "can", "jump"], "display": "I can jump!" },
@@ -91,46 +198,99 @@
           "name": "Greetings",
           "nameZh": "问候",
           "icon": "👋",
-          "words": ["你", "好", "吗", "我", "很", "再", "见", "谢", "对", "不", "起", "请"],
+          "words": [
+            { "word": "你好", "characters": ["你","好"] },
+            { "word": "你", "characters": ["你"] },
+            { "word": "好", "characters": ["好"] },
+            { "word": "吗", "characters": ["吗"] },
+            { "word": "我", "characters": ["我"] },
+            { "word": "很", "characters": ["很"] },
+            { "word": "再见", "characters": ["再","见"] },
+            { "word": "谢谢", "characters": ["谢","谢"] },
+            { "word": "对不起", "characters": ["对","不","起"] },
+            { "word": "请", "characters": ["请"] }
+          ],
           "sentences": [
-            { "words": ["你", "好"], "display": "你好！", "pinyin": "Nǐ hǎo!", "english": "Hello!" },
+            { "words": ["你好"], "display": "你好！", "pinyin": "Nǐ hǎo!", "english": "Hello!" },
             { "words": ["你", "好", "吗"], "display": "你好吗？", "pinyin": "Nǐ hǎo ma?", "english": "How are you?" },
             { "words": ["我", "很", "好"], "display": "我很好。", "pinyin": "Wǒ hěn hǎo.", "english": "I'm very good." },
-            { "words": ["谢", "谢"], "display": "谢谢！", "pinyin": "Xiè xiè!", "english": "Thank you!" },
-            { "words": ["再", "见"], "display": "再见！", "pinyin": "Zài jiàn!", "english": "Goodbye!" },
-            { "words": ["对", "不", "起"], "display": "对不起。", "pinyin": "Duì bù qǐ.", "english": "Sorry." }
+            { "words": ["谢谢"], "display": "谢谢！", "pinyin": "Xiè xiè!", "english": "Thank you!" },
+            { "words": ["再见"], "display": "再见！", "pinyin": "Zài jiàn!", "english": "Goodbye!" },
+            { "words": ["对不起"], "display": "对不起。", "pinyin": "Duì bù qǐ.", "english": "Sorry." }
           ]
         },
         "family": {
           "name": "Family",
           "nameZh": "家庭",
           "icon": "👨‍👩‍👧",
-          "words": ["我", "你", "他", "她", "爸", "妈", "哥", "姐", "弟", "妹", "爱", "的", "是", "家"],
+          "words": [
+            { "word": "我", "characters": ["我"] },
+            { "word": "你", "characters": ["你"] },
+            { "word": "他", "characters": ["他"] },
+            { "word": "她", "characters": ["她"] },
+            { "word": "爸爸", "characters": ["爸","爸"] },
+            { "word": "妈妈", "characters": ["妈","妈"] },
+            { "word": "哥哥", "characters": ["哥","哥"] },
+            { "word": "姐姐", "characters": ["姐","姐"] },
+            { "word": "弟弟", "characters": ["弟","弟"] },
+            { "word": "妹妹", "characters": ["妹","妹"] },
+            { "word": "爱", "characters": ["爱"] },
+            { "word": "的", "characters": ["的"] },
+            { "word": "是", "characters": ["是"] },
+            { "word": "家", "characters": ["家"] }
+          ],
           "sentences": [
             { "words": ["我", "爱", "你"], "display": "我爱你！", "pinyin": "Wǒ ài nǐ!", "english": "I love you!" },
-            { "words": ["我", "的", "妈", "妈"], "display": "我的妈妈", "pinyin": "Wǒ de māma", "english": "My mom" },
-            { "words": ["我", "的", "爸", "爸"], "display": "我的爸爸", "pinyin": "Wǒ de bàba", "english": "My dad" },
+            { "words": ["我", "的", "妈妈"], "display": "我的妈妈", "pinyin": "Wǒ de māma", "english": "My mom" },
+            { "words": ["我", "的", "爸爸"], "display": "我的爸爸", "pinyin": "Wǒ de bàba", "english": "My dad" },
             { "words": ["我", "爱", "我", "的", "家"], "display": "我爱我的家。", "pinyin": "Wǒ ài wǒ de jiā.", "english": "I love my family." },
-            { "words": ["他", "是", "我", "的", "哥", "哥"], "display": "他是我的哥哥。", "pinyin": "Tā shì wǒ de gēge.", "english": "He is my brother." }
+            { "words": ["他", "是", "我", "的", "哥哥"], "display": "他是我的哥哥。", "pinyin": "Tā shì wǒ de gēge.", "english": "He is my brother." }
           ]
         },
         "food": {
           "name": "Food",
           "nameZh": "饮食",
           "icon": "🍚",
-          "words": ["我", "想", "吃", "喝", "饭", "水", "茶", "菜", "肉", "鱼", "好", "很"],
+          "words": [
+            { "word": "我", "characters": ["我"] },
+            { "word": "想", "characters": ["想"] },
+            { "word": "吃", "characters": ["吃"] },
+            { "word": "喝", "characters": ["喝"] },
+            { "word": "饭", "characters": ["饭"] },
+            { "word": "水", "characters": ["水"] },
+            { "word": "茶", "characters": ["茶"] },
+            { "word": "菜", "characters": ["菜"] },
+            { "word": "肉", "characters": ["肉"] },
+            { "word": "鱼", "characters": ["鱼"] },
+            { "word": "好吃", "characters": ["好","吃"] },
+            { "word": "很", "characters": ["很"] }
+          ],
           "sentences": [
             { "words": ["我", "想", "吃", "饭"], "display": "我想吃饭。", "pinyin": "Wǒ xiǎng chī fàn.", "english": "I want to eat." },
             { "words": ["我", "想", "喝", "水"], "display": "我想喝水。", "pinyin": "Wǒ xiǎng hē shuǐ.", "english": "I want to drink water." },
             { "words": ["我", "想", "喝", "茶"], "display": "我想喝茶。", "pinyin": "Wǒ xiǎng hē chá.", "english": "I want to drink tea." },
-            { "words": ["菜", "很", "好", "吃"], "display": "菜很好吃。", "pinyin": "Cài hěn hǎo chī.", "english": "The food is delicious." }
+            { "words": ["菜", "很", "好吃"], "display": "菜很好吃。", "pinyin": "Cài hěn hǎo chī.", "english": "The food is delicious." }
           ]
         },
         "numbers": {
           "name": "Numbers",
           "nameZh": "数字",
           "icon": "🔢",
-          "words": ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "个", "有"],
+          "words": [
+            { "word": "一", "characters": ["一"] },
+            { "word": "二", "characters": ["二"] },
+            { "word": "三", "characters": ["三"] },
+            { "word": "四", "characters": ["四"] },
+            { "word": "五", "characters": ["五"] },
+            { "word": "六", "characters": ["六"] },
+            { "word": "七", "characters": ["七"] },
+            { "word": "八", "characters": ["八"] },
+            { "word": "九", "characters": ["九"] },
+            { "word": "十", "characters": ["十"] },
+            { "word": "个", "characters": ["个"] },
+            { "word": "有", "characters": ["有"] },
+            { "word": "我", "characters": ["我"] }
+          ],
           "sentences": [
             { "words": ["一", "二", "三"], "display": "一二三", "pinyin": "Yī èr sān", "english": "One two three" },
             { "words": ["四", "五", "六"], "display": "四五六", "pinyin": "Sì wǔ liù", "english": "Four five six" },
@@ -142,11 +302,22 @@
           "name": "Daily Life",
           "nameZh": "日常",
           "icon": "🌅",
-          "words": ["我", "你", "去", "来", "在", "学", "校", "家", "工", "作", "想", "要"],
+          "words": [
+            { "word": "我", "characters": ["我"] },
+            { "word": "你", "characters": ["你"] },
+            { "word": "去", "characters": ["去"] },
+            { "word": "来", "characters": ["来"] },
+            { "word": "在", "characters": ["在"] },
+            { "word": "学校", "characters": ["学","校"] },
+            { "word": "家", "characters": ["家"] },
+            { "word": "工作", "characters": ["工","作"] },
+            { "word": "想", "characters": ["想"] },
+            { "word": "要", "characters": ["要"] }
+          ],
           "sentences": [
-            { "words": ["我", "去", "学", "校"], "display": "我去学校。", "pinyin": "Wǒ qù xuéxiào.", "english": "I go to school." },
+            { "words": ["我", "去", "学校"], "display": "我去学校。", "pinyin": "Wǒ qù xuéxiào.", "english": "I go to school." },
             { "words": ["我", "在", "家"], "display": "我在家。", "pinyin": "Wǒ zài jiā.", "english": "I'm at home." },
-            { "words": ["我", "要", "工", "作"], "display": "我要工作。", "pinyin": "Wǒ yào gōngzuò.", "english": "I need to work." },
+            { "words": ["我", "要", "工作"], "display": "我要工作。", "pinyin": "Wǒ yào gōngzuò.", "english": "I need to work." },
             { "words": ["你", "来", "我", "家"], "display": "你来我家。", "pinyin": "Nǐ lái wǒ jiā.", "english": "You come to my home." }
           ]
         }
