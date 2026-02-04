@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flow Games</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Flow Games</h1>
+        <canvas id="game-canvas" width="600" height="600"></canvas>
+        <div id="controls">
+            <!-- UI Controls will go here -->
+        </div>
+    </div>
+
+    <!-- Engine Scripts -->
+    <script src="engine/grid.js"></script>
+    <script src="engine/path.js"></script>
+    <script src="engine/input.js"></script>
+    <script src="engine/game.js"></script>
+
+    <!-- Game Initialization -->
+    <script>
+        window.onload = function() {
+            var game = new Game('game-canvas');
+        };
+    </script>
+</body>
+</html>
