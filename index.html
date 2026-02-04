@@ -7,171 +7,371 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ffd700;
+            --accent-glow: rgba(255, 215, 0, 0.3);
+            --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Safari clean tap */
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
-            background-color: #000;
-            color: #ffd700;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; /* Safari fonts */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            min-height: 100dvh; /* Safari fix for address bar */
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #2a0a40 0%, #0f172a 70%);
+            color: var(--text-primary);
+            font-family: var(--font-main);
             margin: 0;
-            padding: 20px;
-            text-align: center;
-            background-image: radial-gradient(circle, #2a0a40 0%, #000 100%);
-            -webkit-text-size-adjust: 100%;
-        }
-        
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 5px; 
-            text-transform: uppercase; 
-            letter-spacing: 5px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-        
-        .subtitle {
-            color: #aaa;
-            margin-bottom: 40px;
-            font-size: 0.9rem;
-        }
-        
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 25px;
-            max-width: 800px;
-            width: 100%;
-        }
-        
-        .game-card {
-            background: linear-gradient(145deg, #1a0a2e, #0d0518);
-            border: 3px solid #b8860b;
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-decoration: none;
-            color: #ffd700;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .game-card:active {
-            transform: scale(0.96);
-        }
-        
-        @media (hover: hover) {
-            .game-card:hover {
-                transform: translateY(-8px) scale(1.05);
-                box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
-                border-color: #ffd700;
-            }
-        }
-        
-        .game-card.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-            border-color: #444;
-        }
-        
-        .game-icon {
-            font-size: 3.5rem;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
         }
 
-        .game-name {
-            font-weight: bold;
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
             font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            line-height: 1.3;
+            margin-bottom: 30px;
+            font-weight: 300;
         }
 
-        .game-status {
-            font-size: 0.75rem;
-            color: #888;
-            text-transform: uppercase;
+        /* Navigation / Filters */
+        nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
             font-weight: 600;
         }
-        
-        .game-card:not(.disabled) .game-status {
-            color: #4ade80;
+
+        /* Grid */
+        main {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px 60px;
+            flex: 1;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Cards */
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.3));
+            transition: transform 0.3s;
+        }
+
+        .game-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-content {
+            z-index: 1;
+        }
+
+        .game-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 0 8px;
+            color: #fff;
+        }
+
+        .game-tag {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .game-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Project Card Specifics */
+        .game-card.project {
+            background: linear-gradient(145deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: rgba(118, 75, 162, 0.3);
         }
         
-        .footer {
-            margin-top: 50px;
-            color: #555;
-            font-size: 0.75rem;
+        .game-card.project:hover {
+            border-color: #a78bfa;
+            box-shadow: 0 20px 40px rgba(118, 75, 162, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Animation Classes */
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            header { padding-top: 40px; }
+            .game-grid { grid-template-columns: 1fr; }
+            .game-card { flex-direction: row; text-align: left; padding: 20px; align-items: center; }
+            .card-icon { font-size: 2.5rem; margin-bottom: 0; margin-right: 20px; }
+            .game-card:hover .card-icon { transform: scale(1.1); }
+            .card-content { flex: 1; }
         }
     </style>
 </head>
 <body>
-    <h1>🕹️ Fong Family Arcade</h1>
-    <p class="subtitle">v1.4</p>
-    
-    <div class="game-grid">
-        <a href="games/cards/index.html" class="game-card">
-            <span class="game-icon">🃏</span>
-            <span class="game-name">Card Games</span>
-            <span class="game-status">● Play Now</span>
-        </a>
 
-        <a href="games/xtc_ball/index.html" class="game-card">
-            <span class="game-icon">🎱</span>
-            <span class="game-name">Magic 8 Ball</span>
-            <span class="game-status">● Play Now</span>
-        </a>
+    <header>
+        <h1>Fong Family Arcade</h1>
+        <p class="subtitle">A collection of games & utilities v1.5</p>
 
-        <a href="games/snake/index.html" class="game-card">
-            <span class="game-icon">🐍</span>
-            <span class="game-name">Snake</span>
-            <span class="game-status">● Play Now</span>
-        </a>
+        <nav>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="game">Games</button>
+            <button class="filter-btn" data-filter="project">Projects</button>
+        </nav>
+    </header>
 
-        <a href="games/xiangqi/index.html" class="game-card">
-            <span class="game-icon">♟️</span>
-            <span class="game-name">Chinese Chess</span>
-            <span class="game-status">● Play Now</span>
-        </a>
+    <main>
+        <div class="game-grid" id="grid">
 
-        <a href="games/tracing/index.html" class="game-card">
-            <span class="game-icon">✏️</span>
-            <span class="game-name">Tracing</span>
-            <span class="game-status">● 4 Games</span>
-        </a>
+            <!-- Card Games -->
+            <a href="games/cards/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.1s">
+                <div class="card-icon">🃏</div>
+                <div class="card-content">
+                    <span class="game-tag">Shared Engine</span>
+                    <h3 class="game-title">Card Games</h3>
+                    <p class="game-desc">Blackjack, War, and more built on a robust shared engine.</p>
+                </div>
+            </a>
 
-        <a href="games/sprunki/index.html" class="game-card">
-            <span class="game-icon">🎵</span>
-            <span class="game-name">S Mixer</span>
-            <span class="game-status">● Play Now</span>
-        </a>
+            <!-- Tracing -->
+            <a href="games/tracing/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.2s">
+                <div class="card-icon">✏️</div>
+                <div class="card-content">
+                    <span class="game-tag">Educational</span>
+                    <h3 class="game-title">Letter Tracing</h3>
+                    <p class="game-desc">Learn to write with voice guidance and stroke validation.</p>
+                </div>
+            </a>
 
-        <a href="games/slots/index.html" class="game-card">
-            <span class="game-icon">🎰</span>
-            <span class="game-name">Slots</span>
-            <span class="game-status">● Play Now</span>
-        </a>
+            <!-- Slots -->
+            <a href="games/slots/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.3s">
+                <div class="card-icon">🎰</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">Slots</h3>
+                    <p class="game-desc">Feature-rich slot machine with multiple themes and bonus rounds.</p>
+                </div>
+            </a>
 
-        <a href="projects/" class="game-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <span class="game-icon">🛠️</span>
-            <span class="game-name">Projects</span>
-            <span class="game-status">● View All</span>
-        </a>
-    </div>
+            <!-- Xiangqi -->
+            <a href="games/xiangqi/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.4s">
+                <div class="card-icon">♟️</div>
+                <div class="card-content">
+                    <span class="game-tag">Strategy</span>
+                    <h3 class="game-title">Chinese Chess</h3>
+                    <p class="game-desc">Play Xiangqi against an AI opponent.</p>
+                </div>
+            </a>
 
-    <div class="footer">
-        Made with ❤️
-    </div>
+            <!-- Snake -->
+            <a href="games/snake/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.5s">
+                <div class="card-icon">🐍</div>
+                <div class="card-content">
+                    <span class="game-tag">Classic</span>
+                    <h3 class="game-title">Snake</h3>
+                    <p class="game-desc">The classic game of snake. Eat apples, grow long, don't crash.</p>
+                </div>
+            </a>
+
+            <!-- Magic 8 Ball -->
+            <a href="games/xtc_ball/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.6s">
+                <div class="card-icon">🎱</div>
+                <div class="card-content">
+                    <span class="game-tag">Casual</span>
+                    <h3 class="game-title">Magic 8 Ball</h3>
+                    <p class="game-desc">Ask a question and reveal your destiny.</p>
+                </div>
+            </a>
+
+            <!-- Sprunki Mixer -->
+            <a href="games/sprunki/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.7s">
+                <div class="card-icon">🎵</div>
+                <div class="card-content">
+                    <span class="game-tag">Music</span>
+                    <h3 class="game-title">Sprunki Mixer</h3>
+                    <p class="game-desc">Mix beats and create music with animated characters.</p>
+                </div>
+            </a>
+
+            <!-- Projects -->
+            <a href="projects/" class="game-card project fade-in" data-category="project" style="animation-delay: 0.8s">
+                <div class="card-icon">🛠️</div>
+                <div class="card-content">
+                    <span class="game-tag">Utilities</span>
+                    <h3 class="game-title">Projects</h3>
+                    <p class="game-desc">Useful tools including Shipment Tracker.</p>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Made with ❤️ by the Fong Family</p>
+        <p style="opacity: 0.6; font-size: 0.8em; margin-top: 10px;">Built with assistance from Claude</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.game-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+
+                    // Filter cards
+                    cards.forEach(card => {
+                        if (filter === 'all' || card.dataset.category === filter) {
+                            card.style.display = 'flex';
+                            // Re-trigger animation
+                            card.classList.remove('fade-in');
+                            void card.offsetWidth; // Trigger reflow
+                            card.classList.add('fade-in');
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
