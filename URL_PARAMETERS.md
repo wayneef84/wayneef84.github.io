@@ -113,6 +113,39 @@ words.html?id=custom&word=Bicycle&emoji=🚲
 
 ---
 
+## Card Games
+
+### Base URL
+```
+games/cards/index.html
+```
+
+### URL Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `game` | string | No | Game ID: `blackjack`, `war`, `poker`. Defaults to last played or `blackjack`. |
+
+### Examples
+
+**Direct Link to Poker:**
+```
+index.html?game=poker
+```
+
+**Direct Link to War:**
+```
+index.html?game=war
+```
+
+### Behavior
+
+- ✅ Loads the specified game in the shared engine frame.
+- ✅ Updates the "Card Games" sidebar selection.
+- ✅ Persists selection to `localStorage` (`last_card_game`).
+
+---
+
 ## Technical Implementation
 
 ### URL Updates
