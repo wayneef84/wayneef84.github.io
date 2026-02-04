@@ -25,11 +25,14 @@
  * - Added 'Select & Play' button logic for preset balls.
  */
 /**
- * MAGIC XTC BALL - GAME ENGINE (v1.6)
+ * MAGIC XTC BALL - GAME ENGINE (v1.7)
  * =====================================================================================
  * CHANGELOG
  * -------------------------------------------------------------------------------------
- * v1.6 - AUTO-EXPANDING INPUTS (Current)
+ * v1.7 - SOUND UPDATE (Current)
+ * - Juice: Added SoundManager for synthesized audio effects (Shake/Reveal).
+ * - UI: Added Mute toggle button with persistence.
+ * * v1.6 - AUTO-EXPANDING INPUTS
  * - Juice: Added auto-resize logic to answer textareas so they grow with content.
  * * v1.5 - MULTI-LINE SUPPORT
  * - Fix: Swapped input for textarea to allow newlines.
@@ -50,6 +53,8 @@ class OracleGame {
             presets: ORACLE_CONFIG.balls 
         };
 
+        this.soundManager = new SoundManager();
+
         this.dom = {
             ball: document.getElementById('oracleBall'),
             label: document.getElementById('ballLabel'),
@@ -57,6 +62,7 @@ class OracleGame {
             answerText: document.getElementById('answerText'),
             root: document.documentElement, 
 
+            muteBtn: document.getElementById('muteBtn'),
             settingsModal: document.getElementById('settingsModal'),
             ballSelector: document.getElementById('ballSelector'),
             
@@ -95,6 +101,15 @@ class OracleGame {
         this.bindEvents();
         this.setupMotion();
         this.populateSettings();
+
+        // Initialize Mute Button State
+        if(this.soundManager.isMuted()) {
+            this.dom.muteBtn.textContent = '🔇';
+            this.dom.muteBtn.style.opacity = '0.5';
+        } else {
+            this.dom.muteBtn.textContent = '🔊';
+            this.dom.muteBtn.style.opacity = '1';
+        }
     }
 
     loadCustomData() {
@@ -135,7 +150,15 @@ class OracleGame {
     bindEvents() {
         this.dom.ball.addEventListener('click', () => this.handleInteract());
 
+        this.dom.muteBtn.addEventListener('click', () => {
+            this.soundManager.init(); // Ensure context is ready
+            const isMuted = this.soundManager.toggleMute();
+            this.dom.muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            this.dom.muteBtn.style.opacity = isMuted ? '0.5' : '1';
+        });
+
         document.getElementById('settingsBtn').addEventListener('click', () => {
+            this.soundManager.init(); // Ensure context is ready
             this.populateSettings(); 
             this.loadEditor(this.state.currentBallId); 
             this.dom.settingsModal.classList.remove('hidden');
@@ -161,6 +184,7 @@ class OracleGame {
     }
 
     handleInteract() {
+        this.soundManager.init();
         if (this.state.isRevealed) {
             this.reset();
             return;
@@ -175,6 +199,7 @@ class OracleGame {
     startShake() {
         this.state.isShaking = true;
         this.dom.ball.classList.add('shaking');
+        this.soundManager.playShake();
         if (navigator.vibrate) navigator.vibrate(200);
         this.shakeTimer = setTimeout(() => this.revealAnswer(), 2000); 
     }
@@ -183,6 +208,7 @@ class OracleGame {
         if (!this.state.isShaking) return;
         clearTimeout(this.shakeTimer);
         this.dom.ball.classList.remove('shaking');
+        this.soundManager.playReveal();
         
         const data = this.getBallData(this.state.currentBallId);
         const answer = this.pickWeightedAnswer(data.answers);
