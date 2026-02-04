@@ -18,6 +18,7 @@ InputHandler.prototype.attachEvents = function() {
     this.canvas.addEventListener('mousedown', function(e) { self.handleStart(e); });
     this.canvas.addEventListener('mousemove', function(e) { self.handleMove(e); });
     this.canvas.addEventListener('mouseup', function(e) { self.handleEnd(e); });
+    this.canvas.addEventListener('mouseleave', function(e) { self.handleEnd(e); });
 
     // Touch Events
     this.canvas.addEventListener('touchstart', function(e) { self.handleStart(e); }, {passive: false});
@@ -40,31 +41,35 @@ InputHandler.prototype.getGridCoordinates = function(event) {
     var x = clientX - rect.left;
     var y = clientY - rect.top;
 
-    // Placeholder conversion logic
-    // This needs access to the Grid's rendering metrics (cellSize, offsets)
-    // For now, returning raw pixels in a placeholder object
-    return { x: x, y: y, raw: true };
+    // Map to grid
+    // We need the render metrics from the game/grid
+    // Ideally, Game should expose "screenToGrid(x, y)" or we calculate here if we know cellSize.
+    // Let's ask Game.
+    return this.game.screenToGrid(x, y);
 };
 
 InputHandler.prototype.handleStart = function(e) {
-    e.preventDefault();
-    this.isDragging = true;
+    e.preventDefault(); // Prevent scroll on touch
     var coords = this.getGridCoordinates(e);
-    // this.game.onDragStart(coords);
-    console.log("Input Start", coords);
+    if (coords) {
+        this.isDragging = true;
+        this.game.handleInputStart(coords.x, coords.y);
+    }
 };
 
 InputHandler.prototype.handleMove = function(e) {
     e.preventDefault();
     if (!this.isDragging) return;
     var coords = this.getGridCoordinates(e);
-    // this.game.onDragMove(coords);
-    // console.log("Input Move", coords);
+    if (coords) {
+        this.game.handleInputMove(coords.x, coords.y);
+    }
 };
 
 InputHandler.prototype.handleEnd = function(e) {
     e.preventDefault();
-    this.isDragging = false;
-    // this.game.onDragEnd();
-    console.log("Input End");
+    if (this.isDragging) {
+        this.isDragging = false;
+        this.game.handleInputEnd();
+    }
 };

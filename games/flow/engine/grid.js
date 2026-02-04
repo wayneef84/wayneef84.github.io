@@ -45,6 +45,36 @@ Grid.prototype.getCell = function(x, y) {
     return null;
 };
 
+Grid.prototype.setCell = function(x, y, type, color) {
+    var cell = this.getCell(x, y);
+    if (cell) {
+        cell.type = type;
+        if (color !== undefined) cell.color = color;
+    }
+};
+
+Grid.prototype.clear = function() {
+    for (var y = 0; y < this.height; y++) {
+        for (var x = 0; x < this.width; x++) {
+            var cell = this.cells[y][x];
+            cell.type = CellType.EMPTY;
+            cell.color = null;
+            cell.connections = [];
+        }
+    }
+};
+
+Grid.prototype.loadLevel = function(level) {
+    this.width = level.width;
+    this.height = level.height;
+    this.init(); // Re-init array structure
+
+    for (var i = 0; i < level.sources.length; i++) {
+        var s = level.sources[i];
+        this.setCell(s.x, s.y, CellType.SOURCE, s.color);
+    }
+};
+
 // Placeholder for neighbor logic (to be expanded for Hex/Warp)
 Grid.prototype.getNeighbors = function(cell) {
     var neighbors = [];
