@@ -29,9 +29,9 @@
  * =====================================================================================
  * CHANGELOG
  * -------------------------------------------------------------------------------------
- * v1.7 - SOUND UPDATE (Current)
+ * v1.7 - SOUND & VIBRATION UPDATE (Current)
  * - Juice: Added SoundManager for synthesized audio effects (Shake/Reveal).
- * - UI: Added Mute toggle button with persistence.
+ * - UI: Added Mute and Vibrate toggle buttons with persistence.
  * * v1.6 - AUTO-EXPANDING INPUTS
  * - Juice: Added auto-resize logic to answer textareas so they grow with content.
  * * v1.5 - MULTI-LINE SUPPORT
@@ -63,6 +63,7 @@ class OracleGame {
             root: document.documentElement, 
 
             muteBtn: document.getElementById('muteBtn'),
+            vibrateBtn: document.getElementById('vibrateBtn'),
             settingsModal: document.getElementById('settingsModal'),
             ballSelector: document.getElementById('ballSelector'),
             
@@ -109,6 +110,16 @@ class OracleGame {
         } else {
             this.dom.muteBtn.textContent = '🔊';
             this.dom.muteBtn.style.opacity = '1';
+        }
+
+        // Initialize Vibrate Button State
+        const vibrateSetting = localStorage.getItem('oracle_vibration');
+        this.state.vibrationEnabled = vibrateSetting === null ? true : (vibrateSetting === 'true');
+
+        if(this.state.vibrationEnabled) {
+            this.dom.vibrateBtn.style.opacity = '1';
+        } else {
+            this.dom.vibrateBtn.style.opacity = '0.5';
         }
     }
 
@@ -157,6 +168,14 @@ class OracleGame {
             this.dom.muteBtn.style.opacity = isMuted ? '0.5' : '1';
         });
 
+        this.dom.vibrateBtn.addEventListener('click', () => {
+            this.state.vibrationEnabled = !this.state.vibrationEnabled;
+            localStorage.setItem('oracle_vibration', this.state.vibrationEnabled);
+            this.dom.vibrateBtn.style.opacity = this.state.vibrationEnabled ? '1' : '0.5';
+            // Provide immediate tactile feedback if enabling
+            if(this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate(50);
+        });
+
         document.getElementById('settingsBtn').addEventListener('click', () => {
             this.soundManager.init(); // Ensure context is ready
             this.populateSettings(); 
@@ -200,7 +219,7 @@ class OracleGame {
         this.state.isShaking = true;
         this.dom.ball.classList.add('shaking');
         this.soundManager.playShake();
-        if (navigator.vibrate) navigator.vibrate(200);
+        if (this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate(200);
         this.shakeTimer = setTimeout(() => this.revealAnswer(), 2000); 
     }
 
@@ -223,7 +242,7 @@ class OracleGame {
             this.dom.ball.classList.add('revealed');
             this.state.isRevealed = true;
             this.state.isShaking = false;
-            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+            if (this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate([50, 50, 50]);
         }, immediate ? 0 : 200);
     }
 
