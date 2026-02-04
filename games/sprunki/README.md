@@ -39,13 +39,6 @@ The original 20-character pack with 4 categories:
 - **Melodies**: Sun, Durple, Tree, Simon, Tunner
 - **Vocals**: Computer, Wenda, Pinki, Jevin, Black
 
-### Phase 2 (Horror)
-A darker, spooky themed pack with 20 new character variations and audio loops.
-- **Beats**: Horror Oren, Horror Raddy, Horror Clukr, Horror Fun Bot, Horror Vineria
-- **Effects**: Horror Gray, Horror Brud, Horror Garnold, Horror OWAKCX, Horror Sky
-- **Melodies**: Horror Sun, Horror Durple, Horror Tree, Horror Simon, Horror Tunner
-- **Vocals**: Horror Computer, Horror Wenda, Horror Pinki, Horror Jevin, Horror Black
-
 ### UNO Reverse (Test)
 A reverse-themed pack using the same audio/visual assets as Phase 1, but with "Reverse" prefixed names. This pack demonstrates how to add new packs without duplicating assets.
 
