@@ -29,9 +29,9 @@
  * =====================================================================================
  * CHANGELOG
  * -------------------------------------------------------------------------------------
- * v1.7 - SOUND UPDATE (Current)
+ * v1.7 - SOUND & VIBRATION UPDATE (Current)
  * - Juice: Added SoundManager for synthesized audio effects (Shake/Reveal).
- * - UI: Added Mute toggle button with persistence.
+ * - UI: Added Mute and Vibrate toggle buttons with persistence.
  * * v1.6 - AUTO-EXPANDING INPUTS
  * - Juice: Added auto-resize logic to answer textareas so they grow with content.
  * * v1.5 - MULTI-LINE SUPPORT
@@ -41,6 +41,9 @@
  * * v1.3 - REBRAND & LOGIC
  * - Renamed to Magic XTC Ball.
  */
+
+const ICON_SOUND_ON = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+const ICON_SOUND_OFF = '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
 
 class OracleGame {
     constructor() {
@@ -63,6 +66,7 @@ class OracleGame {
             root: document.documentElement, 
 
             muteBtn: document.getElementById('muteBtn'),
+            vibrateBtn: document.getElementById('vibrateBtn'),
             settingsModal: document.getElementById('settingsModal'),
             ballSelector: document.getElementById('ballSelector'),
             
@@ -104,11 +108,21 @@ class OracleGame {
 
         // Initialize Mute Button State
         if(this.soundManager.isMuted()) {
-            this.dom.muteBtn.textContent = '🔇';
+            this.dom.muteBtn.innerHTML = ICON_SOUND_OFF;
             this.dom.muteBtn.style.opacity = '0.5';
         } else {
-            this.dom.muteBtn.textContent = '🔊';
+            this.dom.muteBtn.innerHTML = ICON_SOUND_ON;
             this.dom.muteBtn.style.opacity = '1';
+        }
+
+        // Initialize Vibrate Button State
+        const vibrateSetting = localStorage.getItem('oracle_vibration');
+        this.state.vibrationEnabled = vibrateSetting === null ? true : (vibrateSetting === 'true');
+
+        if(this.state.vibrationEnabled) {
+            this.dom.vibrateBtn.style.opacity = '1';
+        } else {
+            this.dom.vibrateBtn.style.opacity = '0.5';
         }
     }
 
@@ -153,8 +167,16 @@ class OracleGame {
         this.dom.muteBtn.addEventListener('click', () => {
             this.soundManager.init(); // Ensure context is ready
             const isMuted = this.soundManager.toggleMute();
-            this.dom.muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            this.dom.muteBtn.innerHTML = isMuted ? ICON_SOUND_OFF : ICON_SOUND_ON;
             this.dom.muteBtn.style.opacity = isMuted ? '0.5' : '1';
+        });
+
+        this.dom.vibrateBtn.addEventListener('click', () => {
+            this.state.vibrationEnabled = !this.state.vibrationEnabled;
+            localStorage.setItem('oracle_vibration', this.state.vibrationEnabled);
+            this.dom.vibrateBtn.style.opacity = this.state.vibrationEnabled ? '1' : '0.5';
+            // Provide immediate tactile feedback if enabling
+            if(this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate(50);
         });
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -200,7 +222,7 @@ class OracleGame {
         this.state.isShaking = true;
         this.dom.ball.classList.add('shaking');
         this.soundManager.playShake();
-        if (navigator.vibrate) navigator.vibrate(200);
+        if (this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate(200);
         this.shakeTimer = setTimeout(() => this.revealAnswer(), 2000); 
     }
 
@@ -223,7 +245,7 @@ class OracleGame {
             this.dom.ball.classList.add('revealed');
             this.state.isRevealed = true;
             this.state.isShaking = false;
-            if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+            if (this.state.vibrationEnabled && navigator.vibrate) navigator.vibrate([50, 50, 50]);
         }, immediate ? 0 : 200);
     }
 
