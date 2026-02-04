@@ -6,6 +6,14 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Snake v2.0] - 2026-01-12 (Jules)
+### Added
+- **Sound Effects:** Web Audio API implementation for Eat and Crash sounds (no external assets).
+- **Mobile Controls:** New "Swipe" mode option for touch gestures.
+- **Speed Ramp:** Game speed increases as score increases (difficulty curve).
+- **UX Improvements:** Redesigned touch buttons to be large, screen-filling rounded rectangles.
+- **UI:** Added Mute toggle and footer credits.
+
 ## [Arcade v1.4] - 2026-01-14 (Gemini with the patchwork)
 ### Changed
 - **Main Menu:** Complete reorganization of game grid.
