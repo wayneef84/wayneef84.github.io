@@ -384,5 +384,175 @@ const THEME_LIBRARY = {
             { id: 'W', name: '🥳', value: 200, weight: 15,  color: '#e91e63', isWild: true },
             { id: 'S', name: '🎭', value: 0,   weight: 10,  color: '#3f51b5', isScatter: true }
         ]
+    },
+
+    // 🏴‍☠️ 21. PIRATE'S GOLD
+    'pirates': {
+        name: 'Pirate\'s Gold',
+        paylineColor: '#c0392b', // Red
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '⚓', value: 5,   weight: 100, color: '#95a5a6' },
+            { id: '2', name: '💣', value: 10,  weight: 80,  color: '#34495e' },
+            { id: '3', name: '⚔️', value: 20,  weight: 60,  color: '#bdc3c7' },
+            { id: '4', name: '📜', value: 30,  weight: 50,  color: '#f1c40f' },
+            { id: '5', name: '🦜', value: 50,  weight: 30,  color: '#2ecc71' },
+            { id: '6', name: '☠️', value: 100, weight: 20,  color: '#ffffff' },
+            { id: 'W', name: '🏴‍☠️', value: 200, weight: 15,  color: '#000000', isWild: true },
+            { id: 'S', name: '💰', value: 0,   weight: 10,  color: '#ffd700', isScatter: true }
+        ]
+    },
+
+    // 🦖 22. JURASSIC JUNGLE
+    'dinosaurs': {
+        name: 'Jurassic Jungle',
+        paylineColor: '#27ae60', // Green
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🌿', value: 5,   weight: 100, color: '#2ecc71' },
+            { id: '2', name: '🥚', value: 10,  weight: 80,  color: '#f1c40f' },
+            { id: '3', name: '🌋', value: 20,  weight: 60,  color: '#e74c3c' },
+            { id: '4', name: '🥩', value: 30,  weight: 50,  color: '#c0392b' },
+            { id: '5', name: '🦕', value: 50,  weight: 30,  color: '#3498db' },
+            { id: '6', name: '🦖', value: 100, weight: 20,  color: '#27ae60' },
+            { id: 'W', name: '☄️', value: 200, weight: 15,  color: '#e67e22', isWild: true },
+            { id: 'S', name: '🦟', value: 0,   weight: 10,  color: '#f39c12', isScatter: true }
+        ]
+    },
+
+    // ⚔️ 23. SAMURAI SPIRIT
+    'samurai': {
+        name: 'Samurai Spirit',
+        paylineColor: '#e74c3c', // Red
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🌸', value: 5,   weight: 100, color: '#ff69b4' },
+            { id: '2', name: '🍶', value: 10,  weight: 80,  color: '#ecf0f1' },
+            { id: '3', name: '🏮', value: 20,  weight: 60,  color: '#e74c3c' },
+            { id: '4', name: '🏯', value: 30,  weight: 50,  color: '#95a5a6' },
+            { id: '5', name: '👺', value: 50,  weight: 30,  color: '#c0392b' },
+            { id: '6', name: '🗡️', value: 100, weight: 20,  color: '#bdc3c7' },
+            { id: 'W', name: '🥋', value: 200, weight: 15,  color: '#000000', isWild: true },
+            { id: 'S', name: '⛩️', value: 0,   weight: 10,  color: '#e74c3c', isScatter: true }
+        ]
+    },
+
+    // 🛡️ 24. VIKING LEGENDS
+    'vikings': {
+        name: 'Viking Legends',
+        paylineColor: '#3498db', // Blue
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🍺', value: 5,   weight: 100, color: '#f1c40f' },
+            { id: '2', name: '🛡️', value: 10,  weight: 80,  color: '#95a5a6' },
+            { id: '3', name: '🪓', value: 20,  weight: 60,  color: '#7f8c8d' },
+            { id: '4', name: '🛶', value: 30,  weight: 50,  color: '#8e44ad' },
+            { id: '5', name: '🐺', value: 50,  weight: 30,  color: '#bdc3c7' },
+            { id: '6', name: '⚡', value: 100, weight: 20,  color: '#f1c40f' },
+            { id: 'W', name: '🧔', value: 200, weight: 15,  color: '#d35400', isWild: true },
+            { id: 'S', name: '🔨', value: 0,   weight: 10,  color: '#bdc3c7', isScatter: true }
+        ]
+    },
+
+    // ⚙️ 25. STEAMPUNK REVOLUTION
+    'steampunk': {
+        name: 'Steampunk Rev',
+        paylineColor: '#d35400', // Bronze
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🔩', value: 5,   weight: 100, color: '#95a5a6' },
+            { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
+            { id: '3', name: '🕰️', value: 20,  weight: 60,  color: '#d35400' },
+            { id: '4', name: '🗝️', value: 30,  weight: 50,  color: '#f1c40f' },
+            { id: '5', name: '🎩', value: 50,  weight: 30,  color: '#2c3e50' },
+            { id: '6', name: '🚂', value: 100, weight: 20,  color: '#e74c3c' },
+            { id: 'W', name: '💡', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
+            { id: 'S', name: '🧭', value: 0,   weight: 10,  color: '#d35400', isScatter: true }
+        ]
+    },
+
+    // 🤠 26. WILD WEST
+    'wildwest': {
+        name: 'Wild West',
+        paylineColor: '#e67e22', // Orange
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🌵', value: 5,   weight: 100, color: '#27ae60' },
+            { id: '2', name: '👢', value: 10,  weight: 80,  color: '#8d6e63' },
+            { id: '3', name: '🥃', value: 20,  weight: 60,  color: '#e67e22' },
+            { id: '4', name: '🐎', value: 30,  weight: 50,  color: '#795548' },
+            { id: '5', name: '💰', value: 50,  weight: 30,  color: '#f1c40f' },
+            { id: '6', name: '🤠', value: 100, weight: 20,  color: '#d35400' },
+            { id: 'W', name: '⭐', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
+            { id: 'S', name: '🔫', value: 0,   weight: 10,  color: '#95a5a6', isScatter: true }
+        ]
+    },
+
+    // 🧚 27. FAIRY TALE
+    'fairytale': {
+        name: 'Fairy Tale',
+        paylineColor: '#ff69b4', // Pink
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🍄', value: 5,   weight: 100, color: '#e74c3c' },
+            { id: '2', name: '🌸', value: 10,  weight: 80,  color: '#ff69b4' },
+            { id: '3', name: '🐸', value: 20,  weight: 60,  color: '#2ecc71' },
+            { id: '4', name: '👑', value: 30,  weight: 50,  color: '#f1c40f' },
+            { id: '5', name: '🏰', value: 50,  weight: 30,  color: '#9b59b6' },
+            { id: '6', name: '🧚', value: 100, weight: 20,  color: '#e91e63' },
+            { id: 'W', name: '✨', value: 200, weight: 15,  color: '#ffffff', isWild: true },
+            { id: 'S', name: '📖', value: 0,   weight: 10,  color: '#8d6e63', isScatter: true }
+        ]
+    },
+
+    // 🐉 28. DRAGON'S LAIR
+    'dragons': {
+        name: 'Dragon\'s Lair',
+        paylineColor: '#c0392b', // Red
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🥚', value: 5,   weight: 100, color: '#f1c40f' },
+            { id: '2', name: '🔥', value: 10,  weight: 80,  color: '#e74c3c' },
+            { id: '3', name: '🛡️', value: 20,  weight: 60,  color: '#95a5a6' },
+            { id: '4', name: '🗡️', value: 30,  weight: 50,  color: '#bdc3c7' },
+            { id: '5', name: '🏰', value: 50,  weight: 30,  color: '#7f8c8d' },
+            { id: '6', name: '🐉', value: 100, weight: 20,  color: '#c0392b' },
+            { id: 'W', name: '👁️', value: 200, weight: 15,  color: '#2ecc71', isWild: true },
+            { id: 'S', name: '💎', value: 0,   weight: 10,  color: '#3498db', isScatter: true }
+        ]
+    },
+
+    // 🤖 29. ROBOT FACTORY
+    'robots': {
+        name: 'Robot Factory',
+        paylineColor: '#3498db', // Blue
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🔧', value: 5,   weight: 100, color: '#95a5a6' },
+            { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
+            { id: '3', name: '🔋', value: 20,  weight: 60,  color: '#2ecc71' },
+            { id: '4', name: '💾', value: 30,  weight: 50,  color: '#3498db' },
+            { id: '5', name: '🦿', value: 50,  weight: 30,  color: '#bdc3c7' },
+            { id: '6', name: '🤖', value: 100, weight: 20,  color: '#e74c3c' },
+            { id: 'W', name: '⚡', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
+            { id: 'S', name: '🚨', value: 0,   weight: 10,  color: '#e74c3c', isScatter: true }
+        ]
+    },
+
+    // 🥷 30. NINJA SHADOWS
+    'ninjas': {
+        name: 'Ninja Shadows',
+        paylineColor: '#2c3e50', // Dark Blue
+        bgMusic: '../music/default.mp3',
+        symbols: [
+            { id: '1', name: '🍙', value: 5,   weight: 100, color: '#ecf0f1' },
+            { id: '2', name: '🎋', value: 10,  weight: 80,  color: '#2ecc71' },
+            { id: '3', name: '👺', value: 20,  weight: 60,  color: '#c0392b' },
+            { id: '4', name: '🗡️', value: 30,  weight: 50,  color: '#bdc3c7' },
+            { id: '5', name: '🏯', value: 50,  weight: 30,  color: '#34495e' },
+            { id: '6', name: '🥷', value: 100, weight: 20,  color: '#2c3e50' },
+            { id: 'W', name: '💨', value: 200, weight: 15,  color: '#95a5a6', isWild: true },
+            { id: 'S', name: '⭐', value: 0,   weight: 10,  color: '#f1c40f', isScatter: true }
+        ]
     }
 };

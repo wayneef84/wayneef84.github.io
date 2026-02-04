@@ -22,7 +22,7 @@ class SlotMachine {
         this.frameInterval = 1000 / this.targetFPS;
         this.lastFrameTime = 0;
         this.enableShadows = !this.isMobile;
-        this.maxParticles = this.isMobile ? 30 : 100;
+        this.maxParticles = this.isMobile ? 30 : 300; // Increased for Desktop
 
         // Log detection for debugging
         console.log('[Slots] Mobile detected:', this.isMobile);
@@ -72,7 +72,7 @@ class SlotMachine {
         this.enable3D = true; // Toggle for 3D rendering
         this.reelRotations = [0, 0, 0, 0, 0]; // Rotation angles in radians
         this.reelAngularVelocity = [0, 0, 0, 0, 0]; // Rad/frame
-        this.cylinderSegments = this.isMobile ? 4 : 8; // Number of visible faces per cylinder
+        this.cylinderSegments = this.isMobile ? 4 : 16; // Smoother cylinders for Desktop
         this.cylinderRadius = 50; // Will be updated after canvas resize
         this.lastTickAngles = [0, 0, 0, 0, 0]; // For tick sound timing
         this.reelStopTimes = [0, 0, 0, 0, 0]; // When each reel should start stopping
@@ -374,6 +374,16 @@ class SlotMachine {
 
         let active = false;
 
+        // Magic Spin Particles
+        if (this.isSpinning && !this.isMobile && Math.random() < 0.3) {
+             const reelIdx = Math.floor(Math.random() * 5);
+             if (this.reelAngularVelocity[reelIdx] > 0 || this.reelSpeeds[reelIdx] > 0) {
+                 const x = reelIdx * this.colWidth + Math.random() * this.colWidth;
+                 const y = Math.random() * this.canvas.height;
+                 this.particles.push(new MagicParticle(x, y, this.currentTheme.paylineColor));
+             }
+        }
+
         for(let i=0; i<5; i++) {
             if (this.enable3D) {
                 // 3D rotational animation
@@ -536,6 +546,19 @@ class SlotMachine {
             if(isBig) {
                 const particleCount = this.isMobile ? 20 : 50;
                 for(let k=0; k<particleCount; k++) this.particles.push(new Particle(240, 425, '#ffd700'));
+
+                // Unicorn Dash Effect for Fantasy Theme
+                if (this.currentThemeKey === 'fantasy' && !this.isMobile) {
+                    for(let k=0; k<30; k++) {
+                        setTimeout(() => {
+                            const p = new MagicParticle(-50, 400 + (Math.random()-0.5)*200, '#ff69b4');
+                            p.vx = 15 + Math.random() * 10; // Fast horizontal movement
+                            p.vy = (Math.random() - 0.5) * 2;
+                            p.decay = 0.01;
+                            this.particles.push(p);
+                        }, k * 50);
+                    }
+                }
             }
         }
     }
@@ -1522,6 +1545,58 @@ class SparkleParticle {
         ctx.lineTo(0, this.size);
         ctx.stroke();
 
+        ctx.restore();
+    }
+}
+
+class MagicParticle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.life = 1.0;
+        this.history = []; // Trail positions
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.decay = 0.02 + Math.random() * 0.03;
+    }
+
+    update() {
+        this.history.push({x: this.x, y: this.y, life: this.life});
+        if(this.history.length > 10) this.history.shift();
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life -= this.decay;
+    }
+
+    draw(ctx) {
+        if(this.life <= 0) return;
+
+        // Draw Trail
+        if(this.history.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(this.history[0].x, this.history[0].y);
+            for(let i=1; i<this.history.length; i++) {
+                ctx.lineTo(this.history[i].x, this.history[i].y);
+            }
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = this.life * 0.5;
+            ctx.stroke();
+        }
+
+        // Draw Head
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
     }
 }
