@@ -413,6 +413,13 @@ Create a game-agnostic State Machine Engine that delegates logic to interchangea
     /war
       - ruleset.js
       - index.html
+    /poker              # New Poker-specific directory
+      /shared           # Poker-specific shared logic
+        - evaluator.js  # Hand evaluation logic
+      /5card            # 5 Card Draw variant
+      /holdem           # Texas Hold'em variant
+      /13card           # Chinese Poker variant
+      - index.html      # Poker Lobby
     /euchre
       - ruleset.js
       - index.html (TODO)
