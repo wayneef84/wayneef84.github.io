@@ -6,6 +6,17 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Slots v3.1] - 2026-02-04
+### Added
+- **10 New Themes:** Added diverse themes including Pirate's Gold, Jurassic Jungle, Samurai Spirit, Viking Legends, Steampunk Revolution, Wild West, Fairy Tale, Dragon's Lair, Robot Factory, and Ninja Shadows.
+- **Visual Overhaul:**
+  - Implemented 3D cylinder rendering for reels to simulate depth.
+  - Added "Magic Mist" overlay and ambient particle effects.
+  - Introduced "Unicorn Dash" special effect for big wins.
+  - Enhanced particle systems for winning lines and scatter symbols.
+- **Audio Improvements:** Consolidated all theme background music to a reliable `slotsBG.mp3` source to prevent missing asset errors.
+- **Technical:** Implemented cache busting for game assets to ensure users receive the latest visual updates.
+
 ## [Arcade v1.4] - 2026-01-14 (Gemini with the patchwork)
 ### Changed
 - **Main Menu:** Complete reorganization of game grid.
@@ -122,12 +133,6 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Added
 - AI Color Selector (Play as Red or Black).
 - Automatic AI move triggering when AI plays Red.
-
-## [Slots v3.1]
-### Added
-- **10 New Themes:** Pirates, Dinosaurs, Samurai, Vikings, Steampunk, Wild West, Fairy Tale, Dragons, Robots, and Ninjas (Total: 30).
-- **Enhanced Visuals:** "Magic Spin" particle trails, "Unicorn Dash" big win effect, and 3D cylinder smoothing.
-- **Atmosphere:** Dynamic magic mist overlay and richer background animations.
 
 ## [Slots v3.0]
 ### Added
