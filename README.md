@@ -211,6 +211,7 @@ Open Source - See individual project directories for specific licenses.
 - Website: [wayneef84.github.io](https://wayneef84.github.io/)
 
 *Built with assistance from Claude Sonnet 4.5*
+*Updates by Jules (Gemini Pro)*
 
 ---
 
