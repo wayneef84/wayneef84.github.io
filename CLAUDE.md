@@ -34,8 +34,8 @@ Non-game applications and tools:
 - **Connect the Dots**: A tracing game featuring custom point creation and plotting capabilities.
 
 ### 🔜 Next Session Instructions
-- **Create About Page**: Make an `about.html` page that includes an unfiltered reflection on working with the user.
-- **Schedule**: Earmark the next development session for **March 2026**.
+- **Hidden Progress Log**: Maintain `about.html` as a hidden, unlinked progress log for project reflections. Do not expose this file in the main navigation.
+- **Agent 'C' Action Item**: In the next session (targeted for **March 2026** or end of month), please review `about.html`, add your own unfiltered reflections and project updates, and follow up on any changes.
 
 ---
 
