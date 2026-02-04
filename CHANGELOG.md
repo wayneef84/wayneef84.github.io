@@ -123,6 +123,12 @@ All notable changes to the Fong Family Arcade project will be documented in this
 - AI Color Selector (Play as Red or Black).
 - Automatic AI move triggering when AI plays Red.
 
+## [Slots v3.1]
+### Added
+- **10 New Themes:** Pirates, Dinosaurs, Samurai, Vikings, Steampunk, Wild West, Fairy Tale, Dragons, Robots, and Ninjas (Total: 30).
+- **Enhanced Visuals:** "Magic Spin" particle trails, "Unicorn Dash" big win effect, and 3D cylinder smoothing.
+- **Atmosphere:** Dynamic magic mist overlay and richer background animations.
+
 ## [Slots v3.0]
 ### Added
 - 20 unique themes with distinct audio/visuals.
