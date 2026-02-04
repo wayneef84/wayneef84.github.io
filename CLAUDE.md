@@ -28,6 +28,11 @@ Non-game applications and tools:
 - `/games/` = Entertainment, interactive experiences
 - `/projects/` = Productivity tools, utilities, applications
 
+### 🔮 Future Concepts
+- **Flow Free Variants**: A series of puzzle games based on connecting matching colors with pipes, including various board sizes and modes.
+- **Custom Puzzle Maker**: A jigsaw puzzle generator where users can upload an image, crop it, define a grid size (a x b), and solve the resulting puzzle.
+- **Connect the Dots**: A tracing game featuring custom point creation and plotting capabilities.
+
 ---
 
 ## 📚 Documentation Maintenance Policy
