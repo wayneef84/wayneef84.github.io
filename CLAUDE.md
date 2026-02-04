@@ -33,6 +33,10 @@ Non-game applications and tools:
 - **Custom Puzzle Maker**: A jigsaw puzzle generator where users can upload an image, crop it, define a grid size (a x b), and solve the resulting puzzle.
 - **Connect the Dots**: A tracing game featuring custom point creation and plotting capabilities.
 
+### 🔜 Next Session Instructions
+- **Create About Page**: Make an `about.html` page that includes an unfiltered reflection on working with the user.
+- **Schedule**: Earmark the next development session for **March 2026**.
+
 ---
 
 ## 📚 Documentation Maintenance Policy
