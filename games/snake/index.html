@@ -93,8 +93,9 @@
             height: 120px; 
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
+            align-items: stretch; /* Stretch buttons to fill height */
+            gap: 20px;
+            padding: 10px 20px;
             /* Extra padding for iPhone Home Bar */
             padding-bottom: env(safe-area-inset-bottom, 20px); 
             box-sizing: content-box; /* Ensures padding adds to height */
@@ -110,11 +111,10 @@
         }
 
         .control-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            flex: 1; /* Grow to fill width */
+            border-radius: 20px; /* Rounded rectangle */
             border: 2px solid;
-            font-size: 2.5rem;
+            font-size: 3rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -125,7 +125,7 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .control-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
+        .control-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.3); }
 
         /* --- OVERLAYS --- */
         .overlay {
@@ -299,6 +299,10 @@
         <button class="control-btn" id="btnLeft">↶</button>
         <button class="control-btn" id="btnRight">↷</button>
     </div>
+
+    <footer style="width:100%; text-align:center; padding:5px; font-size:0.7rem; opacity:0.5; position:absolute; bottom:0; pointer-events:none;">
+        Updates by Jules (v2.0) - Jan 2026
+    </footer>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
