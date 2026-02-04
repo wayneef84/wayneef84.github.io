@@ -22,7 +22,7 @@ class SlotMachine {
         this.frameInterval = 1000 / this.targetFPS;
         this.lastFrameTime = 0;
         this.enableShadows = !this.isMobile;
-        this.maxParticles = this.isMobile ? 30 : 150; // Balanced for Desktop
+        this.maxParticles = this.isMobile ? 30 : 300; // Increased for Desktop
 
         // Log detection for debugging
         console.log('[Slots] Mobile detected:', this.isMobile);
@@ -375,7 +375,7 @@ class SlotMachine {
         let active = false;
 
         // Magic Spin Particles
-        if (this.isSpinning && !this.isMobile && Math.random() < 0.1) {
+        if (this.isSpinning && !this.isMobile && Math.random() < 0.3) {
              const reelIdx = Math.floor(Math.random() * 5);
              if (this.reelAngularVelocity[reelIdx] > 0 || this.reelSpeeds[reelIdx] > 0) {
                  const x = reelIdx * this.colWidth + Math.random() * this.colWidth;

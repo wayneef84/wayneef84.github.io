@@ -29,6 +29,11 @@ A modern, mobile-first adaptation of the classic Snake game. The primary goal wa
 ### v1.3 - Modes & Mechanics
 - **Feature:** Added "Color Eater" (Chameleon) and "Retro" (B&W) modes.
 
+### v1.6 - Polish Update
+- **Feature:** Added Sound Effects using Web Audio API (Eat, Crash) with a Mute toggle.
+- **Feature:** Added Swipe Controls option for better mobile experience.
+- **Mechanic:** implemented Speed Ramp (game gets faster as score increases).
+
 ---
 
 ## 3. Key Technical Insights
@@ -53,6 +58,7 @@ This ensures the game uses the empty space on Desktop when buttons are hidden.
 ---
 
 ## 4. Todo / Future Improvements
-- [ ] **Sound:** Add retro blips for eating and crashing.
-- [ ] **Swipe Support:** Add an option to toggle between Buttons and Swipe.
-- [ ] **Speed Ramp:** Increase game speed slightly every 50 points.
+- [x] **Sound:** Add retro blips for eating and crashing.
+- [x] **Swipe Support:** Add an option to toggle between Buttons and Swipe.
+- [x] **Speed Ramp:** Increase game speed slightly every 50 points.
+- [ ] **High Score:** Persist high score to local storage.
