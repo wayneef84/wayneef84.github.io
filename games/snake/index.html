@@ -240,6 +240,9 @@
         .theme-chameleon .control-btn { border-color: #00ffcc; color: #00ffcc; }
         .theme-chameleon .game-title { color: #00ffcc; text-shadow: 0 0 10px #00ffcc; }
 
+        /* --- CONTROL MODES --- */
+        body.control-swipe .controls-area { display: none !important; }
+
     </style>
 </head>
 <body class="theme-neon">
@@ -248,7 +251,10 @@
         <a href="../../index.html" class="back-btn">← Arcade</a>
         <div class="title-group">
             <h1 class="game-title">Neon Serpent</h1>
-            <div class="score-display">SCORE: <span id="score">0</span></div>
+            <div style="display:flex; align-items:center; justify-content:flex-end; gap:15px;">
+                <button id="muteBtn" style="background:none; border:none; color:inherit; font-size:1.2rem; cursor:pointer; opacity:1;">🔊</button>
+                <div class="score-display">SCORE: <span id="score">0</span></div>
+            </div>
         </div>
     </header>
 
@@ -263,7 +269,7 @@
             </div>
 
             <div id="startScreen" class="overlay active" style="background: rgba(0,0,0,0.6);">
-                <div style="margin-bottom:10px; font-weight:bold; letter-spacing:1px; color:inherit; opacity:0.8;">SELECT MODE</div>
+                <div style="margin-bottom:10px; font-weight:bold; letter-spacing:1px; color:inherit; opacity:0.8;">THEME</div>
                 
                 <div class="mode-container">
                     <div class="mode-selector">
@@ -273,6 +279,14 @@
                     </div>
                     <div id="modeDesc" class="mode-desc">
                         Classic arcade action with a cyber glow.
+                    </div>
+                </div>
+
+                <div style="margin-bottom:10px; font-weight:bold; letter-spacing:1px; color:inherit; opacity:0.8;">CONTROLS</div>
+                <div class="mode-container" style="margin-bottom: 30px;">
+                    <div class="mode-selector">
+                        <button class="mode-btn active" onclick="setControlMode('buttons')">Buttons</button>
+                        <button class="mode-btn" onclick="setControlMode('swipe')">Swipe</button>
                     </div>
                 </div>
 
@@ -301,7 +315,60 @@
         let isAttractMode = false; 
         let pendingDirection;
         let currentMode = 'neon'; 
+        let currentControlMode = 'buttons';
         let activeColor = '#ffffff';
+
+        const SoundManager = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            },
+
+            playTone(freq, type, duration, slideTo = null) {
+                if (this.muted) return;
+                try {
+                    if (!this.ctx) this.init();
+
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.error(e); }
+            },
+
+            playEat() {
+                this.playTone(600, 'sine', 0.1, 800);
+            },
+
+            playCrash() {
+                this.playTone(150, 'sawtooth', 0.4, 50);
+            }
+        };
 
         const PALETTE = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800'];
         const tileCount = 20; 
@@ -340,6 +407,22 @@
         window.addEventListener('resize', resize);
         resize(); 
 
+        window.setControlMode = function(mode) {
+            currentControlMode = mode;
+            if (mode === 'swipe') {
+                body.classList.add('control-swipe');
+            } else {
+                body.classList.remove('control-swipe');
+            }
+
+            const btns = document.querySelectorAll('[onclick^="setControlMode"]');
+            btns.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase() === mode);
+            });
+
+            resize();
+        }
+
         window.setMode = function(mode) {
             currentMode = mode;
             body.className = `theme-${mode}`;
@@ -376,20 +459,26 @@
             isGameOver = false;
         }
 
+        function calculateSpeed() {
+            if (isAttractMode) return 80;
+            return Math.max(50, 110 - (score * 2));
+        }
+
         function initGame() {
+            SoundManager.init();
             isAttractMode = false; 
             resetState();
             gameOverScreen.classList.remove('active');
             startScreen.classList.remove('active');
-            if (gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(gameTick, 110); 
+            if (gameLoop) clearTimeout(gameLoop);
+            gameTick();
         }
 
         function startAttractMode() {
             isAttractMode = true;
             resetState();
-            if (gameLoop) clearInterval(gameLoop);
-            gameLoop = setInterval(gameTick, 80); 
+            if (gameLoop) clearTimeout(gameLoop);
+            gameTick();
         }
 
         function randomFood() {
@@ -455,6 +544,7 @@
 
             if (head.x === food.x && head.y === food.y) {
                 if (!isAttractMode) {
+                    SoundManager.playEat();
                     score++;
                     scoreEl.textContent = score;
                     if(navigator.vibrate) navigator.vibrate(50);
@@ -469,6 +559,9 @@
             }
 
             draw();
+            if (!isGameOver) {
+                gameLoop = setTimeout(gameTick, calculateSpeed());
+            }
         }
 
         function draw() {
@@ -524,8 +617,9 @@
         }
 
         function endGame() {
-            clearInterval(gameLoop);
+            clearTimeout(gameLoop);
             isGameOver = true;
+            SoundManager.playCrash();
             if(navigator.vibrate) navigator.vibrate(300);
             finalScoreEl.textContent = score;
             gameOverScreen.classList.add('active');
@@ -542,6 +636,46 @@
             const newDir = { x: -direction.y, y: direction.x };
             pendingDirection = newDir;
         }
+
+        function setDirection(x, y) {
+             if (x === -pendingDirection.x && y === -pendingDirection.y) return;
+             pendingDirection = { x, y };
+        }
+
+        // Swipe Logic
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: false});
+
+        document.addEventListener('touchmove', e => {
+            if (currentControlMode === 'swipe' && !isAttractMode && !isGameOver) {
+                 e.preventDefault();
+            }
+        }, {passive: false});
+
+        document.addEventListener('touchend', e => {
+            if (currentControlMode !== 'swipe' || isAttractMode || isGameOver) return;
+
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+
+            if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 0) setDirection(1, 0);
+                else setDirection(-1, 0);
+            } else {
+                if (dy > 0) setDirection(0, 1);
+                else setDirection(0, -1);
+            }
+        }, {passive: false});
 
         const btnLeft = document.getElementById('btnLeft');
         const btnRight = document.getElementById('btnRight');
@@ -561,6 +695,14 @@
             gameOverScreen.classList.remove('active');
             startScreen.classList.add('active');
             startAttractMode(); 
+        });
+
+        const muteBtn = document.getElementById('muteBtn');
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isMuted = SoundManager.toggleMute();
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            muteBtn.style.opacity = isMuted ? '0.5' : '1';
         });
 
         startAttractMode();
