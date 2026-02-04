@@ -887,16 +887,18 @@ class WordGame {
     toPixels(pt) {
         var w = this.canvas.width;
         var h = this.canvas.height;
-        var aspectRatio = 0.8;
+        var aspectRatio = 0.7;  // Width = 70% of height (narrower letters)
         var padding = 20;
+
+        // Height-first calculation (matches Letters game approach)
+        var boxH = h * 0.85;    // Use 85% of canvas height
+        var boxW = boxH * aspectRatio;
+
+        // Constrain width if it exceeds available space
         var availW = w - (padding * 2);
-
-        var boxW = availW;
-        var boxH = boxW / aspectRatio;
-
-        if (boxH > h - 40) {
-            boxH = h - 40;
-            boxW = boxH * aspectRatio;
+        if (boxW > availW) {
+            boxW = availW;
+            boxH = boxW / aspectRatio;
         }
 
         // Account for descenders (y, g, p, q, j go below baseline)
