@@ -63,11 +63,14 @@ class WordGame {
             this.globalAudio = window.GAME_CONTENT.globalAudio;
         }
 
-        // 2. Load Custom Words from Storage
+        // 2. Load Custom Words from Storage (with migration)
         var saved = localStorage.getItem('fong_custom_words');
         if (saved) {
             try {
-                this.customWords = JSON.parse(saved);
+                var parsed = JSON.parse(saved);
+                this.customWords = this.migrateCustomWords(parsed);
+                // Re-save in new format if migration occurred
+                this.saveToStorage();
             } catch(e) { console.error("Save data corrupted", e); }
         }
 
@@ -111,6 +114,27 @@ class WordGame {
                     self.loadFromURL(params);
                 }
             });
+    }
+
+    // Migrate old string format to new object format
+    migrateCustomWords(data) {
+        if (!Array.isArray(data)) return [];
+        var migrated = [];
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+            if (typeof item === 'string') {
+                // Old format: plain string
+                migrated.push({ word: item, emoji: null, imageUrl: null });
+            } else if (item && typeof item === 'object' && item.word) {
+                // New format: object with word property
+                migrated.push({
+                    word: item.word,
+                    emoji: item.emoji || null,
+                    imageUrl: item.imageUrl || null
+                });
+            }
+        }
+        return migrated;
     }
 
     loadCategory(categoryId) {
@@ -267,25 +291,39 @@ class WordGame {
         }
     }
 
-    createWordCard(word, isCustom) {
+    createWordCard(wordData, isCustom) {
         var self = this;
+        // Handle both string (default words) and object (custom words) formats
+        var wordText = typeof wordData === 'string' ? wordData : wordData.word;
+
         var btn = document.createElement('div');
         btn.className = 'word-card';
-        btn.onclick = function() { self.startWord(word); };
+        btn.onclick = function() { self.startWord(wordText); };
 
-        // Add emoji icon on top for non-custom words
-        if (!isCustom) {
-            var emoji = this.getEmojiForWord(word);
-            var iconEl = document.createElement('div');
-            iconEl.className = 'word-card-icon';
-            iconEl.textContent = emoji;
-            btn.appendChild(iconEl);
+        // Add emoji icon on top
+        var emoji;
+        if (isCustom && typeof wordData === 'object') {
+            // Custom word: check for custom emoji or image
+            if (wordData.emoji) {
+                emoji = wordData.emoji;
+            } else if (wordData.imageUrl) {
+                emoji = '🖼️'; // Placeholder for image
+            } else {
+                emoji = '✨';
+            }
+        } else {
+            emoji = this.getEmojiForWord(wordText);
         }
+
+        var iconEl = document.createElement('div');
+        iconEl.className = 'word-card-icon';
+        iconEl.textContent = emoji;
+        btn.appendChild(iconEl);
 
         // Add word text
         var textEl = document.createElement('div');
         textEl.className = 'word-card-text';
-        textEl.textContent = word;
+        textEl.textContent = wordText;
         btn.appendChild(textEl);
 
         if (isCustom) {
@@ -295,7 +333,7 @@ class WordGame {
             delBtn.title = "Delete Word";
             delBtn.onclick = function(e) {
                 e.stopPropagation(); // Don't start game
-                self.deleteCustomWord(word);
+                self.deleteCustomWord(wordText);
             };
             btn.appendChild(delBtn);
         }
@@ -307,31 +345,88 @@ class WordGame {
     openModal() {
         this.modal.classList.remove('hidden');
         this.inputEl.value = '';
+
+        // Reset emoji and image URL fields
+        var emojiInput = document.getElementById('new-emoji-input');
+        var imageUrlInput = document.getElementById('new-image-url');
+        var previewContainer = document.getElementById('image-preview');
+
+        if (emojiInput) emojiInput.value = '';
+        if (imageUrlInput) imageUrlInput.value = '';
+        if (previewContainer) {
+            previewContainer.classList.add('hidden');
+            previewContainer.classList.remove('error');
+        }
+
         this.inputEl.focus();
     }
 
     closeModal() {
         this.modal.classList.add('hidden');
+        // Close emoji picker if open
+        var picker = document.querySelector('.emoji-picker-popup');
+        if (picker) picker.remove();
     }
 
     saveNewWord() {
-        const raw = this.inputEl.value.trim();
+        var raw = this.inputEl.value.trim();
         // Allow Mixed Case (a-z and A-Z)
-        const clean = raw.replace(/[^a-zA-Z]/g, '');
+        var clean = raw.replace(/[^a-zA-Z]/g, '');
 
-        if (clean.length > 0) {
-            if (!this.customWords.includes(clean) && !this.defaultWords.includes(clean)) {
-                this.customWords.push(clean);
-                this.saveToStorage();
-                this.renderMenu();
+        if (clean.length === 0) {
+            this.closeModal();
+            return;
+        }
+
+        // Check for duplicates
+        var isDuplicate = this.defaultWords.indexOf(clean) !== -1;
+        if (!isDuplicate) {
+            for (var i = 0; i < this.customWords.length; i++) {
+                var existing = this.customWords[i];
+                var existingWord = typeof existing === 'string' ? existing : existing.word;
+                if (existingWord.toLowerCase() === clean.toLowerCase()) {
+                    isDuplicate = true;
+                    break;
+                }
             }
         }
+
+        if (isDuplicate) {
+            alert('This word already exists!');
+            return;
+        }
+
+        // Get emoji and image URL from modal inputs
+        var emojiInput = document.getElementById('new-emoji-input');
+        var imageUrlInput = document.getElementById('new-image-url');
+
+        var emoji = emojiInput ? emojiInput.value.trim() : null;
+        var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : null;
+
+        // Basic URL validation
+        if (imageUrl && imageUrl.indexOf('http') !== 0) {
+            imageUrl = null;
+        }
+
+        // Create word object
+        var wordObj = {
+            word: clean,
+            emoji: emoji || null,
+            imageUrl: imageUrl || null
+        };
+
+        this.customWords.push(wordObj);
+        this.saveToStorage();
+        this.renderMenu();
         this.closeModal();
     }
 
     deleteCustomWord(word) {
-        if (confirm(`Delete "${word}"?`)) {
-            this.customWords = this.customWords.filter(w => w !== word);
+        if (confirm('Delete "' + word + '"?')) {
+            this.customWords = this.customWords.filter(function(w) {
+                var wText = typeof w === 'string' ? w : w.word;
+                return wText !== word;
+            });
             this.saveToStorage();
             this.renderMenu();
         }
@@ -432,29 +527,74 @@ class WordGame {
     }
 
     updateImageDisplay() {
+        var self = this;
         if (!this.currentWord) {
             this.imageArea.classList.add('hidden');
             return;
         }
 
         // Check for custom emoji first (from URL parameter)
-        var emoji;
+        var result;
         if (this.isCustomWord && this.customEmoji) {
-            emoji = this.customEmoji;
+            result = this.customEmoji;
         } else {
-            emoji = this.getEmojiForWord(this.currentWord);
+            result = this.getEmojiForWord(this.currentWord);
         }
 
-        // Show emoji fallback for the word
-        this.imageFallback.textContent = emoji;
-        this.imageFallback.style.display = 'block';
-        this.wordImage.classList.add('hidden');
+        // Handle image URL vs emoji
+        if (result && typeof result === 'object' && result.type === 'image') {
+            // Show image from URL
+            this.wordImage.src = result.value;
+            this.wordImage.alt = this.currentWord;
+            this.wordImage.onerror = function() {
+                // Fall back to emoji on error
+                self.wordImage.classList.add('hidden');
+                self.imageFallback.textContent = '✨';
+                self.imageFallback.style.display = 'block';
+            };
+            this.wordImage.onload = function() {
+                self.wordImage.classList.remove('hidden');
+                self.imageFallback.style.display = 'none';
+            };
+            // Show loading state
+            this.imageFallback.textContent = '⏳';
+            this.imageFallback.style.display = 'block';
+            this.wordImage.classList.add('hidden');
+        } else {
+            // Show emoji
+            this.imageFallback.textContent = result;
+            this.imageFallback.style.display = 'block';
+            this.wordImage.classList.add('hidden');
+        }
+
         this.imageArea.classList.remove('hidden');
     }
 
     getEmojiForWord(word) {
-        // Use dynamic emoji map loaded from JSON
-        return this.emojiMap[word] || '✨';
+        // 1. Check custom words first for emoji or image URL
+        for (var i = 0; i < this.customWords.length; i++) {
+            var customWord = this.customWords[i];
+            var customWordText = typeof customWord === 'string' ? customWord : customWord.word;
+            if (customWordText.toLowerCase() === word.toLowerCase()) {
+                if (typeof customWord === 'object') {
+                    if (customWord.emoji) {
+                        return customWord.emoji;
+                    }
+                    if (customWord.imageUrl) {
+                        return { type: 'image', value: customWord.imageUrl };
+                    }
+                }
+                break;
+            }
+        }
+
+        // 2. Use dynamic emoji map loaded from JSON
+        if (this.emojiMap[word]) {
+            return this.emojiMap[word];
+        }
+
+        // 3. Default
+        return '✨';
     }
 
     backToMenu() {
@@ -793,6 +933,12 @@ class WordGame {
         this.saveBtn.onclick = function() { self.saveNewWord(); };
         this.cancelBtn.onclick = function() { self.closeModal(); };
 
+        // Emoji picker handlers
+        self.initEmojiPicker();
+
+        // Image URL preview handlers
+        self.initImagePreview();
+
         this.canvas.addEventListener('pointerdown', function(e) { self.startDraw(e); });
         this.canvas.addEventListener('pointermove', function(e) { self.moveDraw(e); });
         this.canvas.addEventListener('pointerup', function() { self.endDraw(); });
@@ -814,6 +960,181 @@ class WordGame {
         if (this.particles.length === 0) return;
         this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life -= 0.02; p.vy += 0.2; this.ctx.globalAlpha = p.life; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, 5, 0, Math.PI*2); this.ctx.fill(); });
         this.ctx.globalAlpha = 1.0; this.particles = this.particles.filter(p => p.life > 0);
+    }
+
+    // --- EMOJI PICKER ---
+    initEmojiPicker() {
+        var self = this;
+        var pickerBtn = document.getElementById('emoji-picker-btn');
+        var emojiInput = document.getElementById('new-emoji-input');
+        var clearEmojiBtn = document.getElementById('clear-emoji-btn');
+
+        if (!pickerBtn || !emojiInput) return;
+
+        // Open emoji picker on button click
+        pickerBtn.addEventListener('click', function() {
+            self.openEmojiPicker();
+        });
+
+        // Also open on input click (since it's readonly)
+        emojiInput.addEventListener('click', function() {
+            self.openEmojiPicker();
+        });
+
+        // Clear emoji
+        if (clearEmojiBtn) {
+            clearEmojiBtn.addEventListener('click', function() {
+                emojiInput.value = '';
+            });
+        }
+    }
+
+    openEmojiPicker() {
+        var self = this;
+
+        // Remove existing picker if any
+        var existing = document.querySelector('.emoji-picker-popup');
+        if (existing) {
+            existing.remove();
+            return;
+        }
+
+        // Emoji categories
+        var EMOJI_CATEGORIES = {
+            'Animals': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🐺', '🐴', '🦄', '🐝', '🦋', '🐌', '🐞', '🐢', '🐍', '🐙', '🦑', '🦐', '🦀', '🐠', '🐟', '🐬', '🐳', '🦈'],
+            'Food': ['🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥝', '🍅', '🥑', '🥦', '🥒', '🌽', '🥕', '🥔', '🍞', '🧀', '🥚', '🍳', '🥩', '🍗', '🍔', '🍟', '🍕', '🌭', '🥪', '🍝', '🍜', '🍣', '🍦', '🍰', '🎂', '🍩', '🍪'],
+            'Nature': ['🌸', '🌷', '🌹', '🌺', '🌻', '🌼', '🌱', '🌲', '🌳', '🌴', '🌵', '🍀', '🍁', '🍂', '🍃', '🌍', '🌙', '⭐', '✨', '☀️', '🌈', '❄️', '💧', '🌊', '🔥', '💨', '☁️', '⚡'],
+            'Objects': ['⚽', '🏀', '🏈', '⚾', '🎾', '🎱', '🎮', '🎨', '🎭', '🎤', '🎧', '🎹', '🎸', '🎺', '🚗', '🚕', '🚌', '🚀', '✈️', '🚁', '⛵', '🏠', '🏰', '⛺', '📱', '💻', '📷', '🔑', '💎', '🎁'],
+            'Faces': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😋', '😛', '😜', '🤪', '😎', '🤓', '🧐', '🥳', '😏', '😌', '😴', '🤗', '🤔', '🙄']
+        };
+
+        // Create picker popup
+        var popup = document.createElement('div');
+        popup.className = 'emoji-picker-popup';
+
+        // Close button
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'emoji-picker-close';
+        closeBtn.textContent = '✕';
+        closeBtn.onclick = function() { popup.remove(); };
+        popup.appendChild(closeBtn);
+
+        // Category tabs
+        var categories = document.createElement('div');
+        categories.className = 'emoji-categories';
+
+        var categoryNames = Object.keys(EMOJI_CATEGORIES);
+        for (var i = 0; i < categoryNames.length; i++) {
+            var catName = categoryNames[i];
+            var catBtn = document.createElement('button');
+            catBtn.className = 'category-btn' + (i === 0 ? ' active' : '');
+            catBtn.textContent = catName;
+            catBtn.setAttribute('data-category', catName);
+            categories.appendChild(catBtn);
+        }
+        popup.appendChild(categories);
+
+        // Emoji grid
+        var grid = document.createElement('div');
+        grid.className = 'emoji-grid';
+        self.populateEmojiGrid(grid, EMOJI_CATEGORIES, categoryNames[0]);
+        popup.appendChild(grid);
+
+        // Category click handler
+        categories.addEventListener('click', function(e) {
+            if (e.target.classList.contains('category-btn')) {
+                var allBtns = categories.querySelectorAll('.category-btn');
+                for (var j = 0; j < allBtns.length; j++) {
+                    allBtns[j].classList.remove('active');
+                }
+                e.target.classList.add('active');
+                self.populateEmojiGrid(grid, EMOJI_CATEGORIES, e.target.getAttribute('data-category'));
+            }
+        });
+
+        // Emoji selection handler
+        grid.addEventListener('click', function(e) {
+            if (e.target.classList.contains('emoji-option')) {
+                var emoji = e.target.textContent;
+                var input = document.getElementById('new-emoji-input');
+                if (input) {
+                    input.value = emoji;
+                }
+                popup.remove();
+            }
+        });
+
+        document.body.appendChild(popup);
+    }
+
+    populateEmojiGrid(grid, categories, category) {
+        grid.innerHTML = '';
+        var emojis = categories[category] || [];
+
+        for (var i = 0; i < emojis.length; i++) {
+            var btn = document.createElement('button');
+            btn.className = 'emoji-option';
+            btn.textContent = emojis[i];
+            btn.type = 'button';
+            grid.appendChild(btn);
+        }
+    }
+
+    // --- IMAGE URL PREVIEW ---
+    initImagePreview() {
+        var self = this;
+        var imageUrlInput = document.getElementById('new-image-url');
+        var previewContainer = document.getElementById('image-preview');
+        var previewImg = document.getElementById('preview-img');
+        var clearImageBtn = document.getElementById('clear-image-btn');
+
+        if (!imageUrlInput || !previewContainer || !previewImg) return;
+
+        // Debounced preview on URL input
+        var debounceTimer = null;
+        imageUrlInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            var url = imageUrlInput.value.trim();
+
+            if (!url) {
+                previewContainer.classList.add('hidden');
+                previewContainer.classList.remove('error');
+                return;
+            }
+
+            debounceTimer = setTimeout(function() {
+                self.loadImagePreview(url);
+            }, 500);
+        });
+
+        // Clear image
+        if (clearImageBtn) {
+            clearImageBtn.addEventListener('click', function() {
+                imageUrlInput.value = '';
+                previewContainer.classList.add('hidden');
+                previewContainer.classList.remove('error');
+            });
+        }
+    }
+
+    loadImagePreview(url) {
+        var previewContainer = document.getElementById('image-preview');
+        var previewImg = document.getElementById('preview-img');
+
+        if (!previewContainer || !previewImg) return;
+
+        // Test load the image
+        var testImg = new Image();
+        testImg.onload = function() {
+            previewImg.src = url;
+            previewContainer.classList.remove('hidden', 'error');
+        };
+        testImg.onerror = function() {
+            previewContainer.classList.remove('hidden');
+            previewContainer.classList.add('error');
+            previewImg.src = '';
+        };
+        testImg.src = url;
     }
 }
 
