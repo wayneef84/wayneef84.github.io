@@ -1,0 +1,5 @@
+127.0.0.1 - - [04/Feb/2026 09:29:53] "GET /games/xtc_ball/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [04/Feb/2026 09:29:53] "GET /games/xtc_ball/js/config.js HTTP/1.1" 200 -
+127.0.0.1 - - [04/Feb/2026 09:29:53] "GET /games/xtc_ball/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [04/Feb/2026 09:29:53] "GET /games/xtc_ball/js/sound.js HTTP/1.1" 200 -
+127.0.0.1 - - [04/Feb/2026 09:29:53] "GET /games/xtc_ball/js/game.js HTTP/1.1" 200 -
