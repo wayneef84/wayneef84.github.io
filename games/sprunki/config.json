@@ -28,6 +28,11 @@
       "id": "reverse",
       "label": "UNO Reverse (Test)",
       "base_path": "./assets/packs/reverse/"
+    },
+    {
+      "id": "phase2",
+      "label": "Phase 2 (Horror)",
+      "base_path": "./assets/packs/phase2/"
     }
   ],
 
@@ -87,6 +92,30 @@
     { "id": "rv02", "name": "Reverse Wenda", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v02.wav", "img": "../phase1/img/v02.svg" },
     { "id": "rv03", "name": "Reverse Pinki", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v03.wav", "img": "../phase1/img/v03.svg" },
     { "id": "rv04", "name": "Reverse Jevin", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v04.wav", "img": "../phase1/img/v04.svg" },
-    { "id": "rv05", "name": "Reverse Black", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v05.wav", "img": "../phase1/img/v05.svg" }
+    { "id": "rv05", "name": "Reverse Black", "type": "vocals", "pack_id": "reverse", "audio": "../phase1/audio/v05.wav", "img": "../phase1/img/v05.svg" },
+
+    { "id": "hb01", "name": "Horror Oren", "type": "beats", "pack_id": "phase2", "audio": "audio/b01.wav", "img": "img/b01.svg" },
+    { "id": "hb02", "name": "Horror Raddy", "type": "beats", "pack_id": "phase2", "audio": "audio/b02.wav", "img": "img/b02.svg" },
+    { "id": "hb03", "name": "Horror Clukr", "type": "beats", "pack_id": "phase2", "audio": "audio/b03.wav", "img": "img/b03.svg" },
+    { "id": "hb04", "name": "Horror Fun Bot", "type": "beats", "pack_id": "phase2", "audio": "audio/b04.wav", "img": "img/b04.svg" },
+    { "id": "hb05", "name": "Horror Vineria", "type": "beats", "pack_id": "phase2", "audio": "audio/b05.wav", "img": "img/b05.svg" },
+
+    { "id": "he01", "name": "Horror Gray", "type": "effects", "pack_id": "phase2", "audio": "audio/e01.wav", "img": "img/e01.svg" },
+    { "id": "he02", "name": "Horror Brud", "type": "effects", "pack_id": "phase2", "audio": "audio/e02.wav", "img": "img/e02.svg" },
+    { "id": "he03", "name": "Horror Garnold", "type": "effects", "pack_id": "phase2", "audio": "audio/e03.wav", "img": "img/e03.svg" },
+    { "id": "he04", "name": "Horror OWAKCX", "type": "effects", "pack_id": "phase2", "audio": "audio/e04.wav", "img": "img/e04.svg" },
+    { "id": "he05", "name": "Horror Sky", "type": "effects", "pack_id": "phase2", "audio": "audio/e05.wav", "img": "img/e05.svg" },
+
+    { "id": "hm01", "name": "Horror Sun", "type": "melodies", "pack_id": "phase2", "audio": "audio/m01.wav", "img": "img/m01.svg" },
+    { "id": "hm02", "name": "Horror Durple", "type": "melodies", "pack_id": "phase2", "audio": "audio/m02.wav", "img": "img/m02.svg" },
+    { "id": "hm03", "name": "Horror Tree", "type": "melodies", "pack_id": "phase2", "audio": "audio/m03.wav", "img": "img/m03.svg" },
+    { "id": "hm04", "name": "Horror Simon", "type": "melodies", "pack_id": "phase2", "audio": "audio/m04.wav", "img": "img/m04.svg" },
+    { "id": "hm05", "name": "Horror Tunner", "type": "melodies", "pack_id": "phase2", "audio": "audio/m05.wav", "img": "img/m05.svg" },
+
+    { "id": "hv01", "name": "Horror Computer", "type": "vocals", "pack_id": "phase2", "audio": "audio/v01.wav", "img": "img/v01.svg" },
+    { "id": "hv02", "name": "Horror Wenda", "type": "vocals", "pack_id": "phase2", "audio": "audio/v02.wav", "img": "img/v02.svg" },
+    { "id": "hv03", "name": "Horror Pinki", "type": "vocals", "pack_id": "phase2", "audio": "audio/v03.wav", "img": "img/v03.svg" },
+    { "id": "hv04", "name": "Horror Jevin", "type": "vocals", "pack_id": "phase2", "audio": "audio/v04.wav", "img": "img/v04.svg" },
+    { "id": "hv05", "name": "Horror Black", "type": "vocals", "pack_id": "phase2", "audio": "audio/v05.wav", "img": "img/v05.svg" }
   ]
 }

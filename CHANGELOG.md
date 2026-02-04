@@ -6,6 +6,13 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Sprunki v3.5] - 2026-01-26 (Jules)
+### Added
+- **Phase 2 (Horror) Pack:** Added a completely new theme pack with 20 new "Horror" style characters and sounds.
+  - Extracted hidden assets from the project bundle.
+  - Features darker visual theme and spooky audio loops.
+  - Fully integrated into the Pack Selector.
+
 ## [Arcade v1.4] - 2026-01-14 (Gemini with the patchwork)
 ### Changed
 - **Main Menu:** Complete reorganization of game grid.
