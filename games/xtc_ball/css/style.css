@@ -105,6 +105,12 @@ body {
     color: #4a3b2a;
 }
 
+.header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .icon-btn, .back-btn {
     background: none;
     border: none;
@@ -112,6 +118,15 @@ body {
     cursor: pointer;
     text-decoration: none;
     color: #4a3b2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
 }
 
 /* ===================================================================================

@@ -40,6 +40,13 @@ The goal was to create a mobile-first, high-fidelity simulation of a Magic 8-Bal
 
 ## 2. Version History & Changelog
 
+### v1.7 - Sound, Vibration & Juice
+- **Feature:** Added Sound Effects using Web Audio API (No external assets required).
+    - **Shake:** Synthesized White Noise with Lowpass Filter sweep (Liquid slosh).
+    - **Reveal:** Synthesized Sine Oscillator with Gain Envelope (Ding).
+- **UI:** Added Mute Toggle button to header with localStorage persistence.
+- **UI:** Added Vibration Toggle button to header with localStorage persistence.
+
 ### v1.6 - "Juice" & Polish (Final)
 - **Problem:** `<textarea>` elements looked static and clunky in the editor.
 - **Solution:** Added an `autoResize` function attached to the `input` event. It resets height to `auto` then sets it to `scrollHeight` to grow dynamically as the user types.
