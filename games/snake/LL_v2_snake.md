@@ -29,10 +29,15 @@ A modern, mobile-first adaptation of the classic Snake game. The primary goal wa
 ### v1.3 - Modes & Mechanics
 - **Feature:** Added "Color Eater" (Chameleon) and "Retro" (B&W) modes.
 
+### v2.0 - UX & Controls
+- **UX:** Redesigned touch buttons to be large rounded rectangles, filling the bottom area for easier navigation.
+- **UI:** Added footer credit.
+
 ### v1.6 - Polish Update
 - **Feature:** Added Sound Effects using Web Audio API (Eat, Crash) with a Mute toggle.
 - **Feature:** Added Swipe Controls option for better mobile experience.
 - **Mechanic:** implemented Speed Ramp (game gets faster as score increases).
+- **Credit:** Updates implemented by Agent Jules.
 
 ---
 

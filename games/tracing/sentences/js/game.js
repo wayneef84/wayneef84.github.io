@@ -174,7 +174,6 @@
         elements.clearBtn = document.getElementById('clear-btn');
         elements.speakSentenceBtn = document.getElementById('speak-sentence-btn');
         elements.checkBtn = document.getElementById('check-btn');
-        elements.addWordBtn = document.getElementById('add-word-btn');
 
         elements.celebration = document.getElementById('celebration');
         elements.celebrationSentence = document.getElementById('celebration-sentence');
@@ -334,7 +333,6 @@
         elements.clearBtn.addEventListener('click', clearCurrent);
         elements.speakSentenceBtn.addEventListener('click', speakCurrent);
         elements.checkBtn.addEventListener('click', checkCurrent);
-        elements.addWordBtn.addEventListener('click', addCustomWord);
         elements.speakBtn.addEventListener('click', function() {
             if (state.gameMode === 'word' && state.targetWord) {
                 speakText(state.targetWord.word, state.currentLanguage);
@@ -496,24 +494,6 @@
         updateURL(lang + '-' + groupKey, pushHistory);
     }
 
-    // Custom words storage
-    var customWordsList = [];
-
-    function loadCustomWords() {
-        try {
-            var saved = localStorage.getItem('sentences-custom-words');
-            if (saved) {
-                customWordsList = JSON.parse(saved);
-            }
-        } catch (e) {}
-    }
-
-    function saveCustomWords() {
-        try {
-            localStorage.setItem('sentences-custom-words', JSON.stringify(customWordsList));
-        } catch (e) {}
-    }
-
     function showCustomMode(pushHistory) {
         state.currentLanguage = 'english';
         state.currentGroup = 'custom';
@@ -534,13 +514,7 @@
         elements.sentenceArea.style.display = 'block';
         elements.wordBank.style.display = 'block';
 
-        // Show add word button in custom mode
-        elements.addWordBtn.style.display = 'flex';
-
-        // Load custom words from localStorage
-        loadCustomWords();
-
-        // Base common words
+        // Show common words
         var commonWords = [
             { word: 'I', letters: ['I'] },
             { word: 'you', letters: ['y','o','u'] },
@@ -573,28 +547,10 @@
             { word: 'and', letters: ['a','n','d'] },
             { word: 'but', letters: ['b','u','t'] }
         ];
-
-        // Merge with custom words
-        var allWords = commonWords.concat(customWordsList);
-        populateWordBank(allWords, true);
+        populateWordBank(commonWords, true);
         updateSentenceDisplay();
 
         updateURL('custom', pushHistory);
-    }
-
-    function addCustomWord() {
-        var word = prompt('Enter a word to add:');
-        if (word && word.trim()) {
-            word = word.trim();
-            // Check if word already exists
-            var exists = customWordsList.some(function(w) { return w.word.toLowerCase() === word.toLowerCase(); });
-            if (!exists) {
-                customWordsList.push({ word: word, letters: word.split('') });
-                saveCustomWords();
-                // Refresh the word bank
-                showCustomMode(false);
-            }
-        }
     }
 
     function showSavedView(pushHistory) {
@@ -649,7 +605,6 @@
         elements.letterBank.style.display = 'block';
         elements.sentenceArea.style.display = 'none';
         elements.wordBank.style.display = 'none';
-        elements.addWordBtn.style.display = 'none';
 
         elements.targetLabel.textContent = 'Build this word:';
 
@@ -670,7 +625,6 @@
         elements.letterBank.style.display = 'none';
         elements.sentenceArea.style.display = 'block';
         elements.wordBank.style.display = 'block';
-        elements.addWordBtn.style.display = 'none';
 
         elements.targetLabel.textContent = 'Build this sentence:';
 
