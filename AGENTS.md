@@ -5,11 +5,11 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 
 ## 👥 The Agents
 
-| Agent | ID | Role | Key Strengths | File Scope |
-| :--- | :--- | :--- | :--- | :--- |
-| **Claude** | `C` | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE.md` |
-| **Gemini** | `G` | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
-| **Jules** | `J` | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
+| Agent | ID | Model | Role | Key Strengths | File Scope |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Claude** | `C` | Claude Opus 4.5 | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE.md` |
+| **Gemini** | `G` | Gemini Pro/Flash | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
+| **Jules** | `J` | Google Labs Agent | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
 
 ## 🤝 Handshake Protocol
 When starting a session:
