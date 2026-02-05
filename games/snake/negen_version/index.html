@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Serpent (NEGEN Edition)</title>
+    <style>
+        body {
+            background: #240a1e;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            background: #000;
+            border-radius: 4px;
+            display: block;
+        }
+
+        #startOverlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: #ff00cc;
+            color: #fff;
+            border: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff00cc;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>NEGEN SNAKE</div>
+        <div>SCORE: <span id="scoreDisplay">0</span></div>
+    </div>
+
+    <div id="gameContainer">
+        <canvas id="negenCanvas"></canvas>
+        <div id="startOverlay">
+            <h1 style="margin-bottom: 20px; text-shadow: 0 0 10px #fff;">NEON SERPENT</h1>
+            <div style="margin-bottom: 30px; opacity: 0.8;">Powered by NEGEN</div>
+            <button class="btn">TAP TO START</button>
+        </div>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
