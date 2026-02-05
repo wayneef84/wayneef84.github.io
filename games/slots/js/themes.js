@@ -50,7 +50,7 @@ const THEME_LIBRARY = {
     'fantasy': {
         name: 'Mystical Unicorn',
         paylineColor: '#ffd700', // Gold
-        bgMusic: '../music/fantasy.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '💎', value: 5,   weight: 100, color: '#3498db' },
             { id: '2', name: '🔮', value: 10,  weight: 80,  color: '#9b59b6' },
@@ -67,7 +67,7 @@ const THEME_LIBRARY = {
     'classic': {
         name: 'Classic Fruits',
         paylineColor: '#e74c3c', // Red
-        bgMusic: '../music/classic.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🍒', value: 5,   weight: 100, color: '#e74c3c' },
             { id: '2', name: '🍋', value: 10,  weight: 80,  color: '#f1c40f' },
@@ -84,7 +84,7 @@ const THEME_LIBRARY = {
     'ocean': {
         name: 'Ocean Adventure',
         paylineColor: '#00ffff', // Cyan
-        bgMusic: '../music/ocean.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🐠', value: 5,   weight: 100, color: '#00bcd4' },
             { id: '2', name: '🐙', value: 10,  weight: 80,  color: '#9c27b0' },
@@ -101,7 +101,7 @@ const THEME_LIBRARY = {
     'space': {
         name: 'Space Explorer',
         paylineColor: '#00ff00', // Green
-        bgMusic: '../music/space.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '👽', value: 5,   weight: 100, color: '#4caf50' },
             { id: '2', name: '🚀', value: 10,  weight: 80,  color: '#f44336' },
@@ -116,7 +116,7 @@ const THEME_LIBRARY = {
 
     // 🦁 5. WILD ANIMALS
     'animals': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Wild Animals',
         paylineColor: '#e67e22', // Orange
         symbols: [
@@ -133,7 +133,7 @@ const THEME_LIBRARY = {
 
     // 🍕 6. DELICIOUS TREATS
     'food': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Delicious Treats',
         paylineColor: '#ff69b4', // Pink
         symbols: [
@@ -150,7 +150,7 @@ const THEME_LIBRARY = {
 
     // 💎 7. PRECIOUS GEMS
     'gems': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Precious Gems',
         paylineColor: '#8e44ad', // Purple
         symbols: [
@@ -167,7 +167,7 @@ const THEME_LIBRARY = {
 
     // ♠️ 8. CARD ROYALE
     'cards': {
-        bgMusic: '../music/casino.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Card Royale',
         paylineColor: '#c0392b', // Dark Red
         symbols: [
@@ -184,7 +184,7 @@ const THEME_LIBRARY = {
 
     // ♛ 9. CHESS MASTERS
     'chess': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Chess Masters',
         paylineColor: '#95a5a6', // Silver
         symbols: [
@@ -201,7 +201,7 @@ const THEME_LIBRARY = {
 
     // 👻 10. MONSTER MAYHEM
     'monsters': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Monster Mayhem',
         paylineColor: '#2ecc71', // Slime Green
         symbols: [
@@ -218,7 +218,7 @@ const THEME_LIBRARY = {
 
     // 🐺 11. WOLF PACK
     'wolves': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Wolf Pack',
         paylineColor: '#3498db', // Moon Blue
         symbols: [
@@ -235,7 +235,7 @@ const THEME_LIBRARY = {
 
     // 🏺 12. ANCIENT EGYPT
     'egypt': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Ancient Egypt',
         paylineColor: '#f1c40f', // Sand Gold
         symbols: [
@@ -252,7 +252,7 @@ const THEME_LIBRARY = {
 
     // 🎸 13. MUSIC BEATS
     'music': {
-        bgMusic: '../music/music.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Music Beats',
         paylineColor: '#e91e63', // Neon Pink
         symbols: [
@@ -269,7 +269,7 @@ const THEME_LIBRARY = {
 
     // 🏆 14. SPORTS ARENA
     'sports': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Sports Arena',
         paylineColor: '#2ecc71', // Field Green
         symbols: [
@@ -286,7 +286,7 @@ const THEME_LIBRARY = {
 
     // 🤖 15. TECH GADGETS
     'tech': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Tech Gadgets',
         paylineColor: '#00cec9', // Electric Blue
         symbols: [
@@ -303,7 +303,7 @@ const THEME_LIBRARY = {
 
     // ⛺ 16. WILDERNESS CAMP
     'camping': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Wilderness Camp',
         paylineColor: '#27ae60', // Forest Green
         symbols: [
@@ -320,7 +320,7 @@ const THEME_LIBRARY = {
 
     // ♈ 17. ASTROLOGY SIGNS
     'astrology': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Astrology Signs',
         paylineColor: '#9b59b6', // Mystic Purple
         symbols: [
@@ -337,7 +337,7 @@ const THEME_LIBRARY = {
 
     // 🌧️ 18. WEATHER FORECAST
     'weather': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Weather Forecast',
         paylineColor: '#3498db', // Sky Blue
         symbols: [
@@ -354,7 +354,7 @@ const THEME_LIBRARY = {
 
     // 🪐 19. SOLAR SYSTEM
     'planets': {
-        bgMusic: '../music/space.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Solar System',
         paylineColor: '#8e44ad', // Deep Space Purple
         symbols: [
@@ -371,7 +371,7 @@ const THEME_LIBRARY = {
 
     // 😊 20. EMOJI FACES
     'emoticons': {
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         name: 'Emoji Faces',
         paylineColor: '#f1c40f', // Smiley Yellow
         symbols: [
@@ -390,7 +390,7 @@ const THEME_LIBRARY = {
     'pirates': {
         name: 'Pirate\'s Gold',
         paylineColor: '#c0392b', // Red
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '⚓', value: 5,   weight: 100, color: '#95a5a6' },
             { id: '2', name: '💣', value: 10,  weight: 80,  color: '#34495e' },
@@ -407,7 +407,7 @@ const THEME_LIBRARY = {
     'dinosaurs': {
         name: 'Jurassic Jungle',
         paylineColor: '#27ae60', // Green
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🌿', value: 5,   weight: 100, color: '#2ecc71' },
             { id: '2', name: '🥚', value: 10,  weight: 80,  color: '#f1c40f' },
@@ -424,7 +424,7 @@ const THEME_LIBRARY = {
     'samurai': {
         name: 'Samurai Spirit',
         paylineColor: '#e74c3c', // Red
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🌸', value: 5,   weight: 100, color: '#ff69b4' },
             { id: '2', name: '🍶', value: 10,  weight: 80,  color: '#ecf0f1' },
@@ -441,7 +441,7 @@ const THEME_LIBRARY = {
     'vikings': {
         name: 'Viking Legends',
         paylineColor: '#3498db', // Blue
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🍺', value: 5,   weight: 100, color: '#f1c40f' },
             { id: '2', name: '🛡️', value: 10,  weight: 80,  color: '#95a5a6' },
@@ -458,7 +458,7 @@ const THEME_LIBRARY = {
     'steampunk': {
         name: 'Steampunk Rev',
         paylineColor: '#d35400', // Bronze
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🔩', value: 5,   weight: 100, color: '#95a5a6' },
             { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
@@ -475,7 +475,7 @@ const THEME_LIBRARY = {
     'wildwest': {
         name: 'Wild West',
         paylineColor: '#e67e22', // Orange
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🌵', value: 5,   weight: 100, color: '#27ae60' },
             { id: '2', name: '👢', value: 10,  weight: 80,  color: '#8d6e63' },
@@ -492,7 +492,7 @@ const THEME_LIBRARY = {
     'fairytale': {
         name: 'Fairy Tale',
         paylineColor: '#ff69b4', // Pink
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🍄', value: 5,   weight: 100, color: '#e74c3c' },
             { id: '2', name: '🌸', value: 10,  weight: 80,  color: '#ff69b4' },
@@ -509,7 +509,7 @@ const THEME_LIBRARY = {
     'dragons': {
         name: 'Dragon\'s Lair',
         paylineColor: '#c0392b', // Red
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🥚', value: 5,   weight: 100, color: '#f1c40f' },
             { id: '2', name: '🔥', value: 10,  weight: 80,  color: '#e74c3c' },
@@ -526,7 +526,7 @@ const THEME_LIBRARY = {
     'robots': {
         name: 'Robot Factory',
         paylineColor: '#3498db', // Blue
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🔧', value: 5,   weight: 100, color: '#95a5a6' },
             { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
@@ -543,7 +543,7 @@ const THEME_LIBRARY = {
     'ninjas': {
         name: 'Ninja Shadows',
         paylineColor: '#2c3e50', // Dark Blue
-        bgMusic: '../music/default.mp3',
+        bgMusic: 'audio/slotsBG.mp3',
         symbols: [
             { id: '1', name: '🍙', value: 5,   weight: 100, color: '#ecf0f1' },
             { id: '2', name: '🎋', value: 10,  weight: 80,  color: '#2ecc71' },
