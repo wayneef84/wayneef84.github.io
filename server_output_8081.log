@@ -20,3 +20,25 @@
 127.0.0.1 - - [05/Feb/2026 14:00:09] "GET /games/snake/negen_version/index.html HTTP/1.1" 200 -
 127.0.0.1 - - [05/Feb/2026 14:00:09] "GET /games/snake/negen_version/js/main.js HTTP/1.1" 200 -
 127.0.0.1 - - [05/Feb/2026 14:00:09] "GET /games/snake/negen_version/js/SnakeScene.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:01] "GET /games/snake/negen_version/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/snake/negen_version/js/main.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/audio/AudioManager.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/core/Engine.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/snake/negen_version/js/SnakeScene.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/graphics/CanvasRenderer.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/snake/negen_version/js/BattleRoyaleScene.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/input/InputManager.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/core/Scene.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /negen/graphics/Renderer.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/animal_stack/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/animal_stack/js/main.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] code 404, message File not found
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/negen/audio/AudioManager.js HTTP/1.1" 404 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] code 404, message File not found
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/negen/input/InputManager.js HTTP/1.1" 404 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] code 404, message File not found
+127.0.0.1 - - [05/Feb/2026 19:21:02] code 404, message File not found
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/negen/core/Engine.js HTTP/1.1" 404 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/negen/graphics/CanvasRenderer.js HTTP/1.1" 404 -
+127.0.0.1 - - [05/Feb/2026 19:21:02] "GET /games/animal_stack/js/AnimalStackScene.js HTTP/1.1" 200 -
