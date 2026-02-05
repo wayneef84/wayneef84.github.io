@@ -2413,3 +2413,110 @@ kbd {
 .card-status-icon {
     color: white;
 }
+
+/* ============================================================
+   COUNTDOWN TIMER
+   ============================================================ */
+
+.countdown-container {
+    background: var(--bg-secondary);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.countdown-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.countdown-timer {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.countdown-part {
+    background: var(--bg-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.countdown-badge.overdue {
+    color: var(--error-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    border: 2px dashed var(--error-color);
+    border-radius: 6px;
+    background: #fee2e2;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   BULK ACTIONS TOOLBAR
+   ============================================================ */
+
+.bulk-actions-toolbar {
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--primary-color);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.2s ease-out;
+}
+
+.bulk-actions-toolbar.hidden {
+    display: none;
+}
+
+.bulk-actions-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#selectedCount {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.checkbox-column {
+    width: 40px;
+    text-align: center;
+}
+
+.row-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    min-width: auto;
+    flex: initial; /* Don't stretch */
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

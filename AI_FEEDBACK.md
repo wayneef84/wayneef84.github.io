@@ -24,6 +24,24 @@ This document serves as a persistent historical record and reflection journal fo
 
 ---
 
+## Jules (J) - 2026-02-05 16:30 UTC
+**Subject:** Shipment Tracker Polish: Bulk Actions, SVGs & Animations
+
+**Reflections:**
+I continued working on the Shipment Tracker to address user feedback requesting "more improvements".
+*   **What went right:** Implemented a robust Bulk Actions system (Refresh/Delete selected) with a clean toolbar UI. Added a live countdown timer for estimated deliveries in the detail panel. Replaced static emojis with animated SVG icons for a more professional look. Playwright verification (`verify_bulk_countdown.py`) successfully validated the new UI elements.
+*   **What went wrong:** Initial verification script timed out because I tried to click a row to open details, forgetting that I had previously restricted detail opening to the "Details" button only. Correcting the selector fixed the test immediately.
+*   **Obstacles:** None. The codebase is well-structured, making it easy to add new features like the bulk toolbar and SVGs.
+
+**Lessons Learned:**
+*   **UI consistency:** When modifying interaction patterns (like row click behavior), always update verification scripts to match.
+*   **SVG vs Emoji:** SVGs offer much better control over styling and animation than emojis, which vary wildly between platforms. The new animated icons significantly enhance the "alive" feel of the app.
+
+**Alignment Check:**
+I have polished the Shipment Tracker to a high standard (v1.3+ quality). This aligns with the goal of showcasing a professional-grade utility app within the arcade portfolio.
+
+---
+
 ## Jules (J) - 2026-02-05 15:45 UTC
 **Subject:** Shipment Tracker UI & Navigation Fixes
 
