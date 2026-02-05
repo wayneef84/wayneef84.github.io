@@ -7,7 +7,7 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 
 | Agent | ID | Role | Key Strengths | File Scope |
 | :--- | :--- | :--- | :--- | :--- |
-| **Claude** | `C` | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE.md` |
+| **Claude** | `C` | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE_AGENT.md` |
 | **Gemini** | `G` | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
 | **Jules** | `J` | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
 
@@ -15,7 +15,7 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 When starting a session:
 1.  **Read `AGENTS.md`** (this file).
 2.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
-3.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
+3.  **Read your specific file** (`CLAUDE_AGENT.md`, `GEMINI.md`, or `JULES.md`).
 4.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
 ## 🚦 Conflict Resolution
