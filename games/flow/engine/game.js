@@ -79,7 +79,54 @@ Game.prototype.handleInputStart = function(x, y) {
 
 Game.prototype.handleInputMove = function(x, y) {
     if (this.activeColor) {
-        this.pathManager.extendPath(this.activeColor, x, y);
+        var path = this.pathManager.paths[this.activeColor];
+        if (!path || path.length === 0) return;
+
+        // Loop to interpolate path if input skipped cells
+        var maxSteps = 100; // Safety limit
+
+        while (maxSteps-- > 0) {
+            var head = path[path.length - 1];
+            if (head.x === x && head.y === y) break;
+
+            // If adjacent or same, just try to move
+            if (Math.abs(head.x - x) + Math.abs(head.y - y) <= 1) {
+                this.pathManager.extendPath(this.activeColor, x, y);
+                break;
+            }
+
+            // Interpolate towards target
+            var dx = x - head.x;
+            var dy = y - head.y;
+            var moved = false;
+
+            // Try major axis first
+            var tryXFirst = Math.abs(dx) >= Math.abs(dy);
+            var attempts = [];
+
+            var signX = (dx > 0) ? 1 : ((dx < 0) ? -1 : 0);
+            var signY = (dy > 0) ? 1 : ((dy < 0) ? -1 : 0);
+
+            if (tryXFirst) {
+                if (signX !== 0) attempts.push({x: head.x + signX, y: head.y});
+                if (signY !== 0) attempts.push({x: head.x, y: head.y + signY});
+            } else {
+                if (signY !== 0) attempts.push({x: head.x, y: head.y + signY});
+                if (signX !== 0) attempts.push({x: head.x + signX, y: head.y});
+            }
+
+            for (var i = 0; i < attempts.length; i++) {
+                var target = attempts[i];
+                var lenBefore = path.length;
+                this.pathManager.extendPath(this.activeColor, target.x, target.y);
+                if (path.length !== lenBefore) {
+                    moved = true;
+                    break;
+                }
+            }
+
+            if (!moved) break; // Stuck
+        }
 
         if (this.pathManager.isLevelComplete()) {
             var percent = this.pathManager.getCompletionPercent();
