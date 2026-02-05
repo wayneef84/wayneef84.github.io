@@ -2347,3 +2347,69 @@ kbd {
 .collapsible-header.expanded + .collapsible-content {
     display: block;
 }
+
+/* ============================================================
+   SVG ICONS & ANIMATIONS
+   ============================================================ */
+
+.status-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: white; /* Ensure SVG stroke is white */
+}
+
+.icon-svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+    vertical-align: middle;
+}
+
+/* Animations */
+@keyframes drive {
+    0% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    100% { transform: translateX(-2px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Status-specific animations */
+.status-transit .icon-svg,
+.card-status-icon .icon-truck {
+    animation: drive 2s infinite ease-in-out;
+}
+
+.status-exception .icon-svg,
+.card-status-icon .icon-alert {
+    animation: pulse 1.5s infinite;
+}
+
+.status-delivery .icon-svg,
+.status-delivered .icon-svg,
+.card-status-icon .icon-check {
+    /* No animation for delivered */
+}
+
+.status-out_for_delivery .icon-svg,
+.card-status-icon .icon-home {
+    animation: bounce-y 2s infinite;
+}
+
+/* Ensure mobile card icons are white */
+.card-status-icon {
+    color: white;
+}

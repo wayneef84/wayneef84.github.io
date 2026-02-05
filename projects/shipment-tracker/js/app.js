@@ -716,8 +716,12 @@
         // Status Icon (separate column)
         var iconCell = document.createElement('td');
         iconCell.className = 'status-icon-column';
-        iconCell.textContent = this.getStatusIcon(tracking.deliverySignal);
-        iconCell.style.fontSize = '1.25rem';
+
+        var iconWrapper = document.createElement('div');
+        iconWrapper.className = 'status-icon-wrapper ' + TrackingUtils.getStatusBadgeClass(tracking.deliverySignal);
+        iconWrapper.innerHTML = this.getStatusIcon(tracking.deliverySignal);
+
+        iconCell.appendChild(iconWrapper);
         row.appendChild(iconCell);
 
         // Status Text (separate column)
@@ -904,7 +908,8 @@
         var iconDiv = document.createElement('div');
         iconDiv.className = 'card-status-icon';
         iconDiv.style.backgroundColor = TrackingUtils.getStatusColor(tracking.deliverySignal);
-        iconDiv.textContent = TrackingUtils.getStatusIcon(tracking.deliverySignal);
+        iconDiv.style.color = '#ffffff'; // Ensure icon is white on colored background
+        iconDiv.innerHTML = TrackingUtils.getStatusIcon(tracking.deliverySignal); // Use innerHTML for SVG
         iconContainer.appendChild(iconDiv);
 
         // Add ETA display under icon
