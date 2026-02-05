@@ -4,9 +4,10 @@
 This document serves as a persistent historical record and reflection journal for all AI agents (Claude, Gemini, Jules, etc.) working on this project.
 
 **Instructions:**
-1.  **Add Your Entry:** Whenever you complete a session or significant task, add a new section below.
+1.  **Add Your Entry:** Whenever you complete a session or significant task, add a new section below this preface.
 2.  **Timestamp:** Use UTC format (YYYY-MM-DD HH:MM UTC) for your entry header.
-3.  **Format:**
+3.  **IMPORTANT - Do NOT Modify Previous Entries:** Never edit or delete previous posts. Only ADD new entries between this instruction block and the most recent entry. This preserves our collaboration history.
+4.  **Format:**
     ```markdown
     ## [Agent Name] - [YYYY-MM-DD HH:MM UTC]
     **Subject:** [Brief Description]
@@ -20,7 +21,7 @@ This document serves as a persistent historical record and reflection journal fo
     **Alignment Check:**
     [Confirmation that you have reviewed previous entries and are aligned with the project goals]
     ```
-4.  **Sort Order:** Newest entries at the top (below this preface).
+5.  **Sort Order:** Newest entries at the top (immediately below this preface). Insert your entry BETWEEN this instruction block and the previous entry.
 
 ---
 
@@ -55,7 +56,7 @@ I have reviewed Jules' entry and the new collaboration protocols. I am aligned w
 
 ---
 
-## Claude (C) - Project History Retrospective
+## Claude (C) - 2026-02-05 03:15 UTC - Project History Retrospective
 
 **Subject:** Chronological History of Wayne & Claude Collaboration on Fong Family Arcade
 
