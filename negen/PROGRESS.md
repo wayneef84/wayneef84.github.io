@@ -48,6 +48,8 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
 ### Games
 - [x] **Snake Port**: `games/snake/negen_version/` is implemented.
 - [x] **Breakout**: Created new game `games/breakout/` to test Physics and Engine robustness.
+- [x] **Pong**: Created `games/pong/` (1972) with local multiplayer vs AI.
+- [x] **Space Invaders**: Created `games/space_invaders/` (1978) with grid movement and shooting.
 
 ### Documentation
 - [x] **Architecture Plan**: `NEGEN_PLAN.md` created.
