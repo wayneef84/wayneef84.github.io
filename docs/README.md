@@ -17,3 +17,4 @@ Welcome to the central documentation hub for the Fong Family Arcade platform.
 
 ## NEGEN Engine
 *   [Architecture Plan](../../NEGEN_PLAN.md): The blueprint for the homegrown game engine.
+*   [Progress Tracker](../../negen/PROGRESS.md): Working document tracking development status and tasks.
