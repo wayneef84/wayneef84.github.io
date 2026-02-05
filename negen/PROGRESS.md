@@ -64,6 +64,11 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
 
 ---
 
+## 📚 Lessons Learned
+*   (To be populated as development progresses)
+    *   **Architecture**: Separating Input/Audio/Graphics early allows parallel development (e.g., one agent on Audio, one on Graphics).
+    *   **Browser quirks**: `AudioContext` requires user interaction to start. We need a "Click to Start" overlay strategy in all games using NEGEN.
+
 ## 🐛 Known Issues / Notes
 - **Audio Context**: Browsers require user interaction to resume `AudioContext`. The engine currently has a `resume()` method but needs to be hooked into the first input event automatically.
 - **Render Loop**: The `Renderer.clear()` method is currently a stub and does nothing.
