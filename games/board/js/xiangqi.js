@@ -1,13 +1,14 @@
 /**
  * XIANGQI GAME ENGINE (With Undo & Visuals)
- * File: js/game.js
+ * File: js/xiangqi.js
  */
 
 class XiangqiGame {
-    constructor() {
-        this.canvas = document.getElementById('gameCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.turnDisplay = document.getElementById('turnDisplay');
+    constructor(canvas, ctx, statusCallback) {
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.statusCallback = statusCallback;
+        // statusCallback is a function(msg, color)
 
         // Dimensions
         this.cols = 9; this.rows = 10; this.cellSize = 45; this.margin = 30;
@@ -30,26 +31,31 @@ class XiangqiGame {
         this.gameMode = 'pvp'; this.aiColor = 'black'; this.aiDifficulty = 2;
 
         // Events
-        this.canvas.addEventListener('click', (e) => this.handleClick(e));
+        this.handleClickBound = (e) => this.handleClick(e);
+        this.canvas.addEventListener('click', this.handleClickBound);
         
-        const resetBtn = document.getElementById('resetButton');
-        if(resetBtn) resetBtn.addEventListener('click', () => this.resetGame());
-        
-        // NEW: Undo Button Listener
-        const undoBtn = document.getElementById('undoButton');
-        if(undoBtn) undoBtn.addEventListener('click', () => this.undoMove());
-        
-        this.initControls();
+        // Initial Draw
+        this.updateTurnDisplay();
         this.draw();
     }
 
-    initControls() {
-        const ms = document.querySelectorAll('input[name="mode"]');
-        if(ms.length) ms.forEach(r => r.addEventListener('change', (e) => this.handleModeChange(e.target.value)));
-        const ac = document.getElementById('aiColor');
-        if(ac) ac.addEventListener('change', (e) => { this.aiColor = e.target.value; this.resetGame(); });
-        const ad = document.getElementById('aiDifficulty');
-        if(ad) ad.addEventListener('change', (e) => { this.aiDifficulty = parseInt(e.target.value); });
+    destroy() {
+        this.canvas.removeEventListener('click', this.handleClickBound);
+    }
+
+    // Public methods for external controls
+    undo() { this.undoMove(); }
+    reset() { this.resetGame(); }
+    setMode(mode) {
+        this.gameMode = mode;
+        this.resetGame();
+    }
+    setAIColor(color) {
+        this.aiColor = color;
+        this.resetGame();
+    }
+    setAIDifficulty(diff) {
+        this.aiDifficulty = parseInt(diff);
     }
 
     initializeBoard() {
@@ -88,7 +94,15 @@ class XiangqiGame {
             this.ctx.font = 'bold 36px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(this.turnDisplay.textContent, this.width/2, this.height/2);
+            // Use internal state or callback? callback updates DOM, but here we draw on canvas.
+            // We can reconstruct the text.
+            let text = "";
+            if (XiangqiRules.isCheckmate(this.board, this.currentPlayer)) {
+                 text = `${this.currentPlayer === 'red' ? 'BLACK' : 'RED'} WINS!`;
+            } else {
+                 text = "GAME OVER";
+            }
+            this.ctx.fillText(text, this.width/2, this.height/2);
         }
     }
 
@@ -201,17 +215,15 @@ class XiangqiGame {
         
         if(XiangqiRules.isCheckmate(this.board, nextPlayer)) {
             this.isGameOver = true;
-            this.turnDisplay.textContent = `${this.currentPlayer === 'red' ? 'BLACK' : 'RED'} WINS!`;
+            this.updateTurnDisplay(`${this.currentPlayer === 'red' ? 'BLACK' : 'RED'} WINS!`, 'red');
             this.draw();
             return;
         }
 
         if(XiangqiRules.isInCheck(this.board, nextPlayer)) {
-            this.turnDisplay.textContent = `${nextPlayer.toUpperCase()} IN CHECK!`;
-            this.turnDisplay.style.color = "red";
+            this.updateTurnDisplay(`${nextPlayer.toUpperCase()} IN CHECK!`, 'red');
         } else {
-            this.updateTurnDisplay();
-            this.turnDisplay.style.color = "black";
+            this.updateTurnDisplay(nextPlayer === 'red' ? "Red's Turn" : "Black's Turn", 'black');
         }
 
         this.draw();
@@ -221,24 +233,19 @@ class XiangqiGame {
         }
     }
 
-    // NEW: Undo Logic
     undoMove() {
         if (this.moveHistory.length === 0) return;
 
-        // If in AI mode, try to revert 2 steps (Computer's move + Player's move)
-        // This ensures it goes back to "Player's Turn"
         if (this.gameMode === 'ai' && this.currentPlayer !== this.aiColor) {
             if (this.moveHistory.length >= 2) {
-                this.moveHistory.pop(); // Pop AI move
-                const state = this.moveHistory.pop(); // Pop Player move
+                this.moveHistory.pop();
+                const state = this.moveHistory.pop();
                 this.restoreState(state);
             } else if (this.moveHistory.length === 1) {
-                // Rare edge case: Only player moved, AI hasn't moved yet (or crashed)
                 const state = this.moveHistory.pop();
                 this.restoreState(state);
             }
         } else {
-            // PvP Mode: Just go back 1 step
             const state = this.moveHistory.pop();
             this.restoreState(state);
         }
@@ -249,13 +256,13 @@ class XiangqiGame {
         this.currentPlayer = state.turn;
         this.selectedPiece = null;
         this.validMoves = [];
-        this.isGameOver = false; // Clear game over state
-        this.updateTurnDisplay();
+        this.isGameOver = false;
+        this.updateTurnDisplay(this.currentPlayer === 'red' ? "Red's Turn" : "Black's Turn", 'black');
         this.draw();
     }
 
     makeAIMove() {
-        this.turnDisplay.textContent = "AI Thinking...";
+        this.updateTurnDisplay("AI Thinking...", 'black');
         setTimeout(() => {
             let move = null;
             if (typeof XiangqiAI !== 'undefined') {
@@ -270,27 +277,21 @@ class XiangqiGame {
                 this.executeMove(move.from.row, move.from.col, move.to.row, move.to.col);
             } else {
                 this.isGameOver = true;
-                this.turnDisplay.textContent = "YOU WIN!";
+                this.updateTurnDisplay("YOU WIN!", 'red');
                 this.draw();
             }
         }, 50);
     }
 
     flashWarning(msg) {
-        const old = this.turnDisplay.textContent;
-        const oldColor = this.turnDisplay.style.color;
-        this.turnDisplay.textContent = msg;
-        this.turnDisplay.style.color = 'red';
+        this.updateTurnDisplay(msg, 'red');
         setTimeout(() => {
-            this.turnDisplay.textContent = old;
-            this.turnDisplay.style.color = oldColor;
+            this.updateTurnDisplay(this.currentPlayer === 'red' ? "Red's Turn" : "Black's Turn", 'black');
         }, 2000);
     }
 
     handleModeChange(mode) {
         this.gameMode = mode;
-        const aiControls = document.getElementById('aiControls');
-        if(aiControls) aiControls.style.display = mode === 'ai' ? 'block' : 'none';
         this.resetGame();
     }
 
@@ -301,14 +302,17 @@ class XiangqiGame {
         this.selectedPiece = null;
         this.validMoves = [];
         this.isGameOver = false;
-        this.updateTurnDisplay();
+        this.updateTurnDisplay("Red's Turn", 'black');
         this.draw();
         if (this.gameMode === 'ai' && this.aiColor === 'red') setTimeout(() => this.makeAIMove(), 500);
     }
 
-    updateTurnDisplay() {
-        this.turnDisplay.textContent = this.currentPlayer === 'red' ? "Red's Turn" : "Black's Turn";
+    updateTurnDisplay(msg, color) {
+        // Default update if not passed
+        if (!msg) msg = this.currentPlayer === 'red' ? "Red's Turn" : "Black's Turn";
+
+        if (this.statusCallback) {
+            this.statusCallback(msg, color);
+        }
     }
 }
-
-window.onload = () => new XiangqiGame();

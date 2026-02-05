@@ -1,0 +1,9 @@
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/engine.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/xiangqi-rules.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/xiangqi-ai.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/xiangqi.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/chess.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/checkers.js HTTP/1.1" 200 -
+127.0.0.1 - - [05/Feb/2026 23:45:49] "GET /games/board/js/main.js HTTP/1.1" 200 -
