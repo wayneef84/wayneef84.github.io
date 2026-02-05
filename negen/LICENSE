@@ -1,6 +1,11 @@
 MIT License
 
-Copyright (c) 2024 Fong Family Arcade
+Copyright (c) 2026 Wayne Fong
+
+Created by Wayne Fong with AI Development Assistance from:
+- Claude (C) - Anthropic's Claude Opus 4.5 - Senior Developer & Documentation Lead
+- Jules (J) - Google Labs Coding Agent - Lead Architect & Integration Specialist
+- Gemini (G) - Google Gemini Pro/Flash - Creative Director & Content Lead
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -11,12 +16,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-**Original Creators & Contributors:**
-*   **G** (Gemini) - Creative Direction & Asset Design
-*   **J** (Jules) - Architecture & Core Engine Engineering
-*   **C** (Claude) - Documentation & Code Implementation
-*   **The User** - Vision, Project Management, & Integration
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
