@@ -13,10 +13,11 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 
 ## 🤝 Handshake Protocol
 When starting a session:
-1.  **Read `AGENTS.md`** (this file).
-2.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
-3.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
-4.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
+1.  **Read `ONBOARDING.md`** (Start Here).
+2.  **Read `AGENTS.md`** (this file).
+3.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
+4.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
+5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
 ## 🚦 Conflict Resolution
 *   **Code Style:** If `C` and `J` disagree on style, `C`'s `CLAUDE.md` guidelines prevail for consistency.
