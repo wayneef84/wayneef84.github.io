@@ -1487,6 +1487,15 @@ kbd {
         display: flex;
     }
 
+    /* Force search input visibility on mobile when filter bar is open */
+    .filter-group.filter-group-search.hidden {
+        display: flex !important;
+    }
+
+    #searchToggleBtn {
+        display: none !important;
+    }
+
     /* Mobile Bottom Bar (2-row controls) */
     .mobile-bottom-bar {
         display: block !important;
@@ -1719,8 +1728,7 @@ kbd {
     /* Split view: content-wrapper holds table and detail panel side-by-side */
     .content-wrapper {
         display: flex;
-        /* flex-direction: row; */
-        flex-direction: row-reverse; /* Detail panel on left */
+        flex-direction: row; /* Table left, Detail right */
         flex: 1;
         min-height: 0;
         overflow: hidden;
