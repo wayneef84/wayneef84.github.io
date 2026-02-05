@@ -68,4 +68,9 @@ export default class CanvasRenderer extends Renderer {
         this.ctx.textAlign = align;
         this.ctx.fillText(text, x, y);
     }
+
+    drawImage(img, ...args) {
+        if (!img) return;
+        this.ctx.drawImage(img, ...args);
+    }
 }

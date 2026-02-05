@@ -20,12 +20,14 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
     - Added `start()`, `stop()`, `update()`, and `draw()` lifecycle methods.
     - Basic scene management placeholders (`loadScene`).
 - [x] **Module Export**: created `negen/index.js` to bundle the engine.
+- [x] **Utilities**: Added `MathUtils`, `Physics` (AABB), and `Timer` in `negen/utils/`.
 
 ### Graphics
 - [x] **Canvas Renderer (`CanvasRenderer.js`)**:
     - Implemented basic shape drawing (Rect, Circle, Text).
     - Added support for shadows/glow effects.
     - Added DPI-aware resizing.
+    - Added `drawImage` support.
 
 ### Input
 - [x] **Input Manager (`InputManager.js`)**:
@@ -40,6 +42,15 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
     - Global volume control and mute toggle.
     - Basic `playTone()` synthesizer (Oscillator-based) for retro sound effects (Snake-style).
 
+### Assets
+- [x] **Asset Loader**: Created `negen/assets/AssetLoader.js` for loading Images and JSON.
+
+### Games
+- [x] **Snake Port**: `games/snake/negen_version/` is implemented.
+- [x] **Breakout**: Created new game `games/breakout/` to test Physics and Engine robustness.
+- [x] **Pong**: Created `games/pong/` (1972) with local multiplayer vs AI.
+- [x] **Space Invaders**: Created `games/space_invaders/` (1978) with grid movement and shooting.
+
 ### Documentation
 - [x] **Architecture Plan**: `NEGEN_PLAN.md` created.
 - [x] **Project Docs**: Analyzed and documented existing games in `docs/projects/`.
@@ -50,7 +61,6 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
 
 ## 🚧 In Progress (Doing)
 
-- [ ] **Snake Port**: `games/snake/negen_version/` is implemented and needs verification.
 - [ ] **XTC Ball Port**: Begin analysis and refactoring of `games/xtc_ball` to use NEGEN.
 
 ---
@@ -60,7 +70,7 @@ This document tracks the ongoing development of the NEGEN game engine. It serves
 ### Phase 2: Pilot & Retrofit
 - [ ] **Snake "Battle Royale" Mode**: Future feature idea - multiplayer/CPU snake combat with exploding mechanics. (Do not implement yet).
 - [ ] **Magic XTC Ball**: Refactor to use `negen/audio/AudioManager` (synth) and `negen/graphics`.
-- [ ] **Asset Loader**: Create `negen/assets/AssetLoader.js`.
+- [ ] **Asset Loader**: Expand with progress tracking and Audio decoding.
 
 ### Phase 3: Expansion
 - [ ] **Poker**: Create a new card game suite using the engine.
