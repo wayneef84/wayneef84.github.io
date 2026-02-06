@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SKYbreakers | Founding & Forging</title>
+    <style>
+        body {
+            margin: 0; overflow: hidden; background: #000;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: white;
+            touch-action: none;
+        }
+        #gameCanvas { display: block; }
+
+        #ui {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        #score {
+            position: absolute; top: 20px;
+            font-size: 4rem; font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        #msg {
+            font-size: 2rem; font-weight: bold;
+            text-align: center;
+            animation: pulse 1s infinite;
+        }
+
+        .back-btn {
+            position: absolute; top: 20px; left: 20px;
+            color: rgba(255,255,255,0.5); text-decoration: none;
+            font-weight: bold; pointer-events: auto;
+            z-index: 100;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-btn">← EXIT</a>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+        <div id="score">0</div>
+        <div id="msg">TAP TO START</div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
