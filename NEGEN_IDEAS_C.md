@@ -8,7 +8,7 @@
 
 ## Overview
 
-NEGEN (Next-Gen Engine?) - A browser-native game engine built from our existing Fong Family Arcade experience. This document captures my architectural thoughts for Jules to review and expand.
+NEGEN (Next-Gen Engine?) - A browser-native game engine built from our existing Founding & Forging experience. This document captures my architectural thoughts for Jules to review and expand.
 
 ---
 
@@ -16,7 +16,7 @@ NEGEN (Next-Gen Engine?) - A browser-native game engine built from our existing 
 
 ### What We've Learned from the Arcade
 
-The Fong Family Arcade taught us several key lessons:
+The Founding & Forging taught us several key lessons:
 
 1. **No Build Tools Works** - Vanilla JS/CSS runs everywhere, deploys instantly
 2. **ES5 Compatibility Matters** - Older tablets are real users

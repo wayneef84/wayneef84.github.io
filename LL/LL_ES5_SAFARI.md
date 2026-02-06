@@ -7,7 +7,7 @@
 
 ## Why ES5?
 
-The Fong Family Arcade runs on older tablets (iPad Air 2, older Android tablets). These devices:
+The Founding & Forging runs on older tablets (iPad Air 2, older Android tablets). These devices:
 - Have outdated Safari/Chrome versions
 - Cannot update to latest browsers
 - Are perfectly functional otherwise

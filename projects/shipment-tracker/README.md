@@ -45,7 +45,7 @@
 ### Mobile-First UI
 - 📱 Touch-optimized controls
 - 🔍 Responsive layout (100dvh, safe-area-inset)
-- 🎨 Fong Family Arcade theming
+- 🎨 Founding & Forging theming
 
 ---
 
@@ -246,4 +246,4 @@ See root LICENSE file.
 - **FedEx Track API**: https://developer.fedex.com
 - **UPS Tracking API**: https://developer.ups.com
 - **SheetJS (xlsx.js)**: https://sheetjs.com (for Excel export)
-- **UI Patterns**: Adapted from Fong Family Arcade games
+- **UI Patterns**: Adapted from Founding & Forging games

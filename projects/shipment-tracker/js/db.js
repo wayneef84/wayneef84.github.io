@@ -5,7 +5,7 @@
  * Designed with Firebase migration path in mind (adapter pattern).
  *
  * @version 1.0.0
- * @author Fong Family Arcade
+ * @author Founding & Forging
  */
 
 (function(window) {

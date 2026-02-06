@@ -26,10 +26,52 @@ var FILES = [
 var importedFiles = {};
 var currentFilePath = null;
 
+// Infinite Scroll Globals
+var allTokens = [];
+var currentTokenIndex = 0;
+var globalRenderer = null;
+var renderingPath = null;
+
+// View Mode & History
+var viewMode = 'parsed'; // 'parsed' or 'raw'
+var recentFiles = [];
+
 document.addEventListener('DOMContentLoaded', function() {
     loadImportedFromSession();
+    loadHistory();
     init();
 });
+
+function loadHistory() {
+    try {
+        recentFiles = JSON.parse(localStorage.getItem('mdReader_recent') || '[]');
+    } catch (e) {
+        console.error("Failed to load history", e);
+    }
+}
+
+function updateHistory(path) {
+    if (path.startsWith('imported:')) return; // Don't save imported files to persistent history
+
+    try {
+        localStorage.setItem('mdReader_lastFile', path);
+
+        // Remove if exists
+        var idx = recentFiles.indexOf(path);
+        if (idx !== -1) recentFiles.splice(idx, 1);
+
+        // Add to top
+        recentFiles.unshift(path);
+
+        // Limit to 10
+        if (recentFiles.length > 10) recentFiles.pop();
+
+        localStorage.setItem('mdReader_recent', JSON.stringify(recentFiles));
+        renderSidebar(); // Refresh sidebar
+    } catch (e) {
+        console.error("Failed to save history", e);
+    }
+}
 
 function loadImportedFromSession() {
     try {
@@ -51,8 +93,28 @@ function saveImportedToSession() {
 }
 
 function init() {
+    setupSearch();
     renderSidebar();
     setupFileUpload();
+
+    // View Toggle
+    var toggleViewBtn = document.getElementById('toggleView');
+    if (toggleViewBtn) {
+        toggleViewBtn.addEventListener('click', function() {
+            viewMode = (viewMode === 'parsed') ? 'raw' : 'parsed';
+            toggleViewBtn.textContent = (viewMode === 'parsed') ? '👁️ Parsed' : '📝 Raw';
+            if (currentFilePath) {
+                // Reload current file to re-render
+                 // We don't have the text handy, so re-fetch is easiest (cache usually handles it)
+                 if (currentFilePath.startsWith('imported:')) {
+                     var filename = currentFilePath.replace('imported:', '');
+                     if (importedFiles[filename]) renderMarkdown(importedFiles[filename], filename);
+                 } else {
+                     loadFile(currentFilePath);
+                 }
+            }
+        });
+    }
 
     // Check for hash to load initial file
     var hash = window.location.hash.slice(1);
@@ -68,25 +130,56 @@ function init() {
             loadFile(decodeURIComponent(hash));
         }
     } else {
-        // Load default file
-        loadFile(FILES[0].path);
+        // Load last opened or default
+        var last = localStorage.getItem('mdReader_lastFile');
+        if (last) {
+            loadFile(last);
+        } else {
+            loadFile(FILES[0].path);
+        }
     }
 
-    // Sidebar toggle for mobile
+    // Sidebar toggle for mobile and desktop
     var toggleBtn = document.getElementById('toggleSidebar');
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('sidebarOverlay');
 
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            if (overlay) overlay.classList.toggle('active');
+            if (window.innerWidth > 768) {
+                // Desktop: Toggle collapsed state
+                sidebar.classList.toggle('collapsed');
+            } else {
+                // Mobile: Toggle open state
+                sidebar.classList.toggle('open');
+                if (overlay) overlay.classList.toggle('active');
+            }
         });
     }
 
     if (overlay) {
         overlay.addEventListener('click', function() {
             closeSidebar();
+        });
+    }
+
+    // Infinite Scroll Listener
+    var container = document.getElementById('markdownContent');
+    if (container) {
+        container.parentElement.addEventListener('scroll', function(e) {
+            // Note: markdown-container is the scrollable element in style.css,
+            // but the ID markdownContent is the inner div?
+            // In index.html: <div id="markdownContent" class="markdown-body markdown-container">
+            // So markdownContent IS the container.
+        });
+
+        // Wait, looking at index.html:
+        // <div id="markdownContent" class="markdown-body markdown-container">
+        // So the scroll listener should be on markdownContent.
+        container.addEventListener('scroll', function() {
+            if (container.scrollHeight - container.scrollTop - container.clientHeight < 1000) {
+                renderNextChunk();
+            }
         });
     }
 
@@ -107,6 +200,15 @@ function init() {
     var openNewTabBtn = document.getElementById('openNewTab');
     if (openNewTabBtn) {
         openNewTabBtn.addEventListener('click', openInNewTab);
+    }
+}
+
+function setupSearch() {
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            renderSidebar(e.target.value);
+        });
     }
 }
 
@@ -209,14 +311,46 @@ function loadImportedFile(filename) {
     closeSidebar();
 }
 
-function renderSidebar() {
+function renderSidebar(searchTerm) {
+    searchTerm = (searchTerm || '').toLowerCase();
     var list = document.getElementById('fileList');
     if (!list) return;
     list.innerHTML = '';
 
+    // Render Recent Files (only if no search term)
+    if (!searchTerm && recentFiles.length > 0) {
+        var recentHeader = document.createElement('li');
+        recentHeader.innerHTML = '<div style="padding: 10px 15px; font-size: 0.8em; text-transform: uppercase; color: #60a5fa; opacity: 0.9; font-weight: bold; margin-top: 10px;">🕒 Recent</div>';
+        list.appendChild(recentHeader);
+
+        recentFiles.forEach(function(path) {
+            // Find name in FILES if possible
+            var fileObj = FILES.find(f => f.path === path);
+            var name = fileObj ? fileObj.name : path.split('/').pop();
+
+            var li = document.createElement('li');
+            li.className = 'file-item';
+            var btn = document.createElement('button');
+            btn.className = 'file-btn';
+            btn.innerHTML = '<span style="opacity: 0.7;">📄</span> ' + name;
+            btn.addEventListener('click', function() {
+                loadFile(path);
+                closeSidebar();
+            });
+            list.appendChild(li);
+        });
+    }
+
+    // Filter FILES
+    var filteredFiles = FILES.filter(function(file) {
+        if (!searchTerm) return true;
+        return file.name.toLowerCase().includes(searchTerm) ||
+               file.category.toLowerCase().includes(searchTerm);
+    });
+
     // Group by category
     var categories = {};
-    FILES.forEach(function(file) {
+    filteredFiles.forEach(function(file) {
         if (!categories[file.category]) {
             categories[file.category] = [];
         }
@@ -256,8 +390,13 @@ function renderSidebar() {
         });
     });
 
+    // Filter Imported Files
+    var importedKeys = Object.keys(importedFiles).filter(function(filename) {
+        if (!searchTerm) return true;
+        return filename.toLowerCase().includes(searchTerm);
+    });
+
     // Render imported files section
-    var importedKeys = Object.keys(importedFiles);
     if (importedKeys.length > 0) {
         var importedHeader = document.createElement('li');
         importedHeader.innerHTML = '<div style="padding: 10px 15px; font-size: 0.8em; text-transform: uppercase; color: #fbbf24; opacity: 0.9; font-weight: bold; margin-top: 10px;">📥 Imported (Session)</div>';
@@ -308,6 +447,15 @@ function loadFile(path) {
             return response.text();
         })
         .then(function(text) {
+            // Large file check (1MB)
+            if (text.length > 1000000) {
+                var sizeMB = (text.length / 1024 / 1024).toFixed(2);
+                if (!confirm('This file is very large (' + sizeMB + ' MB). Loading it might freeze the browser temporarily. Load anyway?')) {
+                    container.innerHTML = '<div class="error-message">Load cancelled by user.</div>';
+                    return;
+                }
+            }
+            updateHistory(path);
             renderMarkdown(text, path);
         })
         .catch(function(error) {
@@ -358,12 +506,69 @@ function renderMarkdown(text, path) {
         return originalImage.call(this, href, title, text);
     };
 
+    globalRenderer = renderer;
+    renderingPath = path;
+
+    if (viewMode === 'raw') {
+        container.innerHTML = '<pre style="white-space: pre-wrap; word-break: break-all;"><code>' +
+            text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+            '</code></pre>';
+        container.scrollTop = 0;
+        return;
+    }
+
+    // BBC Translation
+    text = convertBbcToMarkdown(text);
+
     try {
-        var html = marked.parse(text, { renderer: renderer });
-        container.innerHTML = html;
-        window.scrollTo(0, 0);
+        // Use lexer to get tokens for chunking
+        allTokens = marked.lexer(text);
+        currentTokenIndex = 0;
+
+        container.innerHTML = '';
+        container.scrollTop = 0;
+
+        renderNextChunk();
     } catch (e) {
         container.innerHTML = '<div class="error-message">Error parsing markdown: ' + e.message + '</div>';
+    }
+}
+
+function convertBbcToMarkdown(text) {
+    return text
+        .replace(/\[b\](.*?)\[\/b\]/gi, '**$1**')
+        .replace(/\[i\](.*?)\[\/i\]/gi, '*$1*')
+        .replace(/\[u\](.*?)\[\/u\]/gi, '<u>$1</u>')
+        .replace(/\[url=(.*?)\](.*?)\[\/url\]/gi, '[$2]($1)')
+        .replace(/\[img\](.*?)\[\/img\]/gi, '![]($1)')
+        .replace(/\[code\]([\s\S]*?)\[\/code\]/gi, '```\n$1\n```')
+        .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi, '> $1');
+}
+
+function renderNextChunk() {
+    if (currentTokenIndex >= allTokens.length) return;
+
+    var chunkSize = 50; // Render 50 top-level blocks at a time
+    var chunk = allTokens.slice(currentTokenIndex, currentTokenIndex + chunkSize);
+    // Pass links from parent
+    chunk.links = allTokens.links;
+
+    currentTokenIndex += chunkSize;
+
+    try {
+        var html = marked.parser(chunk, { renderer: globalRenderer });
+
+        // Create a temp div to hold the new content
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // Append children to container
+        var container = document.getElementById('markdownContent');
+        while (tempDiv.firstChild) {
+            container.appendChild(tempDiv.firstChild);
+        }
+    } catch (e) {
+        console.error("Error rendering chunk:", e);
     }
 }
 

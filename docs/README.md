@@ -1,6 +1,6 @@
 # Documentation Library
 
-Welcome to the central documentation hub for the Fong Family Arcade platform.
+Welcome to the central documentation hub for the Founding & Forging platform.
 
 ## Projects
 
