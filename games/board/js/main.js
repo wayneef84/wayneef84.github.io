@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const engine = new GameEngine('gameCanvas');
 
     // UI Elements
-    const gameSelector = document.getElementById('gameSelector');
     const undoBtn = document.getElementById('undoButton');
     const resetBtn = document.getElementById('resetButton');
+    const switchBtn = document.getElementById('switchButton'); // Will be added in index.html
     const modeInputs = document.querySelectorAll('input[name="mode"]');
     const aiColor = document.getElementById('aiColor');
     const aiDifficulty = document.getElementById('aiDifficulty');
@@ -24,39 +24,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Components
+    let settings = null;
+    if (typeof SettingsMenu !== 'undefined') {
+        settings = new SettingsMenu();
+    }
+
+    let overlay = null;
+    if (typeof GameOverlay !== 'undefined') {
+        overlay = new GameOverlay(
+            (gameId) => loadGame(gameId),
+            () => settings && settings.show()
+        );
+    }
+
     // Load Game Logic
     function loadGame(gameId) {
         console.log("Loading game:", gameId);
 
         let GameClass = null;
         switch(gameId) {
-            case 'xiangqi':
-                if (typeof XiangqiGame !== 'undefined') GameClass = XiangqiGame;
-                break;
-            case 'chess':
-                if (typeof ChessGame !== 'undefined') GameClass = ChessGame;
-                break;
-            case 'checkers':
-                if (typeof CheckersGame !== 'undefined') GameClass = CheckersGame;
-                break;
-            default:
-                console.error("Unknown game:", gameId);
+            case 'xiangqi': if (typeof XiangqiGame !== 'undefined') GameClass = XiangqiGame; break;
+            case 'chess': if (typeof ChessGame !== 'undefined') GameClass = ChessGame; break;
+            case 'checkers': if (typeof CheckersGame !== 'undefined') GameClass = CheckersGame; break;
+            case 'tictactoe': if (typeof TicTacToeGame !== 'undefined') GameClass = TicTacToeGame; break;
+            case 'connect4': if (typeof Connect4Game !== 'undefined') GameClass = Connect4Game; break;
+            case 'mancala': if (typeof MancalaGame !== 'undefined') GameClass = MancalaGame; break;
+            case 'dots': if (typeof DotsGame !== 'undefined') GameClass = DotsGame; break;
+            case 'battleship': if (typeof BattleshipGame !== 'undefined') GameClass = BattleshipGame; break;
+            default: console.error("Unknown game:", gameId);
         }
 
         if (GameClass) {
             engine.loadGame(GameClass);
 
-            // Reset UI state for new game
-            // Default to PvP usually
+            // Reset UI state
             const pvpRadio = document.querySelector('input[name="mode"][value="pvp"]');
-            if (pvpRadio) pvpRadio.checked = true;
-            if (aiControls) aiControls.style.display = 'none';
+            if (pvpRadio) {
+                pvpRadio.checked = true;
+                // Force event listener to trigger if needed, or just set display
+                if (aiControls) aiControls.style.display = 'none';
+            }
         }
     }
 
     // Event Listeners
-    if (gameSelector) {
-        gameSelector.addEventListener('change', (e) => loadGame(e.target.value));
+    if (switchBtn && overlay) {
+        switchBtn.addEventListener('click', () => overlay.show());
     }
 
     if (undoBtn) {
@@ -92,10 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initial Load
-    // Wait for scripts to load? They should be blocking in head/body.
-    // Check if selector has a value
-    if (gameSelector) {
-        loadGame(gameSelector.value || 'xiangqi');
+    // If overlay exists, show it. Otherwise fallback to Xiangqi.
+    if (overlay) {
+        overlay.show();
     } else {
         loadGame('xiangqi');
     }
