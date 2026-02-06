@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Xiangqi - Dad's Casino</title>
+    <title>Board Games Arcade - Dad's Casino</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
         /* Specific styles for control buttons to match Casino theme */
@@ -34,6 +34,14 @@
             gap: 10px;
         }
 
+        #gameSelector {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+
         /* Mobile adjustments */
         @media (max-width: 480px) {
             .control-btn {
@@ -45,9 +53,24 @@
 </head>
 <body>
     <div id="gameContainer">
-        <div id="header">
-            <h1>Dad's Chinese Chess</h1>
-            <a href="../../index.html" class="backButton">← Back to Casino</a>
+        <div id="header" style="flex-direction: column; align-items: center; gap: 10px;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="margin:0;">Board Arcade</h1>
+                <a href="../../index.html" class="backButton">Exit</a>
+            </div>
+
+            <select id="gameSelector" class="control-btn">
+                <option value="xiangqi">Chinese Chess (Xiangqi)</option>
+                <option value="chess">Chess</option>
+                <option value="checkers">Checkers</option>
+                <option disabled>--- Coming Soon ---</option>
+                <option disabled>Mancala</option>
+                <option disabled>Connect 4</option>
+                <option disabled>Battleship</option>
+                <option disabled>Tic Tac Toe</option>
+                <option disabled>Dots and Lines</option>
+                <option disabled>Stacking Game</option>
+            </select>
         </div>
 
         <div id="gameScaler">
@@ -94,5 +117,17 @@
         </div>
     </div>
 
-    <script src="js/rules.js"></script> <script src="js/ai.js"></script>    <script src="js/game.js"></script>  </body>
+    <!-- Core Engine -->
+    <script src="js/engine.js"></script>
+
+    <!-- Games -->
+    <script src="js/xiangqi-rules.js"></script>
+    <script src="js/xiangqi-ai.js"></script>
+    <script src="js/xiangqi.js"></script>
+    <script src="js/chess.js"></script>
+    <script src="js/checkers.js"></script>
+
+    <!-- Main Controller -->
+    <script src="js/main.js"></script>
+</body>
 </html>

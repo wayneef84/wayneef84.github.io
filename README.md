@@ -124,7 +124,7 @@ Pipe connection puzzle game.
 │   ├── letter-tracing/
 │   ├── slots/
 │   ├── sprunki-mixer/
-│   ├── xiangqi/
+│   ├── board/
 │   └── cards/
 │       ├── blackjack/
 │       ├── war/
