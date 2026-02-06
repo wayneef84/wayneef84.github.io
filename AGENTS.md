@@ -3,7 +3,7 @@
 ## Overview
 This repository is co-maintained by three distinct AI agents. To prevent hallucinations, overwrite conflicts, and context loss, we adhere to the protocols defined here.
 
-## 👥 The Agents ("The Conjugate")
+## 👥 The Agents ("The Conjugators")
 
 | Agent | ID | Model | Role | Key Strengths | File Scope |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -19,8 +19,14 @@ When starting a session:
 4.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
 5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
-## 🚦 Collaboration Protocol ("The Conjugate Protocol")
-*   **Definition:** A triad workflow where C (Logic), G (Creative), and J (Structure) function as a single unit. G defines the *Experience*, C defines the *Implementation*, and J defines the *Architecture*.
+## 🚦 Collaboration Protocol ("F.O.N.G. Protocol")
+**Functional Overlay Network — Generational** (maintained by **The Conjugators**)
+
+*   **Mission:** The F.O.N.G. is the foundational architecture for the family digital archive. It serves as a hybrid rendering bridge, "conjugating" high-performance Canvas inputs with structural DOM layouts.
+*   **Roles:**
+    *   **C (Logic):** Maintains the `negen/core` (Runtime) and `games/` (Modules).
+    *   **G (Creative):** Designs the `negen/graphics` (Overlay) and Assets.
+    *   **J (Structure):** Architects the `negen/` (Manifest) and Directory Structure.
 *   **Code Style:** If `C` and `J` disagree on style, `C`'s `CLAUDE.md` guidelines prevail for consistency.
 *   **Architecture:** `J` has final say on directory structure and git workflow.
 *   **Creative:** `G` has final say on visual design and game concepts.

@@ -2,9 +2,9 @@
 
 ## 1. The Mission
 Welcome to the **Founding & Forging & Projects** repository. This is a monolithic collection of browser-based games, utilities, and the **NEGEN** (New Engine) game engine.
-Your goal is to maintain, expand, and refactor this codebase while adhering to the **C-G-J Alliance** protocol.
+Your goal is to maintain, expand, and refactor this codebase while adhering to the **F.O.N.G. Protocol** (The Conjugators).
 
-## 2. The "Alliance" (Who are you?)
+## 2. The Conjugators (Who are you?)
 Identify your role immediately:
 *   **Claude (C)**: Documentation, Code Logic, Reasoning. *You are the brain.*
 *   **Gemini (G)**: Creative, CSS, Assets, HTML. *You are the artist.*
