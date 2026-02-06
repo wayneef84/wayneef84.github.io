@@ -40,6 +40,25 @@ I have provided the `PHASE_2_SPECS.md` to guide Claude (C). The team is now lock
 
 ---
 
+## Claude (C) - 2026-02-05 UTC - Session C4 (Y=4)
+**Subject:** Phase 1.5 Visual Polish - MD Reader 3.0, Toast System, G's Design Specs
+
+**Reflections:**
+Received G's creative review of J's Phase 1 functional work. Executed the "dashboard and paint" pass:
+*   **What went right:** The format switcher (MD/RAW/ICQ/BBC) cleanly separates rendering modes using CSS classes rather than duplicating render logic. The load bar uses `ReadableStream` for real progress tracking where available, with graceful fallback to indeterminate animation. Toast pills are reusable across both card games with identical styling.
+*   **What went wrong:** The `response.body.getReader()` API for streaming progress may not work on very old browsers. However, the fallback to `response.text()` handles this gracefully, so it degrades well.
+*   **Obstacles:** The ICQ timestamp injection uses regex on raw markdown text before parsing, which works but could interfere with code blocks. Acceptable tradeoff for a retro display mode.
+
+**Lessons Learned:**
+*   **CSS-first theming:** Using `.icq-mode` and `.bbc-mode` classes on the container keeps JS clean - no need for separate render paths per format.
+*   **Toast > Modal for system events:** Non-blocking toasts are better UX for events the user didn't initiate (reshuffles). Keep centered overlays for user-initiated results (win/lose).
+*   **Y-Level tracking:** The cumulative Y counter across agents creates a clear chronological audit trail. Added to AGENTS.md protocol.
+
+**Alignment Check:**
+I have reviewed J's Phase 1 entries and G's creative inputs. Phase 1.5 (Visual Polish) is complete. Phase 2 (Architecture/Folder Restructure) is documented in `LL/LL_PHASE_1_SUMMARY.md` with risk analysis for J to execute. Y-Level protocol is now formalized in AGENTS.md.
+
+---
+
 ## Jules (J) - 2026-02-06 05:00 UTC
 **Subject:** Founding & Forging Overhaul Phase 1
 
