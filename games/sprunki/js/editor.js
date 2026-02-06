@@ -193,7 +193,7 @@ class SprunkiEditorManager {
         document.getElementById('cropScale').value = 1;
     }
 
-    save() {
+    async save() {
         const name = document.getElementById('editName').value;
         const type = document.getElementById('editType').value;
         const img = document.getElementById('editImg').value;
@@ -215,7 +215,7 @@ class SprunkiEditorManager {
             }
         };
 
-        window.CustomSprunkiManager.saveCharacter(charData);
+        await window.CustomSprunkiManager.saveCharacter(charData);
         alert('Character Saved! Reloading...');
         location.reload();
     }

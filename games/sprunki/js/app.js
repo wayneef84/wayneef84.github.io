@@ -35,7 +35,7 @@ async function init() {
 
         // --- CUSTOM CONTENT INJECTION ---
         if (window.CustomSprunkiManager) {
-            const customChars = window.CustomSprunkiManager.getCustomCharacters();
+            const customChars = await window.CustomSprunkiManager.getCustomCharacters();
             if (customChars.length > 0) {
                 // Add chars to roster
                 config.characters.push(...customChars);
@@ -234,10 +234,10 @@ function buildPalette(packId) {
                 delBtn.innerHTML = '✖';
                 delBtn.style = 'font-size: 8px; background: #900; border: 1px solid #555; padding: 2px; cursor: pointer; color: white;';
                 delBtn.title = 'Delete';
-                delBtn.onclick = (e) => {
+                delBtn.onclick = async (e) => {
                     e.stopPropagation();
                     if(confirm(`Delete ${char.name}?`)) {
-                        window.CustomSprunkiManager.deleteCharacter(char.id);
+                        await window.CustomSprunkiManager.deleteCharacter(char.id);
                         location.reload();
                     }
                 };

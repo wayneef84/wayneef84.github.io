@@ -96,7 +96,7 @@ class SprunkiQRManager {
         });
     }
 
-    onScanSuccess(decodedText) {
+    async onScanSuccess(decodedText) {
         this.stopScan();
 
         if (this.scanMode === 'copy') {
@@ -123,7 +123,7 @@ class SprunkiQRManager {
 
             if (!charData.img || !charData.audio) throw new Error('Invalid QR Data');
 
-            window.CustomSprunkiManager.saveCharacter({
+            await window.CustomSprunkiManager.saveCharacter({
                 ...charData,
                 id: `custom_${Date.now()}`,
                 pack_id: 'custom',

@@ -1,52 +1,76 @@
 class CustomSprunkiManager {
     constructor() {
-        this.STORAGE_KEY = 's4k_custom_chars';
+        this.LEGACY_KEY = 's4k_custom_chars';
+        this.DB_NAME = 'SprunkiDB';
+        this.COLLECTION = 'custom_characters';
+
+        this.db = new FongDB({
+            name: this.DB_NAME,
+            version: 1,
+            stores: {
+                'custom_characters': { keyPath: 'id' }
+            },
+            adapter: 'ls' // Force LocalStorage for consistency with request/legacy behavior
+        });
+
+        // Async Init
+        this.ready = this.db.init().then(() => this.migrateLegacyData());
     }
 
-    getCustomCharacters() {
-        try {
-            const raw = localStorage.getItem(this.STORAGE_KEY);
-            return raw ? JSON.parse(raw) : [];
-        } catch (e) {
-            console.error("Failed to load custom characters", e);
-            return [];
+    async migrateLegacyData() {
+        const raw = localStorage.getItem(this.LEGACY_KEY);
+        if (raw) {
+            try {
+                const chars = JSON.parse(raw);
+                if (Array.isArray(chars) && chars.length > 0) {
+                    console.log('[Sprunki] Migrating legacy data...');
+                    for (const char of chars) {
+                        // Check if already exists to avoid overwriting or duplicates if needed,
+                        // but put() handles upsert.
+                        await this.db.put(this.COLLECTION, char);
+                    }
+                    // Rename key to avoid re-migration or delete?
+                    // Let's keep it as backup for now but mark migrated?
+                    // Or just clear it to be clean.
+                    localStorage.removeItem(this.LEGACY_KEY);
+                    console.log('[Sprunki] Migration complete.');
+                }
+            } catch (e) {
+                console.error('[Sprunki] Migration failed', e);
+            }
         }
     }
 
-    saveCharacter(charData) {
-        const chars = this.getCustomCharacters();
-        const existingIndex = chars.findIndex(c => c.id === charData.id);
+    // Returns Promise<Array>
+    async getCustomCharacters() {
+        await this.ready;
+        return this.db.getAll(this.COLLECTION);
+    }
 
-        if (existingIndex >= 0) {
-            chars[existingIndex] = charData;
-        } else {
-            chars.push(charData);
-        }
-
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(chars));
+    async saveCharacter(charData) {
+        await this.ready;
+        await this.db.put(this.COLLECTION, charData);
         return true;
     }
 
-    deleteCharacter(id) {
-        const chars = this.getCustomCharacters();
-        const filtered = chars.filter(c => c.id !== id);
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filtered));
+    async deleteCharacter(id) {
+        await this.ready;
+        await this.db.delete(this.COLLECTION, id);
     }
 
-    importCharacter(jsonString) {
+    async importCharacter(jsonString) {
+        await this.ready;
         try {
             const data = JSON.parse(jsonString);
-            // Basic Validation
             if (!data.name || !data.type || !data.img || !data.audio) {
                 throw new Error("Invalid Sprunki Data: Missing required fields");
             }
 
-            // Generate new ID to prevent conflicts on import
             data.id = `custom_${Date.now()}_${Math.floor(Math.random()*1000)}`;
             data.pack_id = 'custom';
             data.custom = true;
 
-            this.saveCharacter(data);
+            await this.saveCharacter(data);
             return data;
         } catch (e) {
             console.error("Import failed", e);
