@@ -1,25 +1,75 @@
+// Expanded File List generated from repo scan
 var FILES = [
+    // Root
     { category: "Root", name: "README", path: "../../README.md" },
     { category: "Root", name: "AI Feedback", path: "../../AI_FEEDBACK.md" },
     { category: "Root", name: "Agents", path: "../../AGENTS.md" },
     { category: "Root", name: "Changelog", path: "../../CHANGELOG.md" },
     { category: "Root", name: "Roadmap", path: "../../ROADMAP.md" },
+    { category: "Root", name: "Info", path: "../../INFO.md" },
     { category: "Root", name: "Ideas (02/04/26)", path: "../../IDEAS_020426.md" },
+    { category: "Root", name: "Questions", path: "../../QUESTIONS.md" },
+    { category: "Root", name: "Wiki Plan", path: "../../WIKI-PLAN.md" },
+    { category: "Root", name: "Todo", path: "../../TODO.md" },
 
+    // Agent Guidelines
     { category: "Agent Guidelines", name: "Claude", path: "../../CLAUDE.md" },
     { category: "Agent Guidelines", name: "Gemini", path: "../../GEMINI.md" },
     { category: "Agent Guidelines", name: "Jules", path: "../../JULES.md" },
+    { category: "Agent Guidelines", name: "Claude Assessment", path: "../../CLAUDE_ASSESSMENT.md" },
+    { category: "Agent Guidelines", name: "Onboarding", path: "../../ONBOARDING.md" },
 
-    { category: "Lessons Learned", name: "LL Index", path: "../../LL/README.md" },
+    // NEGEN Engine
+    { category: "NEGEN Engine", name: "User Manual", path: "../../docs/negen/USER_MANUAL.md" },
+    { category: "NEGEN Engine", name: "Technical Reference", path: "../../docs/negen/TECHNICAL_REFERENCE.md" },
+    { category: "NEGEN Engine", name: "History & Changelog", path: "../../docs/negen/HISTORY.md" },
+    { category: "NEGEN Engine", name: "Architecture Plan", path: "../../negen/NEGEN_PLAN.md" },
+    { category: "NEGEN Engine", name: "Progress Tracker", path: "../../negen/PROGRESS.md" },
+    { category: "NEGEN Engine", name: "Phase 2 Specs", path: "../../negen/PHASE_2_SPECS.md" },
+    { category: "NEGEN Engine", name: "Phase 3 Plan", path: "../../negen/PHASE_3_PLAN.md" },
+    { category: "NEGEN Engine", name: "Phase 4 Plan", path: "../../negen/PHASE_4_PLAN.md" },
+    { category: "NEGEN Engine", name: "Phase 5 Plan", path: "../../negen/PHASE_5_PLAN.md" },
+    { category: "NEGEN Engine", name: "Overhaul Plan", path: "../../negen/OVERHAUL_PLAN.md" },
+    { category: "NEGEN Engine", name: "Arcade Roadmap", path: "../../negen/ARCADE_ROADMAP.md" },
+    { category: "NEGEN Engine", name: "Engine Readme", path: "../../negen/README.md" },
+
+    // Project Docs
+    { category: "Project Specs", name: "Snake", path: "../../docs/projects/SNAKE.md" },
+    { category: "Project Specs", name: "Slots", path: "../../docs/projects/SLOTS.md" },
+    { category: "Project Specs", name: "Shared", path: "../../docs/projects/SHARED.md" },
+    { category: "Project Specs", name: "XTC Ball", path: "../../docs/projects/XTC_BALL.md" },
+    { category: "Project Specs", name: "Sprunki", path: "../../docs/projects/SPRUNKI.md" },
+    { category: "Project Specs", name: "Cards", path: "../../docs/projects/CARDS.md" },
+    { category: "Project Specs", name: "Flow", path: "../../docs/projects/FLOW.md" },
+
+    // Lessons Learned
+    { category: "Lessons Learned", name: "Index", path: "../../LL/README.md" },
     { category: "Lessons Learned", name: "Card Engine", path: "../../LL/LL_CARD_ENGINE.md" },
     { category: "Lessons Learned", name: "ES5 & Safari", path: "../../LL/LL_ES5_SAFARI.md" },
     { category: "Lessons Learned", name: "Collaboration", path: "../../LL/LL_COLLABORATION.md" },
 
-    { category: "NEGEN Engine", name: "NEGEN Ideas (C)", path: "../../NEGEN_IDEAS_C.md" },
+    // Games
+    { category: "Games", name: "Snake LL v1", path: "../../games/snake/LL_v1_snake.md" },
+    { category: "Games", name: "Snake LL v2", path: "../../games/snake/LL_v2_snake.md" },
+    { category: "Games", name: "Sprunki Readme", path: "../../games/sprunki/README.md" },
+    { category: "Games", name: "XTC Ball LL", path: "../../games/xtc_ball/LL_v5_XTCBALL.md" },
+    { category: "Games", name: "Flow Readme", path: "../../games/flow/README.md" },
+    { category: "Games", name: "Flow Changelog", path: "../../games/flow/CHANGELOG.md" },
+    { category: "Games", name: "Flow Architecture", path: "../../games/flow/ARCHITECTURE.md" },
+    { category: "Games", name: "Cards Changelog", path: "../../games/cards/changelog.md" },
+    { category: "Games", name: "Card Engine Guide", path: "../../games/cards/shared/CARD_ENGINE_GUIDE.md" },
+    { category: "Games", name: "Blackjack Info", path: "../../games/cards/blackjack/INFO.md" },
+    { category: "Games", name: "War Info", path: "../../games/cards/war/INFO.md" },
 
-    { category: "Games", name: "Snake Notes", path: "../../games/snake/LL_v2_snake.md" },
+    // Shipment Tracker
+    { category: "Shipment Tracker", name: "Readme", path: "../../projects/shipment-tracker/README.md" },
+    { category: "Shipment Tracker", name: "Changelog", path: "../../projects/shipment-tracker/CHANGELOG.md" },
+    { category: "Shipment Tracker", name: "Architecture", path: "../../projects/shipment-tracker/ARCHITECTURE.md" },
+    { category: "Shipment Tracker", name: "API Guide", path: "../../projects/shipment-tracker/API_SETUP_GUIDE.md" },
 
-    { category: "Projects", name: "Shipment Tracker", path: "../../projects/shipment-tracker/README.md" }
+    // Admin
+    { category: "Admin", name: "Upgrade Checklist", path: "../../admin/UPGRADE_CHECKLIST.md" },
+    { category: "Admin", name: "Dependency Policy", path: "../../admin/DEPENDENCY_POLICY.md" }
 ];
 
 // Imported files storage (session-based)
@@ -39,9 +89,43 @@ var recentFiles = [];
 document.addEventListener('DOMContentLoaded', function() {
     loadImportedFromSession();
     loadHistory();
+    initTheme();
     init();
 });
 
+// --- Theme Management ---
+function initTheme() {
+    var storedTheme = localStorage.getItem('mdReader_theme') || 'dark';
+    setTheme(storedTheme);
+
+    // Bind theme buttons
+    document.querySelectorAll('.theme-opt').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var theme = btn.getAttribute('data-theme');
+            setTheme(theme);
+            toggleSettingsMenu(false);
+        });
+    });
+}
+
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('mdReader_theme', theme);
+
+    // Update Highlight.js theme if needed (could swap CSS links, but simplest is keeping one dark theme for code or swapping)
+    // For now, let's stick to GitHub Dark for code blocks in all themes to ensure contrast,
+    // or we could swap the link href.
+    var hljsLink = document.getElementById('hljs-theme');
+    if (hljsLink) {
+        if (theme === 'light') {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+        } else {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+        }
+    }
+}
+
+// --- History Management ---
 function loadHistory() {
     try {
         recentFiles = JSON.parse(localStorage.getItem('mdReader_recent') || '[]');
@@ -104,8 +188,6 @@ function init() {
             viewMode = (viewMode === 'parsed') ? 'raw' : 'parsed';
             toggleViewBtn.textContent = (viewMode === 'parsed') ? '👁️ Parsed' : '📝 Raw';
             if (currentFilePath) {
-                // Reload current file to re-render
-                 // We don't have the text handy, so re-fetch is easiest (cache usually handles it)
                  if (currentFilePath.startsWith('imported:')) {
                      var filename = currentFilePath.replace('imported:', '');
                      if (importedFiles[filename]) renderMarkdown(importedFiles[filename], filename);
@@ -139,7 +221,7 @@ function init() {
         }
     }
 
-    // Sidebar toggle for mobile and desktop
+    // Sidebar toggle
     var toggleBtn = document.getElementById('toggleSidebar');
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('sidebarOverlay');
@@ -147,10 +229,8 @@ function init() {
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function() {
             if (window.innerWidth > 768) {
-                // Desktop: Toggle collapsed state
                 sidebar.classList.toggle('collapsed');
             } else {
-                // Mobile: Toggle open state
                 sidebar.classList.toggle('open');
                 if (overlay) overlay.classList.toggle('active');
             }
@@ -163,19 +243,36 @@ function init() {
         });
     }
 
+    // Settings Menu
+    var settingsBtn = document.getElementById('settingsBtn');
+    var settingsMenu = document.getElementById('settingsMenu');
+
+    if (settingsBtn && settingsMenu) {
+        settingsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleSettingsMenu();
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+                toggleSettingsMenu(false);
+            }
+        });
+    }
+
+    // Print Button
+    var printBtn = document.getElementById('printBtn');
+    if (printBtn) {
+        printBtn.addEventListener('click', function() {
+            window.print();
+            toggleSettingsMenu(false);
+        });
+    }
+
     // Infinite Scroll Listener
     var container = document.getElementById('markdownContent');
     if (container) {
-        container.parentElement.addEventListener('scroll', function(e) {
-            // Note: markdown-container is the scrollable element in style.css,
-            // but the ID markdownContent is the inner div?
-            // In index.html: <div id="markdownContent" class="markdown-body markdown-container">
-            // So markdownContent IS the container.
-        });
-
-        // Wait, looking at index.html:
-        // <div id="markdownContent" class="markdown-body markdown-container">
-        // So the scroll listener should be on markdownContent.
         container.addEventListener('scroll', function() {
             if (container.scrollHeight - container.scrollTop - container.clientHeight < 1000) {
                 renderNextChunk();
@@ -200,6 +297,18 @@ function init() {
     var openNewTabBtn = document.getElementById('openNewTab');
     if (openNewTabBtn) {
         openNewTabBtn.addEventListener('click', openInNewTab);
+    }
+}
+
+function toggleSettingsMenu(forceState) {
+    var menu = document.getElementById('settingsMenu');
+    if (!menu) return;
+
+    if (typeof forceState === 'boolean') {
+        if (forceState) menu.classList.add('show');
+        else menu.classList.remove('show');
+    } else {
+        menu.classList.toggle('show');
     }
 }
 

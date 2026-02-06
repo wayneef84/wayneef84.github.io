@@ -8,7 +8,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
     <!-- Highlight.js Theme -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 </head>
 <body>
     <div class="app-container">
@@ -53,10 +53,28 @@
 
         <main class="main-content">
             <div class="toolbar">
-                <button id="toggleSidebar" class="toggle-sidebar-btn">☰ Files</button>
-                <div id="currentPath" class="current-file">Select a file...</div>
-                <button id="toggleView" class="open-newtab-btn" style="margin-left: auto; margin-right: 10px;" title="Toggle View Mode">👁️ Parsed</button>
-                <button id="openNewTab" class="open-newtab-btn" title="Open in new tab">↗ New Tab</button>
+                <div style="display: flex; align-items: center;">
+                    <button id="toggleSidebar" class="toggle-sidebar-btn">☰ Files</button>
+                    <div id="currentPath" class="current-file">Select a file...</div>
+                </div>
+
+                <div class="toolbar-group">
+                    <button id="toggleView" class="settings-btn" title="Toggle View Mode">👁️ Parsed</button>
+
+                    <div class="settings-container">
+                        <button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+                        <div id="settingsMenu" class="settings-menu">
+                            <div class="settings-label">Theme</div>
+                            <button class="settings-item theme-opt" data-theme="dark">🌑 Dark</button>
+                            <button class="settings-item theme-opt" data-theme="light">☀️ Light</button>
+                            <button class="settings-item theme-opt" data-theme="terminal">📟 Terminal</button>
+                            <div class="settings-divider"></div>
+                            <div class="settings-label">Export</div>
+                            <button class="settings-item" id="printBtn">🖨️ Print / PDF</button>
+                            <button class="settings-item" id="openNewTab">↗ New Tab</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="markdownContent" class="markdown-body markdown-container">
