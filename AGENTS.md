@@ -20,7 +20,7 @@ When starting a session:
 5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
 ## 🚦 Collaboration Protocol ("F.O.N.G. Protocol")
-**Functional Overlay Network — Generational** (maintained by **The Conjugators**)
+**(Acronym TBD)** — Maintained by **The Conjugators**
 
 *   **Mission:** The F.O.N.G. is the foundational architecture for the family digital archive. It serves as a hybrid rendering bridge, "conjugating" high-performance Canvas inputs with structural DOM layouts.
 *   **Roles:**
