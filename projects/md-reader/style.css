@@ -12,6 +12,34 @@
     --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
+/* Light Theme */
+[data-theme="light"] {
+    --bg-color: #f8fafc;
+    --sidebar-bg: #e2e8f0;
+    --card-bg: #ffffff;
+    --card-border: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent: #0284c7;
+    --accent-hover: #0369a1;
+    --code-bg: #f1f5f9;
+}
+
+/* Terminal Theme */
+[data-theme="terminal"] {
+    --bg-color: #000000;
+    --sidebar-bg: #111111;
+    --card-bg: #000000;
+    --card-border: #333333;
+    --text-primary: #00ff00;
+    --text-secondary: #00cc00;
+    --accent: #00ff00;
+    --accent-hover: #00cc00;
+    --code-bg: #111111;
+    --font-main: 'Courier New', monospace;
+    --font-mono: 'Courier New', monospace;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -137,10 +165,18 @@ body {
     color: var(--text-primary);
 }
 
+[data-theme="light"] .file-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 .file-btn.active {
     background: rgba(255, 215, 0, 0.1);
     color: var(--accent);
     font-weight: 600;
+}
+
+[data-theme="light"] .file-btn.active {
+    background: rgba(2, 132, 199, 0.1);
 }
 
 .custom-path-input {
@@ -238,7 +274,7 @@ body {
     cursor: pointer;
     font-size: 0.85rem;
     transition: all 0.2s;
-    margin-left: auto;
+    margin-left: 10px;
 }
 
 .open-newtab-btn:hover {
@@ -265,10 +301,18 @@ body {
     backdrop-filter: blur(5px);
 }
 
+[data-theme="light"] .toolbar {
+    background: rgba(248, 250, 252, 0.8);
+}
+
 .current-file {
     font-family: var(--font-mono);
     color: var(--text-secondary);
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
 }
 
 .toggle-sidebar-btn {
@@ -279,6 +323,7 @@ body {
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
+    margin-right: 10px;
 }
 
 .markdown-container {
@@ -336,8 +381,9 @@ body {
     padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
-    background-color: rgba(110, 118, 129, 0.4);
+    background-color: var(--code-bg);
     border-radius: 6px;
+    border: 1px solid var(--card-border);
 }
 
 .markdown-body pre {
@@ -350,6 +396,7 @@ body {
 
 .markdown-body pre code {
     background-color: transparent;
+    border: none;
     padding: 0;
     font-size: 100%;
 }
@@ -380,7 +427,7 @@ body {
 }
 
 .markdown-body table tr:nth-child(2n) {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(125, 125, 125, 0.05);
 }
 
 .markdown-body img {
@@ -409,6 +456,161 @@ body {
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+/* Toolbar Menu Group */
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* Settings Dropdown */
+.settings-container {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.settings-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.settings-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 5px;
+    background-color: var(--sidebar-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    min-width: 150px;
+    z-index: 200;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.settings-menu.show {
+    display: block;
+}
+
+.settings-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+}
+
+.settings-item:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+[data-theme="light"] .settings-item:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.settings-divider {
+    height: 1px;
+    background-color: var(--card-border);
+    margin: 4px 0;
+}
+
+.settings-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Print Styles */
+@media print {
+    @page {
+        margin: 1cm;
+        size: auto;
+    }
+
+    body {
+        background: white;
+        color: black;
+        overflow: visible;
+        display: block;
+        height: auto;
+    }
+
+    .sidebar,
+    .toolbar,
+    .sidebar-overlay,
+    .open-newtab-btn,
+    .toggle-sidebar-btn {
+        display: none !important;
+    }
+
+    .app-container {
+        display: block;
+    }
+
+    .main-content {
+        overflow: visible;
+        display: block;
+    }
+
+    .markdown-container {
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
+        overflow: visible;
+    }
+
+    .markdown-body {
+        font-size: 11pt;
+        color: #000;
+    }
+
+    .markdown-body a {
+        text-decoration: underline;
+        color: #000;
+    }
+
+    /* Print URL after links */
+    .markdown-body a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+    }
+
+    .markdown-body pre,
+    .markdown-body code {
+        border: 1px solid #ccc;
+        background-color: #f5f5f5 !important;
+        color: #000 !important;
+    }
+
+    .markdown-body h1 {
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+
+    .markdown-body h2 {
+        border-bottom: 1px solid #000;
+    }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .sidebar {
@@ -428,5 +630,9 @@ body {
 
     .markdown-container {
         padding: 20px;
+    }
+
+    .current-file {
+        display: none;
     }
 }
