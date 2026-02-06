@@ -10,10 +10,21 @@ class StorageManager {
     getSettings() {
         try {
             const data = localStorage.getItem(this.KEYS.SETTINGS);
-            return data ? JSON.parse(data) : { detectMode: 'AUTO' };
+            const defaults = {
+                detectMode: 'AUTO',
+                feedbackVibrate: true,
+                feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
+                feedbackFlash: 'SCANNER'  // OFF, SCANNER, SCREEN
+            };
+            return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         } catch (e) {
             console.error("Failed to load settings", e);
-            return { detectMode: 'AUTO' };
+            return {
+                detectMode: 'AUTO',
+                feedbackVibrate: true,
+                feedbackFrame: 'SCANNER',
+                feedbackFlash: 'SCANNER'
+            };
         }
     }
 
@@ -34,9 +45,6 @@ class StorageManager {
 
     addItem(type, item) {
         const list = this.getHistory(type);
-        // Deduplicate? Or allow multiple? User said "save QR codes it scans if the user wants".
-        // Created ones: "saved ... until deleted".
-        // Let's add all, maybe with ID.
         item.timestamp = Date.now();
         item.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 

@@ -24,19 +24,45 @@
         <!-- SCAN TAB -->
         <section id="scan" class="tab-content active">
             <div class="controls">
-                <label for="scanMode">Detection Mode:</label>
-                <select id="scanMode">
-                    <option value="OCR">OCR (Text Copy)</option>
-                    <option value="AUTO" selected>Auto Detect</option>
-                    <option disabled>--- Specific Formats ---</option>
-                    <option value="QR_CODE">QR Code</option>
-                    <option value="CODE_128">Code 128</option>
-                    <option value="CODE_39">Code 39</option>
-                    <option value="EAN_13">EAN-13</option>
-                    <option value="UPC_A">UPC-A</option>
-                    <option value="UPC_E">UPC-E</option>
-                    <!-- Add more as needed -->
-                </select>
+                <div class="control-row">
+                    <label for="scanMode">Detection Mode:</label>
+                    <select id="scanMode">
+                        <option value="OCR">OCR (Text Copy)</option>
+                        <option value="AUTO" selected>Auto Detect</option>
+                        <option disabled>--- Specific Formats ---</option>
+                        <option value="QR_CODE">QR Code</option>
+                        <option value="CODE_128">Code 128</option>
+                        <option value="CODE_39">Code 39</option>
+                        <option value="EAN_13">EAN-13</option>
+                        <option value="UPC_A">UPC-A</option>
+                        <option value="UPC_E">UPC-E</option>
+                    </select>
+                </div>
+
+                <details class="settings-panel">
+                    <summary>Feedback Settings</summary>
+                    <div class="setting-item">
+                        <label for="set-vibrate">Vibrate:</label>
+                        <input type="checkbox" id="set-vibrate">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-frame">Green Frame:</label>
+                        <select id="set-frame">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-flash">Screen Flash:</label>
+                        <select id="set-flash">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                </details>
+
                 <div id="scan-status" class="status-msg"></div>
             </div>
 

@@ -13,14 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.tab-content');
     const scanModeSelect = document.getElementById('scanMode');
 
+    // Settings Elements
+    const setVibrate = document.getElementById('set-vibrate');
+    const setFrame = document.getElementById('set-frame');
+    const setFlash = document.getElementById('set-flash');
+
     // --- Init ---
     init();
 
     function init() {
         // Restore Settings
-        if (settings.detectMode) {
-            scanModeSelect.value = settings.detectMode;
-        }
+        if (settings.detectMode) scanModeSelect.value = settings.detectMode;
+        if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
+        if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
+        if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
 
         // Initialize Scanner
         scanner = new ScannerManager('reader', {
@@ -60,6 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentTab === 'scan') {
                 startScanner();
             }
+        });
+
+        // Feedback Settings
+        setVibrate.addEventListener('change', (e) => {
+            settings.feedbackVibrate = e.target.checked;
+            storage.saveSettings(settings);
+        });
+        setFrame.addEventListener('change', (e) => {
+            settings.feedbackFrame = e.target.value;
+            storage.saveSettings(settings);
+        });
+        setFlash.addEventListener('change', (e) => {
+            settings.feedbackFlash = e.target.value;
+            storage.saveSettings(settings);
         });
 
         // Scan Result Actions
@@ -112,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onScanSuccess(text, result, mode) {
+        // Trigger Feedback
+        triggerFeedback();
+
         // Stop scanning when result found
         scanner.stop();
 
@@ -126,6 +149,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // If OCR Mode, copy immediately
         if (mode === 'OCR') {
             copyResult(true);
+        }
+    }
+
+    function triggerFeedback() {
+        // Vibrate
+        if (settings.feedbackVibrate && navigator.vibrate) {
+            navigator.vibrate(200);
+        }
+
+        const DURATION = 300;
+
+        // Visual Frame
+        if (settings.feedbackFrame !== 'OFF') {
+            const el = settings.feedbackFrame === 'SCREEN' ? document.body : document.getElementById('reader');
+            const cls = settings.feedbackFrame === 'SCREEN' ? 'feedback-frame-screen' : 'feedback-frame-scanner';
+            if (el) {
+                el.classList.add(cls);
+                setTimeout(() => el.classList.remove(cls), DURATION);
+            }
+        }
+
+        // Screen Flash
+        if (settings.feedbackFlash !== 'OFF') {
+            const el = settings.feedbackFlash === 'SCREEN' ? document.body : document.getElementById('reader');
+            const cls = settings.feedbackFlash === 'SCREEN' ? 'feedback-flash-screen' : 'feedback-flash-scanner';
+            if (el) {
+                el.classList.add(cls);
+                setTimeout(() => el.classList.remove(cls), DURATION);
+            }
         }
     }
 
