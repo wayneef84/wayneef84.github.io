@@ -1,12 +1,15 @@
 import Scene from '../../../negen/core/Scene.js';
 import Physics from '../../../negen/utils/Physics.js';
 import MathUtils from '../../../negen/utils/MathUtils.js';
+import ParticleSystem from '../../../negen/graphics/ParticleSystem.js';
 
 export default class BreakoutScene extends Scene {
     enter(engine) {
         this.engine = engine;
         this.width = engine.width;
         this.height = engine.height;
+
+        this.particles = new ParticleSystem();
 
         this.paddle = { x: this.width/2 - 50, y: this.height - 50, w: 100, h: 20, color: '#0f0' };
         this.ball = { x: this.width/2, y: this.height/2, radius: 8, dx: 4, dy: -4, color: '#fff' };
@@ -97,6 +100,9 @@ export default class BreakoutScene extends Scene {
                 this.ball.dx = diff * 0.15;
 
                 this.engine.audio.playTone(220, 'square', 0.1);
+
+                // Particles on paddle hit
+                this.particles.emit(this.ball.x, this.ball.y, 5, { color: '#0f0', speed: 2, life: 0.5 });
             }
         }
 
@@ -111,9 +117,20 @@ export default class BreakoutScene extends Scene {
                 this.ball.dy *= -1;
                 this.score += 10;
                 this.engine.audio.playTone(440 + (this.score), 'sine', 0.05);
+
+                // Explosion
+                this.particles.emit(
+                    brick.x + brick.w/2,
+                    brick.y + brick.h/2,
+                    15,
+                    { color: brick.color, speed: 4, life: 0.8 }
+                );
+
                 break;
             }
         }
+
+        this.particles.update(dt);
     }
 
     resetBall() {
@@ -141,6 +158,9 @@ export default class BreakoutScene extends Scene {
                 renderer.drawRectEffect(brick.x, brick.y, brick.w, brick.h, brick.color, 10, brick.color);
             }
         }
+
+        // Particles
+        this.particles.draw(renderer);
 
         // Paddle
         renderer.drawRectEffect(this.paddle.x, this.paddle.y, this.paddle.w, this.paddle.h, this.paddle.color, 15, this.paddle.color);

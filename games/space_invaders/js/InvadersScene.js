@@ -2,6 +2,7 @@ import Scene from '../../../negen/core/Scene.js';
 import Physics from '../../../negen/utils/Physics.js';
 import MathUtils from '../../../negen/utils/MathUtils.js';
 import Timer from '../../../negen/utils/Timer.js';
+import ParticleSystem from '../../../negen/graphics/ParticleSystem.js';
 
 export default class InvadersScene extends Scene {
     enter(engine) {
@@ -9,6 +10,7 @@ export default class InvadersScene extends Scene {
         this.width = engine.width;
         this.height = engine.height;
         this.timer = new Timer();
+        this.particles = new ParticleSystem();
 
         this.player = { x: this.width/2 - 20, y: this.height - 50, w: 40, h: 20, color: '#0f0', speed: 5 };
 
@@ -132,6 +134,9 @@ export default class InvadersScene extends Scene {
                         this.score += 10;
                         this.engine.audio.playTone(200, 'noise', 0.1); // Explosion
 
+                        // Particles
+                        this.particles.emit(e.x + e.w/2, e.y + e.h/2, 10, { color: '#fff', size: 4, life: 0.6 });
+
                         // Speed up
                         this.enemyStepInterval = Math.max(100, this.enemyStepInterval * 0.98);
                         break;
@@ -142,6 +147,8 @@ export default class InvadersScene extends Scene {
                     hit = true;
                     this.lives--;
                     this.engine.audio.playTone(100, 'sawtooth', 0.5);
+                    this.particles.emit(this.player.x + this.player.w/2, this.player.y, 20, { color: '#0f0', size: 5, life: 1.0 });
+
                     if (this.lives <= 0) {
                         this.state = 'gameover';
                     }
@@ -152,6 +159,8 @@ export default class InvadersScene extends Scene {
                 this.bullets.splice(i, 1);
             }
         }
+
+        this.particles.update(dt);
 
         // Check win
         if (!this.enemies.some(e => e.active)) {
@@ -210,6 +219,8 @@ export default class InvadersScene extends Scene {
                 renderer.drawRect(e.x + e.w - 10, e.y + 5, 5, 5, '#000'); // Eye
             }
         }
+
+        this.particles.draw(renderer);
 
         // Bullets
         for (let b of this.bullets) {
