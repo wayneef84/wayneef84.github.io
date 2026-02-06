@@ -29,12 +29,24 @@ def test_sprunki_refactor():
         page.get_by_text("+ CREATE").click()
         expect(page.locator("#editorModal")).to_have_class("modal-overlay active")
 
+        # Test Asset Picker
+        print("Testing Asset Picker...")
+        page.select_option("#assetPicker", index=1) # Select first option
+
+        # Check if fields auto-filled
+        name_val = page.input_value("#editName")
+        print(f"Auto-filled name: {name_val}")
+        assert name_val != ""
+
+        # Check Preview (should be visible now)
+        expect(page.locator("#previewImg")).to_be_visible()
+
         # Close Creator
         page.click("#btnCancelEdit")
 
-        page.screenshot(path="verification/refactor_proof.png")
+        page.screenshot(path="verification/asset_picker_proof.png")
 
-        print("Refactor Verification Passed!")
+        print("Refactor & Asset Picker Verification Passed!")
         browser.close()
 
 if __name__ == "__main__":

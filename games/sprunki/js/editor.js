@@ -11,8 +11,17 @@ class SprunkiEditorManager {
         div.innerHTML = `
             <div class="modal">
                 <h2>Create Sprunki</h2>
+
+                <div class="form-group">
+                    <label>Load from Existing (Optional)</label>
+                    <select id="assetPicker" style="background: #333; color: white; padding: 5px; width: 100%;">
+                        <option value="">-- Select Base --</option>
+                    </select>
+                </div>
+
                 <div class="preview-container">
-                    <img id="previewImg" src="" class="preview-img" alt="Preview">
+                    <img id="previewImg" src="" class="preview-img" alt="Preview" style="display: none;">
+                    <div id="previewPlaceholder" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#555;">No Image</div>
                 </div>
 
                 <div class="form-group">
@@ -32,7 +41,7 @@ class SprunkiEditorManager {
 
                 <div class="form-group">
                     <label>Image URL</label>
-                    <input type="text" id="editImg" placeholder="https://...">
+                    <input type="text" id="editImg" placeholder="https://... or relative path">
                 </div>
 
                 <div class="form-group">
@@ -62,13 +71,43 @@ class SprunkiEditorManager {
         document.getElementById('btnCancelEdit').onclick = () => this.close();
         document.getElementById('btnSaveEdit').onclick = () => this.save();
 
+        // Asset Picker Logic
+        const picker = document.getElementById('assetPicker');
+        picker.onchange = () => {
+            const charId = picker.value;
+            if (!charId || !config) return;
+
+            const char = config.characters.find(c => c.id === charId);
+            if (char) {
+                // Determine path. If it's a built-in char, path is usually relative to pack base.
+                // But config.characters just has "img/b01.svg".
+                // We need the FULL relative path from index.html.
+                // We can find the pack and get base_path.
+                const pack = config.packs.find(p => p.id === char.pack_id);
+                const basePath = pack ? pack.base_path : '';
+
+                // Helper to clean path
+                const resolve = (p) => {
+                    if (p.startsWith('http') || p.startsWith('data:')) return p;
+                    // If it starts with ../ it might be tricky depending on where we are.
+                    // Sprunki index is in games/sprunki/.
+                    // Pack base "./assets/..." works.
+                    return basePath + p;
+                };
+
+                document.getElementById('editImg').value = resolve(char.img);
+                document.getElementById('editAudio').value = resolve(char.audio);
+                document.getElementById('editName').value = char.name + " (Remix)";
+                document.getElementById('editType').value = char.type;
+
+                // Trigger preview update
+                this.updatePreview();
+            }
+        };
+
         // Live Preview
         const imgInput = document.getElementById('editImg');
-        const preview = document.getElementById('previewImg');
-
-        imgInput.addEventListener('input', () => {
-            preview.src = imgInput.value || '';
-        });
+        imgInput.addEventListener('input', () => this.updatePreview());
 
         // Crop Controls
         const updateCrop = () => {
@@ -76,6 +115,7 @@ class SprunkiEditorManager {
             const y = document.getElementById('cropY').value;
             const s = document.getElementById('cropScale').value;
 
+            const preview = document.getElementById('previewImg');
             preview.style.setProperty('--crop-x', `${x}%`);
             preview.style.setProperty('--crop-y', `${y}%`);
             preview.style.setProperty('--crop-scale', s);
@@ -86,8 +126,53 @@ class SprunkiEditorManager {
         });
     }
 
+    populateAssetPicker() {
+        const picker = document.getElementById('assetPicker');
+        // Clear except first
+        picker.innerHTML = '<option value="">-- Select Base --</option>';
+
+        if (!config || !config.characters) return;
+
+        // Sort by pack then name
+        config.characters.forEach(char => {
+            if (char.custom) return; // Don't allow picking from other customs to avoid circular issues or complexity
+            const opt = document.createElement('option');
+            opt.value = char.id;
+            opt.textContent = `[${char.pack_id}] ${char.name}`;
+            picker.appendChild(opt);
+        });
+    }
+
+    updatePreview() {
+        const imgInput = document.getElementById('editImg');
+        const preview = document.getElementById('previewImg');
+        const placeholder = document.getElementById('previewPlaceholder');
+
+        const src = imgInput.value.trim();
+
+        if (!src) {
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+            return;
+        }
+
+        preview.onload = () => {
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+
+        preview.onerror = () => {
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+            placeholder.textContent = "Image Not Found";
+        };
+
+        preview.src = src;
+    }
+
     open() {
         document.getElementById('editorModal').classList.add('active');
+        this.populateAssetPicker();
     }
 
     close() {
@@ -96,10 +181,12 @@ class SprunkiEditorManager {
     }
 
     clearForm() {
+        document.getElementById('assetPicker').value = '';
         document.getElementById('editName').value = '';
         document.getElementById('editImg').value = '';
         document.getElementById('editAudio').value = '';
-        document.getElementById('previewImg').src = '';
+        this.updatePreview();
+
         // Reset crop
         document.getElementById('cropX').value = 50;
         document.getElementById('cropY').value = 50;
@@ -130,7 +217,7 @@ class SprunkiEditorManager {
 
         window.CustomSprunkiManager.saveCharacter(charData);
         alert('Character Saved! Reloading...');
-        location.reload(); // Simple reload to refresh config
+        location.reload();
     }
 }
 
