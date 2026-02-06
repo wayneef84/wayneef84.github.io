@@ -13,7 +13,8 @@ Identify your role immediately:
 > **Action:** Read your specific file (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`) after this.
 
 ## 3. Map of the Territory
-*   **`negen/`**: The future. The custom game engine (Phase 1 complete). New games should use this.
+*   **`negen/`**: The future. The custom game engine (Phase 1 [Complete], Phase 2 [Active]). New games should use this.
+    *   **Phase 2 Goal:** Build the Negen Engine Core with a Hybrid Renderer (Canvas + DOM) to power a high-fidelity Card Game prototype.
 *   **`games/`**: The present. Contains both legacy games (Slots, XTC Ball) and NEGEN ports (Snake, Pong).
 *   **`projects/`**: Non-game utilities (e.g., Shipment Tracker).
 *   **`docs/`**: Deep-dive documentation.

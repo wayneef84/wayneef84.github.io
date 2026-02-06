@@ -38,6 +38,11 @@ negen/
     └── Storage.js      # LocalStorage wrapper with namespacing
 ```
 
+### 3.3 Rendering Strategy (The Hybrid Standard)
+*   **Layer 0 (Canvas):** The engine must maintain a background `<canvas>` context for high-performance rendering (Particles, Physics debug lines, retro arcade pixels).
+*   **Layer 1 (DOM):** The engine must maintain a `<div>` overlay for Game Objects that require CSS styling (Playing Cards, HUDs, Text).
+*   **Unified Scene:** The `Scene` class must support adding entities to *either* layer. The Game Loop must update both, but only `draw` the Canvas layer (DOM updates happen via CSS state changes).
+
 ### 3.2 Key Systems
 
 #### Core Loop (`Engine.js`)
