@@ -30,6 +30,10 @@
         customContainer: document.getElementById('custom-pattern-container'),
         customInput: document.getElementById('custom-pattern-input'),
 
+        // User Race Elements
+        userGuessInput: document.getElementById('user-guess'),
+        btnUserSubmit: document.getElementById('btn-user-submit'),
+
         modal: document.getElementById('modal-overlay'),
         manualInput: document.getElementById('manual-input'),
         btnManualConfirm: document.getElementById('btn-manual-confirm'),
@@ -55,7 +59,7 @@
                 els.confLength.disabled = false;
             }
             updateConfig();
-            generateNewTarget(); // Mode change invalidates current target/slots
+            generateNewTarget();
         });
 
         els.confLength.addEventListener('change', function() {
@@ -64,11 +68,7 @@
         });
 
         els.customInput.addEventListener('input', function() {
-             // Debounce or just wait for blur?
-             // For now, let's update on blur or manual trigger.
-             // But actually, we need to rebuild slots.
              updateConfig();
-             // Don't auto-generate target while typing, might be annoying.
         });
 
         els.customInput.addEventListener('blur', function() {
@@ -77,8 +77,6 @@
 
         els.confStrategy.addEventListener('change', function() {
             updateConfig();
-            // Changing strategy shouldn't necessarily reset target,
-            // but it should reset attempts if running.
             if (!isRunning) cracker.reset();
         });
 
@@ -107,12 +105,6 @@
             var code = els.manualInput.value.trim().toUpperCase();
             if (!code) return;
 
-            // If we are in standard mode, does this fit?
-            // If custom mode, does it fit?
-            // Simpler approach: Set the code, and if it doesn't match current config,
-            // we might fail finding it (if sequential).
-            // Let's verify against current cracker config.
-
             if (cracker.isValidConfig(code)) {
                 cracker.setTarget(code);
                 updateDisplay();
@@ -122,13 +114,35 @@
                 alert("Code does not match current configuration rules!");
             }
         });
+
+        // User Race Logic
+        els.btnUserSubmit.addEventListener('click', handleUserGuess);
+        els.userGuessInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleUserGuess();
+        });
+    }
+
+    function handleUserGuess() {
+        if (!isRunning) return;
+
+        var guess = els.userGuessInput.value.trim().toUpperCase();
+        if (guess === cracker.target) {
+            victory('USER');
+        } else {
+            // Optional: Visual feedback for wrong guess?
+            els.userGuessInput.style.borderColor = 'red';
+            setTimeout(function() {
+                els.userGuessInput.style.borderColor = '';
+            }, 500);
+        }
+        els.userGuessInput.value = '';
     }
 
     function updateConfig() {
         var mode = els.confMode.value;
         var len = parseInt(els.confLength.value, 10);
         var strat = els.confStrategy.value;
-        var pattern = els.customInput.value || 'N-A'; // Default fallback
+        var pattern = els.customInput.value || 'N-A';
 
         cracker.configure({
             mode: mode,
@@ -142,7 +156,7 @@
         stop();
         cracker.generateTarget();
         resetGame();
-        updateDisplay();
+        // Don't update display here, handled in resetGame to keep masked
     }
 
     function resetGame() {
@@ -150,10 +164,11 @@
         els.guessDisplay.textContent = '----';
         els.guessDisplay.classList.remove('success');
         els.targetDisplay.classList.remove('revealed');
-        // els.targetDisplay.textContent = '????'; // Keep it revealed? Plan said maybe.
-        // User plan: "until it matches those 4 digits".
-        // Let's show the target.
-        els.targetDisplay.textContent = cracker.target;
+
+        // Mask the target
+        var masked = '';
+        for (var i=0; i < cracker.target.length; i++) masked += '*';
+        els.targetDisplay.textContent = masked;
 
         els.statusText.textContent = 'READY';
         els.statusText.style.color = 'var(--text-color)';
@@ -161,12 +176,16 @@
         els.timer.textContent = '00:00:000';
         els.attempts.textContent = '0';
         els.speed.textContent = '0/s';
+
+        // Reset User Input
+        els.userGuessInput.value = '';
+        els.userGuessInput.disabled = true;
+        els.btnUserSubmit.disabled = true;
     }
 
     function start() {
         if (isRunning) return;
 
-        // If already solved, reset first
         if (cracker.checkMatch()) {
             resetGame();
         }
@@ -183,10 +202,12 @@
         els.confMode.disabled = true;
         els.confLength.disabled = true;
 
-        // Timer Loop
-        timerInterval = setInterval(updateTimer, 37); // ~30fps for timer
+        // Enable User Input
+        els.userGuessInput.disabled = false;
+        els.btnUserSubmit.disabled = false;
+        els.userGuessInput.focus();
 
-        // Game Loop
+        timerInterval = setInterval(updateTimer, 37);
         gameLoop();
     }
 
@@ -204,6 +225,10 @@
         els.btnSetTarget.disabled = false;
         els.confMode.disabled = false;
         els.confLength.disabled = els.confMode.value === 'custom';
+
+        // Disable User Input
+        els.userGuessInput.disabled = true;
+        els.btnUserSubmit.disabled = true;
     }
 
     function gameLoop() {
@@ -211,20 +236,14 @@
 
         var loopStart = Date.now();
 
-        // If delay is 0, we try to crunch as many as possible per frame
-        // to make it look fast, but not freeze browser.
-        // If delay > 0, we do one per delay.
-
         if (delay > 0) {
              processStep();
              if (isRunning) {
                  setTimeout(gameLoop, delay);
              }
         } else {
-            // Batch processing for 0 delay
-            // Run for max 16ms (one frame)
             while (Date.now() - loopStart < 16 && isRunning) {
-                if (processStep()) break; // Found it
+                if (processStep()) break;
             }
             if (isRunning) {
                 requestAnimationFrame(gameLoop);
@@ -238,18 +257,27 @@
         els.attempts.textContent = cracker.attempts;
 
         if (cracker.checkMatch()) {
-            victory();
-            return true; // Stop processing
+            victory('SYSTEM');
+            return true;
         }
         return false;
     }
 
-    function victory() {
+    function victory(winner) {
         stop();
-        els.statusText.textContent = 'MATCH FOUND';
-        els.statusText.style.color = '#00ff00';
-        els.guessDisplay.classList.add('success');
+
+        // Reveal Target
+        els.targetDisplay.textContent = cracker.target;
         els.targetDisplay.classList.add('revealed');
+        els.guessDisplay.classList.add('success');
+
+        if (winner === 'USER') {
+            els.statusText.textContent = 'USER INTERCEPTED';
+            els.statusText.style.color = '#38bdf8'; // Cyan
+        } else {
+            els.statusText.textContent = 'SYSTEM CRACKED';
+            els.statusText.style.color = '#00ff00'; // Green
+        }
     }
 
     function updateTimer() {
@@ -274,8 +302,13 @@
     }
 
     function updateDisplay() {
-        els.targetDisplay.textContent = cracker.target;
-        els.attempts.textContent = cracker.attempts;
+        // Only update if not running (manual set)
+        // If running, it stays masked until victory
+        if (!isRunning) {
+             var masked = '';
+             for (var i=0; i < cracker.target.length; i++) masked += '*';
+             els.targetDisplay.textContent = masked;
+        }
     }
 
     // Init on load
