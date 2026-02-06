@@ -240,6 +240,8 @@ Open Source - See individual project directories for specific licenses.
 - GitHub: [@wayneef84](https://github.com/wayneef84)
 - Website: [wayneef84.github.io](https://wayneef84.github.io/)
 
+*Built with assistance from Claude Sonnet 4.5*
+*Updates by Jules (Gemini Pro)*
 ### AI Development Team (C-G-J Alliance)
 - **Claude (C)** - Claude Opus 4.5 - Senior Developer & Documentation Lead
 - **Gemini (G)** - Gemini Pro/Flash - Creative Director & Content Lead

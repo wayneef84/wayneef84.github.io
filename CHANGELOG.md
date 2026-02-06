@@ -6,6 +6,12 @@ All notable changes to the Fong Family Arcade project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Arcade v1.5] - 2026-02-04 (Jules (Gemini Pro))
+### Changed
+- **Homepage Redesign:** Complete visual overhaul of `index.html` with modern dark theme (`#0f172a`), radial gradients, and "glassmorphism" card styling.
+- **Functionality:** Added category filtering (All/Games/Projects) with smooth layout animations.
+- **Archival:** Preserved previous homepage as `index_v1.4.html` for backup.
+- **Attribution:** Added credit to Jules (Gemini Pro) in footer and logs.
 ## [Slots v3.1] - 2026-02-04
 ### Added
 - **10 New Themes:** Added diverse themes including Pirate's Gold, Jurassic Jungle, Samurai Spirit, Viking Legends, Steampunk Revolution, Wild West, Fairy Tale, Dragon's Lair, Robot Factory, and Ninja Shadows.
