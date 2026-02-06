@@ -11,14 +11,14 @@
             user-select: none;
         }
         body {
-            background-color: #240a1e; 
+            background-color: #240a1e;
             color: #ff66ff;
             font-family: 'Segoe UI', 'Roboto', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            height: 100dvh; 
+            height: 100dvh;
             margin: 0;
             overflow: hidden;
             transition: background-color 0.3s;
@@ -37,7 +37,7 @@
             z-index: 10;
             height: 60px; /* Fixed height for calc */
         }
-        
+
         .back-btn {
             text-decoration: none;
             font-size: 1.2rem;
@@ -69,7 +69,7 @@
             align-items: center;
             width: 100%;
             position: relative;
-            min-height: 0; 
+            min-height: 0;
             z-index: 1;
         }
 
@@ -90,14 +90,14 @@
         /* --- CONTROLS --- */
         .controls-area {
             width: 100%;
-            height: 120px; 
+            height: 120px;
             display: flex;
             justify-content: space-between;
             align-items: stretch; /* Stretch buttons to fill height */
             gap: 20px;
             padding: 10px 20px;
             /* Extra padding for iPhone Home Bar */
-            padding-bottom: env(safe-area-inset-bottom, 20px); 
+            padding-bottom: env(safe-area-inset-bottom, 20px);
             box-sizing: content-box; /* Ensures padding adds to height */
             flex-shrink: 0;
             z-index: 100;
@@ -138,7 +138,7 @@
             justify-content: center;
             align-items: center;
             z-index: 20;
-            display: none; 
+            display: none;
             padding: 20px;
             text-align: center;
         }
@@ -214,7 +214,7 @@
         /* --- THEMES --- */
         body.theme-neon { background-color: #240a1e; color: #ff66ff; }
         .theme-neon .canvas-wrapper { background: linear-gradient(135deg, #ff00cc, #9900ff); }
-        .theme-neon canvas { 
+        .theme-neon canvas {
             background-image: linear-gradient(#2a0a2e 1px, transparent 1px), linear-gradient(90deg, #2a0a2e 1px, transparent 1px);
             background-size: 20px 20px;
         }
@@ -232,7 +232,7 @@
 
         body.theme-chameleon { background-color: #0a1e24; color: #00ffcc; }
         .theme-chameleon .canvas-wrapper { background: linear-gradient(135deg, #00ffcc, #00ff66); }
-        .theme-chameleon canvas { 
+        .theme-chameleon canvas {
             background-image: linear-gradient(#022e2a 1px, transparent 1px), linear-gradient(90deg, #022e2a 1px, transparent 1px);
             background-size: 20px 20px;
         }
@@ -252,7 +252,6 @@
         <div class="title-group">
             <h1 class="game-title">Neon Serpent</h1>
             <div style="display:flex; align-items:center; justify-content:flex-end; gap:15px;">
-                <button id="switchEngineBtn" onclick="location.href='negen_version/index.html'" style="background:rgba(255,255,255,0.1); border:1px solid currentColor; color:inherit; font-size:0.7rem; padding:4px 8px; border-radius:4px; cursor:pointer; text-transform:uppercase;">Play Remastered</button>
                 <button id="muteBtn" style="background:none; border:none; color:inherit; font-size:1.2rem; cursor:pointer; opacity:1;">🔊</button>
                 <div class="score-display">SCORE: <span id="score">0</span></div>
             </div>
@@ -262,7 +261,7 @@
     <div class="game-stage">
         <div class="canvas-wrapper">
             <canvas id="gameCanvas"></canvas>
-            
+
             <div id="gameOverScreen" class="overlay">
                 <h2>CRASHED</h2>
                 <div style="margin-bottom: 20px; font-size: 1.2rem; color: inherit;">Score: <span id="finalScore">0</span></div>
@@ -271,7 +270,7 @@
 
             <div id="startScreen" class="overlay active" style="background: rgba(0,0,0,0.6);">
                 <div style="margin-bottom:10px; font-weight:bold; letter-spacing:1px; color:inherit; opacity:0.8;">THEME</div>
-                
+
                 <div class="mode-container">
                     <div class="mode-selector">
                         <button class="mode-btn active" onclick="setMode('neon')">Neon</button>
@@ -339,9 +338,9 @@
         const body = document.body;
 
         let snake, direction, food, score, gameLoop, isGameOver;
-        let isAttractMode = false; 
+        let isAttractMode = false;
         let pendingDirection;
-        let currentMode = 'neon'; 
+        let currentMode = 'neon';
         let currentControlMode = 'buttons';
         let activeColor = '#ffffff';
         let tileCount = 20;
@@ -424,8 +423,8 @@
         };
 
         const PALETTE = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800'];
-        let gridSize; 
-        
+        let gridSize;
+
         const DESCRIPTIONS = {
             neon: "Classic arcade action with a cyber glow.",
             chameleon: "You are what you eat! Change colors instantly.",
@@ -435,21 +434,21 @@
         function resize() {
             // Logic Check: Are buttons hidden?
             const controlsHidden = getComputedStyle(controlsArea).display === 'none';
-            
+
             // Calculate height buffers
             const headerHeight = 60;
             // IMPORTANT: Increased buffer from 120 -> 160 to account for Safe Area Inset padding
-            const controlsHeight = controlsHidden ? 0 : 160; 
+            const controlsHeight = controlsHidden ? 0 : 160;
             const padding = 20;
 
             const availableHeight = window.innerHeight - (headerHeight + controlsHeight + padding);
             const availableWidth = window.innerWidth - 40;
-            
+
             // Max size limit
             const maxSize = controlsHidden ? 600 : 400;
 
             let size = Math.min(availableWidth, availableHeight, maxSize);
-            
+
             // Fix Grid Alignment: Ensure size is perfectly divisible by tileCount
             gridSize = Math.floor(size / tileCount);
             size = gridSize * tileCount;
@@ -457,10 +456,10 @@
             canvas.width = size;
             canvas.height = size;
 
-            if(snake) draw(); 
+            if(snake) draw();
         }
         window.addEventListener('resize', resize);
-        resize(); 
+        resize();
 
         window.setControlMode = function(mode) {
             currentControlMode = mode;
@@ -521,7 +520,7 @@
             if(mode === 'neon') title.textContent = "Neon Serpent";
             if(mode === 'retro') title.textContent = "Snake_V1.0";
             if(mode === 'chameleon') title.textContent = "Color Eater";
-            
+
             startAttractMode();
         }
 
@@ -532,10 +531,10 @@
                 { x: 10, y: 16, color: startColor },
                 { x: 10, y: 17, color: startColor }
             ];
-            direction = { x: 0, y: -1 }; 
+            direction = { x: 0, y: -1 };
             pendingDirection = { x: 0, y: -1 };
             activeColor = '#ffffff';
-            food = randomFood(); 
+            food = randomFood();
             score = 0;
             scoreEl.textContent = 0;
             isGameOver = false;
@@ -548,7 +547,7 @@
 
         function initGame() {
             SoundManager.init();
-            isAttractMode = false; 
+            isAttractMode = false;
             resetState();
             gameOverScreen.classList.remove('active');
             startScreen.classList.remove('active');
@@ -600,7 +599,7 @@
                 if (m.x === -direction.x && m.y === -direction.y) return false;
                 return true;
             });
-            if (validMoves.length === 0) return direction; 
+            if (validMoves.length === 0) return direction;
             validMoves.sort((a, b) => {
                 const distA = Math.abs((head.x + a.x) - food.x) + Math.abs((head.y + a.y) - food.y);
                 const distB = Math.abs((head.x + b.x) - food.x) + Math.abs((head.y + b.y) - food.y);
@@ -616,16 +615,16 @@
                 direction = pendingDirection;
             }
 
-            const head = { 
-                x: snake[0].x + direction.x, 
+            const head = {
+                x: snake[0].x + direction.x,
                 y: snake[0].y + direction.y,
-                color: activeColor 
+                color: activeColor
             };
 
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || 
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount ||
                 snake.some(seg => seg.x === head.x && seg.y === head.y)) {
                 if (isAttractMode) {
-                    startAttractMode(); 
+                    startAttractMode();
                     return;
                 } else {
                     return endGame();
@@ -643,7 +642,7 @@
                 }
                 if (currentMode === 'chameleon') {
                     activeColor = food.color;
-                    snake[0].color = activeColor; 
+                    snake[0].color = activeColor;
                 }
                 food = randomFood();
             } else {
@@ -669,7 +668,7 @@
                     if (i === 0) {
                         fill = '#ffffff'; blur = 20; shadowColor = "#ff00cc";
                     } else {
-                        const hue = 320 - (i * 4); 
+                        const hue = 320 - (i * 4);
                         fill = `hsl(${hue}, 100%, 50%)`;
                         blur = 10; shadowColor = fill;
                     }
@@ -691,7 +690,7 @@
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = foodFill;
             } else {
-                foodFill = '#00ffff'; 
+                foodFill = '#00ffff';
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = "#00ffff";
             }
@@ -812,7 +811,7 @@
         document.getElementById('retryBtn').addEventListener('click', () => {
             gameOverScreen.classList.remove('active');
             startScreen.classList.add('active');
-            startAttractMode(); 
+            startAttractMode();
         });
 
         const muteBtn = document.getElementById('muteBtn');
