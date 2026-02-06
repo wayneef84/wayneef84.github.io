@@ -6,6 +6,23 @@ All notable changes to the Founding & Forging project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
+## [Board Arcade Expansion] - 2026-02-06 (Jules)
+### Added
+- **New Games:** Implemented 5 new board games to complete the arcade lineup:
+  - **Tic Tac Toe:** Classic 3x3 grid with basic AI.
+  - **Connect 4:** 7x6 grid with gravity logic and diagonal win detection.
+  - **Mancala:** Traditional sowing mechanic with capture rules and extra turns.
+  - **Dots & Boxes:** Grid-based territory capture game with line drawing logic.
+  - **Battleship:** Strategy game with auto-placement setup and hit/miss tracking.
+- **UI Overhaul:**
+  - Replaced the legacy `<select>` dropdown with a modern **Game Overlay** featuring large, touch-friendly game icons.
+  - Added a **Settings Menu** placeholder with toggles for Sound and Theme.
+  - Added a "Switch Game" button to easily return to the overlay.
+- **Input System:**
+  - Implemented `GameEngine.addInputListener` to normalize touch and mouse events across all games.
+  - Implemented `GameEngine.getEventCoords` to correctly handle canvas scaling and touch coordinates on mobile devices.
+  - Fixed "off" touch controls reported by users.
+
 ## [Overhaul] - 2026-02-06
 ### Refactor
 - **Renaming:** Renamed "Fong Family Arcade" to "Founding & Forging" (Attributed to G).
