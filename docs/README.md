@@ -16,5 +16,12 @@ Welcome to the central documentation hub for the Founding & Forging platform.
 *   [Shared Utilities](projects/SHARED.md): Common libraries and assets used across the platform.
 
 ## NEGEN Engine
-*   [Architecture Plan](../../NEGEN_PLAN.md): The blueprint for the homegrown game engine.
-*   [Progress Tracker](../../negen/PROGRESS.md): Working document tracking development status and tasks.
+
+### Guides & Manuals
+*   [User Manual](negen/USER_MANUAL.md): Getting started guide and "Hello World" tutorial.
+*   [Technical Reference](negen/TECHNICAL_REFERENCE.md): API documentation for Engine, Scene, Input, Audio, and Graphics.
+*   [History & Changelog](negen/HISTORY.md): Version history, lessons learned, and retrospective.
+
+### Planning & Status
+*   [Architecture Plan](../negen/NEGEN_PLAN.md): The blueprint for the homegrown game engine.
+*   [Progress Tracker](../negen/PROGRESS.md): Working document tracking development status and tasks.
