@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Reader - Fong Family Arcade</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Highlight.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebarOverlay" class="sidebar-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 90; display: none; opacity: 0; transition: opacity 0.3s;"></div>
+        <style>
+            .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
+        </style>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; align-items:center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">📖</span>
+                    <h1>MD Reader</h1>
+                </div>
+                <a href="../" class="back-link">← Projects</a>
+            </div>
+
+            <div class="file-upload-section" style="padding: 10px 15px;">
+                <label for="fileUpload" style="display:block; text-align:center; cursor:pointer; background: var(--accent); color: white; padding: 10px; border-radius: 4px; font-weight: bold;">📂 Open MD File</label>
+                <input type="file" id="fileUpload" accept=".md,.markdown,.txt" style="display: none;">
+            </div>
+
+            <div style="padding: 0 15px; opacity: 0.7; font-size: 0.8em; text-transform: uppercase; font-weight: bold; margin-top: 10px;">Load from Path</div>
+            <div class="custom-path-input">
+                <form id="customPathForm" class="path-form">
+                    <input type="text" id="customPathInput" placeholder="e.g. ../../README.md">
+                    <button type="submit">→</button>
+                </form>
+            </div>
+
+            <ul class="file-list" id="fileList">
+                <!-- Populated by JS (History or Default) -->
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="toolbar">
+                <button id="toggleSidebar" class="toggle-sidebar-btn">☰ Files</button>
+                <div id="currentPath" class="current-file">Select a file...</div>
+            </div>
+
+            <div id="markdownContent" class="markdown-body markdown-container">
+                <!-- Content goes here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Libraries -->
+    <!-- Using marked 4.3.0 for compatibility with highlight option -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

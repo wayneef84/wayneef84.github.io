@@ -51,6 +51,31 @@ Blackjack, War, Euchre, Big 2 — built on shared Card Engine.
 - Multiple game types
 - Mobile-optimized UI
 
+### Snake (v3.0)
+Classic snake game with modern touches.
+
+**Features:**
+- Web Audio sound effects
+- Swipe and button controls
+- Speed ramping difficulty
+- Touch-optimized zones
+
+### XTC Ball (v5.0)
+Magic 8-ball with personality.
+
+**Features:**
+- DOM/SVG based
+- Synthesized sound
+- Shake to reveal answers
+
+### Flow (v1.0)
+Pipe connection puzzle game.
+
+**Features:**
+- Canvas-based grid
+- Level generator
+- Touch-friendly controls
+
 ---
 
 ## 🛠️ Projects
@@ -121,7 +146,12 @@ Blackjack, War, Euchre, Big 2 — built on shared Card Engine.
 │           └── TESTING.md
 │
 ├── index.html               # Landing page
-├── CLAUDE.md               # AI agent instructions
+├── AGENTS.md               # AI collaboration protocol
+├── CLAUDE.md               # Claude's guidelines
+├── GEMINI.md               # Gemini's guidelines
+├── JULES.md                # Jules's guidelines
+├── AI_FEEDBACK.md          # Inter-agent session log
+├── IDEAS_020426.md         # v2.0 brainstorming
 └── README.md               # This file
 ```
 
@@ -212,6 +242,10 @@ Open Source - See individual project directories for specific licenses.
 
 *Built with assistance from Claude Sonnet 4.5*
 *Updates by Jules (Gemini Pro)*
+### AI Development Team (C-G-J Alliance)
+- **Claude (C)** - Claude Opus 4.5 - Senior Developer & Documentation Lead
+- **Gemini (G)** - Gemini Pro/Flash - Creative Director & Content Lead
+- **Jules (J)** - Google Labs Coding Agent - Lead Architect & Integration Specialist
 
 ---
 
