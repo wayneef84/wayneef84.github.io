@@ -7,13 +7,13 @@
 (function(window) {
     'use strict';
 
-    function NegenIDBAdapter(config) {
+    function F_IDBAdapter(config) {
         this.config = config;
         this.type = 'idb';
         this.db = null;
     }
 
-    NegenIDBAdapter.prototype = {
+    F_IDBAdapter.prototype = {
         init: function() {
             var self = this;
             return new Promise(function(resolve, reject) {
@@ -161,6 +161,6 @@
         }
     };
 
-    window.NegenIDBAdapter = NegenIDBAdapter;
+    window.F_IDBAdapter = F_IDBAdapter;
 
 })(window);

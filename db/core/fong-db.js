@@ -41,13 +41,13 @@
             var self = this;
             return new Promise(function(resolve, reject) {
                 // Select Adapter Class
-                // Note: Adapters are exported as NegenIDBAdapter/NegenLSAdapter
+                // Note: Adapters are exported as F_IDBAdapter/F_LSAdapter
                 var AdapterClass;
-                if (self.config.adapter === 'idb' && window.NegenIDBAdapter) {
-                    AdapterClass = window.NegenIDBAdapter;
-                } else if (window.NegenLSAdapter) {
+                if (self.config.adapter === 'idb' && window.F_IDBAdapter) {
+                    AdapterClass = window.F_IDBAdapter;
+                } else if (window.F_LSAdapter) {
                     console.warn('[FongDB] Falling back to LocalStorage adapter');
-                    AdapterClass = window.NegenLSAdapter;
+                    AdapterClass = window.F_LSAdapter;
                 } else {
                     reject(new Error('No suitable storage adapter found'));
                     return;

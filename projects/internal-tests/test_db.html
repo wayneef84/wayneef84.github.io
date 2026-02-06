@@ -53,6 +53,7 @@
 <body>
     <h1>🛠️ FongDB Verification</h1>
     <p>Automated tests for the generic storage engine.</p>
+    <p style="font-size: 0.8rem; color: #94a3b8;">Verifying Core: FongDB | Adapters: F_IDBAdapter / F_LSAdapter</p>
 
     <div class="controls">
         <button id="runTestsBtn">Run Tests</button>
@@ -96,6 +97,11 @@
             try {
                 // 1. Initialization
                 if (!window.FongDB) throw new Error('FongDB class not found');
+
+                // Verify Adapters are present
+                if (!window.F_IDBAdapter) throw new Error('F_IDBAdapter not found');
+                if (!window.F_LSAdapter) throw new Error('F_LSAdapter not found');
+
                 const db = new FongDB(CONFIG);
                 await db.init();
                 log(`Database initialized (Adapter: ${db.adapter.type})`, 'success');
@@ -149,10 +155,6 @@
                 } else {
                     throw new Error('Clear failed');
                 }
-
-                // Clean up (Delete the temp DB)
-                // Note: Generic adapter doesn't support deleteDatabase yet, so we leave it.
-                // In a real test env we would want to clean up.
 
                 log('All tests passed!', 'success');
 
