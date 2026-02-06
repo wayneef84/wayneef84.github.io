@@ -227,6 +227,7 @@ function saveImportedToSession() {
 
 function init() {
     setupSearch();
+    setupExpandCollapse();
     renderSidebar();
     setupFileUpload();
 
@@ -258,7 +259,14 @@ function init() {
                 loadFile(FILES[0].path);
             }
         } else {
-            loadFile(decodeURIComponent(hash));
+            // Fix path if coming from external link to ensure relative correctness
+            var path = decodeURIComponent(hash);
+            // If path is "games/snake/README.md" and we are in "projects/md-reader/",
+            // we need to make sure it's "../../games/snake/README.md" if not absolute/http.
+            if (!path.startsWith('http') && !path.startsWith('../../') && !path.startsWith('/') && !path.startsWith('./')) {
+                 path = '../../' + path;
+            }
+            loadFile(path);
         }
     } else {
         // Load last opened or default
@@ -366,6 +374,31 @@ function setupSearch() {
     if (searchInput) {
         searchInput.addEventListener('input', function(e) {
             renderSidebar(e.target.value);
+        });
+    }
+}
+
+function setupExpandCollapse() {
+    var expandAll = document.getElementById('expandAllBtn');
+    var collapseAll = document.getElementById('collapseAllBtn');
+
+    if (expandAll) {
+        expandAll.addEventListener('click', function() {
+            document.querySelectorAll('.category-group').forEach(function(el) {
+                el.classList.remove('collapsed');
+                var icon = el.querySelector('.cat-icon');
+                if (icon) icon.textContent = '▼';
+            });
+        });
+    }
+
+    if (collapseAll) {
+        collapseAll.addEventListener('click', function() {
+            document.querySelectorAll('.category-group').forEach(function(el) {
+                el.classList.add('collapsed');
+                var icon = el.querySelector('.cat-icon');
+                if (icon) icon.textContent = '▶';
+            });
         });
     }
 }
@@ -499,29 +532,61 @@ function renderSidebar(searchTerm) {
         });
     }
 
-    // Filter FILES
-    var filteredFiles = FILES.filter(function(file) {
+    // Filter: If search term exists, use REPO_FILES (comprehensive). Else use FILES (curated sidebar).
+    var sourceFiles = (searchTerm && typeof REPO_FILES !== 'undefined') ? REPO_FILES : FILES;
+
+    // Sort logic: If searching, flat list might be better, but grouping still works if categorized well.
+    // Let's stick to grouping for now as REPO_FILES has categories.
+
+    var filteredFiles = sourceFiles.filter(function(file) {
         if (!searchTerm) return true;
         return file.name.toLowerCase().includes(searchTerm) ||
-               file.category.toLowerCase().includes(searchTerm);
+               file.path.toLowerCase().includes(searchTerm);
     });
 
     // Group by category
     var categories = {};
     filteredFiles.forEach(function(file) {
-        if (!categories[file.category]) {
-            categories[file.category] = [];
+        var cat = file.category || "Uncategorized";
+        if (!categories[cat]) {
+            categories[cat] = [];
         }
-        categories[file.category].push(file);
+        categories[cat].push(file);
     });
+
+    // If searching, auto-expand all categories
+    var autoExpand = !!searchTerm;
 
     // Render repo files
     Object.keys(categories).forEach(function(category) {
         var files = categories[category];
 
-        var categoryHeader = document.createElement('li');
-        categoryHeader.innerHTML = '<div style="padding: 10px 15px; font-size: 0.8em; text-transform: uppercase; color: var(--text-secondary); opacity: 0.7; font-weight: bold; margin-top: 10px;">' + category + '</div>';
-        list.appendChild(categoryHeader);
+        var categoryLi = document.createElement('li');
+        categoryLi.className = 'category-group';
+
+        if (!autoExpand) {
+             categoryLi.classList.add('collapsed');
+        } else {
+             // If expanded, remove collapsed (redundant but safe)
+             categoryLi.classList.remove('collapsed');
+        }
+
+        // Header
+        var header = document.createElement('div');
+        header.className = 'category-header';
+        // Fix: Use correct initial arrow state based on collapsed class
+        var arrow = (!autoExpand) ? '▶' : '▼';
+        header.innerHTML = '<span class="cat-icon">' + arrow + '</span> <span class="cat-name">' + category + '</span> <span class="cat-count">' + files.length + '</span>';
+
+        // Container for files
+        var fileContainer = document.createElement('ul');
+        fileContainer.className = 'category-files';
+
+        header.addEventListener('click', function() {
+            categoryLi.classList.toggle('collapsed');
+            var icon = header.querySelector('.cat-icon');
+            icon.textContent = categoryLi.classList.contains('collapsed') ? '▶' : '▼';
+        });
 
         files.forEach(function(file) {
             var li = document.createElement('li');
@@ -529,7 +594,15 @@ function renderSidebar(searchTerm) {
 
             var btn = document.createElement('button');
             btn.className = 'file-btn';
-            btn.innerHTML = '<span style="opacity: 0.7;">📄</span> ' + file.name;
+
+            // Icon based on type if available (from REPO_FILES merging)
+            var icon = '📄';
+            if (file.type === 'csv') icon = '📊';
+            else if (file.type === 'json') icon = 'Curly Braces';
+            else if (file.type === 'js') icon = '📜';
+            else if (file.type === 'html') icon = '🌐';
+
+            btn.innerHTML = '<span style="opacity: 0.7;">' + icon + '</span> ' + file.name;
             btn.addEventListener('click', function() {
                 loadFile(file.path);
                 document.querySelectorAll('.file-btn').forEach(function(b) {
@@ -541,11 +614,17 @@ function renderSidebar(searchTerm) {
 
             if (window.location.hash.slice(1) === file.path) {
                 btn.classList.add('active');
+                categoryLi.classList.remove('collapsed'); // Auto expand if active file is inside
+                header.querySelector('.cat-icon').textContent = '▼';
             }
 
             li.appendChild(btn);
-            list.appendChild(li);
+            fileContainer.appendChild(li);
         });
+
+        categoryLi.appendChild(header);
+        categoryLi.appendChild(fileContainer);
+        list.appendChild(categoryLi);
     });
 
     // Filter Imported Files
@@ -669,13 +748,36 @@ function renderMarkdown(text, path) {
 
     if (viewMode === 'raw') {
         container.innerHTML = '<pre style="white-space: pre-wrap; word-break: break-all;"><code>' +
-            text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+            escapeHtml(text) +
             '</code></pre>';
         container.scrollTop = 0;
         return;
     }
 
-    // BBC Translation
+    // Determine extension for rendering strategy
+    var ext = path ? path.split('.').pop().toLowerCase() : 'md';
+
+    // CSV Rendering
+    if (ext === 'csv') {
+        renderCsv(text, container);
+        return;
+    }
+
+    // Code Rendering (Generic) - if not MD/Markdown
+    if (ext !== 'md' && ext !== 'markdown' && ext !== 'txt') {
+        // Try to map extension to language for highlight.js
+        var lang = ext;
+        if (lang === 'js') lang = 'javascript';
+        if (lang === 'py') lang = 'python';
+        if (lang === 'html') lang = 'xml';
+
+        container.innerHTML = '<pre><code class="language-' + lang + '">' + escapeHtml(text) + '</code></pre>';
+        hljs.highlightAll();
+        container.scrollTop = 0;
+        return;
+    }
+
+    // BBC Translation (Only for MD/TXT)
     text = convertBbcToMarkdown(text);
 
     try {
@@ -689,6 +791,35 @@ function renderMarkdown(text, path) {
         renderNextChunk();
     } catch (e) {
         container.innerHTML = '<div class="error-message">Error parsing markdown: ' + e.message + '</div>';
+    }
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderCsv(text, container) {
+    try {
+        var rows = text.trim().split('\n');
+        if (rows.length === 0) return;
+
+        var html = '<div style="overflow-x:auto;"><table>';
+
+        rows.forEach(function(row, i) {
+            html += '<tr>';
+            var cols = row.split(','); // Simple split, doesn't handle quoted commas
+            cols.forEach(function(col) {
+                if (i === 0) html += '<th>' + escapeHtml(col.trim()) + '</th>';
+                else html += 'td>' + escapeHtml(col.trim()) + '</td>';
+            });
+            html += '</tr>';
+        });
+
+        html += '</table></div>';
+        container.innerHTML = html;
+        container.scrollTop = 0;
+    } catch(e) {
+        container.innerHTML = '<div class="error-message">Error parsing CSV: ' + e.message + '</div>';
     }
 }
 

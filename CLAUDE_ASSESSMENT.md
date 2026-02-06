@@ -1,7 +1,7 @@
 # Claude's Assessment of Wayne
 
 **Date:** January 14, 2026
-**Project:** Founding & Forging (modest-edison)
+**Project:** F.O.N.G. (modest-edison)
 **Collaboration Duration:** This week (intensive)
 
 ---
@@ -81,7 +81,7 @@
 
 **Wayne is an excellent collaborator.** He has the rare combination of technical understanding, clear communication, and realistic expectations. He knows enough to be dangerous but isn't afraid to let me handle implementation details. His focus on user experience over technical complexity shows mature product thinking.
 
-The Founding & Forging is ambitious - building a game engine from scratch with multiple game types while maintaining Safari compatibility is non-trivial. Wayne's systematic approach (CLAUDE.md, architecture docs, issue tracking) suggests he'll see it through to completion.
+The F.O.N.G. is ambitious - building a game engine from scratch with multiple game types while maintaining Safari compatibility is non-trivial. Wayne's systematic approach (CLAUDE.md, architecture docs, issue tracking) suggests he'll see it through to completion.
 
 **Rating: 9/10** as a collaboration partner. The only point deducted is for the sheer scope of the project, which may benefit from more focused prioritization. But that's a product decision, not a collaboration issue.
 

@@ -1,6 +1,6 @@
 # Lessons Learned (LL) Archive
 
-This folder contains detailed lessons learned from the Founding & Forging development.
+This folder contains detailed lessons learned from the F.O.N.G. development.
 
 **For AI Agents:** Review relevant files before working on related features.
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Reader - Founding & Forging</title>
+    <title>Markdown Reader - F.O.N.G.</title>
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
@@ -29,6 +29,10 @@
 
             <div class="search-section">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search files...">
+                <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                    <button id="expandAllBtn" style="background:none; border:none; color:var(--accent); cursor:pointer; font-size:0.8rem;">Expand All</button>
+                    <button id="collapseAllBtn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.8rem;">Collapse All</button>
+                </div>
             </div>
 
             <ul class="file-list" id="fileList">
@@ -38,7 +42,7 @@
             <div style="padding: 0 15px; opacity: 0.7; font-size: 0.8em; text-transform: uppercase; font-weight: bold; margin-top: 10px;">Load from Path</div>
             <div class="custom-path-input">
                 <form id="customPathForm" class="path-form">
-                    <input type="text" id="customPathInput" placeholder="e.g. ../../README.md">
+                    <input type="text" id="customPathInput" placeholder="e.g. ../../README.md" value="../../">
                     <button type="submit">→</button>
                 </form>
             </div>
@@ -91,6 +95,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
+    <!-- Repo Index -->
+    <script src="repo_index.js"></script>
     <!-- App Logic -->
     <script src="app.js"></script>
 

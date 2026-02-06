@@ -5,7 +5,7 @@
  * Refactored to use generic NegenDB engine with fallback to legacy adapter.
  *
  * @version 2.0.0 (Hybrid Generic/Legacy)
- * @author Founding & Forging
+ * @author F.O.N.G.
  */
 
 (function(window) {

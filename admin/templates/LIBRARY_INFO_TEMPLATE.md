@@ -3,7 +3,7 @@
 **Type:** Library
 **Version:** vX.Y.Z
 **Directory:** `path/to/library/`
-**Parent Project:** Founding & Forging
+**Parent Project:** F.O.N.G.
 **Created:** YYYY-MM-DD
 **Last Updated:** YYYY-MM-DD
 

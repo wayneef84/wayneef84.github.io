@@ -1,6 +1,6 @@
 # Documentation Library
 
-Welcome to the central documentation hub for the Founding & Forging platform.
+Welcome to the central documentation hub for the F.O.N.G. platform.
 
 ## Projects
 

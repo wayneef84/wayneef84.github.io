@@ -1,4 +1,4 @@
-# Founding & Forging - TODO List
+# F.O.N.G. - TODO List
 
 **Last Updated:** 2026-01-20
 

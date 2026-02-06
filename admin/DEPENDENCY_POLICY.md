@@ -8,7 +8,7 @@
 
 ## Overview
 
-This document defines how shared libraries and game dependencies are managed in the Founding & Forging project using a **federated architecture** with **opt-in upgrades**.
+This document defines how shared libraries and game dependencies are managed in the F.O.N.G. project using a **federated architecture** with **opt-in upgrades**.
 
 ---
 
