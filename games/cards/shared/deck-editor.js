@@ -56,19 +56,19 @@ class DeckEditor {
                 flex: 1; padding: 20px; overflow-y: auto; background: #1e293b;
             }
             .de-grid {
-                display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-                gap: 10px;
+                display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 6px;
             }
             .de-card {
-                aspect-ratio: 2.5/3.5; background: #fff; border-radius: 4px;
+                aspect-ratio: 2.5/3.5; background: #fff; border-radius: 3px;
                 display: flex; flex-direction: column; align-items: center; justify-content: center;
-                color: #000; font-weight: bold; font-size: 0.9rem;
-                cursor: pointer; border: 2px solid transparent;
+                color: #000; font-weight: bold; font-size: 0.75rem;
+                cursor: pointer; border: 1px solid transparent;
                 position: relative;
             }
             .de-card.red { color: #dc2626; }
-            .de-card.selected { border-color: #ffd700; box-shadow: 0 0 10px #ffd700; transform: scale(1.1); z-index: 10; }
-            .de-card .suit { font-size: 1.2rem; }
+            .de-card.selected { border-color: #ffd700; box-shadow: 0 0 8px #ffd700; transform: scale(1.1); z-index: 10; }
+            .de-card .suit { font-size: 0.9rem; }
             .de-footer {
                 padding: 15px; border-top: 1px solid #334155;
                 display: flex; gap: 10px; justify-content: flex-end;
