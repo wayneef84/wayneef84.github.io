@@ -20,7 +20,7 @@ Create a comprehensive GitHub Wiki for the wayneef84.github.io repository coveri
 ```
 📖 Founding & Forging & Projects Wiki
 
-Welcome to the official documentation for Wayne Fong's games and utility projects.
+Welcome to the official documentation for Founding & Forging games and utility projects.
 
 Quick Links:
 - [Getting Started](#getting-started)
