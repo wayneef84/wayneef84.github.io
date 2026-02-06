@@ -472,16 +472,16 @@
     // ============================================================
 
     /**
-     * Modern Adapter using NegenDB (Generic)
+     * Modern Adapter using FongDB (Generic)
      * Maps Shipment Tracker API to Generic DB API
      */
     function ModernShipmentDB(config) {
-        // Ensure NegenDB exists
-        if (!window.NegenDB) {
-            throw new Error('NegenDB library not found');
+        // Ensure FongDB exists
+        if (!window.FongDB) {
+            throw new Error('FongDB library not found');
         }
 
-        this.db = new NegenDB(config || DB_CONFIG);
+        this.db = new FongDB(config || DB_CONFIG);
         this.type = 'modern';
         console.log('[ModernShipmentDB] Initialized with generic engine');
     }
