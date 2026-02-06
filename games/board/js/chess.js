@@ -36,14 +36,13 @@ class ChessGame {
         this.aiDifficulty = 2;
 
         // Events
-        this.handleClickBound = (e) => this.handleClick(e);
-        this.canvas.addEventListener('click', this.handleClickBound);
+        this.inputCleanup = GameEngine.addInputListener(this.canvas, (e) => this.handleClick(e));
 
         this.resetGame();
     }
 
     destroy() {
-        this.canvas.removeEventListener('click', this.handleClickBound);
+        if (this.inputCleanup) this.inputCleanup();
     }
 
     initializeBoard() {
@@ -170,12 +169,7 @@ class ChessGame {
         if (this.isGameOver) return;
         if (this.gameMode === 'ai' && this.currentPlayer === this.aiColor) return;
 
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-
-        const x = (e.clientX - rect.left) * scaleX;
-        const y = (e.clientY - rect.top) * scaleY;
+        const { x, y } = GameEngine.getEventCoords(e, this.canvas);
 
         const c = Math.floor((x - this.margin) / this.cellSize);
         const r = Math.floor((y - this.margin) / this.cellSize);
