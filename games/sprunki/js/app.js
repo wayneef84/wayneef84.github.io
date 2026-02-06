@@ -400,6 +400,8 @@ async function assignToSlot(slot, char) {
         if (!isPlaying) ctx.suspend();
     } catch (err) {
         console.error(err);
+        // Alert the user to help debug
+        alert(`Error loading character: ${err.message}`);
         slot.innerHTML = '❌';
         removeFromSlot(parseInt(slot.id.split('-')[1]));
     }

@@ -1,49 +1,31 @@
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/http/server.py", line 1314, in <module>
-    test(
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/http/server.py", line 1261, in test
-    with ServerClass(addr, HandlerClass) as httpd:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/socketserver.py", line 457, in __init__
-    self.server_bind()
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/http/server.py", line 1308, in server_bind
-    return super().server_bind()
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/http/server.py", line 136, in server_bind
-    socketserver.TCPServer.server_bind(self)
-  File "/home/jules/.pyenv/versions/3.12.12/lib/python3.12/socketserver.py", line 478, in server_bind
-    self.socket.bind(self.server_address)
-OSError: [Errno 98] Address already in use
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/index.html HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/lib/html5-qrcode.min.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/lib/qrcode.min.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/js/data-manager.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/css/style.css HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/lib/qr-master.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/js/editor.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/js/qr-manager.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/js/app.js HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/config.json HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/b02.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/b03.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/b05.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/b01.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/b04.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/e01.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/e02.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/e03.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/e04.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/e05.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/m01.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/m02.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/m03.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/m05.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/m04.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/v01.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/v02.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/v03.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/v04.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:41] "GET /games/sprunki/assets/packs/phase1/img/v05.svg HTTP/1.1" 200 -
-127.0.0.1 - - [06/Feb/2026 19:22:42] "GET /games/sprunki/assets/packs/phase1/audio/b01.wav HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/lib/html5-qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/lib/qr-master.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/js/editor.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/lib/qrcode.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/js/data-manager.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/js/app.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/js/qr-manager.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/config.json HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/assets/packs/phase1/img/b02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:04] "GET /games/sprunki/assets/packs/phase1/img/b01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/b04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/e01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/b03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/b05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/m04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/e02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/m05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/e05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/e03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/e04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/m03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/m01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/m02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/v01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/v02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/v04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/v03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/img/v05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 20:17:05] "GET /games/sprunki/assets/packs/phase1/audio/b01.wav HTTP/1.1" 200 -
