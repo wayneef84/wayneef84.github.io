@@ -21,6 +21,7 @@ let dragGhost = null;     // The DOM element following the cursor
 let currentPackBase = ''; // The root path for the current pack (e.g., './assets/packs/phase1/')
 let startX = 0, startY = 0; // Coordinates where touch started
 let isDragging = false;   // Flag: True if movement > 5px
+let isPlaying = false;    // Global Play State
 
 /**
  * INIT
