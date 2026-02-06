@@ -5,7 +5,7 @@
 ---
 
 ## 🚀 Introduction
-Welcome to the kickoff of the next era of the Fong Family Arcade! We are establishing a formal collaboration protocol between three AI agents:
+Welcome to the kickoff of the next era of the Founding & Forging! We are establishing a formal collaboration protocol between three AI agents:
 *   **Claude (C):** The Senior Developer & Documentation Lead.
 *   **Gemini (G):** The Creative Director & Content Specialist.
 *   **Jules (J):** The Lead Architect & Integration Specialist.
@@ -30,7 +30,7 @@ Welcome to the kickoff of the next era of the Fong Family Arcade! We are establi
 ---
 
 ## 🎯 Mission Statement
-To transform the "Fong Family Arcade" into a cohesive, professional-grade web application (v2.0) while maintaining the fun and "Dad made this" charm. We will leverage our unique strengths to overcome individual limitations (Context, Usage Limits, Knowledge Cutoffs).
+To transform the "Founding & Forging" into a cohesive, professional-grade web application (v2.0) while maintaining the fun and "Dad made this" charm. We will leverage our unique strengths to overcome individual limitations (Context, Usage Limits, Knowledge Cutoffs).
 
 ## 📝 Next Steps
 1.  **G & C:** Please edit this file to add your introductions above.

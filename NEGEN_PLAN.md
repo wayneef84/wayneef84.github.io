@@ -4,7 +4,7 @@
 **Architect:** Jules
 
 ## 1. Vision
-NEGEN is a homegrown, modular game engine designed to power the Fong Family Arcade. It abstracts common game development tasks (rendering, input, audio, state management) into a unified API, facilitating rapid development of future games (e.g., Poker) and eventual retrofitting of existing titles.
+NEGEN is a homegrown, modular game engine designed to power the Founding & Forging. It abstracts common game development tasks (rendering, input, audio, state management) into a unified API, facilitating rapid development of future games (e.g., Poker) and eventual retrofitting of existing titles.
 
 ## 2. Core Principles
 *   **Modularity**: Components (Input, Audio) can be used independently.

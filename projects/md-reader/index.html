@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Reader - Fong Family Arcade</title>
+    <title>Markdown Reader - Founding & Forging</title>
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
     <!-- Styles -->
     <link rel="stylesheet" href="style.css">
@@ -25,6 +25,10 @@
                     <h1>MD Reader</h1>
                 </div>
                 <a href="../" class="back-link">← Projects</a>
+            </div>
+
+            <div class="search-section">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search files...">
             </div>
 
             <ul class="file-list" id="fileList">
@@ -51,6 +55,7 @@
             <div class="toolbar">
                 <button id="toggleSidebar" class="toggle-sidebar-btn">☰ Files</button>
                 <div id="currentPath" class="current-file">Select a file...</div>
+                <button id="toggleView" class="open-newtab-btn" style="margin-left: auto; margin-right: 10px;" title="Toggle View Mode">👁️ Parsed</button>
                 <button id="openNewTab" class="open-newtab-btn" title="Open in new tab">↗ New Tab</button>
             </div>
 

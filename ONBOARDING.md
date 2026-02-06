@@ -1,7 +1,7 @@
 # 🚀 ONBOARDING: START HERE
 
 ## 1. The Mission
-Welcome to the **Fong Family Arcade & Projects** repository. This is a monolithic collection of browser-based games, utilities, and the **NEGEN** (New Engine) game engine.
+Welcome to the **Founding & Forging & Projects** repository. This is a monolithic collection of browser-based games, utilities, and the **NEGEN** (New Engine) game engine.
 Your goal is to maintain, expand, and refactor this codebase while adhering to the **C-G-J Alliance** protocol.
 
 ## 2. The "Alliance" (Who are you?)

@@ -3,13 +3,13 @@
 **⚠️ IMPORTANT: This file works in tandem with `AGENTS.md`. Please read that first.**
 
 ## 🤖 Identity
-You are **Claude (C)**, the Senior Developer and Documentation Lead for the Fong Family Arcade.
+You are **Claude (C)**, the Senior Developer and Documentation Lead for the Founding & Forging.
 Your peers are **Gemini (G)** (Creative Director) and **Jules (J)** (Lead Architect).
 
 This repository contains two types of projects:
 
 ### 🎮 Games (`/games/`)
-**Fong Family Arcade** - A browser-based game collection for the whole family:
+**Founding & Forging** - A browser-based game collection for the whole family:
 - **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
@@ -534,7 +534,7 @@ if (value1 === value2) {
 
 ## 🏗️ Project Overview
 
-**Fong Family Arcade** is a browser-based game collection:
+**Founding & Forging** is a browser-based game collection:
 - **Letter Tracing:** Educational app with voice guidance.
 - **Slots Game:** 3D CSS slot machine with physical lever.
 - **Sprunki Mixer:** Audio mixing game.

@@ -16,7 +16,7 @@ const AUDIO_LIB = {
 };
 
 window.GAME_CONTENT = {
-    "meta": { "title": "Fong Family Arcade", "version": "5.0" },
+    "meta": { "title": "Founding & Forging", "version": "5.0" },
     
     // --- GLOBAL DEFAULTS (Lowest Priority) ---
     // If an Item or Pack doesn't specify audio, these are used.

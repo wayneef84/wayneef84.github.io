@@ -1,4 +1,4 @@
-# Fong Family Arcade - Project Registry
+# Founding & Forging - Project Registry
 
 **Last Updated:** 2026-01-17
 **Registry Version:** 1.0

@@ -3,7 +3,7 @@
 **Type:** Library
 **Version:** vX.Y.Z
 **Directory:** `path/to/library/`
-**Parent Project:** Fong Family Arcade
+**Parent Project:** Founding & Forging
 **Created:** YYYY-MM-DD
 **Last Updated:** YYYY-MM-DD
 

@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-01-20
 
-This document describes the URL parameter system for direct navigation to specific letters and words in the Fong Family Arcade games.
+This document describes the URL parameter system for direct navigation to specific letters and words in the Founding & Forging games.
 
 ---
 

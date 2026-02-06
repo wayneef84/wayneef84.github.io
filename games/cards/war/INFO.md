@@ -3,7 +3,7 @@
 **Type:** Application (Card Game)
 **Version:** v1.1.0
 **Directory:** `games/cards/war/`
-**Parent Project:** Fong Family Arcade
+**Parent Project:** Founding & Forging
 **Created:** 2026-01-12
 **Last Updated:** 2026-01-17
 

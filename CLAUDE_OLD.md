@@ -657,7 +657,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Fong Family Arcade** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+**Founding & Forging** (formerly Dad's Casino) is a browser-based game collection for the whole family:
 - **Letter Tracing** (v1.0): Educational app with 5 guidance modes, particle rewards, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
@@ -673,7 +673,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Fong Family Arcade** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+**Founding & Forging** (formerly Dad's Casino) is a browser-based game collection for the whole family:
 - **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
