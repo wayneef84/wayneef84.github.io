@@ -143,6 +143,79 @@ body {
     cursor: pointer;
 }
 
+/* Upload Section */
+.upload-section {
+    padding: 15px;
+    border-top: 1px solid var(--card-border);
+}
+
+.upload-area {
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px dashed var(--card-border);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.upload-area:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.upload-area.dragover {
+    border-color: var(--accent);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+/* Imported file styling */
+.file-btn.imported-file {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.file-btn.imported-file .imported-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-btn.imported-file .remove-btn {
+    color: #ef4444;
+    font-weight: bold;
+    margin-left: 8px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.file-btn.imported-file .remove-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* Open in new tab button */
+.open-newtab-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.open-newtab-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 /* Main Content */
 .main-content {
     flex: 1;
