@@ -72,7 +72,31 @@ var FILES = [
 
     // Admin
     { category: "Admin", name: "Upgrade Checklist", path: "../../admin/UPGRADE_CHECKLIST.md" },
-    { category: "Admin", name: "Dependency Policy", path: "../../admin/DEPENDENCY_POLICY.md" }
+    { category: "Admin", name: "Dependency Policy", path: "../../admin/DEPENDENCY_POLICY.md" },
+    { category: "Space Invaders", name: "Manual", path: "../../games/space_invaders/MANUAL.md" },
+    { category: "Space Invaders", name: "Technical", path: "../../games/space_invaders/TECHNICAL.md" },
+    { category: "Sky Breakers", name: "Manual", path: "../../games/sky_breakers/MANUAL.md" },
+    { category: "Sky Breakers", name: "Technical", path: "../../games/sky_breakers/TECHNICAL.md" },
+    { category: "Breakout", name: "Manual", path: "../../games/breakout/MANUAL.md" },
+    { category: "Breakout", name: "Technical", path: "../../games/breakout/TECHNICAL.md" },
+    { category: "Animal Stack", name: "Manual", path: "../../games/animal_stack/MANUAL.md" },
+    { category: "Animal Stack", name: "Technical", path: "../../games/animal_stack/TECHNICAL.md" },
+    { category: "Pong", name: "Manual", path: "../../games/pong/MANUAL.md" },
+    { category: "Pong", name: "Technical", path: "../../games/pong/TECHNICAL.md" },
+    { category: "Tracing", name: "Manual", path: "../../games/tracing/MANUAL.md" },
+    { category: "Tracing", name: "Technical", path: "../../games/tracing/TECHNICAL.md" },
+    { category: "Board Arcade", name: "Manual", path: "../../games/board/MANUAL.md" },
+    { category: "Board Arcade", name: "Technical", path: "../../games/board/TECHNICAL.md" },
+    { category: "Blackjack", name: "Manual", path: "../../games/cards/blackjack/MANUAL.md" },
+    { category: "Blackjack", name: "Technical", path: "../../games/cards/blackjack/TECHNICAL.md" },
+    { category: "War", name: "Manual", path: "../../games/cards/war/MANUAL.md" },
+    { category: "War", name: "Technical", path: "../../games/cards/war/TECHNICAL.md" },
+    { category: "5 Card Draw", name: "Manual", path: "../../games/cards/poker/5card/MANUAL.md" },
+    { category: "5 Card Draw", name: "Technical", path: "../../games/cards/poker/5card/TECHNICAL.md" },
+    { category: "13 Card Poker", name: "Manual", path: "../../games/cards/poker/13card/MANUAL.md" },
+    { category: "13 Card Poker", name: "Technical", path: "../../games/cards/poker/13card/TECHNICAL.md" },
+    { category: "Texas Hold'em", name: "Manual", path: "../../games/cards/poker/holdem/MANUAL.md" },
+    { category: "Texas Hold'em", name: "Technical", path: "../../games/cards/poker/holdem/TECHNICAL.md" },
 ];
 
 // Imported files storage (session-based)
@@ -99,32 +123,54 @@ document.addEventListener('DOMContentLoaded', function() {
 // --- Theme Management ---
 function initTheme() {
     var storedTheme = localStorage.getItem('mdReader_theme') || 'dark';
+
+    // Check if custom theme data exists
+    if (storedTheme === 'custom') {
+        loadCustomTheme();
+    }
+
     setTheme(storedTheme);
 
     // Bind theme buttons
     document.querySelectorAll('.theme-opt').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var theme = btn.getAttribute('data-theme');
-            setTheme(theme);
-            toggleSettingsMenu(false);
+            if (theme === 'custom') {
+                openCustomThemeEditor();
+                toggleSettingsMenu(false);
+            } else {
+                setTheme(theme);
+                toggleSettingsMenu(false);
+            }
         });
     });
+
+    initCustomThemeEditor();
 }
 
 function setTheme(theme) {
     document.body.setAttribute('data-theme', theme);
     localStorage.setItem('mdReader_theme', theme);
 
-    // Update Highlight.js theme if needed (could swap CSS links, but simplest is keeping one dark theme for code or swapping)
-    // For now, let's stick to GitHub Dark for code blocks in all themes to ensure contrast,
-    // or we could swap the link href.
+    // Update Highlight.js theme
     var hljsLink = document.getElementById('hljs-theme');
     if (hljsLink) {
-        if (theme === 'light') {
+        if (theme === 'light' || theme === 'solarized') {
              hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+        } else if (theme === 'high-contrast') {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-dark.min.css";
         } else {
              hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
         }
+    }
+
+    // If switching away from custom, clean up inline styles?
+    // No, keep them in case they switch back, but the attribute selector in CSS will override standard vars
+    // actually, inline styles override CSS classes. So we need to clear them if not custom.
+    if (theme !== 'custom') {
+        document.body.removeAttribute('style');
+    } else {
+        loadCustomTheme(); // Re-apply if switching back to custom
     }
 }
 
@@ -710,4 +756,93 @@ function openInNewTab() {
     } else {
         window.open(currentFilePath, '_blank');
     }
+}
+
+// --- Custom Theme Logic ---
+function initCustomThemeEditor() {
+    var modal = document.getElementById('customThemeEditor');
+    var close = document.getElementById('closeCte');
+    var save = document.getElementById('cte-save');
+    var reset = document.getElementById('cte-reset');
+    var inputs = {
+        bg: document.getElementById('cte-bg'),
+        text: document.getElementById('cte-text'),
+        accent: document.getElementById('cte-accent'),
+        bgSec: document.getElementById('cte-bg-sec')
+    };
+
+    close.addEventListener('click', function() {
+        modal.classList.remove('active');
+    });
+
+    save.addEventListener('click', function() {
+        var themeData = {
+            '--bg-primary': inputs.bg.value,
+            '--text-primary': inputs.text.value,
+            '--accent': inputs.accent.value,
+            '--bg-secondary': inputs.bgSec.value,
+            // Derived
+            '--border': adjustColor(inputs.bgSec.value, 20),
+            '--code-bg': inputs.bgSec.value,
+            '--text-secondary': adjustColor(inputs.text.value, -40)
+        };
+
+        localStorage.setItem('mdReader_custom_theme', JSON.stringify(themeData));
+        applyCustomTheme(themeData);
+        setTheme('custom');
+        modal.classList.remove('active');
+    });
+
+    reset.addEventListener('click', function() {
+        // Reset inputs to dark theme defaults
+        inputs.bg.value = '#0f172a';
+        inputs.text.value = '#f8fafc';
+        inputs.accent.value = '#38bdf8';
+        inputs.bgSec.value = '#1e293b';
+    });
+}
+
+function openCustomThemeEditor() {
+    var modal = document.getElementById('customThemeEditor');
+    modal.classList.add('active');
+
+    // Load current values if custom
+    var stored = localStorage.getItem('mdReader_custom_theme');
+    if (stored) {
+        var data = JSON.parse(stored);
+        document.getElementById('cte-bg').value = data['--bg-primary'] || '#000000';
+        document.getElementById('cte-text').value = data['--text-primary'] || '#ffffff';
+        document.getElementById('cte-accent').value = data['--accent'] || '#00ffff';
+        document.getElementById('cte-bg-sec').value = data['--bg-secondary'] || '#111111';
+    }
+}
+
+function loadCustomTheme() {
+    var stored = localStorage.getItem('mdReader_custom_theme');
+    if (stored) {
+        applyCustomTheme(JSON.parse(stored));
+    }
+}
+
+function applyCustomTheme(data) {
+    for (var key in data) {
+        document.body.style.setProperty(key, data[key]);
+    }
+}
+
+function adjustColor(hex, amount) {
+    // Basic implementation to lighten/darken hex color
+    var usePound = false;
+    if (hex[0] == "#") {
+        hex = hex.slice(1);
+        usePound = true;
+    }
+    var num = parseInt(hex, 16);
+    var r = (num >> 16) + amount;
+    if (r > 255) r = 255; else if (r < 0) r = 0;
+    var b = ((num >> 8) & 0x00FF) + amount;
+    if (b > 255) b = 255; else if (b < 0) b = 0;
+    var g = (num & 0x0000FF) + amount;
+    if (g > 255) g = 255; else if (g < 0) g = 0;
+    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 }

@@ -68,6 +68,9 @@
                             <button class="settings-item theme-opt" data-theme="dark">🌑 Dark</button>
                             <button class="settings-item theme-opt" data-theme="light">☀️ Light</button>
                             <button class="settings-item theme-opt" data-theme="terminal">📟 Terminal</button>
+                            <button class="settings-item theme-opt" data-theme="solarized">🌅 Solarized</button>
+                            <button class="settings-item theme-opt" data-theme="high-contrast">👁️ High Contrast</button>
+                            <button class="settings-item theme-opt" data-theme="custom">🎨 Custom...</button>
                             <div class="settings-divider"></div>
                             <div class="settings-label">Export</div>
                             <button class="settings-item" id="printBtn">🖨️ Print / PDF</button>
@@ -90,5 +93,33 @@
 
     <!-- App Logic -->
     <script src="app.js"></script>
+
+    <!-- Custom Theme Editor Modal -->
+    <div id="customThemeEditor" class="custom-theme-editor">
+        <div class="cte-header">
+            <span>Custom Theme</span>
+            <span style="cursor:pointer;" id="closeCte">✕</span>
+        </div>
+        <div class="cte-row">
+            <label>Background</label>
+            <input type="color" id="cte-bg" value="#0f172a">
+        </div>
+        <div class="cte-row">
+            <label>Text</label>
+            <input type="color" id="cte-text" value="#f8fafc">
+        </div>
+        <div class="cte-row">
+            <label>Accent (Links/Headers)</label>
+            <input type="color" id="cte-accent" value="#38bdf8">
+        </div>
+        <div class="cte-row">
+            <label>Secondary BG (Sidebar)</label>
+            <input type="color" id="cte-bg-sec" value="#1e293b">
+        </div>
+        <div style="margin-top:15px; display:flex; gap:10px;">
+            <button id="cte-save" style="flex:1; padding:8px; background:var(--accent); color:var(--bg-primary); border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Apply & Save</button>
+            <button id="cte-reset" style="padding:8px; background:var(--bg-primary); color:var(--text-secondary); border:1px solid var(--border); border-radius:4px; cursor:pointer;">Reset</button>
+        </div>
+    </div>
 </body>
 </html>
