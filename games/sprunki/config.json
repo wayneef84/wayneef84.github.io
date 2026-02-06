@@ -28,6 +28,11 @@
       "id": "reverse",
       "label": "UNO Reverse (Test)",
       "base_path": "./assets/packs/reverse/"
+    },
+    {
+      "id": "custom",
+      "label": "My Custom Sprunkis",
+      "base_path": ""
     }
   ],
 
