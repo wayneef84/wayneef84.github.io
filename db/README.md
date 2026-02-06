@@ -1,17 +1,22 @@
-# Storage Engine (NegenDB)
+# Storage Engine (FongDB)
 
 **Attributor:** J (Structure)
-**Last Updated:** 2026-02-04 (UTC)
+**Last Updated:** 2026-02-06 (UTC)
 
 ## Overview
 A generic, adapter-based storage engine designed for the F.O.N.G. codebase. It provides a unified API for data persistence, abstracting away the underlying storage mechanism (IndexedDB, LocalStorage, etc.).
 
+**Naming Convention:**
+- **Core Engine:** `FongDB` (`db/core/fong-db.js`)
+- **Adapters:** `NegenIDBAdapter`, `NegenLSAdapter` (`db/adapters/`)
+  - *Note: The core engine is legacy-named `FongDB`, while adapters use the modern `Negen` naming convention.*
+
 ## Architecture
 The engine follows the **Adapter Pattern**:
-- **Core (`NegenDB`)**: The main interface. Handles initialization, event emitting (Observer pattern), and adapter selection.
+- **Core (`FongDB`)**: The main interface. Handles initialization, event emitting (Observer pattern), and adapter selection.
 - **Adapters**:
-    - `IDBAdapter`: Wraps IndexedDB for robust, structured storage.
-    - `LSAdapter`: Wraps LocalStorage as a fallback or for simple use cases.
+    - `NegenIDBAdapter`: Wraps IndexedDB for robust, structured storage.
+    - `NegenLSAdapter`: Wraps LocalStorage as a fallback or for simple use cases.
 - **Collections**: Data is organized into "collections" (analogous to SQL tables or NoSQL collections).
 
 ### Event System

@@ -2,3 +2,7 @@
 127.0.0.1 - - [06/Feb/2026 15:29:12] "GET /db/adapters/ls-adapter.js HTTP/1.1" 200 -
 127.0.0.1 - - [06/Feb/2026 15:29:12] "GET /db/adapters/idb-adapter.js HTTP/1.1" 200 -
 127.0.0.1 - - [06/Feb/2026 15:29:12] "GET /db/core/negen-db.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 15:46:38] "GET /projects/internal-tests/test_db.html HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 15:46:38] "GET /db/adapters/idb-adapter.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 15:46:38] "GET /db/core/fong-db.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 15:46:38] "GET /db/adapters/ls-adapter.js HTTP/1.1" 200 -

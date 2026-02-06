@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NegenDB Verification</title>
+    <title>FongDB Verification</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -51,7 +51,7 @@
     </style>
 </head>
 <body>
-    <h1>🛠️ NegenDB Verification</h1>
+    <h1>🛠️ FongDB Verification</h1>
     <p>Automated tests for the generic storage engine.</p>
 
     <div class="controls">
@@ -64,7 +64,7 @@
     <!-- DB Scripts -->
     <script src="../../db/adapters/idb-adapter.js"></script>
     <script src="../../db/adapters/ls-adapter.js"></script>
-    <script src="../../db/core/negen-db.js"></script>
+    <script src="../../db/core/fong-db.js"></script>
 
     <script>
         const logOutput = document.getElementById('logOutput');
@@ -95,8 +95,8 @@
 
             try {
                 // 1. Initialization
-                if (!window.NegenDB) throw new Error('NegenDB class not found');
-                const db = new NegenDB(CONFIG);
+                if (!window.FongDB) throw new Error('FongDB class not found');
+                const db = new FongDB(CONFIG);
                 await db.init();
                 log(`Database initialized (Adapter: ${db.adapter.type})`, 'success');
 
