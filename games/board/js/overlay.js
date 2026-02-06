@@ -19,7 +19,9 @@ class GameOverlay {
             { id: 'connect4', name: 'Connect 4', icon: '🔴', color: '#fbc02d' },
             { id: 'mancala', name: 'Mancala', icon: '🥣', color: '#5d4037' },
             { id: 'dots', name: 'Dots & Boxes', icon: '⚄', color: '#388e3c' },
-            { id: 'battleship', name: 'Battleship', icon: '⚓', color: '#0288d1' }
+            { id: 'battleship', name: 'Battleship', icon: '⚓', color: '#0288d1' },
+            { id: 'gomoku', name: 'Gomoku', icon: '⚫', color: '#ffb300' },
+            { id: 'othello', name: 'Othello', icon: '⚪', color: '#2e7d32' }
         ];
 
         this.init();

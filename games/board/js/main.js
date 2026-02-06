@@ -16,13 +16,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiControls = document.getElementById('aiControls');
     const turnDisplay = document.getElementById('turnDisplay');
 
+    // Score State
+    let activeGameId = '';
+    let scoreP1 = 0;
+    let scoreP2 = 0;
+    let lastWinMsg = "";
+
     // Engine Status Callback
     engine.updateStatus = (msg, color) => {
         if (turnDisplay) {
             turnDisplay.textContent = msg;
             if (color) turnDisplay.style.color = color;
         }
+
+        // Scoring Logic
+        const upperMsg = msg.toUpperCase();
+        if (upperMsg !== lastWinMsg && (upperMsg.includes('WINS') || upperMsg.includes('VICTORY') || upperMsg.includes('DEFEAT'))) {
+            lastWinMsg = upperMsg;
+
+            // Heuristic to attribute win
+            let p1Wins = false;
+            let p2Wins = false;
+
+            if (upperMsg.includes('VICTORY')) p1Wins = true;
+            else if (upperMsg.includes('DEFEAT')) p2Wins = true;
+            else {
+                // Game specific parsing
+                if (activeGameId === 'gomoku' || activeGameId === 'othello') {
+                    // For these games, Black is P1, White is P2
+                    if (upperMsg.includes('BLACK')) p1Wins = true;
+                    if (upperMsg.includes('WHITE')) p2Wins = true;
+                } else {
+                    // Standard logic (Chess/Checkers/Connect4)
+                    // White/Red/X = P1
+                    // Black/Yellow/O = P2
+                    if (upperMsg.includes('WHITE') || upperMsg.includes('RED') || upperMsg.includes('X WINS')) p1Wins = true;
+                    else if (upperMsg.includes('BLACK') || upperMsg.includes('YELLOW') || upperMsg.includes('O WINS')) p2Wins = true;
+                }
+            }
+
+            if (p1Wins) scoreP1++;
+            if (p2Wins) scoreP2++;
+
+            updateScoreBoard();
+        }
+
+        // Reset lastWinMsg on new game start
+        if (msg.includes('Turn') || msg.includes('Setup')) {
+            lastWinMsg = "";
+        }
     };
+
+    function updateScoreBoard() {
+        const p1 = document.getElementById('scoreP1');
+        const p2 = document.getElementById('scoreP2');
+        if (p1) p1.textContent = scoreP1;
+        if (p2) p2.textContent = scoreP2;
+    }
 
     // Components
     let settings = null;
@@ -41,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Game Logic
     function loadGame(gameId) {
         console.log("Loading game:", gameId);
+        activeGameId = gameId;
 
         let GameClass = null;
         switch(gameId) {
@@ -52,6 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'mancala': if (typeof MancalaGame !== 'undefined') GameClass = MancalaGame; break;
             case 'dots': if (typeof DotsGame !== 'undefined') GameClass = DotsGame; break;
             case 'battleship': if (typeof BattleshipGame !== 'undefined') GameClass = BattleshipGame; break;
+            case 'gomoku': if (typeof GomokuGame !== 'undefined') GameClass = GomokuGame; break;
+            case 'othello': if (typeof OthelloGame !== 'undefined') GameClass = OthelloGame; break;
             default: console.error("Unknown game:", gameId);
         }
 
@@ -81,7 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-            if (engine.currentGame && engine.currentGame.reset) engine.currentGame.reset();
+            if (engine.currentGame) {
+                if (engine.currentGame.reset) engine.currentGame.reset();
+                else if (engine.currentGame.resetGame) engine.currentGame.resetGame();
+            }
         });
     }
 
