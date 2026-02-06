@@ -27,16 +27,22 @@
                 <a href="../" class="back-link">← Projects</a>
             </div>
 
-            <ul class="file-list" id="fileList">
-                <!-- Populated by JS -->
-            </ul>
+            <div class="file-upload-section" style="padding: 10px 15px;">
+                <label for="fileUpload" style="display:block; text-align:center; cursor:pointer; background: var(--accent); color: white; padding: 10px; border-radius: 4px; font-weight: bold;">📂 Open MD File</label>
+                <input type="file" id="fileUpload" accept=".md,.markdown,.txt" style="display: none;">
+            </div>
 
+            <div style="padding: 0 15px; opacity: 0.7; font-size: 0.8em; text-transform: uppercase; font-weight: bold; margin-top: 10px;">Load from Path</div>
             <div class="custom-path-input">
                 <form id="customPathForm" class="path-form">
-                    <input type="text" id="customPathInput" placeholder="Path (e.g. ../../README.md)">
+                    <input type="text" id="customPathInput" placeholder="e.g. ../../README.md">
                     <button type="submit">→</button>
                 </form>
             </div>
+
+            <ul class="file-list" id="fileList">
+                <!-- Populated by JS (History or Default) -->
+            </ul>
         </aside>
 
         <main class="main-content">

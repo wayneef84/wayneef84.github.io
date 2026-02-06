@@ -1,61 +1,30 @@
-const FILES = [
-    { category: "Root", name: "README", path: "../../README.md" },
-    { category: "Root", name: "AI Feedback", path: "../../AI_FEEDBACK.md" },
-    { category: "Root", name: "Agents", path: "../../AGENTS.md" },
-    { category: "Root", name: "TODO", path: "../../TODO.md" },
-    { category: "Root", name: "Changelog", path: "../../CHANGELOG.md" },
-    { category: "Root", name: "Roadmap", path: "../../ROADMAP.md" },
-    { category: "Root", name: "Questions", path: "../../QUESTIONS.md" },
-    { category: "Root", name: "Ideas (02/04/26)", path: "../../IDEAS_020426.md" },
-
-    { category: "Agent Guidelines", name: "Claude", path: "../../CLAUDE.md" },
-    { category: "Agent Guidelines", name: "Gemini", path: "../../GEMINI.md" },
-    { category: "Agent Guidelines", name: "Jules", path: "../../JULES.md" },
-
-    { category: "Negen Engine", name: "Negen Plan", path: "../../NEGEN_PLAN.md" },
-    { category: "Negen Engine", name: "Negen Progress", path: "../../negen/PROGRESS.md" },
-    { category: "Negen Engine", name: "Negen README", path: "../../negen/README.md" },
-
-    { category: "Games", name: "Snake Notes", path: "../../games/snake/LL_v2_snake.md" },
-    { category: "Games", name: "Magic 8 Ball Notes", path: "../../games/xtc_ball/LL_v5_XTCBALL.md" },
-
-    { category: "Projects", name: "Shipment Tracker", path: "../../projects/shipment-tracker/README.md" }
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
 
 function init() {
-    renderSidebar();
+    // File Upload Handler
+    const fileInput = document.getElementById('fileUpload');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
 
-    // Check for hash to load initial file
+    // Check for hash to load initial file (if provided via URL)
     const hash = window.location.hash.slice(1);
     if (hash) {
         loadFile(decodeURIComponent(hash));
     } else {
-        // Load default
-        loadFile(FILES[0].path);
+        // Default state
+        document.getElementById('markdownContent').innerHTML = `
+            <div style="padding: 40px; text-align: center; opacity: 0.6;">
+                <h2>Markdown Reader</h2>
+                <p>Open a local file or enter a path to start.</p>
+            </div>
+        `;
     }
 
-    // Sidebar toggle for mobile
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        });
-    }
-
-    if (overlay) {
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
-    }
+    // Sidebar toggle logic
+    setupSidebar();
 
     // Custom path form
     const form = document.getElementById('customPathForm');
@@ -65,63 +34,60 @@ function init() {
             const input = document.getElementById('customPathInput');
             if (input.value.trim()) {
                 loadFile(input.value.trim());
-                // Close sidebar on mobile
-                sidebar.classList.remove('open');
-                if (overlay) overlay.classList.remove('active');
+                closeSidebar();
             }
         });
     }
 }
 
-function renderSidebar() {
-    const list = document.getElementById('fileList');
-    list.innerHTML = '';
+function setupSidebar() {
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
 
-    // Group by category
-    const categories = {};
-    FILES.forEach(file => {
-        if (!categories[file.category]) {
-            categories[file.category] = [];
-        }
-        categories[file.category].push(file);
-    });
-
-    for (const [category, files] of Object.entries(categories)) {
-        const categoryHeader = document.createElement('li');
-        categoryHeader.innerHTML = `<div style="padding: 10px 15px; font-size: 0.8em; text-transform: uppercase; color: var(--text-secondary); opacity: 0.7; font-weight: bold; margin-top: 10px;">${category}</div>`;
-        list.appendChild(categoryHeader);
-
-        files.forEach(file => {
-            const li = document.createElement('li');
-            li.className = 'file-item';
-
-            const btn = document.createElement('button');
-            btn.className = 'file-btn';
-            btn.innerHTML = `<span style="opacity: 0.7;">📄</span> ${file.name}`;
-            btn.addEventListener('click', () => {
-                loadFile(file.path);
-                // Update active state
-                document.querySelectorAll('.file-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Mobile behavior
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebarOverlay');
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.remove('open');
-                    if (overlay) overlay.classList.remove('active');
-                }
-            });
-
-            // Set active if it matches hash
-            if (window.location.hash.slice(1) === file.path) {
-                btn.classList.add('active');
-            }
-
-            li.appendChild(btn);
-            list.appendChild(li);
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            if (overlay) overlay.classList.toggle('active');
         });
     }
+
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            closeSidebar();
+        });
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+}
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const text = e.target.result;
+
+        // Update display
+        document.getElementById('currentPath').textContent = file.name;
+        // Clear hash as we are not using a path
+        window.location.hash = '';
+
+        renderMarkdown(text, file.name);
+        closeSidebar();
+    };
+
+    reader.onerror = () => {
+        alert('Error reading file');
+    };
+
+    reader.readAsText(file);
 }
 
 async function loadFile(path) {
@@ -184,13 +150,15 @@ function renderMarkdown(text, path) {
     const originalImage = renderer.image;
 
     renderer.image = function(href, title, text) {
-        // Resolve relative paths
-        if (href && !href.startsWith('http') && !href.startsWith('/')) {
-            // Very basic path resolution: join base path of md file with image path
-            const lastSlash = path.lastIndexOf('/');
-            if (lastSlash !== -1) {
-                const basePath = path.substring(0, lastSlash + 1);
-                href = basePath + href;
+        // Resolve relative paths if we are loading from a path
+        if (path && href && !href.startsWith('http') && !href.startsWith('/')) {
+            // Check if path is a URL/Path string
+            if (path.includes('/')) {
+                const lastSlash = path.lastIndexOf('/');
+                if (lastSlash !== -1) {
+                    const basePath = path.substring(0, lastSlash + 1);
+                    href = basePath + href;
+                }
             }
         }
         return originalImage.call(this, href, title, text);
@@ -199,6 +167,10 @@ function renderMarkdown(text, path) {
     try {
         const html = marked.parse(text, { renderer: renderer });
         container.innerHTML = html;
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+
     } catch (e) {
         container.innerHTML = `<div class="error-message">Error parsing markdown: ${e.message}</div>`;
     }

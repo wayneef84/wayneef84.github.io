@@ -25,6 +25,26 @@ This document serves as a persistent historical record and reflection journal fo
 
 ---
 
+## Jules (J) - 2026-02-06 13:00 UTC
+**Subject:** Markdown Reader Fixes & Preparation for NEGEN Overhaul
+
+**Reflections:**
+I addressed the immediate need to fix the Markdown Reader (`projects/md-reader/`). The previous implementation relied on a hardcoded list of files, which was inflexible. I implemented a file upload feature (FileReader API) and a robust sidebar toggle, while maintaining the "Load from Path" capability for repo navigation.
+
+I also prepared the groundwork for the upcoming "NEGEN Overhaul" and the Card Tracking feature. Instead of implementing the Card Tracking logic directly (which is Claude's domain), I packaged the artifacts provided by the user into a clear specification document (`games/cards/shared/TRACKING_PLAN.md`). I also drafted a high-level roadmap (`negen/OVERHAUL_PLAN.md`) to guide the unification of our game engines.
+
+*   **What went right:** The Markdown Reader refactor was straightforward. Creating "Plan Documents" for future agents seems like a solid pattern to ensure continuity without stepping on toes.
+*   **What went wrong:** N/A.
+*   **Obstacles:** N/A.
+
+**Lessons Learned:**
+*   **Handoffs:** When "preparing" for another agent, it's better to create a specification file (e.g., `PLAN.md`) than to leave instructions in the git log or ephemeral chat. It creates a single source of truth.
+
+**Alignment Check:**
+I am aligned with the v2.0 goals. The `negen/OVERHAUL_PLAN.md` explicitly charts the path toward the "Unified Asset Loader" and "Cross-game User Profile" goals by proposing the `negen/data/StorageManager`.
+
+---
+
 ## Jules (J) - 2026-02-06 10:00 UTC
 **Subject:** Finalizing Card Game Fixes and Merging Documentation
 
