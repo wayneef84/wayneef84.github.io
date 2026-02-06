@@ -11,6 +11,8 @@ var FILES = [
     { category: "Root", name: "Questions", path: "../../QUESTIONS.md" },
     { category: "Root", name: "Wiki Plan", path: "../../WIKI-PLAN.md" },
     { category: "Root", name: "Todo", path: "../../TODO.md" },
+    { category: "Root", name: "Project Registry", path: "../../PROJECTS.md" },
+    { category: "Root", name: "Master Manual", path: "../../docs/MASTER_MANUAL.md" },
 
     // Agent Guidelines
     { category: "Agent Guidelines", name: "Claude", path: "../../CLAUDE.md" },
@@ -64,6 +66,7 @@ var FILES = [
     // Shipment Tracker
     { category: "Shipment Tracker", name: "Readme", path: "../../projects/shipment-tracker/README.md" },
     { category: "Shipment Tracker", name: "Changelog", path: "../../projects/shipment-tracker/CHANGELOG.md" },
+    { category: "Shipment Tracker", name: "DB Usage", path: "../../projects/shipment-tracker/docs/DB_USAGE.md" },
     { category: "Shipment Tracker", name: "Architecture", path: "../../projects/shipment-tracker/ARCHITECTURE.md" },
     { category: "Shipment Tracker", name: "API Guide", path: "../../projects/shipment-tracker/API_SETUP_GUIDE.md" },
 
