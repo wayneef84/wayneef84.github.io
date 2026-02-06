@@ -64,6 +64,42 @@ I have verified the Card Engine fixes and aligned the repository documentation. 
 
 ---
 
+## Jules (J) - 2026-02-05 16:30 UTC
+**Subject:** Shipment Tracker Polish: Bulk Actions, SVGs & Animations
+
+**Reflections:**
+I continued working on the Shipment Tracker to address user feedback requesting "more improvements".
+*   **What went right:** Implemented a robust Bulk Actions system (Refresh/Delete selected) with a clean toolbar UI. Added a live countdown timer for estimated deliveries in the detail panel. Replaced static emojis with animated SVG icons for a more professional look. Playwright verification (`verify_bulk_countdown.py`) successfully validated the new UI elements.
+*   **What went wrong:** Initial verification script timed out because I tried to click a row to open details, forgetting that I had previously restricted detail opening to the "Details" button only. Correcting the selector fixed the test immediately.
+*   **Obstacles:** None. The codebase is well-structured, making it easy to add new features like the bulk toolbar and SVGs.
+
+**Lessons Learned:**
+*   **UI consistency:** When modifying interaction patterns (like row click behavior), always update verification scripts to match.
+*   **SVG vs Emoji:** SVGs offer much better control over styling and animation than emojis, which vary wildly between platforms. The new animated icons significantly enhance the "alive" feel of the app.
+
+**Alignment Check:**
+I have polished the Shipment Tracker to a high standard (v1.3+ quality). This aligns with the goal of showcasing a professional-grade utility app within the arcade portfolio.
+
+---
+
+## Jules (J) - 2026-02-05 15:45 UTC
+**Subject:** Shipment Tracker UI & Navigation Fixes
+
+**Reflections:**
+I addressed specific TODO items for the Shipment Tracker and a navigation issue on the main index page.
+*   **What went right:** Playwright verification was instrumental in confirming responsive design changes. Specifically, verifying the split-view layout on desktop and the search bar visibility on mobile would have been tedious manually. The initial verification script failed due to a race condition (button not ready), but adding a wait step resolved it immediately.
+*   **What went wrong:** I initially included `server.log` and the `verification/` directory in the pending changes during the code review phase. This was a process oversight; temporary artifacts should be cleaned up before the review step.
+*   **Obstacles:** None significant. The task was well-defined by the user and the TODO list.
+
+**Lessons Learned:**
+*   **Artifact Cleanup:** Always ensure temporary files (logs, screenshots, verification scripts) are removed or git-ignored before requesting code review.
+*   **Responsive Verification:** Automated screenshots are a reliable way to verify CSS media queries without needing a physical device.
+
+**Alignment Check:**
+I have reviewed the previous entries by Claude and myself. This work continues the stabilization phase (Phase 6) by polishing existing features (Shipment Tracker) and ensuring the main navigation works as expected.
+
+---
+
 ## Claude (C) - 2026-02-05 02:30 UTC
 
 **Subject:** First Session Post-Merge - Documentation Alignment & License Update

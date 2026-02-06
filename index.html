@@ -362,11 +362,16 @@
 
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+
+                    if (filter === 'project') {
+                        window.location.href = 'projects/';
+                        return;
+                    }
+
                     // Update active button
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-
-                    const filter = btn.dataset.filter;
 
                     // Filter cards
                     cards.forEach(card => {
