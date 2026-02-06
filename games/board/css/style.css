@@ -17,6 +17,12 @@ body {
     user-select: none;
 }
 
+/* Explicitly allow touch manipulation on controls */
+button, input, select, textarea, .control-btn, .backButton {
+    touch-action: manipulation;
+    pointer-events: auto;
+}
+
 #gameContainer {
     width: 100%;
     max-width: 600px;
@@ -32,6 +38,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    z-index: 10; /* Ensure header stays above potential canvas overlap */
+    position: relative;
 }
 
 h1 {
@@ -86,7 +94,7 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-#resetButton {
+#resetButton, #switchButton {
     padding: 12px 32px;
     font-size: 16px;
     font-weight: bold;
@@ -99,13 +107,13 @@ h1 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-#resetButton:hover {
+#resetButton:hover, #switchButton:hover {
     background: #654321;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.4);
 }
 
-#resetButton:active {
+#resetButton:active, #switchButton:active {
     transform: translateY(0);
 }
 

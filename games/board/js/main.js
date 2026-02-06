@@ -4,12 +4,14 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Initializing Board Arcade...");
+
     const engine = new GameEngine('gameCanvas');
 
     // UI Elements
     const undoBtn = document.getElementById('undoButton');
     const resetBtn = document.getElementById('resetButton');
-    const switchBtn = document.getElementById('switchButton'); // Will be added in index.html
+    const switchBtn = document.getElementById('switchButton');
     const modeInputs = document.querySelectorAll('input[name="mode"]');
     const aiColor = document.getElementById('aiColor');
     const aiDifficulty = document.getElementById('aiDifficulty');
@@ -28,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let settings = null;
     if (typeof SettingsMenu !== 'undefined') {
         settings = new SettingsMenu();
+    } else {
+        console.warn("SettingsMenu not loaded");
     }
 
     let overlay = null;
@@ -36,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
             (gameId) => loadGame(gameId),
             () => settings && settings.show()
         );
+        console.log("GameOverlay initialized");
+    } else {
+        console.error("GameOverlay not loaded");
     }
 
     // Load Game Logic
@@ -62,15 +69,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const pvpRadio = document.querySelector('input[name="mode"][value="pvp"]');
             if (pvpRadio) {
                 pvpRadio.checked = true;
-                // Force event listener to trigger if needed, or just set display
                 if (aiControls) aiControls.style.display = 'none';
             }
         }
     }
 
     // Event Listeners
-    if (switchBtn && overlay) {
-        switchBtn.addEventListener('click', () => overlay.show());
+    if (switchBtn) {
+        // Robust listener for both click and touchstart
+        const openOverlay = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation(); // Stop propagation to body
+            }
+            if (overlay) {
+                console.log("Opening overlay...");
+                overlay.show();
+            } else {
+                console.error("Cannot open overlay: overlay is null");
+                // Attempt re-init? No, safer to just log.
+            }
+        };
+
+        switchBtn.addEventListener('click', openOverlay);
+        switchBtn.addEventListener('touchstart', openOverlay, {passive: false});
+        console.log("Switch Button listeners attached");
+    } else {
+        console.error("Switch Button not found in DOM");
     }
 
     if (undoBtn) {
@@ -110,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (overlay) {
         overlay.show();
     } else {
+        console.warn("Overlay missing, defaulting to Xiangqi");
         loadGame('xiangqi');
     }
 });
