@@ -18,3 +18,4 @@ This document serves as the central directory for all applications, games, and u
 | **Magic 8 Ball** | `/games/xtc_ball/` | Toy | Random fortune generator. | Legacy |
 | **Slots** | `/games/slots/` | Game | Casino style slot machine. | Legacy |
 | **Board Games** | `/games/board/` | Collection | Chess, Checkers, and other board classics. | Legacy |
+| **C.o.D.E.** | `/projects/code/` | Utility | Code Optimization & Decryption Engine simulation. | 2026-02-05 |
