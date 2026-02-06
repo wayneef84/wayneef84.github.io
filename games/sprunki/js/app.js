@@ -21,7 +21,7 @@ let dragGhost = null;     // The DOM element following the cursor
 let currentPackBase = ''; // The root path for the current pack (e.g., './assets/packs/phase1/')
 let startX = 0, startY = 0; // Coordinates where touch started
 let isDragging = false;   // Flag: True if movement > 5px
-let isPlaying = false;    // Global Play State
+window.isPlaying = false; // Global Play State
 
 /**
  * INIT
@@ -397,7 +397,7 @@ async function assignToSlot(slot, char) {
         src.start(0);
         activeSources[slot.id] = src;
 
-        if (!isPlaying) ctx.suspend();
+        if (!window.isPlaying) ctx.suspend();
     } catch (err) {
         console.error(err);
         // Alert the user to help debug
@@ -415,9 +415,9 @@ function getAudioContext() {
 
 function togglePlay() {
     const ctx = getAudioContext();
-    isPlaying = !isPlaying;
+    window.isPlaying = !window.isPlaying;
     const btn = document.getElementById('playBtn');
-    if (isPlaying) {
+    if (window.isPlaying) {
         btn.textContent = '⏸'; btn.classList.add('playing'); ctx.resume();
     } else {
         btn.textContent = '▶'; btn.classList.remove('playing'); ctx.suspend();
@@ -451,7 +451,7 @@ function clearStage() {
     activeCharIds.clear();
 
     buildStage(slotCount);
-    isPlaying = false;
+    window.isPlaying = false;
     document.getElementById('playBtn').textContent = '▶';
     document.getElementById('playBtn').classList.remove('playing');
     buildPalette(currentPackId);
