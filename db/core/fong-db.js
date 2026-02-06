@@ -1,11 +1,11 @@
 /**
- * NegenDB - Generic Database Engine
+ * FongDB - Generic Database Engine
  *
  * A unified storage engine supporting multiple adapters (IndexedDB, LocalStorage).
  * Implements the Observer pattern for change tracking.
  *
  * @version 1.0.0
- * @author Founding & Forging
+ * @author Wayne Fong
  */
 
 (function(window) {
@@ -20,9 +20,9 @@
      * @param {Object} config.stores - Schema definition (for IDB)
      * @param {string} config.adapter - Preferred adapter ('idb' or 'ls')
      */
-    function NegenDB(config) {
+    function FongDB(config) {
         this.config = config || {};
-        this.name = this.config.name || 'NegenDB';
+        this.name = this.config.name || 'FongDB';
         this.adapter = null;
         this.listeners = {}; // Event listeners
 
@@ -32,7 +32,7 @@
         }
     }
 
-    NegenDB.prototype = {
+    FongDB.prototype = {
         /**
          * Initialize the database
          * @returns {Promise<void>}
@@ -42,11 +42,11 @@
             return new Promise(function(resolve, reject) {
                 // Select Adapter Class
                 var AdapterClass;
-                if (self.config.adapter === 'idb' && window.NegenIDBAdapter) {
-                    AdapterClass = window.NegenIDBAdapter;
-                } else if (window.NegenLSAdapter) {
-                    console.warn('[NegenDB] Falling back to LocalStorage adapter');
-                    AdapterClass = window.NegenLSAdapter;
+                if (self.config.adapter === 'idb' && window.FongIDBAdapter) {
+                    AdapterClass = window.FongIDBAdapter;
+                } else if (window.FongLSAdapter) {
+                    console.warn('[FongDB] Falling back to LocalStorage adapter');
+                    AdapterClass = window.FongLSAdapter;
                 } else {
                     reject(new Error('No suitable storage adapter found'));
                     return;
@@ -58,7 +58,7 @@
                 // Initialize Adapter
                 self.adapter.init()
                     .then(function() {
-                        console.log('[NegenDB] Initialized with adapter:', self.adapter.type);
+                        console.log('[FongDB] Initialized with adapter:', self.adapter.type);
                         resolve();
                     })
                     .catch(reject);
@@ -160,7 +160,7 @@
                 try {
                     callback(payload);
                 } catch (e) {
-                    console.error('[NegenDB] Event listener error:', e);
+                    console.error('[FongDB] Event listener error:', e);
                 }
             });
         },
@@ -209,6 +209,6 @@
         }
     };
 
-    window.NegenDB = NegenDB;
+    window.FongDB = FongDB;
 
 })(window);
