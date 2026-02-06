@@ -7,13 +7,13 @@
 (function(window) {
     'use strict';
 
-    function F_IDBAdapter(config) {
+    function IDBAdapter(config) {
         this.config = config;
         this.type = 'idb';
         this.db = null;
     }
 
-    F_IDBAdapter.prototype = {
+    IDBAdapter.prototype = {
         init: function() {
             var self = this;
             return new Promise(function(resolve, reject) {
@@ -161,6 +161,6 @@
         }
     };
 
-    window.F_IDBAdapter = F_IDBAdapter;
+    window.IDBAdapter = IDBAdapter;
 
 })(window);

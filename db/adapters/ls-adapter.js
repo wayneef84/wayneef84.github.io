@@ -8,13 +8,13 @@
 (function(window) {
     'use strict';
 
-    function F_LSAdapter(config) {
+    function LSAdapter(config) {
         this.config = config;
         this.type = 'ls';
         this.prefix = this.config.name + ':';
     }
 
-    F_LSAdapter.prototype = {
+    LSAdapter.prototype = {
         init: function() {
             // LocalStorage is synchronous and always ready
             return Promise.resolve();
@@ -109,6 +109,6 @@
         }
     };
 
-    window.F_LSAdapter = F_LSAdapter;
+    window.LSAdapter = LSAdapter;
 
 })(window);

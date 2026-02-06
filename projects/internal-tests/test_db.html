@@ -53,7 +53,7 @@
 <body>
     <h1>🛠️ FongDB Verification</h1>
     <p>Automated tests for the generic storage engine.</p>
-    <p style="font-size: 0.8rem; color: #94a3b8;">Verifying Core: FongDB | Adapters: F_IDBAdapter / F_LSAdapter</p>
+    <p style="font-size: 0.8rem; color: #94a3b8;">Verifying Core: FongDB | Adapters: IDBAdapter / LSAdapter</p>
 
     <div class="controls">
         <button id="runTestsBtn">Run Tests</button>
@@ -99,8 +99,8 @@
                 if (!window.FongDB) throw new Error('FongDB class not found');
 
                 // Verify Adapters are present
-                if (!window.F_IDBAdapter) throw new Error('F_IDBAdapter not found');
-                if (!window.F_LSAdapter) throw new Error('F_LSAdapter not found');
+                if (!window.IDBAdapter) throw new Error('IDBAdapter not found');
+                if (!window.LSAdapter) throw new Error('LSAdapter not found');
 
                 const db = new FongDB(CONFIG);
                 await db.init();
