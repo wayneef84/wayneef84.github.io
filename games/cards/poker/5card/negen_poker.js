@@ -1,9 +1,9 @@
 // games/cards/poker/5card/negen_poker.js
-import Engine from '../../../../../negen/core/Engine.js';
-import CardGame from '../../../../../negen/cards/CardGame.js';
-import Evaluator from '../../../../../negen/cards/Evaluator.js';
+import Engine from '../../../../negen/core/Engine.js';
+import CardGame from '../../../../negen/cards/CardGame.js';
+import Evaluator from '../../../../negen/cards/Evaluator.js';
 import CardAssets from '../../shared/card-assets.js'; // Legacy assets for now
-import { RankValues } from '../../../../../negen/cards/enums.js';
+import { RankValues } from '../../../../negen/cards/enums.js';
 
 export default class FiveCardDraw extends CardGame {
     constructor(engine) {
@@ -39,7 +39,7 @@ export default class FiveCardDraw extends CardGame {
         });
 
         // Shuffle if low
-        if (this.deck.count < 15) this.shuffleDeck();
+        this._ensureDeck(15);
 
         // Deal 5 each
         this.deal(5);
@@ -58,16 +58,16 @@ export default class FiveCardDraw extends CardGame {
 
         // Discard
         indicesToDiscard.forEach(idx => {
-            const card = p1.hand.draw(1)[0]; // Logic needs specific index support in Pile?
-            // Pile.draw() draws from top. We need specific removal.
-            // Let's implement specific removal in Pile later or manually:
-            const specificCard = p1.hand.contents[idx];
-            p1.hand.contents.splice(idx, 1);
-            this.discard.add(specificCard);
+            // Remove specific card by index
+            if (idx >= 0 && idx < p1.hand.contents.length) {
+                const specificCard = p1.hand.contents.splice(idx, 1)[0];
+                this.discard.add(specificCard);
+            }
         });
 
         // Draw replacements
         const count = indicesToDiscard.length;
+        this._ensureDeck(count);
         this.deck.give(p1.hand, count);
 
         // Dealer Turn (AI)
@@ -94,10 +94,21 @@ export default class FiveCardDraw extends CardGame {
             // High Card: Discard anything < 10
             toDiscard = dealer.hand.contents.filter(c => RankValues[c.rank] < 10);
             dealer.hand.giveCards(this.discard, toDiscard);
+            this._ensureDeck(toDiscard.length);
             this.deck.give(dealer.hand, toDiscard.length);
         }
 
         this._showdown();
+    }
+
+    _ensureDeck(needed) {
+        if (this.deck.count < needed) {
+            if (this.discard.count > 0) {
+                this.discard.give(this.deck, this.discard.count);
+                this.deck.shuffle();
+                this.emit('SHUFFLE');
+            }
+        }
     }
 
     _showdown() {
