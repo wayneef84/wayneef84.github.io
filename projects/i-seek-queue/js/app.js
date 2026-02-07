@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const scanModeSelect = document.getElementById('scanMode');
 
     // Settings Elements
+    const setAction = document.getElementById('set-action');
+    const setBaseUrl = document.getElementById('set-base-url');
+    const urlConfig = document.getElementById('url-config');
     const setVibrate = document.getElementById('set-vibrate');
     const setRegion = document.getElementById('set-region');
     const setFrame = document.getElementById('set-frame');
@@ -25,10 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function init() {
         // Restore Settings
         if (settings.detectMode) scanModeSelect.value = settings.detectMode;
+        if (settings.actionMode) setAction.value = settings.actionMode;
+        if (settings.baseUrl) setBaseUrl.value = settings.baseUrl;
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
         if (settings.scanRegion) setRegion.value = settings.scanRegion;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
+
+        updateActionUI();
 
         // Initialize Scanner
         scanner = new ScannerManager('reader', {
@@ -68,6 +75,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentTab === 'scan') {
                 startScanner();
             }
+        });
+
+        // Action Settings
+        setAction.addEventListener('change', (e) => {
+            settings.actionMode = e.target.value;
+            storage.saveSettings(settings);
+            updateActionUI();
+        });
+
+        setBaseUrl.addEventListener('change', (e) => {
+            settings.baseUrl = e.target.value;
+            storage.saveSettings(settings);
         });
 
         // Feedback Settings
@@ -151,15 +170,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         lastResult = { text, format: result.result?.format?.formatName || 'Unknown', mode };
 
-        // Show Modal
+        // Check Action Mode
+        if (settings.actionMode === 'URL_LOOKUP') {
+            handleUrlLookup(text);
+            return;
+        }
+
+        // Show Modal (Free Scan)
         const modal = document.getElementById('scan-result');
         document.getElementById('result-type').innerText = `Type: ${lastResult.format}`;
         document.getElementById('result-text').value = text;
         modal.classList.remove('hidden');
 
-        // If OCR Mode, copy immediately
+        // If OCR Mode (deprecated name for Copy Mode), copy immediately
         if (mode === 'OCR') {
             copyResult(true);
+        }
+    }
+
+    function handleUrlLookup(text) {
+        // Copy to clipboard first
+        navigator.clipboard.writeText(text).catch(e => console.warn("Clipboard failed", e));
+
+        const baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
+        const url = baseUrl + text;
+
+        if (confirm(`Result: ${text}\n\nOpen link?\n${url}`)) {
+            window.open(url, '_blank');
+            startScanner(); // Restart scan immediately after decision
+        } else {
+            // If user cancels, show the standard modal so they can see/edit/copy
+            const modal = document.getElementById('scan-result');
+            document.getElementById('result-type').innerText = `Type: ${lastResult.format}`;
+            document.getElementById('result-text').value = text;
+            modal.classList.remove('hidden');
+        }
+    }
+
+    function updateActionUI() {
+        if (setAction.value === 'URL_LOOKUP') {
+            urlConfig.classList.remove('hidden');
+        } else {
+            urlConfig.classList.add('hidden');
         }
     }
 
