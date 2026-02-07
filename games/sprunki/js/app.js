@@ -1,53 +1,61 @@
 /**
  * ========================================================================
- * S4K MIXER V3.4 - CLIENT LOGIC
+ * S4K MIXER V3.4 - CLIENT LOGIC (ES5 Compatible)
  * ========================================================================
  */
 
 // --- GLOBAL STATE ---
-let config = null;       // Stores the loaded JSON config
-let audioCtx = null;     // Web Audio API Context
-let currentPackId = null; // ID of the currently active pack (e.g., 'phase1')
-let slotCount = 0;       // Current number of active stage slots
+var config = null;       // Stores the loaded JSON config
+var audioCtx = null;     // Web Audio API Context
+var currentPackId = null; // ID of the currently active pack
+var slotCount = 0;       // Current number of active stage slots
+var isPlaying = false;   // Playback state
 
 // --- TRACKING OBJECTS ---
-const activeSources = {}; // Maps slotId (e.g., 'slot-0') -> AudioBufferSourceNode
-const activeSlots = {};   // Maps slotId -> Character Data Object
-const activeCharIds = new Set(); // Set of currently active Character IDs (to prevent dupes)
+var activeSources = {}; // Maps slotId -> AudioBufferSourceNode
+var activeSlots = {};   // Maps slotId -> Character Data Object
+var activeCharIds = {}; // Maps charId -> true (to prevent dupes)
 
 // --- DRAG ENGINE VARIABLES ---
-let dragItem = null;      // The character data being dragged
-let dragGhost = null;     // The DOM element following the cursor
-let currentPackBase = ''; // The root path for the current pack (e.g., './assets/packs/phase1/')
-let startX = 0, startY = 0; // Coordinates where touch started
-let isDragging = false;   // Flag: True if movement > 5px
+var dragItem = null;
+var dragGhost = null;
+var currentPackBase = '';
+var startX = 0, startY = 0;
+var isDragging = false;
 
 /**
- * INIT
- * Entry point of the application.
+ * INIT - Entry point of the application.
  */
-async function init() {
-    try {
-        const response = await fetch('./config.json');
-        if (!response.ok) throw new Error('Config not found. Ensure v3_config.json exists.');
-        config = await response.json();
+function init() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', './config.json', true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status !== 200) {
+            document.getElementById('stage').innerHTML = '<div class="error">Config not found.</div>';
+            return;
+        }
+        try {
+            config = JSON.parse(xhr.responseText);
+        } catch (e) {
+            document.getElementById('stage').innerHTML = '<div class="error">Bad config JSON.</div>';
+            return;
+        }
 
         // --- CUSTOM CONTENT INJECTION ---
         if (window.CustomSprunkiManager) {
-            const customChars = window.CustomSprunkiManager.getCustomCharacters();
-            if (customChars.length > 0) {
-                // Add chars to roster
-                config.characters.push(...customChars);
+            var customChars = window.CustomSprunkiManager.getCustomCharacters();
+            for (var i = 0; i < customChars.length; i++) {
+                config.characters.push(customChars[i]);
             }
         }
-        // --------------------------------
 
         initSettings();
         initPackSelector();
 
-        // Load Default Pack (First one in list)
-        const defaultPack = config.packs[0].id;
-        await switchPack(defaultPack);
+        // Load Default Pack
+        var defaultPack = config.packs[0].id;
+        switchPack(defaultPack);
 
         // Bind Controls
         document.getElementById('playBtn').onclick = togglePlay;
@@ -59,55 +67,55 @@ async function init() {
         window.addEventListener('mousemove', onDragMove);
         window.addEventListener('mouseup', onDragEnd);
 
-        console.log(`S4K V3.4 System Ready.`);
-    } catch (err) {
-        console.error(err);
-        document.getElementById('stage').innerHTML = `<div class="error">${err.message}</div>`;
-    }
+        console.log('S4K V3.4 System Ready.');
+    };
+    xhr.send();
 }
 
 function initSettings() {
-    const settings = config.settings.stage;
-    const range = document.getElementById('slotRange');
+    var settings = config.settings.stage;
+    var range = document.getElementById('slotRange');
     range.min = settings.min_slots;
     range.max = settings.max_slots;
     range.value = settings.default_slots;
     slotCount = settings.default_slots;
 
-    // Layout Math
-    const rootStyle = getComputedStyle(document.body);
-    const slotSize = parseInt(rootStyle.getPropertyValue('--slot-size'));
-    const slotGap = 8;
-    const padding = 24;
-    const border = 4;
+    var rootStyle = getComputedStyle(document.body);
+    var slotSize = parseInt(rootStyle.getPropertyValue('--slot-size'));
+    var slotGap = 8;
+    var padding = 24;
+    var border = 4;
 
-    // Formula: (Slots * Size) + (Gaps) + Padding + Safety Border
-    const limit = settings.slots_per_row;
-    const maxWidth = (limit * slotSize) + ((limit - 1) * slotGap) + padding + border;
-    document.getElementById('stage').style.maxWidth = `${maxWidth}px`;
+    var limit = settings.slots_per_row;
+    var maxWidth = (limit * slotSize) + ((limit - 1) * slotGap) + padding + border;
+    document.getElementById('stage').style.maxWidth = maxWidth + 'px';
     document.getElementById('slotCountVal').textContent = slotCount;
 }
 
 function initPackSelector() {
-    const select = document.getElementById('packSelect');
+    var select = document.getElementById('packSelect');
     select.innerHTML = '';
-    config.packs.forEach(pack => {
-        const opt = document.createElement('option');
+    for (var i = 0; i < config.packs.length; i++) {
+        var pack = config.packs[i];
+        var opt = document.createElement('option');
         opt.value = pack.id;
         opt.textContent = pack.label;
         select.appendChild(opt);
-    });
+    }
     select.value = config.packs[0].id;
 }
 
-async function switchPack(forcePackId) {
-    const targetId = forcePackId || document.getElementById('packSelect').value;
+function switchPack(forcePackId) {
+    var targetId = forcePackId || document.getElementById('packSelect').value;
     if (forcePackId) document.getElementById('packSelect').value = forcePackId;
 
     if (currentPackId && currentPackId !== targetId) clearStage();
     currentPackId = targetId;
 
-    const packInfo = config.packs.find(p => p.id === currentPackId);
+    var packInfo = null;
+    for (var i = 0; i < config.packs.length; i++) {
+        if (config.packs[i].id === currentPackId) { packInfo = config.packs[i]; break; }
+    }
     currentPackBase = packInfo ? packInfo.base_path : '';
 
     buildStage(slotCount);
@@ -115,159 +123,163 @@ async function switchPack(forcePackId) {
 }
 
 function handleSliderChange() {
-    const range = document.getElementById('slotRange');
-    const newVal = parseInt(range.value);
+    var range = document.getElementById('slotRange');
+    var newVal = parseInt(range.value);
 
-    // Find right-most occupied slot
-    let maxOccupiedIndex = -1;
-    for (let i = 0; i < config.settings.stage.max_slots; i++) {
-        if (activeSlots[`slot-${i}`]) maxOccupiedIndex = i;
+    var maxOccupiedIndex = -1;
+    for (var i = 0; i < config.settings.stage.max_slots; i++) {
+        if (activeSlots['slot-' + i]) maxOccupiedIndex = i;
     }
-    // Constraint Check
     if (newVal < maxOccupiedIndex + 1) {
-        range.value = maxOccupiedIndex + 1; // Snap back
+        range.value = maxOccupiedIndex + 1;
         return;
     }
 
-    const oldVal = slotCount;
+    var oldVal = slotCount;
     slotCount = newVal;
     document.getElementById('slotCountVal').textContent = slotCount;
     updateStageDOM(oldVal, slotCount);
 }
 
 function updateStageDOM(oldVal, newVal) {
-    const stage = document.getElementById('stage');
+    var stage = document.getElementById('stage');
+    var i;
     if (newVal > oldVal) {
-        for (let i = oldVal; i < newVal; i++) createSlot(i, stage);
+        for (i = oldVal; i < newVal; i++) createSlot(i, stage);
     } else if (newVal < oldVal) {
-        for (let i = oldVal - 1; i >= newVal; i--) {
-            const el = document.getElementById(`slot-${i}`);
+        for (i = oldVal - 1; i >= newVal; i--) {
+            var el = document.getElementById('slot-' + i);
             if (el) el.remove();
         }
     }
 }
 
 function createSlot(i, container) {
-    const slot = document.createElement('div');
+    var slot = document.createElement('div');
     slot.className = 'slot';
-    slot.id = `slot-${i}`;
+    slot.id = 'slot-' + i;
     slot.textContent = '+';
-    slot.onclick = () => { if(activeSlots[slot.id]) removeFromSlot(i); };
+    (function (index) {
+        slot.onclick = function () {
+            if (activeSlots['slot-' + index]) removeFromSlot(index);
+        };
+    })(i);
     container.appendChild(slot);
 }
 
 function buildStage(count) {
-    const stage = document.getElementById('stage');
+    var stage = document.getElementById('stage');
     stage.innerHTML = '';
-    for (let i = 0; i < count; i++) createSlot(i, stage);
+    for (var i = 0; i < count; i++) createSlot(i, stage);
 }
 
-// Helper to resolve paths
 function resolvePath(base, path) {
-    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    if (path.indexOf('http') === 0 || path.indexOf('data:') === 0) return path;
     return base + path;
 }
 
 function buildPalette(packId) {
-    const palette = document.getElementById('palette');
+    var palette = document.getElementById('palette');
     palette.innerHTML = '';
 
-    // Filter
-    const charsInPack = config.characters.filter(c => c.pack_id === packId);
+    var charsInPack = [];
+    for (var i = 0; i < config.characters.length; i++) {
+        if (config.characters[i].pack_id === packId) charsInPack.push(config.characters[i]);
+    }
 
-    // Group by Type (Beats, Effects...)
-    const byType = {};
-    charsInPack.forEach(c => { if(!byType[c.type]) byType[c.type]=[]; byType[c.type].push(c); });
+    var byType = {};
+    for (var j = 0; j < charsInPack.length; j++) {
+        var c = charsInPack[j];
+        if (!byType[c.type]) byType[c.type] = [];
+        byType[c.type].push(c);
+    }
 
-    config.categories.forEach(cat => {
-        if (!byType[cat.id]) return;
+    for (var k = 0; k < config.categories.length; k++) {
+        var cat = config.categories[k];
+        if (!byType[cat.id]) continue;
 
-        // Add Header
-        const header = document.createElement('div');
-        header.className = 'cat-header'; header.textContent = cat.label; header.style.borderBottomColor = cat.color;
+        var header = document.createElement('div');
+        header.className = 'cat-header';
+        header.textContent = cat.label;
+        header.style.borderBottomColor = cat.color;
         palette.appendChild(header);
 
-        // Add Characters
-        byType[cat.id].forEach(char => {
-            const box = document.createElement('div');
-            box.className = 'char-box';
-            box.id = `char-btn-${char.id}`;
-            box.style.borderBottomColor = cat.color;
-            box.style.position = 'relative'; // For buttons
+        var chars = byType[cat.id];
+        for (var m = 0; m < chars.length; m++) {
+            (function (char, catColor) {
+                var box = document.createElement('div');
+                box.className = 'char-box';
+                box.id = 'char-btn-' + char.id;
+                box.style.borderBottomColor = catColor;
+                box.style.position = 'relative';
 
-            const imgPath = resolvePath(currentPackBase, char.img);
+                var imgPath = resolvePath(currentPackBase, char.img);
 
-            // Image
-            const img = document.createElement('img');
-            img.src = imgPath;
-            img.alt = char.name;
-            if (char.crop) {
-                img.style.objectPosition = `${char.crop.x}% ${char.crop.y}%`;
-                img.style.transform = `scale(${char.crop.scale})`;
-            }
-            box.appendChild(img);
+                var img = document.createElement('img');
+                img.src = imgPath;
+                img.alt = char.name;
+                if (char.crop) {
+                    img.style.objectPosition = char.crop.x + '% ' + char.crop.y + '%';
+                    img.style.transform = 'scale(' + char.crop.scale + ')';
+                }
+                box.appendChild(img);
 
-            // Label
-            const span = document.createElement('span');
-            span.className = 'char-label';
-            span.textContent = char.name;
-            box.appendChild(span);
+                var span = document.createElement('span');
+                span.className = 'char-label';
+                span.textContent = char.name;
+                box.appendChild(span);
 
-            // --- CUSTOM ACTIONS ---
-            if (char.custom) {
-                const actionRow = document.createElement('div');
-                actionRow.style = 'position: absolute; bottom: -5px; right: 0; display: flex; gap: 2px;';
+                // --- CUSTOM ACTIONS ---
+                if (char.custom) {
+                    var actionRow = document.createElement('div');
+                    actionRow.style.cssText = 'position: absolute; bottom: -5px; right: 0; display: flex; gap: 2px;';
 
-                // QR Button
-                const qrBtn = document.createElement('button');
-                qrBtn.innerHTML = '🔗';
-                qrBtn.style = 'font-size: 8px; background: #222; border: 1px solid #555; padding: 2px; cursor: pointer; color: white;';
-                qrBtn.title = 'Share QR';
-                qrBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent drag start
-                    window.SprunkiQR.generateQR(char);
+                    var qrBtn = document.createElement('button');
+                    qrBtn.innerHTML = '&#x1F517;';
+                    qrBtn.style.cssText = 'font-size: 8px; background: #222; border: 1px solid #555; padding: 2px; cursor: pointer; color: white;';
+                    qrBtn.title = 'Share QR';
+                    qrBtn.onclick = function (e) {
+                        e.stopPropagation();
+                        window.SprunkiQR.generateQR(char);
+                    };
+
+                    var delBtn = document.createElement('button');
+                    delBtn.innerHTML = '&#x2716;';
+                    delBtn.style.cssText = 'font-size: 8px; background: #900; border: 1px solid #555; padding: 2px; cursor: pointer; color: white;';
+                    delBtn.title = 'Delete';
+                    delBtn.onclick = function (e) {
+                        e.stopPropagation();
+                        if (confirm('Delete ' + char.name + '?')) {
+                            window.CustomSprunkiManager.deleteCharacter(char.id);
+                            location.reload();
+                        }
+                    };
+
+                    actionRow.appendChild(qrBtn);
+                    actionRow.appendChild(delBtn);
+                    box.appendChild(actionRow);
+                }
+
+                var startInput = function (e) {
+                    if (activeCharIds[char.id]) return;
+                    if (e.target.tagName === 'BUTTON') return;
+                    initDrag(e, char, imgPath);
                 };
 
-                // Delete Button
-                const delBtn = document.createElement('button');
-                delBtn.innerHTML = '✖';
-                delBtn.style = 'font-size: 8px; background: #900; border: 1px solid #555; padding: 2px; cursor: pointer; color: white;';
-                delBtn.title = 'Delete';
-                delBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if(confirm(`Delete ${char.name}?`)) {
-                        window.CustomSprunkiManager.deleteCharacter(char.id);
-                        location.reload();
-                    }
-                };
+                box.addEventListener('touchstart', startInput, { passive: false });
+                box.addEventListener('mousedown', startInput);
 
-                actionRow.appendChild(qrBtn);
-                actionRow.appendChild(delBtn);
-                box.appendChild(actionRow);
-            }
-            // ----------------------
-
-            // INIT INPUT (Touch or Mouse)
-            const startInput = (e) => {
-                if (activeCharIds.has(char.id)) return;
-                // If touching a button, don't drag
-                if (e.target.tagName === 'BUTTON') return;
-                initDrag(e, char, imgPath);
-            };
-
-            box.addEventListener('touchstart', startInput, {passive: false});
-            box.addEventListener('mousedown', startInput);
-
-            palette.appendChild(box);
-        });
-    });
+                palette.appendChild(box);
+            })(chars[m], cat.color);
+        }
+    }
 }
 
 function initDrag(e, char, imgPath) {
     dragItem = char;
     isDragging = false;
 
-    const touch = e.touches ? e.touches[0] : e;
+    var touch = e.touches ? e.touches[0] : e;
     startX = touch.clientX;
     startY = touch.clientY;
 
@@ -276,14 +288,8 @@ function initDrag(e, char, imgPath) {
     dragGhost.className = 'drag-ghost';
     dragGhost.style.display = 'none';
 
-    // Apply crop to ghost too
     if (char.crop) {
-        dragGhost.style.objectPosition = `${char.crop.x}% ${char.crop.y}%`;
-        // Scale on ghost might need adjustment or a wrapper,
-        // but for now let's just use object-fit logic similar to slot
-        // Actually, ghost uses transform for position, so adding scale might conflict.
-        // We'll leave ghost uncropped/unscaled for simplicity or apply scale via css vars if we refactor.
-        // Let's just set object-fit cover to fill the ghost box
+        dragGhost.style.objectPosition = char.crop.x + '% ' + char.crop.y + '%';
         dragGhost.style.objectFit = 'cover';
     }
 
@@ -293,10 +299,12 @@ function initDrag(e, char, imgPath) {
 function onDragMove(e) {
     if (!dragItem) return;
 
-    const touch = e.touches ? e.touches[0] : e;
-    const x = touch.clientX;
-    const y = touch.clientY;
-    const dist = Math.hypot(x - startX, y - startY);
+    var touch = e.touches ? e.touches[0] : e;
+    var x = touch.clientX;
+    var y = touch.clientY;
+    var dx = x - startX;
+    var dy = y - startY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
 
     if (dist > 5 && !isDragging) {
         isDragging = true;
@@ -304,14 +312,15 @@ function onDragMove(e) {
     }
 
     if (isDragging) {
-        if(e.cancelable) e.preventDefault();
+        if (e.cancelable) e.preventDefault();
 
-        dragGhost.style.left = `${x}px`;
-        dragGhost.style.top = `${y}px`;
+        dragGhost.style.left = x + 'px';
+        dragGhost.style.top = y + 'px';
 
-        document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
-        const elementBelow = document.elementFromPoint(x, y);
-        const slot = elementBelow ? elementBelow.closest('.slot') : null;
+        var slots = document.querySelectorAll('.slot');
+        for (var i = 0; i < slots.length; i++) slots[i].classList.remove('drag-over');
+        var elementBelow = document.elementFromPoint(x, y);
+        var slot = elementBelow ? elementBelow.closest('.slot') : null;
         if (slot) slot.classList.add('drag-over');
     }
 }
@@ -321,12 +330,13 @@ function onDragEnd(e) {
 
     if (dragGhost) dragGhost.remove();
     dragGhost = null;
-    document.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+    var slots = document.querySelectorAll('.slot');
+    for (var i = 0; i < slots.length; i++) slots[i].classList.remove('drag-over');
 
     if (isDragging) {
-        const touch = e.changedTouches ? e.changedTouches[0] : e;
-        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-        const slot = elementBelow ? elementBelow.closest('.slot') : null;
+        var touch = e.changedTouches ? e.changedTouches[0] : e;
+        var elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        var slot = elementBelow ? elementBelow.closest('.slot') : null;
 
         if (slot) assignToSlot(slot, dragItem);
     } else {
@@ -338,9 +348,9 @@ function onDragEnd(e) {
 }
 
 function autoAddChar(char) {
-    let emptySlot = null;
-    for (let i = 0; i < slotCount; i++) {
-        const slot = document.getElementById(`slot-${i}`);
+    var emptySlot = null;
+    for (var i = 0; i < slotCount; i++) {
+        var slot = document.getElementById('slot-' + i);
         if (slot && slot.textContent === '+') {
             emptySlot = slot;
             break;
@@ -350,58 +360,71 @@ function autoAddChar(char) {
     if (emptySlot) {
         assignToSlot(emptySlot, char);
     } else {
-        const st = document.getElementById('stage');
+        var st = document.getElementById('stage');
         st.classList.add('full');
-        setTimeout(() => st.classList.remove('full'), 300);
+        setTimeout(function () { st.classList.remove('full'); }, 300);
     }
 }
 
-async function assignToSlot(slot, char) {
+function assignToSlot(slot, char) {
     if (activeSlots[slot.id]) {
         removeFromSlot(parseInt(slot.id.split('-')[1]));
     }
 
-    const ctx = getAudioContext();
-    const audioPath = resolvePath(currentPackBase, char.audio);
+    var ctx = getAudioContext();
+    var audioPath = resolvePath(currentPackBase, char.audio);
+    var imgPath = resolvePath(currentPackBase, char.img);
 
-    try {
-        const imgPath = resolvePath(currentPackBase, char.img);
+    slot.innerHTML = '';
+    var img = document.createElement('img');
+    img.src = imgPath;
+    img.alt = char.name;
 
-        slot.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = imgPath;
-        img.alt = char.name;
-
-        if (char.crop) {
-            img.style.objectPosition = `${char.crop.x}% ${char.crop.y}%`;
-            img.style.transform = `scale(${char.crop.scale})`;
-        }
-        slot.appendChild(img);
-
-        slot.classList.add('active');
-        slot.dataset.charId = char.id;
-
-        activeSlots[slot.id] = char;
-        activeCharIds.add(char.id);
-        updatePaletteState(char.id, true);
-
-        const response = await fetch(audioPath);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const ab = await response.arrayBuffer();
-        const buff = await ctx.decodeAudioData(ab);
-
-        const src = ctx.createBufferSource();
-        src.buffer = buff; src.loop = true;
-        src.connect(ctx.destination);
-        src.start(0);
-        activeSources[slot.id] = src;
-
-        if (!isPlaying) ctx.suspend();
-    } catch (err) {
-        console.error(err);
-        slot.innerHTML = '❌';
-        removeFromSlot(parseInt(slot.id.split('-')[1]));
+    if (char.crop) {
+        img.style.objectPosition = char.crop.x + '% ' + char.crop.y + '%';
+        img.style.transform = 'scale(' + char.crop.scale + ')';
     }
+    slot.appendChild(img);
+
+    slot.classList.add('active');
+    slot.dataset.charId = char.id;
+
+    activeSlots[slot.id] = char;
+    activeCharIds[char.id] = true;
+    updatePaletteState(char.id, true);
+
+    // Fetch and decode audio via XHR (ES5 compatible)
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', audioPath, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function () {
+        if (xhr.status !== 200) {
+            console.error('Audio fetch failed: HTTP ' + xhr.status);
+            slot.innerHTML = '&#x274C;';
+            removeFromSlot(parseInt(slot.id.split('-')[1]));
+            return;
+        }
+        ctx.decodeAudioData(xhr.response, function (buff) {
+            var src = ctx.createBufferSource();
+            src.buffer = buff;
+            src.loop = true;
+            src.connect(ctx.destination);
+            src.start(0);
+            activeSources[slot.id] = src;
+
+            if (!isPlaying) ctx.suspend();
+        }, function (err) {
+            console.error('Audio decode error', err);
+            slot.innerHTML = '&#x274C;';
+            removeFromSlot(parseInt(slot.id.split('-')[1]));
+        });
+    };
+    xhr.onerror = function () {
+        console.error('Audio XHR error');
+        slot.innerHTML = '&#x274C;';
+        removeFromSlot(parseInt(slot.id.split('-')[1]));
+    };
+    xhr.send();
 }
 
 function getAudioContext() {
@@ -411,19 +434,23 @@ function getAudioContext() {
 }
 
 function togglePlay() {
-    const ctx = getAudioContext();
+    var ctx = getAudioContext();
     isPlaying = !isPlaying;
-    const btn = document.getElementById('playBtn');
+    var btn = document.getElementById('playBtn');
     if (isPlaying) {
-        btn.textContent = '⏸'; btn.classList.add('playing'); ctx.resume();
+        btn.textContent = '\u23F8';
+        btn.classList.add('playing');
+        ctx.resume();
     } else {
-        btn.textContent = '▶'; btn.classList.remove('playing'); ctx.suspend();
+        btn.textContent = '\u25B6';
+        btn.classList.remove('playing');
+        ctx.suspend();
     }
 }
 
 function removeFromSlot(index) {
-    const slotId = `slot-${index}`;
-    const char = activeSlots[slotId];
+    var slotId = 'slot-' + index;
+    var char = activeSlots[slotId];
     if (!char) return;
 
     if (activeSources[slotId]) {
@@ -431,34 +458,45 @@ function removeFromSlot(index) {
         delete activeSources[slotId];
     }
 
-    activeCharIds.delete(char.id);
+    delete activeCharIds[char.id];
     delete activeSlots[slotId];
     updatePaletteState(char.id, false);
 
-    const slot = document.getElementById(slotId);
+    var slot = document.getElementById(slotId);
     slot.innerHTML = '+';
     slot.classList.remove('active');
     delete slot.dataset.charId;
 }
 
 function clearStage() {
-    Object.values(activeSources).forEach(src => src.stop());
-    for (const key in activeSources) delete activeSources[key];
-    for (const key in activeSlots) delete activeSlots[key];
-    activeCharIds.clear();
+    var key;
+    for (key in activeSources) {
+        if (activeSources.hasOwnProperty(key)) {
+            activeSources[key].stop();
+            delete activeSources[key];
+        }
+    }
+    for (key in activeSlots) {
+        if (activeSlots.hasOwnProperty(key)) delete activeSlots[key];
+    }
+    activeCharIds = {};
 
     buildStage(slotCount);
     isPlaying = false;
-    document.getElementById('playBtn').textContent = '▶';
+    document.getElementById('playBtn').textContent = '\u25B6';
     document.getElementById('playBtn').classList.remove('playing');
     buildPalette(currentPackId);
     if (audioCtx) audioCtx.resume();
 }
 
 function updatePaletteState(charId, isOnStage) {
-    const btn = document.getElementById(`char-btn-${charId}`);
+    var btn = document.getElementById('char-btn-' + charId);
     if (btn) {
-        isOnStage ? btn.classList.add('on-stage') : btn.classList.remove('on-stage');
+        if (isOnStage) {
+            btn.classList.add('on-stage');
+        } else {
+            btn.classList.remove('on-stage');
+        }
     }
 }
 

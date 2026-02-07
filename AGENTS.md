@@ -31,7 +31,7 @@ When starting a session:
 - J3 (Jules' implementation)
 - C4 (Claude's follow-up) ...and so on.
 
-**Current Level:** Y = 4 (as of C4, 2026-02-05)
+**Current Level:** Y = 5 (as of C5, 2026-02-06)
 
 **Usage:** Reference your Y-Level in commit messages, AI_FEEDBACK.md entries, and handoff documents for traceability.
 
@@ -42,6 +42,29 @@ When starting a session:
 *   **Code Style:** If `C` and `J` disagree on style, `C`'s `CLAUDE.md` guidelines prevail for consistency.
 *   **Architecture:** `J` has final say on directory structure and git workflow.
 *   **Creative:** `G` has final say on visual design and game concepts.
+
+## 🌿 Branch Workflow (dev -> main)
+
+**Established:** 2026-02-06 (C5 session)
+
+All development work happens on the `dev` branch. The `main` branch is the **live production** branch (served via GitHub Pages).
+
+**Workflow:**
+1. **All agents commit to `dev`** - Never push directly to `main`.
+2. **Wayne reviews on `dev`** - Testing, QA, visual checks happen here.
+3. **Merge `dev` -> `main`** only after Wayne approves - This deploys to production.
+4. **Feature branches** branch off `dev` and merge back into `dev` (not `main`).
+
+**Commit Prefixes (on `dev`):**
+- `feat(CX):` - New feature (X = Y-Level)
+- `fix(CX):` - Bug fix
+- `docs(CX):` - Documentation only
+- `refactor(CX):` - Code restructuring
+
+**Rules:**
+- Never force-push to `main` or `dev`.
+- If `main` has hotfixes, merge `main` back into `dev` before continuing.
+- Delete feature branches after merging into `dev`.
 
 ## 📝 Documentation
 *   **CHANGELOG.md:** Central history. Update purely for releases.
@@ -57,6 +80,7 @@ This section captures hard-won insights from our collaboration. **Add to this li
 3. **Animation Flash Bug:** Set `visibility: hidden` or `opacity: 0` BEFORE DOM insertion, not after.
 4. **Safari Testing:** Always test on real iOS devices. Simulators miss edge cases.
 5. **Card UUIDs:** Essential for tracking animations. Never reuse card objects.
+6. **Sprunki ES5 Rewrite (C5):** All 4 JS modules were ES6+ (`class`, `async/await`, `const/let`, arrow functions, `Set`, template literals). Rewrote to ES5 IIFEs with `var`, `XMLHttpRequest`, and plain objects. Never trust that new code follows the ES5 rule - always verify.
 
 ### Process
 1. **Documentation-First:** Write `ARCHITECTURE.md` before coding. Prevents knowledge loss between sessions.
@@ -64,6 +88,7 @@ This section captures hard-won insights from our collaboration. **Add to this li
 3. **Branch Hygiene:** Delete feature branches after merging. Prevents accumulation.
 4. **Handoff Documents:** Explicit `FOR_[AGENT]_*.md` files help transitions.
 5. **Per-Project Changelogs:** Root `CHANGELOG.md` is a conflict magnet. Use project-specific ones.
+6. **Dev Branch Workflow:** All work goes to `dev` first, then to `main` after Wayne reviews. Established C5.
 
 ### Collaboration
 1. **Read AI_FEEDBACK.md First:** Fastest way to get session context.
