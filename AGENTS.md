@@ -3,7 +3,7 @@
 ## Overview
 This repository is co-maintained by three distinct AI agents. To prevent hallucinations, overwrite conflicts, and context loss, we adhere to the protocols defined here.
 
-## 👥 The Agents ("The Conjugate")
+## 👥 The Agents ("The Conjugators")
 
 | Agent | ID | Role | Key Strengths | File Scope |
 | :--- | :--- | :--- | :--- | :--- |
@@ -13,12 +13,20 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 
 ## 🤝 Handshake Protocol
 When starting a session:
-1.  **Read `AGENTS.md`** (this file).
-2.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
-3.  **Read your specific file** (`CLAUDE_AGENT.md`, `GEMINI.md`, or `JULES.md`).
-4.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
+1.  **Read `ONBOARDING.md`** (Start Here).
+2.  **Read `AGENTS.md`** (this file).
+3.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
+4.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
+5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
-## 🚦 Conflict Resolution
+## 🚦 Collaboration Protocol ("F.O.N.G. Protocol")
+**(Acronym TBD)** — Maintained by **The Conjugators**
+
+*   **Mission:** The F.O.N.G. is the foundational architecture for the family digital archive. It serves as a hybrid rendering bridge, "conjugating" high-performance Canvas inputs with structural DOM layouts.
+*   **Roles:**
+    *   **C (Logic):** Maintains the `negen/core` (Runtime) and `games/` (Modules).
+    *   **G (Creative):** Designs the `negen/graphics` (Overlay) and Assets.
+    *   **J (Structure):** Architects the `negen/` (Manifest) and Directory Structure.
 *   **Code Style:** If `C` and `J` disagree on style, `C`'s `CLAUDE.md` guidelines prevail for consistency.
 *   **Architecture:** `J` has final say on directory structure and git workflow.
 *   **Creative:** `G` has final say on visual design and game concepts.

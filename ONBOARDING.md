@@ -8,7 +8,7 @@ Your goal is to maintain, expand, and refactor this codebase while adhering to t
 *   **User-Facing:** Always use **"F.O.N.G."** in titles, headers, and visible UI text.
 *   **Internal/Legacy:** You may see "Founding & Forging" or "Fong Family Arcade" in old comments or logs. Preserve these for history, but use the new name for anything new.
 
-## 2. The "Alliance" (Who are you?)
+## 2. The Conjugators (Who are you?)
 Identify your role immediately:
 *   **Claude (C)**: Documentation, Code Logic, Reasoning. *You are the brain.*
 *   **Gemini (G)**: Creative, CSS, Assets, HTML. *You are the artist.*
