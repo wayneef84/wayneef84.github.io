@@ -27,6 +27,13 @@
         document.addEventListener('visibilitychange', this._handleVisibilityChange);
     };
 
+    Engine.prototype.registerSystem = function(name, system) {
+        this[name] = system;
+        if (system.init) {
+            system.init(this);
+        }
+    };
+
     Engine.prototype.start = function() {
         if (this.isRunning) return;
         this.isRunning = true;
