@@ -1,12 +1,18 @@
 class OCRManager {
     constructor(elementId, callbacks) {
         this.elementId = elementId;
-        this.callbacks = callbacks; // { onSuccess, onInitError }
+        this.callbacks = callbacks; // { onSuccess, onInitError, onStatusChange }
         this.stream = null;
         this.video = null;
         this.isScanning = false;
         this.detector = null;
 
+        // Backend configuration
+        this.backendUrl = 'http://localhost:5000';
+        this.useBackend = false;
+        this.backendChecked = false;
+
+        // Native detector check
         if ('TextDetector' in window) {
             try {
                 this.detector = new TextDetector();
@@ -18,16 +24,48 @@ class OCRManager {
         }
     }
 
+    async checkBackend() {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1000); // 1s timeout
+
+            const response = await fetch(`${this.backendUrl}/status`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'online') {
+                    console.log("Local OCR Backend found:", data);
+                    this.useBackend = true;
+                    return true;
+                }
+            }
+        } catch (e) {
+            console.log("Local OCR Backend not reachable (offline mode).");
+        }
+        this.useBackend = false;
+        return false;
+    }
+
     async start(mode) {
         console.log("OCRManager.start called with mode:", mode);
 
-        if (!this.detector) {
-            const msg = "Text Recognition (OCR) not supported in this browser. Please use Chrome/Edge on Android/Desktop or enable 'Experimental Web Platform features'.";
+        // Check for backend before failing on missing TextDetector
+        await this.checkBackend();
+
+        if (!this.detector && !this.useBackend) {
+            const msg = "Text Recognition (OCR) not supported. Please use Chrome/Edge on Android/Desktop (enable Experimental Web Platform features) OR run the local Python OCR server.";
             console.error(msg);
             if (this.callbacks.onInitError) {
                 this.callbacks.onInitError(msg);
             }
             throw new Error(msg);
+        }
+
+        if (this.useBackend && this.callbacks.onStatusChange) {
+            this.callbacks.onStatusChange("Connected to Local OCR Server");
         }
 
         try {
@@ -103,27 +141,72 @@ class OCRManager {
     }
 
     async detectLoop() {
-        if (!this.isScanning || !this.video || !this.detector) return;
+        if (!this.isScanning || !this.video) return;
+
+        let nextFrameDelay = 200; // Default fast delay for native
 
         try {
             if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-                const texts = await this.detector.detect(this.video);
 
-                if (texts && texts.length > 0) {
-                    // Sort by vertical position (y) then horizontal (x) to maintain reading order
-                    texts.sort((a, b) => {
-                        if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
-                            return a.boundingBox.y - b.boundingBox.y;
+                if (this.useBackend) {
+                    // --- Backend Mode ---
+                    nextFrameDelay = 1000; // Slower for network calls
+
+                    // Capture frame to canvas
+                    const canvas = document.createElement('canvas');
+                    canvas.width = this.video.videoWidth;
+                    canvas.height = this.video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(this.video, 0, 0);
+
+                    // Convert to blob
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
+
+                    const formData = new FormData();
+                    formData.append('image', blob, 'frame.jpg');
+
+                    try {
+                        const res = await fetch(`${this.backendUrl}/ocr`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.results && data.results.length > 0) {
+                                // Format is already compatible from backend
+                                const fullText = data.text; // backend returns joined text
+                                if (fullText && fullText.trim().length > 0) {
+                                     if (this.callbacks.onSuccess) {
+                                         this.callbacks.onSuccess(fullText, { result: { format: { formatName: 'TEXT_OCR_LOCAL' } } }, 'TEXT_OCR');
+                                     }
+                                }
+                            }
                         }
-                        return a.boundingBox.x - b.boundingBox.x;
-                    });
+                    } catch (netErr) {
+                        console.warn("Backend OCR request failed", netErr);
+                    }
 
-                    const fullText = texts.map(t => t.rawValue).join('\n');
+                } else if (this.detector) {
+                    // --- Native Mode ---
+                    const texts = await this.detector.detect(this.video);
 
-                    if (fullText.trim().length > 0) {
-                         if (this.callbacks.onSuccess) {
-                             this.callbacks.onSuccess(fullText, { result: { format: { formatName: 'TEXT_OCR' } } }, 'TEXT_OCR');
-                         }
+                    if (texts && texts.length > 0) {
+                        // Sort by vertical position (y) then horizontal (x) to maintain reading order
+                        texts.sort((a, b) => {
+                            if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
+                                return a.boundingBox.y - b.boundingBox.y;
+                            }
+                            return a.boundingBox.x - b.boundingBox.x;
+                        });
+
+                        const fullText = texts.map(t => t.rawValue).join('\n');
+
+                        if (fullText.trim().length > 0) {
+                             if (this.callbacks.onSuccess) {
+                                 this.callbacks.onSuccess(fullText, { result: { format: { formatName: 'TEXT_OCR' } } }, 'TEXT_OCR');
+                             }
+                        }
                     }
                 }
             }
@@ -132,14 +215,9 @@ class OCRManager {
         }
 
         if (this.isScanning) {
-            // Throttle slightly to save battery/CPU?
-            // requestAnimationFrame is usually 60fps, maybe too fast for OCR.
-            // Let's do it every 500ms? Or 200ms?
-            // User wants "text recognition isn't working", implies they want it snappy.
-            // But OCR is heavy.
             setTimeout(() => {
                 if (this.isScanning) requestAnimationFrame(() => this.detectLoop());
-            }, 200);
+            }, nextFrameDelay);
         }
     }
 }

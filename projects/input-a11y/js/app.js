@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 onSuccess: onScanSuccess,
                 onInitError: (err) => {
                     document.getElementById('scan-status').innerText = "OCR Error: " + err;
+                },
+                onStatusChange: (msg) => {
+                    document.getElementById('scan-status').innerText = msg;
                 }
             });
         }
@@ -158,7 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             statusEl.innerText = "Starting Text Scanner...";
             if (ocrManager) {
                 ocrManager.start('TEXT_OCR').then(() => {
-                     statusEl.innerText = "Text Scanner Active. Point at text.";
+                     // If backend connected, status might already be set
+                     if (!statusEl.innerText.includes("Server")) {
+                        statusEl.innerText = "Text Scanner Active. Point at text.";
+                     } else {
+                        statusEl.innerText += " (Active)";
+                     }
                 }).catch(err => {
                     statusEl.innerText = "Text Scanner Start Failed: " + err;
                 });

@@ -1,0 +1,5 @@
+flask
+flask-cors
+easyocr
+opencv-python-headless
+numpy>=1.26.0

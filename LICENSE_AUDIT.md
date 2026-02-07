@@ -22,6 +22,18 @@ Code hosted directly in this repository (e.g., in `lib/` folders).
 
 ---
 
+## 🐍 Python Environment Dependencies
+
+Libraries installed via `pip` for Python-based tools (e.g., `projects/input-a11y/python-ocr`).
+
+| Library Name | License | License Location | Notes |
+| :--- | :--- | :--- | :--- |
+| **EasyOCR** | Apache 2.0 | `projects/input-a11y/python-ocr/LICENSE` | Optical Character Recognition. |
+| **Flask** | BSD-3-Clause | `projects/input-a11y/python-ocr/LICENSE` | Micro web framework. |
+| **OpenCV** (opencv-python-headless) | Apache 2.0 | `projects/input-a11y/python-ocr/LICENSE` | Computer Vision library. |
+
+---
+
 ## 🌐 Remote Dependencies (CDN)
 
 Libraries loaded via `script src` from external CDNs. These are not distributed in the repo but are required for functionality.
