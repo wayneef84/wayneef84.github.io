@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Neon Serpent | Fong Family Arcade</title>
+    <title>Neon Serpent | F.O.N.G.</title>
     <style>
         * {
             box-sizing: border-box;
@@ -252,6 +252,7 @@
         <div class="title-group">
             <h1 class="game-title">Neon Serpent</h1>
             <div style="display:flex; align-items:center; justify-content:flex-end; gap:15px;">
+                <button id="switchEngineBtn" onclick="location.href='negen_version/index.html'" style="background:rgba(255,255,255,0.1); border:1px solid currentColor; color:inherit; font-size:0.7rem; padding:4px 8px; border-radius:4px; cursor:pointer; text-transform:uppercase;">Play Remastered</button>
                 <button id="muteBtn" style="background:none; border:none; color:inherit; font-size:1.2rem; cursor:pointer; opacity:1;">🔊</button>
                 <div class="score-display">SCORE: <span id="score">0</span></div>
             </div>
@@ -422,6 +423,110 @@
             }
         };
 
+        const SoundManager = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            },
+
+            playTone(freq, type, duration, slideTo = null) {
+                if (this.muted) return;
+                try {
+                    if (!this.ctx) this.init();
+
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.error(e); }
+            },
+
+            playEat() {
+                this.playTone(600, 'sine', 0.1, 800);
+            },
+
+            playCrash() {
+                this.playTone(150, 'sawtooth', 0.4, 50);
+            }
+        };
+
+        const SoundManager = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            },
+
+            playTone(freq, type, duration, slideTo = null) {
+                if (this.muted) return;
+                try {
+                    if (!this.ctx) this.init();
+
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.error(e); }
+            },
+
+            playEat() {
+                this.playTone(600, 'sine', 0.1, 800);
+            },
+
+            playCrash() {
+                this.playTone(150, 'sawtooth', 0.4, 50);
+            }
+        };
+
         const PALETTE = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800'];
         let gridSize; 
         
@@ -490,7 +595,7 @@
             saveSettings();
             resize();
         }
-
+      
         window.setGridSize = function(size) {
             tileCount = size;
             const btns = document.querySelectorAll('[onclick^="setGridSize"]');

@@ -283,22 +283,52 @@
     }
 
     /**
-     * Get status icon emoji
+     * Get status icon SVG
      * @param {string} signal - Delivery signal
-     * @returns {string}
+     * @returns {string} SVG string
      */
     function getStatusIcon(signal) {
-        var iconMap = {
-            'PICKUP': '📦',
-            'IN_TRANSIT': '🚚',
-            'OUT_FOR_DELIVERY': '🚛',
-            'DELIVERY': '✅',
-            'EXCEPTION': '⚠️',
-            'FAILED': '❌',
-            'RETURNED': '↩️'
-        };
+        if (!signal) {
+            return getSvg('package');
+        }
 
-        return iconMap[signal] || '❓';
+        switch (signal.toUpperCase()) {
+            case 'DELIVERY':
+                return getSvg('check-circle'); // Delivered (green)
+            case 'IN_TRANSIT':
+                return getSvg('truck'); // In Transit (blue)
+            case 'OUT_FOR_DELIVERY':
+                return getSvg('home'); // Out for Delivery (purple)
+            case 'PICKUP':
+                return getSvg('package'); // Pickup (orange)
+            case 'EXCEPTION':
+                return getSvg('alert-triangle'); // Exception (red)
+            case 'FAILED':
+                return getSvg('x-circle'); // Failed (dark red)
+            case 'RETURNED':
+                return getSvg('corner-down-left'); // Returned
+            default:
+                return getSvg('help-circle'); // Default
+        }
+    }
+
+    /**
+     * Get SVG icon by name
+     * @param {string} name - Icon name
+     * @returns {string} SVG string
+     */
+    function getSvg(name) {
+        var svgs = {
+            'truck': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-truck"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>',
+            'package': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-package"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>',
+            'check-circle': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-check"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+            'alert-triangle': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-alert"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+            'x-circle': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-x"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+            'home': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
+            'corner-down-left': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-corner-left"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>',
+            'help-circle': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-svg icon-help"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+        };
+        return svgs[name] || '';
     }
 
     // ============================================================
@@ -561,11 +591,11 @@
     }
 
     /**
-     * Get status icon emoji
+     * Get status icon emoji (Deprecated in favor of SVG, kept for backward compat if needed)
      * @param {string} signal - Delivery signal
      * @returns {string} Emoji icon
      */
-    function getStatusIcon(signal) {
+    function getStatusIconLegacy(signal) {
         if (!signal) {
             return '📦';
         }

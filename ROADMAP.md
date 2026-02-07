@@ -1,4 +1,62 @@
-# Fong Family Arcade - Roadmap
+# F.O.N.G. - Roadmap
+
+**Last Updated:** 2026-02-05 by Claude (C)
+
+---
+
+## Project-Wide Roadmap (v2.0 Plan)
+
+### Current State (v1.5)
+| Category | Items | Status |
+|----------|-------|--------|
+| Games | Blackjack, War, Slots, Snake, Tracing, Sprunki, Xiangqi, XTC Ball, Flow | ✅ Playable |
+| Projects | Shipment Tracker | ✅ Production |
+| Docs | AGENTS.md, AI_FEEDBACK.md, LL/ archive | ✅ Complete |
+
+### Phase 1: Stabilization (Feb 2026)
+- [x] Merge 12 feature branches (Jules)
+- [x] C-G-J collaboration protocol
+- [x] LL/ Lessons Learned archive
+- [x] Fix index.html corruption
+- [ ] Safari bug sweep
+- [ ] Branch cleanup
+
+### Phase 2: Card Engine (Mar 2026)
+- [ ] Blackjack Split
+- [ ] Euchre (trick-taking)
+- [ ] Big 2 (multiplayer gateway)
+- [ ] Shared module versioning
+
+### Phase 3: NEGEN Engine (Apr 2026)
+- [ ] Extract: Time, Input, Audio, Storage, Events
+- [ ] Migrate: XTC Ball → Snake → Flow → Slots → Cards
+- [ ] Debug inspector tool
+
+### Phase 4: Unified Platform (May 2026)
+- [ ] PWA Shell (single-page app)
+- [ ] User Profile (cross-game)
+- [ ] FongCoin economy
+- [ ] Achievement system
+- [ ] Parental dashboard
+
+### Phase 5: New Games (Jun 2026+)
+| Priority | Game | Notes |
+|----------|------|-------|
+| High | Memory Match | Uses Card Engine |
+| High | Sudoku | Pure logic |
+| Medium | Solitaire | Card Engine |
+| Medium | Go Fish | Educational |
+| Low | WebRTC Multiplayer | Big 2 online |
+
+### Version Milestones
+| Version | Date | Features |
+|---------|------|----------|
+| v1.6 | Feb 2026 | Bug fixes |
+| v1.7 | Mar 2026 | Big 2, Euchre |
+| v2.0 | May 2026 | NEGEN, PWA |
+| v2.5 | Aug 2026 | Multiplayer |
+
+---
 
 ## Blackjack - Next Features
 

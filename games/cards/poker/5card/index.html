@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 Card Draw - F.O.N.G. (NEGEN)</title>
+    <style>
+        /* Inherit Base Styles from Blackjack/Shared */
+        :root {
+            --bg-color: #0f172a;
+            --accent: #ffd700;
+        }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0; height: 100dvh; width: 100vw;
+            background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #020617 100%);
+            color: white; font-family: system-ui, sans-serif;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 10px 15px; background: rgba(0,0,0,0.4);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .balance {
+            font-family: monospace; font-size: 1.1rem; color: var(--accent);
+            border: 1px solid var(--accent); padding: 4px 8px; border-radius: 8px;
+        }
+        .header-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 4px; }
+
+        /* Game Area */
+        main {
+            flex: 1; position: relative;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        /* Hand Areas */
+        .hand-area {
+            display: flex; justify-content: center; height: 140px; position: relative;
+            align-items: center;
+        }
+        .hand-label {
+            position: absolute; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase;
+        }
+        .dealer-area .hand-label { bottom: -20px; }
+        .player-area .hand-label { top: -25px; }
+
+        /* Cards */
+        .card-container {
+            display: flex; gap: -10px; /* Overlap handled by margins in JS or CSS */
+        }
+        .card-slot {
+            width: 80px; height: 112px; margin: 0 4px; position: relative;
+            transition: transform 0.2s, margin 0.2s;
+            cursor: pointer;
+        }
+        .card-slot canvas { width: 100%; height: 100%; border-radius: 6px; box-shadow: -2px 2px 5px rgba(0,0,0,0.5); }
+
+        /* Selection State (Discard) */
+        .card-slot.selected {
+            transform: translateY(-20px);
+            box-shadow: 0 0 15px var(--accent);
+        }
+        .card-slot.selected::after {
+            content: 'DISCARD';
+            position: absolute; bottom: -20px; left: 0; right: 0;
+            font-size: 0.6rem; text-align: center; color: #ef4444; font-weight: bold;
+        }
+
+        /* Controls */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom));
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .action-row { display: flex; gap: 10px; justify-content: center; }
+        .btn {
+            flex: 1; padding: 15px; border-radius: 8px; border: none;
+            font-weight: bold; font-size: 1rem; cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+        }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+        .btn-primary { background: var(--accent); color: black; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-secondary { background: #334155; color: white; }
+
+        .hidden { display: none !important; }
+
+        /* Message Overlay */
+        .message-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8); padding: 20px 40px; border-radius: 12px;
+            text-align: center; border: 2px solid var(--accent);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            z-index: 10;
+        }
+        .message-overlay.visible { opacity: 1; }
+        .message-title { font-size: 2rem; color: var(--accent); margin-bottom: 5px; }
+        .message-sub { color: #ccc; }
+
+        /* Stats Panel (Probability) */
+        .stats-panel {
+            position: absolute; top: 60px; right: 10px;
+            background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;
+            font-size: 0.75rem; color: #ccc; pointer-events: none;
+        }
+        .stat-row { display: flex; justify-content: space-between; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <button class="header-btn" id="btnBack">⬅</button>
+            <button class="header-btn" id="btnDeck">🛠️</button>
+            5 Card Draw <span style="font-size:0.7em; opacity:0.5; margin-left:5px;">(NEGEN)</span>
+        </h1>
+        <div class="balance">$<span id="balance">1000</span></div>
+    </header>
+
+    <main>
+        <!-- Stats -->
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-row"><span>Deck:</span> <span id="deckCount">52</span></div>
+            <div class="stat-row"><span>Pot:</span> <span id="potSize">0</span></div>
+            <div id="handRankDisplay" style="margin-top: 5px; color: var(--accent); font-weight: bold;"></div>
+        </div>
+
+        <!-- Dealer Hand -->
+        <div class="hand-area dealer-area">
+            <div class="hand-label">Opponent</div>
+            <div class="card-container" id="dealerCards"></div>
+        </div>
+
+        <!-- Message -->
+        <div class="message-overlay" id="message">
+            <div class="message-title" id="msgTitle"></div>
+            <div class="message-sub" id="msgSub"></div>
+        </div>
+
+        <!-- Player Hand -->
+        <div class="hand-area player-area">
+            <div class="hand-label">You</div>
+            <div class="card-container" id="playerCards"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="betControls" class="action-row">
+            <button class="btn btn-secondary" id="btnAnteMinus">-</button>
+            <button class="btn btn-primary" id="btnDeal">Ante $10 & Deal</button>
+            <button class="btn btn-secondary" id="btnAntePlus">+</button>
+        </div>
+
+        <div id="playControls" class="action-row hidden">
+            <button class="btn btn-danger" id="btnFold">Fold</button>
+            <button class="btn btn-primary" id="btnDraw">Draw Selected</button>
+        </div>
+
+        <div id="endControls" class="action-row hidden">
+             <button class="btn btn-primary" id="btnNewHand">Play Again</button>
+        </div>
+    </footer>
+
+    <!-- NEGEN Modules -->
+    <script type="module">
+        import Engine from '../../../../../negen/core/Engine.js';
+        import CardAssets from '../../shared/card-assets.js'; // Keep legacy assets for visual consistency
+        import FiveCardDraw from './negen_poker.js';
+        import Evaluator from '../../../../../negen/cards/Evaluator.js';
+
+        // Helper Map
+        const RankToAsset = { 'A': 'ace', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten', 'J': 'jack', 'Q': 'queen', 'K': 'king' };
+
+        class PokerUI {
+            constructor() {
+                this.engine = new Engine({}); // No canvas, purely logical engine for cards (Hybrid)
+                this.game = new FiveCardDraw(this.engine);
+
+                this.ui = {
+                    balance: document.getElementById('balance'),
+                    dealerCards: document.getElementById('dealerCards'),
+                    playerCards: document.getElementById('playerCards'),
+                    btnDeal: document.getElementById('btnDeal'),
+                    btnDraw: document.getElementById('btnDraw'),
+                    btnFold: document.getElementById('btnFold'),
+                    btnNewHand: document.getElementById('btnNewHand'),
+                    btnBack: document.getElementById('btnBack'),
+                    message: document.getElementById('message'),
+                    msgTitle: document.getElementById('msgTitle'),
+                    msgSub: document.getElementById('msgSub'),
+                    controls: {
+                        bet: document.getElementById('betControls'),
+                        play: document.getElementById('playControls'),
+                        end: document.getElementById('endControls')
+                    },
+                    stats: {
+                        deckCount: document.getElementById('deckCount'),
+                        pot: document.getElementById('potSize'),
+                        rank: document.getElementById('handRankDisplay')
+                    }
+                };
+
+                this.init();
+            }
+
+            init() {
+                CardAssets.init();
+
+                // Bind UI
+                this.ui.btnDeal.onclick = () => this.game.startRound();
+                this.ui.btnFold.onclick = () => this.game.fold();
+                this.ui.btnDraw.onclick = () => this.handleDraw();
+                this.ui.btnNewHand.onclick = () => this.resetUI();
+                this.ui.btnBack.onclick = () => window.location.href = '../index.html';
+
+                // Listen to Game Events
+                window.addEventListener('negen-card-event', (e) => this.onGameEvent(e.detail));
+
+                this.game.init();
+                this.updateStats();
+            }
+
+            onGameEvent(data) {
+                switch(data.type) {
+                    case 'DEAL':
+                        this.renderHand(this.game.players[0], this.ui.playerCards, true);
+                        this.renderHand(this.game.players[1], this.ui.dealerCards, false); // Hidden
+                        this.showControls('play');
+                        break;
+                    case 'SHOWDOWN':
+                        this.renderHand(this.game.players[1], this.ui.dealerCards, true); // Reveal
+                        this.showMessage(
+                            data.winner === 'player1' ? 'YOU WIN!' : (data.winner === 'push' ? 'PUSH' : 'DEALER WINS'),
+                            `${data.p1Hand.name} vs ${data.dealerHand.name}`
+                        );
+                        this.showControls('end');
+                        break;
+                    case 'FOLD':
+                        this.showMessage('FOLDED', 'House Wins');
+                        this.showControls('end');
+                        break;
+                }
+                this.updateStats();
+            }
+
+            handleDraw() {
+                const selected = this.ui.playerCards.querySelectorAll('.selected');
+                const indices = Array.from(selected).map(el => parseInt(el.dataset.index));
+                this.game.drawCards(indices);
+
+                // Re-render player hand
+                this.renderHand(this.game.players[0], this.ui.playerCards, true);
+            }
+
+            renderHand(player, container, faceUp) {
+                container.innerHTML = '';
+                player.hand.contents.forEach((card, index) => {
+                    const slot = document.createElement('div');
+                    slot.className = 'card-slot';
+                    slot.dataset.index = index;
+                    slot.dataset.uuid = card.uuid;
+
+                    const canvas = faceUp
+                        ? CardAssets.getAsset(RankToAsset[card.rank], card.suit)
+                        : CardAssets.getAsset(); // Back
+
+                    const img = document.createElement('canvas');
+                    img.width = canvas.width; img.height = canvas.height;
+                    img.getContext('2d').drawImage(canvas, 0, 0);
+                    slot.appendChild(img);
+
+                    if (faceUp && player.id === 'player1') {
+                        slot.onclick = () => {
+                            if (this.game.state === 'PLAYER_TURN') {
+                                slot.classList.toggle('selected');
+                            }
+                        };
+                    }
+                    container.appendChild(slot);
+                });
+            }
+
+            showMessage(title, sub) {
+                this.ui.msgTitle.textContent = title;
+                this.ui.msgSub.textContent = sub;
+                this.ui.message.classList.add('visible');
+            }
+
+            resetUI() {
+                this.ui.message.classList.remove('visible');
+                this.ui.playerCards.innerHTML = '';
+                this.ui.dealerCards.innerHTML = '';
+                this.showControls('bet');
+            }
+
+            showControls(set) {
+                ['bet', 'play', 'end'].forEach(k => this.ui.controls[k].classList.add('hidden'));
+                this.ui.controls[set].classList.remove('hidden');
+            }
+
+            updateStats() {
+                const p1 = this.game.players[0];
+                this.ui.balance.textContent = p1.balance;
+                this.ui.stats.pot.textContent = this.game.pot;
+                this.ui.stats.deckCount.textContent = this.game.deck.count;
+
+                if (p1 && p1.hand.count > 0) {
+                     const ev = Evaluator.evaluate(p1.hand.contents);
+                     this.ui.stats.rank.textContent = ev.name;
+                } else {
+                     this.ui.stats.rank.textContent = '';
+                }
+            }
+        }
+
+        window.onload = () => new PokerUI();
+    </script>
+</body>
+</html>

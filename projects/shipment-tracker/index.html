@@ -471,9 +471,21 @@
         <div class="content-wrapper">
             <!-- Desktop Table Container (shown on desktop) -->
             <div class="table-container">
+
+            <!-- Bulk Actions Toolbar -->
+            <div id="bulkActionsToolbar" class="bulk-actions-toolbar hidden">
+                <span id="selectedCount">0 selected</span>
+                <div class="bulk-actions-controls">
+                    <button id="bulkRefreshBtn" class="btn-primary btn-sm">🔄 Refresh</button>
+                    <button id="bulkDeleteBtn" class="btn-danger btn-sm">🗑️ Delete</button>
+                    <button id="bulkCancelBtn" class="btn-secondary btn-sm">Cancel</button>
+                </div>
+            </div>
+
             <table id="trackingTable">
                 <thead>
                     <tr>
+                        <th class="checkbox-column"><input type="checkbox" id="selectAllCheckbox" title="Select All"></th>
                         <th data-sort="awb" class="sortable">AWB <span class="sort-indicator"></span></th>
                         <th data-sort="carrier" class="sortable">Carrier <span class="sort-indicator"></span></th>
                         <th class="status-icon-column">ℹ️</th>
@@ -612,6 +624,7 @@
     </footer>
 
     <!-- Scripts -->
+    <!-- App Scripts -->
     <script src="js/db.js"></script>
     <script src="js/document-manager.js"></script>
     <script src="js/utils.js"></script>

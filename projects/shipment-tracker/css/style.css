@@ -1487,6 +1487,15 @@ kbd {
         display: flex;
     }
 
+    /* Force search input visibility on mobile when filter bar is open */
+    .filter-group.filter-group-search.hidden {
+        display: flex !important;
+    }
+
+    #searchToggleBtn {
+        display: none !important;
+    }
+
     /* Mobile Bottom Bar (2-row controls) */
     .mobile-bottom-bar {
         display: block !important;
@@ -1719,8 +1728,7 @@ kbd {
     /* Split view: content-wrapper holds table and detail panel side-by-side */
     .content-wrapper {
         display: flex;
-        /* flex-direction: row; */
-        flex-direction: row-reverse; /* Detail panel on left */
+        flex-direction: row; /* Table left, Detail right */
         flex: 1;
         min-height: 0;
         overflow: hidden;
@@ -2338,4 +2346,177 @@ kbd {
 
 .collapsible-header.expanded + .collapsible-content {
     display: block;
+}
+
+/* ============================================================
+   SVG ICONS & ANIMATIONS
+   ============================================================ */
+
+.status-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: white; /* Ensure SVG stroke is white */
+}
+
+.icon-svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+    vertical-align: middle;
+}
+
+/* Animations */
+@keyframes drive {
+    0% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    100% { transform: translateX(-2px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Status-specific animations */
+.status-transit .icon-svg,
+.card-status-icon .icon-truck {
+    animation: drive 2s infinite ease-in-out;
+}
+
+.status-exception .icon-svg,
+.card-status-icon .icon-alert {
+    animation: pulse 1.5s infinite;
+}
+
+.status-delivery .icon-svg,
+.status-delivered .icon-svg,
+.card-status-icon .icon-check {
+    /* No animation for delivered */
+}
+
+.status-out_for_delivery .icon-svg,
+.card-status-icon .icon-home {
+    animation: bounce-y 2s infinite;
+}
+
+/* Ensure mobile card icons are white */
+.card-status-icon {
+    color: white;
+}
+
+/* ============================================================
+   COUNTDOWN TIMER
+   ============================================================ */
+
+.countdown-container {
+    background: var(--bg-secondary);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.countdown-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+
+.countdown-timer {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.countdown-part {
+    background: var(--bg-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.countdown-badge.overdue {
+    color: var(--error-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    border: 2px dashed var(--error-color);
+    border-radius: 6px;
+    background: #fee2e2;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   BULK ACTIONS TOOLBAR
+   ============================================================ */
+
+.bulk-actions-toolbar {
+    background: var(--bg-secondary);
+    border-bottom: 2px solid var(--primary-color);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.2s ease-out;
+}
+
+.bulk-actions-toolbar.hidden {
+    display: none;
+}
+
+.bulk-actions-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#selectedCount {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.checkbox-column {
+    width: 40px;
+    text-align: center;
+}
+
+.row-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    min-width: auto;
+    flex: initial; /* Don't stretch */
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

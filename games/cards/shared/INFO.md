@@ -3,7 +3,7 @@
 **Type:** Library
 **Version:** v1.0.0
 **Directory:** `games/cards/shared/`
-**Parent Project:** Fong Family Arcade
+**Parent Project:** F.O.N.G.
 **Created:** 2026-01-15
 **Last Updated:** 2026-01-17
 
