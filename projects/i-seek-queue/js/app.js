@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Settings Elements
     const setVibrate = document.getElementById('set-vibrate');
+    const setRegion = document.getElementById('set-region');
     const setFrame = document.getElementById('set-frame');
     const setFlash = document.getElementById('set-flash');
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Restore Settings
         if (settings.detectMode) scanModeSelect.value = settings.detectMode;
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
+        if (settings.scanRegion) setRegion.value = settings.scanRegion;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
 
@@ -72,6 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
         setVibrate.addEventListener('change', (e) => {
             settings.feedbackVibrate = e.target.checked;
             storage.saveSettings(settings);
+        });
+        setRegion.addEventListener('change', (e) => {
+            settings.scanRegion = e.target.value;
+            storage.saveSettings(settings);
+            // Restart if active
+            if (currentTab === 'scan') {
+                startScanner();
+            }
         });
         setFrame.addEventListener('change', (e) => {
             settings.feedbackFrame = e.target.value;
@@ -121,10 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function startScanner() {
         if (!scanner) return;
         const mode = scanModeSelect.value;
+        const region = setRegion.value || 'BOX';
         const statusEl = document.getElementById('scan-status');
         statusEl.innerText = `Starting ${mode}...`;
 
-        scanner.start(mode).then(() => {
+        scanner.start(mode, region).then(() => {
             statusEl.innerText = `Scanning (${mode})...`;
         }).catch(err => {
             statusEl.innerText = `Error: ${err}`;
