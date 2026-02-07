@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Neon Serpent | Fong Family Arcade</title>
+    <title>Neon Serpent | F.O.N.G.</title>
     <style>
         * {
             box-sizing: border-box;
@@ -93,8 +93,9 @@
             height: 120px; 
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
+            align-items: stretch; /* Stretch buttons to fill height */
+            gap: 20px;
+            padding: 10px 20px;
             /* Extra padding for iPhone Home Bar */
             padding-bottom: env(safe-area-inset-bottom, 20px); 
             box-sizing: content-box; /* Ensures padding adds to height */
@@ -110,11 +111,10 @@
         }
 
         .control-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            flex: 1; /* Grow to fill width */
+            border-radius: 20px; /* Rounded rectangle */
             border: 2px solid;
-            font-size: 2.5rem;
+            font-size: 3rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -125,7 +125,7 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .control-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
+        .control-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.3); }
 
         /* --- OVERLAYS --- */
         .overlay {
@@ -252,6 +252,7 @@
         <div class="title-group">
             <h1 class="game-title">Neon Serpent</h1>
             <div style="display:flex; align-items:center; justify-content:flex-end; gap:15px;">
+                <button id="switchEngineBtn" onclick="location.href='negen_version/index.html'" style="background:rgba(255,255,255,0.1); border:1px solid currentColor; color:inherit; font-size:0.7rem; padding:4px 8px; border-radius:4px; cursor:pointer; text-transform:uppercase;">Play Remastered</button>
                 <button id="muteBtn" style="background:none; border:none; color:inherit; font-size:1.2rem; cursor:pointer; opacity:1;">🔊</button>
                 <div class="score-display">SCORE: <span id="score">0</span></div>
             </div>
@@ -291,14 +292,40 @@
                 </div>
 
                 <button id="startBtn" class="start-btn">PLAY</button>
+                <button id="settingsBtn" class="mode-btn" style="margin-top:20px; width:auto; padding:10px 20px; background:rgba(255,255,255,0.2);">⚙️ SETTINGS</button>
+            </div>
+
+            <div id="settingsOverlay" class="overlay">
+                <h2>SETTINGS</h2>
+
+                <div style="margin-bottom:10px; font-weight:bold; letter-spacing:1px; color:inherit; opacity:0.8;">GRID SIZE</div>
+                <div class="mode-container">
+                    <div class="mode-selector">
+                        <button class="mode-btn" onclick="setGridSize(15)">Small</button>
+                        <button class="mode-btn active" onclick="setGridSize(20)">Normal</button>
+                        <button class="mode-btn" onclick="setGridSize(25)">Large</button>
+                    </div>
+                </div>
+
+                <button id="closeSettingsBtn" class="start-btn">CLOSE</button>
             </div>
         </div>
+    </div>
+
+    <!-- TOUCH ZONES (Invisible overlays for half-screen tapping) -->
+    <div id="touchZones" style="position:fixed; top:60px; left:0; width:100%; bottom:0; z-index:5; display:flex; pointer-events:none;">
+        <div id="zoneLeft" style="flex:1;"></div>
+        <div id="zoneRight" style="flex:1;"></div>
     </div>
 
     <div class="controls-area">
         <button class="control-btn" id="btnLeft">↶</button>
         <button class="control-btn" id="btnRight">↷</button>
     </div>
+
+    <footer style="width:100%; text-align:center; padding:5px; font-size:0.7rem; opacity:0.5; position:absolute; bottom:0; pointer-events:none;">
+        Updates by Jules (v2.0) - Jan 2026
+    </footer>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -317,6 +344,136 @@
         let currentMode = 'neon'; 
         let currentControlMode = 'buttons';
         let activeColor = '#ffffff';
+        let tileCount = 20;
+
+        // --- LOCAL STORAGE ---
+        function loadSettings() {
+            const storedTheme = localStorage.getItem('snake_theme');
+            const storedControl = localStorage.getItem('snake_controlMode');
+            const storedGrid = localStorage.getItem('snake_gridSize');
+            const storedMute = localStorage.getItem('snake_muted');
+
+            if(storedTheme) setMode(storedTheme);
+            if(storedControl) setControlMode(storedControl);
+            if(storedGrid) setGridSize(parseInt(storedGrid));
+            if(storedMute === 'true') {
+                 SoundManager.muted = true;
+                 const muteBtn = document.getElementById('muteBtn');
+                 muteBtn.textContent = '🔇';
+                 muteBtn.style.opacity = '0.5';
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('snake_theme', currentMode);
+            localStorage.setItem('snake_controlMode', currentControlMode);
+            localStorage.setItem('snake_gridSize', tileCount);
+            localStorage.setItem('snake_muted', SoundManager.muted);
+        }
+
+        const SoundManager = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            },
+
+            playTone(freq, type, duration, slideTo = null) {
+                if (this.muted) return;
+                try {
+                    if (!this.ctx) this.init();
+
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.error(e); }
+            },
+
+            playEat() {
+                this.playTone(600, 'sine', 0.1, 800);
+            },
+
+            playCrash() {
+                this.playTone(150, 'sawtooth', 0.4, 50);
+            }
+        };
+
+        const SoundManager = {
+            ctx: null,
+            muted: false,
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            },
+
+            playTone(freq, type, duration, slideTo = null) {
+                if (this.muted) return;
+                try {
+                    if (!this.ctx) this.init();
+
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (slideTo) {
+                        osc.frequency.exponentialRampToValueAtTime(slideTo, this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) { console.error(e); }
+            },
+
+            playEat() {
+                this.playTone(600, 'sine', 0.1, 800);
+            },
+
+            playCrash() {
+                this.playTone(150, 'sawtooth', 0.4, 50);
+            }
+        };
 
         const SoundManager = {
             ctx: null,
@@ -371,7 +528,6 @@
         };
 
         const PALETTE = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800'];
-        const tileCount = 20; 
         let gridSize; 
         
         const DESCRIPTIONS = {
@@ -396,11 +552,14 @@
             // Max size limit
             const maxSize = controlsHidden ? 600 : 400;
 
-            const size = Math.min(availableWidth, availableHeight, maxSize); 
+            let size = Math.min(availableWidth, availableHeight, maxSize);
             
+            // Fix Grid Alignment: Ensure size is perfectly divisible by tileCount
+            gridSize = Math.floor(size / tileCount);
+            size = gridSize * tileCount;
+
             canvas.width = size;
             canvas.height = size;
-            gridSize = size / tileCount;
 
             if(snake) draw(); 
         }
@@ -420,7 +579,32 @@
                 btn.classList.toggle('active', btn.textContent.toLowerCase() === mode);
             });
 
+            // Toggle Touch Zones based on mode
+            const touchZones = document.getElementById('touchZones');
+            if (mode === 'buttons') {
+                 touchZones.style.display = 'flex';
+                 // We need pointer events on children when active
+                 document.getElementById('zoneLeft').style.pointerEvents = 'auto';
+                 document.getElementById('zoneRight').style.pointerEvents = 'auto';
+            } else {
+                 touchZones.style.display = 'none';
+                 document.getElementById('zoneLeft').style.pointerEvents = 'none';
+                 document.getElementById('zoneRight').style.pointerEvents = 'none';
+            }
+
+            saveSettings();
             resize();
+        }
+
+        window.setGridSize = function(size) {
+            tileCount = size;
+            const btns = document.querySelectorAll('[onclick^="setGridSize"]');
+            btns.forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(size === 15 ? 'small' : size === 20 ? 'normal' : 'large'));
+            });
+            saveSettings();
+            resize();
+            if(isAttractMode) startAttractMode();
         }
 
         window.setMode = function(mode) {
@@ -434,6 +618,8 @@
                 if(mode === 'chameleon' && btn.textContent === 'Color Eater') btn.classList.add('active');
                 if(mode === 'retro' && btn.textContent === 'B&W') btn.classList.add('active');
             });
+
+            saveSettings();
 
             const title = document.querySelector('.game-title');
             if(mode === 'neon') title.textContent = "Neon Serpent";
@@ -470,6 +656,12 @@
             resetState();
             gameOverScreen.classList.remove('active');
             startScreen.classList.remove('active');
+
+            if (currentControlMode === 'buttons') {
+                document.getElementById('touchZones').style.display = 'flex';
+                document.getElementById('touchZones').style.zIndex = '15';
+            }
+
             if (gameLoop) clearTimeout(gameLoop);
             gameTick();
         }
@@ -477,6 +669,10 @@
         function startAttractMode() {
             isAttractMode = true;
             resetState();
+
+            // Disable touch zones behind overlay
+            document.getElementById('touchZones').style.display = 'none';
+
             if (gameLoop) clearTimeout(gameLoop);
             gameTick();
         }
@@ -679,11 +875,25 @@
 
         const btnLeft = document.getElementById('btnLeft');
         const btnRight = document.getElementById('btnRight');
+        const zoneLeft = document.getElementById('zoneLeft');
+        const zoneRight = document.getElementById('zoneRight');
 
-        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); turnLeft(); });
-        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); turnRight(); });
-        btnLeft.addEventListener('mousedown', turnLeft);
-        btnRight.addEventListener('mousedown', turnRight);
+        function handleInput(dir) {
+             if (dir === 'left') turnLeft();
+             if (dir === 'right') turnRight();
+        }
+
+        // Zone Inputs (Half Screen)
+        zoneLeft.addEventListener('touchstart', (e) => { if(currentControlMode === 'buttons') { e.preventDefault(); handleInput('left'); } });
+        zoneRight.addEventListener('touchstart', (e) => { if(currentControlMode === 'buttons') { e.preventDefault(); handleInput('right'); } });
+        zoneLeft.addEventListener('mousedown', () => { if(currentControlMode === 'buttons') handleInput('left'); });
+        zoneRight.addEventListener('mousedown', () => { if(currentControlMode === 'buttons') handleInput('right'); });
+
+        // Button Inputs (Visual Feedback)
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput('left'); });
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput('right'); });
+        btnLeft.addEventListener('mousedown', () => handleInput('left'));
+        btnRight.addEventListener('mousedown', () => handleInput('right'));
 
         document.addEventListener('keydown', e => {
             if(e.key === 'ArrowLeft') turnLeft();
@@ -691,6 +901,18 @@
         });
 
         document.getElementById('startBtn').addEventListener('click', initGame);
+
+        // Settings UI
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+             settingsOverlay.classList.add('active');
+             startScreen.classList.remove('active');
+        });
+        document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+             settingsOverlay.classList.remove('active');
+             startScreen.classList.add('active');
+        });
+
         document.getElementById('retryBtn').addEventListener('click', () => {
             gameOverScreen.classList.remove('active');
             startScreen.classList.add('active');
@@ -703,8 +925,11 @@
             const isMuted = SoundManager.toggleMute();
             muteBtn.textContent = isMuted ? '🔇' : '🔊';
             muteBtn.style.opacity = isMuted ? '0.5' : '1';
+            saveSettings();
         });
 
+        // Initialize
+        loadSettings();
         startAttractMode();
 
     </script>

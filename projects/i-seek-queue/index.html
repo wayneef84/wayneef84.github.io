@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Seek Queue (F.O.N.G.)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Shared Libraries -->
+    <script src="../../games/lib/html5-qrcode.min.js"></script>
+    <script src="../../games/lib/qrcode.min.js"></script>
+</head>
+<body class="negen-theme">
+
+    <header>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="scan">Scan</button>
+            <button class="tab-btn" data-tab="generate">Generate</button>
+            <button class="tab-btn" data-tab="history">History</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- SCAN TAB -->
+        <section id="scan" class="tab-content active">
+            <div class="controls">
+                <div class="control-row">
+                    <label for="scanMode">Detection Mode:</label>
+                    <select id="scanMode">
+                        <option value="OCR">OCR (Text Copy)</option>
+                        <option value="AUTO" selected>Auto Detect</option>
+                        <option disabled>--- Specific Formats ---</option>
+                        <option value="QR_CODE">QR Code</option>
+                        <option value="CODE_128">Code 128</option>
+                        <option value="CODE_39">Code 39</option>
+                        <option value="EAN_13">EAN-13</option>
+                        <option value="UPC_A">UPC-A</option>
+                        <option value="UPC_E">UPC-E</option>
+                    </select>
+                </div>
+
+                <details class="settings-panel">
+                    <summary>Scanning Settings</summary>
+                    <div class="setting-item">
+                        <label for="set-action">Scan Action:</label>
+                        <select id="set-action">
+                            <option value="FREE">Free Scan (History)</option>
+                            <option value="URL_LOOKUP">URL Lookup (Open Link)</option>
+                        </select>
+                    </div>
+                    <div id="url-config" class="setting-item hidden">
+                        <label for="set-base-url">Base URL:</label>
+                        <input type="text" id="set-base-url" placeholder="https://google.com/?q=">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-vibrate">Vibrate:</label>
+                        <input type="checkbox" id="set-vibrate">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-region">Scan Region:</label>
+                        <select id="set-region">
+                            <option value="BOX">Box (Standard)</option>
+                            <option value="LINE">Line (Precise)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-frame">Green Frame:</label>
+                        <select id="set-frame">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-flash">Screen Flash:</label>
+                        <select id="set-flash">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                </details>
+
+                <div id="scan-status" class="status-msg"></div>
+            </div>
+
+            <div id="reader-container">
+                <div id="reader"></div>
+            </div>
+
+            <div id="scan-result" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2>Result Found</h2>
+                    <p id="result-type">Type: </p>
+                    <textarea id="result-text" readonly></textarea>
+                    <div class="actions">
+                        <button id="btn-copy">Copy</button>
+                        <button id="btn-save-scan">Save to History</button>
+                        <button id="btn-rescan">Scan Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GENERATE TAB -->
+        <section id="generate" class="tab-content">
+            <div class="input-group">
+                <label for="gen-text">Content:</label>
+                <input type="text" id="gen-text" placeholder="Enter text or URL">
+            </div>
+
+            <button id="btn-generate" class="primary-btn">Generate QR</button>
+
+            <div id="qr-output">
+                <!-- QR Code Canvas will be appended here -->
+            </div>
+
+            <div id="gen-actions" class="hidden">
+                <button id="btn-download">Download</button>
+            </div>
+
+            <hr>
+
+            <div class="app-qr">
+                <h3>App Homepage</h3>
+                <div id="homepage-qr"></div>
+                <p><a href="https://wayneef84.github.io/" target="_blank">wayneef84.github.io</a></p>
+            </div>
+        </section>
+
+        <!-- HISTORY TAB -->
+        <section id="history" class="tab-content">
+            <div class="history-section">
+                <h3>Created Codes</h3>
+                <ul id="history-created" class="history-list"></ul>
+                <button id="clear-created" class="danger-btn">Clear Created</button>
+            </div>
+            <div class="history-section">
+                <h3>Scanned Codes</h3>
+                <ul id="history-scanned" class="history-list"></ul>
+                <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <div class="brand-footer">👁️ 🔎 🚶</div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/generator.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

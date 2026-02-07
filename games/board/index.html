@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Board Games Arcade - Dad's Casino</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="header" style="flex-direction: column; align-items: center; gap: 10px;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="margin:0;">Board Arcade</h1>
+                <a href="../../index.html" class="backButton">Exit</a>
+            </div>
+
+            <button id="switchButton" class="control-btn">🎮 Switch Game</button>
+        </div>
+
+        <div id="gameScaler">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div id="controls">
+            <div id="gameMode">
+                <label>
+                    <input type="radio" name="mode" value="pvp" checked>
+                    <span>Player vs Player</span>
+                </label>
+                <label>
+                    <input type="radio" name="mode" value="ai">
+                    <span>vs AI</span>
+                </label>
+            </div>
+
+            <div id="aiControls" style="display: none; margin: 10px 0; flex-direction: column; align-items: center; gap: 8px;">
+                <div class="aiSetting">
+                    <label for="aiColor">AI Plays:</label>
+                    <select id="aiColor">
+                        <option value="black" selected>Black (Top)</option>
+                        <option value="red">Red (Bottom)</option>
+                    </select>
+                </div>
+
+                <div class="aiSetting">
+                    <label for="aiDifficulty">AI Level:</label>
+                    <select id="aiDifficulty">
+                        <option value="1">Easy</option>
+                        <option value="2" selected>Medium</option>
+                        <option value="3">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="scoreBoard">
+                <div class="score-box p1-box">
+                    <span class="score-label">PLAYER 1</span>
+                    <span id="scoreP1" class="score-value">0</span>
+                </div>
+                <div class="score-divider">-</div>
+                <div class="score-box p2-box">
+                    <span class="score-label">PLAYER 2</span>
+                    <span id="scoreP2" class="score-value">0</span>
+                </div>
+            </div>
+
+            <div id="turnDisplay" style="font-size: 1.2em; font-weight: bold; margin: 15px 0; min-height: 27px;">Red's Turn</div>
+            
+            <div class="button-group">
+                <button id="undoButton" class="control-btn">↩ Undo</button>
+                <button id="resetButton" class="control-btn">New Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Engine -->
+    <script src="js/engine.js"></script>
+
+    <!-- Games -->
+    <script src="js/xiangqi-rules.js"></script>
+    <script src="js/xiangqi-ai.js"></script>
+    <script src="js/xiangqi.js"></script>
+    <script src="js/chess.js"></script>
+    <script src="js/checkers.js"></script>
+    <script src="js/tictactoe.js"></script>
+    <script src="js/connect4.js"></script>
+    <script src="js/mancala.js"></script>
+    <script src="js/dots.js"></script>
+    <script src="js/battleship.js"></script>
+    <script src="js/gomoku.js"></script>
+    <script src="js/othello.js"></script>
+
+    <!-- UI -->
+    <script src="js/overlay.js"></script>
+    <script src="js/settings.js"></script>
+
+    <!-- Main Controller -->
+    <script src="js/main.js"></script>
+</body>
+</html>

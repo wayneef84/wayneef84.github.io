@@ -1,0 +1,224 @@
+/* * ========================================================================
+ * CSS VARIABLES & RESET
+ * ========================================================================
+ */
+:root {
+    /* Defines the base size of a character slot.
+       JS reads this to calculate stage width. */
+    --slot-size: 65px;
+    --slot-gap: 8px;
+}
+
+/* Prevent standard touch behaviors (zoom, scroll) to allow custom drag */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+body {
+    background: #0f0f1b;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    padding-bottom: 120px;
+    min-height: 100vh;
+    transition: background 0.5s ease-in-out;
+    /* Prevents "Pull to Refresh" on mobile from interrupting drag */
+    overscroll-behavior: none;
+}
+
+/* * ========================================================================
+ * COMPONENT: DRAG GHOST
+ * ========================================================================
+ * This element is created dynamically when dragging starts.
+ * pointer-events: none is CRITICAL. It allows the JS to "see through"
+ * the ghost image to detect the Slot div underneath the finger.
+ */
+.drag-ghost {
+    position: fixed;
+    width: 70px; height: 70px;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%) scale(1.2); /* Float effect */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+    transition: transform 0.1s;
+}
+
+/* --- TOP BAR --- */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.home-btn {
+    background: linear-gradient(to bottom, #333, #111);
+    border: 1px solid #555;
+    color: #aaa;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.home-btn:hover {
+    color: white;
+    background: linear-gradient(to bottom, #444, #222);
+    border-color: #777;
+}
+
+.home-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- HEADER & SETTINGS --- */
+.header-container {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px; margin: 8px 0 15px;
+}
+h1 { font-size: 1.4rem; margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+.settings-bar {
+    display: flex; gap: 15px; background: rgba(0,0,0,0.3);
+    padding: 8px 15px; border-radius: 20px; align-items: center;
+    flex-wrap: wrap; justify-content: center;
+}
+
+select.pack-select {
+    background: #333; color: white; border: 1px solid #555;
+    padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; outline: none;
+}
+
+.slider-container { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #aaa; }
+input[type=range] { width: 100px; accent-color: #00f3ff; cursor: pointer; }
+
+/* --- CONTROLS --- */
+.controls {
+    display: flex; justify-content: center; align-items: center;
+    gap: 15px; margin-bottom: 15px;
+}
+
+.btn-play {
+    width: 70px; height: 70px; border-radius: 50%; border: none;
+    font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    background: #2ecc71; color: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    transition: all 0.2s;
+}
+.btn-play:active { transform: scale(0.92); }
+.btn-play.playing { background: #f39c12; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4); }
+
+.btn-reset {
+    height: 50px; padding: 0 20px; border-radius: 25px; border: none;
+    font-size: 1rem; font-weight: 600; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 8px;
+    background: #e74c3c; color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+.btn-reset:active { transform: scale(0.95); }
+
+/* * ========================================================================
+ * COMPONENT: THE STAGE (Flexbox)
+ * ========================================================================
+ * The stage uses 'justify-content: center' to handle incomplete rows.
+ * Example: If row 1 has 7 items and row 2 has 1 item, the 1 item is centered.
+ * The 'max-width' is set dynamically by JS to force the wrap.
+ */
+.stage-container { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+.stage {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: var(--slot-gap); padding: 12px; background: rgba(255,255,255,0.03);
+    border-radius: 16px; border: 1px solid #333;
+    transition: border-color 0.3s, max-width 0.3s;
+}
+
+.slot {
+    width: var(--slot-size); height: 80px;
+    border: 2px dashed #444; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.2s; font-size: 1.5rem; color: #555;
+    background: rgba(0,0,0,0.2); position: relative; overflow: hidden;
+}
+
+.slot.drag-over { border-color: #ffff00; background: rgba(255, 255, 0, 0.2); transform: scale(1.05); }
+
+.slot.active { border-style: solid; border-color: #00f3ff; background: rgba(0, 243, 255, 0.08); box-shadow: 0 0 12px rgba(0, 243, 255, 0.5); }
+.slot.active img { animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; pointer-events: none; }
+@keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1) translateY(-3px); } }
+.slot img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+
+/* --- PALETTE --- */
+.palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 450px; margin: 0 auto; padding: 5px 10px; }
+.cat-header { grid-column: 1 / -1; text-align: left; font-size: 11px; color: #666; text-transform: uppercase; margin-top: 8px; padding: 4px 0; border-bottom: 1px solid #333; letter-spacing: 1px; }
+
+.char-box {
+    aspect-ratio: 1; background: rgba(255,255,255,0.06); padding: 6px;
+    border-radius: 10px; cursor: grab; transition: 0.2s;
+    border: 2px solid transparent; border-bottom-width: 3px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.char-box:active { cursor: grabbing; transform: scale(0.93); background: rgba(255,255,255,0.12); }
+.char-box.on-stage { opacity: 0.3; filter: grayscale(100%); cursor: not-allowed; border-color: #333 !important; }
+.char-box img { width: 80%; height: 60%; object-fit: contain; pointer-events: none; }
+.char-label { font-size: 8px; color: #aaa; margin-top: 2px; font-weight: 600; text-transform: uppercase; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.loading { grid-column: 1 / -1; padding: 30px; color: #555; }
+.error { grid-column: 1 / -1; padding: 15px; color: #e74c3c; background: rgba(231,76,60,0.1); border-radius: 10px; }
+
+@media (max-width: 500px) { :root { --slot-size: 45px; } .slot { height: 60px; font-size: 1rem; } .palette { grid-template-columns: repeat(4, 1fr); } }
+
+/* --- EDITOR MODAL --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 10000;
+    display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+    background: #1a1a2e; border: 1px solid #444; border-radius: 12px;
+    padding: 20px; width: 90%; max-width: 500px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    text-align: left;
+    max-height: 90vh; overflow-y: auto;
+}
+
+.modal h2 { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 0.8rem; color: #aaa; margin-bottom: 5px; }
+.form-group input, .form-group select {
+    width: 100%; background: #0f0f1b; border: 1px solid #333;
+    color: white; padding: 8px; border-radius: 4px;
+}
+
+.preview-container {
+    width: 100px; height: 100px; margin: 0 auto 15px;
+    border: 2px dashed #444; border-radius: 10px;
+    position: relative; overflow: hidden; background: #000;
+}
+.preview-img {
+    width: 100%; height: 100%; object-fit: contain;
+    /* CSS Vars for Crop */
+    object-position: var(--crop-x, 50%) var(--crop-y, 50%);
+    transform: scale(var(--crop-scale, 1));
+}
+
+.btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+.btn-primary { background: #3498db; color: white; }
+.btn-secondary { background: #444; color: #ccc; }
+
+.crop-controls { display: flex; gap: 5px; margin-top: 5px; }
+.crop-controls input { flex: 1; }
+
+/* --- QR MODALS --- */
+#qrDisplayModal .qr-canvas {
+    background: white; padding: 20px; border-radius: 8px; margin: 0 auto;
+    display: flex; justify-content: center;
+}
+
+#scannerModal .scanner-box {
+    width: 100%; max-width: 400px; margin: 0 auto; background: black;
+}

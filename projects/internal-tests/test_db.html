@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FongDB Verification</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --card-bg: #1e293b;
+        }
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: monospace;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 1rem; }
+        .log-container {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+        .log-entry { margin-bottom: 0.5rem; }
+        .log-info { color: #94a3b8; }
+        .log-success { color: var(--success); font-weight: bold; }
+        .log-error { color: var(--error); font-weight: bold; }
+        .controls { margin-bottom: 1rem; }
+        button {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <h1>🛠️ FongDB Verification</h1>
+    <p>Automated tests for the generic storage engine.</p>
+
+    <div class="controls">
+        <button id="runTestsBtn">Run Tests</button>
+        <a href="index.html" style="margin-left: 1rem; color: var(--accent);">Back to Dashboard</a>
+    </div>
+
+    <div id="logOutput" class="log-container">Waiting to start...</div>
+
+    <!-- DB Scripts -->
+    <script src="../../db/adapters/idb-adapter.js"></script>
+    <script src="../../db/adapters/ls-adapter.js"></script>
+    <script src="../../db/core/fong-db.js"></script>
+
+    <script>
+        const logOutput = document.getElementById('logOutput');
+        const runBtn = document.getElementById('runTestsBtn');
+
+        function log(msg, type = 'info') {
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry', `log-${type}`);
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logOutput.appendChild(entry);
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        async function runTests() {
+            logOutput.innerHTML = '';
+            log('Starting verification suite...', 'info');
+
+            // Config
+            const DB_NAME = 'TestDB_' + Date.now();
+            const CONFIG = {
+                name: DB_NAME,
+                version: 1,
+                stores: {
+                    users: { keyPath: 'id', autoIncrement: true },
+                    settings: { keyPath: 'key' }
+                }
+            };
+
+            try {
+                // 1. Initialization
+                if (!window.FongDB) throw new Error('FongDB class not found');
+                const db = new FongDB(CONFIG);
+                await db.init();
+                log(`Database initialized (Adapter: ${db.adapter.type})`, 'success');
+
+                // 2. Put Data
+                const user1 = { name: 'Alice', role: 'admin', age: 30 };
+                const id1 = await db.collection('users').put(user1);
+                log(`Inserted user with ID: ${id1}`, 'success');
+
+                const user2 = { name: 'Bob', role: 'user', age: 25 };
+                await db.collection('users').put(user2);
+                log('Inserted second user', 'success');
+
+                // 3. Get Data
+                const retrieved = await db.collection('users').get(id1);
+                if (retrieved && retrieved.name === 'Alice') {
+                    log('Retrieved user correct', 'success');
+                } else {
+                    throw new Error('Failed to retrieve user correctly');
+                }
+
+                // 4. Query Data
+                const admins = await db.query('users').where('role', '==', 'admin').execute();
+                if (admins.length === 1 && admins[0].name === 'Alice') {
+                    log('Query (Where role == admin) correct', 'success');
+                } else {
+                    throw new Error(`Query failed. Expected 1 admin, got ${admins.length}`);
+                }
+
+                const youngUsers = await db.query('users').where('age', '<', 30).execute();
+                if (youngUsers.length === 1 && youngUsers[0].name === 'Bob') {
+                    log('Query (Where age < 30) correct', 'success');
+                } else {
+                    throw new Error('Query (age < 30) failed');
+                }
+
+                // 5. Delete Data
+                await db.collection('users').delete(id1);
+                const deletedCheck = await db.collection('users').get(id1);
+                if (!deletedCheck) {
+                    log('Deletion verified', 'success');
+                } else {
+                    throw new Error('Deletion failed, item still exists');
+                }
+
+                // 6. Clear Collection
+                await db.collection('users').clear();
+                const allUsers = await db.collection('users').getAll();
+                if (allUsers.length === 0) {
+                    log('Collection clear verified', 'success');
+                } else {
+                    throw new Error('Clear failed');
+                }
+
+                // Clean up (Delete the temp DB)
+                // Note: Generic adapter doesn't support deleteDatabase yet, so we leave it.
+                // In a real test env we would want to clean up.
+
+                log('All tests passed!', 'success');
+
+            } catch (e) {
+                log(`Test Failed: ${e.message}`, 'error');
+                console.error(e);
+            }
+        }
+
+        runBtn.addEventListener('click', runTests);
+
+        // Auto-run on load
+        setTimeout(runTests, 500);
+
+    </script>
+</body>
+</html>

@@ -7,7 +7,7 @@
 ## 🎯 Objective
 
 Create a comprehensive GitHub Wiki for the wayneef84.github.io repository covering:
-- Fong Family Arcade (games)
+- F.O.N.G. (games)
 - Utility Projects (Shipment Tracker)
 - Development guides
 - Architecture documentation
@@ -18,9 +18,9 @@ Create a comprehensive GitHub Wiki for the wayneef84.github.io repository coveri
 
 ### Home Page
 ```
-📖 Fong Family Arcade & Projects Wiki
+📖 F.O.N.G. & Projects Wiki
 
-Welcome to the official documentation for Wayne Fong's games and utility projects.
+Welcome to the official documentation for F.O.N.G. games and utility projects.
 
 Quick Links:
 - [Getting Started](#getting-started)

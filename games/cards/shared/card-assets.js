@@ -1,184 +1,238 @@
 /**
  * CardAssets.js
- * A lightweight renderer that programmatically generates card textures.
- * This avoids the need for external image files and ensures crisp graphics on Retina screens.
+ * High-quality SVG-based procedural card renderer. ES5 Compatible.
  */
 
-const CardAssets = {
-    // Configuration
-    cardWidth: 100,  // Base resolution (will scale via CSS)
-    cardHeight: 140,
-    cache: {},       // Stores the pre-rendered images
+var CardAssets = {
+    width: 200,
+    height: 280,
+
+    cache: {},
     isLoaded: false,
 
-    // Colors
     colors: {
-        red: '#D40000',
-        black: '#2D2D2D',
-        white: '#FFFFFF',
-        back: '#2c3e50', // Dark blue back
-        pattern: '#34495e'
+        red: '#e74c3c',
+        black: '#2c3e50',
+        white: '#fdfbf7',
+        gold: '#f1c40f',
+        royal: '#3498db',
+        backBase: '#2c3e50',
+        backAccent: '#34495e'
     },
 
-    init: function() {
-        if (this.isLoaded) return;
-        
-        const suits = ['H', 'D', 'C', 'S'];
-        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    paths: {
+        H: "M50,30 C50,15 35,0 25,0 C12,0 0,15 0,30 C0,55 50,90 50,90 C50,90 100,55 100,30 C100,15 88,0 75,0 C65,0 50,15 50,30 Z",
+        D: "M50,0 L100,50 L50,100 L0,50 Z",
+        C: "M50,10 C65,10 75,25 75,35 C75,45 65,55 55,55 L55,55 C65,55 80,55 85,70 C90,85 75,95 60,95 L40,95 C25,95 10,85 15,70 C20,55 35,55 45,55 L45,55 C35,55 25,45 25,35 C25,25 35,10 50,10 Z M50,55 L50,100",
+        S: "M50,0 C50,0 100,40 100,65 C100,85 85,95 70,95 C55,95 50,75 50,75 C50,75 45,95 30,95 C15,95 0,85 0,65 C0,40 50,0 50,0 Z M50,75 L50,100",
+        Crown: "M10,40 L30,10 L50,40 L70,10 L90,40 L90,60 L10,60 Z",
+        FaceJ: "M20,20 L80,20 L50,80 Z",
+        FaceQ: "M50,20 A30,30 0 1,0 50,80 A30,30 0 1,0 50,20",
+        FaceK: "M20,20 L80,20 L80,80 L20,80 Z"
+    },
 
-        // 1. Generate the "Card Back"
+    init: function () {
+        if (this.isLoaded) return;
+
+        var suits = ['H', 'D', 'C', 'S'];
+        var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
         this.cache['BACK'] = this.createCardBack();
 
-        // 2. Generate all 52 faces
-        suits.forEach(suit => {
-            ranks.forEach(rank => {
-                const key = `${rank}${suit}`; // e.g., "10H" or "KS"
-                this.cache[key] = this.createCardFace(rank, suit);
-            });
-        });
+        for (var s = 0; s < suits.length; s++) {
+            for (var r = 0; r < ranks.length; r++) {
+                this.cache[ranks[r] + suits[s]] = this.createCardFace(ranks[r], suits[s]);
+            }
+        }
 
         this.isLoaded = true;
-        console.log('[CardAssets] Generated 53 textures (52 faces + 1 back)');
+        console.log('[SVGCardAssets] Generated 53 High-Res textures (' + this.width + 'x' + this.height + ')');
     },
 
-    // Returns the standard HTMLCanvasElement for a specific card
-    getAsset: function(rank, suit) {
-        if (!suit) return this.cache['BACK']; // If no arguments, return back
-        return this.cache[`${rank}${suit}`];
+    getAsset: function (rank, suit) {
+        if (!suit) return this.cache['BACK'];
+        return this.cache[rank + suit] || this.cache['BACK'];
     },
 
-    // --- Drawing Logic (The "Printing Press") ---
-
-    createBaseCanvas: function() {
-        const c = document.createElement('canvas');
-        c.width = this.cardWidth;
-        c.height = this.cardHeight;
+    createCanvas: function () {
+        var c = document.createElement('canvas');
+        c.width = this.width;
+        c.height = this.height;
         return c;
     },
 
-    createCardBack: function() {
-        const c = this.createBaseCanvas();
-        const ctx = c.getContext('2d');
+    createCardBack: function () {
+        var c = this.createCanvas();
+        var ctx = c.getContext('2d');
+        var w = this.width;
+        var h = this.height;
 
-        // Card Shape
-        this.drawRoundedRect(ctx, 0, 0, c.width, c.height, 8, this.colors.white);
-        
-        // Pattern Area (Inset)
-        const margin = 6;
-        this.drawRoundedRect(ctx, margin, margin, c.width - (margin*2), c.height - (margin*2), 4, this.colors.back);
-        
-        // Simple Cross-hatch Pattern
-        ctx.strokeStyle = this.colors.pattern;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        for(let i=0; i<c.width; i+=10) { ctx.moveTo(i,0); ctx.lineTo(i, c.height); }
-        for(let i=0; i<c.height; i+=10) { ctx.moveTo(0,i); ctx.lineTo(c.width, i); }
-        ctx.stroke();
+        this.drawRoundedRect(ctx, 0, 0, w, h, 16, this.colors.white);
 
-        return c;
-    },
+        var m = 12;
+        this.drawRoundedRect(ctx, m, m, w - m * 2, h - m * 2, 10, this.colors.backBase);
 
-    createCardFace: function(rank, suit) {
-        const c = this.createBaseCanvas();
-        const ctx = c.getContext('2d');
-        const isRed = (suit === 'H' || suit === 'D');
-        const color = isRed ? this.colors.red : this.colors.black;
-
-        // Background
-        this.drawRoundedRect(ctx, 0, 0, c.width, c.height, 8, this.colors.white);
-
-        // --- TOP LEFT (Tightened Spacing) ---
-        ctx.fillStyle = color;
-        ctx.textAlign = 'center';
-        ctx.font = 'bold 18px Arial';
-        // Moved Y from 22 -> 20 (closer to top)
-        ctx.fillText(rank, 15, 20);
-        // Moved Y from 38 -> 32 (closer to number)
-        this.drawSuitIcon(ctx, suit, 15, 32, 10);
-
-        // --- BOTTOM RIGHT (Rotated 180°) ---
         ctx.save();
-        // Translate to bottom-right margin
-        ctx.translate(c.width - 15, c.height - 20);
-        ctx.rotate(Math.PI);
-        // Draw Number at anchor (Closest to corner)
-        ctx.fillText(rank, 0, 0);
-        // Draw Suit "above" number in rotated space (visually inner)
-        this.drawSuitIcon(ctx, suit, 0, 13, 10); 
-        ctx.restore();
+        ctx.beginPath();
+        ctx.rect(m, m, w - m * 2, h - m * 2);
+        ctx.clip();
 
-        // --- CENTER ART ---
-        if (['J', 'Q', 'K'].includes(rank)) {
-            // Draw Box for Face Card
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(30, 30, 40, 80);
-            ctx.font = '40px serif';
-            ctx.fillText(rank, 50, 85);
-        } else {
-            // Big Center Pip
-            this.drawSuitIcon(ctx, suit, 50, 70, 30);
+        ctx.strokeStyle = this.colors.backAccent;
+        ctx.lineWidth = 4;
+        var step = 30;
+
+        for (var x = -h; x < w + h; x += step) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + h, h);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x + h, 0);
+            ctx.lineTo(x, h);
+            ctx.stroke();
         }
 
+        ctx.fillStyle = this.colors.gold;
+        ctx.beginPath();
+        ctx.moveTo(w / 2, h / 2 - 30);
+        ctx.lineTo(w / 2 + 20, h / 2);
+        ctx.lineTo(w / 2, h / 2 + 30);
+        ctx.lineTo(w / 2 - 20, h / 2);
+        ctx.fill();
+
+        ctx.restore();
         return c;
     },
 
-    drawSuitIcon: function(ctx, suit, x, y, size) {
-        ctx.save();
-        ctx.translate(x, y);
-        const scale = size / 20; // Normalize path scale
-        ctx.scale(scale, scale);
-        ctx.fillStyle = (suit === 'H' || suit === 'D') ? this.colors.red : this.colors.black;
-        
-        ctx.beginPath();
-        if (suit === 'H') { // Heart
-            ctx.moveTo(0, 0);
-            ctx.bezierCurveTo(-10, -10, -20, 5, 0, 20);
-            ctx.bezierCurveTo(20, 5, 10, -10, 0, 0);
-        } else if (suit === 'D') { // Diamond
-            ctx.moveTo(0, -20);
-            ctx.lineTo(15, 0);
-            ctx.lineTo(0, 20);
-            ctx.lineTo(-15, 0);
-        } else if (suit === 'C') { // Club
-            // 1. Top Circle
-            ctx.moveTo(0, -12); 
-            ctx.arc(0, -12, 8, 0, Math.PI * 2);
-            
-            // 2. Bottom Right Circle (Move pen first!)
-            ctx.moveTo(10, 2); 
-            ctx.arc(10, 2, 8, 0, Math.PI * 2);
-            
-            // 3. Bottom Left Circle (Move pen first!)
-            ctx.moveTo(-10, 2); 
-            ctx.arc(-10, 2, 8, 0, Math.PI * 2);
-            
-            // 4. Stem (Triangle-ish)
-            ctx.moveTo(0, 0); 
-            ctx.lineTo(-2, 20); 
-            ctx.lineTo(2, 20); 
-            ctx.lineTo(0, 0);
-        } else if (suit === 'S') { // Spade
-            ctx.moveTo(0, -20);
-            ctx.bezierCurveTo(15, -10, 20, 10, 0, 10);
-            ctx.bezierCurveTo(-20, 10, -15, -10, 0, -20);
-            ctx.moveTo(0, 0); ctx.lineTo(-2, 20); ctx.lineTo(2, 20);
-        }
-        ctx.fill();
-        ctx.restore();
-    },
+    createCardFace: function (rank, suit) {
+        var c = this.createCanvas();
+        var ctx = c.getContext('2d');
+        var w = this.width;
+        var h = this.height;
+        var isRed = (suit === 'H' || suit === 'D');
+        var color = isRed ? this.colors.red : this.colors.black;
 
-    drawRoundedRect: function(ctx, x, y, w, h, r, fill) {
-        ctx.beginPath();
-        ctx.moveTo(x+r, y);
-        ctx.arcTo(x+w, y, x+w, y+h, r);
-        ctx.arcTo(x+w, y+h, x, y+h, r);
-        ctx.arcTo(x, y+h, x, y, r);
-        ctx.arcTo(x, y, x+w, y, r);
-        ctx.fillStyle = fill;
-        ctx.fill();
-        ctx.strokeStyle = '#000';
+        this.drawRoundedRect(ctx, 0, 0, w, h, 16, this.colors.white);
+        ctx.strokeStyle = '#e0e0e0';
         ctx.lineWidth = 1;
         ctx.stroke();
+
+        var fontSize = rank === '10' ? 36 : 42;
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        this.drawCorner(ctx, rank, suit, 25, 30, fontSize);
+
+        ctx.save();
+        ctx.translate(w, h);
+        ctx.rotate(Math.PI);
+        this.drawCorner(ctx, rank, suit, 25, 30, fontSize);
+        ctx.restore();
+
+        if (rank === 'J' || rank === 'Q' || rank === 'K') {
+            this.drawFaceCardArt(ctx, rank, suit, w / 2, h / 2);
+        } else if (rank === 'A') {
+            this.drawPath(ctx, this.paths[suit], w / 2 - 35, h / 2 - 35, 70, 70, color);
+        } else {
+            this.drawPips(ctx, parseInt(rank), suit, w, h, color);
+        }
+
+        return c;
+    },
+
+    drawCorner: function (ctx, rank, suit, x, y, fontSize) {
+        ctx.font = 'bold ' + fontSize + 'px "Segoe UI", sans-serif';
+        ctx.fillText(rank, x, y);
+
+        var pipSize = 24;
+        this.drawPath(ctx, this.paths[suit], x - pipSize / 2, y + 25, pipSize, pipSize, ctx.fillStyle);
+    },
+
+    drawFaceCardArt: function (ctx, rank, suit, x, y) {
+        var fw = 120;
+        var fh = 160;
+        var left = x - fw / 2;
+        var top = y - fh / 2;
+
+        ctx.strokeStyle = this.colors.gold;
+        ctx.lineWidth = 4;
+        ctx.strokeRect(left, top, fw, fh);
+
+        ctx.fillStyle = '#fafafa';
+        ctx.fillRect(left, top, fw, fh);
+
+        var symbol = this.paths.Crown;
+        var clr = this.colors.gold;
+
+        if (rank === 'J') { symbol = this.paths.FaceJ; clr = this.colors.royal; }
+        if (rank === 'Q') { symbol = this.paths.FaceQ; clr = this.colors.red; }
+        if (rank === 'K') { symbol = this.paths.FaceK; clr = this.colors.black; }
+
+        ctx.globalAlpha = 0.1;
+        this.drawPath(ctx, this.paths[suit], left + 10, top + 30, fw - 20, fw - 20,
+            (suit === 'H' || suit === 'D') ? this.colors.red : this.colors.black);
+        ctx.globalAlpha = 1.0;
+
+        this.drawPath(ctx, symbol, x - 30, y - 50, 60, 60, clr);
+
+        ctx.fillStyle = clr;
+        ctx.font = 'bold 60px serif';
+        ctx.fillText(rank, x, y + 40);
+    },
+
+    drawPips: function (ctx, count, suit, w, h, color) {
+        var layouts = {
+            2: [[50, 20], [50, 80]],
+            3: [[50, 20], [50, 50], [50, 80]],
+            4: [[30, 20], [70, 20], [30, 80], [70, 80]],
+            5: [[30, 20], [70, 20], [50, 50], [30, 80], [70, 80]],
+            6: [[30, 20], [70, 20], [30, 50], [70, 50], [30, 80], [70, 80]],
+            7: [[30, 20], [70, 20], [50, 35], [30, 50], [70, 50], [30, 80], [70, 80]],
+            8: [[30, 20], [70, 20], [50, 35], [30, 50], [70, 50], [50, 65], [30, 80], [70, 80]],
+            9: [[30, 20], [70, 20], [30, 40], [70, 40], [50, 50], [30, 60], [70, 60], [30, 80], [70, 80]],
+            10: [[30, 20], [70, 20], [50, 30], [30, 45], [70, 45], [30, 65], [70, 65], [50, 70], [30, 80], [70, 80]]
+        };
+
+        var layout = layouts[count];
+        if (!layout) return;
+
+        var pipSize = 34;
+
+        for (var i = 0; i < layout.length; i++) {
+            var pos = layout[i];
+            var px = (pos[0] / 100) * w;
+            var py = (pos[1] / 100) * h;
+            var isBottom = pos[1] > 50;
+
+            ctx.save();
+            ctx.translate(px, py);
+            if (isBottom) ctx.rotate(Math.PI);
+            this.drawPath(ctx, this.paths[suit], -pipSize / 2, -pipSize / 2, pipSize, pipSize, color);
+            ctx.restore();
+        }
+    },
+
+    drawPath: function (ctx, pathStr, x, y, w, h, color) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(w / 100, h / 100);
+        ctx.fillStyle = color;
+        var p = new Path2D(pathStr);
+        ctx.fill(p);
+        ctx.restore();
+    },
+
+    drawRoundedRect: function (ctx, x, y, w, h, r, fill) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
     }
 };
