@@ -45,3 +45,13 @@ To enable offline text recognition, you must download the following **5 files** 
 -   **"Tesseract library not loaded"**: Ensure `tesseract.min.js` is in the `assets/` folder and loaded by `index.html`.
 -   **"Failed to load OCR Engine"**: Check that `worker.min.js`, `tesseract-core.wasm.js`, `tesseract-core.wasm`, and `eng.traineddata` are present in `assets/`.
 -   **Slow Performance**: OCR is computationally intensive. Ensure your device has sufficient resources.
+
+## License Information
+
+Tesseract.js is licensed under the **Apache License 2.0**.
+
+By downloading and using these assets, you agree to the terms of the Apache License 2.0. A copy of this license is included in this directory as `LICENSE_TESSERACT`.
+
+-   **Tesseract.js**: Apache License 2.0
+-   **Tesseract (Core)**: Apache License 2.0
+-   **Leptonica**: BSD 2-Clause (BSD-2-Clause)

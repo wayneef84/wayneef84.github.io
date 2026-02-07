@@ -18,6 +18,7 @@ Code hosted directly in this repository (e.g., in `lib/` folders).
 | :--- | :--- | :--- | :--- | :--- |
 | `games/lib/html5-qrcode.min.js` | **html5-qrcode** | Apache 2.0 | `games/lib/LICENSE.txt` | Camera/Barcode scanning. Author: minhazav. |
 | `games/lib/qrcode.min.js` | **qrcodejs** | MIT | `games/lib/LICENSE.txt` | QR Code generation. Author: davidshimjs. |
+| `projects/input-a11y/assets/tesseract.min.js` | **Tesseract.js** | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | OCR Engine (v5.0.3) |
 | `games/cards/shared/poker-evaluator.js` | **Poker Evaluator** | MIT | File Header | Adaptation of standard evaluation logic. Licensed by Wayne Fong as an adaptation. |
 
 ---
