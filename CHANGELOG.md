@@ -1,10 +1,31 @@
 # Changelog
 
-All notable changes to the Fong Family Arcade project will be documented in this file.
+All notable changes to the Founding & Forging project will be documented in this file.
 
 ## [Unreleased]
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
+
+## [Overhaul] - 2026-02-06
+### Refactor
+- **Renaming:** Renamed "Fong Family Arcade" to "Founding & Forging" (Attributed to G).
+
+## [Arcade v1.5] - 2026-02-04 (Jules (Gemini Pro))
+### Changed
+- **Homepage Redesign:** Complete visual overhaul of `index.html` with modern dark theme (`#0f172a`), radial gradients, and "glassmorphism" card styling.
+- **Functionality:** Added category filtering (All/Games/Projects) with smooth layout animations.
+- **Archival:** Preserved previous homepage as `index_v1.4.html` for backup.
+- **Attribution:** Added credit to Jules (Gemini Pro) in footer and logs.
+## [Slots v3.1] - 2026-02-04
+### Added
+- **10 New Themes:** Added diverse themes including Pirate's Gold, Jurassic Jungle, Samurai Spirit, Viking Legends, Steampunk Revolution, Wild West, Fairy Tale, Dragon's Lair, Robot Factory, and Ninja Shadows.
+- **Visual Overhaul:**
+  - Implemented 3D cylinder rendering for reels to simulate depth.
+  - Added "Magic Mist" overlay and ambient particle effects.
+  - Introduced "Unicorn Dash" special effect for big wins.
+  - Enhanced particle systems for winning lines and scatter symbols.
+- **Audio Improvements:** Consolidated all theme background music to a reliable `slotsBG.mp3` source to prevent missing asset errors.
+- **Technical:** Implemented cache busting for game assets to ensure users receive the latest visual updates.
 
 ## [Arcade v1.4] - 2026-01-14 (Gemini with the patchwork)
 ### Changed

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Reader - F.O.N.G.</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Highlight.js Theme -->
+    <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebarOverlay" class="sidebar-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 90; display: none; opacity: 0; transition: opacity 0.3s;"></div>
+        <style>
+            .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
+        </style>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; align-items:center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">📖</span>
+                    <h1>MD Reader</h1>
+                </div>
+                <a href="../" class="back-link">← Projects</a>
+            </div>
+
+            <div class="search-section">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search files...">
+                <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                    <button id="expandAllBtn" style="background:none; border:none; color:var(--accent); cursor:pointer; font-size:0.8rem;">Expand All</button>
+                    <button id="collapseAllBtn" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.8rem;">Collapse All</button>
+                </div>
+            </div>
+
+            <ul class="file-list" id="fileList">
+                <!-- Populated by JS -->
+            </ul>
+
+            <div style="padding: 0 15px; opacity: 0.7; font-size: 0.8em; text-transform: uppercase; font-weight: bold; margin-top: 10px;">Load from Path</div>
+            <div class="custom-path-input">
+                <form id="customPathForm" class="path-form">
+                    <input type="text" id="customPathInput" placeholder="e.g. ../../README.md" value="../../">
+                    <button type="submit">→</button>
+                </form>
+            </div>
+
+            <div class="upload-section">
+                <div id="uploadArea" class="upload-area">
+                    📤 Drop or click to import .md
+                    <input type="file" id="fileUploadInput" accept=".md,.markdown,.txt" style="display:none;">
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="toolbar">
+                <div style="display: flex; align-items: center;">
+                    <button id="toggleSidebar" class="toggle-sidebar-btn">☰ Files</button>
+                    <div id="currentPath" class="current-file">Select a file...</div>
+                </div>
+
+                <div class="toolbar-group">
+                    <button id="toggleView" class="settings-btn" title="Toggle View Mode">👁️ Parsed</button>
+
+                    <div class="settings-container">
+                        <button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+                        <div id="settingsMenu" class="settings-menu">
+                            <div class="settings-label">Theme</div>
+                            <button class="settings-item theme-opt" data-theme="dark">🌑 Dark</button>
+                            <button class="settings-item theme-opt" data-theme="light">☀️ Light</button>
+                            <button class="settings-item theme-opt" data-theme="terminal">📟 Terminal</button>
+                            <button class="settings-item theme-opt" data-theme="solarized">🌅 Solarized</button>
+                            <button class="settings-item theme-opt" data-theme="high-contrast">👁️ High Contrast</button>
+                            <button class="settings-item theme-opt" data-theme="custom">🎨 Custom...</button>
+                            <div class="settings-divider"></div>
+                            <div class="settings-label">Export</div>
+                            <button class="settings-item" id="printBtn">🖨️ Print / PDF</button>
+                            <button class="settings-item" id="openNewTab">↗ New Tab</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="markdownContent" class="markdown-body markdown-container">
+                <!-- Content goes here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Libraries -->
+    <!-- Using marked 4.3.0 for compatibility with highlight option -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Repo Index -->
+    <script src="repo_index.js"></script>
+    <!-- App Logic -->
+    <script src="app.js"></script>
+
+    <!-- Custom Theme Editor Modal -->
+    <div id="customThemeEditor" class="custom-theme-editor">
+        <div class="cte-header">
+            <span>Custom Theme</span>
+            <span style="cursor:pointer;" id="closeCte">✕</span>
+        </div>
+        <div class="cte-row">
+            <label>Background</label>
+            <input type="color" id="cte-bg" value="#0f172a">
+        </div>
+        <div class="cte-row">
+            <label>Text</label>
+            <input type="color" id="cte-text" value="#f8fafc">
+        </div>
+        <div class="cte-row">
+            <label>Accent (Links/Headers)</label>
+            <input type="color" id="cte-accent" value="#38bdf8">
+        </div>
+        <div class="cte-row">
+            <label>Secondary BG (Sidebar)</label>
+            <input type="color" id="cte-bg-sec" value="#1e293b">
+        </div>
+        <div style="margin-top:15px; display:flex; gap:10px;">
+            <button id="cte-save" style="flex:1; padding:8px; background:var(--accent); color:var(--bg-primary); border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Apply & Save</button>
+            <button id="cte-reset" style="padding:8px; background:var(--bg-primary); color:var(--text-secondary); border:1px solid var(--border); border-radius:4px; cursor:pointer;">Reset</button>
+        </div>
+    </div>
+</body>
+</html>

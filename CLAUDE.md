@@ -1,13 +1,15 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+**⚠️ IMPORTANT: This file works in tandem with `AGENTS.md`. Please read that first.**
 
-## Project Overview
+## 🤖 Identity
+You are **Claude (C)**, the Senior Developer and Documentation Lead for the Founding & Forging.
+Your peers are **Gemini (G)** (Creative Director) and **Jules (J)** (Lead Architect).
 
 This repository contains two types of projects:
 
 ### 🎮 Games (`/games/`)
-**Fong Family Arcade** - A browser-based game collection for the whole family:
+**Founding & Forging** - A browser-based game collection for the whole family:
 - **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
@@ -27,6 +29,15 @@ Non-game applications and tools:
 **Key Distinction:**
 - `/games/` = Entertainment, interactive experiences
 - `/projects/` = Productivity tools, utilities, applications
+
+### 🔮 Future Concepts
+- **Flow Free Variants**: A series of puzzle games based on connecting matching colors with pipes, including various board sizes and modes.
+- **Custom Puzzle Maker**: A jigsaw puzzle generator where users can upload an image, crop it, define a grid size (a x b), and solve the resulting puzzle.
+- **Connect the Dots**: A tracing game featuring custom point creation and plotting capabilities.
+
+### 🔜 Next Session Instructions
+- **Hidden Progress Log**: Maintain `about.html` as a hidden, unlinked progress log for project reflections. Do not expose this file in the main navigation.
+- **Agent 'C' Action Item**: In the next session (targeted for **March 2026** or end of month), please review `about.html`, add your own unfiltered reflections and project updates, and follow up on any changes.
 
 ---
 
@@ -404,6 +415,13 @@ Create a game-agnostic State Machine Engine that delegates logic to interchangea
     /war
       - ruleset.js
       - index.html
+    /poker              # New Poker-specific directory
+      /shared           # Poker-specific shared logic
+        - evaluator.js  # Hand evaluation logic
+      /5card            # 5 Card Draw variant
+      /holdem           # Texas Hold'em variant
+      /13card           # Chinese Poker variant
+      - index.html      # Poker Lobby
     /euchre
       - ruleset.js
       - index.html (TODO)
@@ -507,219 +525,66 @@ if (value1 === value2) {
     scoringType: 'DOUBLE_OVER_TEN' // or 'TRIPLE_OVER_THIRTEEN'
 }
 ```
+## 📘 Your Core Responsibilities
+1.  **Documentation:** You own `README.md`, `CHANGELOG.md`, and project-specific docs (e.g., `projects/shipment-tracker/ARCHITECTURE.md`).
+2.  **Code Review:** You provide the reasoning and verification plans for complex changes.
+3.  **Planning:** You break down vague requests into actionable steps.
 
 ---
 
-## Mobile UI Architecture
+## 🏗️ Project Overview
 
-### Fixed Footer Controls
-```css
-.controls {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-}
-```
+**Founding & Forging** is a browser-based game collection:
+- **Letter Tracing:** Educational app with voice guidance.
+- **Slots Game:** 3D CSS slot machine with physical lever.
+- **Sprunki Mixer:** Audio mixing game.
+- **Card Games:** Shared engine for Blackjack, War, etc.
+- **Snake:** Classic game with Web Audio.
+- **XTC Ball:** Magic 8 ball.
+- **Flow:** Pipe connection puzzle.
 
-### Scrollable Card Area
-```css
-.game-table {
-    overflow-y: auto;
-    flex: 1;
-}
-```
-
-### Layout Order
-- **Dealer (top):** Label → Cards → Value Bubble
-- **Player (bottom):** Cards → Value Bubble → Label
-
-### Value Bubble Logic
-- Hide if value is 0 or no cards present
-- Show "BUST" styling if > 21
-- Show "BLACKJACK" animation if natural 21
-
-### Chip Set (Blackjack)
-- $1, $5, $25, $50, $100
-- Clear Bet: Red X chip
-- Full-width Deal/New Hand buttons (~400px max)
+**Utility Projects:**
+- **Shipment Tracker:** Offline-first multi-carrier tracking app.
 
 ---
 
-## Test Suite (test.html)
+## 📚 Documentation Policy
 
-### Purpose
-Headless runner to verify ruleset logic without full UI.
+**CRITICAL:** When making changes, update the relevant documentation.
 
-### Test Case Structure
-```javascript
-{
-    name: 'BJ-01 Bust Bypass',
-    setup: { playerHand: [10, 5], dealerHand: [10] },
-    action: 'hit', // Player hits, gets 10
-    cardToDeal: 10,
-    expected: {
-        getNextActor: null,  // Should return null
-        resolveRound: 'lose' // Player loses
-    }
-}
-```
-
-### Blackjack Test Cases
-- **BJ-01:** Bust Bypass - Player busts, dealer doesn't draw
-- **BJ-02:** Double Down - Pot doubles, one card dealt, forced stand
-- **BJ-03:** Blackjack Payout - Natural 21 pays 3:2
-- **BJ-04:** Push - Equal values return bet
-
-### War Test Cases
-- **WAR-01:** High Card Win
-- **WAR-02:** Tie Initiates War
-- **WAR-03:** Nested War (tie during war)
-- **WAR-04:** Insufficient Cards Fallback
-
-### Debug Commands
-- `FORCE_PLAYER_BJ` - Give player Ace + King
-- `FORCE_PLAYER_BUST` - Force next card to 10, hit
-- `FORCE_DEALER_BUST` - Dealer draws until > 21
-- `FORCE_TIE` - Match dealer score to player
-- `RESET_BANK` - Set balance to $1000
+### Shipment Tracker Docs
+- `projects/shipment-tracker/ARCHITECTURE.md`: System design.
+- `projects/shipment-tracker/TODO.md`: Roadmap.
+- **Rule:** If you add a feature, update these files.
 
 ---
 
-## Data Structures Reference
+## 📦 Federated Architecture (Dependency Management)
 
-### Card
-```javascript
-{
-    suit: 'HEARTS',
-    rank: 'KING',
-    id: 'KH',
-    deckId: 'standard',
-    uuid: 'card_42'  // REQUIRED for animation tracking
-}
-```
-
-### Pile Methods
-| Method | Behavior |
-|--------|----------|
-| `createFrom(deck, copies)` | Factory from template |
-| `receive(card, position)` | Add at position (0=top, -1=bottom) |
-| `give(position)` | Remove and return |
-| `shuffle()` | Randomize |
-| `reset()` | Restore from template |
-
-### Player
-```javascript
-{
-    id: 'player1',
-    type: 'human',
-    seat: 0,
-    hand: Pile,
-    balance: 1000,      // If PlayerWithCurrency
-    currentBet: 25
-}
-```
+- **Shared Libraries:** `games/cards/shared/` is versioned independently.
+- **Lock Files:** Check `[game]/INFO.md` for dependency versions.
+- **Policy:** Do not auto-upgrade libraries without explicit instruction.
 
 ---
 
-## CLI Task List
+## 🚧 Coding Standards
 
-When implementing fixes, follow this order:
+### Javascript
+- **ES5 Compatibility:** Use `var` instead of `const`/`let` for maximum compatibility on older tablets (unless inside a specific modern module).
+- **No Build Tools:** The project runs directly in the browser. Do not introduce Webpack/Babel.
 
-1. **Fix engine.js Terminal Check Gate**
-   - Add `checkWinCondition()` call after every deal
-   - If `immediate: true`, skip to RESOLUTION
-
-2. **Fix blackjack/ruleset.js Bust Suppression**
-   - `getNextActor()` returns `null` if player busted
-   - `checkWinCondition()` returns `{immediate: true}` on bust
-
-3. **Fix Double Down**
-   - Only available when `player.hand.count === 2`
-   - Deals exactly 1 card
-   - Forces stand after
-
-4. **Create test.html**
-   - Import shared modules
-   - Run predefined test cases
-   - Report PASS/FAIL
-
-5. **Build Big 2 ruleset**
-   - Config object for house rules
-   - 3♦ starting logic
-   - Hand combination validation
+### CSS
+- **Mobile First:** Design for touch targets (min 44px).
+- **Safe Areas:** Use `env(safe-area-inset-bottom)` for iPhone X+ support.
 
 ---
 
-## Code Style
+## 🐛 Known Issues & Fixes (Blackjack)
 
-- **JS:** ES5-compatible for Safari (use `var`, regular functions)
-- **CSS:** Flexbox, `dvh` for mobile heights, safe-area-inset
-- **Canvas:** `requestAnimationFrame` for loops
-- **No build tools:** Vanilla JS, direct script loading
+### Animation Flash
+- **Issue:** Cards appear at destination before flying.
+- **Fix:** Ensure `tempSlot` has `visibility: hidden` before animation starts.
 
----
-
-## Known Issues & Fixes
-
-### Animation Bug: Card Preview Before Flying (Blackjack)
-
-**Problem:**
-When dealing cards, the following sequence occurs incorrectly:
-1. Card appears at final destination (player/dealer hand) immediately
-2. Card element is created at shoe position (top-right)
-3. Animation flies card from shoe → destination
-4. User sees card "preview" at destination before animation starts
-
-**User Report:**
-> "the card appears where it will be at the end, then is flipped upside down at the shoe and flies to the hand and revealed back at the spot"
-
-**Root Cause:**
-In `games/cards/blackjack/index.html` `_handleDealEvent()` method:
-1. Card is added to DOM at landing pad (lines 790-795)
-2. Landing pad made invisible (`opacity: '0'`)
-3. Flying card animates from shoe → landing pad
-4. Landing pad becomes visible after animation completes
-
-The issue: The card is briefly visible at the landing pad BEFORE being hidden, creating a "preview" flash.
-
-**Fix Strategy:**
-```javascript
-// Current (buggy):
-landingPad.appendChild(slot);          // Card visible briefly
-landingPad.style.opacity = '0';       // Then hidden
-const flyer = _createCardElement(...); // Create flying copy
-flyer.style.position = 'fixed';
-flyer.style.left = startX;            // Start at shoe
-// Animate flyer → landingPad
-
-// Proposed fix:
-landingPad.style.opacity = '0';       // Hide FIRST
-landingPad.appendChild(slot);          // Then add card (invisible)
-const flyer = _createCardElement(...); // Create flying copy
-flyer.style.position = 'fixed';
-flyer.style.left = startX;
-// Animate flyer → landingPad
-```
-
-**Alternative Fix (Better):**
-Don't add card to DOM until AFTER animation completes:
-```javascript
-// Don't add to landing pad yet
-const landingPadRect = landingPad.getBoundingClientRect();
-const flyer = _createCardElement(cardData, faceUp);
-// ... position at shoe, animate to landingPadRect
-setTimeout(() => {
-    flyer.remove();
-    landingPad.appendChild(slot); // Add AFTER animation
-    landingPad.style.opacity = '1';
-}, 500);
-```
-
-**When to Fix:**
-- Low priority (cosmetic issue, game is playable)
-- Fix alongside other animation improvements
-- Test thoroughly to ensure card always appears in correct final position
-
----
+### Terminal Check Gate
+- **Rule:** Do NOT trigger "Win Condition" inside the `deal()` loop if it prevents Insurance from being offered.
+- **Status:** Fixed in v1.0.5-C by removing immediate dealer blackjack check.

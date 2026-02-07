@@ -3,7 +3,7 @@
 **Type:** Application (Game)
 **Version:** vX.Y.Z
 **Directory:** `games/[category]/[game-name]/`
-**Parent Project:** Fong Family Arcade
+**Parent Project:** F.O.N.G.
 **Created:** YYYY-MM-DD
 **Last Updated:** YYYY-MM-DD
 

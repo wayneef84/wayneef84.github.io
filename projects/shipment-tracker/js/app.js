@@ -25,6 +25,7 @@
         // Current state
         this.trackings = [];
         this.filteredTrackings = [];
+        this.selectedTrackings = new Set(); // Stores AWB_Carrier keys
         this.currentFilters = {
             carrier: '',
             status: '',
@@ -682,10 +683,27 @@
     ShipmentTrackerApp.prototype.createTableRow = function(tracking) {
         var self = this;
         var row = document.createElement('tr');
+        var trackingKey = tracking.awb + '|' + tracking.carrier;
 
         if (tracking.delivered) {
             row.classList.add('delivered');
         }
+
+        // Checkbox Cell
+        var checkboxCell = document.createElement('td');
+        checkboxCell.className = 'checkbox-column';
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'row-checkbox';
+        checkbox.dataset.key = trackingKey;
+        checkbox.checked = this.selectedTrackings.has(trackingKey);
+
+        checkbox.onclick = function(e) {
+            e.stopPropagation();
+            self.toggleSelection(trackingKey, checkbox.checked);
+        };
+        checkboxCell.appendChild(checkbox);
+        row.appendChild(checkboxCell);
 
         // AWB (truncated, clickable to carrier site)
         var awbCell = document.createElement('td');
@@ -716,8 +734,12 @@
         // Status Icon (separate column)
         var iconCell = document.createElement('td');
         iconCell.className = 'status-icon-column';
-        iconCell.textContent = this.getStatusIcon(tracking.deliverySignal);
-        iconCell.style.fontSize = '1.25rem';
+
+        var iconWrapper = document.createElement('div');
+        iconWrapper.className = 'status-icon-wrapper ' + TrackingUtils.getStatusBadgeClass(tracking.deliverySignal);
+        iconWrapper.innerHTML = this.getStatusIcon(tracking.deliverySignal);
+
+        iconCell.appendChild(iconWrapper);
         row.appendChild(iconCell);
 
         // Status Text (separate column)
@@ -839,6 +861,154 @@
         return row;
     };
 
+    ShipmentTrackerApp.prototype.toggleSelection = function(key, isSelected) {
+        if (isSelected) {
+            this.selectedTrackings.add(key);
+        } else {
+            this.selectedTrackings.delete(key);
+        }
+        this.updateBulkToolbar();
+        this.updateSelectAllCheckbox();
+    };
+
+    ShipmentTrackerApp.prototype.toggleSelectAll = function(isChecked) {
+        var self = this;
+
+        if (isChecked) {
+            // Select all currently filtered trackings
+            this.filteredTrackings.forEach(function(t) {
+                self.selectedTrackings.add(t.awb + '|' + t.carrier);
+            });
+        } else {
+            // Deselect all currently filtered trackings
+            this.filteredTrackings.forEach(function(t) {
+                self.selectedTrackings.delete(t.awb + '|' + t.carrier);
+            });
+        }
+
+        this.renderTable(); // Re-render to update checkboxes
+        this.updateBulkToolbar();
+    };
+
+    ShipmentTrackerApp.prototype.updateSelectAllCheckbox = function() {
+        var selectAll = document.getElementById('selectAllCheckbox');
+        if (!selectAll) return;
+
+        if (this.filteredTrackings.length === 0) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+            return;
+        }
+
+        var selectedCount = 0;
+        var self = this;
+        this.filteredTrackings.forEach(function(t) {
+            if (self.selectedTrackings.has(t.awb + '|' + t.carrier)) {
+                selectedCount++;
+            }
+        });
+
+        if (selectedCount === 0) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+        } else if (selectedCount === this.filteredTrackings.length) {
+            selectAll.checked = true;
+            selectAll.indeterminate = false;
+        } else {
+            selectAll.checked = false;
+            selectAll.indeterminate = true;
+        }
+    };
+
+    ShipmentTrackerApp.prototype.updateBulkToolbar = function() {
+        var toolbar = document.getElementById('bulkActionsToolbar');
+        var countSpan = document.getElementById('selectedCount');
+        var count = this.selectedTrackings.size;
+
+        if (count > 0) {
+            toolbar.classList.remove('hidden');
+            countSpan.textContent = count + ' selected';
+        } else {
+            toolbar.classList.add('hidden');
+        }
+    };
+
+    ShipmentTrackerApp.prototype.cancelSelection = function() {
+        this.selectedTrackings.clear();
+        this.updateBulkToolbar();
+        this.renderTable();
+
+        var selectAll = document.getElementById('selectAllCheckbox');
+        if (selectAll) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+        }
+    };
+
+    ShipmentTrackerApp.prototype.bulkDelete = async function() {
+        var count = this.selectedTrackings.size;
+        if (count === 0) return;
+
+        if (!confirm('Delete ' + count + ' selected tracking(s)?')) return;
+
+        try {
+            var keys = Array.from(this.selectedTrackings);
+            for (var i = 0; i < keys.length; i++) {
+                var parts = keys[i].split('|'); // awb|carrier
+                var awb = parts[0];
+                var carrier = parts[1];
+                await this.db.deleteTracking(awb, carrier);
+            }
+
+            this.selectedTrackings.clear();
+            await this.loadTrackings();
+            this.updateStats();
+            this.updateBulkToolbar();
+            this.showToast('✅ Deleted ' + count + ' trackings', 'success');
+        } catch (err) {
+            console.error('Bulk delete failed:', err);
+            this.showToast('Bulk delete failed: ' + err.message, 'error');
+        }
+    };
+
+    ShipmentTrackerApp.prototype.bulkRefresh = async function() {
+        var count = this.selectedTrackings.size;
+        if (count === 0) return;
+
+        if (!confirm('Refresh ' + count + ' selected tracking(s)?')) return;
+
+        this.showToast('🔄 Refreshing ' + count + ' trackings...', 'info');
+        var useMock = this.settings.development ? this.settings.development.useMockData : false;
+
+        var keys = Array.from(this.selectedTrackings);
+        var success = 0;
+        var fail = 0;
+
+        try {
+            for (var i = 0; i < keys.length; i++) {
+                var parts = keys[i].split('|');
+                var awb = parts[0];
+                var carrier = parts[1];
+
+                try {
+                    var freshData = await this.queryEngine(awb, carrier, useMock);
+                    await this.db.saveTracking(freshData);
+                    success++;
+                } catch (e) {
+                    console.error('Failed to refresh ' + awb, e);
+                    fail++;
+                }
+            }
+
+            await this.loadTrackings();
+            this.showToast('✅ Refreshed ' + success + ' (Failed: ' + fail + ')', 'success');
+            // Don't clear selection after refresh so user can see results
+        } catch (err) {
+            console.error('Bulk refresh failed:', err);
+            this.showToast('Bulk refresh failed: ' + err.message, 'error');
+        }
+    };
+
     // ============================================================
     // MOBILE CARDS RENDERING
     // ============================================================
@@ -904,7 +1074,8 @@
         var iconDiv = document.createElement('div');
         iconDiv.className = 'card-status-icon';
         iconDiv.style.backgroundColor = TrackingUtils.getStatusColor(tracking.deliverySignal);
-        iconDiv.textContent = TrackingUtils.getStatusIcon(tracking.deliverySignal);
+        iconDiv.style.color = '#ffffff'; // Ensure icon is white on colored background
+        iconDiv.innerHTML = TrackingUtils.getStatusIcon(tracking.deliverySignal); // Use innerHTML for SVG
         iconContainer.appendChild(iconDiv);
 
         // Add ETA display under icon
@@ -1261,6 +1432,12 @@
     ShipmentTrackerApp.prototype.showDetail = async function(awb) {
         console.log('[App] Showing detail for:', awb);
 
+        // Clear existing countdown
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+        }
+
         try {
             var tracking = await this.db.getTracking(awb);
             if (!tracking) {
@@ -1272,6 +1449,18 @@
 
             var detailInfo = document.getElementById('detailInfo');
             detailInfo.innerHTML = '';
+
+            // Add Countdown if active and has estimated delivery
+            if (tracking.estimatedDelivery && !tracking.delivered) {
+                var countdownRow = document.createElement('div');
+                countdownRow.id = 'deliveryCountdown';
+                countdownRow.className = 'countdown-container';
+                detailInfo.parentNode.insertBefore(countdownRow, detailInfo);
+                this.startCountdown(tracking.estimatedDelivery);
+            } else {
+                var existingCountdown = document.getElementById('deliveryCountdown');
+                if (existingCountdown) existingCountdown.remove();
+            }
 
             this.addDetailRow(detailInfo, 'Carrier', tracking.carrier);
             this.addDetailRow(detailInfo, 'Status', tracking.status);
@@ -2310,6 +2499,12 @@
     };
 
     ShipmentTrackerApp.prototype.closeDetail = function() {
+        // Clear countdown
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+        }
+
         // Remove detail-open class from body
         document.body.classList.remove('detail-open');
 
@@ -3367,6 +3562,35 @@
 
         // Document management listeners
         this.setupDocumentListeners();
+
+        // Bulk Actions
+        var selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.onclick = function() {
+                self.toggleSelectAll(this.checked);
+            };
+        }
+
+        var bulkRefreshBtn = document.getElementById('bulkRefreshBtn');
+        if (bulkRefreshBtn) {
+            bulkRefreshBtn.onclick = function() {
+                self.bulkRefresh();
+            };
+        }
+
+        var bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+        if (bulkDeleteBtn) {
+            bulkDeleteBtn.onclick = function() {
+                self.bulkDelete();
+            };
+        }
+
+        var bulkCancelBtn = document.getElementById('bulkCancelBtn');
+        if (bulkCancelBtn) {
+            bulkCancelBtn.onclick = function() {
+                self.cancelSelection();
+            };
+        }
     };
 
     // ============================================================
