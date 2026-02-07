@@ -1,4 +1,4 @@
-# Founding & Forging - Roadmap
+# F.O.N.G. - Roadmap
 
 **Last Updated:** 2026-02-05 by Claude (C)
 

@@ -1,4 +1,4 @@
-# Founding & Forging - Project Registry
+# F.O.N.G. - Project Registry
 
 **Last Updated:** 2026-01-17
 **Registry Version:** 1.0
