@@ -3,7 +3,7 @@
 **Type:** Application (Card Game)
 **Version:** v1.0.0
 **Directory:** `games/cards/blackjack/`
-**Parent Project:** Founding & Forging
+**Parent Project:** F.O.N.G.
 **Created:** 2026-01-10
 **Last Updated:** 2026-01-17
 

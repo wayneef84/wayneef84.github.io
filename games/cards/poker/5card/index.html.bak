@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 Card Draw - F.O.N.G.</title>
+    <style>
+        /* Inherit Base Styles from Blackjack/Shared */
+        :root {
+            --bg-color: #0f172a;
+            --accent: #ffd700;
+        }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0; height: 100dvh; width: 100vw;
+            background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #020617 100%);
+            color: white; font-family: system-ui, sans-serif;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 10px 15px; background: rgba(0,0,0,0.4);
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .balance {
+            font-family: monospace; font-size: 1.1rem; color: var(--accent);
+            border: 1px solid var(--accent); padding: 4px 8px; border-radius: 8px;
+        }
+        .header-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 4px; }
+
+        /* Game Area */
+        main {
+            flex: 1; position: relative;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        /* Hand Areas */
+        .hand-area {
+            display: flex; justify-content: center; height: 140px; position: relative;
+            align-items: center;
+        }
+        .hand-label {
+            position: absolute; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase;
+        }
+        .dealer-area .hand-label { bottom: -20px; }
+        .player-area .hand-label { top: -25px; }
+
+        /* Cards */
+        .card-container {
+            display: flex; gap: -10px; /* Overlap handled by margins in JS or CSS */
+        }
+        .card-slot {
+            width: 80px; height: 112px; margin: 0 4px; position: relative;
+            transition: transform 0.2s, margin 0.2s;
+            cursor: pointer;
+        }
+        .card-slot canvas { width: 100%; height: 100%; border-radius: 6px; box-shadow: -2px 2px 5px rgba(0,0,0,0.5); }
+
+        /* Selection State (Discard) */
+        .card-slot.selected {
+            transform: translateY(-20px);
+            box-shadow: 0 0 15px var(--accent);
+        }
+        .card-slot.selected::after {
+            content: 'DISCARD';
+            position: absolute; bottom: -20px; left: 0; right: 0;
+            font-size: 0.6rem; text-align: center; color: #ef4444; font-weight: bold;
+        }
+        /* Hold State (Inverse Logic: Selected = Hold?)
+           Standard Video Poker: Click to HOLD.
+           Standard Table Poker: Click to DISCARD?
+           Let's go with: Click to TOGGLE. Visual indicator says what happens.
+           Let's say Default is HOLD. Click raises card -> DISCARD.
+        */
+
+        /* Controls */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom));
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .action-row { display: flex; gap: 10px; justify-content: center; }
+        .btn {
+            flex: 1; padding: 15px; border-radius: 8px; border: none;
+            font-weight: bold; font-size: 1rem; cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+        }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+        .btn-primary { background: var(--accent); color: black; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-secondary { background: #334155; color: white; }
+
+        .hidden { display: none !important; }
+
+        /* Message Overlay */
+        .message-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8); padding: 20px 40px; border-radius: 12px;
+            text-align: center; border: 2px solid var(--accent);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .message-overlay.visible { opacity: 1; }
+        .message-title { font-size: 2rem; color: var(--accent); margin-bottom: 5px; }
+        .message-sub { color: #ccc; }
+
+        /* Stats Panel (Probability) */
+        .stats-panel {
+            position: absolute; top: 60px; right: 10px;
+            background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;
+            font-size: 0.75rem; color: #ccc; pointer-events: none;
+        }
+        .stat-row { display: flex; justify-content: space-between; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>
+            <button class="header-btn" id="btnBack">⬅</button>
+            <button class="header-btn" id="btnDeck">🛠️</button>
+            5 Card Draw
+        </h1>
+        <div class="balance">$<span id="balance">1000</span></div>
+    </header>
+
+    <main>
+        <!-- Stats -->
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-row"><span>Deck:</span> <span id="deckCount">52</span></div>
+            <div class="stat-row"><span>Pot:</span> <span id="potSize">0</span></div>
+            <div id="handRankDisplay" style="margin-top: 5px; color: var(--accent); font-weight: bold;"></div>
+        </div>
+
+        <!-- Dealer Hand -->
+        <div class="hand-area dealer-area">
+            <div class="hand-label">Opponent</div>
+            <div class="card-container" id="dealerCards"></div>
+        </div>
+
+        <!-- Message -->
+        <div class="message-overlay" id="message">
+            <div class="message-title" id="msgTitle"></div>
+            <div class="message-sub" id="msgSub"></div>
+        </div>
+
+        <!-- Player Hand -->
+        <div class="hand-area player-area">
+            <div class="hand-label">You</div>
+            <div class="card-container" id="playerCards"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="betControls" class="action-row">
+            <button class="btn btn-secondary" id="btnAnteMinus">-</button>
+            <button class="btn btn-primary" id="btnDeal">Ante $10 & Deal</button>
+            <button class="btn btn-secondary" id="btnAntePlus">+</button>
+        </div>
+
+        <div id="playControls" class="action-row hidden">
+            <button class="btn btn-danger" id="btnFold">Fold</button>
+            <button class="btn btn-primary" id="btnDraw">Draw Selected</button>
+        </div>
+
+        <div id="endControls" class="action-row hidden">
+             <button class="btn btn-primary" id="btnNewHand">Play Again</button>
+        </div>
+    </footer>
+
+    <!-- Shared Modules -->
+    <script src="../../shared/enums.js"></script>
+    <script src="../../shared/card.js"></script>
+    <script src="../../shared/deck.js"></script>
+    <script src="../../shared/pile.js"></script>
+    <script src="../../shared/player.js"></script>
+    <script src="../../shared/engine.js"></script>
+    <script src="../../shared/card-assets.js"></script>
+    <script src="../../shared/game-config.js"></script>
+    <script src="../../shared/poker-evaluator.js"></script>
+    <script src="../../shared/deck-editor.js"></script>
+    <script src="ruleset.js"></script>
+
+    <script>
+        class PokerGame {
+            constructor() {
+                this.ante = 10;
+                this.engine = new GameEngine(FiveCardDrawRuleset, { debug: true });
+                this.deckEditor = new DeckEditor(this.engine, 'poker-5card');
+
+                this.ui = {
+                    balance: document.getElementById('balance'),
+                    dealerCards: document.getElementById('dealerCards'),
+                    playerCards: document.getElementById('playerCards'),
+                    btnDeal: document.getElementById('btnDeal'),
+                    btnDraw: document.getElementById('btnDraw'),
+                    btnFold: document.getElementById('btnFold'),
+                    btnNewHand: document.getElementById('btnNewHand'),
+                    btnDeck: document.getElementById('btnDeck'),
+                    btnBack: document.getElementById('btnBack'),
+                    message: document.getElementById('message'),
+                    msgTitle: document.getElementById('msgTitle'),
+                    msgSub: document.getElementById('msgSub'),
+                    controls: {
+                        bet: document.getElementById('betControls'),
+                        play: document.getElementById('playControls'),
+                        end: document.getElementById('endControls')
+                    },
+                    stats: {
+                        deckCount: document.getElementById('deckCount'),
+                        pot: document.getElementById('potSize'),
+                        rank: document.getElementById('handRankDisplay')
+                    }
+                };
+
+                this._init();
+            }
+
+            _init() {
+                CardAssets.init();
+                this._updateBalance();
+
+                // Bind Events
+                this.ui.btnDeal.onclick = () => this.deal();
+                this.ui.btnDraw.onclick = () => this.draw();
+                this.ui.btnFold.onclick = () => this.engine.submitAction('player1', 'fold');
+                this.ui.btnNewHand.onclick = () => this.reset();
+                this.ui.btnDeck.onclick = () => this.deckEditor.open();
+                this.ui.btnBack.onclick = () => window.location.href = '../index.html'; // Back to Poker Hall
+
+                // Initialize Engine with Config Balance
+                const balance = GameConfig.getBalance();
+                this.engine.init([{ id: 'player1', name: 'You', balance: balance }]);
+
+                // Try loading saved deck
+                if (this.deckEditor.loadState()) {
+                    console.log('Loaded saved deck state');
+                }
+
+                this.engine.on('*', e => this._onEngineEvent(e));
+            }
+
+            _updateBalance() {
+                const bal = GameConfig.getBalance();
+                this.ui.balance.textContent = bal;
+                // Update engine player balance to match global
+                if (this.engine.players[0]) this.engine.players[0].balance = bal;
+            }
+
+            deal() {
+                const player = this.engine.players[0];
+                if (player.balance < this.ante) {
+                    alert("Not enough funds!");
+                    return;
+                }
+
+                this.engine.startRound();
+                this.engine.placeBet('player1', this.ante);
+                this.engine.confirmBets();
+
+                this._showControls('play');
+                this._showMessage('');
+            }
+
+            draw() {
+                // Identify selected cards (marked for discard)
+                const selectedSlots = document.querySelectorAll('.card-slot.selected');
+                const discardPile = this.engine.piles.discard;
+                const player = this.engine.players[0];
+                const indicesToRemove = [];
+
+                selectedSlots.forEach(slot => {
+                    const uuid = slot.dataset.uuid;
+                    const index = player.hand.contents.findIndex(c => c.uuid === uuid);
+                    if (index !== -1) indicesToRemove.push(index);
+                });
+
+                // Sort descending to remove without shifting issues
+                indicesToRemove.sort((a, b) => b - a);
+
+                // Move to discard pile
+                indicesToRemove.forEach(idx => {
+                    const card = player.hand.give(idx);
+                    discardPile.receive(card);
+                });
+
+                // Submit action
+                this.engine.submitAction('player1', 'draw_cards');
+            }
+
+            reset() {
+                this.ui.dealerCards.innerHTML = '';
+                this.ui.playerCards.innerHTML = '';
+                this.ui.stats.rank.textContent = '';
+                this._showControls('bet');
+                this._showMessage('');
+            }
+
+            _onEngineEvent(event) {
+                switch(event.type) {
+                    case 'DEAL':
+                        this._renderDeal(event);
+                        break;
+                    case 'RESOLUTION':
+                        this._handleResolution(event);
+                        break;
+                    case 'PAYOUT':
+                        // Sync new balance to storage
+                        GameConfig.setBalance(event.newBalance);
+                        this._updateBalance();
+                        break;
+                    case 'GAME_OVER':
+                        this._showControls('end');
+                        break;
+                }
+
+                // Update Stats
+                if (this.engine.piles.deck) {
+                    this.ui.stats.deckCount.textContent = this.engine.piles.deck.count;
+                }
+                this.ui.stats.pot.textContent = this.engine.pot;
+
+                // Eval player hand live
+                const player = this.engine.players[0];
+                if (player && player.hand.count > 0) {
+                    const ev = PokerEvaluator.evaluate(player.hand.contents);
+                    this.ui.stats.rank.textContent = ev.name;
+                }
+            }
+
+            _renderDeal(event) {
+                const container = event.to.id === 'player1' ? this.ui.playerCards : this.ui.dealerCards;
+                const card = event.card;
+                const faceUp = event.faceUp;
+
+                const slot = document.createElement('div');
+                slot.className = 'card-slot';
+                slot.dataset.uuid = card.uuid;
+
+                const canvas = faceUp
+                    ? CardAssets.getAsset(RankToAsset[card.rank], SuitToAsset[card.suit])
+                    : CardAssets.getAsset(); // Back
+
+                const img = document.createElement('canvas');
+                img.width = canvas.width; img.height = canvas.height;
+                img.getContext('2d').drawImage(canvas, 0, 0);
+                slot.appendChild(img);
+
+                // Interaction for Player: Toggle Discard
+                if (event.to.id === 'player1') {
+                    slot.onclick = () => {
+                        // Only allow selection during player turn
+                        if (this.engine.activeActorId === 'player1' && this.engine.state === 'PLAYER_TURN') {
+                            slot.classList.toggle('selected');
+                        }
+                    };
+                }
+
+                container.appendChild(slot);
+            }
+
+            _handleResolution(event) {
+                // Reveal dealer hand
+                this.ui.dealerCards.innerHTML = '';
+                event.dealerHand.bestHand.forEach(card => { // Wait, dealerHand is Evaluator result which has bestHand array
+                     // We need the ACTUAL full hand from engine dealer to render correctly
+                     // or just render the contents of dealer hand now
+                });
+
+                // Re-render Dealer Hand Face Up
+                const dealer = this.engine.dealer;
+                dealer.hand.contents.forEach(card => {
+                    const slot = document.createElement('div');
+                    slot.className = 'card-slot';
+                    const canvas = CardAssets.getAsset(RankToAsset[card.rank], SuitToAsset[card.suit]);
+                    const img = document.createElement('canvas');
+                    img.width = canvas.width; img.height = canvas.height;
+                    img.getContext('2d').drawImage(canvas, 0, 0);
+                    slot.appendChild(img);
+                    this.ui.dealerCards.appendChild(slot);
+                });
+
+                // Show Message
+                const res = event.playerResults[0];
+                const won = res.outcome === 'win';
+                const tie = res.outcome === 'push';
+
+                let title = won ? 'YOU WIN!' : (tie ? 'PUSH' : 'DEALER WINS');
+                let sub = `${res.handName} vs ${res.dealerHandName}`;
+
+                if (won) sub += ` (+$${Math.floor(res.bet * res.multiplier)})`;
+
+                this._showMessage(title, sub);
+            }
+
+            _showMessage(title, sub = '') {
+                this.ui.msgTitle.textContent = title;
+                this.ui.msgSub.textContent = sub;
+                if (title) this.ui.message.classList.add('visible');
+                else this.ui.message.classList.remove('visible');
+            }
+
+            _showControls(set) {
+                ['bet', 'play', 'end'].forEach(k => this.ui.controls[k].classList.add('hidden'));
+                this.ui.controls[set].classList.remove('hidden');
+            }
+        }
+
+        window.onload = () => new PokerGame();
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blackjack - Founding & Forging</title>
+    <title>Blackjack - F.O.N.G.</title>
     <style>
         * {
             box-sizing: border-box;
@@ -827,7 +827,7 @@
             <div class="setting-row"><label>Decks</label><input type="number" id="cfgDecks" value="6" min="0.5" max="8" step="any"></div>
             <div class="setting-row"><label>Target Score</label><input type="number" id="cfgTarget" value="21" min="10" max="50"></div>
             <div class="setting-row"><label>Dealer Stands</label><input type="number" id="cfgDealerStand" value="17" min="10" max="25"></div>
-            <div class="setting-row"><label>Reshuffle at % Remaining</label><input type="number" id="cfgReshuffle" value="20" min="5" max="50" step="5"></div>
+            <div class="setting-row"><label>Reshuffle at <span id="reshuffleLabel">20</span>% Remaining</label><input type="range" id="cfgReshuffle" value="20" min="10" max="50" step="5" style="width: 100%; accent-color: #ffd700;"></div>
             <div class="button-row">
                 <button id="btnResetDeck" class="half-btn">🔄 Reset Deck</button>
                 <button id="btnReshuffle" class="half-btn">🔀 Re-shuffle</button>
@@ -915,6 +915,31 @@
             <button id="btnCloseRules" class="full-btn close-btn">Close</button>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:500; display:flex; flex-direction:column; gap:8px; pointer-events:none;"></div>
+    <style>
+        .toast-pill {
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffd700;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-family: system-ui, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: auto;
+        }
+        .toast-pill.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
 
     <script src="../shared/enums.js"></script>
     <script src="../shared/card-assets.js"></script>
@@ -1132,6 +1157,12 @@
                 this.el.btnResetFunds.onclick = () => this._resetFunds();
                 this.el.btnResetRules.onclick = () => this._resetRules();
 
+                // Slider live label update
+                this.el.cfgReshuffle.oninput = function() {
+                    var label = document.getElementById('reshuffleLabel');
+                    if (label) label.textContent = this.value;
+                };
+
                 // Click outside settings modal to close
                 this.el.settingsModal.onclick = (e) => {
                     if (e.target === this.el.settingsModal) {
@@ -1228,6 +1259,8 @@
                 this.el.cfgTarget.value = BlackjackRuleset.targetScore;
                 this.el.cfgDealerStand.value = BlackjackRuleset.dealerStandThreshold;
                 this.el.cfgReshuffle.value = this.reshuffleThreshold;
+                var reshuffleLabel = document.getElementById('reshuffleLabel');
+                if (reshuffleLabel) reshuffleLabel.textContent = this.reshuffleThreshold;
             }
 
             _saveSettings() {
@@ -1317,8 +1350,8 @@
                         '7': 0, '8': 0, '9': 0, '10': 0, 'J': 0, 'Q': 0, 'K': 0
                     };
 
-                    // Show toast message
-                    this._showMessage('🔄 Shuffling shoe...', 'info');
+                    // Show non-blocking toast
+                    this._showToast('🔄 Deck Reshuffled');
 
                     // Update history display to show reset counts
                     this._updateHistoryDisplay();
@@ -1662,6 +1695,24 @@
                 this.el.message.textContent = text;
                 this.el.message.className = 'message visible ' + className;
                 // Auto-fade logic could go here, but stickiness is better for game over
+            }
+
+            _showToast(text) {
+                var container = document.getElementById('toastContainer');
+                if (!container) return;
+                var pill = document.createElement('div');
+                pill.className = 'toast-pill';
+                pill.textContent = text;
+                container.appendChild(pill);
+                // Trigger animation
+                setTimeout(function() { pill.classList.add('show'); }, 10);
+                // Auto-dismiss
+                setTimeout(function() {
+                    pill.classList.remove('show');
+                    setTimeout(function() {
+                        if (pill.parentNode) pill.parentNode.removeChild(pill);
+                    }, 300);
+                }, 2500);
             }
 
             // ================================================================

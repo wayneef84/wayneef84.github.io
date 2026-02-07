@@ -62,6 +62,7 @@ h1 {
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     overflow: hidden;
+    margin-bottom: 20px;
 }
 
 #gameCanvas {
@@ -72,11 +73,12 @@ h1 {
 }
 
 #controls {
-    margin-top: 20px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    width: 100%;
 }
 
 #turnDisplay {
@@ -84,31 +86,48 @@ h1 {
     font-weight: bold;
     color: #DEB887;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    min-height: 27px;
+    text-align: center;
 }
 
-#resetButton {
-    padding: 12px 32px;
-    font-size: 16px;
+/* --- Control Buttons --- */
+.control-btn {
+    background: linear-gradient(145deg, #ffd700, #daa520);
+    border: 2px solid #8b4513;
+    color: #3d2b1f;
+    padding: 10px 20px;
     font-weight: bold;
-    color: #fff;
-    background: #8B4513;
-    border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 16px;
+    box-shadow: 0 4px #8b4513;
+    margin: 0 5px;
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-#resetButton:hover {
-    background: #654321;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+.control-btn:active {
+    box-shadow: 0 2px #8b4513;
+    transform: translateY(2px);
 }
 
-#resetButton:active {
-    transform: translateY(0);
+.control-btn:hover {
+    background: linear-gradient(145deg, #ffe066, #e6b800);
 }
 
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+#switchButton {
+    /* Style specific to top switch button if needed */
+}
+
+/* --- Game Mode & AI --- */
 #gameMode {
     display: flex;
     gap: 16px;
@@ -135,6 +154,7 @@ h1 {
     cursor: pointer;
     width: 16px;
     height: 16px;
+    accent-color: #FFD700;
 }
 
 #aiControls {
@@ -145,13 +165,17 @@ h1 {
     padding: 12px 16px;
     background: rgba(139, 69, 19, 0.3);
     border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
 }
 
 .aiSetting {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
 }
 
 .aiSetting label {
@@ -170,7 +194,7 @@ h1 {
     cursor: pointer;
     color: #654321;
     font-weight: bold;
-    min-width: 180px;
+    flex-grow: 1;
     text-align: center;
 }
 
@@ -179,6 +203,50 @@ h1 {
     background: #FFD700;
 }
 
+/* --- Score Board --- */
+#scoreBoard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid #8B4513;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 300px;
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.score-label {
+    font-size: 10px;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.score-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px black;
+}
+
+.score-divider {
+    font-size: 24px;
+    color: #DEB887;
+    font-weight: bold;
+}
+
+
+/* --- Mobile --- */
 @media (max-width: 600px) {
     #gameContainer {
         padding: 10px;
@@ -191,5 +259,10 @@ h1 {
     .backButton {
         font-size: 14px;
         padding: 6px 12px;
+    }
+
+    .control-btn {
+        font-size: 14px;
+        padding: 8px 16px;
     }
 }

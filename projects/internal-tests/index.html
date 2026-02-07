@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal QA Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --accent: #38bdf8;
+            --card-bg: #1e293b;
+        }
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: monospace;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 1rem; }
+        .test-list { list-style: none; padding: 0; }
+        .test-item {
+            background: var(--card-bg);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-item a { color: var(--accent); text-decoration: none; font-weight: bold; }
+        .test-item a:hover { text-decoration: underline; }
+        .status { font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: #334155; }
+    </style>
+</head>
+<body>
+    <h1>🛠️ Internal QA Dashboard</h1>
+    <p>Centralized testing hub for F.O.N.G. codebase.</p>
+
+    <ul class="test-list">
+        <!-- Template for future tests -->
+        <li class="test-item">
+            <div>
+                <a href="test_db.html">FongDB Verification</a>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">Verifies FongDB generic engine and fallback logic.</div>
+            </div>
+            <span class="status" style="background: #22c55e; color: #000;">Active</span>
+        </li>
+        <li class="test-item">
+            <div>
+                <a href="#">(Placeholder) Physics Benchmark</a>
+                <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">Stress test for NEGEN collision detection.</div>
+            </div>
+            <span class="status">Planned</span>
+        </li>
+    </ul>
+
+    <footer>
+        <p style="margin-top: 3rem; opacity: 0.5; font-size: 0.8rem;">F.O.N.G. Internal Tools v0.1</p>
+    </footer>
+</body>
+</html>

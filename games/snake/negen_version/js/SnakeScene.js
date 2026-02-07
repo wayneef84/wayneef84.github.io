@@ -1,4 +1,6 @@
 import Scene from '../../../../negen/core/Scene.js';
+import Synthesizer from '../../../../negen/audio/Synthesizer.js';
+import ControlOverlay from '../../../../negen/ui/ControlOverlay.js';
 
 export default class SnakeScene extends Scene {
     constructor(engine) {
@@ -19,28 +21,42 @@ export default class SnakeScene extends Scene {
 
         // Timing
         this.tickTimer = 0;
-        this.tickRate = 100; // ms per tick
 
-        this.currentMode = 'neon'; // Default
+        // Systems
+        this.synth = new Synthesizer(engine.audio);
+        this.controls = new ControlOverlay(engine);
     }
 
     init() {
         this.resize();
         this.resetGame();
 
+        // Bind Controls
+        this.engine.input.bindAction('UP', ['ArrowUp', 'KeyW', 'Gamepad_Axis_1_Neg', 'Virtual_UP']);
+        this.engine.input.bindAction('DOWN', ['ArrowDown', 'KeyS', 'Gamepad_Axis_1_Pos', 'Virtual_DOWN']);
+        this.engine.input.bindAction('LEFT', ['ArrowLeft', 'KeyA', 'Gamepad_Axis_0_Neg', 'Virtual_LEFT']);
+        this.engine.input.bindAction('RIGHT', ['ArrowRight', 'KeyD', 'Gamepad_Axis_0_Pos', 'Virtual_RIGHT']);
+        this.engine.input.bindAction('CONFIRM', ['Space', 'Enter', 'Gamepad_Btn_0', 'Virtual_A']);
+
+        // Setup Overlay
+        this.controls.setLayout('dpad');
+
         // Bind window resize
         window.addEventListener('resize', () => this.resize());
-
         console.log("Snake Scene Initialized via NEGEN");
     }
 
     enter() {
         this.resetGame();
+        this.controls.active = true;
+    }
+
+    exit() {
+        this.controls.active = false; // Hide overlay
     }
 
     resize() {
-        // Simple sizing logic similar to original
-        const maxSize = Math.min(window.innerWidth - 20, window.innerHeight - 100, 600);
+        const maxSize = Math.min(window.innerWidth - 20, window.innerHeight - 200, 600); // 200px buffer for controls
         if (this.engine.renderer && this.engine.renderer.resize) {
             this.engine.renderer.resize(maxSize, maxSize);
         }
@@ -60,7 +76,7 @@ export default class SnakeScene extends Scene {
         this.spawnFood();
         this.tickTimer = 0;
 
-        // DOM update (optional/hybrid approach)
+        // DOM update
         const scoreEl = document.getElementById('scoreDisplay');
         if(scoreEl) scoreEl.textContent = "0";
     }
@@ -73,15 +89,13 @@ export default class SnakeScene extends Scene {
                 y: Math.floor(Math.random() * this.TILE_COUNT),
                 color: this.PALETTE[Math.floor(Math.random() * this.PALETTE.length)]
             };
-            // Collision check
             valid = !this.snake.some(s => s.x === this.food.x && s.y === this.food.y);
         }
     }
 
     update(dt) {
         if (this.isGameOver) {
-            // Restart on tap
-            if (this.engine.input.pointer.isPressed) {
+            if (this.engine.input.isJustPressed('CONFIRM') || this.engine.input.pointer.isPressed) {
                 this.resetGame();
             }
             return;
@@ -89,13 +103,11 @@ export default class SnakeScene extends Scene {
 
         this.handleInput();
 
-        // Game Loop Logic (Tick based)
+        // Game Loop Logic
         this.tickTimer += dt;
+        const currentSpeedMs = Math.max(50, 110 - (this.score * 2)); // Speed up
 
-        // Adaptive speed
-        const currentSpeed = Math.max(50, 110 - (this.score * 2));
-
-        if (this.tickTimer >= currentSpeed) {
+        if (this.tickTimer * 1000 >= currentSpeedMs) {
             this.tickTimer = 0;
             this.gameTick();
         }
@@ -104,39 +116,13 @@ export default class SnakeScene extends Scene {
     handleInput() {
         const input = this.engine.input;
 
-        // Keyboard
-        if (input.isKeyPressed('ArrowLeft')) this.setDirection(-1, 0);
-        if (input.isKeyPressed('ArrowRight')) this.setDirection(1, 0);
-        if (input.isKeyPressed('ArrowUp')) this.setDirection(0, -1);
-        if (input.isKeyPressed('ArrowDown')) this.setDirection(0, 1);
-
-        // Touch (Simple relative turning for now, swipe could be added to InputManager)
-        if (input.pointer.isPressed) {
-            // Ignore if game over tap
-            if (this.isGameOver) return;
-
-            const centerX = this.engine.renderer.width / 2;
-            if (input.pointer.x < centerX) {
-                // Turn Left relative to current direction
-                this.turnLeft();
-            } else {
-                this.turnRight();
-            }
-        }
-    }
-
-    turnLeft() {
-        const newDir = { x: this.direction.y, y: -this.direction.x };
-        this.setDirection(newDir.x, newDir.y);
-    }
-
-    turnRight() {
-        const newDir = { x: -this.direction.y, y: this.direction.x };
-        this.setDirection(newDir.x, newDir.y);
+        if (input.isActive('LEFT')) this.setDirection(-1, 0);
+        if (input.isActive('RIGHT')) this.setDirection(1, 0);
+        if (input.isActive('UP')) this.setDirection(0, -1);
+        if (input.isActive('DOWN')) this.setDirection(0, 1);
     }
 
     setDirection(x, y) {
-        // Prevent 180 turns
         if (x === -this.direction.x && y === -this.direction.y) return;
         this.pendingDirection = { x, y };
     }
@@ -160,32 +146,27 @@ export default class SnakeScene extends Scene {
             return;
         }
 
-        // Add Head
         this.snake.unshift(head);
 
-        // Eat Food
         if (head.x === this.food.x && head.y === this.food.y) {
             this.score++;
-            this.engine.audio.playTone(600, 'sine', 0.1); // Beep!
+            this.synth.playEat();
 
-            // DOM Update
             const scoreEl = document.getElementById('scoreDisplay');
             if(scoreEl) scoreEl.textContent = this.score;
 
             this.spawnFood();
         } else {
-            // Remove Tail
             this.snake.pop();
         }
     }
 
     gameOver() {
         this.isGameOver = true;
-        this.engine.audio.playTone(150, 'sawtooth', 0.4); // Crash!
+        this.synth.playCrash();
     }
 
     draw(renderer) {
-        // Background
         renderer.clear('#240a1e');
 
         // Draw Snake
@@ -212,20 +193,18 @@ export default class SnakeScene extends Scene {
         if (this.food) {
             const x = this.food.x * this.GRID_SIZE + this.GRID_SIZE/2;
             const y = this.food.y * this.GRID_SIZE + this.GRID_SIZE/2;
-
             renderer.drawCircleEffect(x, y, this.GRID_SIZE/2 - 4, '#00ffff', 15, '#00ffff');
         }
 
-        // Game Over Overlay
+        // UI
         if (this.isGameOver) {
             const w = renderer.width;
             const h = renderer.height;
             renderer.ctx.fillStyle = 'rgba(0,0,0,0.7)';
             renderer.ctx.fillRect(0, 0, w, h);
-
             renderer.drawText("GAME OVER", w/2, h/2 - 20, 40, '#fff');
             renderer.drawText("Score: " + this.score, w/2, h/2 + 30, 25, '#ccc');
-            renderer.drawText("Tap to Retry", w/2, h/2 + 70, 20, '#fff');
+            renderer.drawText("Press Button to Retry", w/2, h/2 + 70, 20, '#fff');
         }
     }
 }

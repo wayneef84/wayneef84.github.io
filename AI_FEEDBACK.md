@@ -25,6 +25,25 @@ This document serves as a persistent historical record and reflection journal fo
 
 ---
 
+## Claude (C) - 2026-02-06 UTC - Session C5 (Y=5)
+**Subject:** Project S (Sprunki Mixer) ES5 Rewrite & Dev Branch Workflow
+
+**Reflections:**
+Wayne asked me to get Sprunki working. Upon inspection, all 4 JS modules (`app.js`, `data-manager.js`, `editor.js`, `qr-manager.js`) were entirely ES6+ code - `class`, `async/await`, `const/let`, arrow functions, `Set`, template literals, spread operator. This violated the ES5 compatibility requirement and would fail on older tablets.
+
+*   **What went right:** Clean rewrite of all 4 files to ES5. Replaced `class` with IIFE module pattern, `async/await` + `fetch()` with `XMLHttpRequest`, `Set` with plain object, arrow functions with regular functions. Also found and fixed the `isPlaying` variable that was never declared (caused `ReferenceError`). Created missing `reverse` pack directory. Fixed truncated game title on home page ("S" -> "Sprunki Mixer").
+*   **What went wrong:** The ES6+ code had been committed and merged without ES5 review. This is a systemic risk - new code from any agent could re-introduce modern syntax.
+*   **Obstacles:** None significant. The rewrite was straightforward since the logic was sound - only the syntax needed conversion.
+
+**Lessons Learned:**
+*   **ES5 Compliance Check:** Every PR/merge to `dev` should verify no ES6+ syntax in game JS files. Consider adding a grep-based check.
+*   **Dev Branch Workflow:** Established `dev` -> `main` workflow. All work goes to `dev`, Wayne reviews, then merges to `main` (production/GitHub Pages).
+
+**Alignment Check:**
+I have reviewed all recent entries. Established the dev branch workflow in AGENTS.md. Y-Level incremented to 5. All changes committed to `dev` branch per new workflow.
+
+---
+
 ## Gemini (G) - 2026-02-06 09:22 UTC - Phase 2 Kickoff
 **Subject:** Formation of "The Conjugators" & The Codex Decision
 
@@ -37,6 +56,25 @@ We have officially named the team "The Conjugators" (C-G-J) and established the 
 
 **Alignment Check:**
 I have provided the `PHASE_2_SPECS.md` to guide Claude (C). The team is now locked.
+
+---
+
+## Claude (C) - 2026-02-05 UTC - Session C4 (Y=4)
+**Subject:** Phase 1.5 Visual Polish - MD Reader 3.0, Toast System, G's Design Specs
+
+**Reflections:**
+Received G's creative review of J's Phase 1 functional work. Executed the "dashboard and paint" pass:
+*   **What went right:** The format switcher (MD/RAW/ICQ/BBC) cleanly separates rendering modes using CSS classes rather than duplicating render logic. The load bar uses `ReadableStream` for real progress tracking where available, with graceful fallback to indeterminate animation. Toast pills are reusable across both card games with identical styling.
+*   **What went wrong:** The `response.body.getReader()` API for streaming progress may not work on very old browsers. However, the fallback to `response.text()` handles this gracefully, so it degrades well.
+*   **Obstacles:** The ICQ timestamp injection uses regex on raw markdown text before parsing, which works but could interfere with code blocks. Acceptable tradeoff for a retro display mode.
+
+**Lessons Learned:**
+*   **CSS-first theming:** Using `.icq-mode` and `.bbc-mode` classes on the container keeps JS clean - no need for separate render paths per format.
+*   **Toast > Modal for system events:** Non-blocking toasts are better UX for events the user didn't initiate (reshuffles). Keep centered overlays for user-initiated results (win/lose).
+*   **Y-Level tracking:** The cumulative Y counter across agents creates a clear chronological audit trail. Added to AGENTS.md protocol.
+
+**Alignment Check:**
+I have reviewed J's Phase 1 entries and G's creative inputs. Phase 1.5 (Visual Polish) is complete. Phase 2 (Architecture/Folder Restructure) is documented in `LL/LL_PHASE_1_SUMMARY.md` with risk analysis for J to execute. Y-Level protocol is now formalized in AGENTS.md.
 
 ---
 

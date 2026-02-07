@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>War - Founding & Forging</title>
+    <title>War - F.O.N.G.</title>
     <style>
         * {
             box-sizing: border-box;
@@ -890,6 +890,31 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:500; display:flex; flex-direction:column; gap:8px; pointer-events:none;"></div>
+    <style>
+        .toast-pill {
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffd700;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-family: system-ui, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: auto;
+        }
+        .toast-pill.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+
     <script src="../shared/enums.js"></script>
     <script src="../shared/card.js"></script>
     <script src="../shared/deck.js"></script>
@@ -1495,26 +1520,24 @@
             };
 
             WarUI.prototype._showAutoShuffleFireFlash = function() {
-                var self = this;
-                var flashDiv = this.el.autoShuffleFlash;
-                var messageSpan = this.el.flashMessage;
+                // Non-blocking toast pill instead of full-screen flash
+                this._showToast('🔄 Deck Reshuffled');
+            };
 
-                messageSpan.textContent = 'Auto-Shuffle!';
-
-                // Show flash (faster - 0.25s for firing)
-                flashDiv.classList.remove('hidden');
+            WarUI.prototype._showToast = function(text) {
+                var container = document.getElementById('toastContainer');
+                if (!container) return;
+                var pill = document.createElement('div');
+                pill.className = 'toast-pill';
+                pill.textContent = text;
+                container.appendChild(pill);
+                setTimeout(function() { pill.classList.add('show'); }, 10);
                 setTimeout(function() {
-                    flashDiv.classList.add('show');
-                }, 10);
-
-                var dismissTimeout = setTimeout(function() {
-                    self._hideAutoShuffleFlash();
-                }, 250);
-
-                flashDiv.onclick = function() {
-                    clearTimeout(dismissTimeout);
-                    self._hideAutoShuffleFlash();
-                };
+                    pill.classList.remove('show');
+                    setTimeout(function() {
+                        if (pill.parentNode) pill.parentNode.removeChild(pill);
+                    }, 300);
+                }, 2500);
             };
 
             WarUI.prototype._hideAutoShuffleFlash = function() {

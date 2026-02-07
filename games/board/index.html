@@ -5,51 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Board Games Arcade - Dad's Casino</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Specific styles for control buttons to match Casino theme */
-        .control-btn {
-            background: linear-gradient(145deg, #ffd700, #daa520);
-            border: 2px solid #8b4513;
-            color: #3d2b1f;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 4px #8b4513;
-            margin: 0 5px;
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
-        
-        .control-btn:active {
-            box-shadow: 0 2px #8b4513;
-            transform: translateY(2px);
-        }
-
-        /* Container for the bottom buttons */
-        .button-group {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        #gameSelector {
-            margin-top: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        /* Mobile adjustments */
-        @media (max-width: 480px) {
-            .control-btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-        }
-    </style>
 </head>
 <body>
     <div id="gameContainer">
@@ -59,18 +14,7 @@
                 <a href="../../index.html" class="backButton">Exit</a>
             </div>
 
-            <select id="gameSelector" class="control-btn">
-                <option value="xiangqi">Chinese Chess (Xiangqi)</option>
-                <option value="chess">Chess</option>
-                <option value="checkers">Checkers</option>
-                <option disabled>--- Coming Soon ---</option>
-                <option disabled>Mancala</option>
-                <option disabled>Connect 4</option>
-                <option disabled>Battleship</option>
-                <option disabled>Tic Tac Toe</option>
-                <option disabled>Dots and Lines</option>
-                <option disabled>Stacking Game</option>
-            </select>
+            <button id="switchButton" class="control-btn">🎮 Switch Game</button>
         </div>
 
         <div id="gameScaler">
@@ -108,6 +52,18 @@
                 </div>
             </div>
 
+            <div id="scoreBoard">
+                <div class="score-box p1-box">
+                    <span class="score-label">PLAYER 1</span>
+                    <span id="scoreP1" class="score-value">0</span>
+                </div>
+                <div class="score-divider">-</div>
+                <div class="score-box p2-box">
+                    <span class="score-label">PLAYER 2</span>
+                    <span id="scoreP2" class="score-value">0</span>
+                </div>
+            </div>
+
             <div id="turnDisplay" style="font-size: 1.2em; font-weight: bold; margin: 15px 0; min-height: 27px;">Red's Turn</div>
             
             <div class="button-group">
@@ -126,6 +82,17 @@
     <script src="js/xiangqi.js"></script>
     <script src="js/chess.js"></script>
     <script src="js/checkers.js"></script>
+    <script src="js/tictactoe.js"></script>
+    <script src="js/connect4.js"></script>
+    <script src="js/mancala.js"></script>
+    <script src="js/dots.js"></script>
+    <script src="js/battleship.js"></script>
+    <script src="js/gomoku.js"></script>
+    <script src="js/othello.js"></script>
+
+    <!-- UI -->
+    <script src="js/overlay.js"></script>
+    <script src="js/settings.js"></script>
 
     <!-- Main Controller -->
     <script src="js/main.js"></script>

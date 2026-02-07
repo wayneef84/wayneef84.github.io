@@ -1,25 +1,102 @@
+// Expanded File List generated from repo scan
 var FILES = [
+    // Root
     { category: "Root", name: "README", path: "../../README.md" },
     { category: "Root", name: "AI Feedback", path: "../../AI_FEEDBACK.md" },
     { category: "Root", name: "Agents", path: "../../AGENTS.md" },
     { category: "Root", name: "Changelog", path: "../../CHANGELOG.md" },
     { category: "Root", name: "Roadmap", path: "../../ROADMAP.md" },
+    { category: "Root", name: "Info", path: "../../INFO.md" },
     { category: "Root", name: "Ideas (02/04/26)", path: "../../IDEAS_020426.md" },
+    { category: "Root", name: "Questions", path: "../../QUESTIONS.md" },
+    { category: "Root", name: "Wiki Plan", path: "../../WIKI-PLAN.md" },
+    { category: "Root", name: "Todo", path: "../../TODO.md" },
+    { category: "Root", name: "Project Registry", path: "../../PROJECTS.md" },
+    { category: "Root", name: "Master Manual", path: "../../docs/MASTER_MANUAL.md" },
 
+    // Agent Guidelines
     { category: "Agent Guidelines", name: "Claude", path: "../../CLAUDE.md" },
     { category: "Agent Guidelines", name: "Gemini", path: "../../GEMINI.md" },
     { category: "Agent Guidelines", name: "Jules", path: "../../JULES.md" },
+    { category: "Agent Guidelines", name: "Claude Assessment", path: "../../CLAUDE_ASSESSMENT.md" },
+    { category: "Agent Guidelines", name: "Onboarding", path: "../../ONBOARDING.md" },
 
-    { category: "Lessons Learned", name: "LL Index", path: "../../LL/README.md" },
+    // NEGEN Engine
+    { category: "NEGEN Engine", name: "User Manual", path: "../../docs/negen/USER_MANUAL.md" },
+    { category: "NEGEN Engine", name: "Technical Reference", path: "../../docs/negen/TECHNICAL_REFERENCE.md" },
+    { category: "NEGEN Engine", name: "History & Changelog", path: "../../docs/negen/HISTORY.md" },
+    { category: "NEGEN Engine", name: "Architecture Plan", path: "../../negen/NEGEN_PLAN.md" },
+    { category: "NEGEN Engine", name: "Progress Tracker", path: "../../negen/PROGRESS.md" },
+    { category: "NEGEN Engine", name: "Phase 2 Specs", path: "../../negen/PHASE_2_SPECS.md" },
+    { category: "NEGEN Engine", name: "Phase 3 Plan", path: "../../negen/PHASE_3_PLAN.md" },
+    { category: "NEGEN Engine", name: "Phase 4 Plan", path: "../../negen/PHASE_4_PLAN.md" },
+    { category: "NEGEN Engine", name: "Phase 5 Plan", path: "../../negen/PHASE_5_PLAN.md" },
+    { category: "NEGEN Engine", name: "Overhaul Plan", path: "../../negen/OVERHAUL_PLAN.md" },
+    { category: "NEGEN Engine", name: "Arcade Roadmap", path: "../../negen/ARCADE_ROADMAP.md" },
+    { category: "NEGEN Engine", name: "Engine Readme", path: "../../negen/README.md" },
+
+    // Project Docs
+    { category: "Project Specs", name: "Snake", path: "../../docs/projects/SNAKE.md" },
+    { category: "Project Specs", name: "Slots", path: "../../docs/projects/SLOTS.md" },
+    { category: "Project Specs", name: "Shared", path: "../../docs/projects/SHARED.md" },
+    { category: "Project Specs", name: "XTC Ball", path: "../../docs/projects/XTC_BALL.md" },
+    { category: "Project Specs", name: "Sprunki", path: "../../docs/projects/SPRUNKI.md" },
+    { category: "Project Specs", name: "Cards", path: "../../docs/projects/CARDS.md" },
+    { category: "Project Specs", name: "Flow", path: "../../docs/projects/FLOW.md" },
+
+    // Lessons Learned
+    { category: "Lessons Learned", name: "Index", path: "../../LL/README.md" },
     { category: "Lessons Learned", name: "Card Engine", path: "../../LL/LL_CARD_ENGINE.md" },
     { category: "Lessons Learned", name: "ES5 & Safari", path: "../../LL/LL_ES5_SAFARI.md" },
     { category: "Lessons Learned", name: "Collaboration", path: "../../LL/LL_COLLABORATION.md" },
 
-    { category: "NEGEN Engine", name: "NEGEN Ideas (C)", path: "../../NEGEN_IDEAS_C.md" },
+    // Games
+    { category: "Games", name: "Snake LL v1", path: "../../games/snake/LL_v1_snake.md" },
+    { category: "Games", name: "Snake LL v2", path: "../../games/snake/LL_v2_snake.md" },
+    { category: "Games", name: "Sprunki Readme", path: "../../games/sprunki/README.md" },
+    { category: "Games", name: "XTC Ball LL", path: "../../games/xtc_ball/LL_v5_XTCBALL.md" },
+    { category: "Games", name: "Flow Readme", path: "../../games/flow/README.md" },
+    { category: "Games", name: "Flow Changelog", path: "../../games/flow/CHANGELOG.md" },
+    { category: "Games", name: "Flow Architecture", path: "../../games/flow/ARCHITECTURE.md" },
+    { category: "Games", name: "Cards Changelog", path: "../../games/cards/changelog.md" },
+    { category: "Games", name: "Card Engine Guide", path: "../../games/cards/shared/CARD_ENGINE_GUIDE.md" },
+    { category: "Games", name: "Blackjack Info", path: "../../games/cards/blackjack/INFO.md" },
+    { category: "Games", name: "War Info", path: "../../games/cards/war/INFO.md" },
 
-    { category: "Games", name: "Snake Notes", path: "../../games/snake/LL_v2_snake.md" },
+    // Shipment Tracker
+    { category: "Shipment Tracker", name: "Readme", path: "../../projects/shipment-tracker/README.md" },
+    { category: "Shipment Tracker", name: "Changelog", path: "../../projects/shipment-tracker/CHANGELOG.md" },
+    { category: "Shipment Tracker", name: "DB Usage", path: "../../projects/shipment-tracker/docs/DB_USAGE.md" },
+    { category: "Shipment Tracker", name: "Architecture", path: "../../projects/shipment-tracker/ARCHITECTURE.md" },
+    { category: "Shipment Tracker", name: "API Guide", path: "../../projects/shipment-tracker/API_SETUP_GUIDE.md" },
 
-    { category: "Projects", name: "Shipment Tracker", path: "../../projects/shipment-tracker/README.md" }
+    // Admin
+    { category: "Admin", name: "Upgrade Checklist", path: "../../admin/UPGRADE_CHECKLIST.md" },
+    { category: "Admin", name: "Dependency Policy", path: "../../admin/DEPENDENCY_POLICY.md" },
+    { category: "Space Invaders", name: "Manual", path: "../../games/space_invaders/MANUAL.md" },
+    { category: "Space Invaders", name: "Technical", path: "../../games/space_invaders/TECHNICAL.md" },
+    { category: "Sky Breakers", name: "Manual", path: "../../games/sky_breakers/MANUAL.md" },
+    { category: "Sky Breakers", name: "Technical", path: "../../games/sky_breakers/TECHNICAL.md" },
+    { category: "Breakout", name: "Manual", path: "../../games/breakout/MANUAL.md" },
+    { category: "Breakout", name: "Technical", path: "../../games/breakout/TECHNICAL.md" },
+    { category: "Animal Stack", name: "Manual", path: "../../games/animal_stack/MANUAL.md" },
+    { category: "Animal Stack", name: "Technical", path: "../../games/animal_stack/TECHNICAL.md" },
+    { category: "Pong", name: "Manual", path: "../../games/pong/MANUAL.md" },
+    { category: "Pong", name: "Technical", path: "../../games/pong/TECHNICAL.md" },
+    { category: "Tracing", name: "Manual", path: "../../games/tracing/MANUAL.md" },
+    { category: "Tracing", name: "Technical", path: "../../games/tracing/TECHNICAL.md" },
+    { category: "Board Arcade", name: "Manual", path: "../../games/board/MANUAL.md" },
+    { category: "Board Arcade", name: "Technical", path: "../../games/board/TECHNICAL.md" },
+    { category: "Blackjack", name: "Manual", path: "../../games/cards/blackjack/MANUAL.md" },
+    { category: "Blackjack", name: "Technical", path: "../../games/cards/blackjack/TECHNICAL.md" },
+    { category: "War", name: "Manual", path: "../../games/cards/war/MANUAL.md" },
+    { category: "War", name: "Technical", path: "../../games/cards/war/TECHNICAL.md" },
+    { category: "5 Card Draw", name: "Manual", path: "../../games/cards/poker/5card/MANUAL.md" },
+    { category: "5 Card Draw", name: "Technical", path: "../../games/cards/poker/5card/TECHNICAL.md" },
+    { category: "13 Card Poker", name: "Manual", path: "../../games/cards/poker/13card/MANUAL.md" },
+    { category: "13 Card Poker", name: "Technical", path: "../../games/cards/poker/13card/TECHNICAL.md" },
+    { category: "Texas Hold'em", name: "Manual", path: "../../games/cards/poker/holdem/MANUAL.md" },
+    { category: "Texas Hold'em", name: "Technical", path: "../../games/cards/poker/holdem/TECHNICAL.md" },
 ];
 
 // Imported files storage (session-based)
@@ -39,9 +116,65 @@ var recentFiles = [];
 document.addEventListener('DOMContentLoaded', function() {
     loadImportedFromSession();
     loadHistory();
+    initTheme();
     init();
 });
 
+// --- Theme Management ---
+function initTheme() {
+    var storedTheme = localStorage.getItem('mdReader_theme') || 'dark';
+
+    // Check if custom theme data exists
+    if (storedTheme === 'custom') {
+        loadCustomTheme();
+    }
+
+    setTheme(storedTheme);
+
+    // Bind theme buttons
+    document.querySelectorAll('.theme-opt').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var theme = btn.getAttribute('data-theme');
+            if (theme === 'custom') {
+                openCustomThemeEditor();
+                toggleSettingsMenu(false);
+            } else {
+                setTheme(theme);
+                toggleSettingsMenu(false);
+            }
+        });
+    });
+
+    initCustomThemeEditor();
+}
+
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('mdReader_theme', theme);
+
+    // Update Highlight.js theme
+    var hljsLink = document.getElementById('hljs-theme');
+    if (hljsLink) {
+        if (theme === 'light' || theme === 'solarized') {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+        } else if (theme === 'high-contrast') {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/a11y-dark.min.css";
+        } else {
+             hljsLink.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+        }
+    }
+
+    // If switching away from custom, clean up inline styles?
+    // No, keep them in case they switch back, but the attribute selector in CSS will override standard vars
+    // actually, inline styles override CSS classes. So we need to clear them if not custom.
+    if (theme !== 'custom') {
+        document.body.removeAttribute('style');
+    } else {
+        loadCustomTheme(); // Re-apply if switching back to custom
+    }
+}
+
+// --- History Management ---
 function loadHistory() {
     try {
         recentFiles = JSON.parse(localStorage.getItem('mdReader_recent') || '[]');
@@ -94,6 +227,7 @@ function saveImportedToSession() {
 
 function init() {
     setupSearch();
+    setupExpandCollapse();
     renderSidebar();
     setupFileUpload();
 
@@ -104,8 +238,6 @@ function init() {
             viewMode = (viewMode === 'parsed') ? 'raw' : 'parsed';
             toggleViewBtn.textContent = (viewMode === 'parsed') ? '👁️ Parsed' : '📝 Raw';
             if (currentFilePath) {
-                // Reload current file to re-render
-                 // We don't have the text handy, so re-fetch is easiest (cache usually handles it)
                  if (currentFilePath.startsWith('imported:')) {
                      var filename = currentFilePath.replace('imported:', '');
                      if (importedFiles[filename]) renderMarkdown(importedFiles[filename], filename);
@@ -127,7 +259,14 @@ function init() {
                 loadFile(FILES[0].path);
             }
         } else {
-            loadFile(decodeURIComponent(hash));
+            // Fix path if coming from external link to ensure relative correctness
+            var path = decodeURIComponent(hash);
+            // If path is "games/snake/README.md" and we are in "projects/md-reader/",
+            // we need to make sure it's "../../games/snake/README.md" if not absolute/http.
+            if (!path.startsWith('http') && !path.startsWith('../../') && !path.startsWith('/') && !path.startsWith('./')) {
+                 path = '../../' + path;
+            }
+            loadFile(path);
         }
     } else {
         // Load last opened or default
@@ -139,7 +278,7 @@ function init() {
         }
     }
 
-    // Sidebar toggle for mobile and desktop
+    // Sidebar toggle
     var toggleBtn = document.getElementById('toggleSidebar');
     var sidebar = document.getElementById('sidebar');
     var overlay = document.getElementById('sidebarOverlay');
@@ -147,10 +286,8 @@ function init() {
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function() {
             if (window.innerWidth > 768) {
-                // Desktop: Toggle collapsed state
                 sidebar.classList.toggle('collapsed');
             } else {
-                // Mobile: Toggle open state
                 sidebar.classList.toggle('open');
                 if (overlay) overlay.classList.toggle('active');
             }
@@ -163,19 +300,36 @@ function init() {
         });
     }
 
+    // Settings Menu
+    var settingsBtn = document.getElementById('settingsBtn');
+    var settingsMenu = document.getElementById('settingsMenu');
+
+    if (settingsBtn && settingsMenu) {
+        settingsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleSettingsMenu();
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+                toggleSettingsMenu(false);
+            }
+        });
+    }
+
+    // Print Button
+    var printBtn = document.getElementById('printBtn');
+    if (printBtn) {
+        printBtn.addEventListener('click', function() {
+            window.print();
+            toggleSettingsMenu(false);
+        });
+    }
+
     // Infinite Scroll Listener
     var container = document.getElementById('markdownContent');
     if (container) {
-        container.parentElement.addEventListener('scroll', function(e) {
-            // Note: markdown-container is the scrollable element in style.css,
-            // but the ID markdownContent is the inner div?
-            // In index.html: <div id="markdownContent" class="markdown-body markdown-container">
-            // So markdownContent IS the container.
-        });
-
-        // Wait, looking at index.html:
-        // <div id="markdownContent" class="markdown-body markdown-container">
-        // So the scroll listener should be on markdownContent.
         container.addEventListener('scroll', function() {
             if (container.scrollHeight - container.scrollTop - container.clientHeight < 1000) {
                 renderNextChunk();
@@ -203,11 +357,48 @@ function init() {
     }
 }
 
+function toggleSettingsMenu(forceState) {
+    var menu = document.getElementById('settingsMenu');
+    if (!menu) return;
+
+    if (typeof forceState === 'boolean') {
+        if (forceState) menu.classList.add('show');
+        else menu.classList.remove('show');
+    } else {
+        menu.classList.toggle('show');
+    }
+}
+
 function setupSearch() {
     var searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', function(e) {
             renderSidebar(e.target.value);
+        });
+    }
+}
+
+function setupExpandCollapse() {
+    var expandAll = document.getElementById('expandAllBtn');
+    var collapseAll = document.getElementById('collapseAllBtn');
+
+    if (expandAll) {
+        expandAll.addEventListener('click', function() {
+            document.querySelectorAll('.category-group').forEach(function(el) {
+                el.classList.remove('collapsed');
+                var icon = el.querySelector('.cat-icon');
+                if (icon) icon.textContent = '▼';
+            });
+        });
+    }
+
+    if (collapseAll) {
+        collapseAll.addEventListener('click', function() {
+            document.querySelectorAll('.category-group').forEach(function(el) {
+                el.classList.add('collapsed');
+                var icon = el.querySelector('.cat-icon');
+                if (icon) icon.textContent = '▶';
+            });
         });
     }
 }
@@ -341,29 +532,61 @@ function renderSidebar(searchTerm) {
         });
     }
 
-    // Filter FILES
-    var filteredFiles = FILES.filter(function(file) {
+    // Filter: If search term exists, use REPO_FILES (comprehensive). Else use FILES (curated sidebar).
+    var sourceFiles = (searchTerm && typeof REPO_FILES !== 'undefined') ? REPO_FILES : FILES;
+
+    // Sort logic: If searching, flat list might be better, but grouping still works if categorized well.
+    // Let's stick to grouping for now as REPO_FILES has categories.
+
+    var filteredFiles = sourceFiles.filter(function(file) {
         if (!searchTerm) return true;
         return file.name.toLowerCase().includes(searchTerm) ||
-               file.category.toLowerCase().includes(searchTerm);
+               file.path.toLowerCase().includes(searchTerm);
     });
 
     // Group by category
     var categories = {};
     filteredFiles.forEach(function(file) {
-        if (!categories[file.category]) {
-            categories[file.category] = [];
+        var cat = file.category || "Uncategorized";
+        if (!categories[cat]) {
+            categories[cat] = [];
         }
-        categories[file.category].push(file);
+        categories[cat].push(file);
     });
+
+    // If searching, auto-expand all categories
+    var autoExpand = !!searchTerm;
 
     // Render repo files
     Object.keys(categories).forEach(function(category) {
         var files = categories[category];
 
-        var categoryHeader = document.createElement('li');
-        categoryHeader.innerHTML = '<div style="padding: 10px 15px; font-size: 0.8em; text-transform: uppercase; color: var(--text-secondary); opacity: 0.7; font-weight: bold; margin-top: 10px;">' + category + '</div>';
-        list.appendChild(categoryHeader);
+        var categoryLi = document.createElement('li');
+        categoryLi.className = 'category-group';
+
+        if (!autoExpand) {
+             categoryLi.classList.add('collapsed');
+        } else {
+             // If expanded, remove collapsed (redundant but safe)
+             categoryLi.classList.remove('collapsed');
+        }
+
+        // Header
+        var header = document.createElement('div');
+        header.className = 'category-header';
+        // Fix: Use correct initial arrow state based on collapsed class
+        var arrow = (!autoExpand) ? '▶' : '▼';
+        header.innerHTML = '<span class="cat-icon">' + arrow + '</span> <span class="cat-name">' + category + '</span> <span class="cat-count">' + files.length + '</span>';
+
+        // Container for files
+        var fileContainer = document.createElement('ul');
+        fileContainer.className = 'category-files';
+
+        header.addEventListener('click', function() {
+            categoryLi.classList.toggle('collapsed');
+            var icon = header.querySelector('.cat-icon');
+            icon.textContent = categoryLi.classList.contains('collapsed') ? '▶' : '▼';
+        });
 
         files.forEach(function(file) {
             var li = document.createElement('li');
@@ -371,7 +594,15 @@ function renderSidebar(searchTerm) {
 
             var btn = document.createElement('button');
             btn.className = 'file-btn';
-            btn.innerHTML = '<span style="opacity: 0.7;">📄</span> ' + file.name;
+
+            // Icon based on type if available (from REPO_FILES merging)
+            var icon = '📄';
+            if (file.type === 'csv') icon = '📊';
+            else if (file.type === 'json') icon = 'Curly Braces';
+            else if (file.type === 'js') icon = '📜';
+            else if (file.type === 'html') icon = '🌐';
+
+            btn.innerHTML = '<span style="opacity: 0.7;">' + icon + '</span> ' + file.name;
             btn.addEventListener('click', function() {
                 loadFile(file.path);
                 document.querySelectorAll('.file-btn').forEach(function(b) {
@@ -383,11 +614,17 @@ function renderSidebar(searchTerm) {
 
             if (window.location.hash.slice(1) === file.path) {
                 btn.classList.add('active');
+                categoryLi.classList.remove('collapsed'); // Auto expand if active file is inside
+                header.querySelector('.cat-icon').textContent = '▼';
             }
 
             li.appendChild(btn);
-            list.appendChild(li);
+            fileContainer.appendChild(li);
         });
+
+        categoryLi.appendChild(header);
+        categoryLi.appendChild(fileContainer);
+        list.appendChild(categoryLi);
     });
 
     // Filter Imported Files
@@ -511,13 +748,36 @@ function renderMarkdown(text, path) {
 
     if (viewMode === 'raw') {
         container.innerHTML = '<pre style="white-space: pre-wrap; word-break: break-all;"><code>' +
-            text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+            escapeHtml(text) +
             '</code></pre>';
         container.scrollTop = 0;
         return;
     }
 
-    // BBC Translation
+    // Determine extension for rendering strategy
+    var ext = path ? path.split('.').pop().toLowerCase() : 'md';
+
+    // CSV Rendering
+    if (ext === 'csv') {
+        renderCsv(text, container);
+        return;
+    }
+
+    // Code Rendering (Generic) - if not MD/Markdown
+    if (ext !== 'md' && ext !== 'markdown' && ext !== 'txt') {
+        // Try to map extension to language for highlight.js
+        var lang = ext;
+        if (lang === 'js') lang = 'javascript';
+        if (lang === 'py') lang = 'python';
+        if (lang === 'html') lang = 'xml';
+
+        container.innerHTML = '<pre><code class="language-' + lang + '">' + escapeHtml(text) + '</code></pre>';
+        hljs.highlightAll();
+        container.scrollTop = 0;
+        return;
+    }
+
+    // BBC Translation (Only for MD/TXT)
     text = convertBbcToMarkdown(text);
 
     try {
@@ -531,6 +791,35 @@ function renderMarkdown(text, path) {
         renderNextChunk();
     } catch (e) {
         container.innerHTML = '<div class="error-message">Error parsing markdown: ' + e.message + '</div>';
+    }
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderCsv(text, container) {
+    try {
+        var rows = text.trim().split('\n');
+        if (rows.length === 0) return;
+
+        var html = '<div style="overflow-x:auto;"><table>';
+
+        rows.forEach(function(row, i) {
+            html += '<tr>';
+            var cols = row.split(','); // Simple split, doesn't handle quoted commas
+            cols.forEach(function(col) {
+                if (i === 0) html += '<th>' + escapeHtml(col.trim()) + '</th>';
+                else html += 'td>' + escapeHtml(col.trim()) + '</td>';
+            });
+            html += '</tr>';
+        });
+
+        html += '</table></div>';
+        container.innerHTML = html;
+        container.scrollTop = 0;
+    } catch(e) {
+        container.innerHTML = '<div class="error-message">Error parsing CSV: ' + e.message + '</div>';
     }
 }
 
@@ -598,4 +887,93 @@ function openInNewTab() {
     } else {
         window.open(currentFilePath, '_blank');
     }
+}
+
+// --- Custom Theme Logic ---
+function initCustomThemeEditor() {
+    var modal = document.getElementById('customThemeEditor');
+    var close = document.getElementById('closeCte');
+    var save = document.getElementById('cte-save');
+    var reset = document.getElementById('cte-reset');
+    var inputs = {
+        bg: document.getElementById('cte-bg'),
+        text: document.getElementById('cte-text'),
+        accent: document.getElementById('cte-accent'),
+        bgSec: document.getElementById('cte-bg-sec')
+    };
+
+    close.addEventListener('click', function() {
+        modal.classList.remove('active');
+    });
+
+    save.addEventListener('click', function() {
+        var themeData = {
+            '--bg-primary': inputs.bg.value,
+            '--text-primary': inputs.text.value,
+            '--accent': inputs.accent.value,
+            '--bg-secondary': inputs.bgSec.value,
+            // Derived
+            '--border': adjustColor(inputs.bgSec.value, 20),
+            '--code-bg': inputs.bgSec.value,
+            '--text-secondary': adjustColor(inputs.text.value, -40)
+        };
+
+        localStorage.setItem('mdReader_custom_theme', JSON.stringify(themeData));
+        applyCustomTheme(themeData);
+        setTheme('custom');
+        modal.classList.remove('active');
+    });
+
+    reset.addEventListener('click', function() {
+        // Reset inputs to dark theme defaults
+        inputs.bg.value = '#0f172a';
+        inputs.text.value = '#f8fafc';
+        inputs.accent.value = '#38bdf8';
+        inputs.bgSec.value = '#1e293b';
+    });
+}
+
+function openCustomThemeEditor() {
+    var modal = document.getElementById('customThemeEditor');
+    modal.classList.add('active');
+
+    // Load current values if custom
+    var stored = localStorage.getItem('mdReader_custom_theme');
+    if (stored) {
+        var data = JSON.parse(stored);
+        document.getElementById('cte-bg').value = data['--bg-primary'] || '#000000';
+        document.getElementById('cte-text').value = data['--text-primary'] || '#ffffff';
+        document.getElementById('cte-accent').value = data['--accent'] || '#00ffff';
+        document.getElementById('cte-bg-sec').value = data['--bg-secondary'] || '#111111';
+    }
+}
+
+function loadCustomTheme() {
+    var stored = localStorage.getItem('mdReader_custom_theme');
+    if (stored) {
+        applyCustomTheme(JSON.parse(stored));
+    }
+}
+
+function applyCustomTheme(data) {
+    for (var key in data) {
+        document.body.style.setProperty(key, data[key]);
+    }
+}
+
+function adjustColor(hex, amount) {
+    // Basic implementation to lighten/darken hex color
+    var usePound = false;
+    if (hex[0] == "#") {
+        hex = hex.slice(1);
+        usePound = true;
+    }
+    var num = parseInt(hex, 16);
+    var r = (num >> 16) + amount;
+    if (r > 255) r = 255; else if (r < 0) r = 0;
+    var b = ((num >> 8) & 0x00FF) + amount;
+    if (b > 255) b = 255; else if (b < 0) b = 0;
+    var g = (num & 0x0000FF) + amount;
+    if (g > 255) g = 255; else if (g < 0) g = 0;
+    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 }

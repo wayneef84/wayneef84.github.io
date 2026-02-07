@@ -55,7 +55,7 @@ A browser-based shipment tracking application that aggregates tracking data from
 - **Firebase SDK** (v10.x): For cloud sync adapter
 - **SheetJS (xlsx.js)** (v0.18.x): For Excel export (if not using minimal CSV-to-XLSX)
 
-### Shared UI Patterns (from Founding & Forging games)
+### Shared UI Patterns (from F.O.N.G. games)
 - Mobile CSS patterns from `/games/slots/css/slots.css`
 - Form controls from `/games/xiangqi/index.html`
 - Layout structure from `/games/letter-tracing/css/style.css`
@@ -246,7 +246,7 @@ Query Engine (Smart Filter)
 
 ## Project Context
 
-This is a **utility project** (non-game) that lives separately from the Founding & Forging games in `/projects/` instead of `/games/`.
+This is a **utility project** (non-game) that lives separately from the F.O.N.G. games in `/projects/` instead of `/games/`.
 
 ### Development Guidelines
 - Read `/CLAUDE.md` for architecture guidance

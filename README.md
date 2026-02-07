@@ -1,4 +1,4 @@
-# Founding & Forging & Projects
+# F.O.N.G. & Projects
 
 **A collection of browser-based games and utility applications.**
 

@@ -31,8 +31,7 @@ class XiangqiGame {
         this.gameMode = 'pvp'; this.aiColor = 'black'; this.aiDifficulty = 2;
 
         // Events
-        this.handleClickBound = (e) => this.handleClick(e);
-        this.canvas.addEventListener('click', this.handleClickBound);
+        this.inputCleanup = GameEngine.addInputListener(this.canvas, (e) => this.handleClick(e));
         
         // Initial Draw
         this.updateTurnDisplay();
@@ -40,7 +39,7 @@ class XiangqiGame {
     }
 
     destroy() {
-        this.canvas.removeEventListener('click', this.handleClickBound);
+        if (this.inputCleanup) this.inputCleanup();
     }
 
     // Public methods for external controls
@@ -157,10 +156,9 @@ class XiangqiGame {
         if(this.isGameOver) return;
         if(this.gameMode==='ai' && this.currentPlayer===this.aiColor) return;
 
-        const rect=this.canvas.getBoundingClientRect();
-        const scaleX=this.canvas.width/rect.width, scaleY=this.canvas.height/rect.height;
-        const c=Math.round(((e.clientX-rect.left)*scaleX - this.margin)/this.cellSize);
-        const r=Math.round(((e.clientY-rect.top)*scaleY - this.margin)/this.cellSize);
+        const { x, y } = GameEngine.getEventCoords(e, this.canvas);
+        const c=Math.round((x - this.margin)/this.cellSize);
+        const r=Math.round((y - this.margin)/this.cellSize);
         
         if(c<0||c>=9||r<0||r>=10) return;
         const piece = this.board[r][c];
