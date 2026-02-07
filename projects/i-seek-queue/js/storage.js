@@ -12,6 +12,9 @@ class StorageManager {
             const data = localStorage.getItem(this.KEYS.SETTINGS);
             const defaults = {
                 detectMode: 'AUTO',
+                actionMode: 'URL_LOOKUP', // FREE or URL_LOOKUP
+                baseUrl: 'https://www.google.com/search?q=',
+                scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
                 feedbackFlash: 'SCANNER'  // OFF, SCANNER, SCREEN
@@ -21,6 +24,9 @@ class StorageManager {
             console.error("Failed to load settings", e);
             return {
                 detectMode: 'AUTO',
+                actionMode: 'URL_LOOKUP',
+                baseUrl: 'https://www.google.com/search?q=',
+                scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER',
                 feedbackFlash: 'SCANNER'
