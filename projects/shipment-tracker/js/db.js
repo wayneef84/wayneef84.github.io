@@ -2,10 +2,12 @@
  * IndexedDB Storage Adapter for Shipment Tracker
  *
  * Provides persistent storage for tracking records, raw payloads, and settings.
- * Refactored to use generic NegenDB engine with fallback to legacy adapter.
+ * Uses IndexedDB directly via LegacyIndexedDBAdapter (proven, stable).
  *
  * @version 2.0.0 (Hybrid Generic/Legacy)
  * @author F.O.N.G.
+ * @version 2.1.0 (Legacy-only, NegenDB references removed)
+ * @author Founding & Forging
  */
 
 (function(window) {
@@ -468,233 +470,12 @@
     };
 
     // ============================================================
-    // MODERN SHIPMENT DB (Generic Engine Wrapper)
-    // ============================================================
-
-    /**
-     * Modern Adapter using FongDB (Generic)
-     * Maps Shipment Tracker API to Generic DB API
-     */
-    function ModernShipmentDB(config) {
-        // Ensure FongDB exists
-        if (!window.FongDB) {
-            throw new Error('FongDB library not found');
-        }
-
-        this.db = new FongDB(config || DB_CONFIG);
-        this.type = 'modern';
-        console.log('[ModernShipmentDB] Initialized with generic engine');
-    }
-
-    // Mixin existing logic (Smart Save, Pruning) but implemented via Generic API
-    ModernShipmentDB.prototype = {
-        init: function() {
-            return this.db.init();
-        },
-
-        close: function() {
-            // NegenDB doesn't currently expose close (managed internally), but we can stub it
-            // or extend NegenDB later. For now, it's fine.
-            console.log('[ModernShipmentDB] Closed');
-        },
-
-        // --- TRACKING ---
-        getTracking: function(awb, carrier) {
-            if (carrier) {
-                // Get by ID
-                return this.db.collection('trackings').get(awb + '_' + carrier);
-            } else {
-                // Query by AWB index
-                return this.db.collection('trackings').getAll({ awb: awb }).then(function(results) {
-                    return results.length > 0 ? results[0] : null;
-                });
-            }
-        },
-
-        saveTracking: function(tracking) {
-            if (!tracking.awb || !tracking.carrier) return Promise.reject(new Error('Missing AWB/Carrier'));
-            tracking.trackingId = tracking.awb + '_' + tracking.carrier;
-            return this.db.collection('trackings').put(tracking);
-        },
-
-        deleteTracking: function(awb, carrier) {
-            if (carrier) {
-                return this.db.collection('trackings').delete(awb + '_' + carrier);
-            } else {
-                var self = this;
-                return this.getTracking(awb).then(function(tracking) {
-                    if (tracking) {
-                        return self.db.collection('trackings').delete(tracking.trackingId);
-                    }
-                    return Promise.reject(new Error('Tracking not found'));
-                });
-            }
-        },
-
-        getAllTrackings: function(filters) {
-            // Map filters to object for generic getAll
-            // Note: DB engine currently only supports simple {key: val} exact matches for getAll optimization
-            // For complex filters, we fetch all (or partial) and filter in memory here.
-
-            var queryFilter = null;
-            if (filters) {
-                if (filters.carrier && !filters.delivered && !filters.deliverySignal) {
-                    queryFilter = { carrier: filters.carrier };
-                } else if (filters.delivered !== undefined && !filters.carrier && !filters.deliverySignal) {
-                    queryFilter = { delivered: filters.delivered };
-                }
-            }
-
-            return this.db.collection('trackings').getAll(queryFilter).then(function(results) {
-                // Apply remaining filters in memory
-                if (filters) {
-                    return results.filter(function(r) {
-                        if (filters.carrier && r.carrier !== filters.carrier) return false;
-                        if (filters.delivered !== undefined && r.delivered !== filters.delivered) return false;
-                        if (filters.deliverySignal && r.deliverySignal !== filters.deliverySignal) return false;
-                        return true;
-                    });
-                }
-                return results;
-            });
-        },
-
-        getStaleTrackings: function(cooldownMs) {
-            var now = Date.now();
-            return this.db.collection('trackings').getAll().then(function(results) {
-                return results.filter(function(r) {
-                    if (r.delivered) return false;
-                    var lastChecked = new Date(r.lastChecked).getTime();
-                    return (now - lastChecked) >= cooldownMs;
-                });
-            });
-        },
-
-        // --- SMART SAVE LOGIC (Reused from Legacy) ---
-        saveSmartTracking: function(newRecord) {
-            var self = this;
-            var awb = newRecord.awb;
-            var carrier = newRecord.carrier;
-
-            if (!awb || !carrier) return Promise.reject(new Error('Missing AWB/Carrier'));
-
-            return this.getTracking(awb, carrier).then(function(existing) {
-                var finalRecord = newRecord;
-                if (existing) {
-                    var oldDate = existing.dateShipped;
-                    var newDate = newRecord.dateShipped;
-                    var isValid = function(d) { return d && d !== 'N/A' && d !== 'null' && d !== '' && new Date(d).toString() !== 'Invalid Date'; };
-
-                    if (isValid(oldDate)) {
-                        if (!isValid(newDate)) {
-                            finalRecord.dateShipped = oldDate;
-                        } else {
-                            var tOld = new Date(oldDate).getTime();
-                            var tNew = new Date(newDate).getTime();
-                            if (tOld < tNew) finalRecord.dateShipped = oldDate;
-                        }
-                    }
-                    if (existing.trackingId) finalRecord.trackingId = existing.trackingId;
-                }
-                return self.saveTracking(finalRecord);
-            });
-        },
-
-        // --- RAW PAYLOADS ---
-        getRawPayload: function(id) {
-            return this.db.collection('raw_payloads').get(id);
-        },
-
-        saveRawPayload: function(payload) {
-            return this.db.collection('raw_payloads').put(payload);
-        },
-
-        pruneOldPayloads: function(awb, keepCount) {
-            var self = this;
-            keepCount = keepCount || 5;
-
-            return this.db.collection('raw_payloads').getAll({ awb: awb }).then(function(payloads) {
-                payloads.sort(function(a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
-                var toDelete = payloads.slice(keepCount);
-                if (toDelete.length === 0) return 0;
-
-                var promises = toDelete.map(function(p) {
-                    return self.db.collection('raw_payloads').delete(p.id);
-                });
-
-                return Promise.all(promises).then(function() {
-                    return promises.length;
-                });
-            });
-        },
-
-        // --- SETTINGS ---
-        getSetting: function(key) {
-            return this.db.collection('settings').get(key).then(function(result) {
-                return result ? result.value : null;
-            });
-        },
-
-        saveSetting: function(key, value) {
-            return this.db.collection('settings').put({ key: key, value: value });
-        },
-
-        // --- STATS ---
-        getStats: function() {
-            var self = this;
-            return Promise.all([
-                this.db.collection('trackings').getAll(),
-                this.db.collection('raw_payloads').getAll() // Might be slow if huge, optimize later with count()
-            ]).then(function(results) {
-                var trackings = results[0];
-                var payloads = results[1];
-
-                var stats = { totalTrackings: 0, deliveredCount: 0, activeCount: 0, carrierCounts: { DHL: 0, FedEx: 0, UPS: 0 }, totalRawPayloads: payloads.length };
-
-                trackings.forEach(function(record) {
-                    stats.totalTrackings++;
-                    if (record.delivered) stats.deliveredCount++; else stats.activeCount++;
-                    if (stats.carrierCounts[record.carrier] !== undefined) stats.carrierCounts[record.carrier]++;
-                });
-
-                return stats;
-            });
-        },
-
-        clearAll: function() {
-            var self = this;
-            return Promise.all([
-                this.db.collection('trackings').clear(),
-                this.db.collection('raw_payloads').clear(),
-                this.db.collection('settings').clear()
-            ]).then(function() { return; });
-        }
-    };
-
-    // ============================================================
-    // SAFE DB LAUNCHER (Proxy Factory)
-    // ============================================================
-
-    function SafeDBLauncher(config) {
-        // Try to initialize Modern DB
-        try {
-            console.log('[SafeDBLauncher] Attempting to load Generic NegenDB Engine...');
-            return new ModernShipmentDB(config);
-        } catch (e) {
-            console.error('[SafeDBLauncher] Generic Engine failed to load, falling back to Legacy.', e);
-            console.warn('[SafeDBLauncher] Fallback active: LegacyIndexedDBAdapter');
-            return new LegacyIndexedDBAdapter(config);
-        }
-    }
-
-    // ============================================================
     // EXPORT TO GLOBAL SCOPE
     // ============================================================
 
     window.StorageAdapter = StorageAdapter;
-    window.IndexedDBAdapter = SafeDBLauncher; // Replace default export with Launcher
-    window.LegacyIndexedDBAdapter = LegacyIndexedDBAdapter; // Expose legacy just in case
-    window.ModernShipmentDB = ModernShipmentDB;
+    window.IndexedDBAdapter = LegacyIndexedDBAdapter;
+    window.LegacyIndexedDBAdapter = LegacyIndexedDBAdapter;
     window.DB_CONFIG = DB_CONFIG;
 
 })(window);

@@ -8,7 +8,7 @@
 A specialized utility for tracking packages across multiple carriers (DHL, FedEx, UPS). It features a local-first architecture, smart rate limiting to conserve API quotas, and a responsive dashboard UI.
 
 ## Data Schema (LocalDB)
-Data is stored using the **NegenDB** generic engine (IndexedDB adapter) in the following collections:
+Data is stored using **IndexedDB** (via LegacyIndexedDBAdapter) in the following collections:
 
 ### `trackings`
 Primary record for each shipment.
@@ -41,7 +41,8 @@ Stores the full JSON response from the carrier API for debugging and re-normaliz
 Key-value storage for user preferences and API keys.
 
 ## Changelog
-*   **v2.0.0 (2026-02-05)**: Migrated to generic `NegenDB` engine with fallback support. Rebranded to F.O.N.G.
+*   **v2.1.0 (2026-02-06)**: Removed NegenDB/FongDB references; db.js uses LegacyIndexedDBAdapter directly.
+*   **v2.0.0 (2026-02-05)**: Rebranded to F.O.N.G.
 *   **v1.5.0**: Added Dark Mode support.
 *   **v1.0.0**: Initial release with IDB v4 schema.
 

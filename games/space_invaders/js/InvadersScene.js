@@ -29,6 +29,9 @@ export default class InvadersScene extends Scene {
         this.score = 0;
         this.lives = 3;
         this.state = 'playing';
+
+        // Bind FIRE action so we can use isJustPressed for single-shot firing
+        this.engine.input.bindAction('FIRE', ['Space'], 150);
     }
 
     setupLevel() {
@@ -72,7 +75,7 @@ export default class InvadersScene extends Scene {
         this.player.x = MathUtils.clamp(this.player.x, 10, this.width - this.player.w - 10);
 
         // Shoot
-        if (this.engine.input.isKeyPressed('Space') || this.engine.input.pointer.isPressed) {
+        if (this.engine.input.isJustPressed('FIRE') || this.engine.input.pointer.isPressed) {
             // Limit player bullets
             if (this.bullets.filter(b => b.type === 'player').length < 1) {
                 this.bullets.push({
