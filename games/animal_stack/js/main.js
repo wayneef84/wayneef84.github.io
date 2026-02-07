@@ -1,7 +1,7 @@
-import Engine from '../../negen/core/Engine.js';
-import InputManager from '../../negen/input/InputManager.js';
-import AudioManager from '../../negen/audio/AudioManager.js';
-import CanvasRenderer from '../../negen/graphics/CanvasRenderer.js';
+import Engine from '../../../negen/core/Engine.js';
+import InputManager from '../../../negen/input/InputManager.js';
+import AudioManager from '../../../negen/audio/AudioManager.js';
+import CanvasRenderer from '../../../negen/graphics/CanvasRenderer.js';
 import AnimalStackScene from './AnimalStackScene.js';
 
 const canvas = document.getElementById('negenCanvas');
