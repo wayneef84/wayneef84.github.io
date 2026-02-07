@@ -54,12 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Generate Homepage QR
-        generator.generate('homepage-qr', 'https://wayneef84.github.io/');
-
-        // Generate Mobile Page QR
-        generator.generate('mobile-page-qr', window.location.href);
-
         // Render History
         renderHistory();
 
@@ -161,15 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusEl = document.getElementById('scan-status');
 
         if (mode === 'TEXT_OCR') {
-            statusEl.innerText = "Starting OCR...";
+            statusEl.innerText = "Starting Text Scanner...";
             if (ocrManager) {
                 ocrManager.start('TEXT_OCR').then(() => {
-                     statusEl.innerText = "OCR Active. Point at text.";
+                     statusEl.innerText = "Text Scanner Active. Point at text.";
                 }).catch(err => {
-                    statusEl.innerText = "OCR Start Failed: " + err;
+                    statusEl.innerText = "Text Scanner Start Failed: " + err;
                 });
             } else {
-                statusEl.innerText = "OCR Manager not loaded.";
+                statusEl.innerText = "Text Scanner Manager not loaded.";
             }
             return;
         }
