@@ -58,25 +58,16 @@ export default class FiveCardDraw extends CardGame {
 
         // Discard
         indicesToDiscard.forEach(idx => {
-            const removed = p1.hand.contents.splice(idx, 1);
-            if (removed.length > 0) {
-                this.discard.add(removed[0]);
-            }
+            const card = p1.hand.draw(1)[0]; // Logic needs specific index support in Pile?
+            // Pile.draw() draws from top. We need specific removal.
+            // Let's implement specific removal in Pile later or manually:
+            const specificCard = p1.hand.contents[idx];
+            p1.hand.contents.splice(idx, 1);
+            this.discard.add(specificCard);
         });
 
         // Draw replacements
         const count = indicesToDiscard.length;
-
-        // Check if deck has enough cards, shuffle if needed
-        if (this.deck.count < count) {
-            // Move discard to deck if deck is low
-            if (!this.discard.isEmpty) {
-                this.discard.give(this.deck, this.discard.count);
-                this.deck.shuffle();
-                this.emit('SHUFFLE');
-            }
-        }
-
         this.deck.give(p1.hand, count);
 
         // Dealer Turn (AI)
