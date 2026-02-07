@@ -2,7 +2,7 @@
 import Engine from '../../../../negen/core/Engine.js';
 import CardGame from '../../../../negen/cards/CardGame.js';
 import Evaluator from '../../../../negen/cards/Evaluator.js';
-import CardAssets from '../../shared/card-assets.js'; // Legacy assets for now
+// CardAssets is global
 import { RankValues } from '../../../../negen/cards/enums.js';
 
 export default class FiveCardDraw extends CardGame {
