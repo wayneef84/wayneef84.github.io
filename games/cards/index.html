@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Card Table - F.O.N.G.</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -14,6 +14,25 @@
             height: 100dvh;
             display: flex;
             overflow: hidden;
+        }
+
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            background: #ffd700;
+            color: #000;
+            padding: 10px 15px;
+            z-index: 9999;
+            text-decoration: none;
+            border-radius: 0 0 8px 8px;
+            font-weight: bold;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
         }
 
         /* --- DESKTOP SIDEBAR (Visible on Large Screens) --- */
@@ -176,10 +195,12 @@
 </head>
 <body>
 
+    <a href="#gameFrame" class="skip-link">Skip to game</a>
+
     <nav class="sidebar">
         <div class="sidebar-header">Card Games</div>
         <a href="../../index.html" class="game-btn" style="margin-bottom: 20px; background: rgba(255,255,255,0.05);">
-            <span class="game-icon">⬅</span> Back to Arcade
+            <span class="game-icon" aria-hidden="true">⬅</span> Back to Arcade
         </a>
         <div id="desktop-list" style="display: flex; flex-direction: column; gap: 10px;">
             </div>
@@ -188,11 +209,11 @@
     <header class="mobile-header">
         <a href="../../index.html" class="back-btn">Exit</a>
         <span class="mobile-title" id="mobile-title">Card Games</span>
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <button class="menu-toggle" onclick="toggleMenu()" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle Menu">☰</button>
     </header>
 
-    <div class="menu-overlay" id="mobile-menu">
-        <button class="menu-close" onclick="toggleMenu()">×</button>
+    <div class="menu-overlay" id="mobile-menu" aria-modal="true" role="dialog" aria-label="Game Selection Menu">
+        <button class="menu-close" onclick="toggleMenu()" aria-label="Close Menu">×</button>
         <div class="menu-content">
             <h2 style="text-align: center; margin-bottom: 20px; color: #94a3b8;">Select Game</h2>
             <div id="mobile-list" style="display: flex; flex-direction: column; gap: 10px;">
@@ -201,7 +222,7 @@
     </div>
 
     <main class="viewport">
-        <iframe id="gameFrame" src=""></iframe>
+        <iframe id="gameFrame" src="" title="Game Area"></iframe>
     </main>
 
     <script>
@@ -253,7 +274,7 @@
         function createGameButton(game) {
             const btn = document.createElement('button');
             btn.className = `game-btn ${game.disabled ? 'disabled' : ''}`;
-            btn.innerHTML = `<span class="game-icon">${game.icon}</span> ${game.name}`;
+            btn.innerHTML = `<span class="game-icon" role="img" aria-label="${game.name} Icon">${game.icon}</span> ${game.name}`;
             // Remove unique ID assignment to allow multiple buttons for same game (desktop/mobile)
             
             if (!game.disabled) {
@@ -301,13 +322,16 @@
 
         function toggleMenu(forceState) {
             const menu = document.getElementById('mobile-menu');
+            const toggleBtn = document.querySelector('.menu-toggle');
             const isActive = menu.classList.contains('active');
             const newState = forceState !== undefined ? forceState : !isActive;
             
             if (newState) {
                 menu.classList.add('active');
+                toggleBtn.setAttribute('aria-expanded', 'true');
             } else {
                 menu.classList.remove('active');
+                toggleBtn.setAttribute('aria-expanded', 'false');
             }
         }
 

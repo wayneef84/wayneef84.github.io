@@ -232,6 +232,52 @@
             opacity: 1;
         }
 
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            background: #fff;
+            color: #667eea;
+            padding: 10px 15px;
+            z-index: 9999;
+            text-decoration: none;
+            border-radius: 0 0 8px 8px;
+            font-weight: bold;
+            transition: top 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        :focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
@@ -248,282 +294,287 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container">
         <header>
-            <h1>🛠️ Projects</h1>
+            <h1 role="img" aria-label="Tools">🛠️ Projects</h1>
             <p class="subtitle">Utility tools and applications</p>
         </header>
 
-        <div class="projects-grid">
-            <!-- Shipment Tracker -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">📦</div>
-                    <div class="project-title-group">
-                        <h2>Shipment Tracker</h2>
-                        <div class="project-version">v1.0.0</div>
+        <main id="main-content">
+            <h2 class="visually-hidden">Project List</h2>
+            <div class="projects-grid">
+                <!-- Shipment Tracker -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Package">📦</div>
+                        <div class="project-title-group">
+                            <h2>Shipment Tracker</h2>
+                            <div class="project-version">v1.0.0</div>
+                        </div>
+                    </div>
+
+                    <p class="project-description">
+                        Multi-carrier shipment tracking with smart API rate limiting. Track packages from DHL, FedEx, UPS, and USPS in one place with offline-first storage and beautiful analytics.
+                    </p>
+
+                    <div class="project-meta">
+                        <span class="status-badge">✓ Production Ready</span>
+                        <span class="meta-badge">📱 Mobile First</span>
+                        <span class="meta-badge">🌙 Dark Mode</span>
+                    </div>
+
+                    <ul class="features-list">
+                        <li>Auto-detect carrier from tracking number</li>
+                        <li>IndexedDB offline storage</li>
+                        <li>JSON payload viewer & download</li>
+                        <li>Export to JSON/CSV/Excel</li>
+                        <li>Smart rate limiting (10min cooldown)</li>
+                        <li>Cloudflare Worker proxy support</li>
+                    </ul>
+
+                    <div class="project-links">
+                        <a href="shipment-tracker/" class="btn btn-primary">🚀 Launch App</a>
+                        <a href="shipment-tracker/CHANGELOG.md" class="btn btn-secondary">📋 Changelog</a>
+                        <a href="shipment-tracker/README.md" class="btn btn-secondary">📖 Docs</a>
                     </div>
                 </div>
 
-                <p class="project-description">
-                    Multi-carrier shipment tracking with smart API rate limiting. Track packages from DHL, FedEx, UPS, and USPS in one place with offline-first storage and beautiful analytics.
-                </p>
+                <!-- Markdown Reader -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Book">📖</div>
+                        <div class="project-title-group">
+                            <h2>Markdown Reader</h2>
+                            <div class="project-version">v1.0.0</div>
+                        </div>
+                    </div>
 
-                <div class="project-meta">
-                    <span class="status-badge">✓ Production Ready</span>
-                    <span class="meta-badge">📱 Mobile First</span>
-                    <span class="meta-badge">🌙 Dark Mode</span>
-                </div>
+                    <p class="project-description">
+                        Access internal documentation, AI feedback, and project plans directly from the browser. Supports syntax highlighting and easy navigation.
+                    </p>
 
-                <ul class="features-list">
-                    <li>Auto-detect carrier from tracking number</li>
-                    <li>IndexedDB offline storage</li>
-                    <li>JSON payload viewer & download</li>
-                    <li>Export to JSON/CSV/Excel</li>
-                    <li>Smart rate limiting (10min cooldown)</li>
-                    <li>Cloudflare Worker proxy support</li>
-                </ul>
+                    <div class="project-meta">
+                        <span class="status-badge">✓ Live</span>
+                        <span class="meta-badge">🌙 Dark Mode</span>
+                        <span class="meta-badge">📝 Documentation</span>
+                    </div>
 
-                <div class="project-links">
-                    <a href="shipment-tracker/" class="btn btn-primary">🚀 Launch App</a>
-                    <a href="shipment-tracker/CHANGELOG.md" class="btn btn-secondary">📋 Changelog</a>
-                    <a href="shipment-tracker/README.md" class="btn btn-secondary">📖 Docs</a>
-                </div>
-            </div>
+                    <ul class="features-list">
+                        <li>Read hidden project files (AI_FEEDBACK.md, etc.)</li>
+                        <li>Syntax highlighting for code blocks</li>
+                        <li>Sidebar navigation with categories</li>
+                        <li>Custom path loading support</li>
+                    </ul>
 
-            <!-- Markdown Reader -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">📖</div>
-                    <div class="project-title-group">
-                        <h2>Markdown Reader</h2>
-                        <div class="project-version">v1.0.0</div>
+                    <div class="project-links">
+                        <a href="md-reader/index.html" class="btn btn-primary">📖 Open Reader</a>
                     </div>
                 </div>
 
-                <p class="project-description">
-                    Access internal documentation, AI feedback, and project plans directly from the browser. Supports syntax highlighting and easy navigation.
-                </p>
+                <!-- Test Portal -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Test Tube">🧪</div>
+                        <div class="project-title-group">
+                            <h2>Test Portal (QA Dashboard)</h2>
+                            <div class="project-version">v0.1</div>
+                        </div>
+                    </div>
 
-                <div class="project-meta">
-                    <span class="status-badge">✓ Live</span>
-                    <span class="meta-badge">🌙 Dark Mode</span>
-                    <span class="meta-badge">📝 Documentation</span>
-                </div>
+                    <p class="project-description">
+                        Centralized testing hub for F.O.N.G. codebase. Verifies FongDB, NEGEN engine, and other internal components.
+                    </p>
 
-                <ul class="features-list">
-                    <li>Read hidden project files (AI_FEEDBACK.md, etc.)</li>
-                    <li>Syntax highlighting for code blocks</li>
-                    <li>Sidebar navigation with categories</li>
-                    <li>Custom path loading support</li>
-                </ul>
+                    <div class="project-meta">
+                        <span class="status-badge">✓ Live</span>
+                        <span class="meta-badge">Internal</span>
+                        <span class="meta-badge">QA</span>
+                    </div>
 
-                <div class="project-links">
-                    <a href="md-reader/index.html" class="btn btn-primary">📖 Open Reader</a>
-                </div>
-            </div>
+                    <ul class="features-list">
+                        <li>FongDB Verification</li>
+                        <li>Centralized Verification Hub</li>
+                        <li>NEGEN Physics Benchmark (Planned)</li>
+                    </ul>
 
-            <!-- Test Portal -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">🧪</div>
-                    <div class="project-title-group">
-                        <h2>Test Portal (QA Dashboard)</h2>
-                        <div class="project-version">v0.1</div>
+                    <div class="project-links">
+                        <a href="internal-tests/index.html" class="btn btn-primary">🧪 Open Portal</a>
                     </div>
                 </div>
 
-                <p class="project-description">
-                    Centralized testing hub for F.O.N.G. codebase. Verifies FongDB, NEGEN engine, and other internal components.
-                </p>
+                <!-- C.o.D.E. -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Unlocked">🔓</div>
+                        <div class="project-title-group">
+                            <h2>C.o.D.E.</h2>
+                            <div class="project-version">v1.0</div>
+                        </div>
+                    </div>
 
-                <div class="project-meta">
-                    <span class="status-badge">✓ Live</span>
-                    <span class="meta-badge">Internal</span>
-                    <span class="meta-badge">QA</span>
-                </div>
+                    <p class="project-description">
+                        Code Optimization & Decryption Engine. A simulation of brute-force and algorithmic code cracking with customizable patterns and strategies.
+                    </p>
 
-                <ul class="features-list">
-                    <li>FongDB Verification</li>
-                    <li>Centralized Verification Hub</li>
-                    <li>NEGEN Physics Benchmark (Planned)</li>
-                </ul>
+                    <div class="project-meta">
+                        <span class="status-badge">✓ Live</span>
+                        <span class="meta-badge">Simulation</span>
+                        <span class="meta-badge">Hacker UI</span>
+                    </div>
 
-                <div class="project-links">
-                    <a href="internal-tests/index.html" class="btn btn-primary">🧪 Open Portal</a>
-                </div>
-            </div>
+                    <ul class="features-list">
+                        <li>Customizable patterns (e.g. License Plates)</li>
+                        <li>Strategies: Sequential, Random, Reverse</li>
+                        <li>Real-time visualization and speed metrics</li>
+                        <li>Adjustable simulation delay</li>
+                    </ul>
 
-            <!-- C.o.D.E. -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">🔓</div>
-                    <div class="project-title-group">
-                        <h2>C.o.D.E.</h2>
-                        <div class="project-version">v1.0</div>
+                    <div class="project-links">
+                        <a href="code/index.html" class="btn btn-primary">🔓 Launch Engine</a>
                     </div>
                 </div>
 
-                <p class="project-description">
-                    Code Optimization & Decryption Engine. A simulation of brute-force and algorithmic code cracking with customizable patterns and strategies.
-                </p>
+                <!-- I Seek Queue -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Camera">📷</div>
+                        <div class="project-title-group">
+                            <h2>I Seek Queue</h2>
+                            <div class="project-version">v1.0</div>
+                        </div>
+                    </div>
 
-                <div class="project-meta">
-                    <span class="status-badge">✓ Live</span>
-                    <span class="meta-badge">Simulation</span>
-                    <span class="meta-badge">Hacker UI</span>
-                </div>
+                    <p class="project-description">
+                        Barcode and QR code scanner with multiple detection modes. Scan, generate, and copy codes directly from your device camera.
+                    </p>
 
-                <ul class="features-list">
-                    <li>Customizable patterns (e.g. License Plates)</li>
-                    <li>Strategies: Sequential, Random, Reverse</li>
-                    <li>Real-time visualization and speed metrics</li>
-                    <li>Adjustable simulation delay</li>
-                </ul>
+                    <div class="project-meta">
+                        <span class="status-badge">✓ Live</span>
+                        <span class="meta-badge">📱 Mobile First</span>
+                        <span class="meta-badge">📷 Camera</span>
+                    </div>
 
-                <div class="project-links">
-                    <a href="code/index.html" class="btn btn-primary">🔓 Launch Engine</a>
-                </div>
-            </div>
+                    <ul class="features-list">
+                        <li>QR code scanning and generation</li>
+                        <li>Barcode detection (multiple formats)</li>
+                        <li>Copy scanned text to clipboard</li>
+                        <li>Camera-based real-time scanning</li>
+                    </ul>
 
-            <!-- I Seek Queue -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div class="project-icon">📷</div>
-                    <div class="project-title-group">
-                        <h2>I Seek Queue</h2>
-                        <div class="project-version">v1.0</div>
+                    <div class="project-links">
+                        <a href="i-seek-queue/index.html" class="btn btn-primary">📷 Launch Scanner</a>
                     </div>
                 </div>
 
-                <p class="project-description">
-                    Barcode and QR code scanner with multiple detection modes. Scan, generate, and copy codes directly from your device camera.
-                </p>
-
-                <div class="project-meta">
-                    <span class="status-badge">✓ Live</span>
-                    <span class="meta-badge">📱 Mobile First</span>
-                    <span class="meta-badge">📷 Camera</span>
-                </div>
-
-                <ul class="features-list">
-                    <li>QR code scanning and generation</li>
-                    <li>Barcode detection (multiple formats)</li>
-                    <li>Copy scanned text to clipboard</li>
-                    <li>Camera-based real-time scanning</li>
-                </ul>
-
-                <div class="project-links">
-                    <a href="i-seek-queue/index.html" class="btn btn-primary">📷 Launch Scanner</a>
-                </div>
-            </div>
-
-            <!-- Future Projects Placeholder -->
-            <div class="project-card" style="opacity: 0.6;">
-                <div class="project-header">
-                    <div class="project-icon">💰</div>
-                    <div class="project-title-group">
-                        <h2>Budget Tracker</h2>
-                        <div class="project-version">Coming Soon</div>
+                <!-- Future Projects Placeholder -->
+                <div class="project-card" style="opacity: 0.6;">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Money Bag">💰</div>
+                        <div class="project-title-group">
+                            <h2>Budget Tracker</h2>
+                            <div class="project-version">Coming Soon</div>
+                        </div>
                     </div>
-                </div>
 
-                <p class="project-description">
-                    Personal finance management tool with expense tracking, budget planning, and financial insights.
-                </p>
+                    <p class="project-description">
+                        Personal finance management tool with expense tracking, budget planning, and financial insights.
+                    </p>
 
-                <div class="project-meta">
-                    <span class="status-badge in-development">🚧 Planned</span>
-                </div>
-
-                <ul class="features-list">
-                    <li>Expense categorization</li>
-                    <li>Budget alerts & notifications</li>
-                    <li>Visual charts & reports</li>
-                    <li>Multi-currency support</li>
-                </ul>
-            </div>
-
-            <div class="project-card" style="opacity: 0.6;">
-                <div class="project-header">
-                    <div class="project-icon">📝</div>
-                    <div class="project-title-group">
-                        <h2>Task Manager</h2>
-                        <div class="project-version">Coming Soon</div>
+                    <div class="project-meta">
+                        <span class="status-badge in-development">🚧 Planned</span>
                     </div>
+
+                    <ul class="features-list">
+                        <li>Expense categorization</li>
+                        <li>Budget alerts & notifications</li>
+                        <li>Visual charts & reports</li>
+                        <li>Multi-currency support</li>
+                    </ul>
                 </div>
 
-                <p class="project-description">
-                    Simple, beautiful task management with projects, tags, and priorities. Built for speed and clarity.
-                </p>
+                <div class="project-card" style="opacity: 0.6;">
+                    <div class="project-header">
+                        <div class="project-icon" role="img" aria-label="Memo">📝</div>
+                        <div class="project-title-group">
+                            <h2>Task Manager</h2>
+                            <div class="project-version">Coming Soon</div>
+                        </div>
+                    </div>
 
-                <div class="project-meta">
-                    <span class="status-badge in-development">🚧 Planned</span>
+                    <p class="project-description">
+                        Simple, beautiful task management with projects, tags, and priorities. Built for speed and clarity.
+                    </p>
+
+                    <div class="project-meta">
+                        <span class="status-badge in-development">🚧 Planned</span>
+                    </div>
+
+                    <ul class="features-list">
+                        <li>Project organization</li>
+                        <li>Kanban board view</li>
+                        <li>Due date reminders</li>
+                        <li>Collaborative features</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Recent Updates -->
+            <div class="updates-section">
+                <h2>📰 Recent Updates</h2>
+
+                <div class="update-item">
+                    <div class="update-date">February 6, 2026 - Test Portal v0.1</div>
+                    <ul class="update-changes">
+                        <li>🧪 Added centralized QA Dashboard</li>
+                        <li>🔗 Linked internal verification tools for FongDB and NEGEN engine</li>
+                    </ul>
                 </div>
 
-                <ul class="features-list">
-                    <li>Project organization</li>
-                    <li>Kanban board view</li>
-                    <li>Due date reminders</li>
-                    <li>Collaborative features</li>
-                </ul>
-            </div>
-        </div>
+                <div class="update-item">
+                    <div class="update-date">January 23, 2026 - Shipment Tracker v1.0.0</div>
+                    <ul class="update-changes">
+                        <li>🎉 Initial release with DHL, FedEx, UPS support</li>
+                        <li>✨ Auto-detect carrier from tracking number</li>
+                        <li>🔍 JSON payload viewer with syntax highlighting</li>
+                        <li>📥 Download raw payloads as JSON files</li>
+                        <li>🛡️ Force refresh with confirmation (off by default)</li>
+                        <li>📱 Mobile-first responsive design</li>
+                        <li>🌙 Dark mode support</li>
+                    </ul>
+                </div>
 
-        <!-- Recent Updates -->
-        <div class="updates-section">
-            <h2>📰 Recent Updates</h2>
-
-            <div class="update-item">
-                <div class="update-date">February 6, 2026 - Test Portal v0.1</div>
-                <ul class="update-changes">
-                    <li>🧪 Added centralized QA Dashboard</li>
-                    <li>🔗 Linked internal verification tools for FongDB and NEGEN engine</li>
-                </ul>
-            </div>
-
-            <div class="update-item">
-                <div class="update-date">January 23, 2026 - Shipment Tracker v1.0.0</div>
-                <ul class="update-changes">
-                    <li>🎉 Initial release with DHL, FedEx, UPS support</li>
-                    <li>✨ Auto-detect carrier from tracking number</li>
-                    <li>🔍 JSON payload viewer with syntax highlighting</li>
-                    <li>📥 Download raw payloads as JSON files</li>
-                    <li>🛡️ Force refresh with confirmation (off by default)</li>
-                    <li>📱 Mobile-first responsive design</li>
-                    <li>🌙 Dark mode support</li>
-                </ul>
+                <div class="update-item">
+                    <div class="update-date">January 23, 2026 - Bug Fixes</div>
+                    <ul class="update-changes">
+                        <li>🐛 Fixed Unix epoch date display (now shows "Not yet checked")</li>
+                        <li>🎨 Improved payload viewer styling</li>
+                        <li>⚙️ Fixed force refresh button behavior</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="update-item">
-                <div class="update-date">January 23, 2026 - Bug Fixes</div>
-                <ul class="update-changes">
-                    <li>🐛 Fixed Unix epoch date display (now shows "Not yet checked")</li>
-                    <li>🎨 Improved payload viewer styling</li>
-                    <li>⚙️ Fixed force refresh button behavior</li>
-                </ul>
-            </div>
-        </div>
+            <!-- Upcoming Features -->
+            <div class="updates-section">
+                <h2>🚀 Upcoming Features</h2>
 
-        <!-- Upcoming Features -->
-        <div class="updates-section">
-            <h2>🚀 Upcoming Features</h2>
-
-            <div class="update-item">
-                <div class="update-date">Shipment Tracker - Planned Features</div>
-                <ul class="update-changes">
-                    <li>🤖 Query engine for smart batching & auto-refresh</li>
-                    <li>🔔 Push notifications for delivered shipments</li>
-                    <li>☁️ Cloud sync with Firebase/Supabase</li>
-                    <li>📊 Analytics dashboard (delivery times, carrier performance)</li>
-                    <li>🔗 Webhooks support for carrier callbacks</li>
-                    <li>📧 Email notifications</li>
-                    <li>🎯 Advanced filtering (date ranges, custom queries)</li>
-                    <li>🔄 Import from CSV/JSON</li>
-                    <li>📈 Excel export with charts</li>
-                </ul>
+                <div class="update-item">
+                    <div class="update-date">Shipment Tracker - Planned Features</div>
+                    <ul class="update-changes">
+                        <li>🤖 Query engine for smart batching & auto-refresh</li>
+                        <li>🔔 Push notifications for delivered shipments</li>
+                        <li>☁️ Cloud sync with Firebase/Supabase</li>
+                        <li>📊 Analytics dashboard (delivery times, carrier performance)</li>
+                        <li>🔗 Webhooks support for carrier callbacks</li>
+                        <li>📧 Email notifications</li>
+                        <li>🎯 Advanced filtering (date ranges, custom queries)</li>
+                        <li>🔄 Import from CSV/JSON</li>
+                        <li>📈 Excel export with charts</li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        </main>
 
         <div class="back-link">
             <a href="../">← Back to Games</a>
