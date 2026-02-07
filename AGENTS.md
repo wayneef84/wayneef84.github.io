@@ -70,6 +70,21 @@ All development work happens on the `dev` branch. The `main` branch is the **liv
 *   **CHANGELOG.md:** Central history. Update purely for releases.
 *   **AI_FEEDBACK.md:** Inter-agent communication log. Update EVERY session.
 
+## ⚖️ License Audit Log (Sync with CLAUDE.md)
+
+This repository contains code from third-party sources and libraries. All licenses must be strictly respected.
+
+| Component | License Type | Location | Notes |
+| :--- | :--- | :--- | :--- |
+| **Project Root** | **MIT License** | `/LICENSE` | Main license for all original code (Copyright © 2026 Wayne Fong). |
+| **Shipment Tracker** | **MIT License** | `projects/shipment-tracker/LICENSE` | Explicit MIT license for the tracker utility. |
+| **html5-qrcode** | **Apache 2.0** | `games/lib/LICENSE.txt` | Used for camera scanning in *Sprunki* & *I Seek Queue*. Local file: `games/lib/html5-qrcode.min.js`. |
+| **qrcode.js** | **MIT License** | `games/lib/LICENSE.txt` | Used for QR generation. Local file: `games/lib/qrcode.min.js`. |
+| **Poker Evaluator** | **MIT License** | File Header | Logic adapted for `games/cards/shared/poker-evaluator.js`. |
+| **SheetJS** | **Apache 2.0** | Referenced in `projects/shipment-tracker/LICENSE` | Referenced for optional Excel support; library files are **not distributed** in this repo. |
+| **marked** | **MIT License** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
+| **highlight.js** | **BSD 3-Clause** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
+
 ## 📚 Lessons Learned (Accumulated Wisdom)
 
 This section captures hard-won insights from our collaboration. **Add to this list, never delete.**
