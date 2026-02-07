@@ -19,6 +19,11 @@
         this.scene = null;
         this.renderer = options.renderer || null;
 
+        // Store dimensions if provided
+        this.width = options.width || 0;
+        this.height = options.height || 0;
+        this.canvas = options.canvas || null;
+
         // Bind context
         this._loop = this._loop.bind(this);
         this._handleVisibilityChange = this._handleVisibilityChange.bind(this);

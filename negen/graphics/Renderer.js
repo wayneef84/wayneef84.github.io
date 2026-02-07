@@ -7,7 +7,23 @@
     'use strict';
 
     var Renderer = function(containerId) {
-        this.container = document.getElementById(containerId) || document.body;
+        // If containerId is a number (width) as passed by CanvasRenderer super(), handle it gracefully or ignore
+        // The original Renderer takes a containerId, but CanvasRenderer extends it and passes (width, height)
+        // This is a mismatch in constructor signature between base and subclass.
+
+        // CanvasRenderer calls super(width, height)
+        // Renderer expects (containerId) which is a string or DOM element
+
+        // Let's make Renderer adaptable
+        if (typeof containerId === 'number') {
+            // Likely called from CanvasRenderer with width
+            // We can ignore or use it, but we shouldn't fail looking for document.getElementById(number)
+            this.container = document.body; // Default fallback
+            this.width = containerId;
+            // The second arg would be height, but arguments access is tricky in strict mode if not named
+        } else {
+            this.container = document.getElementById(containerId) || document.body;
+        }
 
         // Layer 0: Canvas (Background / High Perf)
         this.canvas = document.createElement('canvas');
@@ -31,17 +47,23 @@
         this.uiLayer.style.zIndex = '1';
         this.uiLayer.style.overflow = 'hidden';
 
-        // Append layers
-        this.container.appendChild(this.canvas);
-        this.container.appendChild(this.uiLayer);
+        // Append layers only if we have a valid container (and aren't just being used as a base class logic)
+        // But wait, CanvasRenderer creates its OWN canvas and context.
+        // It shouldn't necessarily append these layers if it's managing its own canvas.
 
-        // Handle Resize
-        this._resize = this._resize.bind(this);
-        window.addEventListener('resize', this._resize);
-        this._resize(); // Initial sizing
+        if (this.container && typeof containerId !== 'number') {
+             this.container.appendChild(this.canvas);
+             this.container.appendChild(this.uiLayer);
+
+             // Handle Resize only if we are the primary renderer managing the container
+             this._resize = this._resize.bind(this);
+             window.addEventListener('resize', this._resize);
+             this._resize(); // Initial sizing
+        }
     };
 
     Renderer.prototype._resize = function() {
+        if (!this.container) return;
         var rect = this.container.getBoundingClientRect();
         this.width = rect.width;
         this.height = rect.height;

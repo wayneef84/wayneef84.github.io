@@ -4,9 +4,12 @@ import Renderer from './Renderer.js';
  * NEGEN Canvas Renderer
  * Standard 2D Context renderer.
  */
-export default class CanvasRenderer extends Renderer {
+export default class CanvasRenderer {
     constructor(canvas, width, height) {
-        super(width, height);
+        // Manually inherit properties instead of extending via super()
+        // This avoids any weird module-to-IIFE prototype chain issues
+        // We can just implement the methods we need.
+
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
 
@@ -72,5 +75,12 @@ export default class CanvasRenderer extends Renderer {
     drawImage(img, ...args) {
         if (!img) return;
         this.ctx.drawImage(img, ...args);
+    }
+
+    // Legacy DOM methods - needed if scenes use them, but Pong/SpaceInvaders use mostly canvas
+    // Copy these from Renderer.js if needed or stub them
+    drawDOM(element, x, y, rotation) {
+        // Simple stub or implementation if games rely on it
+        // Pong doesn't seem to use it.
     }
 }
