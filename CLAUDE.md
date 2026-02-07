@@ -41,25 +41,16 @@ Non-game applications and tools:
 
 ---
 
-## ⚖️ License Audit Log
+## ⚖️ License Audit & Compliance
 
-This repository contains code from third-party sources and libraries. All licenses must be strictly respected.
+**Master Record:** [`LICENSE_AUDIT.md`](../LICENSE_AUDIT.md)
 
-| Component | License Type | Location | Notes |
-| :--- | :--- | :--- | :--- |
-| **Project Root** | **MIT License** | `/LICENSE` | Main license for all original code (Copyright © 2026 Wayne Fong). |
-| **Shipment Tracker** | **MIT License** | `projects/shipment-tracker/LICENSE` | Explicit MIT license for the tracker utility. |
-| **html5-qrcode** | **Apache 2.0** | `games/lib/LICENSE.txt` | Used for camera scanning in *Sprunki* & *I Seek Queue*. Local file: `games/lib/html5-qrcode.min.js`. |
-| **qrcode.js** | **MIT License** | `games/lib/LICENSE.txt` | Used for QR generation. Local file: `games/lib/qrcode.min.js`. |
-| **Poker Evaluator** | **MIT License** | File Header | Logic adapted for `games/cards/shared/poker-evaluator.js`. |
-| **SheetJS** | **Apache 2.0** | Referenced in `projects/shipment-tracker/LICENSE` | Referenced for optional Excel support; library files are **not distributed** in this repo. |
-| **marked** | **MIT License** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
-| **highlight.js** | **BSD 3-Clause** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
+This file is the **Single Source of Truth** for all third-party code, libraries, and license statuses in this repository.
 
-**Audit Policy:**
-- All new third-party libraries must be added to `games/lib/` and their license text added to `games/lib/LICENSE.txt`.
-- CDN links do not require local license files but should be noted here.
-- Adapted code (copied & modified) must retain original copyright headers or explicit attribution comments.
+**Your Responsibility:**
+1.  **Read** `LICENSE_AUDIT.md` before importing any new code.
+2.  **Update** `LICENSE_AUDIT.md` immediately if you add a library (Local or CDN).
+3.  **Ensure** appropriate license text is added to `games/lib/LICENSE.txt` for any local files.
 
 ---
 
