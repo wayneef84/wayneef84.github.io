@@ -8,19 +8,14 @@ class OCRManager {
         this.isScanning = false;
         this.animationFrameId = null;
         this.detector = null;
-        this.lastText = "";
-        this.consecutiveFrames = 0;
+        this.isSupported = false;
     }
 
     async start() {
-        if (!window.TextDetector) {
-            const err = new Error("TextDetector API not supported in this browser. Enable experimental web platform features.");
-            if (this.callbacks.onInitError) this.callbacks.onInitError(err);
-            return;
-        }
+        // 1. Check Support, but don't abort immediately
+        this.isSupported = !!window.TextDetector;
 
         try {
-            this.detector = new TextDetector();
             const container = document.getElementById(this.elementId);
             if (!container) throw new Error(`Element ${this.elementId} not found`);
 
@@ -28,6 +23,7 @@ class OCRManager {
             container.innerHTML = '';
             container.style.position = 'relative';
             container.style.background = '#000';
+            container.style.overflow = 'hidden'; // Ensure video doesn't spill
 
             // Create Video
             this.video = document.createElement('video');
@@ -47,6 +43,29 @@ class OCRManager {
 
             container.appendChild(this.video);
             container.appendChild(this.canvas);
+
+            // Create Overlay Message if not supported
+            if (!this.isSupported) {
+                const msg = document.createElement('div');
+                msg.style.position = 'absolute';
+                msg.style.top = '50%';
+                msg.style.left = '50%';
+                msg.style.transform = 'translate(-50%, -50%)';
+                msg.style.color = '#ff4444';
+                msg.style.background = 'rgba(0,0,0,0.7)';
+                msg.style.padding = '10px';
+                msg.style.borderRadius = '5px';
+                msg.style.textAlign = 'center';
+                msg.innerHTML = '⚠️ OCR Not Supported<br><small>Enable "Experimental Web Platform features"</small>';
+                container.appendChild(msg);
+
+                // Notify UI but don't stop execution so video can still show
+                if (this.callbacks.onInitError) {
+                    this.callbacks.onInitError(new Error("Browser does not support TextDetector API"));
+                }
+            } else {
+                this.detector = new TextDetector();
+            }
 
             // Get Stream
             this.stream = await navigator.mediaDevices.getUserMedia({
@@ -77,7 +96,14 @@ class OCRManager {
     }
 
     async scanLoop() {
-        if (!this.isScanning || !this.video || !this.detector) return;
+        if (!this.isScanning || !this.video) return;
+
+        // If not supported, just loop to keep alive (or stop loop entirely? User might want to just see camera)
+        if (!this.detector) {
+            // Maybe check occasionally? No, API support won't change at runtime.
+            // Just return for now, video is playing.
+            return;
+        }
 
         try {
             // Detect
@@ -111,13 +137,6 @@ class OCRManager {
                 });
 
                 const joinedText = fullText.join('\n');
-
-                // Simple Debounce / Stabilization
-                // We want to return text if it's substantial and stable for a moment?
-                // Or just return immediately? User wants "Live stream".
-                // If we return immediately, the UI might flicker or popup might trigger too fast.
-                // But app.js handles the "Stop on Success" logic.
-                // So we just report it.
 
                 if (joinedText.trim().length > 0) {
                     if (this.callbacks.onSuccess) {
