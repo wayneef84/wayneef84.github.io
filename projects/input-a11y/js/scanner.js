@@ -75,10 +75,35 @@ class ScannerManager {
     }
 
     async stop() {
+        if (this.stopPromise) return this.stopPromise;
+
         if (this.instance && this.isScanning) {
-            await this.instance.stop().catch(e => console.error("Error stopping", e));
-            this.isScanning = false;
-            try { this.instance.clear(); } catch(e) {}
+            this.stopPromise = (async () => {
+                await this.instance.stop().catch(e => {
+                    // Suppress NotFoundError which can happen if DOM is already altered
+                    if (e && e.name === 'NotFoundError') {
+                         console.warn("Scanner stop: Element not found, force cleaning");
+                    } else {
+                         console.error("Error stopping scanner", e);
+                    }
+                });
+
+                this.isScanning = false;
+                try { await this.instance.clear(); } catch(e) {}
+
+                // Manual Cleanup: Ensure video element tracks are stopped if library missed them
+                const container = document.getElementById(this.elementId);
+                if (container) {
+                    const video = container.querySelector('video');
+                    if (video && video.srcObject) {
+                        const tracks = video.srcObject.getTracks();
+                        tracks.forEach(track => track.stop());
+                        video.srcObject = null;
+                    }
+                }
+            })();
+            await this.stopPromise;
+            this.stopPromise = null;
         }
     }
 }
