@@ -5,40 +5,87 @@ class OCRManager {
         this.stream = null;
         this.video = null;
         this.isScanning = false;
-        this.detector = null;
 
+        // Native TextDetector Support
+        this.detector = null;
         if ('TextDetector' in window) {
             try {
                 this.detector = new TextDetector();
             } catch (e) {
                 console.warn("TextDetector detected but failed to init", e);
             }
-        } else {
-             console.warn("TextDetector API not found in window object.");
+        }
+
+        // Tesseract Support
+        this.tesseractWorker = null;
+        this.isTesseractReady = false;
+
+        // Canvas for capturing frames
+        this.canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+    }
+
+    async initTesseract() {
+        if (this.tesseractWorker) return; // Already initialized
+
+        if (typeof Tesseract === 'undefined') {
+            console.error("Tesseract library not loaded.");
+            return;
+        }
+
+        console.log("Initializing Tesseract Worker...");
+        try {
+            // Create worker with explicit local paths
+            this.tesseractWorker = await Tesseract.createWorker('eng', 1, {
+                workerPath: './assets/worker.min.js',
+                corePath: './assets/tesseract-core.wasm.js',
+                langPath: './assets/',
+                logger: m => {
+                    // Optional: Log progress
+                    // console.log(m);
+                }
+            });
+            this.isTesseractReady = true;
+            console.log("Tesseract Worker Ready.");
+        } catch (err) {
+            console.error("Failed to initialize Tesseract:", err);
+            throw new Error("Failed to load OCR Engine. Please check assets.");
         }
     }
 
     async start(mode) {
         console.log("OCRManager.start called with mode:", mode);
 
-        if (!this.detector) {
-            const msg = "Text Recognition (OCR) not supported in this browser. Please use Chrome/Edge on Android/Desktop or enable 'Experimental Web Platform features'.";
-            console.error(msg);
-            if (this.callbacks.onInitError) {
-                this.callbacks.onInitError(msg);
+        // Determine Engine
+        let useTesseract = false;
+        if (mode === 'TEXT_OCR') {
+            // Prefer Tesseract if available (checked via global variable existence first)
+            if (typeof Tesseract !== 'undefined') {
+                useTesseract = true;
+            } else if (!this.detector) {
+                const msg = "Text Recognition (OCR) not supported. Tesseract library missing and native API not found.";
+                if (this.callbacks.onInitError) this.callbacks.onInitError(msg);
+                throw new Error(msg);
             }
-            throw new Error(msg);
         }
 
         try {
-            // Stop existing if running
             await this.stop();
+
+            // Init Tesseract if needed
+            if (useTesseract) {
+                // Show loading state?
+                if (this.callbacks.onInitError) {
+                    // Use onInitError temporarily to show status or add a status callback
+                    // For now, we rely on the UI showing "Starting..."
+                }
+                await this.initTesseract();
+            }
 
             const container = document.getElementById(this.elementId);
             if (!container) throw new Error("Scanner container not found");
 
             // Create Video Element
-            console.log("Creating video element for OCR...");
             this.video = document.createElement('video');
             this.video.style.width = '100%';
             this.video.style.height = '100%';
@@ -47,7 +94,6 @@ class OCRManager {
             this.video.setAttribute('muted', '');
             this.video.setAttribute('playsinline', '');
 
-            // Clear previous content
             container.innerHTML = '';
             container.appendChild(this.video);
 
@@ -57,7 +103,6 @@ class OCRManager {
                     video: { facingMode: 'environment' }
                 });
             } catch (cameraErr) {
-                 // Fallback if environment camera not found
                  console.warn("Environment camera failed, trying user facing", cameraErr);
                  this.stream = await navigator.mediaDevices.getUserMedia({
                      video: true
@@ -66,18 +111,19 @@ class OCRManager {
 
             this.video.srcObject = this.stream;
 
-            // Wait for video metadata to load before playing
             await new Promise((resolve) => {
-                this.video.onloadedmetadata = () => {
-                    resolve();
-                };
+                this.video.onloadedmetadata = () => resolve();
             });
 
             await this.video.play();
             this.isScanning = true;
 
             // Start Loop
-            this.detectLoop();
+            if (useTesseract) {
+                this.detectLoopTesseract();
+            } else {
+                this.detectLoopNative();
+            }
 
         } catch (err) {
             console.error("OCR Start Error", err);
@@ -102,7 +148,7 @@ class OCRManager {
         if (container) container.innerHTML = '';
     }
 
-    async detectLoop() {
+    async detectLoopNative() {
         if (!this.isScanning || !this.video || !this.detector) return;
 
         try {
@@ -110,7 +156,6 @@ class OCRManager {
                 const texts = await this.detector.detect(this.video);
 
                 if (texts && texts.length > 0) {
-                    // Sort by vertical position (y) then horizontal (x) to maintain reading order
                     texts.sort((a, b) => {
                         if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
                             return a.boundingBox.y - b.boundingBox.y;
@@ -128,18 +173,46 @@ class OCRManager {
                 }
             }
         } catch (e) {
-            console.error("Detection failed", e);
+            console.error("Native Detection failed", e);
         }
 
         if (this.isScanning) {
-            // Throttle slightly to save battery/CPU?
-            // requestAnimationFrame is usually 60fps, maybe too fast for OCR.
-            // Let's do it every 500ms? Or 200ms?
-            // User wants "text recognition isn't working", implies they want it snappy.
-            // But OCR is heavy.
             setTimeout(() => {
-                if (this.isScanning) requestAnimationFrame(() => this.detectLoop());
+                if (this.isScanning) requestAnimationFrame(() => this.detectLoopNative());
             }, 200);
+        }
+    }
+
+    async detectLoopTesseract() {
+        if (!this.isScanning || !this.video || !this.tesseractWorker) return;
+
+        try {
+            if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+                // Capture frame
+                this.canvas.width = this.video.videoWidth;
+                this.canvas.height = this.video.videoHeight;
+                this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+
+                // Recognize
+                // Note: recognize() is heavy. We assume it handles the image processing.
+                const { data: { text } } = await this.tesseractWorker.recognize(this.canvas);
+
+                if (text && text.trim().length > 0) {
+                    if (this.callbacks.onSuccess) {
+                        this.callbacks.onSuccess(text.trim(), { result: { format: { formatName: 'TEXT_OCR_TESSERACT' } } }, 'TEXT_OCR');
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Tesseract Detection failed", e);
+        }
+
+        if (this.isScanning) {
+            // Tesseract is slow, so we just call the next loop immediately after the previous one finishes
+            // But let's add a small delay to yield UI thread if needed
+            setTimeout(() => {
+                this.detectLoopTesseract();
+            }, 100);
         }
     }
 }
