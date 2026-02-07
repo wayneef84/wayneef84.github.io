@@ -47,18 +47,6 @@ Code that might appear external but is confirmed as custom or fully owned.
 
 ---
 
-## 🐍 Python Environment Dependencies
-
-Libraries referenced in `requirements.txt` files but not distributed in the repository.
-
-| Project / File | Library Name | License | Source | Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| `projects/python-ocr/requirements.txt` | **EasyOCR** | Apache 2.0 | PyPI | Main OCR engine. |
-| `projects/python-ocr/requirements.txt` | **Streamlit** | Apache 2.0 | PyPI | Web UI framework. |
-| `projects/python-ocr/requirements.txt` | **OpenCV-Python** | MIT / Apache 2.0 | PyPI | Image processing backend for EasyOCR. |
-
----
-
 ## 📝 Maintenance Protocol
 
 **When adding a new library:**
