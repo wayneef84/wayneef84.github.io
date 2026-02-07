@@ -75,10 +75,16 @@ class ScannerManager {
     }
 
     async stop() {
+        if (this.stopPromise) return this.stopPromise;
+
         if (this.instance && this.isScanning) {
-            await this.instance.stop().catch(e => console.error("Error stopping", e));
-            this.isScanning = false;
-            try { this.instance.clear(); } catch(e) {}
+            this.stopPromise = (async () => {
+                await this.instance.stop().catch(e => console.error("Error stopping", e));
+                this.isScanning = false;
+                try { this.instance.clear(); } catch(e) {}
+            })();
+            await this.stopPromise;
+            this.stopPromise = null;
         }
     }
 }
