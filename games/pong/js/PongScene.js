@@ -115,12 +115,17 @@ export default class PongScene extends Scene {
     }
 
     draw(renderer) {
+        // Use abstract methods instead of direct ctx access
         renderer.clear('#000');
 
         // Divider
-        renderer.ctx.fillStyle = '#fff';
+        // renderer.ctx.fillStyle = '#fff';
+        // for (let y = 10; y < this.height; y += this.dividerStyle.h + this.dividerStyle.gap) {
+        //     renderer.ctx.fillRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h);
+        // }
+        // REPLACE WITH:
         for (let y = 10; y < this.height; y += this.dividerStyle.h + this.dividerStyle.gap) {
-            renderer.ctx.fillRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h);
+            renderer.drawRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h, '#fff');
         }
 
         // Paddles
