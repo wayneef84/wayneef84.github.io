@@ -81,7 +81,7 @@ class ScannerManager {
             this.stopPromise = (async () => {
                 await this.instance.stop().catch(e => {
                     // Suppress NotFoundError which can happen if DOM is already altered
-                    if (e && e.name === 'NotFoundError') {
+                    if (e && (e.name === 'NotFoundError' || (e.message && e.message.includes("removeChild")))) {
                          console.warn("Scanner stop: Element not found, force cleaning");
                     } else {
                          console.error("Error stopping scanner", e);

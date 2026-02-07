@@ -13,12 +13,17 @@ class OCRManager {
             } catch (e) {
                 console.warn("TextDetector detected but failed to init", e);
             }
+        } else {
+             console.warn("TextDetector API not found in window object.");
         }
     }
 
     async start(mode) {
+        console.log("OCRManager.start called with mode:", mode);
+
         if (!this.detector) {
             const msg = "Text Recognition (OCR) not supported in this browser. Please use Chrome/Edge on Android/Desktop or enable 'Experimental Web Platform features'.";
+            console.error(msg);
             if (this.callbacks.onInitError) {
                 this.callbacks.onInitError(msg);
             }
@@ -33,6 +38,7 @@ class OCRManager {
             if (!container) throw new Error("Scanner container not found");
 
             // Create Video Element
+            console.log("Creating video element for OCR...");
             this.video = document.createElement('video');
             this.video.style.width = '100%';
             this.video.style.height = '100%';
