@@ -1,10 +1,10 @@
 import Scene from '../../../negen/core/Scene.js';
 
 export default class AnimalStackScene extends Scene {
-    constructor(engine) {
-        super(engine);
+    constructor() {
+        super();
 
-        // Physics constants (Simplified custom physics since we can't import Matter.js easily without external script)
+        // Physics constants
         this.gravity = 500; // px/s^2
         this.groundY = 0;
 
@@ -23,8 +23,13 @@ export default class AnimalStackScene extends Scene {
         ];
     }
 
-    init() {
+    enter(engine) {
+        this.engine = engine;
         this.groundY = this.engine.renderer.height - 50;
+
+        // Bind input actions
+        this.engine.input.bindAction('DROP', ['Space']);
+
         this.spawnNewPiece();
     }
 
@@ -53,13 +58,13 @@ export default class AnimalStackScene extends Scene {
 
         if (!this.currentPiece.isFalling) {
             // Hover Phase
-            // Move left/right
-            if(input.isKeyPressed('ArrowLeft')) this.currentPiece.x -= 200 * dtSec;
-            if(input.isKeyPressed('ArrowRight')) this.currentPiece.x += 200 * dtSec;
+            // Move left/right (continuous hold via raw keys)
+            if(input.keys['ArrowLeft']) this.currentPiece.x -= 200 * dtSec;
+            if(input.keys['ArrowRight']) this.currentPiece.x += 200 * dtSec;
 
-            // Rotate
-            if(input.isKeyPressed('z')) this.currentPiece.angle -= 2 * dtSec;
-            if(input.isKeyPressed('x')) this.currentPiece.angle += 2 * dtSec;
+            // Rotate (continuous hold via raw keys)
+            if(input.keys['KeyZ']) this.currentPiece.angle -= 2 * dtSec;
+            if(input.keys['KeyX']) this.currentPiece.angle += 2 * dtSec;
 
             // Mouse/Touch follow x
             if(input.pointer.isPressed) {
@@ -69,8 +74,8 @@ export default class AnimalStackScene extends Scene {
                  // Let's just use Space/Click to drop
             }
 
-            // Drop Trigger
-            if (input.isKeyPressed(' ') || (input.pointer.isPressed && input.pointer.y > this.engine.renderer.height/2)) {
+            // Drop Trigger (single press via action binding)
+            if (input.isJustPressed('DROP') || (input.pointer.isPressed && input.pointer.y > this.engine.renderer.height/2)) {
                 this.currentPiece.isFalling = true;
                 this.engine.audio.playTone(400, 'sine', 0.1);
             }
