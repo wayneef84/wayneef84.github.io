@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const storage = new StorageManager();
     const generator = new GeneratorManager();
-    let scanner = null;
-    let ocrScanner = null;
+    let scanner = null; // Initialized later
 
     // --- State ---
     let currentTab = 'scan';
@@ -38,18 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateActionUI();
 
-        // Initialize Scanners
+        // Initialize Scanner
         scanner = new ScannerManager('reader', {
             onSuccess: onScanSuccess,
             onInitError: (err) => {
                 document.getElementById('scan-status').innerText = "Camera Error: " + err;
-            }
-        });
-
-        ocrScanner = new OCRManager('reader', {
-            onSuccess: onScanSuccess,
-            onInitError: (err) => {
-                document.getElementById('scan-status').innerText = "OCR Error: " + err.message;
             }
         });
 
@@ -92,8 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateActionUI();
         });
 
-        // Use 'input' for live updates as requested
-        setBaseUrl.addEventListener('input', (e) => {
+        setBaseUrl.addEventListener('change', (e) => {
             settings.baseUrl = e.target.value;
             storage.saveSettings(settings);
         });
@@ -121,19 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Scan Result Actions
-        document.getElementById('btn-copy').addEventListener('click', () => copyResult());
+        document.getElementById('btn-copy').addEventListener('click', copyResult);
         document.getElementById('btn-rescan').addEventListener('click', closeResultModal);
         document.querySelector('.close-modal').addEventListener('click', closeResultModal);
-        document.getElementById('btn-save-scan').addEventListener('click', () => {
-            if (lastResult) {
-                saveScan(lastResult.text, lastResult.format, lastResult.mode);
-                // Feedback
-                const btn = document.getElementById('btn-save-scan');
-                const orig = btn.innerText;
-                btn.innerText = "Saved!";
-                setTimeout(() => btn.innerText = orig, 1500);
-            }
-        });
+        document.getElementById('btn-save-scan').addEventListener('click', saveCurrentScan);
 
         // Generate Actions
         document.getElementById('btn-generate').addEventListener('click', generateQR);
@@ -162,38 +144,21 @@ document.addEventListener('DOMContentLoaded', () => {
             startScanner();
         } else {
             if (scanner) scanner.stop();
-            if (ocrScanner) ocrScanner.stop();
         }
     }
 
-    async function startScanner() {
+    function startScanner() {
+        if (!scanner) return;
         const mode = scanModeSelect.value;
         const region = setRegion.value || 'BOX';
         const statusEl = document.getElementById('scan-status');
-
-        // Stop both first
-        if (scanner) await scanner.stop();
-        if (ocrScanner) ocrScanner.stop();
-
         statusEl.innerText = `Starting ${mode}...`;
 
-        if (mode === 'OCR') {
-             ocrScanner.start().then(() => {
-                 statusEl.innerText = `Scanning (OCR Text)...`;
-             }).catch(err => {
-                 statusEl.innerText = `Error: ${err.message}`;
-                 // If TextDetector is missing, maybe fallback to Auto?
-                 if (err.message.includes("not supported")) {
-                     alert(err.message);
-                 }
-             });
-        } else {
-             scanner.start(mode, region).then(() => {
-                 statusEl.innerText = `Scanning (${mode})...`;
-             }).catch(err => {
-                 statusEl.innerText = `Error: ${err}`;
-             });
-        }
+        scanner.start(mode, region).then(() => {
+            statusEl.innerText = `Scanning (${mode})...`;
+        }).catch(err => {
+            statusEl.innerText = `Error: ${err}`;
+        });
     }
 
     function onScanSuccess(text, result, mode) {
@@ -201,17 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerFeedback();
 
         // Stop scanning when result found
-        if (mode === 'OCR') {
-             ocrScanner.stop();
-        } else {
-             scanner.stop();
-        }
+        scanner.stop();
 
         lastResult = { text, format: result.result?.format?.formatName || 'Unknown', mode };
 
-        // Check Action Mode (Processing Mode)
+        // Check Action Mode
         if (settings.actionMode === 'URL_LOOKUP') {
-            handleProcessingMode(text);
+            handleUrlLookup(text);
             return;
         }
 
@@ -220,33 +181,25 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('result-type').innerText = `Type: ${lastResult.format}`;
         document.getElementById('result-text').value = text;
         modal.classList.remove('hidden');
+
+        // If OCR Mode (deprecated name for Copy Mode), copy immediately
+        if (mode === 'OCR') {
+            copyResult(true);
+        }
     }
 
-    function handleProcessingMode(text) {
-        // 1. Copy to clipboard
+    function handleUrlLookup(text) {
+        // Copy to clipboard first
         navigator.clipboard.writeText(text).catch(e => console.warn("Clipboard failed", e));
 
-        // 2. Save to History (Fixing bug)
-        saveScan(text, lastResult.format, lastResult.mode);
-
-        // 3. Prepare URL
         const baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
-        const url = baseUrl + encodeURIComponent(text); // Should we encode? Usually yes for query params. But user might just paste base URL. I'll encode to be safe for query params.
+        const url = baseUrl + text;
 
-        // Wait, if Base URL is just a prefix, maybe they want raw concatenation?
-        // E.g. "https://site.com/id/" + "12345"
-        // E.g. "https://google.com/?q=" + "hello world"
-        // I'll stick to raw concatenation as per original logic, but maybe safer?
-        // Original logic was raw concatenation: `baseUrl + text`.
-        // I will keep raw concatenation to maintain flexibility unless user asks.
-        const finalUrl = baseUrl + text;
-
-        // 4. Confirm and Open
-        if (confirm(`Result Copied!\n\nValue: ${text}\n\nOpen link?\n${finalUrl}`)) {
-            window.open(finalUrl, '_blank');
-            startScanner(); // Restart scan immediately
+        if (confirm(`Result: ${text}\n\nOpen link?\n${url}`)) {
+            window.open(url, '_blank');
+            startScanner(); // Restart scan immediately after decision
         } else {
-            // If cancelled, show modal so they can edit or see details
+            // If user cancels, show the standard modal so they can see/edit/copy
             const modal = document.getElementById('scan-result');
             document.getElementById('result-type').innerText = `Type: ${lastResult.format}`;
             document.getElementById('result-text').value = text;
@@ -301,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         text.select();
         document.execCommand('copy');
         if (!silent) {
+            // Use a temporary notification or just alert
             const btn = document.getElementById('btn-copy');
             const originalText = btn.innerText;
             btn.innerText = "Copied!";
@@ -308,12 +262,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function saveScan(content, format, mode) {
+    function saveCurrentScan() {
+        if (!lastResult) return;
         storage.addItem('SCANNED', {
-            content: content,
-            format: format,
-            mode: mode
+            content: lastResult.text,
+            format: lastResult.format,
+            mode: lastResult.mode
         });
+        // Feedback
+        const btn = document.getElementById('btn-save-scan');
+        btn.innerText = "Saved!";
+        setTimeout(() => btn.innerText = "Save to History", 1500);
         renderHistory();
     }
 
@@ -354,7 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="hist-time">${time}</span>
                     </div>
                 `;
+                // Add click to regenerate or copy?
                 li.addEventListener('click', () => {
+                    // Copy to clipboard
                     navigator.clipboard.writeText(item.content).then(() => {
                         alert("Copied: " + item.content);
                     });
