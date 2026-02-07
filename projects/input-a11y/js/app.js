@@ -54,12 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Generate Homepage QR
-        generator.generate('homepage-qr', 'https://wayneef84.github.io/');
-
-        // Generate Mobile Page QR
-        generator.generate('mobile-page-qr', window.location.href);
-
         // Render History
         renderHistory();
 
@@ -136,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function switchTab(tabId) {
+    async function switchTab(tabId) {
         currentTab = tabId;
 
         // Update UI
@@ -145,31 +139,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logic
         if (tabId === 'scan') {
-            startScanner();
+            await startScanner();
         } else {
-            if (scanner) scanner.stop();
-            if (ocrManager) ocrManager.stop();
+            if (scanner) await scanner.stop();
+            if (ocrManager) await ocrManager.stop();
         }
     }
 
-    function startScanner() {
+    async function startScanner() {
         // Stop both first to be safe
-        if (scanner) scanner.stop();
-        if (ocrManager) ocrManager.stop();
+        if (scanner) await scanner.stop();
+        if (ocrManager) await ocrManager.stop();
 
         const mode = scanModeSelect.value;
         const statusEl = document.getElementById('scan-status');
 
         if (mode === 'TEXT_OCR') {
-            statusEl.innerText = "Starting OCR...";
+            statusEl.innerText = "Starting Text Scanner...";
             if (ocrManager) {
                 ocrManager.start('TEXT_OCR').then(() => {
-                     statusEl.innerText = "OCR Active. Point at text.";
+                     statusEl.innerText = "Text Scanner Active. Point at text.";
                 }).catch(err => {
-                    statusEl.innerText = "OCR Start Failed: " + err;
+                    statusEl.innerText = "Text Scanner Start Failed: " + err;
                 });
             } else {
-                statusEl.innerText = "OCR Manager not loaded.";
+                statusEl.innerText = "Text Scanner Manager not loaded.";
             }
             return;
         }
@@ -184,13 +178,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function onScanSuccess(text, result, mode) {
+    async function onScanSuccess(text, result, mode) {
         // Trigger Feedback
         triggerFeedback();
 
         // Stop scanning when result found
-        if (scanner) scanner.stop();
-        if (ocrManager) ocrManager.stop();
+        if (scanner) await scanner.stop();
+        if (ocrManager) await ocrManager.stop();
 
         lastResult = { text, format: result.result?.format?.formatName || 'Unknown', mode };
 

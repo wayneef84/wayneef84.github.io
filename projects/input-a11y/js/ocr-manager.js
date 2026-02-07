@@ -22,7 +22,7 @@ class OCRManager {
             if (this.callbacks.onInitError) {
                 this.callbacks.onInitError(msg);
             }
-            return;
+            throw new Error(msg);
         }
 
         try {
@@ -46,10 +46,26 @@ class OCRManager {
             container.appendChild(this.video);
 
             // Get Stream
-            this.stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            });
+            try {
+                this.stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+            } catch (cameraErr) {
+                 // Fallback if environment camera not found
+                 console.warn("Environment camera failed, trying user facing", cameraErr);
+                 this.stream = await navigator.mediaDevices.getUserMedia({
+                     video: true
+                 });
+            }
+
             this.video.srcObject = this.stream;
+
+            // Wait for video metadata to load before playing
+            await new Promise((resolve) => {
+                this.video.onloadedmetadata = () => {
+                    resolve();
+                };
+            });
 
             await this.video.play();
             this.isScanning = true;
