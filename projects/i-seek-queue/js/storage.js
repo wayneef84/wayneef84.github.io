@@ -13,7 +13,7 @@ class StorageManager {
             const defaults = {
                 detectMode: 'AUTO',
                 actionMode: 'URL_LOOKUP', // FREE or URL_LOOKUP
-                baseUrl: 'https://www.google.com/search?q=',
+                baseUrl: 'www.google.com/?q=',
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
@@ -25,7 +25,7 @@ class StorageManager {
             return {
                 detectMode: 'AUTO',
                 actionMode: 'URL_LOOKUP',
-                baseUrl: 'https://www.google.com/search?q=',
+                baseUrl: 'www.google.com/?q=',
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER',

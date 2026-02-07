@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Generate Homepage QR
         generator.generate('homepage-qr', 'https://wayneef84.github.io/');
 
+        // Generate Mobile Page QR
+        generator.generate('mobile-page-qr', window.location.href);
+
         // Render History
         renderHistory();
 
@@ -82,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateActionUI();
         });
 
-        setBaseUrl.addEventListener('change', (e) => {
+        setBaseUrl.addEventListener('input', (e) => {
             settings.baseUrl = e.target.value;
             storage.saveSettings(settings);
         });
@@ -141,6 +144,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!scanner) return;
         const mode = scanModeSelect.value;
         const statusEl = document.getElementById('scan-status');
+
+        if (mode === 'TEXT_OCR') {
+            statusEl.innerText = "OCR Mode: Feature TBD (Scanning for codes...)";
+            // We run in AUTO mode for now as placeholder
+            scanner.start('AUTO', region).then(() => {
+                statusEl.innerText = `OCR Mode (TBD) - Scanning...`;
+            }).catch(err => {
+                statusEl.innerText = `Error: ${err}`;
+            });
+            return;
+        }
+
         statusEl.innerText = `Starting ${mode}...`;
 
         scanner.start(mode).then(() => {
@@ -181,7 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Copy to clipboard first
         navigator.clipboard.writeText(text).catch(e => console.warn("Clipboard failed", e));
 
-        const baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
+        let baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
+        // Ensure protocol
+        if (!/^https?:\/\//i.test(baseUrl)) {
+            baseUrl = 'https://' + baseUrl;
+        }
+
         const url = baseUrl + text;
 
         if (confirm(`Result: ${text}\n\nOpen link?\n${url}`)) {
