@@ -26,7 +26,7 @@
                 <div class="control-row">
                     <label for="scanMode">Detection Mode:</label>
                     <select id="scanMode">
-                        <option value="TEXT_OCR">Text Scanner</option>
+                        <option value="TEXT_OCR">Text (OCR)</option>
                         <option value="AUTO" selected>Auto Detect</option>
                         <option disabled>--- Specific Formats ---</option>
                         <option value="QR_CODE">QR Code</option>
@@ -112,6 +112,14 @@
             <div id="gen-actions" class="hidden">
                 <button id="btn-download">Download</button>
             </div>
+
+            <hr>
+
+            <div class="app-qr">
+                <h3>App Homepage</h3>
+                <div id="homepage-qr"></div>
+                <p><a href="https://wayneef84.github.io/" target="_blank">wayneef84.github.io</a></p>
+            </div>
         </section>
 
         <!-- HISTORY TAB -->
@@ -128,6 +136,9 @@
             </div>
         </section>
     </main>
+
+    <!-- Mobile QR Icon -->
+    <div id="mobile-page-qr"></div>
 
     <!-- Scripts -->
     <script src="js/storage.js"></script>
