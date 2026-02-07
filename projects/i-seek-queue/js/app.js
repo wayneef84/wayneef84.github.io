@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const setBaseUrl = document.getElementById('set-base-url');
     const urlConfig = document.getElementById('url-config');
     const setVibrate = document.getElementById('set-vibrate');
-    const setRegion = document.getElementById('set-region');
     const setFrame = document.getElementById('set-frame');
     const setFlash = document.getElementById('set-flash');
 
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settings.actionMode) setAction.value = settings.actionMode;
         if (settings.baseUrl) setBaseUrl.value = settings.baseUrl;
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
-        if (settings.scanRegion) setRegion.value = settings.scanRegion;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
 
@@ -94,14 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
             settings.feedbackVibrate = e.target.checked;
             storage.saveSettings(settings);
         });
-        setRegion.addEventListener('change', (e) => {
-            settings.scanRegion = e.target.value;
-            storage.saveSettings(settings);
-            // Restart if active
-            if (currentTab === 'scan') {
-                startScanner();
-            }
-        });
         setFrame.addEventListener('change', (e) => {
             settings.feedbackFrame = e.target.value;
             storage.saveSettings(settings);
@@ -150,11 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function startScanner() {
         if (!scanner) return;
         const mode = scanModeSelect.value;
-        const region = setRegion.value || 'BOX';
         const statusEl = document.getElementById('scan-status');
         statusEl.innerText = `Starting ${mode}...`;
 
-        scanner.start(mode, region).then(() => {
+        scanner.start(mode).then(() => {
             statusEl.innerText = `Scanning (${mode})...`;
         }).catch(err => {
             statusEl.innerText = `Error: ${err}`;
