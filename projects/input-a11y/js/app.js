@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function switchTab(tabId) {
+    function switchTab(tabId) {
         currentTab = tabId;
 
         // Update UI
@@ -145,17 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logic
         if (tabId === 'scan') {
-            await startScanner();
+            startScanner();
         } else {
-            if (scanner) await scanner.stop();
-            if (ocrManager) await ocrManager.stop();
+            if (scanner) scanner.stop();
+            if (ocrManager) ocrManager.stop();
         }
     }
 
-    async function startScanner() {
+    function startScanner() {
         // Stop both first to be safe
-        if (scanner) await scanner.stop();
-        if (ocrManager) await ocrManager.stop();
+        if (scanner) scanner.stop();
+        if (ocrManager) ocrManager.stop();
 
         const mode = scanModeSelect.value;
         const statusEl = document.getElementById('scan-status');
@@ -184,13 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function onScanSuccess(text, result, mode) {
+    function onScanSuccess(text, result, mode) {
         // Trigger Feedback
         triggerFeedback();
 
         // Stop scanning when result found
-        if (scanner) await scanner.stop();
-        if (ocrManager) await ocrManager.stop();
+        if (scanner) scanner.stop();
+        if (ocrManager) ocrManager.stop();
 
         lastResult = { text, format: result.result?.format?.formatName || 'Unknown', mode };
 
