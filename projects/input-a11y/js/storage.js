@@ -1,9 +1,9 @@
 class StorageManager {
     constructor() {
         this.KEYS = {
-            SETTINGS: 'iseekqueue_settings',
-            HISTORY_SCANNED: 'iseekqueue_history_scanned',
-            HISTORY_CREATED: 'iseekqueue_history_created'
+            SETTINGS: 'input_a11y_settings',
+            HISTORY_SCANNED: 'input_a11y_history_scanned',
+            HISTORY_CREATED: 'input_a11y_history_created'
         };
     }
 
@@ -12,7 +12,7 @@ class StorageManager {
             const data = localStorage.getItem(this.KEYS.SETTINGS);
             const defaults = {
                 detectMode: 'AUTO',
-                actionMode: 'URL_LOOKUP', // FREE or URL_LOOKUP
+                actionMode: 'URL_INPUT', // FREE or URL_INPUT
                 baseUrl: 'www.google.com/?q=',
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
@@ -24,7 +24,7 @@ class StorageManager {
             console.error("Failed to load settings", e);
             return {
                 detectMode: 'AUTO',
-                actionMode: 'URL_LOOKUP',
+                actionMode: 'URL_INPUT',
                 baseUrl: 'www.google.com/?q=',
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
