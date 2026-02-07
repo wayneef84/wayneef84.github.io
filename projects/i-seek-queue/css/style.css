@@ -132,6 +132,20 @@ main {
 
 #reader {
     width: 100%;
+    /* Ensure reader doesn't obscure absolute elements if z-indexed correctly, but video usually is on top */
+}
+
+/* Red Scan Line */
+.scan-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background-color: rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 6px red;
+    z-index: 10;
+    pointer-events: none;
 }
 
 .status-msg {
@@ -366,15 +380,33 @@ button {
     transition: all 0.3s ease-out;
 }
 
-/* Footer Brand */
-.brand-footer {
+/* Mobile QR Icon */
+#mobile-page-qr {
     position: fixed;
-    bottom: 10px;
+    bottom: 15px;
     right: 15px;
-    font-size: 2rem;
+    width: 50px;
+    height: 50px;
     z-index: 100;
-    pointer-events: none;
-    opacity: 0.7;
+    background: white;
+    padding: 4px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    display: none; /* Hidden on desktop */
+}
+
+/* Ensure image inside QR div fits */
+#mobile-page-qr img, #mobile-page-qr canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* Mobile Media Query */
+@media (max-width: 768px) {
+    #mobile-page-qr {
+        display: block;
+    }
 }
 
 @media (max-width: 600px) {
