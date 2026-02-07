@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const storage = new StorageManager();
     const generator = new GeneratorManager();
     let scanner = null; // Initialized later
+    let ocrManager = null; // Initialized later
 
     // --- State ---
     let currentTab = 'scan';
@@ -42,6 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('scan-status').innerText = "Camera Error: " + err;
             }
         });
+
+        // Initialize OCR
+        if (typeof OCRManager !== 'undefined') {
+            ocrManager = new OCRManager('reader', {
+                onSuccess: onScanSuccess,
+                onInitError: (err) => {
+                    document.getElementById('scan-status').innerText = "OCR Error: " + err;
+                }
+            });
+        }
 
         // Generate Homepage QR
         generator.generate('homepage-qr', 'https://wayneef84.github.io/');
@@ -112,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Generate Actions
         document.getElementById('btn-generate').addEventListener('click', generateQR);
-        document.getElementById('btn-download').addEventListener('click', () => generator.download('qr-output', 'iseekqueue_qr.png'));
+        document.getElementById('btn-download').addEventListener('click', () => generator.download('qr-output', 'input_a11y_qr.png'));
 
         // History Actions
         document.getElementById('clear-created').addEventListener('click', () => {
@@ -137,25 +148,33 @@ document.addEventListener('DOMContentLoaded', () => {
             startScanner();
         } else {
             if (scanner) scanner.stop();
+            if (ocrManager) ocrManager.stop();
         }
     }
 
     function startScanner() {
-        if (!scanner) return;
+        // Stop both first to be safe
+        if (scanner) scanner.stop();
+        if (ocrManager) ocrManager.stop();
+
         const mode = scanModeSelect.value;
         const statusEl = document.getElementById('scan-status');
 
         if (mode === 'TEXT_OCR') {
-            statusEl.innerText = "OCR Mode: Feature TBD (Scanning for codes...)";
-            // We run in AUTO mode for now as placeholder
-            scanner.start('AUTO', region).then(() => {
-                statusEl.innerText = `OCR Mode (TBD) - Scanning...`;
-            }).catch(err => {
-                statusEl.innerText = `Error: ${err}`;
-            });
+            statusEl.innerText = "Starting OCR...";
+            if (ocrManager) {
+                ocrManager.start('TEXT_OCR').then(() => {
+                     statusEl.innerText = "OCR Active. Point at text.";
+                }).catch(err => {
+                    statusEl.innerText = "OCR Start Failed: " + err;
+                });
+            } else {
+                statusEl.innerText = "OCR Manager not loaded.";
+            }
             return;
         }
 
+        if (!scanner) return;
         statusEl.innerText = `Starting ${mode}...`;
 
         scanner.start(mode).then(() => {
@@ -170,13 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerFeedback();
 
         // Stop scanning when result found
-        scanner.stop();
+        if (scanner) scanner.stop();
+        if (ocrManager) ocrManager.stop();
 
         lastResult = { text, format: result.result?.format?.formatName || 'Unknown', mode };
 
         // Check Action Mode
-        if (settings.actionMode === 'URL_LOOKUP') {
-            handleUrlLookup(text);
+        if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
+            handleUrlInput(text);
             return;
         }
 
@@ -192,9 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function handleUrlLookup(text) {
+    function handleUrlInput(text) {
         // Copy to clipboard first
-        navigator.clipboard.writeText(text).catch(e => console.warn("Clipboard failed", e));
+        navigator.clipboard.writeText(text)
+            .then(() => showToast("Copied!"))
+            .catch(e => console.warn("Clipboard failed", e));
 
         let baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
         // Ensure protocol
@@ -204,20 +226,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const url = baseUrl + text;
 
-        if (confirm(`Result: ${text}\n\nOpen link?\n${url}`)) {
-            window.open(url, '_blank');
-            startScanner(); // Restart scan immediately after decision
-        } else {
-            // If user cancels, show the standard modal so they can see/edit/copy
-            const modal = document.getElementById('scan-result');
-            document.getElementById('result-type').innerText = `Type: ${lastResult.format}`;
-            document.getElementById('result-text').value = text;
-            modal.classList.remove('hidden');
+        // Open immediately
+        window.open(url, '_blank');
+        startScanner(); // Restart scan
+    }
+
+    function showToast(message) {
+        let toast = document.getElementById('toast-msg');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast-msg';
+            toast.style.position = 'fixed';
+            toast.style.bottom = '80px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '20px';
+            toast.style.zIndex = '1000';
+            toast.style.transition = 'opacity 0.3s';
+            document.body.appendChild(toast);
         }
+        toast.innerText = message;
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 2000);
     }
 
     function updateActionUI() {
-        if (setAction.value === 'URL_LOOKUP') {
+        if (setAction.value === 'URL_INPUT' || setAction.value === 'URL_LOOKUP') {
             urlConfig.classList.remove('hidden');
         } else {
             urlConfig.classList.add('hidden');
