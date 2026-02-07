@@ -1,4 +1,4 @@
-import Scene from '../../negen/core/Scene.js';
+import Scene from '../../../negen/core/Scene.js';
 
 export default class AnimalStackScene extends Scene {
     constructor(engine) {

@@ -21,7 +21,11 @@ engine.loadScene(scene);
 
 // Start
 document.addEventListener('click', () => {
-    if (engine.audio.ctx.state === 'suspended') engine.audio.init();
+    if (!engine.audio.ctx) {
+        engine.audio.init();
+    } else if (engine.audio.ctx.state === 'suspended') {
+        engine.audio.ctx.resume();
+    }
 }, { once: true });
 
 engine.start();
