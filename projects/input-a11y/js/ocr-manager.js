@@ -22,7 +22,7 @@ class OCRManager {
             if (this.callbacks.onInitError) {
                 this.callbacks.onInitError(msg);
             }
-            return;
+            throw new Error(msg);
         }
 
         try {
