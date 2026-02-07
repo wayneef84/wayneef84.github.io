@@ -4,7 +4,7 @@
 This document serves as the single source of truth for the F.O.N.G. repository, combining architectural vision, project registry, and standard operating procedures.
 
 ## 1. Vision & Protocol
-**F.O.N.G.** (Founding & Forging) is a monolithic repository hosting a suite of browser-based games, utilities, and the proprietary **NEGEN** game engine.
+**F.O.N.G.** (F.O.N.G.) is a monolithic repository hosting a suite of browser-based games, utilities, and the proprietary **NEGEN** game engine.
 
 ### The Conjugators Protocol
 Development is driven by a triad of AI agents ("The Conjugators") collaborating under strict roles:

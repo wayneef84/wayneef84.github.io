@@ -1,6 +1,6 @@
 # NEGEN (New Engine)
 
-The homegrown game engine for the Founding & Forging.
+The homegrown game engine for the F.O.N.G..
 
 ## Quick Links
 *   **[Progress Tracker (Working Doc)](PROGRESS.md)**: Current status, tasks, and roadmap.

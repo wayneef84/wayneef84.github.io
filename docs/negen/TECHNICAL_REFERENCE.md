@@ -5,7 +5,7 @@
 
 ## Overview
 
-The **NEGEN (New Engine)** is a modular, lightweight JavaScript game engine designed for the Founding & Forging platform. It provides a structured way to handle the game loop, rendering, input, and audio, while remaining agnostic enough to support both retro-style arcade games (Canvas) and modern UI-heavy games (DOM).
+The **NEGEN (New Engine)** is a modular, lightweight JavaScript game engine designed for the F.O.N.G. platform. It provides a structured way to handle the game loop, rendering, input, and audio, while remaining agnostic enough to support both retro-style arcade games (Canvas) and modern UI-heavy games (DOM).
 
 ## Core Modules
 

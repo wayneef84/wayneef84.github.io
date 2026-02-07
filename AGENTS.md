@@ -3,13 +3,13 @@
 ## Overview
 This repository is co-maintained by three distinct AI agents. To prevent hallucinations, overwrite conflicts, and context loss, we adhere to the protocols defined here.
 
-## 👥 The Agents ("The Conjugate")
+## 👥 The Agents ("The Conjugators")
 
-| Agent | ID | Model | Role | Key Strengths | File Scope |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Claude** | `C` | Claude Opus 4.5 | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE.md` |
-| **Gemini** | `G` | Gemini Pro/Flash | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
-| **Jules** | `J` | Google Labs Agent | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
+| Agent | ID | Role | Key Strengths | File Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Claude** | `C` | Senior Developer / Docs | Reasoning, Planning, QA | `*.js`, `*.md`, `CLAUDE_AGENT.md` |
+| **Gemini** | `G` | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
+| **Jules** | `J` | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
 
 ## 🤝 Handshake Protocol
 When starting a session:
@@ -19,26 +19,14 @@ When starting a session:
 4.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
 5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
 
-## 📊 Thinking Budget (Y-Level) Protocol
+## 🚦 Collaboration Protocol ("F.O.N.G. Protocol")
+**(Acronym TBD)** — Maintained by **The Conjugators**
 
-**Rule:** The Y (Thinking Level) does **NOT** reset daily. It increments continuously per Agent Session to track the project's cumulative depth across all agents.
-
-**Format:** `[Agent][Y-Level]` - e.g., `C1`, `G2`, `J3`, `C4`
-
-**Sequence:** Each agent session increments the global Y counter by 1, regardless of which agent is active. This creates a chronological audit trail:
-- C1 (Claude's first session)
-- G2 (Gemini's review)
-- J3 (Jules' implementation)
-- C4 (Claude's follow-up) ...and so on.
-
-**Current Level:** Y = 5 (as of C5, 2026-02-06)
-
-**Usage:** Reference your Y-Level in commit messages, AI_FEEDBACK.md entries, and handoff documents for traceability.
-
-## 🚦 Collaboration Protocol ("The Conjugate Protocol")
-*   **Definition:** A triad workflow where C (Logic), G (Creative), and J (Structure) function as a single unit. G defines the *Experience*, C defines the *Implementation*, and J defines the *Architecture*.
-
-## 🚦 Conflict Resolution
+*   **Mission:** The F.O.N.G. is the foundational architecture for the family digital archive. It serves as a hybrid rendering bridge, "conjugating" high-performance Canvas inputs with structural DOM layouts.
+*   **Roles:**
+    *   **C (Logic):** Maintains the `negen/core` (Runtime) and `games/` (Modules).
+    *   **G (Creative):** Designs the `negen/graphics` (Overlay) and Assets.
+    *   **J (Structure):** Architects the `negen/` (Manifest) and Directory Structure.
 *   **Code Style:** If `C` and `J` disagree on style, `C`'s `CLAUDE.md` guidelines prevail for consistency.
 *   **Architecture:** `J` has final say on directory structure and git workflow.
 *   **Creative:** `G` has final say on visual design and game concepts.

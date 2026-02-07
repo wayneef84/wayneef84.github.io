@@ -5,7 +5,7 @@
 
 ## Welcome to NEGEN
 
-NEGEN (New Engine) is the custom game engine powering the Founding & Forging platform. This manual will guide you through setting up a project and creating your first game.
+NEGEN (New Engine) is the custom game engine powering the F.O.N.G. platform. This manual will guide you through setting up a project and creating your first game.
 
 ## Getting Started
 

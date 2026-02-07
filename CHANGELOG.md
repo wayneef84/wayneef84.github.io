@@ -6,10 +6,6 @@ All notable changes to the Founding & Forging project will be documented in this
 ### Planned Features
 - **God Mode:** Card counting overlay showing probability of next card value (educational feature)
 
-## [Overhaul] - 2026-02-06
-### Refactor
-- **Renaming:** Renamed "Fong Family Arcade" to "Founding & Forging" (Attributed to G).
-
 ## [Arcade v1.5] - 2026-02-04 (Jules (Gemini Pro))
 ### Changed
 - **Homepage Redesign:** Complete visual overhaul of `index.html` with modern dark theme (`#0f172a`), radial gradients, and "glassmorphism" card styling.

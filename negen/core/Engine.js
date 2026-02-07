@@ -1,101 +1,109 @@
 /**
- * NEGEN Engine - Core
- * The main entry point for the game loop.
+ * negen/core/Engine.js
+ * The heartbeat of the Negen Engine.
+ * Implements a fixed-step update loop with variable-step rendering.
  */
-export default class Engine {
-    /**
-     * @param {Object} config Configuration object
-     * @param {HTMLElement} config.canvas The canvas element (optional)
-     * @param {number} config.width Target width
-     * @param {number} config.height Target height
-     */
-    constructor(config = {}) {
-        this.canvas = config.canvas;
-        this.width = config.width || 800;
-        this.height = config.height || 600;
+(function(global) {
+    'use strict';
 
-        this.lastTime = 0;
-        this.accumulatedTime = 0;
-        this.timeStep = 1000 / 60; // 60 FPS
+    // Defaults
+    var DEFAULT_FPS = 60;
+    var STEP = 1 / DEFAULT_FPS;
+    var MAX_FRAME_TIME = 0.25; // Prevent spiral of death on lag spikes
 
+    var Engine = function(options) {
+        options = options || {};
         this.isRunning = false;
-        this.animationFrameId = null;
+        this.lastTime = 0;
+        this.accumulator = 0;
+        this.scene = null;
+        this.renderer = options.renderer || null;
 
-        // Systems
-        this.input = null; // To be attached
-        this.audio = null; // To be attached
-        this.renderer = null; // To be attached
+        // Bind context
+        this._loop = this._loop.bind(this);
+        this._handleVisibilityChange = this._handleVisibilityChange.bind(this);
 
-        this.scene = null; // Current active scene
-    }
+        // Visibility API for auto-pause
+        document.addEventListener('visibilitychange', this._handleVisibilityChange);
+    };
 
-    /**
-     * Attach a system to the engine.
-     * @param {string} name System name (input, audio, renderer)
-     * @param {Object} system System instance
-     */
-    registerSystem(name, system) {
-        this[name] = system;
-        if (system.init) system.init(this);
-    }
-
-    /**
-     * Set the active scene.
-     * @param {Object} scene A scene object implementing update() and draw()
-     */
-    loadScene(scene) {
-        if (this.scene && this.scene.exit) this.scene.exit();
-        this.scene = scene;
-        if (this.scene.enter) this.scene.enter(this);
-    }
-
-    start() {
+    Engine.prototype.start = function() {
         if (this.isRunning) return;
         this.isRunning = true;
-        this.lastTime = performance.now();
-        this.loop(this.lastTime);
-        console.log("NEGEN Engine Started");
-    }
+        this.lastTime = performance.now() / 1000;
+        this.accumulator = 0;
+        requestAnimationFrame(this._loop);
+    };
 
-    stop() {
+    Engine.prototype.stop = function() {
         this.isRunning = false;
-        cancelAnimationFrame(this.animationFrameId);
-        console.log("NEGEN Engine Stopped");
-    }
+    };
 
-    loop(timestamp) {
+    Engine.prototype.loadScene = function(scene) {
+        if (this.scene && this.scene.exit) {
+            this.scene.exit();
+        }
+        this.scene = scene;
+        if (this.scene && this.scene.enter) {
+            this.scene.enter(this);
+        }
+    };
+
+    Engine.prototype._loop = function(timestamp) {
         if (!this.isRunning) return;
 
-        const deltaTime = timestamp - this.lastTime;
-        this.lastTime = timestamp;
-        this.accumulatedTime += deltaTime;
+        var currentTime = timestamp / 1000; // Seconds
+        var frameTime = currentTime - this.lastTime;
+        this.lastTime = currentTime;
 
-        // Fixed timestep update
-        while (this.accumulatedTime >= this.timeStep) {
-            this.update(this.timeStep);
-            this.accumulatedTime -= this.timeStep;
+        // Cap frame time to prevent spiral of death
+        if (frameTime > MAX_FRAME_TIME) {
+            frameTime = MAX_FRAME_TIME;
         }
 
-        this.draw();
+        this.accumulator += frameTime;
 
-        this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
-    }
+        // Fixed Update Loop (Logic)
+        while (this.accumulator >= STEP) {
+            this._update(STEP);
+            this.accumulator -= STEP;
+        }
 
-    update(dt) {
+        // Variable Render Loop (Graphics)
+        // Passes interpolation alpha (0..1) for smooth visual smoothing
+        var alpha = this.accumulator / STEP;
+        this._draw(alpha);
+
+        requestAnimationFrame(this._loop);
+    };
+
+    Engine.prototype._update = function(dt) {
         if (this.scene && this.scene.update) {
             this.scene.update(dt);
         }
-        if (this.input && this.input.update) {
-            this.input.update();
-        }
-    }
+    };
 
-    draw() {
+    Engine.prototype._draw = function(alpha) {
         if (this.renderer) {
             this.renderer.clear();
             if (this.scene && this.scene.draw) {
-                this.scene.draw(this.renderer);
+                this.scene.draw(this.renderer, alpha);
             }
         }
-    }
-}
+    };
+
+    Engine.prototype._handleVisibilityChange = function() {
+        if (document.hidden) {
+            this.stop();
+        } else {
+            // Reset timer on resume to avoid huge delta jumps
+            this.lastTime = performance.now() / 1000;
+            this.start();
+        }
+    };
+
+    // Export
+    global.Negen = global.Negen || {};
+    global.Negen.Engine = Engine;
+
+})(typeof window !== 'undefined' ? window : this);

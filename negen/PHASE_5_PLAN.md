@@ -22,4 +22,4 @@
 ---
 
 ## Vision
-By Phase 5, "Founding & Forging" is no longer a list of links, but a single application where the user launches games, earns coins, and tracks progress without leaving the immersive environment.
+By Phase 5, "F.O.N.G." is no longer a list of links, but a single application where the user launches games, earns coins, and tracks progress without leaving the immersive environment.

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 2 Verification</title>
+    <style>
+        body { margin: 0; background: #333; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+
+    <!-- Engine Scripts -->
+    <script src="../core/Engine.js"></script>
+    <script src="../graphics/Renderer.js"></script>
+    <script src="../assets/AssetLoader.js"></script>
+    <script src="../entities/Card.js"></script>
+
+    <script>
+        // Verification Scene
+        var VerifyScene = {
+            card: null,
+            timer: 0,
+
+            enter: function(engine) {
+                this.renderer = engine.renderer;
+
+                // Create a Card (Layer 1)
+                this.card = new Negen.Entities.Card('HEARTS', 'A', this.renderer);
+                this.card.setPosition(100, 100);
+                this.card.flip(); // Start face up
+
+                // Draw something on Canvas (Layer 0)
+                this.renderer.ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+                this.renderer.ctx.fillRect(50, 50, 200, 200);
+            },
+
+            update: function(dt) {
+                this.timer += dt;
+
+                // Animate Card
+                var x = 100 + Math.sin(this.timer) * 50;
+                var y = 100 + Math.cos(this.timer) * 50;
+                this.card.setPosition(x, y, this.timer * 20);
+
+                // Auto flip every 2 seconds
+                if (Math.floor(this.timer) % 2 === 0 && !this.flipped) {
+                    this.card.flip();
+                    this.flipped = true;
+                } else if (Math.floor(this.timer) % 2 !== 0) {
+                    this.flipped = false;
+                }
+            },
+
+            draw: function(renderer, alpha) {
+                // Render the Card using the Hybrid Renderer
+                renderer.drawDOM(this.card.element, this.card.x, this.card.y, this.card.rotation);
+
+                // Draw a moving circle on Canvas
+                var ctx = renderer.ctx;
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(400, 300 + Math.sin(this.timer * 2) * 100, 20, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        };
+
+        // Init
+        var renderer = new Negen.Renderer('game-container');
+        var engine = new Negen.Engine({ renderer: renderer });
+
+        engine.loadScene(VerifyScene);
+        engine.start();
+
+        console.log('Phase 2 Verification Started');
+    </script>
+</body>
+</html>
