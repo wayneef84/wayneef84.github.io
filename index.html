@@ -280,6 +280,51 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 20px;
+            background: var(--accent);
+            color: #000;
+            padding: 10px 15px;
+            z-index: 9999;
+            text-decoration: none;
+            border-radius: 0 0 8px 8px;
+            font-weight: bold;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
@@ -294,6 +339,8 @@
 </head>
 <body>
 
+    <a href="#grid" class="skip-link">Skip to main content</a>
+
     <!-- Theme Toggle -->
     <button id="themeToggle" class="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
         ☀️
@@ -304,21 +351,22 @@
         <p class="subtitle">A collection of games & utilities v1.5</p>
 
         <nav>
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="cards">Cards</button>
-            <button class="filter-btn" data-filter="board">Board Games</button>
-            <button class="filter-btn" data-filter="arcade">Arcade</button>
-            <button class="filter-btn" data-filter="puzzle">Puzzle</button>
-            <button class="filter-btn" data-filter="project">Projects</button>
+            <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-btn" data-filter="cards" aria-pressed="false">Cards</button>
+            <button class="filter-btn" data-filter="board" aria-pressed="false">Board Games</button>
+            <button class="filter-btn" data-filter="arcade" aria-pressed="false">Arcade</button>
+            <button class="filter-btn" data-filter="puzzle" aria-pressed="false">Puzzle</button>
+            <button class="filter-btn" data-filter="project" aria-pressed="false">Projects</button>
         </nav>
     </header>
 
     <main>
+        <h2 class="visually-hidden">Game Library</h2>
         <div class="game-grid" id="grid">
 
             <!-- Card Games -->
             <a href="games/cards/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.1s">
-                <div class="card-icon">🃏</div>
+                <div class="card-icon" role="img" aria-label="Joker Card">🃏</div>
                 <div class="card-content">
                     <span class="game-tag">Shared Engine</span>
                     <h3 class="game-title">Card Games</h3>
@@ -328,7 +376,7 @@
 
             <!-- Tracing -->
             <a href="games/tracing/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.2s">
-                <div class="card-icon">✏️</div>
+                <div class="card-icon" role="img" aria-label="Pencil">✏️</div>
                 <div class="card-content">
                     <span class="game-tag">Educational</span>
                     <h3 class="game-title">Letter Tracing</h3>
@@ -338,7 +386,7 @@
 
             <!-- Breakout -->
             <a href="games/breakout/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.25s">
-                <div class="card-icon">🧱</div>
+                <div class="card-icon" role="img" aria-label="Brick Wall">🧱</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">Breakout</h3>
@@ -348,7 +396,7 @@
 
             <!-- Pong -->
             <a href="games/pong/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.26s">
-                <div class="card-icon">🏓</div>
+                <div class="card-icon" role="img" aria-label="Ping Pong Paddle">🏓</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">Pong</h3>
@@ -358,7 +406,7 @@
 
             <!-- Space Invaders -->
             <a href="games/space_invaders/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.27s">
-                <div class="card-icon">👾</div>
+                <div class="card-icon" role="img" aria-label="Space Invader">👾</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">Space Invaders</h3>
@@ -368,7 +416,7 @@
 
             <!-- Slots -->
             <a href="games/slots/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.3s">
-                <div class="card-icon">🎰</div>
+                <div class="card-icon" role="img" aria-label="Slot Machine">🎰</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">Slots</h3>
@@ -378,7 +426,7 @@
 
             <!-- Board Games -->
             <a href="games/board/index.html" class="game-card fade-in" data-category="board" style="animation-delay: 0.4s">
-                <div class="card-icon">♟️</div>
+                <div class="card-icon" role="img" aria-label="Chess Pawn">♟️</div>
                 <div class="card-content">
                     <span class="game-tag">Strategy</span>
                     <h3 class="game-title">Board Games</h3>
@@ -388,7 +436,7 @@
 
             <!-- Snake -->
             <a href="games/snake/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.5s">
-                <div class="card-icon">🐍</div>
+                <div class="card-icon" role="img" aria-label="Snake">🐍</div>
                 <div class="card-content">
                     <span class="game-tag">Classic</span>
                     <h3 class="game-title">Snake</h3>
@@ -398,7 +446,7 @@
 
             <!-- Magic 8 Ball -->
             <a href="games/xtc_ball/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.6s">
-                <div class="card-icon">🎱</div>
+                <div class="card-icon" role="img" aria-label="8 Ball">🎱</div>
                 <div class="card-content">
                     <span class="game-tag">Casual</span>
                     <h3 class="game-title">Magic 8 Ball</h3>
@@ -408,7 +456,7 @@
 
             <!-- Sprunki Mixer -->
             <a href="games/sprunki/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.7s">
-                <div class="card-icon">🎵</div>
+                <div class="card-icon" role="img" aria-label="Music Note">🎵</div>
                 <div class="card-content">
                     <span class="game-tag">Music</span>
                     <h3 class="game-title">Sprunki Mixer</h3>
@@ -418,7 +466,7 @@
 
             <!-- Poker Hall -->
             <a href="games/cards/index.html?game=poker" class="game-card fade-in" data-category="cards" style="animation-delay: 0.75s">
-                <div class="card-icon">♣️</div>
+                <div class="card-icon" role="img" aria-label="Club Suit">♣️</div>
                 <div class="card-content">
                     <span class="game-tag">New</span>
                     <h3 class="game-title">Poker Hall</h3>
@@ -428,7 +476,7 @@
 
             <!-- Flow Games -->
             <a href="games/flow/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.8s">
-                <div class="card-icon">🔗</div>
+                <div class="card-icon" role="img" aria-label="Links">🔗</div>
                 <div class="card-content">
                     <span class="game-tag">Puzzle</span>
                     <h3 class="game-title">Flow Games</h3>
@@ -438,7 +486,7 @@
 
             <!-- Animal Stack -->
             <a href="games/animal_stack/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.85s">
-                <div class="card-icon">🦒</div>
+                <div class="card-icon" role="img" aria-label="Giraffe">🦒</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">Animal Stack</h3>
@@ -448,7 +496,7 @@
 
             <!-- SKYbreakers -->
             <a href="games/sky_breakers/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.9s">
-                <div class="card-icon">🚀</div>
+                <div class="card-icon" role="img" aria-label="Rocket">🚀</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
                     <h3 class="game-title">SKYbreakers</h3>
@@ -458,7 +506,7 @@
 
             <!-- I Seek Queue -->
             <a href="projects/i-seek-queue/index.html" class="game-card project fade-in" data-category="project" style="animation-delay: 0.95s">
-                <div class="card-icon">📷</div>
+                <div class="card-icon" role="img" aria-label="Camera">📷</div>
                 <div class="card-content">
                     <span class="game-tag">Utility</span>
                     <h3 class="game-title">I Seek Queue</h3>
@@ -468,7 +516,7 @@
 
             <!-- Projects -->
             <a href="projects/" class="game-card project fade-in" data-category="project" style="animation-delay: 1.0s">
-                <div class="card-icon">🛠️</div>
+                <div class="card-icon" role="img" aria-label="Tools">🛠️</div>
                 <div class="card-content">
                     <span class="game-tag">Utilities</span>
                     <h3 class="game-title">Projects</h3>
@@ -520,8 +568,12 @@
                     }
 
                     // Update active button
-                    filterBtns.forEach(b => b.classList.remove('active'));
+                    filterBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
                     btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
 
                     // Filter cards
                     cards.forEach(card => {
