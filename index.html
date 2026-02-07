@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Fong Family Arcade</title>
+    <title>F.O.N.G.</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="favicon.svg">
     <style>
@@ -18,9 +18,21 @@
             --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
 
+        /* Light Mode Variables */
+        :root.light-mode {
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #eab308; /* Darker yellow/gold for visibility on light */
+            --accent-glow: rgba(234, 179, 8, 0.2);
+        }
+
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         body {
@@ -37,12 +49,43 @@
             align-items: center;
         }
 
+        body.light-mode {
+            background-image: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f1f5f9 70%);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
         /* Header */
         header {
             text-align: center;
             padding: 60px 20px 40px;
             width: 100%;
             max-width: 800px;
+            position: relative;
         }
 
         h1 {
@@ -55,6 +98,10 @@
             background-clip: text;
             color: transparent;
             text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        body.light-mode h1 {
+            text-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
         }
 
         .subtitle {
@@ -202,6 +249,11 @@
             box-shadow: 0 20px 40px rgba(118, 75, 162, 0.2);
         }
 
+        body.light-mode .game-card.project {
+            background: linear-gradient(145deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: rgba(118, 75, 162, 0.4);
+        }
+
         /* Footer */
         footer {
             padding: 40px;
@@ -242,13 +294,21 @@
 </head>
 <body>
 
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+        ☀️
+    </button>
+
     <header>
-        <h1>Fong Family Arcade</h1>
+        <h1>F.O.N.G.</h1>
         <p class="subtitle">A collection of games & utilities v1.5</p>
 
         <nav>
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="game">Games</button>
+            <button class="filter-btn" data-filter="cards">Cards</button>
+            <button class="filter-btn" data-filter="board">Board Games</button>
+            <button class="filter-btn" data-filter="arcade">Arcade</button>
+            <button class="filter-btn" data-filter="puzzle">Puzzle</button>
             <button class="filter-btn" data-filter="project">Projects</button>
         </nav>
     </header>
@@ -257,7 +317,7 @@
         <div class="game-grid" id="grid">
 
             <!-- Card Games -->
-            <a href="games/cards/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.1s">
+            <a href="games/cards/index.html" class="game-card fade-in" data-category="cards" style="animation-delay: 0.05s">
                 <div class="card-icon">🃏</div>
                 <div class="card-content">
                     <span class="game-tag">Shared Engine</span>
@@ -267,7 +327,7 @@
             </a>
 
             <!-- Tracing -->
-            <a href="games/tracing/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.2s">
+            <a href="games/tracing/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.2s">
                 <div class="card-icon">✏️</div>
                 <div class="card-content">
                     <span class="game-tag">Educational</span>
@@ -276,8 +336,38 @@
                 </div>
             </a>
 
+            <!-- Breakout -->
+            <a href="games/breakout/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.25s">
+                <div class="card-icon">🧱</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">Breakout</h3>
+                    <p class="game-desc">Smash bricks with a ball and paddle. Now with particles!</p>
+                </div>
+            </a>
+
+            <!-- Pong -->
+            <a href="games/pong/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.26s">
+                <div class="card-icon">🏓</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">Pong</h3>
+                    <p class="game-desc">The original tennis game. 1P vs CPU.</p>
+                </div>
+            </a>
+
+            <!-- Space Invaders -->
+            <a href="games/space_invaders/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.27s">
+                <div class="card-icon">👾</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">Space Invaders</h3>
+                    <p class="game-desc">Defend Earth from the alien invasion.</p>
+                </div>
+            </a>
+
             <!-- Slots -->
-            <a href="games/slots/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.3s">
+            <a href="games/slots/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.3s">
                 <div class="card-icon">🎰</div>
                 <div class="card-content">
                     <span class="game-tag">Arcade</span>
@@ -286,18 +376,18 @@
                 </div>
             </a>
 
-            <!-- Xiangqi -->
-            <a href="games/xiangqi/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.4s">
+            <!-- Board Games -->
+            <a href="games/board/index.html" class="game-card fade-in" data-category="board" style="animation-delay: 0.4s">
                 <div class="card-icon">♟️</div>
                 <div class="card-content">
                     <span class="game-tag">Strategy</span>
-                    <h3 class="game-title">Chinese Chess</h3>
-                    <p class="game-desc">Play Xiangqi against an AI opponent.</p>
+                    <h3 class="game-title">Board Games</h3>
+                    <p class="game-desc">Play Chess, Checkers, Xiangqi and more.</p>
                 </div>
             </a>
 
             <!-- Snake -->
-            <a href="games/snake/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.5s">
+            <a href="games/snake/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.5s">
                 <div class="card-icon">🐍</div>
                 <div class="card-content">
                     <span class="game-tag">Classic</span>
@@ -307,7 +397,7 @@
             </a>
 
             <!-- Magic 8 Ball -->
-            <a href="games/xtc_ball/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.6s">
+            <a href="games/xtc_ball/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.6s">
                 <div class="card-icon">🎱</div>
                 <div class="card-content">
                     <span class="game-tag">Casual</span>
@@ -317,7 +407,7 @@
             </a>
 
             <!-- Sprunki Mixer -->
-            <a href="games/sprunki/index.html" class="game-card fade-in" data-category="game" style="animation-delay: 0.7s">
+            <a href="games/sprunki/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.7s">
                 <div class="card-icon">🎵</div>
                 <div class="card-content">
                     <span class="game-tag">Music</span>
@@ -326,13 +416,63 @@
                 </div>
             </a>
 
+            <!-- Poker Hall -->
+            <a href="games/cards/index.html?game=poker" class="game-card fade-in" data-category="cards" style="animation-delay: 0.75s">
+                <div class="card-icon">♣️</div>
+                <div class="card-content">
+                    <span class="game-tag">New</span>
+                    <h3 class="game-title">Poker Hall</h3>
+                    <p class="game-desc">Texas Hold'em, 5 Card Draw, and more.</p>
+                </div>
+            </a>
+
+            <!-- Flow Games -->
+            <a href="games/flow/index.html" class="game-card fade-in" data-category="puzzle" style="animation-delay: 0.8s">
+                <div class="card-icon">🔗</div>
+                <div class="card-content">
+                    <span class="game-tag">Puzzle</span>
+                    <h3 class="game-title">Flow Games</h3>
+                    <p class="game-desc">Connect matching colors with pipes across the board.</p>
+                </div>
+            </a>
+
+            <!-- Animal Stack -->
+            <a href="games/animal_stack/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.85s">
+                <div class="card-icon">🦒</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">Animal Stack</h3>
+                    <p class="game-desc">Stack animals as high as you can without toppling over.</p>
+                </div>
+            </a>
+
+            <!-- SKYbreakers -->
+            <a href="games/sky_breakers/index.html" class="game-card fade-in" data-category="arcade" style="animation-delay: 0.9s">
+                <div class="card-icon">🚀</div>
+                <div class="card-content">
+                    <span class="game-tag">Arcade</span>
+                    <h3 class="game-title">SKYbreakers</h3>
+                    <p class="game-desc">Break through the sky in this high-flying arcade game.</p>
+                </div>
+            </a>
+
+            <!-- I Seek Queue -->
+            <a href="projects/i-seek-queue/index.html" class="game-card project fade-in" data-category="project" style="animation-delay: 0.95s">
+                <div class="card-icon">📷</div>
+                <div class="card-content">
+                    <span class="game-tag">Utility</span>
+                    <h3 class="game-title">I Seek Queue</h3>
+                    <p class="game-desc">Barcode and QR code scanner with multiple detection modes.</p>
+                </div>
+            </a>
+
             <!-- Projects -->
-            <a href="projects/" class="game-card project fade-in" data-category="project" style="animation-delay: 0.8s">
+            <a href="projects/" class="game-card project fade-in" data-category="project" style="animation-delay: 1.0s">
                 <div class="card-icon">🛠️</div>
                 <div class="card-content">
                     <span class="game-tag">Utilities</span>
                     <h3 class="game-title">Projects</h3>
-                    <p class="game-desc">Useful tools including Shipment Tracker.</p>
+                    <p class="game-desc">Shipment Tracker, Markdown Reader, C.o.D.E., and more.</p>
                 </div>
             </a>
 
@@ -341,21 +481,47 @@
 
     <footer>
         <p>Made with ❤️ by the Fong Family</p>
-        <p style="opacity: 0.6; font-size: 0.8em; margin-top: 10px;">Built with assistance from Claude</p>
+        <p style="opacity: 0.6; font-size: 0.8em; margin-top: 10px;">Built with AI assistance from Claude (C), Gemini (G) & Jules (J)</p>
+        <p style="opacity: 0.6; font-size: 0.8em; margin-top: 5px;">v1.5 - 2026-02-05</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Theme Logic
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const savedTheme = localStorage.getItem('fong_theme');
+
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                const isLight = body.classList.contains('light-mode');
+                themeToggle.textContent = isLight ? '🌙' : '☀️';
+                localStorage.setItem('fong_theme', isLight ? 'light' : 'dark');
+            });
+
+            // Filter Logic
             const filterBtns = document.querySelectorAll('.filter-btn');
             const cards = document.querySelectorAll('.game-card');
 
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+
+                    if (filter === 'project') {
+                        window.location.href = 'projects/';
+                        return;
+                    }
+
                     // Update active button
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-
-                    const filter = btn.dataset.filter;
 
                     // Filter cards
                     cards.forEach(card => {

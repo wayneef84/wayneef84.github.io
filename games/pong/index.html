@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEGEN Pong</title>
+    <link rel="stylesheet" href="../../negen/style.css">
+    <style>
+        /* Game Specific Overrides */
+        :root {
+            --accent: #fff; /* Classic Pong White */
+            --accent-glow: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="startOverlay" class="overlay">
+        <h1>PONG</h1>
+        <p class="blink">INSERT COIN (TAP TO START)</p>
+    </div>
+    <canvas id="negenCanvas"></canvas>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

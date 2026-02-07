@@ -1,0 +1,16 @@
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/index.html HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/css/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/engine.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/checkers.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/chess.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/xiangqi-rules.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/tictactoe.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/xiangqi.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/xiangqi-ai.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/mancala.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/settings.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/battleship.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/connect4.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/dots.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/overlay.js HTTP/1.1" 200 -
+127.0.0.1 - - [06/Feb/2026 16:28:38] "GET /games/board/js/main.js HTTP/1.1" 200 -

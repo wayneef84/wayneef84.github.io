@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-01-20
 
-This document describes the URL parameter system for direct navigation to specific letters and words in the Fong Family Arcade games.
+This document describes the URL parameter system for direct navigation to specific letters and words in the F.O.N.G. games.
 
 ---
 
@@ -110,6 +110,39 @@ words.html?id=custom&word=Bicycle&emoji=🚲
 - ✅ Emoji parameter overrides default emoji mapping
 - ✅ Perfect for sharing one-off practice words
 - ⚠️ Word not saved to word list (temporary)
+
+---
+
+## Card Games
+
+### Base URL
+```
+games/cards/index.html
+```
+
+### URL Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `game` | string | No | Game ID: `blackjack`, `war`, `poker`. Defaults to last played or `blackjack`. |
+
+### Examples
+
+**Direct Link to Poker:**
+```
+index.html?game=poker
+```
+
+**Direct Link to War:**
+```
+index.html?game=war
+```
+
+### Behavior
+
+- ✅ Loads the specified game in the shared engine frame.
+- ✅ Updates the "Card Games" sidebar selection.
+- ✅ Persists selection to `localStorage` (`last_card_game`).
 
 ---
 

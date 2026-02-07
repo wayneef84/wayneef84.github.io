@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flow Games</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Flow Games</h1>
+
+        <div id="controls-top" style="margin-bottom: 10px;">
+            <label>Size:
+                <select id="grid-size">
+                    <option value="5">5x5</option>
+                    <option value="6">6x6</option>
+                    <option value="7">7x7</option>
+                    <option value="8">8x8</option>
+                    <option value="9">9x9</option>
+                    <option value="10">10x10</option>
+                </select>
+            </label>
+            <label>Pairs:
+                <select id="pair-count">
+                    <option value="0">Auto</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </label>
+            <button id="btn-new-game">New Game</button>
+        </div>
+
+        <canvas id="game-canvas" width="600" height="600"></canvas>
+
+        <div id="controls-bottom">
+            <!-- Stats or Messages -->
+        </div>
+    </div>
+
+    <!-- Engine Scripts -->
+    <script src="engine/grid.js"></script>
+    <script src="engine/path.js"></script>
+    <script src="engine/input.js"></script>
+    <script src="engine/level_generator.js"></script>
+    <script src="engine/game.js"></script>
+
+    <!-- Game Initialization -->
+    <script>
+        window.onload = function() {
+            var game = new Game('game-canvas');
+
+            document.getElementById('btn-new-game').onclick = function() {
+                var size = parseInt(document.getElementById('grid-size').value);
+                var pairs = parseInt(document.getElementById('pair-count').value);
+                if (pairs === 0) pairs = null; // Auto
+                game.startRandomLevel(size, size, pairs);
+            };
+        };
+    </script>
+</body>
+</html>
