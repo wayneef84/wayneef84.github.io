@@ -38,22 +38,30 @@
                     </select>
                 </div>
 
+                <div class="control-row">
+                    <label for="set-action">Scan Action:</label>
+                    <select id="set-action">
+                        <option value="FREE">Free Scan (History)</option>
+                        <option value="URL_LOOKUP">Processing Mode (Copy & Open)</option>
+                    </select>
+                </div>
+                <div id="url-config" class="control-row hidden" style="flex-direction: column; align-items: flex-start;">
+                    <label for="set-base-url" style="margin-bottom: 5px;">Base URL:</label>
+                    <input type="text" id="set-base-url" placeholder="https://google.com/?q=" style="width: 100%; max-width: 500px; box-sizing: border-box;">
+                </div>
+
                 <details class="settings-panel">
-                    <summary>Feedback Settings</summary>
-                    <div class="setting-item">
-                        <label for="set-action">Scan Action:</label>
-                        <select id="set-action">
-                            <option value="FREE">Free Scan (History)</option>
-                            <option value="URL_LOOKUP">URL Lookup (Open Link)</option>
-                        </select>
-                    </div>
-                    <div id="url-config" class="setting-item hidden">
-                        <label for="set-base-url">Base URL:</label>
-                        <input type="text" id="set-base-url" placeholder="https://google.com/?q=">
-                    </div>
+                    <summary>Scanning Settings</summary>
                     <div class="setting-item">
                         <label for="set-vibrate">Vibrate:</label>
                         <input type="checkbox" id="set-vibrate">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-region">Scan Region:</label>
+                        <select id="set-region">
+                            <option value="BOX">Box (Standard)</option>
+                            <option value="LINE">Line (Precise)</option>
+                        </select>
                     </div>
                     <div class="setting-item">
                         <label for="set-frame">Green Frame:</label>
@@ -141,6 +149,7 @@
 
     <!-- Scripts -->
     <script src="js/storage.js"></script>
+    <script src="js/ocr-manager.js"></script>
     <script src="js/scanner.js"></script>
     <script src="js/generator.js"></script>
     <script src="js/app.js"></script>
