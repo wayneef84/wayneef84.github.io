@@ -322,16 +322,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = document.getElementById('gen-text').value;
         if (!text) return alert("Please enter text");
 
-        document.getElementById('qr-output').style.display = 'block';
-        generator.generate('qr-output', text);
-        document.getElementById('gen-actions').classList.remove('hidden');
+        // QR Code generation disabled per user request
+        // document.getElementById('qr-output').style.display = 'block';
+        // generator.generate('qr-output', text);
+        // document.getElementById('gen-actions').classList.remove('hidden');
 
         // Auto Save to History
         storage.addItem('CREATED', {
             content: text,
-            format: 'QR_CODE'
+            format: 'QR_CODE' // Keeping format for history consistency
         });
         renderHistory();
+
+        alert("Content saved to History (Visual QR generation is disabled).");
     }
 
     function renderHistory() {
