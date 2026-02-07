@@ -1,4 +1,4 @@
-import Renderer from './Renderer.mjs';
+import Renderer from './Renderer.js';
 
 /**
  * NEGEN Canvas Renderer

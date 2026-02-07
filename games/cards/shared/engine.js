@@ -466,12 +466,20 @@ GameEngine.prototype._executeDeductAction = function (action) {
 GameEngine.prototype._handleResolution = function () {
     var result = this.ruleset.resolveRound(this.getGameState());
 
-    this._emit({
+    var event = {
         type: 'RESOLUTION',
         winner: result.winner,
         outcome: result.outcome,
         details: result.details
-    });
+    };
+
+    for (var key in result) {
+        if (result.hasOwnProperty(key) && key !== 'type') {
+            event[key] = result[key];
+        }
+    }
+
+    this._emit(event);
 
     this._resolutionResult = result;
     var nextState = this.ruleset.usesCurrency ? GameState.PAYOUT : GameState.GAME_OVER;

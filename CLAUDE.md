@@ -41,6 +41,28 @@ Non-game applications and tools:
 
 ---
 
+## ⚖️ License Audit Log
+
+This repository contains code from third-party sources and libraries. All licenses must be strictly respected.
+
+| Component | License Type | Location | Notes |
+| :--- | :--- | :--- | :--- |
+| **Project Root** | **MIT License** | `/LICENSE` | Main license for all original code (Copyright © 2026 Wayne Fong). |
+| **Shipment Tracker** | **MIT License** | `projects/shipment-tracker/LICENSE` | Explicit MIT license for the tracker utility. |
+| **html5-qrcode** | **Apache 2.0** | `games/lib/LICENSE.txt` | Used for camera scanning in *Sprunki* & *I Seek Queue*. Local file: `games/lib/html5-qrcode.min.js`. |
+| **qrcode.js** | **MIT License** | `games/lib/LICENSE.txt` | Used for QR generation. Local file: `games/lib/qrcode.min.js`. |
+| **Poker Evaluator** | **MIT License** | File Header | Logic adapted for `games/cards/shared/poker-evaluator.js`. |
+| **SheetJS** | **Apache 2.0** | Referenced in `projects/shipment-tracker/LICENSE` | Referenced for optional Excel support; library files are **not distributed** in this repo. |
+| **marked** | **MIT License** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
+| **highlight.js** | **BSD 3-Clause** | CDN Hosted | Used in Markdown Reader (`projects/md-reader/`). Not hosted locally. |
+
+**Audit Policy:**
+- All new third-party libraries must be added to `games/lib/` and their license text added to `games/lib/LICENSE.txt`.
+- CDN links do not require local license files but should be noted here.
+- Adapted code (copied & modified) must retain original copyright headers or explicit attribution comments.
+
+---
+
 ## 📚 Documentation Maintenance Policy
 
 **CRITICAL:** When making changes to ANY project, you MUST update related documentation files.

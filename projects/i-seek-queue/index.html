@@ -26,7 +26,7 @@
                 <div class="control-row">
                     <label for="scanMode">Detection Mode:</label>
                     <select id="scanMode">
-                        <option value="OCR">OCR (Text Copy)</option>
+                        <option value="TEXT_OCR">Text (OCR)</option>
                         <option value="AUTO" selected>Auto Detect</option>
                         <option disabled>--- Specific Formats ---</option>
                         <option value="QR_CODE">QR Code</option>
@@ -39,7 +39,7 @@
                 </div>
 
                 <details class="settings-panel">
-                    <summary>Scanning Settings</summary>
+                    <summary>Feedback Settings</summary>
                     <div class="setting-item">
                         <label for="set-action">Scan Action:</label>
                         <select id="set-action">
@@ -49,18 +49,11 @@
                     </div>
                     <div id="url-config" class="setting-item hidden">
                         <label for="set-base-url">Base URL:</label>
-                        <input type="text" id="set-base-url" placeholder="https://google.com/?q=">
+                        <input type="text" id="set-base-url" placeholder="www.google.com/?q=">
                     </div>
                     <div class="setting-item">
                         <label for="set-vibrate">Vibrate:</label>
                         <input type="checkbox" id="set-vibrate">
-                    </div>
-                    <div class="setting-item">
-                        <label for="set-region">Scan Region:</label>
-                        <select id="set-region">
-                            <option value="BOX">Box (Standard)</option>
-                            <option value="LINE">Line (Precise)</option>
-                        </select>
                     </div>
                     <div class="setting-item">
                         <label for="set-frame">Green Frame:</label>
@@ -85,6 +78,7 @@
 
             <div id="reader-container">
                 <div id="reader"></div>
+                <div class="scan-line"></div>
             </div>
 
             <div id="scan-result" class="modal hidden">
@@ -143,8 +137,8 @@
         </section>
     </main>
 
-    <!-- Scripts -->
-    <div class="brand-footer">👁️ 🔎 🚶</div>
+    <!-- Mobile QR Icon -->
+    <div id="mobile-page-qr"></div>
 
     <!-- Scripts -->
     <script src="js/storage.js"></script>

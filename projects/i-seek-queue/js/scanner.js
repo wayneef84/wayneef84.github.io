@@ -6,7 +6,7 @@ class ScannerManager {
         this.isScanning = false;
     }
 
-    async start(mode, regionMode = 'BOX') {
+    async start(mode) {
         try {
             // Stop existing if running
             if (this.instance) {
@@ -51,15 +51,9 @@ class ScannerManager {
             // Start
             const cameraConfig = { facingMode: "environment" }; // Prefer back camera
 
-            // Configure QR Box based on region mode
-            let qrboxConfig = { width: 250, height: 250 }; // Default BOX
-            if (regionMode === 'LINE') {
-                qrboxConfig = { width: 300, height: 50 }; // Wide and thin for picking specific codes
-            }
-
             await this.instance.start(
                 cameraConfig,
-                { fps: 10, qrbox: qrboxConfig },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText, decodedResult) => {
                     if (this.callbacks.onSuccess) {
                         this.callbacks.onSuccess(decodedText, decodedResult, mode);

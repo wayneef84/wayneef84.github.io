@@ -1,4 +1,4 @@
-import Engine from '../../negen/core/Engine.mjs';
+import Engine from '../../negen/core/Engine.js';
 import InputManager from '../../negen/input/InputManager.js';
 import AudioManager from '../../negen/audio/AudioManager.js';
 import CanvasRenderer from '../../negen/graphics/CanvasRenderer.js';
