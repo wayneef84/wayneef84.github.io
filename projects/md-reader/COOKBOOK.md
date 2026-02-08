@@ -35,4 +35,8 @@ steps:
 
 *(Run the indexer to populate this list if we add auto-discovery later, for now browse via file explorer)*
 
-* [Example Recipe](../../recipes/example.md) (Create me!)
+* [Asado](#./recipes/asado.md)
+* [Cacik](#./recipes/cacik.md)
+* [Flan](#./recipes/flan.md)
+* [Kabse](#./recipes/kabse.md)
+* [Migas](#./recipes/migas.md)
