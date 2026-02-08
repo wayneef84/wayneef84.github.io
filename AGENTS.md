@@ -70,6 +70,7 @@ All development work happens on the `dev` branch. The `main` branch is the **liv
 
 **Policy Mapping:**
 All agents must adhere to the specific data and legal policies for each project.
+**Proactive Update:** If you encounter a project missing from this matrix, you must update this table with the correct policy classification.
 
 | Project Name | Data Policy | Legal / Liability | Status |
 | :--- | :--- | :--- | :--- |
