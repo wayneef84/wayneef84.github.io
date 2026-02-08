@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
     var setOcrScanLine = document.getElementById('set-ocr-scan-line');
+    var scanCharCountIndicator = document.getElementById('scan-char-count-indicator');
 
     // OCR Scan Region (ROI) - Auto-centered, user adjusts size only
     var setOcrRoiEnabled = document.getElementById('set-ocr-roi-enabled');
@@ -222,19 +223,32 @@ document.addEventListener('DOMContentLoaded', function() {
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
         var roiConfig = buildRoiConfig();
 
+        var minLength = (s.ocrMinLength !== undefined) ? parseInt(s.ocrMinLength, 10) : 0;
+
         ocrManager.configure({
             filterMode: s.ocrFilterMode || 'NONE',
             filterValue: s.ocrFilterValue || '',
             confirmPopup: s.ocrConfirmPopup !== undefined ? s.ocrConfirmPopup : true,
             confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
-            minTextLength: (s.ocrMinLength !== undefined) ? parseInt(s.ocrMinLength, 10) : 0,
+            minTextLength: minLength,
             preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
             roi: roiConfig
         });
 
         updateRoiOverlay(roiConfig);
         updateScanLineVisibility();
+        updateCharCountIndicator(minLength);
+    }
+
+    function updateCharCountIndicator(minLength) {
+        if (!scanCharCountIndicator) return;
+        if (minLength > 0) {
+            scanCharCountIndicator.innerText = 'Req: ' + minLength + ' chars';
+            scanCharCountIndicator.classList.remove('hidden');
+        } else {
+            scanCharCountIndicator.classList.add('hidden');
+        }
     }
 
     function updateRoiUI() {
