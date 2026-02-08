@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Builder - Vanilla $N0WM4N</title>
+    <style>
+        :root {
+            --snow-white: #ffffff;
+            --ice-blue: #e3f2fd;
+            --deep-freeze: #1565c0;
+            --frost-gray: #cfd8dc;
+            --coal-black: #263238;
+            --carrot-orange: #ffab40;
+            --button-hover: #1976d2;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--ice-blue);
+            color: var(--coal-black);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--snow-white);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--deep-freeze);
+            margin: 0;
+        }
+
+        .subtitle {
+            color: var(--coal-black);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* The Workshop */
+        .workshop {
+            border: 2px solid var(--frost-gray);
+            border-radius: 8px;
+            padding: 20px;
+            background: #fdfdfd;
+        }
+
+        .workshop h2 {
+            margin-top: 0;
+            color: var(--deep-freeze);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--frost-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Important for width: 100% */
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* The Live Preview */
+        .preview-section {
+            background: var(--coal-black);
+            color: #00e676; /* Terminal green */
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 60px; /* Prevent jump on empty */
+        }
+
+        .preview-text {
+            word-break: break-all;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--deep-freeze);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--button-hover);
+        }
+
+        .btn-secondary {
+            background: var(--frost-gray);
+            color: var(--coal-black);
+        }
+
+        .btn-secondary:hover {
+            background: #b0bec5;
+        }
+
+        .btn-danger {
+            background: #e53935;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c62828;
+        }
+
+        /* The Snowbank */
+        .snowbank {
+            margin-top: 20px;
+        }
+
+        .snowbank h2 {
+            color: var(--deep-freeze);
+            font-size: 1.2rem;
+            border-bottom: 2px solid var(--ice-blue);
+            padding-bottom: 10px;
+        }
+
+        .card-list {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--frost-gray);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-content {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            margin-bottom: 40px; /* Space for buttons */
+            word-break: break-all;
+            background: #f5f5f5;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .card-meta {
+            font-size: 0.75rem;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .card-actions {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--coal-black);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☃️ Regex Builder</h1>
+            <div class="subtitle">Vanilla $N0WM4N Architecture</div>
+        </header>
+
+        <!-- The Workshop -->
+        <section class="workshop">
+            <h2>The Workshop</h2>
+
+            <div class="input-group">
+                <label for="startInput">Starts With</label>
+                <input type="text" id="startInput" class="text-input" placeholder="e.g. ^(http|https)">
+            </div>
+
+            <div class="input-group">
+                <label for="containsInput">Contains (Core Pattern)</label>
+                <input type="text" id="containsInput" class="text-input" placeholder="e.g. [a-zA-Z0-9]+">
+            </div>
+
+            <div class="input-group">
+                <label for="endInput">Ends With</label>
+                <input type="text" id="endInput" class="text-input" placeholder="e.g. \.com$">
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="globalFlag"> Global (g)
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="caseFlag"> Case Insensitive (i)
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="multilineFlag"> Multiline (m)
+                </label>
+            </div>
+        </section>
+
+        <!-- The Live Preview -->
+        <section class="preview-section">
+            <div id="preview" class="preview-text">/pattern/</div>
+            <div class="action-buttons">
+                <button id="copyBtn" class="btn btn-secondary" title="Copy to Clipboard">Copy</button>
+                <button id="saveBtn" class="btn btn-primary" title="Save to Snowbank">Save</button>
+            </div>
+        </section>
+
+        <!-- The Snowbank -->
+        <section class="snowbank">
+            <h2>The Snowbank</h2>
+            <div id="cardList" class="card-list">
+                <!-- Cards will be injected here -->
+                <div class="empty-state">No saved regex patterns yet. Start building!</div>
+            </div>
+        </section>
+    </div>
+
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script>
+        // DOM Elements
+        const startInput = document.getElementById('startInput');
+        const containsInput = document.getElementById('containsInput');
+        const endInput = document.getElementById('endInput');
+        const globalFlag = document.getElementById('globalFlag');
+        const caseFlag = document.getElementById('caseFlag');
+        const multilineFlag = document.getElementById('multilineFlag');
+        const previewEl = document.getElementById('preview');
+        const copyBtn = document.getElementById('copyBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const cardList = document.getElementById('cardList');
+        const toast = document.getElementById('toast');
+
+        // State
+        let currentRegex = '';
+
+        // Initialize
+        function init() {
+            loadSnowbank();
+            updateRegex();
+
+            // Event Listeners
+            const inputs = [startInput, containsInput, endInput, globalFlag, caseFlag, multilineFlag];
+            inputs.forEach(input => {
+                input.addEventListener('input', updateRegex);
+            });
+
+            copyBtn.addEventListener('click', () => copyToClipboard(currentRegex));
+            saveBtn.addEventListener('click', saveToSnowbank);
+        }
+
+        // Logic
+        function updateRegex() {
+            const start = startInput.value;
+            const core = containsInput.value;
+            const end = endInput.value;
+
+            const flags = [
+                globalFlag.checked ? 'g' : '',
+                caseFlag.checked ? 'i' : '',
+                multilineFlag.checked ? 'm' : ''
+            ].join('');
+
+            // Construct the regex string
+            // We use template literals as per Vanilla $N0WM4N spec
+            const pattern = `${start}${core}${end}`;
+
+            // Validate if it's a valid regex (optional, but good for preview)
+            try {
+                // Just to check validity, we don't use the object here
+                new RegExp(pattern, flags);
+                currentRegex = `/${pattern}/${flags}`;
+                previewEl.style.color = '#00e676'; // Valid green
+            } catch (e) {
+                currentRegex = `Error: ${e.message}`;
+                previewEl.style.color = '#ff5252'; // Error red
+            }
+
+            previewEl.textContent = currentRegex;
+        }
+
+        function copyToClipboard(text) {
+            if (!text || text.startsWith('Error:')) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showToast('Failed to copy');
+            });
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // LocalStorage Management
+        function saveToSnowbank() {
+            if (!currentRegex || currentRegex.startsWith('Error:')) {
+                showToast('Cannot save invalid regex');
+                return;
+            }
+
+            const library = getLibrary();
+            const newItem = {
+                id: Date.now(),
+                pattern: currentRegex,
+                timestamp: new Date().toISOString()
+            };
+
+            library.push(newItem);
+            localStorage.setItem('snowman_lib', JSON.stringify(library));
+
+            loadSnowbank();
+            showToast('Saved to Snowbank!');
+        }
+
+        function getLibrary() {
+            const stored = localStorage.getItem('snowman_lib');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function deleteFromSnowbank(id) {
+            let library = getLibrary();
+            library = library.filter(item => item.id !== id);
+            localStorage.setItem('snowman_lib', JSON.stringify(library));
+            loadSnowbank();
+            showToast('Deleted from Snowbank');
+        }
+
+        function loadSnowbank() {
+            const library = getLibrary();
+
+            // Clear list
+            cardList.innerHTML = '';
+
+            if (library.length === 0) {
+                cardList.innerHTML = '<div class="empty-state">No saved regex patterns yet. Start building!</div>';
+                return;
+            }
+
+            // Sort by newest first
+            library.sort((a, b) => b.id - a.id);
+
+            library.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const date = new Date(item.timestamp).toLocaleDateString();
+
+                card.innerHTML = `
+                    <div class="card-meta">Saved: ${date}</div>
+                    <div class="card-content">${escapeHtml(item.pattern)}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-sm btn-secondary copy-card-btn" data-pattern="${escapeHtml(item.pattern)}">Copy</button>
+                        <button class="btn btn-sm btn-danger delete-card-btn" data-id="${item.id}">Delete</button>
+                    </div>
+                `;
+
+                cardList.appendChild(card);
+            });
+
+            // Add event listeners to dynamic buttons
+            document.querySelectorAll('.copy-card-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const pattern = e.target.dataset.pattern;
+                    copyToClipboard(pattern);
+                });
+            });
+
+            document.querySelectorAll('.delete-card-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    deleteFromSnowbank(id);
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Run
+        init();
+    </script>
+</body>
+</html>
