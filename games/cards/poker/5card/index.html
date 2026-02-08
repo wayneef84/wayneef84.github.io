@@ -171,9 +171,9 @@
     </footer>
 
     <!-- NEGEN Modules -->
-    <script src="../../../../negen/core/Engine.js"></script>
     <script src="../../shared/card-assets.js"></script>
     <script type="module">
+        import Engine from '../../../../negen/core/Engine.js';
         import FiveCardDraw from './five_card_draw.js';
         import Evaluator from '../../../../negen/cards/Evaluator.js';
 
@@ -182,7 +182,7 @@
 
         class PokerUI {
             constructor() {
-                this.engine = new Negen.Engine({}); // No canvas, purely logical engine for cards (Hybrid)
+                this.engine = new Engine({}); // No canvas, purely logical engine for cards (Hybrid)
                 this.game = new FiveCardDraw(this.engine);
 
                 this.ui = {
