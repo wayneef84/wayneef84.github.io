@@ -25,12 +25,6 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "server_log.txt",
-    "path": "../../server_log.txt",
-    "category": "Root",
-    "type": "txt"
-  },
-  {
     "name": "IDEAS_020426.md",
     "path": "../../IDEAS_020426.md",
     "category": "Root",
@@ -97,12 +91,6 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "260204_KICKOFF.md",
-    "path": "../../260204_KICKOFF.md",
-    "category": "Root",
-    "type": "md"
-  },
-  {
     "name": "project_notes_v0101.md",
     "path": "../../project_notes_v0101.md",
     "category": "Root",
@@ -119,24 +107,6 @@ var REPO_FILES = [
     "path": "../../notes_from_c_to_j_overhaul_phase1.md",
     "category": "Root",
     "type": "md"
-  },
-  {
-    "name": "260116_TODO.md",
-    "path": "../../260116_TODO.md",
-    "category": "Root",
-    "type": "md"
-  },
-  {
-    "name": "index_v1.4.html",
-    "path": "../../index_v1.4.html",
-    "category": "Root",
-    "type": "html"
-  },
-  {
-    "name": "test-mobile.html",
-    "path": "../../test-mobile.html",
-    "category": "Root",
-    "type": "html"
   },
   {
     "name": "JULES.md",
@@ -211,18 +181,6 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "CLAUDE_OLD.md",
-    "path": "../../CLAUDE_OLD.md",
-    "category": "Root",
-    "type": "md"
-  },
-  {
-    "name": "CLAUDE_OLD2.md",
-    "path": "../../CLAUDE_OLD2.md",
-    "category": "Root",
-    "type": "md"
-  },
-  {
     "name": "NEGEN_IDEAS_C.md",
     "path": "../../NEGEN_IDEAS_C.md",
     "category": "Root",
@@ -239,18 +197,6 @@ var REPO_FILES = [
     "path": "../../WAR_ISSUES.md",
     "category": "Root",
     "type": "md"
-  },
-  {
-    "name": "verify_poker.py",
-    "path": "../../verification/verify_poker.py",
-    "category": "Verification",
-    "type": "py"
-  },
-  {
-    "name": "verify_legal_links.py",
-    "path": "../../verification/verify_legal_links.py",
-    "category": "Verification",
-    "type": "py"
   },
   {
     "name": "README.md",
@@ -553,6 +499,12 @@ var REPO_FILES = [
     "type": "js"
   },
   {
+    "name": "BuilderScene.js",
+    "path": "../../games/space_invaders/js/BuilderScene.js",
+    "category": "Games (Space Invaders)",
+    "type": "js"
+  },
+  {
     "name": "main.js",
     "path": "../../games/space_invaders/js/main.js",
     "category": "Games (Space Invaders)",
@@ -719,6 +671,18 @@ var REPO_FILES = [
     "path": "../../games/breakout/MANUAL.md",
     "category": "Games (Breakout)",
     "type": "md"
+  },
+  {
+    "name": "BuilderScene.js",
+    "path": "../../games/breakout/js/BuilderScene.js",
+    "category": "Games (Breakout)",
+    "type": "js"
+  },
+  {
+    "name": "LevelManager.js",
+    "path": "../../games/breakout/js/LevelManager.js",
+    "category": "Games (Breakout)",
+    "type": "js"
   },
   {
     "name": "main.js",
@@ -1100,6 +1064,60 @@ var REPO_FILES = [
   },
   {
     "name": "index.html",
+    "path": "../../games/puzzller/index.html",
+    "category": "Games (Puzzller)",
+    "type": "html"
+  },
+  {
+    "name": "README.md",
+    "path": "../../games/puzzller/README.md",
+    "category": "Games (Puzzller)",
+    "type": "md"
+  },
+  {
+    "name": "style.css",
+    "path": "../../games/puzzller/style.css",
+    "category": "Games (Puzzller)",
+    "type": "css"
+  },
+  {
+    "name": "main.js",
+    "path": "../../games/puzzller/js/main.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "renderer.js",
+    "path": "../../games/puzzller/js/renderer.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "game.js",
+    "path": "../../games/puzzller/js/game.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "levelLoader.js",
+    "path": "../../games/puzzller/js/levelLoader.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "input.js",
+    "path": "../../games/puzzller/js/input.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "levels.js",
+    "path": "../../games/puzzller/js/levels.js",
+    "category": "Games (Puzzller)",
+    "type": "js"
+  },
+  {
+    "name": "index.html",
     "path": "../../games/animal_stack/index.html",
     "category": "Games (Animal Stack)",
     "type": "html"
@@ -1125,6 +1143,12 @@ var REPO_FILES = [
   {
     "name": "AnimalStackScene.js",
     "path": "../../games/animal_stack/js/AnimalStackScene.js",
+    "category": "Games (Animal Stack)",
+    "type": "js"
+  },
+  {
+    "name": "PhysicsEngine.js",
+    "path": "../../games/animal_stack/js/PhysicsEngine.js",
     "category": "Games (Animal Stack)",
     "type": "js"
   },
@@ -1670,6 +1694,12 @@ var REPO_FILES = [
   },
   {
     "name": "index.html",
+    "path": "../../projects/regex_builder/index.html",
+    "category": "Projects",
+    "type": "html"
+  },
+  {
+    "name": "index.html",
     "path": "../../projects/code/index.html",
     "category": "Projects",
     "type": "html"
@@ -1723,10 +1753,22 @@ var REPO_FILES = [
     "type": "css"
   },
   {
+    "name": "RECIPE_AGENT.md",
+    "path": "../../projects/md-reader/RECIPE_AGENT.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
     "name": "build_index.py",
     "path": "../../projects/md-reader/build_index.py",
     "category": "Projects",
     "type": "py"
+  },
+  {
+    "name": "COOKBOOK.md",
+    "path": "../../projects/md-reader/COOKBOOK.md",
+    "category": "Projects",
+    "type": "md"
   },
   {
     "name": "index.html",
@@ -2075,6 +2117,48 @@ var REPO_FILES = [
     "path": "../../network/README.md",
     "category": "Network",
     "type": "md"
+  },
+  {
+    "name": "260204_KICKOFF.md",
+    "path": "../../archive/260204_KICKOFF.md",
+    "category": "Archive",
+    "type": "md"
+  },
+  {
+    "name": "260116_TODO.md",
+    "path": "../../archive/260116_TODO.md",
+    "category": "Archive",
+    "type": "md"
+  },
+  {
+    "name": "index_v1.4.html",
+    "path": "../../archive/index_v1.4.html",
+    "category": "Archive",
+    "type": "html"
+  },
+  {
+    "name": "test-mobile.html",
+    "path": "../../archive/test-mobile.html",
+    "category": "Archive",
+    "type": "html"
+  },
+  {
+    "name": "CLAUDE_OLD.md",
+    "path": "../../archive/CLAUDE_OLD.md",
+    "category": "Archive",
+    "type": "md"
+  },
+  {
+    "name": "CLAUDE_OLD2.md",
+    "path": "../../archive/CLAUDE_OLD2.md",
+    "category": "Archive",
+    "type": "md"
+  },
+  {
+    "name": "projects.js",
+    "path": "../../js/projects.js",
+    "category": "Projects",
+    "type": "js"
   },
   {
     "name": "letters-data.js",
