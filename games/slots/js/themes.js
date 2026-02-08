@@ -49,17 +49,17 @@ const THEME_LIBRARY = {
     // 🦄 1. MYSTICAL UNICORN
     'fantasy': {
         name: 'Mystical Unicorn',
-        paylineColor: '#ffd700', // Gold
+        paylineColor: '#C0C0C0', // Silver
         bgMusic: 'audio/slotsBG.mp3',
         symbols: [
-            { id: '1', name: '💎', value: 5,   weight: 100, color: '#3498db' },
-            { id: '2', name: '🔮', value: 10,  weight: 80,  color: '#9b59b6' },
-            { id: '3', name: '🛡️', value: 20,  weight: 60,  color: '#95a5a6' },
-            { id: '4', name: '⚔️', value: 30,  weight: 50,  color: '#e74c3c' },
-            { id: '5', name: '👸', value: 50,  weight: 30,  color: '#f1c40f' },
-            { id: '6', name: '🏰', value: 100, weight: 20,  color: '#ecf0f1' },
-            { id: 'W', name: '🦄', value: 200, weight: 15,  color: '#ff69b4', isWild: true },
-            { id: 'S', name: '🌟', value: 0,   weight: 10,  color: '#ffd700', isScatter: true }
+            { id: '1', name: '💎', value: 5,   weight: 100, color: '#ADD8E6' },
+            { id: '2', name: '🔮', value: 10,  weight: 80,  color: '#9370DB' },
+            { id: '3', name: '🛡️', value: 20,  weight: 60,  color: '#C0C0C0' },
+            { id: '4', name: '⚔️', value: 30,  weight: 50,  color: '#E6E6FA' },
+            { id: '5', name: '👸', value: 50,  weight: 30,  color: '#F0E68C' },
+            { id: '6', name: '🏰', value: 100, weight: 20,  color: '#FFFFFF' },
+            { id: 'W', name: '🦄', value: 200, weight: 15,  color: '#D8BFD8', isWild: true }, // Thistle
+            { id: 'S', name: '🌟', value: 0,   weight: 10,  color: '#E6E6FA', isScatter: true }
         ]
     },
 

@@ -24,16 +24,6 @@
             <div class="bolt bl">✦</div>
             <div class="bolt br">✦</div>
 
-            <!-- Floating sparkles -->
-            <div class="sparkle-container">
-                <div class="sparkle" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
-                <div class="sparkle" style="left: 85%; top: 35%; animation-delay: 1.5s;"></div>
-                <div class="sparkle" style="left: 25%; top: 70%; animation-delay: 3s;"></div>
-                <div class="sparkle" style="left: 70%; top: 60%; animation-delay: 2s;"></div>
-                <div class="sparkle" style="left: 50%; top: 45%; animation-delay: 4s;"></div>
-                <div class="sparkle" style="left: 92%; top: 85%; animation-delay: 2.5s;"></div>
-            </div>
-
             <div class="top-bar">
                 <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
                 <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)"></select>
@@ -84,6 +74,17 @@
 
                 <canvas id="slotCanvas"></canvas>
                 <div id="winOverlay" class="win-overlay"></div>
+
+                <!-- Bonus Overlay -->
+                <div id="bonusOverlay" class="bonus-overlay" style="display: none;">
+                    <div class="bonus-content">
+                        <h2>BONUS ROUND</h2>
+                        <div id="bonusCounter">SPIN 1 OF 10</div>
+                        <div id="bonusWinDisplay">TOTAL WON: $0.00</div>
+                        <button id="skipBonusButton" class="sys-btn" onclick="skipBonus()">SKIP TO RESULT ⏩</button>
+                    </div>
+                </div>
+
                 <div id="bonusIndicator" class="bonus-indicator"></div>
 
                 <!-- Mechanical Frame Overlay -->
