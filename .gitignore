@@ -12,3 +12,22 @@ CONTINUATION_NOTES.md
 # IDE
 .vscode/
 .idea/
+
+# Log files
+*.log
+
+# Backup files
+*.bak
+
+# Temp files
+*.tmp
+
+# Environment / secrets
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# Windows OS files
+Thumbs.db
