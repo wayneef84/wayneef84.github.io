@@ -76,43 +76,32 @@ Pipe connection puzzle game.
 - Level generator
 - Touch-friendly controls
 
----
-
-## 🛠️ Projects
-
-### Shipment Tracker (v1.1.0)
-
-**Multi-carrier shipment tracking with offline-first architecture.**
-
-📦 **Live App:** [wayneef84.github.io/projects/shipment-tracker/](https://wayneef84.github.io/projects/shipment-tracker/)
+### SKYbreakers
+High-flying arcade action.
 
 **Features:**
-- **Multi-carrier support:** DHL, FedEx, UPS, USPS (more coming)
-- **Mobile-first design:** Card-based layout with AWB truncation
-- **Offline-first:** IndexedDB storage, works without internet
-- **BYOK model:** Bring Your Own API Keys
-- **Smart tracking:** Auto-detect carrier, duplicate detection
-- **Export capabilities:** JSON, CSV, Excel
-- **Rate limiting:** Configurable cooldown, force refresh option
-- **JSON viewer:** View and download raw API payloads
+- Fast-paced gameplay
+- Power-ups and particle effects
 
-**Documentation:**
-- [Architecture Guide](projects/shipment-tracker/ARCHITECTURE.md) - Complete system design
-- [TODO Roadmap](projects/shipment-tracker/TODO.md) - Feature priorities
-- [Testing Guide](projects/shipment-tracker/TESTING.md) - How to test
+---
 
-**Technology:**
-- Vanilla JavaScript (ES5)
-- IndexedDB for storage
-- Mobile-responsive (< 768px cards, ≥ 768px table)
-- Optional Cloudflare Worker proxy
+## 🛠️ Tools & Projects
 
-**Quick Start:**
-1. Open [Shipment Tracker](https://wayneef84.github.io/projects/shipment-tracker/)
-2. Go to Settings → API Keys
-3. Enter your carrier API keys
-4. Add tracking numbers
-5. View status updates
+### Shipment Tracker (v1.1.0)
+**Multi-carrier shipment tracking with offline-first architecture.**
+📦 **Live App:** [projects/shipment-tracker/](projects/shipment-tracker/index.html)
+
+### MD Reader
+**Markdown documentation viewer and repository explorer.**
+📖 **Live App:** [projects/md-reader/](projects/md-reader/index.html)
+
+### Input A11y
+**Advanced barcode and QR code scanner with accessibility features.**
+📷 **Live App:** [projects/input-a11y/](projects/input-a11y/index.html)
+
+### Cookbook
+**Digital family cookbook powered by the MD Reader.**
+🍳 **Live App:** [projects/md-reader/#COOKBOOK.md](projects/md-reader/index.html#COOKBOOK.md)
 
 ---
 
@@ -131,27 +120,20 @@ Pipe connection puzzle game.
 │       └── shared/          # Shared card engine
 │
 ├── projects/
-│   └── shipment-tracker/
-│       ├── index.html
-│       ├── css/
-│       ├── js/
-│       │   ├── app.js
-│       │   ├── db.js
-│       │   ├── utils.js
-│       │   └── api/
-│       ├── proxy/           # Cloudflare Worker
-│       └── docs/
-│           ├── ARCHITECTURE.md
-│           ├── TODO.md
-│           └── TESTING.md
+│   ├── shipment-tracker/
+│   ├── md-reader/
+│   └── input-a11y/
 │
+├── js/
+│   └── projects.js          # Dynamic project loader
+│
+├── archive/                 # Deprecated files
 ├── index.html               # Landing page
 ├── AGENTS.md               # AI collaboration protocol
 ├── CLAUDE.md               # Claude's guidelines
 ├── GEMINI.md               # Gemini's guidelines
 ├── JULES.md                # Jules's guidelines
 ├── AI_FEEDBACK.md          # Inter-agent session log
-├── IDEAS_020426.md         # v2.0 brainstorming
 └── README.md               # This file
 ```
 
@@ -211,23 +193,6 @@ open http://localhost:8000
 
 ---
 
-## 📋 Project Status
-
-### Games
-- ✅ Letter Tracing - Complete
-- ✅ Slots Game - Complete
-- ✅ Sprunki Mixer - Complete
-- ✅ Xiangqi - Playable
-- 🚧 Card Games - In Progress
-
-### Projects
-- ✅ Shipment Tracker v1.1.0 - Mobile UX Complete
-- 🚧 Query Engine - In Progress
-- 📋 Desktop Split View - Planned
-- 📋 Additional Carriers - Planned
-
----
-
 ## 📄 License
 
 Open Source - See individual project directories for specific licenses.
@@ -253,5 +218,4 @@ Open Source - See individual project directories for specific licenses.
 
 - [Live Site](https://wayneef84.github.io/)
 - [Shipment Tracker](https://wayneef84.github.io/projects/shipment-tracker/)
-- [Shipment Tracker Docs](projects/shipment-tracker/ARCHITECTURE.md)
 - [Issue Tracker](https://github.com/wayneef84/wayneef84.github.io/issues)
