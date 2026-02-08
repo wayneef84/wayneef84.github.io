@@ -86,6 +86,13 @@ class SlotMachine {
         this.expandedWildReels = new Set();
         this.bonusTriggered = false;
 
+        // New Bonus Round State
+        this.bonusActive = false;
+        this.bonusSpinsTotal = 0;
+        this.bonusSpinsPlayed = 0;
+        this.bonusTotalWin = 0;
+        this.isSkipping = false;
+
         // Init
         this.initScaleManager(); // START THE SCALER
         this.initTouchFeedback(); // Add touch feedback
@@ -93,6 +100,41 @@ class SlotMachine {
         this.loadTheme(this.currentThemeKey);
         this.generateReelData();
         this.updateUI();
+    }
+
+    // --- BONUS ROUND LOGIC ---
+    startBonusRound(spins) {
+        this.bonusActive = true;
+        this.bonusSpinsTotal = spins;
+        this.bonusSpinsPlayed = 0;
+        this.bonusTotalWin = 0;
+        this.bonusMode = 'bonus_round';
+
+        // Show Bonus Overlay
+        const overlay = document.getElementById('bonusOverlay');
+        if(overlay) {
+            overlay.style.display = 'flex';
+            this.updateBonusUI();
+        }
+
+        // Disable main spin button
+        const spinBtn = document.getElementById('spinButton');
+        if(spinBtn) spinBtn.disabled = true;
+
+        this.showToast(`🦄 BONUS ROUND STARTED! ${spins} SPINS`, "win");
+        if(this.audio) this.audio.playWinBig();
+
+        // Start auto-spinning after a short delay
+        setTimeout(() => {
+            if(this.bonusActive) this.playBonusSpin();
+        }, 2000);
+    }
+
+    updateBonusUI() {
+        const counter = document.getElementById('bonusCounter');
+        const winDisplay = document.getElementById('bonusWinDisplay');
+        if(counter) counter.textContent = `SPIN ${this.bonusSpinsPlayed + 1} OF ${this.bonusSpinsTotal}`;
+        if(winDisplay) winDisplay.textContent = `TOTAL WON: $${this.bonusTotalWin.toFixed(2)}`;
     }
 
     // --- Touch Feedback Enhancement ---
@@ -292,20 +334,18 @@ class SlotMachine {
             setTimeout(() => leverArm.classList.remove('pulling'), 600);
         }
 
-        // Check if we're in free spins mode
-        const isFreeSpins = this.freeSpinsRemaining > 0;
+        // Check if we're in bonus mode
+        const isBonus = this.bonusActive;
 
-        if(!isFreeSpins && this.playerBalance < this.currentBet) {
+        if(!isBonus && this.playerBalance < this.currentBet) {
             this.showToast("Not enough cash!", "error");
             if(this.audio) this.audio.playError();
             return;
         }
 
-        // Deduct bet only if not in free spins
-        if(!isFreeSpins) {
+        // Deduct bet only if not in bonus
+        if(!isBonus) {
             this.playerBalance -= this.currentBet;
-        } else {
-            this.freeSpinsRemaining--;
         }
 
         this.isSpinning = true;
@@ -374,7 +414,8 @@ class SlotMachine {
 
         let active = false;
 
-        // Magic Spin Particles
+        // Magic Spin Particles - Disabled for Minimalist Theme
+        /*
         if (this.isSpinning && !this.isMobile && Math.random() < 0.3) {
              const reelIdx = Math.floor(Math.random() * 5);
              if (this.reelAngularVelocity[reelIdx] > 0 || this.reelSpeeds[reelIdx] > 0) {
@@ -383,6 +424,7 @@ class SlotMachine {
                  this.particles.push(new MagicParticle(x, y, this.currentTheme.paylineColor));
              }
         }
+        */
 
         for(let i=0; i<5; i++) {
             if (this.enable3D) {
@@ -471,12 +513,61 @@ class SlotMachine {
         }
     }
 
+    playBonusSpin() {
+        if (!this.bonusActive || this.isSkipping) return;
+
+        if (this.bonusSpinsPlayed < this.bonusSpinsTotal) {
+            this.bonusSpinsPlayed++;
+            this.updateBonusUI();
+            this.spin();
+        } else {
+            this.endBonusRound();
+        }
+    }
+
+    skipBonus() {
+        if (!this.bonusActive) return;
+        this.isSkipping = true;
+
+        // If currently spinning, resolve it immediately
+        if (this.isSpinning) {
+            this.isSpinning = false;
+            this.evaluateWins();
+            // Current spin was already counted in bonusSpinsPlayed when playBonusSpin() was called
+        }
+
+        // Fast-forward remaining spins
+        while (this.bonusSpinsPlayed < this.bonusSpinsTotal) {
+            this.bonusSpinsPlayed++;
+            this.generateReelData();
+            this.evaluateWins();
+        }
+
+        this.isSkipping = false;
+        this.endBonusRound();
+    }
+
+    endBonusRound() {
+        this.bonusActive = false;
+        this.bonusMode = null;
+        this.freeSpinsMultiplier = 1; // Reset multiplier
+
+        // Hide Overlay
+        const overlay = document.getElementById('bonusOverlay');
+        if(overlay) overlay.style.display = 'none';
+
+        // Enable controls
+        const spinBtn = document.getElementById('spinButton');
+        if(spinBtn) spinBtn.disabled = false;
+
+        this.showToast(`🦄 BONUS COMPLETE! WON $${this.bonusTotalWin.toFixed(2)} 🦄`, "win");
+        if(this.audio) this.audio.playJackpot();
+    }
+
     checkBonusEnd() {
-        // Check if free spins ended
-        if(this.freeSpinsRemaining === 0 && this.bonusMode === 'freespins') {
-            this.bonusMode = null;
-            this.freeSpinsMultiplier = 1;
-            this.showToast("🦄 Free Spins Complete! 🦄", "win");
+        if (this.bonusActive && !this.isSkipping) {
+            // Continue bonus loop
+            setTimeout(() => this.playBonusSpin(), 1000);
         }
     }
 
@@ -530,6 +621,13 @@ class SlotMachine {
         if(winAmount > 0) {
             this.playerBalance += winAmount;
             this.totalWon += winAmount;
+            if(this.bonusActive) {
+                this.bonusTotalWin += winAmount;
+                if (!this.isSkipping) this.updateBonusUI();
+            }
+
+            // Skip visual effects if skipping
+            if (this.isSkipping) return;
 
             const isBig = winAmount > this.currentBet * 10;
             const overlay = document.getElementById('winOverlay');
@@ -537,29 +635,20 @@ class SlotMachine {
 
             let msg = `WIN: $${winAmount.toFixed(2)}`;
             if(this.cascadeMultiplier > 1) msg = `💫 ${this.cascadeMultiplier}x CASCADE: $${winAmount.toFixed(2)}`;
-            if(this.freeSpinsRemaining > 0) msg = `🦄 FREE SPIN WIN: $${winAmount.toFixed(2)}`;
+            if(this.bonusActive) msg = `🦄 BONUS WIN: $${winAmount.toFixed(2)}`;
             if(isBig) msg = `💎 BIG WIN: $${winAmount.toFixed(2)}`;
 
             this.showToast(msg, "win");
             if(this.audio) isBig ? this.audio.playBigWin() : this.audio.playWin(winAmount);
 
+            // Particles disabled for minimalist theme
+            /*
             if(isBig) {
                 const particleCount = this.isMobile ? 20 : 50;
                 for(let k=0; k<particleCount; k++) this.particles.push(new Particle(240, 425, '#ffd700'));
-
-                // Unicorn Dash Effect for Fantasy Theme
-                if (this.currentThemeKey === 'fantasy' && !this.isMobile) {
-                    for(let k=0; k<30; k++) {
-                        setTimeout(() => {
-                            const p = new MagicParticle(-50, 400 + (Math.random()-0.5)*200, '#ff69b4');
-                            p.vx = 15 + Math.random() * 10; // Fast horizontal movement
-                            p.vy = (Math.random() - 0.5) * 2;
-                            p.decay = 0.01;
-                            this.particles.push(p);
-                        }, k * 50);
-                    }
-                }
+                // ...
             }
+            */
         }
     }
 
@@ -579,19 +668,12 @@ class SlotMachine {
         const spins = scatterCount === 3 ? 10 : scatterCount === 4 ? 15 : 20;
         const multiplier = scatterCount === 3 ? 2 : scatterCount === 4 ? 3 : 5;
 
-        this.freeSpinsRemaining += spins;
+        // this.freeSpinsRemaining += spins; // No longer used directly
         this.freeSpinsMultiplier = multiplier;
-        this.bonusMode = 'freespins';
+        // this.bonusMode = 'freespins';
 
-        this.showToast(`🌟 ${spins} FREE SPINS! ${multiplier}x WINS! 🌟`, "win");
-        if(this.audio) this.audio.playBigWin();
-
-        // Particle explosion
-        const freeSpinParticleCount = this.isMobile ? 30 : 100;
-        for(let k=0; k<freeSpinParticleCount; k++) {
-            this.particles.push(new Particle(240, 425, '#ffd700'));
-            this.particles.push(new SparkleParticle(240, 425, '#ff69b4'));
-        }
+        // Trigger new Bonus Round
+        this.startBonusRound(spins);
     }
 
     checkMatch(syms) {
@@ -649,6 +731,8 @@ class SlotMachine {
 
     // --- CASCADE/AVALANCHE BONUS ---
     checkCascade() {
+        if(this.isSkipping) return;
+
         if(this.winningCells.size === 0) {
             this.checkBonusEnd();
             return;
@@ -1626,6 +1710,10 @@ function initGame() {
 function spin() {
     if (!game) { console.error('[Slots] Game not initialized'); return; }
     game.spin();
+}
+function skipBonus() {
+    if (!game) return;
+    game.skipBonus();
 }
 function changeBet(v) {
     if (!game) return;
