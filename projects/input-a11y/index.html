@@ -57,6 +57,7 @@
 
             <div id="reader-container">
                 <div id="reader"></div>
+                <div id="scan-line"></div>
                 <div id="scan-roi-overlay" class="hidden"></div>
             </div>
 
@@ -147,10 +148,10 @@
                         <input type="text" id="set-base-url" placeholder="www.google.com/?q=" class="filter-input" style="max-width:220px;">
                     </div>
                     <div class="setting-item">
-                        <label for="set-truncate-url">Truncate URL &amp; Value:</label>
-                        <input type="checkbox" id="set-truncate-url">
+                        <label for="set-add-value-to-url">Add value to url:</label>
+                        <input type="checkbox" id="set-add-value-to-url">
                     </div>
-                    <div id="truncate-hint" class="filter-hint">Strips protocol (https://), www., and trims whitespace from value before opening.</div>
+                    <div id="add-value-hint" class="filter-hint">When ON, appends scanned value to end of Base URL. When OFF, opens Base URL as-is and copies value to clipboard.</div>
                 </div>
             </div>
 
@@ -184,48 +185,31 @@
                     <label for="set-confirm-popup">Confirm Popup:</label>
                     <input type="checkbox" id="set-confirm-popup" checked>
                 </div>
-                <!-- Scan Region Settings -->
+                <!-- Scan Region: Auto-centered, user can toggle & adjust size only -->
                 <div class="setting-item">
-                    <label for="set-ocr-roi-enabled">Custom Region:</label>
+                    <label for="set-ocr-roi-enabled">Scan Region Box:</label>
                     <input type="checkbox" id="set-ocr-roi-enabled" checked>
                 </div>
                 <div id="roi-settings-group" class="hidden indented-setting">
                     <div class="setting-item">
-                        <label for="set-ocr-roi-top">Top (%)</label>
-                        <div class="range-group">
-                            <input type="range" id="set-ocr-roi-top" min="0" max="100" step="1" value="10">
-                            <input type="number" id="set-ocr-roi-top-manual" class="manual-input hidden" min="0" max="100" value="10">
-                            <span id="ocr-roi-top-val" class="range-val">10</span>
-                            <button class="manual-toggle-btn" data-target="set-ocr-roi-top" title="Toggle Manual Input">⌨️</button>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="set-ocr-roi-left">Left (%)</label>
-                        <div class="range-group">
-                            <input type="range" id="set-ocr-roi-left" min="0" max="100" step="1" value="10">
-                            <input type="number" id="set-ocr-roi-left-manual" class="manual-input hidden" min="0" max="100" value="10">
-                            <span id="ocr-roi-left-val" class="range-val">10</span>
-                            <button class="manual-toggle-btn" data-target="set-ocr-roi-left" title="Toggle Manual Input">⌨️</button>
-                        </div>
-                    </div>
-                    <div class="setting-item">
                         <label for="set-ocr-roi-width">Width (%)</label>
                         <div class="range-group">
-                            <input type="range" id="set-ocr-roi-width" min="10" max="100" step="1" value="80">
-                            <input type="number" id="set-ocr-roi-width-manual" class="manual-input hidden" min="10" max="100" value="80">
-                            <span id="ocr-roi-width-val" class="range-val">80</span>
+                            <input type="range" id="set-ocr-roi-width" min="10" max="100" step="1" value="90">
+                            <input type="number" id="set-ocr-roi-width-manual" class="manual-input hidden" min="10" max="100" value="90">
+                            <span id="ocr-roi-width-val" class="range-val">90</span>
                             <button class="manual-toggle-btn" data-target="set-ocr-roi-width" title="Toggle Manual Input">⌨️</button>
                         </div>
                     </div>
                     <div class="setting-item">
                         <label for="set-ocr-roi-height">Height (%)</label>
                         <div class="range-group">
-                            <input type="range" id="set-ocr-roi-height" min="5" max="100" step="1" value="20">
-                            <input type="number" id="set-ocr-roi-height-manual" class="manual-input hidden" min="5" max="100" value="20">
-                            <span id="ocr-roi-height-val" class="range-val">20</span>
+                            <input type="range" id="set-ocr-roi-height" min="5" max="100" step="1" value="10">
+                            <input type="number" id="set-ocr-roi-height-manual" class="manual-input hidden" min="5" max="100" value="10">
+                            <span id="ocr-roi-height-val" class="range-val">10</span>
                             <button class="manual-toggle-btn" data-target="set-ocr-roi-height" title="Toggle Manual Input">⌨️</button>
                         </div>
                     </div>
+                    <div class="filter-hint">Box is always centered. Red line shows scan position.</div>
                 </div>
 
                 <div class="setting-item">
@@ -247,13 +231,14 @@
                     </div>
                 </div>
                 <div class="setting-item">
-                    <label for="set-ocr-minlength">Min Text Length</label>
+                    <label for="set-ocr-minlength">Exact Text Length</label>
                     <div class="range-group">
-                        <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="3">
-                        <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="1" max="50" value="3">
-                        <span id="ocr-minlength-val" class="range-val">3</span>
+                        <input type="range" id="set-ocr-minlength" min="0" max="20" step="1" value="0">
+                        <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="0" max="50" value="0">
+                        <span id="ocr-minlength-val" class="range-val">0</span>
                         <button class="manual-toggle-btn" data-target="set-ocr-minlength" title="Toggle Manual Input">⌨️</button>
                     </div>
+                    <span class="filter-hint" style="margin-left:4px;">(0 = Off)</span>
                 </div>
                 <div class="setting-item">
                     <label for="set-ocr-preprocess">Whitespace Mode:</label>

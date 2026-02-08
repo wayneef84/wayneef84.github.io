@@ -115,13 +115,27 @@ main {
     object-fit: cover;
 }
 
+/* Red Scan Line - fixed centered strip indicator */
+#scan-line {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    width: 90%;
+    height: 2px;
+    background: rgba(255, 0, 0, 0.8);
+    z-index: 15;
+    pointer-events: none;
+    box-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+    transform: translateY(-50%);
+}
+
 #scan-roi-overlay {
     position: absolute;
     border: 2px dashed #00BCD4;
     background: rgba(0, 188, 212, 0.1);
     z-index: 15;
     pointer-events: none;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); /* Dim area outside ROI */
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
 }
 
 .status-msg {

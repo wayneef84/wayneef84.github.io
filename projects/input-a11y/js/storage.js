@@ -15,7 +15,7 @@ var StorageManager = (function() {
         detectMode: 'AUTO',
         actionMode: 'URL_INPUT',
         baseUrl: 'www.google.com/?q=',
-        truncateUrl: false,
+        addValueToUrl: false,
         scanRegion: 'BOX',
         feedbackVibrate: true,
         feedbackFrame: 'SCANNER',
@@ -26,7 +26,7 @@ var StorageManager = (function() {
         ocrConfirmPopup: true,
         ocrConfidence: 40,
         ocrDebounce: 3000,
-        ocrMinLength: 3,
+        ocrMinLength: 0,
         barcodeFps: 10,
         barcodeBoxWidth: 250,
         barcodeBoxHeight: 250

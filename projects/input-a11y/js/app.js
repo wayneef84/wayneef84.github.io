@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var setBaseUrl = document.getElementById('set-base-url');
     var urlConfig = document.getElementById('url-config');
-    var setTruncateUrl = document.getElementById('set-truncate-url');
+    var setAddValueToUrl = document.getElementById('set-add-value-to-url');
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
@@ -48,15 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
 
-    // OCR Scan Region (ROI)
+    // OCR Scan Region (ROI) - Auto-centered, user adjusts size only
     var setOcrRoiEnabled = document.getElementById('set-ocr-roi-enabled');
     var roiSettingsGroup = document.getElementById('roi-settings-group');
-    var setOcrRoiTop = document.getElementById('set-ocr-roi-top');
-    var setOcrRoiLeft = document.getElementById('set-ocr-roi-left');
     var setOcrRoiWidth = document.getElementById('set-ocr-roi-width');
     var setOcrRoiHeight = document.getElementById('set-ocr-roi-height');
-    var roiTopVal = document.getElementById('ocr-roi-top-val');
-    var roiLeftVal = document.getElementById('ocr-roi-left-val');
     var roiWidthVal = document.getElementById('ocr-roi-width-val');
     var roiHeightVal = document.getElementById('ocr-roi-height-val');
 
@@ -90,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settings.detectMode) scanModeSelect.value = settings.detectMode;
         if (settings.actionMode) setAction.value = settings.actionMode;
         if (settings.baseUrl) setBaseUrl.value = settings.baseUrl;
-        if (setTruncateUrl && settings.truncateUrl !== undefined) setTruncateUrl.checked = settings.truncateUrl;
+        if (setAddValueToUrl && settings.addValueToUrl !== undefined) setAddValueToUrl.checked = settings.addValueToUrl;
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
@@ -112,26 +108,19 @@ document.addEventListener('DOMContentLoaded', function() {
             setOcrShowRaw.checked = settings.ocrShowRaw;
         }
 
-        // Restore OCR ROI settings
+        // Restore OCR ROI settings (auto-centered, size only)
         if (setOcrRoiEnabled) {
-             if (settings.ocrRoiEnabled !== undefined) {
-                 setOcrRoiEnabled.checked = settings.ocrRoiEnabled;
-             } else {
-                 setOcrRoiEnabled.checked = true;
-                 settings.ocrRoiEnabled = true;
-             }
+            if (settings.ocrRoiEnabled !== undefined) {
+                setOcrRoiEnabled.checked = settings.ocrRoiEnabled;
+            } else {
+                setOcrRoiEnabled.checked = true;
+                settings.ocrRoiEnabled = true;
+            }
         }
-        if (setOcrRoiTop) setOcrRoiTop.value = settings.ocrRoiTop || 10;
-        if (setOcrRoiLeft) setOcrRoiLeft.value = settings.ocrRoiLeft || 10;
-        if (setOcrRoiWidth) setOcrRoiWidth.value = settings.ocrRoiWidth || 80;
-        if (setOcrRoiHeight) setOcrRoiHeight.value = settings.ocrRoiHeight || 20;
-
-        // Sync ROI display values
-        if (roiTopVal) roiTopVal.innerText = setOcrRoiTop.value;
-        if (roiLeftVal) roiLeftVal.innerText = setOcrRoiLeft.value;
-        if (roiWidthVal) roiWidthVal.innerText = setOcrRoiWidth.value;
-        if (roiHeightVal) roiHeightVal.innerText = setOcrRoiHeight.value;
-
+        if (setOcrRoiWidth) setOcrRoiWidth.value = settings.ocrRoiWidth || 90;
+        if (setOcrRoiHeight) setOcrRoiHeight.value = settings.ocrRoiHeight || 10;
+        if (roiWidthVal) roiWidthVal.innerText = setOcrRoiWidth ? setOcrRoiWidth.value : '90';
+        if (roiHeightVal) roiHeightVal.innerText = setOcrRoiHeight ? setOcrRoiHeight.value : '10';
         updateRoiUI();
 
         // Restore OCR tuning
@@ -144,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (ocrDebounceVal) ocrDebounceVal.innerText = setOcrDebounce.value;
         }
         if (setOcrMinLength) {
-            setOcrMinLength.value = settings.ocrMinLength || 3;
+            setOcrMinLength.value = (settings.ocrMinLength !== undefined) ? settings.ocrMinLength : 0;
             if (ocrMinLengthVal) ocrMinLengthVal.innerText = setOcrMinLength.value;
         }
 
@@ -213,17 +202,21 @@ document.addEventListener('DOMContentLoaded', function() {
         tempSettings = JSON.parse(JSON.stringify(settings));
     }
 
+    function buildRoiConfig() {
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+        var enabled = (s.ocrRoiEnabled !== undefined) ? s.ocrRoiEnabled : true;
+        var w = parseInt(s.ocrRoiWidth, 10) || 90;
+        var h = parseInt(s.ocrRoiHeight, 10) || 10;
+        // Auto-center: derive top/left from width/height
+        var left = Math.max(0, Math.round((100 - w) / 2));
+        var top = Math.max(0, Math.round((100 - h) / 2));
+        return { enabled: enabled, top: top, left: left, width: w, height: h };
+    }
+
     function applyOCRFilterConfig() {
         if (!ocrManager) return;
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
-
-        var roiConfig = {
-            enabled: (s.ocrRoiEnabled !== undefined) ? s.ocrRoiEnabled : true,
-            top: parseInt(s.ocrRoiTop, 10) || 10,
-            left: parseInt(s.ocrRoiLeft, 10) || 10,
-            width: parseInt(s.ocrRoiWidth, 10) || 80,
-            height: parseInt(s.ocrRoiHeight, 10) || 20
-        };
+        var roiConfig = buildRoiConfig();
 
         ocrManager.configure({
             filterMode: s.ocrFilterMode || 'NONE',
@@ -231,15 +224,17 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmPopup: s.ocrConfirmPopup !== undefined ? s.ocrConfirmPopup : true,
             confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
-            minTextLength: parseInt(s.ocrMinLength, 10) || 3,
+            minTextLength: (s.ocrMinLength !== undefined) ? parseInt(s.ocrMinLength, 10) : 0,
             preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
             roi: roiConfig
         });
 
         updateRoiOverlay(roiConfig);
+        updateScanLineVisibility();
     }
 
     function updateRoiUI() {
+        if (!roiSettingsGroup) return;
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
         if (s.ocrRoiEnabled) {
             roiSettingsGroup.classList.remove('hidden');
@@ -252,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var overlay = document.getElementById('scan-roi-overlay');
         if (!overlay) return;
 
-        // Only show overlay if ROI is enabled AND we are in OCR mode (or Auto)
         var isOCR = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
         if (roi.enabled && isOCR) {
             overlay.classList.remove('hidden');
@@ -262,6 +256,18 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.style.height = roi.height + '%';
         } else {
             overlay.classList.add('hidden');
+        }
+    }
+
+    function updateScanLineVisibility() {
+        var scanLine = document.getElementById('scan-line');
+        if (!scanLine) return;
+
+        var isOCR = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
+        if (isOCR) {
+            scanLine.style.display = 'block';
+        } else {
+            scanLine.style.display = 'none';
         }
     }
 
@@ -469,6 +475,8 @@ document.addEventListener('DOMContentLoaded', function() {
             settings.detectMode = e.target.value;
             storage.saveSettings(settings);
             updateDriverRowVisibility();
+            updateScanLineVisibility();
+            applyOCRFilterConfig(); // Updates ROI overlay visibility too
             if (currentTab === 'scan' && userHasInteracted) startScanner();
         });
         if (ocrDriverSelect) {
@@ -492,7 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setAction.addEventListener('change', function(e) { updateSetting('actionMode', e.target.value); updateActionUI(); });
         setBaseUrl.addEventListener('input', function(e) { updateSetting('baseUrl', e.target.value); });
-        if (setTruncateUrl) setTruncateUrl.addEventListener('change', function(e) { updateSetting('truncateUrl', e.target.checked); });
+        if (setAddValueToUrl) setAddValueToUrl.addEventListener('change', function(e) { updateSetting('addValueToUrl', e.target.checked); });
         setVibrate.addEventListener('change', function(e) { updateSetting('feedbackVibrate', e.target.checked); });
         setFrame.addEventListener('change', function(e) { updateSetting('feedbackFrame', e.target.value); });
         setFlash.addEventListener('change', function(e) { updateSetting('feedbackFlash', e.target.value); });
@@ -518,14 +526,12 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSetting('ocrShowRaw', e.target.checked);
         });
 
-        // OCR ROI
+        // OCR ROI (auto-centered, size only)
         if (setOcrRoiEnabled) setOcrRoiEnabled.addEventListener('change', function(e) {
             updateSetting('ocrRoiEnabled', e.target.checked);
             updateRoiUI();
             applyOCRFilterConfig();
         });
-        bindRangeSlider(setOcrRoiTop, roiTopVal, 'ocrRoiTop', applyOCRFilterConfig);
-        bindRangeSlider(setOcrRoiLeft, roiLeftVal, 'ocrRoiLeft', applyOCRFilterConfig);
         bindRangeSlider(setOcrRoiWidth, roiWidthVal, 'ocrRoiWidth', applyOCRFilterConfig);
         bindRangeSlider(setOcrRoiHeight, roiHeightVal, 'ocrRoiHeight', applyOCRFilterConfig);
 
@@ -936,24 +942,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function buildUrl(value) {
         var baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
-        var val = value;
-
-        if (settings.truncateUrl) {
-            // Strip protocol and www. from base URL
-            baseUrl = baseUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-            // Trim whitespace from value
-            val = val.replace(/\s+/g, '').trim();
-        }
 
         // Ensure protocol for window.open
         if (!/^https?:\/\//i.test(baseUrl)) {
             baseUrl = 'https://' + baseUrl;
         }
 
-        return baseUrl + encodeURIComponent(val);
+        if (settings.addValueToUrl) {
+            // Append value to end of URL
+            return baseUrl + encodeURIComponent(value);
+        }
+
+        // If addValueToUrl is OFF, just return the base URL
+        return baseUrl;
     }
 
     function executeUrlRedirect(text) {
+        // Always copy value to clipboard
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text)
                 .then(function() { showToast('Copied!'); })
@@ -1227,6 +1232,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openUrlForItem(content) {
+        // Always copy value to clipboard
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(content)
+                .then(function() { showToast('Copied!'); })
+                .catch(function() {});
+        }
+
         var url = buildUrl(content);
         window.open(url, '_blank');
     }

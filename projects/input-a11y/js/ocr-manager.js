@@ -468,6 +468,17 @@ var OCRManager = (function() {
     };
 
     /**
+     * Check if text passes the exact length filter.
+     * If minTextLength is 0 (off), accept any non-empty text.
+     * Otherwise require exact character count match.
+     */
+    OCRManager.prototype._passesLengthFilter = function(text) {
+        if (!text || text.length === 0) return false;
+        if (this.minTextLength === 0) return true; // 0 = off, accept all
+        return text.length === this.minTextLength;
+    };
+
+    /**
      * Debounce duplicate results
      */
     OCRManager.prototype._isDuplicate = function(text) {
@@ -544,7 +555,7 @@ var OCRManager = (function() {
             var rawText = result && result.data && result.data.text ? result.data.text : '';
             var filtered = self._filterText(rawText);
 
-            if (filtered.length >= self.minTextLength && !self._isDuplicate(filtered)) {
+            if (self._passesLengthFilter(filtered) && !self._isDuplicate(filtered)) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
                         result: { format: { formatName: 'TEXT_OCR' } },
@@ -598,7 +609,7 @@ var OCRManager = (function() {
             var rawText = texts.map(function(t) { return t.rawValue; }).join(' ');
             var filtered = self._filterText(rawText);
 
-            if (filtered.length >= self.minTextLength && !self._isDuplicate(filtered)) {
+            if (self._passesLengthFilter(filtered) && !self._isDuplicate(filtered)) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
                         result: { format: { formatName: 'TEXT_OCR' } }
@@ -706,7 +717,7 @@ var OCRManager = (function() {
             var filtered = result.text;
             var imageDataUri = result.rawImageUri || result.processedImageUri;
 
-            if (filtered.length >= self.minTextLength) {
+            if (self._passesLengthFilter(filtered)) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
                         result: { format: { formatName: 'TEXT_OCR' } },
