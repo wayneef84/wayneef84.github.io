@@ -30,11 +30,15 @@ var OCRManager = (function() {
         this._loopTimer = null;
         this._lastText = '';
         this._lastTextTime = 0;
-        this._debounceMs = 2000;
+        this._debounceMs = 3000;
 
         // Config
         this.alphanumericOnly = false;
-        this.minTextLength = 2;
+        this.minTextLength = 3;
+        this.filterMode = 'NONE';   // NONE, MIN_CHARS, REGEX, FORMAT
+        this.filterValue = '';       // filter value depends on mode
+        this.confirmPopup = true;    // show confirmation modal on OCR result
+        this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -54,6 +58,10 @@ var OCRManager = (function() {
         if (opts.alphanumericOnly !== undefined) this.alphanumericOnly = opts.alphanumericOnly;
         if (opts.minTextLength !== undefined) this.minTextLength = opts.minTextLength;
         if (opts.debounceMs !== undefined) this._debounceMs = opts.debounceMs;
+        if (opts.filterMode !== undefined) this.filterMode = opts.filterMode;
+        if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
+        if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
+        if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
     };
 
     /**
@@ -151,6 +159,13 @@ var OCRManager = (function() {
             }
             return Promise.reject(new Error(msg));
         }
+        drivers.push({
+            id: DRIVER_NATIVE,
+            label: 'Native TextDetector (Browser)',
+            available: !!this.nativeDetector
+        });
+        return drivers;
+    };
 
         return this.stop().then(function() {
             self.activeDriver = driver;
@@ -271,7 +286,8 @@ var OCRManager = (function() {
     };
 
     /**
-     * Filter detected text based on config
+     * Filter detected text based on config.
+     * Returns filtered text, or empty string if text does not pass filter.
      */
     OCRManager.prototype._filterText = function(rawText) {
         var text = rawText;
@@ -281,7 +297,69 @@ var OCRManager = (function() {
         } else {
             text = text.trim();
         }
+
+        // Apply advanced filter based on mode
+        if (this.filterMode === 'NONE' || !this.filterValue) {
+            return text;
+        }
+
+        if (this.filterMode === 'MIN_CHARS') {
+            var minChars = parseInt(this.filterValue, 10);
+            if (!isNaN(minChars) && text.length < minChars) {
+                return ''; // Doesn't meet minimum length
+            }
+            return text;
+        }
+
+        if (this.filterMode === 'REGEX') {
+            try {
+                var regex = new RegExp(this.filterValue);
+                if (!regex.test(text)) {
+                    return ''; // Doesn't match regex
+                }
+            } catch (e) {
+                console.warn('OCRManager: Invalid regex filter', e);
+            }
+            return text;
+        }
+
+        if (this.filterMode === 'FORMAT') {
+            // Format: A = alpha, N = number (e.g. "ANNNAAA")
+            if (!this._matchesFormat(text, this.filterValue)) {
+                return ''; // Doesn't match format
+            }
+            return text;
+        }
+
         return text;
+    };
+
+    /**
+     * Check if text matches a format pattern.
+     * A = alpha letter, N = numeric digit.
+     * e.g. "ANNNAAA" matches "B123XYZ"
+     */
+    OCRManager.prototype._matchesFormat = function(text, format) {
+        if (!format) return true;
+
+        // Strip spaces from text for format matching
+        var cleaned = text.replace(/\s+/g, '');
+        if (cleaned.length !== format.length) return false;
+
+        for (var i = 0; i < format.length; i++) {
+            var fChar = format.charAt(i).toUpperCase();
+            var tChar = cleaned.charAt(i);
+            if (fChar === 'A') {
+                if (!/[a-zA-Z]/.test(tChar)) return false;
+            } else if (fChar === 'N') {
+                if (!/[0-9]/.test(tChar)) return false;
+            }
+            // Any other format char is treated as a literal match
+            else if (fChar !== tChar.toUpperCase()) {
+                return false;
+            }
+        }
+        return true;
     };
 
     /**
@@ -354,13 +432,18 @@ var OCRManager = (function() {
         return this.tesseractWorker.recognize(this.canvas).then(function(result) {
             if (!self.isScanning) return;
 
+            var confidence = result && result.data && result.data.confidence ? result.data.confidence : 0;
+            // Skip low-confidence detections (reduces false positives on non-text)
+            if (confidence < self.confidenceThreshold) return;
+
             var rawText = result && result.data && result.data.text ? result.data.text : '';
             var filtered = self._filterText(rawText);
 
             if (filtered.length >= self.minTextLength && !self._isDuplicate(filtered)) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
-                        result: { format: { formatName: 'TEXT_OCR' } }
+                        result: { format: { formatName: 'TEXT_OCR' } },
+                        confidence: confidence
                     }, 'TEXT_OCR');
                 }
             }
@@ -397,6 +480,83 @@ var OCRManager = (function() {
                     }, 'TEXT_OCR');
                 }
             }
+        });
+    };
+
+    /**
+     * Snapshot: pause live scanning, capture current frame, run OCR on it.
+     * Returns a Promise that resolves with the recognized text.
+     * The live loop is paused during recognition and resumed after.
+     */
+    OCRManager.prototype.snapshot = function() {
+        var self = this;
+
+        if (!this.video || !this.canvas || !this.canvasCtx) {
+            return Promise.reject(new Error('Camera not active'));
+        }
+
+        // Pause live loop
+        var wasScanning = this.isScanning;
+        this.isScanning = false;
+        if (this._loopTimer) {
+            clearTimeout(this._loopTimer);
+            this._loopTimer = null;
+        }
+
+        // Capture frame
+        this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+
+        // Capture image data URI for history (always, regardless of text result)
+        var imageDataUri = '';
+        try {
+            imageDataUri = this.canvas.toDataURL('image/jpeg', 0.7);
+        } catch (e) {
+            console.warn('OCRManager: Failed to capture snapshot image', e);
+        }
+
+        var detectPromise;
+        if (this.activeDriver === DRIVER_TESSERACT && this.tesseractWorker) {
+            detectPromise = this.tesseractWorker.recognize(this.canvas).then(function(result) {
+                return result && result.data && result.data.text ? result.data.text.trim() : '';
+            });
+        } else if (this.activeDriver === DRIVER_NATIVE && this.nativeDetector) {
+            detectPromise = this.nativeDetector.detect(this.video).then(function(texts) {
+                if (!texts || texts.length === 0) return '';
+                texts.sort(function(a, b) {
+                    if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
+                        return a.boundingBox.y - b.boundingBox.y;
+                    }
+                    return a.boundingBox.x - b.boundingBox.x;
+                });
+                return texts.map(function(t) { return t.rawValue; }).join(' ').trim();
+            });
+        } else {
+            detectPromise = Promise.resolve('');
+        }
+
+        return detectPromise.then(function(text) {
+            var filtered = self._filterText(text);
+
+            // Fire success callback if text found
+            if (filtered.length >= self.minTextLength) {
+                if (self.callbacks.onSuccess) {
+                    self.callbacks.onSuccess(filtered, {
+                        result: { format: { formatName: 'TEXT_OCR' } },
+                        imageDataUri: imageDataUri
+                    }, 'TEXT_OCR');
+                }
+            }
+
+            // Always return both text and image so caller can save to history
+            return { text: filtered, imageDataUri: imageDataUri };
+        }).catch(function(err) {
+            console.error('OCRManager snapshot error:', err);
+            // Resume scanning on error
+            if (wasScanning) {
+                self.isScanning = true;
+                self._detectLoop();
+            }
+            throw err;
         });
     };
 

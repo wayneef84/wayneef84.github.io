@@ -44,3 +44,8 @@ Identify your role immediately:
 *   [ ] Did you read `AI_FEEDBACK.md`?
 *   [ ] Did you verify your changes?
 *   [ ] Did you update `AI_FEEDBACK.md` with your session log?
+
+## 7. Legal & Compliance
+Before starting work, verify the legal context of the project you are touching.
+*   **Central Docs:** [`legal/`](legal/) (MSA, Privacy, Data Policy).
+*   **Policy Matrix:** See `AGENTS.md` for project-specific rules (e.g., SkyLantern NDA vs. Open Source Arcade).
