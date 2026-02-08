@@ -50,6 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrScanLine = document.getElementById('set-ocr-scan-line');
     var scanCharCountIndicator = document.getElementById('scan-char-count-indicator');
 
+    // OCR Resize Controls (Scan Tab)
+    var btnScanResize = document.getElementById('btn-scan-resize');
+    var scanResizeOverlay = document.getElementById('scan-resize-overlay');
+    var scanRoiWSlider = document.getElementById('scan-roi-w-slider');
+    var scanRoiHSlider = document.getElementById('scan-roi-h-slider');
+
     // OCR Scan Region (ROI) - Auto-centered, user adjusts size only
     var setOcrRoiEnabled = document.getElementById('set-ocr-roi-enabled');
     var roiSettingsGroup = document.getElementById('roi-settings-group');
@@ -122,10 +128,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 settings.ocrRoiEnabled = true;
             }
         }
-        if (setOcrRoiWidth) setOcrRoiWidth.value = settings.ocrRoiWidth || 90;
-        if (setOcrRoiHeight) setOcrRoiHeight.value = settings.ocrRoiHeight || 10;
-        if (roiWidthVal) roiWidthVal.innerText = setOcrRoiWidth ? setOcrRoiWidth.value : '90';
-        if (roiHeightVal) roiHeightVal.innerText = setOcrRoiHeight ? setOcrRoiHeight.value : '10';
+        var currentW = settings.ocrRoiWidth || 70; // Default 70%
+        var currentH = settings.ocrRoiHeight || 10; // Default 10%
+
+        if (setOcrRoiWidth) setOcrRoiWidth.value = currentW;
+        if (setOcrRoiHeight) setOcrRoiHeight.value = currentH;
+        if (roiWidthVal) roiWidthVal.innerText = currentW;
+        if (roiHeightVal) roiHeightVal.innerText = currentH;
+
+        // Sync scan sliders
+        if (scanRoiWSlider) scanRoiWSlider.value = currentW;
+        if (scanRoiHSlider) scanRoiHSlider.value = currentH;
+
         updateRoiUI();
 
         // Restore OCR tuning
@@ -210,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function buildRoiConfig() {
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
         var enabled = (s.ocrRoiEnabled !== undefined) ? s.ocrRoiEnabled : true;
-        var w = parseInt(s.ocrRoiWidth, 10) || 90;
+        var w = parseInt(s.ocrRoiWidth, 10) || 70;
         var h = parseInt(s.ocrRoiHeight, 10) || 10;
         // Auto-center: derive top/left from width/height
         var left = Math.max(0, Math.round((100 - w) / 2));
@@ -557,8 +571,60 @@ document.addEventListener('DOMContentLoaded', function() {
             updateRoiUI();
             applyOCRFilterConfig();
         });
-        bindRangeSlider(setOcrRoiWidth, roiWidthVal, 'ocrRoiWidth', applyOCRFilterConfig);
-        bindRangeSlider(setOcrRoiHeight, roiHeightVal, 'ocrRoiHeight', applyOCRFilterConfig);
+
+        // Shared apply function for ROI that syncs both sets of sliders
+        var applyROI = function() {
+            // Update other sliders if changed from one place
+            // Note: bindRangeSlider updates 'settings' or 'tempSettings'
+            // We need to propagate that value to the other UI elements
+            var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+            if (scanRoiWSlider && setOcrRoiWidth) {
+                if (parseInt(scanRoiWSlider.value) !== s.ocrRoiWidth) scanRoiWSlider.value = s.ocrRoiWidth;
+                if (parseInt(setOcrRoiWidth.value) !== s.ocrRoiWidth) {
+                    setOcrRoiWidth.value = s.ocrRoiWidth;
+                    if (roiWidthVal) roiWidthVal.innerText = s.ocrRoiWidth;
+                }
+            }
+            if (scanRoiHSlider && setOcrRoiHeight) {
+                if (parseInt(scanRoiHSlider.value) !== s.ocrRoiHeight) scanRoiHSlider.value = s.ocrRoiHeight;
+                if (parseInt(setOcrRoiHeight.value) !== s.ocrRoiHeight) {
+                    setOcrRoiHeight.value = s.ocrRoiHeight;
+                    if (roiHeightVal) roiHeightVal.innerText = s.ocrRoiHeight;
+                }
+            }
+            applyOCRFilterConfig();
+        };
+
+        bindRangeSlider(setOcrRoiWidth, roiWidthVal, 'ocrRoiWidth', applyROI);
+        bindRangeSlider(setOcrRoiHeight, roiHeightVal, 'ocrRoiHeight', applyROI);
+
+        // Bind Scan Tab Sliders (Direct update to main settings as they are live)
+        if (scanRoiWSlider) {
+            scanRoiWSlider.addEventListener('input', function(e) {
+                var val = parseInt(e.target.value, 10);
+                settings.ocrRoiWidth = val;
+                storage.saveSettings(settings);
+                applyROI();
+            });
+        }
+        if (scanRoiHSlider) {
+            scanRoiHSlider.addEventListener('input', function(e) {
+                var val = parseInt(e.target.value, 10);
+                settings.ocrRoiHeight = val;
+                storage.saveSettings(settings);
+                applyROI();
+            });
+        }
+
+        if (btnScanResize && scanResizeOverlay) {
+            btnScanResize.addEventListener('click', function() {
+                if (scanResizeOverlay.classList.contains('hidden')) {
+                    scanResizeOverlay.classList.remove('hidden');
+                } else {
+                    scanResizeOverlay.classList.add('hidden');
+                }
+            });
+        }
 
         // OCR Tuning Sliders
         bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);

@@ -28,6 +28,8 @@ var StorageManager = (function() {
         ocrConfidence: 40,
         ocrDebounce: 3000,
         ocrMinLength: 0,
+        ocrRoiWidth: 70,
+        ocrRoiHeight: 10,
         barcodeFps: 10,
         barcodeBoxWidth: 250,
         barcodeBoxHeight: 250
