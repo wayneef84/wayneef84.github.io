@@ -4,17 +4,6 @@ class ScannerManager {
         this.callbacks = callbacks; // { onSuccess, onError }
         this.instance = null;
         this.isScanning = false;
-
-        // Configurable scan parameters
-        this.fps = 10;
-        this.qrboxWidth = 250;
-        this.qrboxHeight = 250;
-    }
-
-    configure(opts) {
-        if (opts.fps !== undefined) this.fps = opts.fps;
-        if (opts.qrboxWidth !== undefined) this.qrboxWidth = opts.qrboxWidth;
-        if (opts.qrboxHeight !== undefined) this.qrboxHeight = opts.qrboxHeight;
     }
 
     async start(mode) {
@@ -64,7 +53,7 @@ class ScannerManager {
 
             await this.instance.start(
                 cameraConfig,
-                { fps: this.fps, qrbox: { width: this.qrboxWidth, height: this.qrboxHeight } },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText, decodedResult) => {
                     if (this.callbacks.onSuccess) {
                         this.callbacks.onSuccess(decodedText, decodedResult, mode);

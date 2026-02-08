@@ -8,7 +8,7 @@
     <!-- Shared Libraries -->
     <script src="../../games/lib/html5-qrcode.min.js"></script>
     <script src="../../games/lib/qrcode.min.js"></script>
-    <!-- Tesseract.js (Offline OCR) - Apache 2.0 License -->
+    <!-- OCR Library (Local) -->
     <script src="assets/tesseract.min.js"></script>
 </head>
 <body class="negen-theme">
@@ -18,7 +18,6 @@
             <button class="tab-btn active" data-tab="scan">Scan</button>
             <button class="tab-btn" data-tab="generate">Generate</button>
             <button class="tab-btn" data-tab="history">History</button>
-            <button class="tab-btn" data-tab="settings">Settings</button>
         </nav>
     </header>
 
@@ -40,13 +39,41 @@
                         <option value="UPC_E">UPC-E</option>
                     </select>
                 </div>
-                <div id="driver-row" class="control-row hidden">
-                    <label for="ocrDriver">OCR Driver:</label>
-                    <select id="ocrDriver">
-                        <option value="tesseract">Tesseract.js (Offline)</option>
-                        <option value="native">Native TextDetector</option>
-                    </select>
-                </div>
+
+                <details class="settings-panel">
+                    <summary>Feedback Settings</summary>
+                    <div class="setting-item">
+                        <label for="set-action">Scan Action:</label>
+                        <select id="set-action">
+                            <option value="FREE">Free Scan (History)</option>
+                            <option value="URL_INPUT">URL Input (Open Link)</option>
+                        </select>
+                    </div>
+                    <div id="url-config" class="setting-item hidden">
+                        <label for="set-base-url">Base URL:</label>
+                        <input type="text" id="set-base-url" placeholder="www.google.com/?q=">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-vibrate">Vibrate:</label>
+                        <input type="checkbox" id="set-vibrate">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-frame">Green Frame:</label>
+                        <select id="set-frame">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-flash">Screen Flash:</label>
+                        <select id="set-flash">
+                            <option value="OFF">Off</option>
+                            <option value="SCANNER">Scanner Only</option>
+                            <option value="SCREEN">Full Screen</option>
+                        </select>
+                    </div>
+                </details>
 
                 <div id="scan-status" class="status-msg"></div>
             </div>
@@ -56,16 +83,11 @@
                 <div class="scan-line"></div>
             </div>
 
-            <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
-                <button id="btn-snapshot" class="snapshot-btn">Snapshot</button>
-            </div>
-
             <div id="scan-result" class="modal hidden">
                 <div class="modal-content">
                     <span class="close-modal">&times;</span>
                     <h2>Result Found</h2>
                     <p id="result-type">Type: </p>
-                    <img id="result-image" class="result-thumb hidden" alt="Snapshot">
                     <textarea id="result-text" readonly></textarea>
                     <div class="actions">
                         <button id="btn-copy">Copy</button>
@@ -97,124 +119,14 @@
         <!-- HISTORY TAB -->
         <section id="history" class="tab-content">
             <div class="history-section">
-                <h3>Scanned Items</h3>
-                <ul id="history-scanned" class="history-list"></ul>
-                <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
-            </div>
-            <div class="history-section">
                 <h3>Created Codes</h3>
                 <ul id="history-created" class="history-list"></ul>
                 <button id="clear-created" class="danger-btn">Clear Created</button>
             </div>
-        </section>
-
-        <!-- SETTINGS TAB -->
-        <section id="settings" class="tab-content">
-            <div class="settings-section">
-                <h3 class="settings-heading">Scan Action</h3>
-                <div class="setting-item">
-                    <label for="set-action">On Scan:</label>
-                    <select id="set-action">
-                        <option value="FREE">Free Scan (History)</option>
-                        <option value="URL_INPUT">URL Input (Open Link)</option>
-                    </select>
-                </div>
-                <div id="url-config" class="setting-item hidden">
-                    <label for="set-base-url">Base URL:</label>
-                    <input type="text" id="set-base-url" placeholder="www.google.com/?q=" class="filter-input" style="max-width:220px;">
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <h3 class="settings-heading">Feedback</h3>
-                <div class="setting-item">
-                    <label for="set-vibrate">Vibrate:</label>
-                    <input type="checkbox" id="set-vibrate">
-                </div>
-                <div class="setting-item">
-                    <label for="set-frame">Green Frame:</label>
-                    <select id="set-frame">
-                        <option value="OFF">Off</option>
-                        <option value="SCANNER">Scanner Only</option>
-                        <option value="SCREEN">Full Screen</option>
-                    </select>
-                </div>
-                <div class="setting-item">
-                    <label for="set-flash">Screen Flash:</label>
-                    <select id="set-flash">
-                        <option value="OFF">Off</option>
-                        <option value="SCANNER">Scanner Only</option>
-                        <option value="SCREEN">Full Screen</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <h3 class="settings-heading">Text Scanner (OCR)</h3>
-                <div class="setting-item">
-                    <label for="set-confirm-popup">Confirm Popup:</label>
-                    <input type="checkbox" id="set-confirm-popup" checked>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-confidence">Confidence (%)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
-                        <span id="ocr-confidence-val" class="range-val">40</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-debounce">Debounce (ms)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
-                        <span id="ocr-debounce-val" class="range-val">3000</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-minlength">Min Text Length</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="3">
-                        <span id="ocr-minlength-val" class="range-val">3</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-filter-mode">Filter Mode:</label>
-                    <select id="set-filter-mode">
-                        <option value="NONE">None (Accept All)</option>
-                        <option value="MIN_CHARS">Min Characters</option>
-                        <option value="REGEX">Regex Pattern</option>
-                        <option value="FORMAT">Format Mask (A/N)</option>
-                    </select>
-                </div>
-                <div id="filter-value-row" class="setting-item hidden">
-                    <label id="filter-value-label" for="set-filter-value">Value:</label>
-                    <input type="text" id="set-filter-value" placeholder="" class="filter-input">
-                </div>
-                <div id="filter-hint" class="filter-hint hidden"></div>
-            </div>
-
-            <div class="settings-section">
-                <h3 class="settings-heading">Barcode Scanner</h3>
-                <div class="setting-item">
-                    <label for="set-barcode-fps">Scan FPS</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
-                        <span id="barcode-fps-val" class="range-val">10</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-barcode-box-w">Box Width (px)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
-                        <span id="barcode-box-w-val" class="range-val">250</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-barcode-box-h">Box Height (px)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
-                        <span id="barcode-box-h-val" class="range-val">250</span>
-                    </div>
-                </div>
+            <div class="history-section">
+                <h3>Scanned Codes</h3>
+                <ul id="history-scanned" class="history-list"></ul>
+                <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
             </div>
         </section>
     </main>
