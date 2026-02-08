@@ -199,6 +199,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "verify_projects.py",
+    "path": "../../verification/verify_projects.py",
+    "category": "Projects",
+    "type": "py"
+  },
+  {
     "name": "README.md",
     "path": "../../music/README.md",
     "category": "Music",
@@ -1759,6 +1765,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "scraper.py",
+    "path": "../../projects/md-reader/scraper.py",
+    "category": "Projects",
+    "type": "py"
+  },
+  {
     "name": "build_index.py",
     "path": "../../projects/md-reader/build_index.py",
     "category": "Projects",
@@ -1767,6 +1779,36 @@ var REPO_FILES = [
   {
     "name": "COOKBOOK.md",
     "path": "../../projects/md-reader/COOKBOOK.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "cacik.md",
+    "path": "../../projects/md-reader/recipes/cacik.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "flan.md",
+    "path": "../../projects/md-reader/recipes/flan.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "asado.md",
+    "path": "../../projects/md-reader/recipes/asado.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "migas.md",
+    "path": "../../projects/md-reader/recipes/migas.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "kabse.md",
+    "path": "../../projects/md-reader/recipes/kabse.md",
     "category": "Projects",
     "type": "md"
   },
@@ -2023,6 +2065,12 @@ var REPO_FILES = [
     "type": "html"
   },
   {
+    "name": "TODO.md",
+    "path": "../../projects/input-a11y/TODO.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
     "name": "README.md",
     "path": "../../projects/input-a11y/README.md",
     "category": "Projects",
@@ -2031,6 +2079,18 @@ var REPO_FILES = [
   {
     "name": "OCR_SETUP.md",
     "path": "../../projects/input-a11y/OCR_SETUP.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "INFO.md",
+    "path": "../../projects/input-a11y/INFO.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "ARCHITECTURE.md",
+    "path": "../../projects/input-a11y/ARCHITECTURE.md",
     "category": "Projects",
     "type": "md"
   },
@@ -2121,12 +2181,6 @@ var REPO_FILES = [
   {
     "name": "260204_KICKOFF.md",
     "path": "../../archive/260204_KICKOFF.md",
-    "category": "Archive",
-    "type": "md"
-  },
-  {
-    "name": "260116_TODO.md",
-    "path": "../../archive/260116_TODO.md",
     "category": "Archive",
     "type": "md"
   },
