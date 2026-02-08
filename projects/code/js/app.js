@@ -10,6 +10,19 @@
     var accumulator = 0;
     var glowTimer = null;
 
+    // Logarithmic Slider Logic
+    var ANCHORS = [0.5, 1, 5, 25, 50];
+    var B_CONST = Math.pow(100, 1/100); // ~1.0471
+
+    function toDelay(sliderVal) {
+        return 0.5 * Math.pow(B_CONST, sliderVal);
+    }
+
+    function toSlider(delayVal) {
+        if (delayVal <= 0.5) return 0;
+        return Math.log(delayVal / 0.5) / Math.log(B_CONST);
+    }
+
     // DOM Elements
     var els = {
         targetDisplay: document.getElementById('target-display'),
@@ -90,8 +103,9 @@
         });
 
         els.confDelay.addEventListener('input', handleDelaySlider);
-        els.delayInput.addEventListener('change', handleDelayInput); // Change on enter/blur
-        els.delayInput.addEventListener('input', handleDelayInput); // Optional: live update? Might be annoying. Let's stick to change or just input if careful.
+        els.confDelay.addEventListener('change', snapDelaySlider); // Snap on release
+        els.delayInput.addEventListener('change', handleDelayInput);
+        els.delayInput.addEventListener('input', handleDelayInput);
 
         // Controls
         els.btnStart.addEventListener('click', start);
@@ -192,34 +206,16 @@
         // Don't update display here, handled in resetGame to keep masked
     }
 
-    // Logarithmic Slider Logic
-    var ANCHORS = [0.5, 1, 5, 25, 50];
-    var B_CONST = Math.pow(100, 1/100); // ~1.0471
-
-    function toDelay(sliderVal) {
-        return 0.5 * Math.pow(B_CONST, sliderVal);
-    }
-
-    function toSlider(delayVal) {
-        if (delayVal <= 0.5) return 0;
-        return Math.log(delayVal / 0.5) / Math.log(B_CONST);
-    }
-
     function handleDelaySlider() {
         var sVal = parseFloat(this.value);
         var dVal = toDelay(sVal);
 
-        // Snapping
+        // Soft Snapping (update value box)
         for (var i = 0; i < ANCHORS.length; i++) {
             var a = ANCHORS[i];
             var aPos = toSlider(a);
             if (Math.abs(sVal - aPos) < 2.5) { // Snap radius
                 dVal = a;
-                // We don't update this.value immediately to avoid fighting the user's drag,
-                // but we update the input to show the snapped value.
-                // Actually, user asked to snap the handle.
-                // If we do it on 'input', it might be jerky.
-                // Let's just update the input box for now and the delay.
                 break;
             }
         }
@@ -229,6 +225,19 @@
 
         delay = dVal;
         els.delayInput.value = dVal;
+    }
+
+    function snapDelaySlider() {
+        var sVal = parseFloat(this.value);
+        for (var i = 0; i < ANCHORS.length; i++) {
+            var a = ANCHORS[i];
+            var aPos = toSlider(a);
+            if (Math.abs(sVal - aPos) < 2.5) {
+                this.value = aPos;
+                handleDelaySlider.call(this); // Update derived values
+                break;
+            }
+        }
     }
 
     function handleDelayInput() {
