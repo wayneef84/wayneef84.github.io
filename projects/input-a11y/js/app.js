@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
+    // Verify Modal Elements
+    var verifyModal = document.getElementById('verify-modal');
+    var candidateList = document.getElementById('candidate-list');
+    var btnVerifyCancel = document.getElementById('btn-verify-cancel');
+    var closeVerify = document.querySelector('.close-verify');
+
     var setBaseUrl = document.getElementById('set-base-url');
     var urlConfig = document.getElementById('url-config');
     var setVibrate = document.getElementById('set-vibrate');
@@ -104,7 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Restore OCR ROI settings
-        if (setOcrRoiEnabled && settings.ocrRoiEnabled !== undefined) setOcrRoiEnabled.checked = settings.ocrRoiEnabled;
+        if (setOcrRoiEnabled) {
+             if (settings.ocrRoiEnabled !== undefined) {
+                 setOcrRoiEnabled.checked = settings.ocrRoiEnabled;
+             } else {
+                 setOcrRoiEnabled.checked = true;
+                 settings.ocrRoiEnabled = true;
+             }
+        }
         if (setOcrRoiTop) setOcrRoiTop.value = settings.ocrRoiTop || 10;
         if (setOcrRoiLeft) setOcrRoiLeft.value = settings.ocrRoiLeft || 10;
         if (setOcrRoiWidth) setOcrRoiWidth.value = settings.ocrRoiWidth || 80;
@@ -202,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
 
         var roiConfig = {
-            enabled: s.ocrRoiEnabled || false,
+            enabled: (s.ocrRoiEnabled !== undefined) ? s.ocrRoiEnabled : true,
             top: parseInt(s.ocrRoiTop, 10) || 10,
             left: parseInt(s.ocrRoiLeft, 10) || 10,
             width: parseInt(s.ocrRoiWidth, 10) || 80,
@@ -387,36 +400,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var activeInput = null;
 
-        if (mode === 'MIN_CHARS') {
-            document.getElementById('filter-block-minchars').classList.remove('hidden');
-            activeInput = document.getElementById('set-filter-minchars');
-        } else if (mode === 'REGEX') {
+        if (mode === 'REGEX') {
             document.getElementById('filter-block-regex').classList.remove('hidden');
             activeInput = document.getElementById('set-filter-regex');
-        } else if (mode === 'FORMAT') {
-            document.getElementById('filter-block-format').classList.remove('hidden');
-            activeInput = document.getElementById('set-filter-format');
         }
 
         // Hints & Constraints
         if (filterHint) {
             filterHint.classList.remove('hidden');
-            if (mode === 'FORMAT') {
-                filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
-            } else if (mode === 'REGEX') {
+            if (mode === 'REGEX') {
                 filterHint.innerText = 'JavaScript regex. Default: Alphanumeric, 10 chars.';
                 // Enforce Default if empty
                 if (activeInput && !activeInput.value) {
                     activeInput.value = '^[a-zA-Z0-9]{10}$';
                     if (tempSettings) tempSettings.ocrFilterValue = activeInput.value;
                     else { settings.ocrFilterValue = activeInput.value; storage.saveSettings(settings); }
-                }
-            } else if (mode === 'MIN_CHARS') {
-                filterHint.innerText = 'Min length (Default 5).';
-                if (activeInput && (!activeInput.value || parseInt(activeInput.value)<1)) {
-                    activeInput.value = 5;
-                    if (tempSettings) tempSettings.ocrFilterValue = 5;
-                    else { settings.ocrFilterValue = 5; storage.saveSettings(settings); }
                 }
             } else {
                 filterHint.classList.add('hidden');
@@ -584,6 +582,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('btn-rescan').addEventListener('click', closeResultModal);
         document.querySelector('.close-modal').addEventListener('click', closeResultModal);
         document.getElementById('btn-save-scan').addEventListener('click', saveCurrentScan);
+
+        // Verify Modal Actions
+        if (btnVerifyCancel) btnVerifyCancel.addEventListener('click', closeVerifyModal);
+        if (closeVerify) closeVerify.addEventListener('click', closeVerifyModal);
 
         // Generate Actions
         document.getElementById('btn-generate').addEventListener('click', generateQR);
@@ -820,7 +822,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // URL Input mode
         if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
             stopAll();
-            handleUrlInput(text);
+            handleScanToVerify(text);
             return;
         }
 
@@ -868,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function handleUrlInput(text) {
+    function executeUrlRedirect(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text)
                 .then(function() { showToast('Copied!'); })
@@ -883,6 +885,59 @@ document.addEventListener('DOMContentLoaded', function() {
         var url = baseUrl + encodeURIComponent(text);
         window.open(url, '_blank');
         startScanner();
+    }
+
+    function handleScanToVerify(text) {
+        if (!text) return;
+
+        // 1. Pre-Processing: Split by newlines and remove whitespace from each candidate
+        var rawCandidates = text.split(/[\r\n]+/);
+        var candidates = [];
+
+        for (var i = 0; i < rawCandidates.length; i++) {
+            var clean = rawCandidates[i].replace(/\s+/g, '');
+            if (clean.length > 0 && candidates.indexOf(clean) === -1) {
+                candidates.push(clean);
+            }
+        }
+
+        if (candidates.length === 0) {
+            showToast('No valid text found');
+            startScanner();
+            return;
+        }
+
+        // 2. User Verification (The Modal)
+        if (candidateList) {
+            candidateList.innerHTML = '';
+            for (var j = 0; j < candidates.length; j++) {
+                var candidate = candidates[j];
+                var li = document.createElement('li');
+                var btn = document.createElement('button');
+                btn.className = 'candidate-btn';
+                btn.textContent = candidate;
+
+                // Closure to capture candidate
+                (function(val) {
+                    btn.addEventListener('click', function() {
+                        closeVerifyModal(true); // silent close (don't restart yet)
+                        executeUrlRedirect(val);
+                    });
+                })(candidate);
+
+                li.appendChild(btn);
+                candidateList.appendChild(li);
+            }
+        }
+
+        if (verifyModal) verifyModal.classList.remove('hidden');
+    }
+
+    function closeVerifyModal(silent) {
+        if (verifyModal) verifyModal.classList.add('hidden');
+        // If passed explicit true, we skip restart (caller handles it)
+        // If event object (click) or undefined, we restart.
+        if (silent !== true) startScanner();
     }
 
     function showToast(message) {

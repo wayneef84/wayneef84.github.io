@@ -79,6 +79,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Verify Modal (Scan-to-Verify) -->
+            <div id="verify-modal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-modal close-verify">&times;</span>
+                    <h2>Select Text</h2>
+                    <p>Choose the correct text to proceed:</p>
+                    <ul id="candidate-list"></ul>
+                    <div class="actions">
+                        <button id="btn-verify-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- GENERATE TAB -->
@@ -165,9 +178,9 @@
                 <!-- Scan Region Settings -->
                 <div class="setting-item">
                     <label for="set-ocr-roi-enabled">Custom Region:</label>
-                    <input type="checkbox" id="set-ocr-roi-enabled">
+                    <input type="checkbox" id="set-ocr-roi-enabled" checked>
                 </div>
-                <div id="roi-settings-group" class="hidden">
+                <div id="roi-settings-group" class="hidden indented-setting">
                     <div class="setting-item">
                         <label for="set-ocr-roi-top">Top (%)</label>
                         <div class="range-group">
@@ -250,24 +263,14 @@
                     <label for="set-filter-mode">Filter Mode:</label>
                     <select id="set-filter-mode">
                         <option value="NONE">None (Accept All)</option>
-                        <option value="MIN_CHARS">Min Characters</option>
                         <option value="REGEX">Regex Pattern</option>
-                        <option value="FORMAT">Format Mask (A/N)</option>
                     </select>
                 </div>
 
                 <!-- Individual Filter Blocks -->
-                <div id="filter-block-minchars" class="setting-item filter-block hidden">
-                    <label for="set-filter-minchars">Min Chars:</label>
-                    <input type="number" id="set-filter-minchars" placeholder="e.g. 5" class="filter-input">
-                </div>
                 <div id="filter-block-regex" class="setting-item filter-block hidden">
                     <label for="set-filter-regex">Pattern:</label>
                     <input type="text" id="set-filter-regex" placeholder="e.g. ^[A-Z]{3}\d+" class="filter-input">
-                </div>
-                <div id="filter-block-format" class="setting-item filter-block hidden">
-                    <label for="set-filter-format">Format:</label>
-                    <input type="text" id="set-filter-format" placeholder="e.g. ANNNAAA" class="filter-input">
                 </div>
 
                 <div id="filter-hint" class="filter-hint hidden"></div>

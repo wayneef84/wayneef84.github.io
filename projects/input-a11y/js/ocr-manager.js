@@ -317,14 +317,6 @@ var OCRManager = (function() {
             return text;
         }
 
-        if (this.filterMode === 'MIN_CHARS') {
-            var minChars = parseInt(this.filterValue, 10);
-            if (!isNaN(minChars) && text.length < minChars) {
-                return ''; // Doesn't meet minimum length
-            }
-            return text;
-        }
-
         if (this.filterMode === 'REGEX') {
             try {
                 var regex = new RegExp(this.filterValue);
@@ -337,43 +329,7 @@ var OCRManager = (function() {
             return text;
         }
 
-        if (this.filterMode === 'FORMAT') {
-            // Format: A = alpha, N = number (e.g. "ANNNAAA")
-            if (!this._matchesFormat(text, this.filterValue)) {
-                return ''; // Doesn't match format
-            }
-            return text;
-        }
-
         return text;
-    };
-
-    /**
-     * Check if text matches a format pattern.
-     * A = alpha letter, N = numeric digit.
-     * e.g. "ANNNAAA" matches "B123XYZ"
-     */
-    OCRManager.prototype._matchesFormat = function(text, format) {
-        if (!format) return true;
-
-        // Strip spaces from text for format matching
-        var cleaned = text.replace(/\s+/g, '');
-        if (cleaned.length !== format.length) return false;
-
-        for (var i = 0; i < format.length; i++) {
-            var fChar = format.charAt(i).toUpperCase();
-            var tChar = cleaned.charAt(i);
-            if (fChar === 'A') {
-                if (!/[a-zA-Z]/.test(tChar)) return false;
-            } else if (fChar === 'N') {
-                if (!/[0-9]/.test(tChar)) return false;
-            }
-            // Any other format char is treated as a literal match
-            else if (fChar !== tChar.toUpperCase()) {
-                return false;
-            }
-        }
-        return true;
     };
 
     /**
