@@ -24,6 +24,7 @@ var StorageManager = (function() {
         ocrFilterMode: 'NONE',
         ocrFilterValue: '',
         ocrConfirmPopup: true,
+        ocrScanLine: true,
         ocrConfidence: 40,
         ocrDebounce: 3000,
         ocrMinLength: 0,

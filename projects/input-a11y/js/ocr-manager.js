@@ -689,6 +689,11 @@ var OCRManager = (function() {
         return detectPromise.then(function(ocrResult) {
             var filtered = self._filterText(ocrResult.text);
 
+            // Adhere to Exact Text Length (if set)
+            if (!self._passesLengthFilter(filtered)) {
+                filtered = ''; // Treat as no result if length doesn't match
+            }
+
             return {
                 text: filtered,
                 confidence: ocrResult.confidence,
