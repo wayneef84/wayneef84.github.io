@@ -111,6 +111,16 @@
         <!-- SETTINGS TAB -->
         <section id="settings" class="tab-content">
             <div class="settings-section">
+                <h3 class="settings-heading">Camera Source</h3>
+                <div class="setting-item">
+                    <label for="set-camera-device">Camera:</label>
+                    <select id="set-camera-device" style="max-width:180px;">
+                        <option value="">Auto / Default</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
                 <h3 class="settings-heading">Scan Action</h3>
                 <div class="setting-item">
                     <label for="set-action">On Scan:</label>
@@ -149,72 +159,96 @@
                 </div>
             </div>
 
-            <div class="settings-section">
-                <h3 class="settings-heading">Text Scanner (OCR)</h3>
-                <div class="setting-item">
-                    <label for="set-confirm-popup">Confirm Popup:</label>
-                    <input type="checkbox" id="set-confirm-popup" checked>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-confidence">Confidence (%)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
-                        <span id="ocr-confidence-val" class="range-val">40</span>
+            <div class="settings-wrapper">
+                <div class="settings-section">
+                    <h3 class="settings-heading">Text Scanner (OCR)</h3>
+                    <div class="setting-item">
+                        <label for="set-confirm-popup">Confirm Popup:</label>
+                        <input type="checkbox" id="set-confirm-popup" checked>
                     </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-debounce">Debounce (ms)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
-                        <span id="ocr-debounce-val" class="range-val">3000</span>
+                    <div class="setting-item">
+                        <label for="set-ocr-confidence">Confidence (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
+                            <span id="ocr-confidence-val" class="range-val">40</span>
+                        </div>
                     </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-ocr-minlength">Min Text Length</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="3">
-                        <span id="ocr-minlength-val" class="range-val">3</span>
+                    <div class="setting-item">
+                        <label for="set-ocr-debounce">Debounce (ms)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
+                            <span id="ocr-debounce-val" class="range-val">3000</span>
+                        </div>
                     </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-filter-mode">Filter Mode:</label>
-                    <select id="set-filter-mode">
-                        <option value="NONE">None (Accept All)</option>
-                        <option value="MIN_CHARS">Min Characters</option>
-                        <option value="REGEX">Regex Pattern</option>
-                        <option value="FORMAT">Format Mask (A/N)</option>
-                    </select>
-                </div>
-                <div id="filter-value-row" class="setting-item hidden">
-                    <label id="filter-value-label" for="set-filter-value">Value:</label>
-                    <input type="text" id="set-filter-value" placeholder="" class="filter-input">
-                </div>
-                <div id="filter-hint" class="filter-hint hidden"></div>
-            </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-minlength">Min Text Length</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="5">
+                            <span id="ocr-minlength-val" class="range-val">5</span>
+                        </div>
+                    </div>
+                    <div id="ocr-minlength-error" class="validation-error hidden">Value must be at least 5</div>
 
-            <div class="settings-section">
-                <h3 class="settings-heading">Barcode Scanner</h3>
-                <div class="setting-item">
-                    <label for="set-barcode-fps">Scan FPS</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
-                        <span id="barcode-fps-val" class="range-val">10</span>
+                    <div class="setting-item">
+                        <label for="set-filter-mode">Filter Mode:</label>
+                        <select id="set-filter-mode">
+                            <option value="NONE">None (Accept All)</option>
+                            <option value="MIN_CHARS">Min Characters</option>
+                            <option value="REGEX">Regex Pattern</option>
+                            <option value="FORMAT">Format Mask (A/N)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-manual-override">Manual Override:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="set-ocr-manual-override">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div id="filter-value-row" class="setting-item hidden">
+                        <label id="filter-value-label" for="set-filter-value">Value:</label>
+                        <input type="text" id="set-filter-value" placeholder="" class="filter-input">
+                    </div>
+                    <div id="filter-hint" class="filter-hint hidden"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="settings-heading">Barcode Scanner</h3>
+                    <div class="setting-item">
+                        <label for="set-barcode-manual-override">Manual Override:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="set-barcode-manual-override">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-barcode-fps">Scan FPS</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
+                            <span id="barcode-fps-val" class="range-val">10</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-barcode-box-w">Box Width (px)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
+                            <span id="barcode-box-w-val" class="range-val">250</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-barcode-box-h">Box Height (px)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
+                            <span id="barcode-box-h-val" class="range-val">250</span>
+                        </div>
                     </div>
                 </div>
-                <div class="setting-item">
-                    <label for="set-barcode-box-w">Box Width (px)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
-                        <span id="barcode-box-w-val" class="range-val">250</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="set-barcode-box-h">Box Height (px)</label>
-                    <div class="range-group">
-                        <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
-                        <span id="barcode-box-h-val" class="range-val">250</span>
-                    </div>
-                </div>
+
+                <footer class="settings-footer">
+                    <button id="btn-default" class="warning-btn">Default</button>
+                    <button id="btn-cancel" class="secondary-btn">Cancel</button>
+                    <button id="btn-save" class="primary-btn">Save</button>
+                </footer>
             </div>
         </section>
     </main>
