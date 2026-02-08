@@ -43,6 +43,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "RETROSPECTIVE_AND_FEEDBACK.md",
+    "path": "../../RETROSPECTIVE_AND_FEEDBACK.md",
+    "category": "Root",
+    "type": "md"
+  },
+  {
     "name": "README.md",
     "path": "../../README.md",
     "category": "Root",
@@ -79,6 +85,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "LICENSE_AUDIT.md",
+    "path": "../../LICENSE_AUDIT.md",
+    "category": "Root",
+    "type": "md"
+  },
+  {
     "name": "CLAUDE_ASSESSMENT.md",
     "path": "../../CLAUDE_ASSESSMENT.md",
     "category": "Root",
@@ -101,6 +113,12 @@ var REPO_FILES = [
     "path": "../../cloudflare-worker.js",
     "category": "Root",
     "type": "js"
+  },
+  {
+    "name": "notes_from_c_to_j_overhaul_phase1.md",
+    "path": "../../notes_from_c_to_j_overhaul_phase1.md",
+    "category": "Root",
+    "type": "md"
   },
   {
     "name": "260116_TODO.md",
@@ -163,6 +181,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "CLAUDE_AGENT.md",
+    "path": "../../CLAUDE_AGENT.md",
+    "category": "Root",
+    "type": "md"
+  },
+  {
     "name": "PROJECTS.md",
     "path": "../../PROJECTS.md",
     "category": "Root",
@@ -217,14 +241,8 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "verify_db_test.py",
-    "path": "../../verification/verify_db_test.py",
-    "category": "Verification",
-    "type": "py"
-  },
-  {
-    "name": "verify_all.py",
-    "path": "../../verification/verify_all.py",
+    "name": "verify_poker.py",
+    "path": "../../verification/verify_poker.py",
     "category": "Verification",
     "type": "py"
   },
@@ -232,6 +250,12 @@ var REPO_FILES = [
     "name": "README.md",
     "path": "../../music/README.md",
     "category": "Music",
+    "type": "md"
+  },
+  {
+    "name": "L10N_STRATEGY.md",
+    "path": "../../docs/L10N_STRATEGY.md",
+    "category": "Documentation",
     "type": "md"
   },
   {
@@ -313,6 +337,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "README.md",
+    "path": "../../games/README.md",
+    "category": "Games (Readme.Md)",
+    "type": "md"
+  },
+  {
     "name": "SkyScene.js",
     "path": "../../games/sky_breakers/SkyScene.js",
     "category": "Games (Sky Breakers)",
@@ -389,6 +419,36 @@ var REPO_FILES = [
     "path": "../../games/sprunki/assets/unassigned/project.json",
     "category": "Games (Sprunki)",
     "type": "json"
+  },
+  {
+    "name": "data-manager.js",
+    "path": "../../games/sprunki/js/data-manager.js",
+    "category": "Games (Sprunki)",
+    "type": "js"
+  },
+  {
+    "name": "qr-manager.js",
+    "path": "../../games/sprunki/js/qr-manager.js",
+    "category": "Games (Sprunki)",
+    "type": "js"
+  },
+  {
+    "name": "app.js",
+    "path": "../../games/sprunki/js/app.js",
+    "category": "Games (Sprunki)",
+    "type": "js"
+  },
+  {
+    "name": "editor.js",
+    "path": "../../games/sprunki/js/editor.js",
+    "category": "Games (Sprunki)",
+    "type": "js"
+  },
+  {
+    "name": "style.css",
+    "path": "../../games/sprunki/css/style.css",
+    "category": "Games (Sprunki)",
+    "type": "css"
   },
   {
     "name": "index.html",
@@ -799,12 +859,6 @@ var REPO_FILES = [
     "type": "html"
   },
   {
-    "name": "negen_poker.js",
-    "path": "../../games/cards/poker/5card/negen_poker.js",
-    "category": "Games (Cards)",
-    "type": "js"
-  },
-  {
     "name": "ruleset.js",
     "path": "../../games/cards/poker/5card/ruleset.js",
     "category": "Games (Cards)",
@@ -821,6 +875,12 @@ var REPO_FILES = [
     "path": "../../games/cards/poker/5card/MANUAL.md",
     "category": "Games (Cards)",
     "type": "md"
+  },
+  {
+    "name": "five_card_draw.js",
+    "path": "../../games/cards/poker/5card/five_card_draw.js",
+    "category": "Games (Cards)",
+    "type": "js"
   },
   {
     "name": "index.html",
@@ -1166,6 +1226,54 @@ var REPO_FILES = [
   },
   {
     "name": "index.html",
+    "path": "../../games/code_breaker/index.html",
+    "category": "Games (Code Breaker)",
+    "type": "html"
+  },
+  {
+    "name": "app.js",
+    "path": "../../games/code_breaker/js/app.js",
+    "category": "Games (Code Breaker)",
+    "type": "js"
+  },
+  {
+    "name": "cracker.js",
+    "path": "../../games/code_breaker/js/cracker.js",
+    "category": "Games (Code Breaker)",
+    "type": "js"
+  },
+  {
+    "name": "style.css",
+    "path": "../../games/code_breaker/css/style.css",
+    "category": "Games (Code Breaker)",
+    "type": "css"
+  },
+  {
+    "name": "qr-master.js",
+    "path": "../../games/lib/qr-master.js",
+    "category": "Games (Lib)",
+    "type": "js"
+  },
+  {
+    "name": "qrcode.min.js",
+    "path": "../../games/lib/qrcode.min.js",
+    "category": "Games (Lib)",
+    "type": "js"
+  },
+  {
+    "name": "html5-qrcode.min.js",
+    "path": "../../games/lib/html5-qrcode.min.js",
+    "category": "Games (Lib)",
+    "type": "js"
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "../../games/lib/LICENSE.txt",
+    "category": "Games (Lib)",
+    "type": "txt"
+  },
+  {
+    "name": "index.html",
     "path": "../../games/flow/index.html",
     "category": "Games (Flow)",
     "type": "html"
@@ -1249,6 +1357,12 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "260206_183334_J_Prompt_3.md",
+    "path": "../../prompts/260206_183334_J_Prompt_3.md",
+    "category": "Prompts",
+    "type": "md"
+  },
+  {
     "name": "PROGRESS.md",
     "path": "../../negen/PROGRESS.md",
     "category": "Negen",
@@ -1313,6 +1427,12 @@ var REPO_FILES = [
     "path": "../../negen/OVERHAUL_PLAN.md",
     "category": "Negen",
     "type": "md"
+  },
+  {
+    "name": "phase2_test.html",
+    "path": "../../negen/verification/phase2_test.html",
+    "category": "Negen",
+    "type": "html"
   },
   {
     "name": "InputManager.js",
@@ -1391,6 +1511,12 @@ var REPO_FILES = [
     "path": "../../negen/cards/CardGame.js",
     "category": "Negen",
     "type": "js"
+  },
+  {
+    "name": "INFO.md",
+    "path": "../../negen/cards/INFO.md",
+    "category": "Negen",
+    "type": "md"
   },
   {
     "name": "Pile.js",
@@ -1477,6 +1603,36 @@ var REPO_FILES = [
     "type": "md"
   },
   {
+    "name": "DATA_POLICY.md",
+    "path": "../../legal/DATA_POLICY.md",
+    "category": "Legal",
+    "type": "md"
+  },
+  {
+    "name": "TERMS_OF_USE.md",
+    "path": "../../legal/TERMS_OF_USE.md",
+    "category": "Legal",
+    "type": "md"
+  },
+  {
+    "name": "README.md",
+    "path": "../../legal/README.md",
+    "category": "Legal",
+    "type": "md"
+  },
+  {
+    "name": "PRIVACY_POLICY.md",
+    "path": "../../legal/PRIVACY_POLICY.md",
+    "category": "Legal",
+    "type": "md"
+  },
+  {
+    "name": "MSA.md",
+    "path": "../../legal/MSA.md",
+    "category": "Legal",
+    "type": "md"
+  },
+  {
     "name": "index.js",
     "path": "../../db/index.js",
     "category": "Db",
@@ -1521,6 +1677,18 @@ var REPO_FILES = [
   {
     "name": "app.js",
     "path": "../../projects/md-reader/app.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "README.md",
+    "path": "../../projects/md-reader/README.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "repo_index.js",
+    "path": "../../projects/md-reader/repo_index.js",
     "category": "Projects",
     "type": "js"
   },
@@ -1784,9 +1952,69 @@ var REPO_FILES = [
   },
   {
     "name": "index.html",
+    "path": "../../projects/input-a11y/index.html",
+    "category": "Projects",
+    "type": "html"
+  },
+  {
+    "name": "README.md",
+    "path": "../../projects/input-a11y/README.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "OCR_SETUP.md",
+    "path": "../../projects/input-a11y/OCR_SETUP.md",
+    "category": "Projects",
+    "type": "md"
+  },
+  {
+    "name": "ocr-manager.js",
+    "path": "../../projects/input-a11y/js/ocr-manager.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "app.js",
+    "path": "../../projects/input-a11y/js/app.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "generator.js",
+    "path": "../../projects/input-a11y/js/generator.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "scanner.js",
+    "path": "../../projects/input-a11y/js/scanner.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "storage.js",
+    "path": "../../projects/input-a11y/js/storage.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "style.css",
+    "path": "../../projects/input-a11y/css/style.css",
+    "category": "Projects",
+    "type": "css"
+  },
+  {
+    "name": "index.html",
     "path": "../../projects/internal-tests/index.html",
     "category": "Projects",
     "type": "html"
+  },
+  {
+    "name": "README.md",
+    "path": "../../projects/internal-tests/README.md",
+    "category": "Projects",
+    "type": "md"
   },
   {
     "name": "CLAUDE.md",
@@ -1833,6 +2061,12 @@ var REPO_FILES = [
   {
     "name": "LL_ES5_SAFARI.md",
     "path": "../../LL/LL_ES5_SAFARI.md",
+    "category": "Ll",
+    "type": "md"
+  },
+  {
+    "name": "LL_PHASE_1_SUMMARY.md",
+    "path": "../../LL/LL_PHASE_1_SUMMARY.md",
     "category": "Ll",
     "type": "md"
   }

@@ -23,12 +23,28 @@ function start() {
     engine.audio.init();
     engine.start();
     document.getElementById('startOverlay').style.display = 'none';
+
+    // Remove listeners
     canvas.removeEventListener('click', start);
     canvas.removeEventListener('touchstart', start);
     document.getElementById('startOverlay').removeEventListener('click', start);
+    document.getElementById('startOverlay').removeEventListener('touchstart', start);
+    window.removeEventListener('keydown', handleKeyStart);
 }
 
+function handleKeyStart(e) {
+    if (e.code === 'Enter' || e.code === 'Space') {
+        if (e.code === 'Space') e.preventDefault();
+        start();
+    }
+}
+
+// Bind Start Inputs (Touch, Click, Keyboard)
 canvas.addEventListener('click', start);
 canvas.addEventListener('touchstart', start, {passive: false});
-document.getElementById('startOverlay').addEventListener('click', start);
-document.getElementById('startOverlay').addEventListener('touchstart', start, {passive: false});
+
+const overlay = document.getElementById('startOverlay');
+overlay.addEventListener('click', start);
+overlay.addEventListener('touchstart', start, {passive: false});
+
+window.addEventListener('keydown', handleKeyStart);

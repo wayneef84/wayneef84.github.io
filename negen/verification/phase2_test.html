@@ -13,12 +13,13 @@
     <div id="game-container"></div>
 
     <!-- Engine Scripts -->
-    <script src="../core/Engine.js"></script>
-    <script src="../graphics/Renderer.js"></script>
     <script src="../assets/AssetLoader.js"></script>
     <script src="../entities/Card.js"></script>
 
-    <script>
+    <script type="module">
+        import Engine from '../core/Engine.js';
+        import Renderer from '../graphics/Renderer.js';
+
         // Verification Scene
         var VerifyScene = {
             card: null,
@@ -68,8 +69,8 @@
         };
 
         // Init
-        var renderer = new Negen.Renderer('game-container');
-        var engine = new Negen.Engine({ renderer: renderer });
+        var renderer = new Renderer('game-container');
+        var engine = new Engine({ renderer: renderer });
 
         engine.loadScene(VerifyScene);
         engine.start();
