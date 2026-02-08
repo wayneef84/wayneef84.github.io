@@ -83,10 +83,31 @@
                 </details>
 
                 <details id="ocr-settings-panel" class="settings-panel hidden">
-                    <summary>Text Filter Settings</summary>
+                    <summary>Text Scanner Settings</summary>
                     <div class="setting-item">
                         <label for="set-confirm-popup">Confirm Popup:</label>
                         <input type="checkbox" id="set-confirm-popup" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-confidence">Confidence (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
+                            <span id="ocr-confidence-val" class="range-val">40</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-debounce">Debounce (ms)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
+                            <span id="ocr-debounce-val" class="range-val">3000</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-minlength">Min Text Length</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="3">
+                            <span id="ocr-minlength-val" class="range-val">3</span>
+                        </div>
                     </div>
                     <div class="setting-item">
                         <label for="set-filter-mode">Filter Mode:</label>
@@ -102,6 +123,31 @@
                         <input type="text" id="set-filter-value" placeholder="" class="filter-input">
                     </div>
                     <div id="filter-hint" class="filter-hint hidden"></div>
+                </details>
+
+                <details id="barcode-settings-panel" class="settings-panel hidden">
+                    <summary>Barcode Scanner Settings</summary>
+                    <div class="setting-item">
+                        <label for="set-barcode-fps">Scan FPS</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
+                            <span id="barcode-fps-val" class="range-val">10</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-barcode-box-w">Box Width (px)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
+                            <span id="barcode-box-w-val" class="range-val">250</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-barcode-box-h">Box Height (px)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
+                            <span id="barcode-box-h-val" class="range-val">250</span>
+                        </div>
+                    </div>
                 </details>
 
                 <div id="scan-status" class="status-msg"></div>

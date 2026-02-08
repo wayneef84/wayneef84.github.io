@@ -380,6 +380,26 @@ button {
     font-style: italic;
 }
 
+/* Range Slider Group */
+.range-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.range-group input[type="range"] {
+    width: 120px;
+    accent-color: var(--accent-color);
+}
+
+.range-val {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    min-width: 40px;
+    text-align: right;
+    font-family: monospace;
+}
+
 /* Start Button (deferred autoplay) */
 .start-scan-btn {
     background: var(--accent-color);

@@ -36,6 +36,23 @@ document.addEventListener('DOMContentLoaded', function() {
     var setFilterValue = document.getElementById('set-filter-value');
     var filterHint = document.getElementById('filter-hint');
 
+    // OCR Tuning Elements
+    var setOcrConfidence = document.getElementById('set-ocr-confidence');
+    var ocrConfidenceVal = document.getElementById('ocr-confidence-val');
+    var setOcrDebounce = document.getElementById('set-ocr-debounce');
+    var ocrDebounceVal = document.getElementById('ocr-debounce-val');
+    var setOcrMinLength = document.getElementById('set-ocr-minlength');
+    var ocrMinLengthVal = document.getElementById('ocr-minlength-val');
+
+    // Barcode Settings Elements
+    var barcodeSettingsPanel = document.getElementById('barcode-settings-panel');
+    var setBarcodeFps = document.getElementById('set-barcode-fps');
+    var barcodeFpsVal = document.getElementById('barcode-fps-val');
+    var setBarcodeBoxW = document.getElementById('set-barcode-box-w');
+    var barcodeBoxWVal = document.getElementById('barcode-box-w-val');
+    var setBarcodeBoxH = document.getElementById('set-barcode-box-h');
+    var barcodeBoxHVal = document.getElementById('barcode-box-h-val');
+
     // --- Init ---
     init();
 
@@ -59,6 +76,34 @@ document.addEventListener('DOMContentLoaded', function() {
             setFilterValue.value = settings.ocrFilterValue;
         }
 
+        // Restore OCR tuning settings
+        if (setOcrConfidence) {
+            setOcrConfidence.value = settings.ocrConfidence || 40;
+            if (ocrConfidenceVal) ocrConfidenceVal.innerText = setOcrConfidence.value;
+        }
+        if (setOcrDebounce) {
+            setOcrDebounce.value = settings.ocrDebounce || 3000;
+            if (ocrDebounceVal) ocrDebounceVal.innerText = setOcrDebounce.value;
+        }
+        if (setOcrMinLength) {
+            setOcrMinLength.value = settings.ocrMinLength || 3;
+            if (ocrMinLengthVal) ocrMinLengthVal.innerText = setOcrMinLength.value;
+        }
+
+        // Restore barcode settings
+        if (setBarcodeFps) {
+            setBarcodeFps.value = settings.barcodeFps || 10;
+            if (barcodeFpsVal) barcodeFpsVal.innerText = setBarcodeFps.value;
+        }
+        if (setBarcodeBoxW) {
+            setBarcodeBoxW.value = settings.barcodeBoxWidth || 250;
+            if (barcodeBoxWVal) barcodeBoxWVal.innerText = setBarcodeBoxW.value;
+        }
+        if (setBarcodeBoxH) {
+            setBarcodeBoxH.value = settings.barcodeBoxHeight || 250;
+            if (barcodeBoxHVal) barcodeBoxHVal.innerText = setBarcodeBoxH.value;
+        }
+
         updateActionUI();
         updateFilterUI();
 
@@ -69,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('scan-status').innerText = 'Camera Error: ' + err;
             }
         });
+
+        // Apply saved barcode config
+        applyBarcodeConfig();
 
         // Initialize OCR Manager
         if (typeof OCRManager !== 'undefined') {
@@ -116,7 +164,19 @@ document.addEventListener('DOMContentLoaded', function() {
         ocrManager.configure({
             filterMode: settings.ocrFilterMode || 'NONE',
             filterValue: settings.ocrFilterValue || '',
-            confirmPopup: settings.ocrConfirmPopup !== undefined ? settings.ocrConfirmPopup : true
+            confirmPopup: settings.ocrConfirmPopup !== undefined ? settings.ocrConfirmPopup : true,
+            confidenceThreshold: parseInt(settings.ocrConfidence, 10) || 40,
+            debounceMs: parseInt(settings.ocrDebounce, 10) || 3000,
+            minTextLength: parseInt(settings.ocrMinLength, 10) || 3
+        });
+    }
+
+    function applyBarcodeConfig() {
+        if (!scanner) return;
+        scanner.configure({
+            fps: parseInt(settings.barcodeFps, 10) || 10,
+            qrboxWidth: parseInt(settings.barcodeBoxWidth, 10) || 250,
+            qrboxHeight: parseInt(settings.barcodeBoxHeight, 10) || 250
         });
     }
 
@@ -193,6 +253,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (ocrSettingsPanel) {
             if (isOCR) { ocrSettingsPanel.classList.remove('hidden'); }
             else { ocrSettingsPanel.classList.add('hidden'); }
+        }
+        // Show/hide Barcode-specific settings panel (when NOT in OCR mode)
+        var isBarcode = !isOCR;
+        if (barcodeSettingsPanel) {
+            if (isBarcode) { barcodeSettingsPanel.classList.remove('hidden'); }
+            else { barcodeSettingsPanel.classList.add('hidden'); }
         }
     }
 
@@ -322,6 +388,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 settings.ocrFilterValue = e.target.value;
                 storage.saveSettings(settings);
                 applyOCRFilterConfig();
+            });
+        }
+
+        // OCR Tuning Sliders
+        if (setOcrConfidence) {
+            setOcrConfidence.addEventListener('input', function(e) {
+                settings.ocrConfidence = parseInt(e.target.value, 10);
+                if (ocrConfidenceVal) ocrConfidenceVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+        if (setOcrDebounce) {
+            setOcrDebounce.addEventListener('input', function(e) {
+                settings.ocrDebounce = parseInt(e.target.value, 10);
+                if (ocrDebounceVal) ocrDebounceVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+        if (setOcrMinLength) {
+            setOcrMinLength.addEventListener('input', function(e) {
+                settings.ocrMinLength = parseInt(e.target.value, 10);
+                if (ocrMinLengthVal) ocrMinLengthVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+
+        // Barcode Tuning Sliders
+        if (setBarcodeFps) {
+            setBarcodeFps.addEventListener('input', function(e) {
+                settings.barcodeFps = parseInt(e.target.value, 10);
+                if (barcodeFpsVal) barcodeFpsVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyBarcodeConfig();
+            });
+        }
+        if (setBarcodeBoxW) {
+            setBarcodeBoxW.addEventListener('input', function(e) {
+                settings.barcodeBoxWidth = parseInt(e.target.value, 10);
+                if (barcodeBoxWVal) barcodeBoxWVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyBarcodeConfig();
+            });
+        }
+        if (setBarcodeBoxH) {
+            setBarcodeBoxH.addEventListener('input', function(e) {
+                settings.barcodeBoxHeight = parseInt(e.target.value, 10);
+                if (barcodeBoxHVal) barcodeBoxHVal.innerText = e.target.value;
+                storage.saveSettings(settings);
+                applyBarcodeConfig();
             });
         }
 

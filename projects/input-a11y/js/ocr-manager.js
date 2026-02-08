@@ -38,6 +38,7 @@ var OCRManager = (function() {
         this.filterMode = 'NONE';   // NONE, MIN_CHARS, REGEX, FORMAT
         this.filterValue = '';       // filter value depends on mode
         this.confirmPopup = true;    // show confirmation modal on OCR result
+        this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -60,6 +61,7 @@ var OCRManager = (function() {
         if (opts.filterMode !== undefined) this.filterMode = opts.filterMode;
         if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
         if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
+        if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
     };
 
     /**
@@ -425,7 +427,7 @@ var OCRManager = (function() {
 
             var confidence = result && result.data && result.data.confidence ? result.data.confidence : 0;
             // Skip low-confidence detections (reduces false positives on non-text)
-            if (confidence < 40) return;
+            if (confidence < self.confidenceThreshold) return;
 
             var rawText = result && result.data && result.data.text ? result.data.text : '';
             var filtered = self._filterText(rawText);
