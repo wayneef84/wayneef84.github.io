@@ -389,26 +389,39 @@ button {
     min-width: 0;
 }
 
-/* History Edit Button */
-.hist-edit-btn {
+/* History Action Buttons */
+.hist-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.hist-action-btn {
     background: transparent;
     border: 1px solid var(--border-color);
     color: #aaa;
-    font-size: 1rem;
-    padding: 4px 8px;
+    font-size: 0.85rem;
+    padding: 4px 6px;
     border-radius: 4px;
     cursor: pointer;
-    flex-shrink: 0;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 30px;
+    min-height: 30px;
     transition: background 0.2s, color 0.2s;
-    align-self: center;
+    line-height: 1;
 }
 
 .hist-edit-btn:hover {
     background: #333;
     color: #fff;
     border-color: var(--teal);
+}
+
+.hist-delete-btn:hover {
+    background: #3a1a1a;
+    color: #ef5350;
+    border-color: #c62828;
 }
 
 /* Image Preview Modal */

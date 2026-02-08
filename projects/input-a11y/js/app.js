@@ -1139,21 +1139,27 @@ document.addEventListener('DOMContentLoaded', function() {
     var editText = document.getElementById('edit-entry-text');
     var btnEditSave = document.getElementById('btn-edit-save');
     var btnEditCancel = document.getElementById('btn-edit-cancel');
+    var btnEditDelete = document.getElementById('btn-edit-delete');
     var closeEdit = document.querySelector('.close-edit');
     var _editEntryId = null;
     var _editEntryType = null;
+    var _editOriginalContent = '';
 
     function openEditEntry(type, id, currentContent) {
         _editEntryId = id;
         _editEntryType = type;
-        if (editText) editText.value = currentContent || '';
+        _editOriginalContent = currentContent || '';
+        if (editText) editText.value = _editOriginalContent;
         if (editModal) editModal.classList.remove('hidden');
     }
 
     function closeEditEntry() {
+        // Revert textarea to original (in case user changed it but cancelled)
+        if (editText) editText.value = _editOriginalContent;
         if (editModal) editModal.classList.add('hidden');
         _editEntryId = null;
         _editEntryType = null;
+        _editOriginalContent = '';
     }
 
     function saveEditEntry() {
@@ -1164,14 +1170,33 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         storage.updateItem(_editEntryType, _editEntryId, { content: newContent });
+        _editOriginalContent = ''; // Clear so close doesn't revert
         closeEditEntry();
         renderHistory();
         showToast('Entry updated');
     }
 
+    function deleteEditEntry() {
+        if (!_editEntryId || !_editEntryType) return;
+        if (!confirm('Delete this entry? This cannot be undone.')) return;
+        storage.removeItem(_editEntryType, _editEntryId);
+        _editOriginalContent = '';
+        closeEditEntry();
+        renderHistory();
+        showToast('Entry deleted');
+    }
+
+    function deleteHistoryItem(type, id) {
+        if (!confirm('Delete this entry?')) return;
+        storage.removeItem(type, id);
+        renderHistory();
+        showToast('Entry deleted');
+    }
+
     if (closeEdit) closeEdit.addEventListener('click', closeEditEntry);
     if (btnEditCancel) btnEditCancel.addEventListener('click', closeEditEntry);
     if (btnEditSave) btnEditSave.addEventListener('click', saveEditEntry);
+    if (btnEditDelete) btnEditDelete.addEventListener('click', deleteEditEntry);
     if (editModal) {
         editModal.addEventListener('click', function(e) {
             if (e.target === editModal) closeEditEntry();
@@ -1231,16 +1256,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 row.appendChild(info);
 
+                // Action buttons container
+                var actionsDiv = document.createElement('div');
+                actionsDiv.className = 'hist-actions';
+
                 // Edit button
                 var editBtn = document.createElement('button');
-                editBtn.className = 'hist-edit-btn';
+                editBtn.className = 'hist-action-btn hist-edit-btn';
                 editBtn.innerHTML = '&#9998;'; // Pencil icon ✎
                 editBtn.title = 'Edit entry';
                 editBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     openEditEntry(type, item.id, item.content);
                 });
-                row.appendChild(editBtn);
+                actionsDiv.appendChild(editBtn);
+
+                // Delete button
+                var delBtn = document.createElement('button');
+                delBtn.className = 'hist-action-btn hist-delete-btn';
+                delBtn.innerHTML = '&#128465;'; // Wastebasket icon 🗑
+                delBtn.title = 'Delete entry';
+                delBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    deleteHistoryItem(type, item.id);
+                });
+                actionsDiv.appendChild(delBtn);
+
+                row.appendChild(actionsDiv);
 
                 li.appendChild(row);
 
