@@ -830,16 +830,25 @@ button {
 
 /* Settings Footer */
 .settings-footer {
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
     background: var(--bg-color);
-    padding: 16px 0;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+}
+
+.settings-footer-inner {
+    width: 100%;
+    max-width: 500px;
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid var(--border-color);
-    max-width: 500px;
-    margin: 0 auto;
-    z-index: 100;
 }
 
 .footer-actions {
