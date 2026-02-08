@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var lastResult = null;
     var lastSnapshotImage = '';
     var settings = storage.getSettings();
-    var tempSettings = JSON.parse(JSON.stringify(settings)); // Working copy for settings UI
     var userHasInteracted = false;
 
     // --- Elements ---
@@ -21,19 +20,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var snapshotRow = document.getElementById('snapshot-row');
     var btnSnapshot = document.getElementById('btn-snapshot');
 
-    // Settings Elements
+    // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
     var setBaseUrl = document.getElementById('set-base-url');
     var urlConfig = document.getElementById('url-config');
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
-    var setCameraDevice = document.getElementById('set-camera-device'); // NEW
 
-    // OCR Settings
+    // OCR Filter Settings
     var setConfirmPopup = document.getElementById('set-confirm-popup');
     var setFilterMode = document.getElementById('set-filter-mode');
-    var setOcrManualOverride = document.getElementById('set-ocr-manual-override'); // NEW
     var filterValueRow = document.getElementById('filter-value-row');
     var filterValueLabel = document.getElementById('filter-value-label');
     var setFilterValue = document.getElementById('set-filter-value');
@@ -46,10 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var ocrDebounceVal = document.getElementById('ocr-debounce-val');
     var setOcrMinLength = document.getElementById('set-ocr-minlength');
     var ocrMinLengthVal = document.getElementById('ocr-minlength-val');
-    var ocrMinLengthError = document.getElementById('ocr-minlength-error'); // NEW
 
     // Barcode Settings
-    var setBarcodeManualOverride = document.getElementById('set-barcode-manual-override'); // NEW
     var setBarcodeFps = document.getElementById('set-barcode-fps');
     var barcodeFpsVal = document.getElementById('barcode-fps-val');
     var setBarcodeBoxW = document.getElementById('set-barcode-box-w');
@@ -57,30 +52,59 @@ document.addEventListener('DOMContentLoaded', function() {
     var setBarcodeBoxH = document.getElementById('set-barcode-box-h');
     var barcodeBoxHVal = document.getElementById('barcode-box-h-val');
 
-    // Settings Actions
-    var btnSave = document.getElementById('btn-save');
-    var btnCancel = document.getElementById('btn-cancel');
-    var btnDefault = document.getElementById('btn-default');
-
     // --- Init ---
     init();
 
-    function countChanges(original, current) {
-        var count = 0;
-        for (var key in current) {
-            if (current.hasOwnProperty(key)) {
-                if (current[key] !== original[key]) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
     function init() {
-        // Initialize UI with settings
-        updateSettingsUI();
-        loadCameraDevices(); // NEW: Load cameras
+        // Restore Settings
+        if (settings.detectMode) scanModeSelect.value = settings.detectMode;
+        if (settings.actionMode) setAction.value = settings.actionMode;
+        if (settings.baseUrl) setBaseUrl.value = settings.baseUrl;
+        if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
+        if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
+        if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
+
+        // Restore OCR filter settings
+        if (setConfirmPopup && settings.ocrConfirmPopup !== undefined) {
+            setConfirmPopup.checked = settings.ocrConfirmPopup;
+        }
+        if (setFilterMode && settings.ocrFilterMode) {
+            setFilterMode.value = settings.ocrFilterMode;
+        }
+        if (setFilterValue && settings.ocrFilterValue) {
+            setFilterValue.value = settings.ocrFilterValue;
+        }
+
+        // Restore OCR tuning
+        if (setOcrConfidence) {
+            setOcrConfidence.value = settings.ocrConfidence || 40;
+            if (ocrConfidenceVal) ocrConfidenceVal.innerText = setOcrConfidence.value;
+        }
+        if (setOcrDebounce) {
+            setOcrDebounce.value = settings.ocrDebounce || 3000;
+            if (ocrDebounceVal) ocrDebounceVal.innerText = setOcrDebounce.value;
+        }
+        if (setOcrMinLength) {
+            setOcrMinLength.value = settings.ocrMinLength || 3;
+            if (ocrMinLengthVal) ocrMinLengthVal.innerText = setOcrMinLength.value;
+        }
+
+        // Restore barcode settings
+        if (setBarcodeFps) {
+            setBarcodeFps.value = settings.barcodeFps || 10;
+            if (barcodeFpsVal) barcodeFpsVal.innerText = setBarcodeFps.value;
+        }
+        if (setBarcodeBoxW) {
+            setBarcodeBoxW.value = settings.barcodeBoxWidth || 250;
+            if (barcodeBoxWVal) barcodeBoxWVal.innerText = setBarcodeBoxW.value;
+        }
+        if (setBarcodeBoxH) {
+            setBarcodeBoxH.value = settings.barcodeBoxHeight || 250;
+            if (barcodeBoxHVal) barcodeBoxHVal.innerText = setBarcodeBoxH.value;
+        }
+
+        updateActionUI();
+        updateFilterUI();
 
         // Initialize Barcode Scanner
         scanner = new ScannerManager('reader', {
@@ -109,8 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
             populateDriverSelector();
         }
 
-        // Restore active settings to non-settings-tab controls
-        if (settings.detectMode) scanModeSelect.value = settings.detectMode;
+        // Restore driver preference
         if (settings.ocrDriver && ocrDriverSelect) {
             ocrDriverSelect.value = settings.ocrDriver;
         }
@@ -124,135 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function loadCameraDevices() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-            console.warn("enumerateDevices() not supported.");
-            return;
-        }
-
-        navigator.mediaDevices.enumerateDevices()
-            .then(function(devices) {
-                var videoDevices = devices.filter(function(device) {
-                    return device.kind === 'videoinput';
-                });
-
-                setCameraDevice.innerHTML = '<option value="">Auto / Default</option>';
-                videoDevices.forEach(function(device) {
-                    var option = document.createElement('option');
-                    option.value = device.deviceId;
-                    option.text = device.label || 'Camera ' + (setCameraDevice.length);
-                    setCameraDevice.appendChild(option);
-                });
-
-                // Restore selection if saved
-                if (settings.cameraDeviceId) {
-                    setCameraDevice.value = settings.cameraDeviceId;
-                }
-            })
-            .catch(function(err) {
-                console.error("Error enumerating devices:", err);
-            });
-    }
-
-    // Updates all Settings tab inputs from tempSettings
-    function updateSettingsUI() {
-        // General
-        setAction.value = tempSettings.actionMode;
-        setBaseUrl.value = tempSettings.baseUrl;
-        if (tempSettings.actionMode === 'URL_INPUT') {
-            urlConfig.classList.remove('hidden');
-        } else {
-            urlConfig.classList.add('hidden');
-        }
-
-        setVibrate.checked = tempSettings.feedbackVibrate;
-        setFrame.value = tempSettings.feedbackFrame;
-        setFlash.value = tempSettings.feedbackFlash;
-        setCameraDevice.value = tempSettings.cameraDeviceId || ""; // NEW
-
-        // OCR
-        setConfirmPopup.checked = tempSettings.ocrConfirmPopup;
-        setOcrConfidence.value = tempSettings.ocrConfidence;
-        ocrConfidenceVal.innerText = tempSettings.ocrConfidence;
-        setOcrDebounce.value = tempSettings.ocrDebounce;
-        ocrDebounceVal.innerText = tempSettings.ocrDebounce;
-        setOcrMinLength.value = tempSettings.ocrMinLength;
-        ocrMinLengthVal.innerText = tempSettings.ocrMinLength;
-
-        // OCR Validation
-        if (tempSettings.ocrMinLength < 5) {
-            ocrMinLengthError.classList.remove('hidden');
-        } else {
-            ocrMinLengthError.classList.add('hidden');
-        }
-
-        // OCR Manual Override & Filter Logic
-        setOcrManualOverride.checked = tempSettings.ocrManualOverride;
-        setFilterMode.value = tempSettings.ocrFilterMode;
-
-        // Enforce defaults if override is OFF
-        if (!tempSettings.ocrManualOverride) {
-            setFilterValue.disabled = true;
-            if (tempSettings.ocrFilterMode === 'REGEX') {
-                // Default regex pattern
-                tempSettings.ocrFilterValue = '^[a-zA-Z0-9]{10}$';
-            }
-            // Add other defaults if needed, but only regex was specified
-        } else {
-            setFilterValue.disabled = false;
-        }
-        setFilterValue.value = tempSettings.ocrFilterValue;
-
-        // Filter UI Details
-        var mode = tempSettings.ocrFilterMode;
-        var showValue = (mode !== 'NONE');
-
-        if (showValue) {
-            filterValueRow.classList.remove('hidden');
-        } else {
-            filterValueRow.classList.add('hidden');
-        }
-
-        if (mode === 'MIN_CHARS') {
-            filterValueLabel.innerText = 'Min Chars:';
-            setFilterValue.placeholder = 'e.g. 5';
-            setFilterValue.type = 'number';
-        } else if (mode === 'REGEX') {
-            filterValueLabel.innerText = 'Pattern:';
-            setFilterValue.placeholder = '^[a-zA-Z0-9]{10}$'; // Updated placeholder
-            setFilterValue.type = 'text';
-        } else if (mode === 'FORMAT') {
-            filterValueLabel.innerText = 'Format:';
-            setFilterValue.placeholder = 'e.g. ANNNAAA';
-            setFilterValue.type = 'text';
-        } else {
-            setFilterValue.type = 'text';
-            setFilterValue.placeholder = '';
-        }
-
-        if (mode === 'FORMAT') {
-            filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
-            filterHint.classList.remove('hidden');
-        } else if (mode === 'REGEX') {
-            filterHint.innerText = 'JavaScript regex pattern';
-            filterHint.classList.remove('hidden');
-        } else if (mode === 'MIN_CHARS') {
-            filterHint.innerText = 'Only accept text with at least this many characters';
-            filterHint.classList.remove('hidden');
-        } else {
-            filterHint.classList.add('hidden');
-        }
-
-        // Barcode
-        setBarcodeManualOverride.checked = tempSettings.barcodeManualOverride;
-        setBarcodeFps.value = tempSettings.barcodeFps;
-        barcodeFpsVal.innerText = tempSettings.barcodeFps;
-        setBarcodeBoxW.value = tempSettings.barcodeBoxWidth;
-        barcodeBoxWVal.innerText = tempSettings.barcodeBoxWidth;
-        setBarcodeBoxH.value = tempSettings.barcodeBoxHeight;
-        barcodeBoxHVal.innerText = tempSettings.barcodeBoxHeight;
-    }
-
     function applyOCRFilterConfig() {
         if (!ocrManager) return;
         ocrManager.configure({
@@ -261,8 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmPopup: settings.ocrConfirmPopup !== undefined ? settings.ocrConfirmPopup : true,
             confidenceThreshold: parseInt(settings.ocrConfidence, 10) || 40,
             debounceMs: parseInt(settings.ocrDebounce, 10) || 3000,
-            minTextLength: parseInt(settings.ocrMinLength, 10) || 3,
-            deviceId: settings.cameraDeviceId // NEW
+            minTextLength: parseInt(settings.ocrMinLength, 10) || 3
         });
     }
 
@@ -271,8 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         scanner.configure({
             fps: parseInt(settings.barcodeFps, 10) || 10,
             qrboxWidth: parseInt(settings.barcodeBoxWidth, 10) || 250,
-            qrboxHeight: parseInt(settings.barcodeBoxHeight, 10) || 250,
-            deviceId: settings.cameraDeviceId // NEW
+            qrboxHeight: parseInt(settings.barcodeBoxHeight, 10) || 250
         });
     }
 
@@ -343,6 +235,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function updateFilterUI() {
+        if (!setFilterMode) return;
+
+        var mode = setFilterMode.value;
+        var showValue = (mode !== 'NONE');
+
+        if (filterValueRow) {
+            if (showValue) { filterValueRow.classList.remove('hidden'); }
+            else { filterValueRow.classList.add('hidden'); }
+        }
+
+        if (filterValueLabel && setFilterValue) {
+            if (mode === 'MIN_CHARS') {
+                filterValueLabel.innerText = 'Min Chars:';
+                setFilterValue.placeholder = 'e.g. 5';
+                setFilterValue.type = 'number';
+            } else if (mode === 'REGEX') {
+                filterValueLabel.innerText = 'Pattern:';
+                setFilterValue.placeholder = 'e.g. ^[A-Z]{3}\\d+';
+                setFilterValue.type = 'text';
+            } else if (mode === 'FORMAT') {
+                filterValueLabel.innerText = 'Format:';
+                setFilterValue.placeholder = 'e.g. ANNNAAA';
+                setFilterValue.type = 'text';
+            } else {
+                setFilterValue.type = 'text';
+                setFilterValue.placeholder = '';
+            }
+        }
+
+        if (filterHint) {
+            if (mode === 'FORMAT') {
+                filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
+                filterHint.classList.remove('hidden');
+            } else if (mode === 'REGEX') {
+                filterHint.innerText = 'JavaScript regex pattern to match against detected text';
+                filterHint.classList.remove('hidden');
+            } else if (mode === 'MIN_CHARS') {
+                filterHint.innerText = 'Only accept text with at least this many characters';
+                filterHint.classList.remove('hidden');
+            } else {
+                filterHint.classList.add('hidden');
+            }
+        }
+    }
+
     function bindEvents() {
         // Tabs
         for (var i = 0; i < tabBtns.length; i++) {
@@ -351,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Active Settings (Immediate Effect)
+        // Scan Mode
         scanModeSelect.addEventListener('change', function(e) {
             settings.detectMode = e.target.value;
             storage.saveSettings(settings);
@@ -361,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // OCR Driver selector
         if (ocrDriverSelect) {
             ocrDriverSelect.addEventListener('change', function(e) {
                 settings.ocrDriver = e.target.value;
@@ -371,68 +310,65 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // --- Settings Tab Inputs (Update tempSettings) ---
-
-        // General
-        bindSettingsInput(setAction, 'value', 'actionMode');
-        bindSettingsInput(setBaseUrl, 'value', 'baseUrl');
-        bindSettingsInput(setVibrate, 'checked', 'feedbackVibrate');
-        bindSettingsInput(setFrame, 'value', 'feedbackFrame');
-        bindSettingsInput(setFlash, 'value', 'feedbackFlash');
-        bindSettingsInput(setCameraDevice, 'value', 'cameraDeviceId'); // NEW
-
-        // OCR
-        bindSettingsInput(setConfirmPopup, 'checked', 'ocrConfirmPopup');
-        bindSettingsInput(setOcrManualOverride, 'checked', 'ocrManualOverride');
-        bindSettingsInput(setFilterMode, 'value', 'ocrFilterMode');
-        bindSettingsInput(setFilterValue, 'value', 'ocrFilterValue');
-
-        bindSettingsInput(setOcrConfidence, 'value', 'ocrConfidence', true);
-        bindSettingsInput(setOcrDebounce, 'value', 'ocrDebounce', true);
-        bindSettingsInput(setOcrMinLength, 'value', 'ocrMinLength', true);
-
-        // Barcode
-        bindSettingsInput(setBarcodeManualOverride, 'checked', 'barcodeManualOverride');
-        bindSettingsInput(setBarcodeFps, 'value', 'barcodeFps', true);
-        bindSettingsInput(setBarcodeBoxW, 'value', 'barcodeBoxWidth', true);
-        bindSettingsInput(setBarcodeBoxH, 'value', 'barcodeBoxHeight', true);
-
-        // --- Settings Footer Actions ---
-        btnSave.addEventListener('click', function() {
-            // Commit
-            var count = countChanges(settings, tempSettings);
-            settings = JSON.parse(JSON.stringify(tempSettings));
+        // Action Settings
+        setAction.addEventListener('change', function(e) {
+            settings.actionMode = e.target.value;
             storage.saveSettings(settings);
-            applyOCRFilterConfig();
-            applyBarcodeConfig();
-
-            // If camera changed, restart scanner
-            if (currentTab === 'scan' && userHasInteracted) {
-                startScanner();
-            }
-            alert('Saved ' + count + ' changes.');
+            updateActionUI();
         });
 
-        btnCancel.addEventListener('click', function() {
-            // Check for changes
-            var count = countChanges(settings, tempSettings);
-            if (count > 0) {
-                if (!confirm('Discard ' + count + ' unsaved changes?')) {
-                    return;
-                }
-            }
-            // Revert
-            tempSettings = JSON.parse(JSON.stringify(settings));
-            updateSettingsUI();
+        setBaseUrl.addEventListener('input', function(e) {
+            settings.baseUrl = e.target.value;
+            storage.saveSettings(settings);
         });
 
-        btnDefault.addEventListener('click', function() {
-            // Reset to defaults
-            if (confirm('Are you sure you want to reset all settings to default regex and character limits?')) {
-                tempSettings = storage.getDefaults();
-                updateSettingsUI();
-            }
+        // Feedback Settings
+        setVibrate.addEventListener('change', function(e) {
+            settings.feedbackVibrate = e.target.checked;
+            storage.saveSettings(settings);
         });
+        setFrame.addEventListener('change', function(e) {
+            settings.feedbackFrame = e.target.value;
+            storage.saveSettings(settings);
+        });
+        setFlash.addEventListener('change', function(e) {
+            settings.feedbackFlash = e.target.value;
+            storage.saveSettings(settings);
+        });
+
+        // OCR Filter Settings
+        if (setConfirmPopup) {
+            setConfirmPopup.addEventListener('change', function(e) {
+                settings.ocrConfirmPopup = e.target.checked;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+        if (setFilterMode) {
+            setFilterMode.addEventListener('change', function(e) {
+                settings.ocrFilterMode = e.target.value;
+                storage.saveSettings(settings);
+                updateFilterUI();
+                applyOCRFilterConfig();
+            });
+        }
+        if (setFilterValue) {
+            setFilterValue.addEventListener('input', function(e) {
+                settings.ocrFilterValue = e.target.value;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+
+        // OCR Tuning Sliders
+        bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
+        bindRangeSlider(setOcrDebounce, ocrDebounceVal, 'ocrDebounce', applyOCRFilterConfig);
+        bindRangeSlider(setOcrMinLength, ocrMinLengthVal, 'ocrMinLength', applyOCRFilterConfig);
+
+        // Barcode Tuning Sliders
+        bindRangeSlider(setBarcodeFps, barcodeFpsVal, 'barcodeFps', applyBarcodeConfig);
+        bindRangeSlider(setBarcodeBoxW, barcodeBoxWVal, 'barcodeBoxWidth', applyBarcodeConfig);
+        bindRangeSlider(setBarcodeBoxH, barcodeBoxHVal, 'barcodeBoxHeight', applyBarcodeConfig);
 
         // Snapshot Button
         if (btnSnapshot) {
@@ -449,6 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var text = (result && result.text) ? result.text : '';
                     var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
 
+                    // Always save snapshot to history (with image), regardless of text
                     storage.addItem('SCANNED', {
                         content: text || '(no text detected)',
                         format: 'SNAPSHOT',
@@ -495,15 +432,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function bindSettingsInput(elem, prop, key, isInt) {
-        if (!elem) return;
-        var eventType = (prop === 'checked' || elem.tagName === 'SELECT') ? 'change' : 'input';
-
-        elem.addEventListener(eventType, function(e) {
-            var val = e.target[prop];
-            if (isInt) val = parseInt(val, 10);
-            tempSettings[key] = val;
-            updateSettingsUI(); // Re-render UI to handle dependencies/validation
+    function bindRangeSlider(inputEl, displayEl, settingsKey, applyFn) {
+        if (!inputEl) return;
+        inputEl.addEventListener('input', function(e) {
+            settings[settingsKey] = parseInt(e.target.value, 10);
+            if (displayEl) displayEl.innerText = e.target.value;
+            storage.saveSettings(settings);
+            if (applyFn) applyFn();
         });
     }
 
@@ -626,16 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
         stopAll();
         var modal = document.getElementById('scan-result');
         document.getElementById('result-type').innerText = 'Type: ' + formatName;
-
-        var resultText = document.getElementById('result-text');
-        resultText.value = text;
-
-        // Handle Barcode Manual Override
-        if (settings.barcodeManualOverride) {
-            resultText.removeAttribute('readonly');
-        } else {
-            resultText.setAttribute('readonly', 'readonly');
-        }
+        document.getElementById('result-text').value = text;
 
         // Show snapshot image in modal if available
         var resultImg = document.getElementById('result-image');
@@ -689,6 +615,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
+    function updateActionUI() {
+        if (setAction.value === 'URL_INPUT' || setAction.value === 'URL_LOOKUP') {
+            urlConfig.classList.remove('hidden');
+        } else {
+            urlConfig.classList.add('hidden');
+        }
+    }
+
     function triggerFeedback() {
         if (settings.feedbackVibrate && navigator.vibrate) {
             navigator.vibrate(200);
@@ -734,16 +668,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function saveCurrentScan() {
         if (!lastResult) return;
-
-        // If override is enabled, use the current value from the textarea
-        var content = lastResult.text;
-        var textEl = document.getElementById('result-text');
-        if (textEl && !textEl.hasAttribute('readonly')) {
-            content = textEl.value;
-        }
-
         storage.addItem('SCANNED', {
-            content: content,
+            content: lastResult.text,
             format: lastResult.format,
             mode: lastResult.mode,
             image: lastResult.image || ''
