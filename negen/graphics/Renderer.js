@@ -3,10 +3,9 @@
  * The "Hybrid Renderer" for Phase 2.
  * Manages Layer 0 (Canvas) and Layer 1 (DOM) simultaneously.
  */
-(function(global) {
-    'use strict';
 
-    var Renderer = function(containerId) {
+export default class Renderer {
+    constructor(containerId) {
         // If containerId is a number (width) as passed by CanvasRenderer super(), handle it gracefully or ignore
         // The original Renderer takes a containerId, but CanvasRenderer extends it and passes (width, height)
         // This is a mismatch in constructor signature between base and subclass.
@@ -60,9 +59,9 @@
              window.addEventListener('resize', this._resize);
              this._resize(); // Initial sizing
         }
-    };
+    }
 
-    Renderer.prototype._resize = function() {
+    _resize() {
         if (!this.container) return;
         var rect = this.container.getBoundingClientRect();
         this.width = rect.width;
@@ -71,32 +70,32 @@
         // Resize Canvas (handle DPI if needed later, simple for now)
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-    };
+    }
 
     /**
      * Clears the Canvas layer.
      * DOM layer doesn't need "clearing" per se, as elements are persistent.
      */
-    Renderer.prototype.clear = function() {
+    clear() {
         this.ctx.clearRect(0, 0, this.width, this.height);
-    };
+    }
 
     /**
      * Layer 0: Draw a sprite/image to the canvas.
      */
-    Renderer.prototype.drawSprite = function(image, x, y, width, height) {
+    drawSprite(image, x, y, width, height) {
         if (!image) return;
         // Optional scaling
         var w = width || image.width;
         var h = height || image.height;
         this.ctx.drawImage(image, x, y, w, h);
-    };
+    }
 
     /**
      * Layer 1: Update a DOM element's position via CSS Transform.
      * This is much more performant than updating top/left.
      */
-    Renderer.prototype.drawDOM = function(element, x, y, rotation) {
+    drawDOM(element, x, y, rotation) {
         if (!element) return;
 
         // Ensure element is in the DOM layer
@@ -109,12 +108,12 @@
             transform += ' rotate(' + rotation + 'deg)';
         }
         element.style.transform = transform;
-    };
+    }
 
     /**
      * Helper to create a DOM element for Layer 1
      */
-    Renderer.prototype.createDOMEntity = function(className, content) {
+    createDOMEntity(className, content) {
         var el = document.createElement('div');
         el.className = className;
         el.innerHTML = content || '';
@@ -124,19 +123,20 @@
         el.style.willChange = 'transform'; // Hint browser for optimization
         this.uiLayer.appendChild(el);
         return el;
-    };
+    }
 
     /**
      * Remove a DOM element
      */
-    Renderer.prototype.removeDOMEntity = function(element) {
+    removeDOMEntity(element) {
         if (element && element.parentNode === this.uiLayer) {
             this.uiLayer.removeChild(element);
         }
-    };
+    }
+}
 
-    // Export
-    global.Negen = global.Negen || {};
-    global.Negen.Renderer = Renderer;
-
-})(typeof window !== 'undefined' ? window : this);
+// Global Assignment for Backward Compatibility
+if (typeof window !== 'undefined') {
+    window.Negen = window.Negen || {};
+    window.Negen.Renderer = Renderer;
+}
