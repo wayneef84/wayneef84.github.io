@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
     var setOcrScanLine = document.getElementById('set-ocr-scan-line');
+    var setOcrShowResize = document.getElementById('set-ocr-show-resize');
     var scanCharCountIndicator = document.getElementById('scan-char-count-indicator');
 
     // OCR Resize Controls (Scan Tab)
@@ -118,6 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrScanLine && settings.ocrScanLine !== undefined) {
             setOcrScanLine.checked = settings.ocrScanLine;
         }
+        if (setOcrShowResize && settings.ocrShowResize !== undefined) {
+            setOcrShowResize.checked = settings.ocrShowResize;
+        }
 
         // Restore OCR ROI settings (auto-centered, size only)
         if (setOcrRoiEnabled) {
@@ -141,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (scanRoiHSlider) scanRoiHSlider.value = currentH;
 
         updateRoiUI();
+        updateResizeControlsVisibility();
 
         // Restore OCR tuning
         if (setOcrConfidence) {
@@ -262,6 +267,19 @@ document.addEventListener('DOMContentLoaded', function() {
             scanCharCountIndicator.classList.remove('hidden');
         } else {
             scanCharCountIndicator.classList.add('hidden');
+        }
+    }
+
+    function updateResizeControlsVisibility() {
+        if (!btnScanResize) return;
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+        var show = (s.ocrShowResize !== undefined) ? s.ocrShowResize : true;
+
+        if (show) {
+            btnScanResize.classList.remove('hidden');
+        } else {
+            btnScanResize.classList.add('hidden');
+            if (scanResizeOverlay) scanResizeOverlay.classList.add('hidden');
         }
     }
 
@@ -563,6 +581,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrScanLine) setOcrScanLine.addEventListener('change', function(e) {
             updateSetting('ocrScanLine', e.target.checked);
             updateScanLineVisibility();
+        });
+        if (setOcrShowResize) setOcrShowResize.addEventListener('change', function(e) {
+            updateSetting('ocrShowResize', e.target.checked);
+            updateResizeControlsVisibility();
         });
 
         // OCR ROI (auto-centered, size only)

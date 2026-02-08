@@ -153,6 +153,14 @@ main {
     color: var(--teal);
 }
 
+#btn-scan-resize.hidden {
+    display: none !important;
+}
+
+#scan-resize-overlay.hidden {
+    display: none !important;
+}
+
 #scan-resize-overlay {
     position: absolute;
     bottom: 40px;
