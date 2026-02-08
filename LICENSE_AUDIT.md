@@ -20,6 +20,10 @@ Code hosted directly in this repository (e.g., in `lib/` folders).
 | `games/lib/qrcode.min.js` | **qrcodejs** | MIT | `games/lib/LICENSE.txt` | QR Code generation. Author: davidshimjs. |
 | `projects/input-a11y/assets/tesseract.min.js` | **Tesseract.js** | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | OCR Engine (v5.0.3) |
 | `games/cards/shared/poker-evaluator.js` | **Poker Evaluator** | MIT | File Header | Adaptation of standard evaluation logic. Licensed by Wayne Fong as an adaptation. |
+| `projects/input-a11y/assets/tesseract.min.js` | **Tesseract.js** (v5.1.1) | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | Client-side OCR engine. Author: naptha. |
+| `projects/input-a11y/assets/worker.min.js` | **Tesseract.js** (v5.1.1) | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | Tesseract.js web worker. |
+| `projects/input-a11y/assets/tesseract-core-simd.*` | **tesseract.js-core** (v5.1.0) | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | WASM core + glue for Tesseract OCR. |
+| `projects/input-a11y/assets/eng.traineddata` | **tessdata** | Apache 2.0 | `projects/input-a11y/LICENSE_TESSERACT` | English language model for Tesseract. |
 
 ---
 
