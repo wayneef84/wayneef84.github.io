@@ -115,19 +115,6 @@ main {
     object-fit: cover;
 }
 
-/* Red Scan Line */
-.scan-line {
-    position: absolute;
-    top: 50%;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background-color: rgba(255, 0, 0, 0.8);
-    box-shadow: 0 0 6px red;
-    z-index: 10;
-    pointer-events: none;
-}
-
 #scan-roi-overlay {
     position: absolute;
     border: 2px dashed #00BCD4;
