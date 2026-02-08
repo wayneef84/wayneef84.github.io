@@ -159,6 +159,13 @@ var OCRManager = (function() {
             }
             return Promise.reject(new Error(msg));
         }
+        drivers.push({
+            id: DRIVER_NATIVE,
+            label: 'Native TextDetector (Browser)',
+            available: !!this.nativeDetector
+        });
+        return drivers;
+    };
 
         return this.stop().then(function() {
             self.activeDriver = driver;
