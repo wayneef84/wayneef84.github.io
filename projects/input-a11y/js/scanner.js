@@ -15,6 +15,7 @@ class ScannerManager {
         if (opts.fps !== undefined) this.fps = opts.fps;
         if (opts.qrboxWidth !== undefined) this.qrboxWidth = opts.qrboxWidth;
         if (opts.qrboxHeight !== undefined) this.qrboxHeight = opts.qrboxHeight;
+        if (opts.deviceId !== undefined) this.deviceId = opts.deviceId;
     }
 
     async start(mode) {
@@ -60,7 +61,13 @@ class ScannerManager {
             this.instance = new Html5Qrcode(this.elementId, config);
 
             // Start
-            const cameraConfig = { facingMode: "environment" }; // Prefer back camera
+            // Prefer specific deviceId if provided, else use environment camera
+            let cameraConfig;
+            if (this.deviceId) {
+                cameraConfig = { deviceId: { exact: this.deviceId } };
+            } else {
+                cameraConfig = { facingMode: "environment" };
+            }
 
             await this.instance.start(
                 cameraConfig,

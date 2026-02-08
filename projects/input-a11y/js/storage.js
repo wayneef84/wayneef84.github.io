@@ -7,52 +7,40 @@ class StorageManager {
         };
     }
 
+    getDefaults() {
+        return {
+            detectMode: 'AUTO',
+            actionMode: 'URL_INPUT', // FREE or URL_INPUT
+            baseUrl: 'www.google.com/?q=',
+            scanRegion: 'BOX',
+            feedbackVibrate: true,
+            feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
+            feedbackFlash: 'SCANNER', // OFF, SCANNER, SCREEN
+            ocrDriver: '',            // '' = auto (native if available, else tesseract)
+            ocrFilterMode: 'NONE',    // NONE, MIN_CHARS, REGEX, FORMAT
+            ocrFilterValue: '',       // filter value (number, regex string, or A/N format)
+            ocrConfirmPopup: true,    // show confirmation modal on OCR result
+            ocrManualOverride: false, // NEW: Allow manual override of OCR filter value
+            // OCR Tuning
+            ocrConfidence: 40,        // minimum Tesseract confidence (0-100)
+            ocrDebounce: 3000,        // ms between duplicate detections
+            ocrMinLength: 5,          // minimum text length to accept
+            // Barcode Tuning
+            barcodeFps: 10,           // frames per second for barcode scanner
+            barcodeBoxWidth: 250,     // scan box width in px
+            barcodeBoxHeight: 250,    // scan box height in px
+            barcodeManualOverride: false // NEW: Allow manual editing of barcode result
+        };
+    }
+
     getSettings() {
         try {
             const data = localStorage.getItem(this.KEYS.SETTINGS);
-            const defaults = {
-                detectMode: 'AUTO',
-                actionMode: 'URL_INPUT', // FREE or URL_INPUT
-                baseUrl: 'www.google.com/?q=',
-                scanRegion: 'BOX',
-                feedbackVibrate: true,
-                feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
-                feedbackFlash: 'SCANNER', // OFF, SCANNER, SCREEN
-                ocrDriver: '',            // '' = auto (native if available, else tesseract)
-                ocrFilterMode: 'NONE',    // NONE, MIN_CHARS, REGEX, FORMAT
-                ocrFilterValue: '',       // filter value (number, regex string, or A/N format)
-                ocrConfirmPopup: true,    // show confirmation modal on OCR result
-                // OCR Tuning
-                ocrConfidence: 40,        // minimum Tesseract confidence (0-100)
-                ocrDebounce: 3000,        // ms between duplicate detections
-                ocrMinLength: 3,          // minimum text length to accept
-                // Barcode Tuning
-                barcodeFps: 10,           // frames per second for barcode scanner
-                barcodeBoxWidth: 250,     // scan box width in px
-                barcodeBoxHeight: 250     // scan box height in px
-            };
+            const defaults = this.getDefaults();
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         } catch (e) {
             console.error("Failed to load settings", e);
-            return {
-                detectMode: 'AUTO',
-                actionMode: 'URL_INPUT',
-                baseUrl: 'www.google.com/?q=',
-                scanRegion: 'BOX',
-                feedbackVibrate: true,
-                feedbackFrame: 'SCANNER',
-                feedbackFlash: 'SCANNER',
-                ocrDriver: '',
-                ocrFilterMode: 'NONE',
-                ocrFilterValue: '',
-                ocrConfirmPopup: true,
-                ocrConfidence: 40,
-                ocrDebounce: 3000,
-                ocrMinLength: 3,
-                barcodeFps: 10,
-                barcodeBoxWidth: 250,
-                barcodeBoxHeight: 250
-            };
+            return this.getDefaults();
         }
     }
 

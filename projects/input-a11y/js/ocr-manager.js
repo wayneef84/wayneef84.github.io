@@ -39,6 +39,7 @@ var OCRManager = (function() {
         this.filterValue = '';       // filter value depends on mode
         this.confirmPopup = true;    // show confirmation modal on OCR result
         this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
+        this.deviceId = null; // optional camera device ID
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -62,6 +63,7 @@ var OCRManager = (function() {
         if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
         if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
         if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
+        if (opts.deviceId !== undefined) this.deviceId = opts.deviceId;
     };
 
     /**
@@ -186,10 +188,15 @@ var OCRManager = (function() {
             container.innerHTML = '';
             container.appendChild(self.video);
 
-            return navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            }).catch(function(cameraErr) {
-                console.warn('OCRManager: Environment camera failed, trying any camera', cameraErr);
+            var constraints = { video: { facingMode: 'environment' } };
+            if (self.deviceId) {
+                constraints = { video: { deviceId: { exact: self.deviceId } } };
+            }
+
+            return navigator.mediaDevices.getUserMedia(constraints)
+            .catch(function(cameraErr) {
+                console.warn('OCRManager: Camera init failed with constraints, trying fallback', cameraErr);
+                // Fallback to any camera if specific failed
                 return navigator.mediaDevices.getUserMedia({ video: true });
             });
         }).then(function(stream) {
