@@ -17,7 +17,8 @@ class StorageManager {
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
-                feedbackFlash: 'SCANNER'  // OFF, SCANNER, SCREEN
+                feedbackFlash: 'SCANNER', // OFF, SCANNER, SCREEN
+                ocrDriver: ''             // '' = auto (native if available, else tesseract)
             };
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         } catch (e) {
@@ -29,7 +30,8 @@ class StorageManager {
                 scanRegion: 'BOX',
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER',
-                feedbackFlash: 'SCANNER'
+                feedbackFlash: 'SCANNER',
+                ocrDriver: ''
             };
         }
     }
