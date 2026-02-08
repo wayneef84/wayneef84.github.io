@@ -11,7 +11,7 @@
     <!-- Tesseract.js (Offline OCR) - Apache 2.0 License -->
     <script src="assets/tesseract.min.js"></script>
 </head>
-<body class="negen-theme">
+<body>
 
     <header>
         <nav class="tabs">
@@ -62,7 +62,10 @@
             </div>
 
             <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
-                <button id="btn-snapshot" class="snapshot-btn">Snapshot</button>
+                <div class="dual-btn-group">
+                    <button id="btn-screenshot" class="screenshot-btn" title="Save raw camera image as evidence">Screenshot Evidence</button>
+                    <button id="btn-scan-verify" class="scan-verify-btn" title="Run OCR with pre-processing pipeline">Scan &amp; Verify</button>
+                </div>
             </div>
 
             <div id="scan-result" class="modal hidden">

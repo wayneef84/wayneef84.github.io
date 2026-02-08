@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var driverRow = document.getElementById('driver-row');
     var ocrDriverSelect = document.getElementById('ocrDriver');
     var snapshotRow = document.getElementById('snapshot-row');
-    var btnSnapshot = document.getElementById('btn-snapshot');
+    var btnScreenshot = document.getElementById('btn-screenshot');
+    var btnScanVerify = document.getElementById('btn-scan-verify');
 
     // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
@@ -538,41 +539,101 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize Manual Toggles
         setupManualToggles();
 
-        // Snapshot Button
-        if (btnSnapshot) {
-            btnSnapshot.addEventListener('click', function() {
+        // Screenshot Evidence Button — captures raw frame, always works
+        if (btnScreenshot) {
+            btnScreenshot.addEventListener('click', function() {
                 if (!ocrManager) return;
-                btnSnapshot.disabled = true;
-                btnSnapshot.innerText = 'Scanning...';
-                document.getElementById('scan-status').innerText = 'Capturing snapshot...';
+                btnScreenshot.disabled = true;
+                btnScreenshot.innerText = 'Capturing...';
 
-                ocrManager.snapshot().then(function(result) {
-                    btnSnapshot.disabled = false;
-                    btnSnapshot.innerText = 'Snapshot';
+                ocrManager.screenshotEvidence().then(function(result) {
+                    btnScreenshot.disabled = false;
+                    btnScreenshot.innerText = 'Screenshot Evidence';
 
-                    var text = (result && result.text) ? result.text : '';
                     var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
 
-                    // Always save snapshot to history (with image), regardless of text
+                    // Always save to history as evidence
                     storage.addItem('SCANNED', {
-                        content: text || '(no text detected)',
-                        format: 'SNAPSHOT',
+                        content: '(screenshot evidence)',
+                        format: 'EVIDENCE',
                         mode: 'TEXT_OCR',
                         image: imageDataUri
                     });
                     renderHistory();
 
+                    document.getElementById('scan-status').innerText = 'Screenshot saved to history.';
+                    showToast('Evidence captured');
+                }).catch(function() {
+                    btnScreenshot.disabled = false;
+                    btnScreenshot.innerText = 'Screenshot Evidence';
+                    document.getElementById('scan-status').innerText = 'Screenshot failed. Try again.';
+                });
+            });
+        }
+
+        // Scan & Verify Button — runs Smart Canvas pipeline + OCR
+        if (btnScanVerify) {
+            btnScanVerify.addEventListener('click', function() {
+                if (!ocrManager) return;
+                btnScanVerify.disabled = true;
+                btnScanVerify.innerText = 'Processing...';
+                document.getElementById('scan-status').innerText = 'Running OCR pipeline...';
+
+                ocrManager.scanAndVerify().then(function(result) {
+                    btnScanVerify.disabled = false;
+                    btnScanVerify.innerText = 'Scan & Verify';
+
+                    var text = (result && result.text) ? result.text : '';
+                    var rawImage = (result && result.rawImageUri) ? result.rawImageUri : '';
+                    var processedImage = (result && result.processedImageUri) ? result.processedImageUri : '';
+
+                    // Save to history with both images
+                    storage.addItem('SCANNED', {
+                        content: text || '(no text detected)',
+                        format: 'OCR_SCAN',
+                        mode: 'TEXT_OCR',
+                        image: rawImage || processedImage
+                    });
+                    renderHistory();
+
                     if (!text || text.length < 2) {
-                        document.getElementById('scan-status').innerText = 'Snapshot saved to history. No text detected.';
+                        document.getElementById('scan-status').innerText = 'Text not detected. Try adjusting position.';
+                        showToast('Text not detected');
+                        // Resume live scanning
                         ocrManager.isScanning = true;
                         ocrManager._detectLoop();
                     } else {
-                        document.getElementById('scan-status').innerText = 'Snapshot saved. Text: ' + text.substring(0, 40);
+                        // Show verification modal with detected text
+                        document.getElementById('scan-status').innerText = 'Text detected. Verify below.';
+
+                        // Check action mode
+                        if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
+                            handleScanToVerify(text);
+                        } else {
+                            // Show result modal
+                            var modal = document.getElementById('scan-result');
+                            document.getElementById('result-type').innerText = 'Type: OCR_SCAN (Confidence: ' + (result.confidence || 0).toFixed(0) + '%)';
+                            document.getElementById('result-text').value = text;
+
+                            var resultImg = document.getElementById('result-image');
+                            if (resultImg) {
+                                if (processedImage) {
+                                    resultImg.src = processedImage;
+                                    resultImg.classList.remove('hidden');
+                                } else {
+                                    resultImg.classList.add('hidden');
+                                }
+                            }
+
+                            modal.classList.remove('hidden');
+                            copyResult(true); // auto-copy
+                        }
                     }
                 }).catch(function() {
-                    btnSnapshot.disabled = false;
-                    btnSnapshot.innerText = 'Snapshot';
-                    document.getElementById('scan-status').innerText = 'Snapshot failed. Try again.';
+                    btnScanVerify.disabled = false;
+                    btnScanVerify.innerText = 'Scan & Verify';
+                    document.getElementById('scan-status').innerText = 'Scan failed. Try again.';
+                    showToast('Scan failed');
                 });
             });
         }
@@ -1026,12 +1087,19 @@ document.addEventListener('DOMContentLoaded', function() {
         var text = document.getElementById('gen-text').value;
         if (!text) return alert('Please enter text');
 
+        generator.generate('qr-output', text);
+
+        var qrOutput = document.getElementById('qr-output');
+        if (qrOutput) qrOutput.style.display = 'block';
+
+        var genActions = document.getElementById('gen-actions');
+        if (genActions) genActions.classList.remove('hidden');
+
         storage.addItem('CREATED', {
             content: text,
             format: 'QR_CODE'
         });
         renderHistory();
-        alert('Content saved to History (Visual QR generation is disabled).');
     }
 
     function renderHistory() {

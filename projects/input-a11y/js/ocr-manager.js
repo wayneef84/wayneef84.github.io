@@ -1,19 +1,53 @@
 /**
- * OCRManager - Dual-driver text recognition
+ * OCRManager - Dual-driver text recognition with Smart Canvas pipeline
  *
  * Primary Driver: Tesseract.js (offline, works everywhere)
  * Legacy Driver: Native TextDetector API (Chrome/Edge experimental)
  *
  * User's driver preference is saved via StorageManager.
  * Default: Native TextDetector when available, else Tesseract.js.
+ *
+ * All processing happens client-side. No images are sent to any server.
  */
 
-// Use IIFE to avoid ES6 class syntax for ES5 compat on older tablets
+/* POST-MORTEM ANALYSIS & FIXES
+ * ============================================================================
+ * Previous OCR attempts on digital screens produced "garbage" data because:
+ *
+ * 1. RAW INPUT ISSUE: The raw <video> element was passed directly to Tesseract.
+ *    Digital screens have sub-pixel rendering, anti-aliasing, and varying
+ *    brightness that confuse OCR engines into seeing noise patterns.
+ *
+ * 2. CONFIG GAPS: Tesseract was initialized with default parameters:
+ *    - No `tessedit_char_whitelist` → engine tried to match ALL Unicode chars
+ *    - Default PSM (Page Segmentation Mode 3 = "fully automatic") → treats
+ *      the frame as a full page, not a single line of text
+ *    - No DPI hint → engine assumed low-density input
+ *
+ * 3. LACK OF CONSTRAINTS: No image pre-processing was applied:
+ *    - No upscaling (Tesseract needs ~300 DPI equivalent)
+ *    - No binarization (grayscale screen content has gradients that blur edges)
+ *    - ROI cropping existed but canvas was not resized to match ROI dimensions,
+ *      causing the cropped region to be stretched/distorted
+ *
+ * FIXES APPLIED IN THIS VERSION:
+ * - Smart Canvas Pipeline: upscale 2.5x → grayscale → threshold binarization
+ * - Tesseract Strict Mode: PSM 7 (single line), char whitelist, DPI 300
+ * - Canvas sized to actual ROI pixel dimensions before upscaling
+ * - Dual-button UI separates evidence capture from text extraction
+ * ============================================================================
+ */
+
 var OCRManager = (function() {
 
     // Driver constants
     var DRIVER_TESSERACT = 'tesseract';
     var DRIVER_NATIVE = 'native';
+
+    // Pre-processing constants
+    var UPSCALE_FACTOR = 2.5;
+    var BINARIZE_THRESHOLD = 128; // 0-255, pixels below = black, above = white
+    var TARGET_DPI = 300;
 
     function OCRManager(elementId, callbacks) {
         this.elementId = elementId;
@@ -35,12 +69,14 @@ var OCRManager = (function() {
         // Config
         this.alphanumericOnly = false;
         this.minTextLength = 3;
-        this.filterMode = 'NONE';   // NONE, MIN_CHARS, REGEX, FORMAT
+        this.filterMode = 'NONE';   // NONE, REGEX
         this.filterValue = '';       // filter value depends on mode
         this.confirmPopup = true;    // show confirmation modal on OCR result
         this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
         this.preprocessingMode = 'TRIM'; // TRIM, NONE, REMOVE_ALL, NORMALIZE
-        this.roi = null; // { top, left, width, height } in %
+        this.roi = null; // { enabled, top, left, width, height } in %
+        this.binarizeEnabled = true; // Smart Canvas binarization
+        this.binarizeThreshold = BINARIZE_THRESHOLD;
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -66,6 +102,8 @@ var OCRManager = (function() {
         if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
         if (opts.preprocessingMode !== undefined) this.preprocessingMode = opts.preprocessingMode;
         if (opts.roi !== undefined) this.roi = opts.roi;
+        if (opts.binarizeEnabled !== undefined) this.binarizeEnabled = opts.binarizeEnabled;
+        if (opts.binarizeThreshold !== undefined) this.binarizeThreshold = opts.binarizeThreshold;
     };
 
     /**
@@ -73,7 +111,6 @@ var OCRManager = (function() {
      */
     OCRManager.prototype.getAvailableDrivers = function() {
         var drivers = [];
-        // Tesseract is always available if the script loaded
         if (typeof Tesseract !== 'undefined') {
             drivers.push({
                 id: DRIVER_TESSERACT,
@@ -98,7 +135,6 @@ var OCRManager = (function() {
 
     /**
      * Resolve which driver to use.
-     * Priority: user preference > native (if available) > tesseract
      */
     OCRManager.prototype.resolveDriver = function(preferredDriver) {
         if (preferredDriver === DRIVER_NATIVE && this.nativeDetector) {
@@ -107,20 +143,22 @@ var OCRManager = (function() {
         if (preferredDriver === DRIVER_TESSERACT && typeof Tesseract !== 'undefined') {
             return DRIVER_TESSERACT;
         }
-
-        // Default: native if available, else tesseract
         if (this.nativeDetector) {
             return DRIVER_NATIVE;
         }
         if (typeof Tesseract !== 'undefined') {
             return DRIVER_TESSERACT;
         }
-
         return null;
     };
 
     /**
-     * Initialize Tesseract.js worker with local assets
+     * Initialize Tesseract.js worker with STRICT MODE parameters.
+     *
+     * Key settings:
+     * - PSM 7: Treat image as a single text line
+     * - Char whitelist: Only A-Z, 0-9 (eliminates garbage symbols)
+     * - DPI 300: Force high-density interpretation
      */
     OCRManager.prototype.initTesseract = function() {
         var self = this;
@@ -140,16 +178,118 @@ var OCRManager = (function() {
             cacheMethod: 'none'
         }).then(function(worker) {
             self.tesseractWorker = worker;
+
+            // Apply strict mode parameters
+            return worker.setParameters({
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz',
+                tessedit_pageseg_mode: '7',  // Single text line
+                user_defined_dpi: String(TARGET_DPI)
+            });
+        }).then(function() {
             self.tesseractReady = true;
-            console.log('OCRManager: Tesseract worker ready');
+            console.log('OCRManager: Tesseract worker ready (Strict Mode: PSM 7, whitelist, DPI ' + TARGET_DPI + ')');
         });
     };
 
     /**
+     * Smart Canvas Pre-Processing Pipeline
+     *
+     * Transforms a raw video frame into a high-contrast, binarized image
+     * optimized for OCR. Steps:
+     *   1. ROI crop (if enabled) - extract only the region of interest
+     *   2. Upscale by 2.5x - Tesseract needs high DPI input
+     *   3. Grayscale conversion - remove color noise
+     *   4. Threshold binarization - strict black/white for maximum contrast
+     *
+     * @param {HTMLVideoElement} video - The source video element
+     * @param {Object} roi - ROI config { enabled, top, left, width, height } in %
+     * @param {boolean} binarize - Whether to apply binarization
+     * @returns {Object} { canvas, imageDataUri } - processed canvas and JPEG snapshot
+     */
+    OCRManager.prototype._preprocessFrame = function(video, roi, binarize) {
+        var vw = video.videoWidth;
+        var vh = video.videoHeight;
+
+        // Step 1: Calculate source region (ROI or full frame)
+        var sx = 0, sy = 0, sw = vw, sh = vh;
+        if (roi && roi.enabled) {
+            sx = Math.round((roi.left / 100) * vw);
+            sy = Math.round((roi.top / 100) * vh);
+            sw = Math.round((roi.width / 100) * vw);
+            sh = Math.round((roi.height / 100) * vh);
+        }
+
+        // Step 2: Create upscaled canvas
+        var scaledW = Math.round(sw * UPSCALE_FACTOR);
+        var scaledH = Math.round(sh * UPSCALE_FACTOR);
+
+        var procCanvas = document.createElement('canvas');
+        procCanvas.width = scaledW;
+        procCanvas.height = scaledH;
+        var ctx = procCanvas.getContext('2d');
+
+        // Draw source region scaled up
+        ctx.drawImage(video, sx, sy, sw, sh, 0, 0, scaledW, scaledH);
+
+        // Step 3 & 4: Grayscale + Binarization
+        if (binarize) {
+            var imageData = ctx.getImageData(0, 0, scaledW, scaledH);
+            var data = imageData.data;
+            var threshold = this.binarizeThreshold;
+
+            for (var i = 0; i < data.length; i += 4) {
+                // Luminance formula (ITU-R BT.601)
+                var gray = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+                // Binarize: below threshold = black (0), above = white (255)
+                var val = gray < threshold ? 0 : 255;
+                data[i] = val;
+                data[i + 1] = val;
+                data[i + 2] = val;
+                // Alpha stays 255
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // Capture processed image as JPEG for evidence/history
+        var imageDataUri = '';
+        try {
+            imageDataUri = procCanvas.toDataURL('image/jpeg', 0.8);
+        } catch (e) {
+            console.warn('OCRManager: Failed to capture processed image', e);
+        }
+
+        return { canvas: procCanvas, imageDataUri: imageDataUri };
+    };
+
+    /**
+     * Capture a raw (unprocessed) snapshot for evidence purposes.
+     * Always captures the full video frame at native resolution.
+     *
+     * @returns {string} JPEG data URI of the raw frame
+     */
+    OCRManager.prototype._captureRawEvidence = function() {
+        if (!this.video) return '';
+
+        var vw = this.video.videoWidth;
+        var vh = this.video.videoHeight;
+
+        var rawCanvas = document.createElement('canvas');
+        rawCanvas.width = vw;
+        rawCanvas.height = vh;
+        var ctx = rawCanvas.getContext('2d');
+        ctx.drawImage(this.video, 0, 0, vw, vh);
+
+        try {
+            return rawCanvas.toDataURL('image/jpeg', 0.85);
+        } catch (e) {
+            console.warn('OCRManager: Failed to capture raw evidence', e);
+            return '';
+        }
+    };
+
+    /**
      * Start scanning with specified driver preference
-     * @param {string} mode - 'TEXT_OCR'
-     * @param {string} preferredDriver - 'tesseract' | 'native' | undefined
-     * @param {string} deviceId - Optional specific camera device ID
      */
     OCRManager.prototype.start = function(mode, preferredDriver, deviceId) {
         var self = this;
@@ -184,7 +324,7 @@ var OCRManager = (function() {
             self.video.setAttribute('muted', '');
             self.video.setAttribute('playsinline', '');
 
-            // Create offscreen canvas for Tesseract frame capture
+            // Create offscreen canvas for frame capture (used as fallback)
             self.canvas = document.createElement('canvas');
             self.canvasCtx = self.canvas.getContext('2d');
 
@@ -214,23 +354,21 @@ var OCRManager = (function() {
         }).then(function() {
             return self.video.play();
         }).then(function() {
-            // Set canvas size to match video
+            // Set canvas size to match video (fallback canvas)
             self.canvas.width = self.video.videoWidth;
             self.canvas.height = self.video.videoHeight;
 
-            // If using Tesseract, initialize worker
+            // If using Tesseract, initialize worker with strict params
             if (self.activeDriver === DRIVER_TESSERACT) {
                 return self.initTesseract();
             }
         }).then(function() {
             self.isScanning = true;
 
-            // Notify which driver is active
             if (self.callbacks.onDriverReady) {
                 self.callbacks.onDriverReady(self.activeDriver);
             }
 
-            // Start detection loop
             self._detectLoop();
         }).catch(function(err) {
             console.error('OCRManager start error:', err);
@@ -290,7 +428,6 @@ var OCRManager = (function() {
 
     /**
      * Filter detected text based on config.
-     * Returns filtered text, or empty string if text does not pass filter.
      */
     OCRManager.prototype._filterText = function(rawText) {
         var text = rawText;
@@ -303,12 +440,10 @@ var OCRManager = (function() {
         } else if (this.preprocessingMode === 'TRIM') {
             text = text.trim();
         }
-        // If 'NONE', leave raw including spaces
 
-        // 2. Alphanumeric Filter (if enabled - usually separate from regex mode)
+        // 2. Alphanumeric Filter (if enabled)
         if (this.alphanumericOnly) {
             text = text.replace(/[^a-zA-Z0-9 ]/g, '');
-            // Re-trim if needed
             if (this.preprocessingMode !== 'NONE') text = text.trim();
         }
 
@@ -321,7 +456,7 @@ var OCRManager = (function() {
             try {
                 var regex = new RegExp(this.filterValue);
                 if (!regex.test(text)) {
-                    return ''; // Doesn't match regex
+                    return '';
                 }
             } catch (e) {
                 console.warn('OCRManager: Invalid regex filter', e);
@@ -388,35 +523,22 @@ var OCRManager = (function() {
     };
 
     /**
-     * Tesseract.js detection on current video frame
+     * Tesseract.js detection using Smart Canvas pipeline
      */
     OCRManager.prototype._detectTesseract = function() {
         var self = this;
 
-        if (!this.tesseractWorker || !this.canvas || !this.video) {
+        if (!this.tesseractWorker || !this.video) {
             return Promise.resolve();
         }
 
-        // Apply ROI if enabled
-        if (this.roi && this.roi.enabled) {
-            var vw = this.video.videoWidth;
-            var vh = this.video.videoHeight;
-            var sx = (this.roi.left / 100) * vw;
-            var sy = (this.roi.top / 100) * vh;
-            var sw = (this.roi.width / 100) * vw;
-            var sh = (this.roi.height / 100) * vh;
+        // Use Smart Canvas pipeline
+        var processed = this._preprocessFrame(this.video, this.roi, this.binarizeEnabled);
 
-            // Clear canvas and draw cropped region
-            this.canvasCtx.drawImage(this.video, sx, sy, sw, sh, 0, 0, this.canvas.width, this.canvas.height);
-        } else {
-            this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
-        }
-
-        return this.tesseractWorker.recognize(this.canvas).then(function(result) {
+        return this.tesseractWorker.recognize(processed.canvas).then(function(result) {
             if (!self.isScanning) return;
 
             var confidence = result && result.data && result.data.confidence ? result.data.confidence : 0;
-            // Skip low-confidence detections (reduces false positives on non-text)
             if (confidence < self.confidenceThreshold) return;
 
             var rawText = result && result.data && result.data.text ? result.data.text : '';
@@ -426,7 +548,8 @@ var OCRManager = (function() {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
                         result: { format: { formatName: 'TEXT_OCR' } },
-                        confidence: confidence
+                        confidence: confidence,
+                        imageDataUri: processed.imageDataUri
                     }, 'TEXT_OCR');
                 }
             }
@@ -486,14 +609,30 @@ var OCRManager = (function() {
     };
 
     /**
-     * Snapshot: pause live scanning, capture current frame, run OCR on it.
-     * Returns a Promise that resolves with the recognized text.
-     * The live loop is paused during recognition and resumed after.
+     * Screenshot Evidence: Capture raw frame for evidence, independent of OCR.
+     * Always works, even if OCR fails.
+     *
+     * @returns {Promise} resolves with { imageDataUri }
      */
-    OCRManager.prototype.snapshot = function() {
+    OCRManager.prototype.screenshotEvidence = function() {
+        if (!this.video) {
+            return Promise.reject(new Error('Camera not active'));
+        }
+
+        var imageDataUri = this._captureRawEvidence();
+        return Promise.resolve({ imageDataUri: imageDataUri });
+    };
+
+    /**
+     * Scan & Verify: Capture frame, run through Smart Canvas pipeline, OCR it.
+     * Pauses live scanning during recognition.
+     *
+     * @returns {Promise} resolves with { text, processedImageUri, rawImageUri }
+     */
+    OCRManager.prototype.scanAndVerify = function() {
         var self = this;
 
-        if (!this.video || !this.canvas || !this.canvasCtx) {
+        if (!this.video) {
             return Promise.reject(new Error('Camera not active'));
         }
 
@@ -505,51 +644,68 @@ var OCRManager = (function() {
             this._loopTimer = null;
         }
 
-        // Capture frame (respect ROI)
-        if (this.roi && this.roi.enabled) {
-            var vw = this.video.videoWidth;
-            var vh = this.video.videoHeight;
-            var sx = (this.roi.left / 100) * vw;
-            var sy = (this.roi.top / 100) * vh;
-            var sw = (this.roi.width / 100) * vw;
-            var sh = (this.roi.height / 100) * vh;
-            this.canvasCtx.drawImage(this.video, sx, sy, sw, sh, 0, 0, this.canvas.width, this.canvas.height);
-        } else {
-            this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
-        }
+        // Capture raw evidence first
+        var rawImageUri = this._captureRawEvidence();
 
-        // Capture image data URI for history (always, regardless of text result)
-        var imageDataUri = '';
-        try {
-            imageDataUri = this.canvas.toDataURL('image/jpeg', 0.7);
-        } catch (e) {
-            console.warn('OCRManager: Failed to capture snapshot image', e);
-        }
+        // Run Smart Canvas pipeline
+        var processed = this._preprocessFrame(this.video, this.roi, this.binarizeEnabled);
 
         var detectPromise;
         if (this.activeDriver === DRIVER_TESSERACT && this.tesseractWorker) {
-            detectPromise = this.tesseractWorker.recognize(this.canvas).then(function(result) {
-                return result && result.data && result.data.text ? result.data.text.trim() : '';
+            detectPromise = this.tesseractWorker.recognize(processed.canvas).then(function(result) {
+                var text = result && result.data && result.data.text ? result.data.text.trim() : '';
+                var confidence = result && result.data && result.data.confidence ? result.data.confidence : 0;
+                return { text: text, confidence: confidence };
             });
         } else if (this.activeDriver === DRIVER_NATIVE && this.nativeDetector) {
             detectPromise = this.nativeDetector.detect(this.video).then(function(texts) {
-                if (!texts || texts.length === 0) return '';
+                if (!texts || texts.length === 0) return { text: '', confidence: 0 };
                 texts.sort(function(a, b) {
                     if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
                         return a.boundingBox.y - b.boundingBox.y;
                     }
                     return a.boundingBox.x - b.boundingBox.x;
                 });
-                return texts.map(function(t) { return t.rawValue; }).join(' ').trim();
+                return {
+                    text: texts.map(function(t) { return t.rawValue; }).join(' ').trim(),
+                    confidence: 100 // Native API doesn't provide confidence
+                };
             });
         } else {
-            detectPromise = Promise.resolve('');
+            detectPromise = Promise.resolve({ text: '', confidence: 0 });
         }
 
-        return detectPromise.then(function(text) {
-            var filtered = self._filterText(text);
+        return detectPromise.then(function(ocrResult) {
+            var filtered = self._filterText(ocrResult.text);
 
-            // Fire success callback if text found
+            return {
+                text: filtered,
+                confidence: ocrResult.confidence,
+                processedImageUri: processed.imageDataUri,
+                rawImageUri: rawImageUri
+            };
+        }).catch(function(err) {
+            console.error('OCRManager scanAndVerify error:', err);
+            // Resume scanning on error
+            if (wasScanning) {
+                self.isScanning = true;
+                self._detectLoop();
+            }
+            throw err;
+        });
+    };
+
+    /**
+     * Legacy snapshot method (kept for backward compatibility).
+     * Now delegates to scanAndVerify.
+     */
+    OCRManager.prototype.snapshot = function() {
+        var self = this;
+        return this.scanAndVerify().then(function(result) {
+            // Map to legacy format
+            var filtered = result.text;
+            var imageDataUri = result.rawImageUri || result.processedImageUri;
+
             if (filtered.length >= self.minTextLength) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
@@ -559,16 +715,7 @@ var OCRManager = (function() {
                 }
             }
 
-            // Always return both text and image so caller can save to history
             return { text: filtered, imageDataUri: imageDataUri };
-        }).catch(function(err) {
-            console.error('OCRManager snapshot error:', err);
-            // Resume scanning on error
-            if (wasScanning) {
-                self.isScanning = true;
-                self._detectLoop();
-            }
-            throw err;
         });
     };
 
