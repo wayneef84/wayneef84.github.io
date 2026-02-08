@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var setBaseUrl = document.getElementById('set-base-url');
     var urlConfig = document.getElementById('url-config');
+    var setTruncateUrl = document.getElementById('set-truncate-url');
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settings.detectMode) scanModeSelect.value = settings.detectMode;
         if (settings.actionMode) setAction.value = settings.actionMode;
         if (settings.baseUrl) setBaseUrl.value = settings.baseUrl;
+        if (setTruncateUrl && settings.truncateUrl !== undefined) setTruncateUrl.checked = settings.truncateUrl;
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
@@ -490,6 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setAction.addEventListener('change', function(e) { updateSetting('actionMode', e.target.value); updateActionUI(); });
         setBaseUrl.addEventListener('input', function(e) { updateSetting('baseUrl', e.target.value); });
+        if (setTruncateUrl) setTruncateUrl.addEventListener('change', function(e) { updateSetting('truncateUrl', e.target.checked); });
         setVibrate.addEventListener('change', function(e) { updateSetting('feedbackVibrate', e.target.checked); });
         setFrame.addEventListener('change', function(e) { updateSetting('feedbackFrame', e.target.value); });
         setFlash.addEventListener('change', function(e) { updateSetting('feedbackFlash', e.target.value); });
@@ -931,6 +934,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function buildUrl(value) {
+        var baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
+        var val = value;
+
+        if (settings.truncateUrl) {
+            // Strip protocol and www. from base URL
+            baseUrl = baseUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+            // Trim whitespace from value
+            val = val.replace(/\s+/g, '').trim();
+        }
+
+        // Ensure protocol for window.open
+        if (!/^https?:\/\//i.test(baseUrl)) {
+            baseUrl = 'https://' + baseUrl;
+        }
+
+        return baseUrl + encodeURIComponent(val);
+    }
+
     function executeUrlRedirect(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text)
@@ -938,12 +960,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(function() { showToast('Scan complete'); });
         }
 
-        var baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
-        if (!/^https?:\/\//i.test(baseUrl)) {
-            baseUrl = 'https://' + baseUrl;
-        }
-
-        var url = baseUrl + encodeURIComponent(text);
+        var url = buildUrl(text);
         window.open(url, '_blank');
         startScanner();
     }
@@ -981,6 +998,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Closure to capture candidate
                 (function(val) {
                     btn.addEventListener('click', function() {
+                        // Save selected candidate to history
+                        storage.addItem('SCANNED', {
+                            content: val,
+                            format: 'TEXT_OCR',
+                            mode: 'TEXT_OCR',
+                            image: lastSnapshotImage || ''
+                        });
+                        renderHistory();
+
                         closeVerifyModal(true); // silent close (don't restart yet)
                         executeUrlRedirect(val);
                     });
@@ -1201,11 +1227,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openUrlForItem(content) {
-        var baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
-        if (!/^https?:\/\//i.test(baseUrl)) {
-            baseUrl = 'https://' + baseUrl;
-        }
-        var url = baseUrl + encodeURIComponent(content);
+        var url = buildUrl(content);
         window.open(url, '_blank');
     }
 

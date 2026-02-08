@@ -15,6 +15,7 @@ var StorageManager = (function() {
         detectMode: 'AUTO',
         actionMode: 'URL_INPUT',
         baseUrl: 'www.google.com/?q=',
+        truncateUrl: false,
         scanRegion: 'BOX',
         feedbackVibrate: true,
         feedbackFrame: 'SCANNER',

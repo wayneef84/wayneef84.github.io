@@ -142,9 +142,16 @@
                         <option value="URL_INPUT">URL Input (Open Link)</option>
                     </select>
                 </div>
-                <div id="url-config" class="setting-item hidden">
-                    <label for="set-base-url">Base URL:</label>
-                    <input type="text" id="set-base-url" placeholder="www.google.com/?q=" class="filter-input" style="max-width:220px;">
+                <div id="url-config" class="hidden">
+                    <div class="setting-item">
+                        <label for="set-base-url">Base URL:</label>
+                        <input type="text" id="set-base-url" placeholder="www.google.com/?q=" class="filter-input" style="max-width:220px;">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-truncate-url">Truncate URL &amp; Value:</label>
+                        <input type="checkbox" id="set-truncate-url">
+                    </div>
+                    <div id="truncate-hint" class="filter-hint">Strips protocol (https://), www., and trims whitespace from value before opening.</div>
                 </div>
             </div>
 
