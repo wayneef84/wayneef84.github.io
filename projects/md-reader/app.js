@@ -355,6 +355,28 @@ function init() {
     if (openNewTabBtn) {
         openNewTabBtn.addEventListener('click', openInNewTab);
     }
+
+    // Listen for hash changes (Back/Forward navigation)
+    window.addEventListener('hashchange', function() {
+        var hash = window.location.hash.slice(1);
+        if (hash) {
+            if (hash.startsWith('imported:')) {
+                var filename = hash.replace('imported:', '');
+                if (importedFiles[filename]) {
+                    loadImportedFile(filename);
+                }
+            } else {
+                 var path = decodeURIComponent(hash);
+                 if (!path.startsWith('http') && !path.startsWith('../../') && !path.startsWith('/') && !path.startsWith('./')) {
+                     path = '../../' + path;
+                 }
+                 // Avoid reloading if just setting hash from loadFile
+                 if (path !== currentFilePath) {
+                     loadFile(path);
+                 }
+            }
+        }
+    });
 }
 
 function toggleSettingsMenu(forceState) {
@@ -676,6 +698,17 @@ function loadFile(path) {
 
     container.innerHTML = '<div class="loading">Loading...</div>';
 
+    // Cookbook Menu Handling
+    if (path.endsWith('.menu.md')) {
+        fetch(path)
+            .then(res => res.text())
+            .then(text => renderRecipeMenu(text, path))
+            .catch(err => {
+                container.innerHTML = '<div class="error-message">Error loading menu: ' + err.message + '</div>';
+            });
+        return;
+    }
+
     fetch(path)
         .then(function(response) {
             if (!response.ok) {
@@ -712,6 +745,29 @@ function renderMarkdown(text, path) {
     if (typeof marked === 'undefined') {
         container.innerHTML = '<div class="error-message">Error: marked.js library not loaded.</div>';
         return;
+    }
+
+    // Cookbook Logic: Check for Frontmatter
+    if (text.trim().startsWith('---')) {
+        try {
+            var parts = text.split('---');
+            if (parts.length >= 3) {
+                var frontmatterRaw = parts[1];
+                // Join back in case body contains '---'
+                var body = parts.slice(2).join('---');
+
+                if (typeof jsyaml !== 'undefined') {
+                    var frontmatter = jsyaml.load(frontmatterRaw);
+                    // Check if it's a recipe
+                    if (frontmatter && (frontmatter.ingredients || frontmatter.steps || frontmatter.type === 'recipe')) {
+                        renderCookbook(frontmatter, body, path);
+                        return;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn("Frontmatter parsing failed", e);
+        }
     }
 
     marked.setOptions({
@@ -976,4 +1032,286 @@ function adjustColor(hex, amount) {
     var g = (num & 0x0000FF) + amount;
     if (g > 255) g = 255; else if (g < 0) g = 0;
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+}
+
+// --- Cookbook Logic ---
+
+function renderCookbook(frontmatter, body, path) {
+    var container = document.getElementById('markdownContent');
+    container.innerHTML = '';
+
+    // Create Dashboard Container
+    var dashboard = document.createElement('div');
+    dashboard.className = 'cookbook-dashboard';
+
+    // --- Left Column: Mise-en-place ---
+    var colLeft = document.createElement('div');
+    colLeft.className = 'cookbook-col col-left';
+
+    var title = document.createElement('h1');
+    title.textContent = frontmatter.title || 'Recipe';
+    colLeft.appendChild(title);
+
+    // Meta Info
+    var meta = document.createElement('div');
+    meta.className = 'recipe-meta';
+    if (frontmatter.total_time) {
+        meta.innerHTML += '<div>⏱️ ' + frontmatter.total_time + ' min</div>';
+    }
+    colLeft.appendChild(meta);
+
+    // Servings Scaler
+    var servingsContainer = document.createElement('div');
+    servingsContainer.className = 'servings-control';
+    var baseServings = frontmatter.servings || 1;
+    servingsContainer.innerHTML =
+        '<label>Servings:</label>' +
+        '<input type="number" id="servingsInput" value="' + baseServings + '" min="1" style="width: 60px; margin-left: 10px;">';
+    colLeft.appendChild(servingsContainer);
+
+    // Ingredients List
+    var ingList = document.createElement('ul');
+    ingList.className = 'ingredient-list';
+    ingList.id = 'ingredientList';
+
+    var ingredients = frontmatter.ingredients || [];
+    // Store original ingredients for scaling
+    ingList.dataset.ingredients = JSON.stringify(ingredients);
+    ingList.dataset.baseServings = baseServings;
+
+    colLeft.appendChild(ingList);
+    dashboard.appendChild(colLeft);
+
+    // --- Center Column: The Guide ---
+    var colCenter = document.createElement('div');
+    colCenter.className = 'cookbook-col col-center';
+
+    var stepsHeader = document.createElement('h2');
+    stepsHeader.textContent = 'Instructions';
+    colCenter.appendChild(stepsHeader);
+
+    if (frontmatter.steps && Array.isArray(frontmatter.steps)) {
+        var stepsContainer = document.createElement('div');
+        stepsContainer.className = 'steps-container';
+
+        frontmatter.steps.forEach(function(step, index) {
+            var card = document.createElement('div');
+            card.className = 'step-card';
+            card.innerHTML =
+                '<div class="step-time">' + (step.time !== undefined ? 'T+' + step.time + 'm' : 'Step ' + (index + 1)) + '</div>' +
+                '<div class="step-action">' + marked.parse(step.action) + '</div>';
+
+            card.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+            stepsContainer.appendChild(card);
+        });
+        colCenter.appendChild(stepsContainer);
+    } else {
+        // Fallback to markdown body
+        var bodyContent = document.createElement('div');
+        bodyContent.className = 'markdown-body';
+        bodyContent.innerHTML = marked.parse(body);
+        colCenter.appendChild(bodyContent);
+    }
+    dashboard.appendChild(colCenter);
+
+    // --- Right Column: Visuals ---
+    var colRight = document.createElement('div');
+    colRight.className = 'cookbook-col col-right';
+
+    // Try to find image
+    var imgSrc = frontmatter.image;
+    if (!imgSrc) {
+        // Regex to find first image in markdown body
+        var match = body.match(/!\[.*?\]\((.*?)\)/);
+        if (match) imgSrc = match[1];
+    }
+
+    if (imgSrc) {
+         // Fix relative path if needed
+         if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/') && path.includes('/')) {
+             var lastSlash = path.lastIndexOf('/');
+             imgSrc = path.substring(0, lastSlash + 1) + imgSrc;
+         }
+
+        var hero = document.createElement('img');
+        hero.className = 'hero-image';
+        hero.src = imgSrc;
+        colRight.appendChild(hero);
+    }
+
+    dashboard.appendChild(colRight);
+    container.appendChild(dashboard);
+
+    // Init Logic
+    renderIngredients(ingredients, 1); // 1 = ratio (base/base)
+    checkPantry(ingredients);
+
+    // Bind Scaler
+    document.getElementById('servingsInput').addEventListener('change', function(e) {
+        var newServings = parseFloat(e.target.value);
+        var ratio = newServings / baseServings;
+        renderIngredients(ingredients, ratio);
+        checkPantry(ingredients); // Re-check pantry
+    });
+}
+
+function renderIngredients(ingredients, ratio) {
+    var list = document.getElementById('ingredientList');
+    list.innerHTML = '';
+
+    ingredients.forEach(function(ing) {
+        var li = document.createElement('li');
+        li.className = 'ingredient-item';
+
+        var qty = ing.qty ? (ing.qty * ratio) : '';
+        // Format float to nicer string (e.g. 1.5 -> 1.5, 1.0 -> 1)
+        if (typeof qty === 'number') qty = parseFloat(qty.toFixed(2));
+
+        var unit = ing.unit || '';
+        var item = ing.item || '';
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'pantry-check';
+        checkbox.dataset.item = item;
+        checkbox.addEventListener('change', function() {
+            togglePantryItem(item, this.checked);
+            if (this.checked) li.classList.add('in-pantry');
+            else li.classList.remove('in-pantry');
+        });
+
+        var text = document.createElement('span');
+        text.innerHTML = '<b>' + qty + ' ' + unit + '</b> ' + item;
+        if (ing.notes) text.innerHTML += ' <em style="opacity:0.7">(' + ing.notes + ')</em>';
+
+        li.appendChild(checkbox);
+        li.appendChild(text);
+        list.appendChild(li);
+    });
+}
+
+function checkPantry(ingredients) {
+    var pantry = JSON.parse(localStorage.getItem('pantry') || '[]');
+    // Normalize pantry items
+    pantry = pantry.map(i => i.toLowerCase().trim());
+
+    var checkboxes = document.querySelectorAll('.pantry-check');
+    checkboxes.forEach(function(cb) {
+        var item = cb.dataset.item.toLowerCase().trim();
+        // Simple fuzzy check or exact match
+        if (pantry.includes(item)) {
+            cb.checked = true;
+            cb.closest('li').classList.add('in-pantry');
+        }
+    });
+}
+
+function togglePantryItem(item, isChecked) {
+    var pantry = JSON.parse(localStorage.getItem('pantry') || '[]');
+    var normItem = item.toLowerCase().trim();
+
+    if (isChecked) {
+        if (!pantry.includes(normItem)) pantry.push(normItem);
+    } else {
+        pantry = pantry.filter(i => i !== normItem);
+    }
+
+    localStorage.setItem('pantry', JSON.stringify(pantry));
+}
+
+function renderRecipeMenu(text, path) {
+    var container = document.getElementById('markdownContent');
+    container.innerHTML = '<h1>Recipe Menu</h1><div id="menu-loading">Loading recipes...</div>';
+
+    // Parse links from markdown [Name](path)
+    var linkRegex = /\[(.*?)\]\((.*?)\)/g;
+    var match;
+    var recipes = [];
+    var links = [];
+
+    while ((match = linkRegex.exec(text)) !== null) {
+        links.push({ name: match[1], url: match[2] });
+    }
+
+    // Resolve relative paths
+    var basePath = path.substring(0, path.lastIndexOf('/') + 1);
+
+    // Fetch all recipes
+    var promises = links.map(function(link) {
+        var url = link.url;
+        if (!url.startsWith('http') && !url.startsWith('/')) {
+            url = basePath + url;
+        }
+        return fetch(url).then(res => res.text()).then(txt => {
+            return { name: link.name, text: txt, url: url };
+        });
+    });
+
+    Promise.all(promises).then(function(results) {
+        var menuContainer = document.createElement('div');
+        menuContainer.className = 'menu-container';
+
+        var aggregatedIngredients = {};
+
+        results.forEach(function(res) {
+            // Parse Frontmatter
+             if (res.text.trim().startsWith('---')) {
+                var parts = res.text.split('---');
+                if (parts.length >= 3 && typeof jsyaml !== 'undefined') {
+                    try {
+                        var fm = jsyaml.load(parts[1]);
+
+                        // Render Recipe Card
+                        var card = document.createElement('div');
+                        card.className = 'menu-card';
+                        card.innerHTML = '<h3>' + (fm.title || res.name) + '</h3>';
+                        if (fm.image) {
+                            // Fix relative path for image
+                            var imgUrl = fm.image;
+                             if (!imgUrl.startsWith('http') && !imgUrl.startsWith('/') && res.url.includes('/')) {
+                                 var rLastSlash = res.url.lastIndexOf('/');
+                                 imgUrl = res.url.substring(0, rLastSlash + 1) + imgUrl;
+                             }
+                             card.innerHTML += '<img src="' + imgUrl + '" style="max-width:100%; height:100px; object-fit:cover;">';
+                        }
+                        card.addEventListener('click', function() {
+                            loadFile(res.url);
+                        });
+                        menuContainer.appendChild(card);
+
+                        // Aggregate Ingredients
+                        if (fm.ingredients) {
+                            fm.ingredients.forEach(function(ing) {
+                                var key = ing.item.toLowerCase().trim();
+                                if (!aggregatedIngredients[key]) {
+                                    aggregatedIngredients[key] = { ...ing, qty: 0 };
+                                }
+                                aggregatedIngredients[key].qty += (ing.qty || 0);
+                            });
+                        }
+                    } catch(e) { console.error(e); }
+                }
+             }
+        });
+
+        container.innerHTML = '<h1>Menu: ' + path.split('/').pop().replace('.menu.md','') + '</h1>';
+        container.appendChild(menuContainer);
+
+        // Show Shopping List
+        var shoppingList = document.createElement('div');
+        shoppingList.className = 'shopping-list';
+        shoppingList.innerHTML = '<h2>Shopping List</h2><ul>';
+
+        for (var key in aggregatedIngredients) {
+            var ing = aggregatedIngredients[key];
+            shoppingList.innerHTML += '<li>' + ing.qty + ' ' + ing.unit + ' ' + ing.item + '</li>';
+        }
+        shoppingList.innerHTML += '</ul>';
+        container.appendChild(shoppingList);
+
+    }).catch(function(err) {
+        container.innerHTML = '<div class="error-message">Error loading recipes: ' + err.message + '</div>';
+    });
 }
