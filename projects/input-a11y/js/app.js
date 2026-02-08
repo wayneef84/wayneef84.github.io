@@ -870,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function handleUrlInput(text) {
+    function executeUrlRedirect(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text)
                 .then(function() { showToast('Copied!'); })
@@ -921,7 +921,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 (function(val) {
                     btn.addEventListener('click', function() {
                         closeVerifyModal(true); // silent close (don't restart yet)
-                        handleUrlInput(val);
+                        executeUrlRedirect(val);
                     });
                 })(candidate);
 
