@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- State ---
     var currentTab = 'scan';
     var lastResult = null;
+    var lastSnapshotImage = '';
     var settings = storage.getSettings();
-    var userHasInteracted = false; // Defer camera until user interaction
+    var userHasInteracted = false;
 
     // --- Elements ---
     var tabBtns = document.querySelectorAll('.tab-btn');
@@ -16,19 +17,18 @@ document.addEventListener('DOMContentLoaded', function() {
     var scanModeSelect = document.getElementById('scanMode');
     var driverRow = document.getElementById('driver-row');
     var ocrDriverSelect = document.getElementById('ocrDriver');
+    var snapshotRow = document.getElementById('snapshot-row');
+    var btnSnapshot = document.getElementById('btn-snapshot');
 
-    // Settings Elements
+    // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
     var setBaseUrl = document.getElementById('set-base-url');
     var urlConfig = document.getElementById('url-config');
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
-    var snapshotRow = document.getElementById('snapshot-row');
-    var btnSnapshot = document.getElementById('btn-snapshot');
 
-    // OCR Filter Settings Elements
-    var ocrSettingsPanel = document.getElementById('ocr-settings-panel');
+    // OCR Filter Settings
     var setConfirmPopup = document.getElementById('set-confirm-popup');
     var setFilterMode = document.getElementById('set-filter-mode');
     var filterValueRow = document.getElementById('filter-value-row');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setFilterValue = document.getElementById('set-filter-value');
     var filterHint = document.getElementById('filter-hint');
 
-    // OCR Tuning Elements
+    // OCR Tuning
     var setOcrConfidence = document.getElementById('set-ocr-confidence');
     var ocrConfidenceVal = document.getElementById('ocr-confidence-val');
     var setOcrDebounce = document.getElementById('set-ocr-debounce');
@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrMinLength = document.getElementById('set-ocr-minlength');
     var ocrMinLengthVal = document.getElementById('ocr-minlength-val');
 
-    // Barcode Settings Elements
-    var barcodeSettingsPanel = document.getElementById('barcode-settings-panel');
+    // Barcode Settings
     var setBarcodeFps = document.getElementById('set-barcode-fps');
     var barcodeFpsVal = document.getElementById('barcode-fps-val');
     var setBarcodeBoxW = document.getElementById('set-barcode-box-w');
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setFilterValue.value = settings.ocrFilterValue;
         }
 
-        // Restore OCR tuning settings
+        // Restore OCR tuning
         if (setOcrConfidence) {
             setOcrConfidence.value = settings.ocrConfidence || 40;
             if (ocrConfidenceVal) ocrConfidenceVal.innerText = setOcrConfidence.value;
@@ -114,8 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('scan-status').innerText = 'Camera Error: ' + err;
             }
         });
-
-        // Apply saved barcode config
         applyBarcodeConfig();
 
         // Initialize OCR Manager
@@ -132,11 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('scan-status').innerText = 'Text Scanner Active (' + label + '). Point at text.';
                 }
             });
-
-            // Apply saved filter config to OCR manager
             applyOCRFilterConfig();
-
-            // Populate driver selector based on available drivers
             populateDriverSelector();
         }
 
@@ -145,15 +138,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ocrDriverSelect.value = settings.ocrDriver;
         }
 
-        // Show/hide driver row based on current mode
         updateDriverRowVisibility();
-
-        // Render History
         renderHistory();
         bindEvents();
 
-        // DEFERRED START: Show "Start Scanner" button instead of auto-starting
-        // This avoids the browser autoplay/camera error that requires user interaction
         if (currentTab === 'scan') {
             showStartButton();
         }
@@ -185,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
         statusEl.innerText = 'Tap the button below to start scanning.';
 
         var container = document.getElementById('reader-container');
-        // Only add start button if not already present
         if (document.getElementById('btn-start-scan')) return;
 
         var btn = document.createElement('button');
@@ -197,8 +184,6 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.remove();
             startScanner();
         });
-
-        // Insert after reader-container
         container.parentNode.insertBefore(btn, container.nextSibling);
     }
 
@@ -224,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
             ocrDriverSelect.appendChild(opt);
         }
 
-        // Set from saved preference or auto-detect default
         if (settings.ocrDriver) {
             ocrDriverSelect.value = settings.ocrDriver;
         } else {
@@ -249,17 +233,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isOCR && userHasInteracted) { snapshotRow.classList.remove('hidden'); }
             else { snapshotRow.classList.add('hidden'); }
         }
-        // Show/hide OCR-specific settings panel
-        if (ocrSettingsPanel) {
-            if (isOCR) { ocrSettingsPanel.classList.remove('hidden'); }
-            else { ocrSettingsPanel.classList.add('hidden'); }
-        }
-        // Show/hide Barcode-specific settings panel (when NOT in OCR mode)
-        var isBarcode = !isOCR;
-        if (barcodeSettingsPanel) {
-            if (isBarcode) { barcodeSettingsPanel.classList.remove('hidden'); }
-            else { barcodeSettingsPanel.classList.add('hidden'); }
-        }
     }
 
     function updateFilterUI() {
@@ -273,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
             else { filterValueRow.classList.add('hidden'); }
         }
 
-        // Update label and placeholder based on mode
         if (filterValueLabel && setFilterValue) {
             if (mode === 'MIN_CHARS') {
                 filterValueLabel.innerText = 'Min Chars:';
@@ -293,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Show hint text
         if (filterHint) {
             if (mode === 'FORMAT') {
                 filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
@@ -373,7 +344,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 applyOCRFilterConfig();
             });
         }
-
         if (setFilterMode) {
             setFilterMode.addEventListener('change', function(e) {
                 settings.ocrFilterMode = e.target.value;
@@ -382,7 +352,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 applyOCRFilterConfig();
             });
         }
-
         if (setFilterValue) {
             setFilterValue.addEventListener('input', function(e) {
                 settings.ocrFilterValue = e.target.value;
@@ -392,56 +361,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // OCR Tuning Sliders
-        if (setOcrConfidence) {
-            setOcrConfidence.addEventListener('input', function(e) {
-                settings.ocrConfidence = parseInt(e.target.value, 10);
-                if (ocrConfidenceVal) ocrConfidenceVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyOCRFilterConfig();
-            });
-        }
-        if (setOcrDebounce) {
-            setOcrDebounce.addEventListener('input', function(e) {
-                settings.ocrDebounce = parseInt(e.target.value, 10);
-                if (ocrDebounceVal) ocrDebounceVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyOCRFilterConfig();
-            });
-        }
-        if (setOcrMinLength) {
-            setOcrMinLength.addEventListener('input', function(e) {
-                settings.ocrMinLength = parseInt(e.target.value, 10);
-                if (ocrMinLengthVal) ocrMinLengthVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyOCRFilterConfig();
-            });
-        }
+        bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
+        bindRangeSlider(setOcrDebounce, ocrDebounceVal, 'ocrDebounce', applyOCRFilterConfig);
+        bindRangeSlider(setOcrMinLength, ocrMinLengthVal, 'ocrMinLength', applyOCRFilterConfig);
 
         // Barcode Tuning Sliders
-        if (setBarcodeFps) {
-            setBarcodeFps.addEventListener('input', function(e) {
-                settings.barcodeFps = parseInt(e.target.value, 10);
-                if (barcodeFpsVal) barcodeFpsVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyBarcodeConfig();
-            });
-        }
-        if (setBarcodeBoxW) {
-            setBarcodeBoxW.addEventListener('input', function(e) {
-                settings.barcodeBoxWidth = parseInt(e.target.value, 10);
-                if (barcodeBoxWVal) barcodeBoxWVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyBarcodeConfig();
-            });
-        }
-        if (setBarcodeBoxH) {
-            setBarcodeBoxH.addEventListener('input', function(e) {
-                settings.barcodeBoxHeight = parseInt(e.target.value, 10);
-                if (barcodeBoxHVal) barcodeBoxHVal.innerText = e.target.value;
-                storage.saveSettings(settings);
-                applyBarcodeConfig();
-            });
-        }
+        bindRangeSlider(setBarcodeFps, barcodeFpsVal, 'barcodeFps', applyBarcodeConfig);
+        bindRangeSlider(setBarcodeBoxW, barcodeBoxWVal, 'barcodeBoxWidth', applyBarcodeConfig);
+        bindRangeSlider(setBarcodeBoxH, barcodeBoxHVal, 'barcodeBoxHeight', applyBarcodeConfig);
 
         // Snapshot Button
         if (btnSnapshot) {
@@ -451,19 +378,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 btnSnapshot.innerText = 'Scanning...';
                 document.getElementById('scan-status').innerText = 'Capturing snapshot...';
 
-                ocrManager.snapshot().then(function(text) {
+                ocrManager.snapshot().then(function(result) {
                     btnSnapshot.disabled = false;
-                    btnSnapshot.innerHTML = '&#128247; Snapshot';
+                    btnSnapshot.innerText = 'Snapshot';
+
+                    var text = (result && result.text) ? result.text : '';
+                    var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
+
+                    // Always save snapshot to history (with image), regardless of text
+                    storage.addItem('SCANNED', {
+                        content: text || '(no text detected)',
+                        format: 'SNAPSHOT',
+                        mode: 'TEXT_OCR',
+                        image: imageDataUri
+                    });
+                    renderHistory();
+
                     if (!text || text.length < 2) {
-                        document.getElementById('scan-status').innerText = 'No text detected. Try again.';
-                        // Resume live scanning
+                        document.getElementById('scan-status').innerText = 'Snapshot saved to history. No text detected.';
                         ocrManager.isScanning = true;
                         ocrManager._detectLoop();
+                    } else {
+                        document.getElementById('scan-status').innerText = 'Snapshot saved. Text: ' + text.substring(0, 40);
                     }
-                    // If text was found, onSuccess callback already fired
                 }).catch(function() {
                     btnSnapshot.disabled = false;
-                    btnSnapshot.innerHTML = '&#128247; Snapshot';
+                    btnSnapshot.innerText = 'Snapshot';
                     document.getElementById('scan-status').innerText = 'Snapshot failed. Try again.';
                 });
             });
@@ -489,6 +429,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('clear-scanned').addEventListener('click', function() {
             storage.clearHistory('SCANNED');
             renderHistory();
+        });
+    }
+
+    function bindRangeSlider(inputEl, displayEl, settingsKey, applyFn) {
+        if (!inputEl) return;
+        inputEl.addEventListener('input', function(e) {
+            settings[settingsKey] = parseInt(e.target.value, 10);
+            if (displayEl) displayEl.innerText = e.target.value;
+            storage.saveSettings(settings);
+            if (applyFn) applyFn();
         });
     }
 
@@ -519,6 +469,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             stopAll();
         }
+
+        // Re-render history when switching to history tab
+        if (tabId === 'history') {
+            renderHistory();
+        }
     }
 
     function stopAll() {
@@ -540,10 +495,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             if (!ocrManager.isSupported()) {
-                statusEl.innerText = 'No OCR engine available. Tesseract.js failed to load and TextDetector not supported.';
+                statusEl.innerText = 'No OCR engine available.';
                 return;
             }
-            // Show snapshot row now that we're active
             if (snapshotRow) snapshotRow.classList.remove('hidden');
 
             var preferredDriver = ocrDriverSelect ? ocrDriverSelect.value : '';
@@ -571,19 +525,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (result && result.result && result.result.format && result.result.format.formatName) {
             formatName = result.result.format.formatName;
         }
-        lastResult = { text: text, format: formatName, mode: mode };
 
-        // URL Input mode: always open URL regardless of popup setting
+        var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
+        lastResult = { text: text, format: formatName, mode: mode, image: imageDataUri };
+        lastSnapshotImage = imageDataUri;
+
+        // URL Input mode
         if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
             stopAll();
             handleUrlInput(text);
             return;
         }
 
-        // OCR mode: check if confirm popup is enabled
+        // OCR mode: check confirm popup
         if (mode === 'TEXT_OCR' || mode === 'OCR') {
             if (!settings.ocrConfirmPopup) {
-                // No popup: auto-copy and continue scanning (don't stop)
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text)
                         .then(function() { showToast('Copied: ' + text.substring(0, 30)); })
@@ -591,22 +547,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     showToast('Text detected');
                 }
-                // Save to history automatically
                 storage.addItem('SCANNED', {
                     content: text,
                     format: formatName,
-                    mode: mode
+                    mode: mode,
+                    image: imageDataUri
                 });
-                // Don't stop scanning - continue live
                 return;
             }
         }
 
-        // Show Modal (Free Scan or OCR with confirm popup on)
+        // Show Modal
         stopAll();
         var modal = document.getElementById('scan-result');
         document.getElementById('result-type').innerText = 'Type: ' + formatName;
         document.getElementById('result-text').value = text;
+
+        // Show snapshot image in modal if available
+        var resultImg = document.getElementById('result-image');
+        if (resultImg) {
+            if (imageDataUri) {
+                resultImg.src = imageDataUri;
+                resultImg.classList.remove('hidden');
+            } else {
+                resultImg.classList.add('hidden');
+            }
+        }
+
         modal.classList.remove('hidden');
 
         if (mode === 'TEXT_OCR' || mode === 'OCR') {
@@ -637,8 +604,8 @@ document.addEventListener('DOMContentLoaded', function() {
             toast = document.createElement('div');
             toast.id = 'toast-msg';
             toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
-                'background:rgba(0,0,0,0.8);color:white;padding:10px 20px;border-radius:20px;' +
-                'z-index:1000;transition:opacity 0.3s;';
+                'background:rgba(0,0,0,0.85);color:white;padding:10px 20px;border-radius:20px;' +
+                'z-index:1000;transition:opacity 0.3s;font-size:0.9rem;';
             document.body.appendChild(toast);
         }
         toast.innerText = message;
@@ -704,7 +671,8 @@ document.addEventListener('DOMContentLoaded', function() {
         storage.addItem('SCANNED', {
             content: lastResult.text,
             format: lastResult.format,
-            mode: lastResult.mode
+            mode: lastResult.mode,
+            image: lastResult.image || ''
         });
         var btn = document.getElementById('btn-save-scan');
         btn.innerText = 'Saved!';
@@ -728,26 +696,37 @@ document.addEventListener('DOMContentLoaded', function() {
         var created = storage.getHistory('CREATED');
         var scanned = storage.getHistory('SCANNED');
 
-        renderList(created, 'history-created');
         renderList(scanned, 'history-scanned');
+        renderList(created, 'history-created');
     }
 
     function renderList(list, elementId) {
         var ul = document.getElementById(elementId);
         ul.innerHTML = '';
         if (list.length === 0) {
-            ul.innerHTML = '<li class="empty">No history</li>';
+            ul.innerHTML = '<li class="empty">No items yet</li>';
             return;
         }
         for (var i = 0; i < list.length; i++) {
             var item = list[i];
             var li = document.createElement('li');
             var time = new Date(item.timestamp).toLocaleString();
+
+            var thumbHtml = '';
+            if (item.image) {
+                thumbHtml = '<img class="hist-thumb" src="' + item.image + '" alt="Snapshot">';
+            }
+
             li.innerHTML =
+                '<div class="hist-row">' +
+                thumbHtml +
+                '<div class="hist-info">' +
                 '<div class="hist-content">' + escapeHtml(item.content) + '</div>' +
                 '<div class="hist-meta">' +
                 '<span>' + (item.format || 'QR') + '</span>' +
-                '<span class="hist-time">' + time + '</span>' +
+                '<span>' + time + '</span>' +
+                '</div>' +
+                '</div>' +
                 '</div>';
             li.setAttribute('data-content', item.content);
             li.title = 'Click to copy';

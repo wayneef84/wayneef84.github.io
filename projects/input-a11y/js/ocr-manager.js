@@ -499,6 +499,14 @@ var OCRManager = (function() {
         // Capture frame
         this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
 
+        // Capture image data URI for history (always, regardless of text result)
+        var imageDataUri = '';
+        try {
+            imageDataUri = this.canvas.toDataURL('image/jpeg', 0.7);
+        } catch (e) {
+            console.warn('OCRManager: Failed to capture snapshot image', e);
+        }
+
         var detectPromise;
         if (this.activeDriver === DRIVER_TESSERACT && this.tesseractWorker) {
             detectPromise = this.tesseractWorker.recognize(this.canvas).then(function(result) {
@@ -526,12 +534,14 @@ var OCRManager = (function() {
             if (filtered.length >= self.minTextLength) {
                 if (self.callbacks.onSuccess) {
                     self.callbacks.onSuccess(filtered, {
-                        result: { format: { formatName: 'TEXT_OCR' } }
+                        result: { format: { formatName: 'TEXT_OCR' } },
+                        imageDataUri: imageDataUri
                     }, 'TEXT_OCR');
                 }
             }
 
-            return filtered;
+            // Always return both text and image so caller can save to history
+            return { text: filtered, imageDataUri: imageDataUri };
         }).catch(function(err) {
             console.error('OCRManager snapshot error:', err);
             // Resume scanning on error
