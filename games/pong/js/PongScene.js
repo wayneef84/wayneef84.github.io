@@ -1,24 +1,34 @@
 import Scene from '../../../negen/core/Scene.js';
 import Physics from '../../../negen/utils/Physics.js';
 import MathUtils from '../../../negen/utils/MathUtils.js';
+import ParticleSystem from '../../../negen/graphics/ParticleSystem.js';
 
 export default class PongScene extends Scene {
     enter(engine) {
         this.engine = engine;
         this.width = engine.width;
         this.height = engine.height;
+        this.particleSystem = new ParticleSystem();
 
         this.paddleW = 15;
         this.paddleH = 80;
         const padY = this.height/2 - this.paddleH/2;
 
-        // Left Paddle (Player)
-        this.p1 = { x: 50, y: padY, w: this.paddleW, h: this.paddleH, score: 0, color: '#fff' };
+        // Left Paddle (Player) - Cyan Neon
+        this.p1 = {
+            x: 50, y: padY, w: this.paddleW, h: this.paddleH,
+            score: 0, color: '#0ff',
+            prevY: padY, velocity: 0
+        };
 
-        // Right Paddle (CPU)
-        this.p2 = { x: this.width - 50 - this.paddleW, y: padY, w: this.paddleW, h: this.paddleH, score: 0, color: '#fff' };
+        // Right Paddle (CPU) - Magenta Neon
+        this.p2 = {
+            x: this.width - 50 - this.paddleW, y: padY, w: this.paddleW, h: this.paddleH,
+            score: 0, color: '#f0f',
+            prevY: padY, velocity: 0
+        };
 
-        // Ball
+        // Ball - Bright White
         this.ball = { x: this.width/2, y: this.height/2, w: 15, h: 15, dx: 0, dy: 0, speed: 6 };
 
         this.resetBall();
@@ -39,6 +49,12 @@ export default class PongScene extends Scene {
     }
 
     update(dt) {
+        this.particleSystem.update(dt);
+
+        // Track previous positions for velocity calc
+        this.p1.prevY = this.p1.y;
+        this.p2.prevY = this.p2.y;
+
         // P1 Input (Mouse/Touch or Keys)
         if (this.engine.input.keys['ArrowUp'] || this.engine.input.keys['KeyW']) {
             this.p1.y -= 8;
@@ -58,6 +74,9 @@ export default class PongScene extends Scene {
 
         this.p1.y = MathUtils.clamp(this.p1.y, 10, this.height - this.p1.h - 10);
 
+        // Calculate P1 Velocity (smoothed)
+        this.p1.velocity = (this.p1.y - this.p1.prevY);
+
         // CPU AI
         // Simple tracking with error/delay
         const targetY = this.ball.y - this.p2.h/2;
@@ -71,6 +90,9 @@ export default class PongScene extends Scene {
             this.p2.y += diff;
         }
         this.p2.y = MathUtils.clamp(this.p2.y, 10, this.height - this.p2.h - 10);
+
+        // Calculate P2 Velocity
+        this.p2.velocity = (this.p2.y - this.p2.prevY);
 
         // Ball Movement
         this.ball.x += this.ball.dx;
@@ -109,34 +131,142 @@ export default class PongScene extends Scene {
         const center = paddle.y + paddle.h/2;
         const ballCenter = this.ball.y + this.ball.h/2;
         const diff = ballCenter - center;
+
+        // Base deflection
         this.ball.dy = diff * 0.3;
 
-        this.engine.audio.playTone(200, 'square', 0.1);
+        // Add Kinetic Spin (Paddle Velocity influence)
+        // If paddle is moving, it drags the ball vertically
+        this.ball.dy += paddle.velocity * 0.5;
+
+        // Particle Splash
+        const impactSpeed = Math.abs(this.ball.dx) + Math.abs(this.ball.dy);
+        const pCount = Math.floor(MathUtils.clamp(impactSpeed * 2, 10, 50));
+
+        // Emit towards center of screen roughly
+        const emitDirX = this.ball.dx > 0 ? 1 : -1; // Ball is moving AWAY from paddle now? No, dx just flipped.
+        // If ball.dx is positive, it hit left paddle and is moving right.
+
+        this.particleSystem.emit(this.ball.x, this.ball.y, pCount, {
+            color: paddle.color,
+            speed: impactSpeed * 0.3,
+            life: 0.8
+        });
+
+        this.engine.audio.playTone(200 + Math.abs(paddle.velocity)*10, 'square', 0.1);
     }
 
     draw(renderer) {
         // Use abstract methods instead of direct ctx access
-        renderer.clear('#000');
+        renderer.clear('#050510'); // Dark void background
 
-        // Divider
-        // renderer.ctx.fillStyle = '#fff';
-        // for (let y = 10; y < this.height; y += this.dividerStyle.h + this.dividerStyle.gap) {
-        //     renderer.ctx.fillRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h);
-        // }
-        // REPLACE WITH:
+        // Draw Particles
+        this.particleSystem.draw(renderer);
+
+        // Divider (Cyan/Magenta Gradient feel using opacity)
         for (let y = 10; y < this.height; y += this.dividerStyle.h + this.dividerStyle.gap) {
-            renderer.drawRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h, '#fff');
+            renderer.drawRect(this.dividerStyle.x, y, this.dividerStyle.w, this.dividerStyle.h, 'rgba(255, 255, 255, 0.2)');
         }
 
-        // Paddles
-        renderer.drawRect(this.p1.x, this.p1.y, this.p1.w, this.p1.h, this.p1.color);
-        renderer.drawRect(this.p2.x, this.p2.y, this.p2.w, this.p2.h, this.p2.color);
+        // Draw Kinetic Paddles
+        this.drawPaddle(renderer, this.p1);
+        this.drawSpinMeter(renderer, this.p1); // Draw meter for P1
+        this.drawPaddle(renderer, this.p2);
+        // this.drawSpinMeter(renderer, this.p2); // CPU doesn't really need a visual meter, but consistent
 
-        // Ball (Square for retro feel)
-        renderer.drawRect(this.ball.x, this.ball.y, this.ball.w, this.ball.h, '#fff');
+        // Ball (Glowing)
+        renderer.drawRectEffect(this.ball.x, this.ball.y, this.ball.w, this.ball.h, '#fff', 10, '#fff');
 
-        // Score
-        renderer.drawText(this.p1.score, this.width/4, 80, 60, '#fff');
-        renderer.drawText(this.p2.score, this.width*3/4, 80, 60, '#fff');
+        // Score (Parallax/Floating)
+        renderer.ctx.save();
+        renderer.ctx.globalAlpha = 0.5;
+        renderer.drawText(this.p1.score, this.width/4, 120, 100, this.p1.color);
+        renderer.drawText(this.p2.score, this.width*3/4, 120, 100, this.p2.color);
+        renderer.ctx.restore();
+    }
+
+    drawPaddle(renderer, paddle) {
+        const ctx = renderer.ctx;
+        const isLeft = paddle.x < this.width / 2;
+
+        // Tilt based on velocity to create "Kinetic" angle
+        // If moving UP (vel < 0), we want to deflect UP.
+        // P1 (Right Face): Needs Top Right > Bottom Right (\ shape) -> Tilt > 0
+        // P2 (Left Face): Needs Top Left < Bottom Left (/ shape) -> Tilt < 0? No.
+        // P2 Ball moves -> hits / (TL > BL?).
+        // / surface deflects UP.
+        // / implies Top Left is to the Right of Bottom Left (TL > BL).
+
+        // Let's stick to visual logic:
+        // Moving UP -> Top part leads? No, drag means top trails.
+        // But for gameplay "Paddle Angles", we want the angle to help the player.
+        // Moving UP -> Angle paddle to hit UP.
+
+        const tilt = -paddle.velocity * 0.8;
+
+        ctx.beginPath();
+        ctx.fillStyle = paddle.color;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = paddle.color;
+
+        if (isLeft) {
+            // P1: Flat Left, Tilted Right Impact Face
+            // If vel < 0 (UP), tilt > 0.
+            // TR = x+w + tilt. BR = x+w - tilt.
+            // TR > BR (\). Hits UP. Correct.
+
+            ctx.moveTo(paddle.x, paddle.y); // TL
+            ctx.lineTo(paddle.x + paddle.w + tilt, paddle.y); // TR (Variable)
+            ctx.lineTo(paddle.x + paddle.w - tilt, paddle.y + paddle.h); // BR (Variable)
+            ctx.lineTo(paddle.x, paddle.y + paddle.h); // BL
+        } else {
+            // P2: Tilted Left Impact Face, Flat Right
+            // If vel < 0 (UP), tilt > 0.
+            // TL = x + tilt. BL = x - tilt.
+            // TL > BL (/). Hits UP. Correct.
+
+            ctx.moveTo(paddle.x + tilt, paddle.y); // TL (Variable)
+            ctx.lineTo(paddle.x + paddle.w, paddle.y); // TR
+            ctx.lineTo(paddle.x + paddle.w, paddle.y + paddle.h); // BR
+            ctx.lineTo(paddle.x - tilt, paddle.y + paddle.h); // BL (Variable)
+        }
+
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+    }
+
+    drawSpinMeter(renderer, paddle) {
+        if (Math.abs(paddle.velocity) < 0.5) return;
+
+        const ctx = renderer.ctx;
+        const x = paddle.x + paddle.w/2;
+        const y = paddle.y + paddle.h/2;
+
+        // Radius slightly larger than paddle height half
+        const r = paddle.h/2 + 15;
+
+        // Arc length based on velocity
+        const angle = Math.min(Math.PI/2, Math.abs(paddle.velocity) * 0.1);
+        const startAngle = paddle.x < this.width/2 ? -Math.PI/2 : Math.PI/2; // Different side?
+
+        // Draw an arc indicating spin
+        ctx.beginPath();
+        ctx.strokeStyle = paddle.color;
+        ctx.lineWidth = 3;
+        ctx.globalAlpha = 0.6;
+
+        // Arc centered at paddle center
+        // If moving down (vel > 0), arc downwards?
+        // Let's just draw a curve representing intensity.
+
+        // Side check
+        const isLeft = paddle.x < this.width/2;
+        const centerAngle = isLeft ? 0 : Math.PI; // Face inward
+
+        ctx.arc(x, y, r, centerAngle - angle, centerAngle + angle);
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+        ctx.lineWidth = 1;
     }
 }

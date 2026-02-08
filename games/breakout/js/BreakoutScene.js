@@ -23,6 +23,14 @@ export default class BreakoutScene extends Scene {
     }
 
     setupLevel() {
+        if (this.levelData) {
+            this.loadCustomLevel();
+        } else {
+            this.loadDefaultLevel();
+        }
+    }
+
+    loadDefaultLevel() {
         const rows = 5;
         const cols = 8;
         const padding = 10;
@@ -39,6 +47,32 @@ export default class BreakoutScene extends Scene {
                     active: true,
                     color: `hsl(${r * 40}, 70%, 50%)`
                 });
+            }
+        }
+    }
+
+    loadCustomLevel() {
+        const rows = this.levelData.rows;
+        const cols = this.levelData.cols;
+        const grid = this.levelData.grid;
+
+        const padding = 5;
+        const brickW = (this.width - (cols+1)*padding) / cols;
+        const brickH = 20;
+
+        for(let r=0; r<rows; r++) {
+            for(let c=0; c<cols; c++) {
+                const cell = grid[r][c];
+                if (cell.active) {
+                    this.bricks.push({
+                        x: padding + c*(brickW+padding),
+                        y: 60 + r*(brickH+padding),
+                        w: brickW,
+                        h: brickH,
+                        active: true,
+                        color: cell.color
+                    });
+                }
             }
         }
     }

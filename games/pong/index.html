@@ -8,8 +8,23 @@
     <style>
         /* Game Specific Overrides */
         :root {
-            --accent: #fff; /* Classic Pong White */
-            --accent-glow: rgba(255, 255, 255, 0.5);
+            --accent: #0ff; /* Cyberpunk Cyan */
+            --accent-glow: rgba(0, 255, 255, 0.5);
+            --bg-color: #050510;
+        }
+        body {
+            background-color: var(--bg-color) !important;
+        }
+        .game-header {
+            background: rgba(5, 5, 16, 0.9);
+            border-bottom: 1px solid var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .header-title {
+            text-shadow: 0 0 10px var(--accent);
+            color: var(--accent);
+            font-family: 'Courier New', Courier, monospace; /* Retro font */
+            letter-spacing: 2px;
         }
     </style>
 </head>
