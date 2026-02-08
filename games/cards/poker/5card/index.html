@@ -175,10 +175,7 @@
     <script type="module">
         import Engine from '../../../../negen/core/Engine.js';
         import FiveCardDraw from './five_card_draw.js';
-        import Evaluator from '../../../../negen/cards/Evaluator.js';
-
-        // Helper Map
-        const RankToAsset = { 'A': 'ace', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten', 'J': 'jack', 'Q': 'queen', 'K': 'king' };
+        import Evaluator from '../shared/evaluator.js';
 
         class PokerUI {
             constructor() {
@@ -270,7 +267,7 @@
                     slot.dataset.uuid = card.uuid;
 
                     const canvas = faceUp
-                        ? CardAssets.getAsset(RankToAsset[card.rank], card.suit)
+                        ? CardAssets.getAsset(card.rank, card.suit)
                         : CardAssets.getAsset(); // Back
 
                     const img = document.createElement('canvas');

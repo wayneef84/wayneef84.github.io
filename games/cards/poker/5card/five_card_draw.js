@@ -1,10 +1,9 @@
 // games/cards/poker/5card/negen_poker.js
-import CardGame from '../../../../negen/cards/CardGame.js';
-import Evaluator from '../../../../negen/cards/Evaluator.js';
+import BasePokerGame from '../shared/BasePokerGame.js';
 // CardAssets is global (loaded via <script> tag in index.html)
 import { RankValues } from '../../../../negen/cards/enums.js';
 
-export default class FiveCardDraw extends CardGame {
+export default class FiveCardDraw extends BasePokerGame {
     constructor(engine) {
         super(engine);
         this.ante = 10;
@@ -24,7 +23,7 @@ export default class FiveCardDraw extends CardGame {
     }
 
     startRound() {
-        // Collect Ante
+        // Collect Ante (Human only for now, based on original logic)
         const p1 = this.players[0];
         if (p1.balance < this.ante) return false;
 
@@ -32,16 +31,13 @@ export default class FiveCardDraw extends CardGame {
         this.pot += this.ante;
 
         // Reset Hands
-        this.players.forEach(p => {
-            p.hand.give(this.discard, p.hand.count);
-            p.isFolded = false;
-        });
+        this._resetHands();
 
         // Shuffle if low
         this._ensureDeck(15);
 
-        // Deal 5 each
-        this.deal(5);
+        // Deal 5 each, face up for human
+        this.dealToAll(5, true);
 
         this.state = 'PLAYER_TURN'; // Draw Phase
         this.emit('STATE_CHANGE', { state: 'PLAYER_TURN' });
@@ -67,7 +63,12 @@ export default class FiveCardDraw extends CardGame {
         // Draw replacements
         const count = indicesToDiscard.length;
         this._ensureDeck(count);
-        this.deck.give(p1.hand, count);
+
+        // Give cards to hand
+        const newCards = this.deck.give(p1.hand, count);
+
+        // Ensure new cards are face up
+        newCards.forEach(c => c.faceUp = true);
 
         // Dealer Turn (AI)
         this._dealerTurn();
@@ -75,7 +76,7 @@ export default class FiveCardDraw extends CardGame {
 
     _dealerTurn() {
         const dealer = this.players[1];
-        const ev = Evaluator.evaluate(dealer.hand.contents);
+        const ev = this.Evaluator.evaluate(dealer.hand.contents);
 
         // Simple AI: Keep paying hands, or high cards
         // If Hand Rank > Pair, Stand.
@@ -100,22 +101,14 @@ export default class FiveCardDraw extends CardGame {
         this._showdown();
     }
 
-    _ensureDeck(needed) {
-        if (this.deck.count < needed) {
-            if (this.discard.count > 0) {
-                this.discard.give(this.deck, this.discard.count);
-                this.deck.shuffle();
-                this.emit('SHUFFLE');
-            }
-        }
-    }
+    // _ensureDeck is inherited from BasePokerGame
 
     _showdown() {
         const p1 = this.players[0];
         const dealer = this.players[1];
 
-        const ev1 = Evaluator.evaluate(p1.hand.contents);
-        const ev2 = Evaluator.evaluate(dealer.hand.contents);
+        const ev1 = this.Evaluator.evaluate(p1.hand.contents);
+        const ev2 = this.Evaluator.evaluate(dealer.hand.contents);
 
         let winner = null;
         if (ev1.score > ev2.score) winner = p1;
