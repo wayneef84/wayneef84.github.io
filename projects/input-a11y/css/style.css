@@ -119,6 +119,15 @@ main {
     pointer-events: none;
 }
 
+#scan-roi-overlay {
+    position: absolute;
+    border: 2px dashed #00BCD4;
+    background: rgba(0, 188, 212, 0.1);
+    z-index: 15;
+    pointer-events: none;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); /* Dim area outside ROI */
+}
+
 .status-msg {
     margin-top: 5px;
     font-size: 0.9rem;
