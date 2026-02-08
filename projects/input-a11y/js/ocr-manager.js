@@ -39,6 +39,7 @@ var OCRManager = (function() {
         this.filterValue = '';       // filter value depends on mode
         this.confirmPopup = true;    // show confirmation modal on OCR result
         this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
+        this.preprocessingMode = 'TRIM'; // TRIM, NONE, REMOVE_ALL, NORMALIZE
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -62,6 +63,7 @@ var OCRManager = (function() {
         if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
         if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
         if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
+        if (opts.preprocessingMode !== undefined) this.preprocessingMode = opts.preprocessingMode;
     };
 
     /**
@@ -145,8 +147,9 @@ var OCRManager = (function() {
      * Start scanning with specified driver preference
      * @param {string} mode - 'TEXT_OCR'
      * @param {string} preferredDriver - 'tesseract' | 'native' | undefined
+     * @param {string} deviceId - Optional specific camera device ID
      */
-    OCRManager.prototype.start = function(mode, preferredDriver) {
+    OCRManager.prototype.start = function(mode, preferredDriver, deviceId) {
         var self = this;
         var driver = this.resolveDriver(preferredDriver);
 
@@ -186,10 +189,15 @@ var OCRManager = (function() {
             container.innerHTML = '';
             container.appendChild(self.video);
 
-            return navigator.mediaDevices.getUserMedia({
+            var constraints = {
                 video: { facingMode: 'environment' }
-            }).catch(function(cameraErr) {
-                console.warn('OCRManager: Environment camera failed, trying any camera', cameraErr);
+            };
+            if (deviceId) {
+                constraints.video = { deviceId: { exact: deviceId } };
+            }
+
+            return navigator.mediaDevices.getUserMedia(constraints).catch(function(cameraErr) {
+                console.warn('OCRManager: Preferred camera failed, trying fallback', cameraErr);
                 return navigator.mediaDevices.getUserMedia({ video: true });
             });
         }).then(function(stream) {
@@ -284,11 +292,22 @@ var OCRManager = (function() {
      */
     OCRManager.prototype._filterText = function(rawText) {
         var text = rawText;
-        if (this.alphanumericOnly) {
-            text = text.replace(/[^a-zA-Z0-9 ]/g, '').trim();
-            text = text.replace(/\s+/g, ' ');
-        } else {
+
+        // 1. Preprocessing
+        if (this.preprocessingMode === 'REMOVE_ALL') {
+            text = text.replace(/\s+/g, '');
+        } else if (this.preprocessingMode === 'NORMALIZE') {
+            text = text.replace(/\s+/g, ' ').trim();
+        } else if (this.preprocessingMode === 'TRIM') {
             text = text.trim();
+        }
+        // If 'NONE', leave raw including spaces
+
+        // 2. Alphanumeric Filter (if enabled - usually separate from regex mode)
+        if (this.alphanumericOnly) {
+            text = text.replace(/[^a-zA-Z0-9 ]/g, '');
+            // Re-trim if needed
+            if (this.preprocessingMode !== 'NONE') text = text.trim();
         }
 
         // Apply advanced filter based on mode
