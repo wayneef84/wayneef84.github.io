@@ -361,6 +361,46 @@ button {
     cursor: not-allowed;
 }
 
+/* Filter Input */
+.filter-input {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    max-width: 140px;
+    font-family: monospace;
+}
+
+.filter-hint {
+    font-size: 0.75rem;
+    color: #888;
+    padding: 2px 8px 6px;
+    font-style: italic;
+}
+
+/* Start Button (deferred autoplay) */
+.start-scan-btn {
+    background: var(--accent-color);
+    color: white;
+    padding: 16px 32px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    display: block;
+    margin: 40px auto;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.start-scan-btn:active {
+    transform: scale(0.95);
+    background: var(--accent-hover);
+}
+
 /* Feedback Animations */
 @keyframes flash-anim {
     0% { background-color: rgba(255,255,255,0.8); }

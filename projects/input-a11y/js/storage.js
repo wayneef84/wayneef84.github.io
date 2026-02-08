@@ -18,7 +18,10 @@ class StorageManager {
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER', // OFF, SCANNER, SCREEN
                 feedbackFlash: 'SCANNER', // OFF, SCANNER, SCREEN
-                ocrDriver: ''             // '' = auto (native if available, else tesseract)
+                ocrDriver: '',            // '' = auto (native if available, else tesseract)
+                ocrFilterMode: 'NONE',    // NONE, MIN_CHARS, REGEX, FORMAT
+                ocrFilterValue: '',       // filter value (number, regex string, or A/N format)
+                ocrConfirmPopup: true     // show confirmation modal on OCR result
             };
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         } catch (e) {
@@ -31,7 +34,10 @@ class StorageManager {
                 feedbackVibrate: true,
                 feedbackFrame: 'SCANNER',
                 feedbackFlash: 'SCANNER',
-                ocrDriver: ''
+                ocrDriver: '',
+                ocrFilterMode: 'NONE',
+                ocrFilterValue: '',
+                ocrConfirmPopup: true
             };
         }
     }

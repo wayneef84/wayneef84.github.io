@@ -82,6 +82,28 @@
                     </div>
                 </details>
 
+                <details id="ocr-settings-panel" class="settings-panel hidden">
+                    <summary>Text Filter Settings</summary>
+                    <div class="setting-item">
+                        <label for="set-confirm-popup">Confirm Popup:</label>
+                        <input type="checkbox" id="set-confirm-popup" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-filter-mode">Filter Mode:</label>
+                        <select id="set-filter-mode">
+                            <option value="NONE">None (Accept All)</option>
+                            <option value="MIN_CHARS">Min Characters</option>
+                            <option value="REGEX">Regex Pattern</option>
+                            <option value="FORMAT">Format Mask (A/N)</option>
+                        </select>
+                    </div>
+                    <div id="filter-value-row" class="setting-item hidden">
+                        <label id="filter-value-label" for="set-filter-value">Value:</label>
+                        <input type="text" id="set-filter-value" placeholder="" class="filter-input">
+                    </div>
+                    <div id="filter-hint" class="filter-hint hidden"></div>
+                </details>
+
                 <div id="scan-status" class="status-msg"></div>
             </div>
 

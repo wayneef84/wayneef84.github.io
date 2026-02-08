@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var currentTab = 'scan';
     var lastResult = null;
     var settings = storage.getSettings();
+    var userHasInteracted = false; // Defer camera until user interaction
 
     // --- Elements ---
     var tabBtns = document.querySelectorAll('.tab-btn');
@@ -26,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
     var snapshotRow = document.getElementById('snapshot-row');
     var btnSnapshot = document.getElementById('btn-snapshot');
 
+    // OCR Filter Settings Elements
+    var ocrSettingsPanel = document.getElementById('ocr-settings-panel');
+    var setConfirmPopup = document.getElementById('set-confirm-popup');
+    var setFilterMode = document.getElementById('set-filter-mode');
+    var filterValueRow = document.getElementById('filter-value-row');
+    var filterValueLabel = document.getElementById('filter-value-label');
+    var setFilterValue = document.getElementById('set-filter-value');
+    var filterHint = document.getElementById('filter-hint');
+
     // --- Init ---
     init();
 
@@ -38,7 +48,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
 
+        // Restore OCR filter settings
+        if (setConfirmPopup && settings.ocrConfirmPopup !== undefined) {
+            setConfirmPopup.checked = settings.ocrConfirmPopup;
+        }
+        if (setFilterMode && settings.ocrFilterMode) {
+            setFilterMode.value = settings.ocrFilterMode;
+        }
+        if (setFilterValue && settings.ocrFilterValue) {
+            setFilterValue.value = settings.ocrFilterValue;
+        }
+
         updateActionUI();
+        updateFilterUI();
 
         // Initialize Barcode Scanner
         scanner = new ScannerManager('reader', {
@@ -63,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
+            // Apply saved filter config to OCR manager
+            applyOCRFilterConfig();
+
             // Populate driver selector based on available drivers
             populateDriverSelector();
         }
@@ -79,10 +104,47 @@ document.addEventListener('DOMContentLoaded', function() {
         renderHistory();
         bindEvents();
 
-        // Start Scanner if on Scan tab
+        // DEFERRED START: Show "Start Scanner" button instead of auto-starting
+        // This avoids the browser autoplay/camera error that requires user interaction
         if (currentTab === 'scan') {
-            startScanner();
+            showStartButton();
         }
+    }
+
+    function applyOCRFilterConfig() {
+        if (!ocrManager) return;
+        ocrManager.configure({
+            filterMode: settings.ocrFilterMode || 'NONE',
+            filterValue: settings.ocrFilterValue || '',
+            confirmPopup: settings.ocrConfirmPopup !== undefined ? settings.ocrConfirmPopup : true
+        });
+    }
+
+    function showStartButton() {
+        var statusEl = document.getElementById('scan-status');
+        statusEl.innerText = 'Tap the button below to start scanning.';
+
+        var container = document.getElementById('reader-container');
+        // Only add start button if not already present
+        if (document.getElementById('btn-start-scan')) return;
+
+        var btn = document.createElement('button');
+        btn.id = 'btn-start-scan';
+        btn.className = 'start-scan-btn';
+        btn.innerText = 'Start Scanner';
+        btn.addEventListener('click', function() {
+            userHasInteracted = true;
+            btn.remove();
+            startScanner();
+        });
+
+        // Insert after reader-container
+        container.parentNode.insertBefore(btn, container.nextSibling);
+    }
+
+    function removeStartButton() {
+        var btn = document.getElementById('btn-start-scan');
+        if (btn) btn.remove();
     }
 
     function populateDriverSelector() {
@@ -124,8 +186,61 @@ document.addEventListener('DOMContentLoaded', function() {
             else { driverRow.classList.add('hidden'); }
         }
         if (snapshotRow) {
-            if (isOCR) { snapshotRow.classList.remove('hidden'); }
+            if (isOCR && userHasInteracted) { snapshotRow.classList.remove('hidden'); }
             else { snapshotRow.classList.add('hidden'); }
+        }
+        // Show/hide OCR-specific settings panel
+        if (ocrSettingsPanel) {
+            if (isOCR) { ocrSettingsPanel.classList.remove('hidden'); }
+            else { ocrSettingsPanel.classList.add('hidden'); }
+        }
+    }
+
+    function updateFilterUI() {
+        if (!setFilterMode) return;
+
+        var mode = setFilterMode.value;
+        var showValue = (mode !== 'NONE');
+
+        if (filterValueRow) {
+            if (showValue) { filterValueRow.classList.remove('hidden'); }
+            else { filterValueRow.classList.add('hidden'); }
+        }
+
+        // Update label and placeholder based on mode
+        if (filterValueLabel && setFilterValue) {
+            if (mode === 'MIN_CHARS') {
+                filterValueLabel.innerText = 'Min Chars:';
+                setFilterValue.placeholder = 'e.g. 5';
+                setFilterValue.type = 'number';
+            } else if (mode === 'REGEX') {
+                filterValueLabel.innerText = 'Pattern:';
+                setFilterValue.placeholder = 'e.g. ^[A-Z]{3}\\d+';
+                setFilterValue.type = 'text';
+            } else if (mode === 'FORMAT') {
+                filterValueLabel.innerText = 'Format:';
+                setFilterValue.placeholder = 'e.g. ANNNAAA';
+                setFilterValue.type = 'text';
+            } else {
+                setFilterValue.type = 'text';
+                setFilterValue.placeholder = '';
+            }
+        }
+
+        // Show hint text
+        if (filterHint) {
+            if (mode === 'FORMAT') {
+                filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
+                filterHint.classList.remove('hidden');
+            } else if (mode === 'REGEX') {
+                filterHint.innerText = 'JavaScript regex pattern to match against detected text';
+                filterHint.classList.remove('hidden');
+            } else if (mode === 'MIN_CHARS') {
+                filterHint.innerText = 'Only accept text with at least this many characters';
+                filterHint.classList.remove('hidden');
+            } else {
+                filterHint.classList.add('hidden');
+            }
         }
     }
 
@@ -142,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
             settings.detectMode = e.target.value;
             storage.saveSettings(settings);
             updateDriverRowVisibility();
-            if (currentTab === 'scan') {
+            if (currentTab === 'scan' && userHasInteracted) {
                 startScanner();
             }
         });
@@ -152,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ocrDriverSelect.addEventListener('change', function(e) {
                 settings.ocrDriver = e.target.value;
                 storage.saveSettings(settings);
-                if (currentTab === 'scan' && scanModeSelect.value === 'TEXT_OCR') {
+                if (currentTab === 'scan' && scanModeSelect.value === 'TEXT_OCR' && userHasInteracted) {
                     startScanner();
                 }
             });
@@ -183,6 +298,32 @@ document.addEventListener('DOMContentLoaded', function() {
             settings.feedbackFlash = e.target.value;
             storage.saveSettings(settings);
         });
+
+        // OCR Filter Settings
+        if (setConfirmPopup) {
+            setConfirmPopup.addEventListener('change', function(e) {
+                settings.ocrConfirmPopup = e.target.checked;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
+
+        if (setFilterMode) {
+            setFilterMode.addEventListener('change', function(e) {
+                settings.ocrFilterMode = e.target.value;
+                storage.saveSettings(settings);
+                updateFilterUI();
+                applyOCRFilterConfig();
+            });
+        }
+
+        if (setFilterValue) {
+            setFilterValue.addEventListener('input', function(e) {
+                settings.ocrFilterValue = e.target.value;
+                storage.saveSettings(settings);
+                applyOCRFilterConfig();
+            });
+        }
 
         // Snapshot Button
         if (btnSnapshot) {
@@ -252,7 +393,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (tabId === 'scan') {
-            startScanner();
+            if (userHasInteracted) {
+                startScanner();
+            } else {
+                showStartButton();
+            }
         } else {
             stopAll();
         }
@@ -265,6 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function startScanner() {
         stopAll();
+        removeStartButton();
 
         var mode = scanModeSelect.value;
         var statusEl = document.getElementById('scan-status');
@@ -279,6 +425,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusEl.innerText = 'No OCR engine available. Tesseract.js failed to load and TextDetector not supported.';
                 return;
             }
+            // Show snapshot row now that we're active
+            if (snapshotRow) snapshotRow.classList.remove('hidden');
+
             var preferredDriver = ocrDriverSelect ? ocrDriverSelect.value : '';
             ocrManager.start('TEXT_OCR', preferredDriver).catch(function(err) {
                 statusEl.innerText = 'Text Scanner Failed: ' + err;
@@ -299,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function onScanSuccess(text, result, mode) {
         triggerFeedback();
-        stopAll();
 
         var formatName = 'Unknown';
         if (result && result.result && result.result.format && result.result.format.formatName) {
@@ -307,18 +455,43 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         lastResult = { text: text, format: formatName, mode: mode };
 
+        // URL Input mode: always open URL regardless of popup setting
         if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
+            stopAll();
             handleUrlInput(text);
             return;
         }
 
-        // Show Modal (Free Scan)
+        // OCR mode: check if confirm popup is enabled
+        if (mode === 'TEXT_OCR' || mode === 'OCR') {
+            if (!settings.ocrConfirmPopup) {
+                // No popup: auto-copy and continue scanning (don't stop)
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text)
+                        .then(function() { showToast('Copied: ' + text.substring(0, 30)); })
+                        .catch(function() { showToast('Text detected'); });
+                } else {
+                    showToast('Text detected');
+                }
+                // Save to history automatically
+                storage.addItem('SCANNED', {
+                    content: text,
+                    format: formatName,
+                    mode: mode
+                });
+                // Don't stop scanning - continue live
+                return;
+            }
+        }
+
+        // Show Modal (Free Scan or OCR with confirm popup on)
+        stopAll();
         var modal = document.getElementById('scan-result');
         document.getElementById('result-type').innerText = 'Type: ' + formatName;
         document.getElementById('result-text').value = text;
         modal.classList.remove('hidden');
 
-        if (mode === 'OCR') {
+        if (mode === 'TEXT_OCR' || mode === 'OCR') {
             copyResult(true);
         }
     }
