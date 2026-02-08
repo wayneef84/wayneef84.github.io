@@ -337,6 +337,30 @@ button {
     padding: 5px 10px;
 }
 
+/* Snapshot Button */
+.snapshot-btn {
+    background: #FF9800;
+    color: white;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    border-radius: 24px;
+    border: none;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.snapshot-btn:active {
+    transform: scale(0.95);
+    background: #E68900;
+}
+
+.snapshot-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
 /* Feedback Animations */
 @keyframes flash-anim {
     0% { background-color: rgba(255,255,255,0.8); }

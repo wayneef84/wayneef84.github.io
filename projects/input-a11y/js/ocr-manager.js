@@ -400,6 +400,73 @@ var OCRManager = (function() {
         });
     };
 
+    /**
+     * Snapshot: pause live scanning, capture current frame, run OCR on it.
+     * Returns a Promise that resolves with the recognized text.
+     * The live loop is paused during recognition and resumed after.
+     */
+    OCRManager.prototype.snapshot = function() {
+        var self = this;
+
+        if (!this.video || !this.canvas || !this.canvasCtx) {
+            return Promise.reject(new Error('Camera not active'));
+        }
+
+        // Pause live loop
+        var wasScanning = this.isScanning;
+        this.isScanning = false;
+        if (this._loopTimer) {
+            clearTimeout(this._loopTimer);
+            this._loopTimer = null;
+        }
+
+        // Capture frame
+        this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+
+        var detectPromise;
+        if (this.activeDriver === DRIVER_TESSERACT && this.tesseractWorker) {
+            detectPromise = this.tesseractWorker.recognize(this.canvas).then(function(result) {
+                return result && result.data && result.data.text ? result.data.text.trim() : '';
+            });
+        } else if (this.activeDriver === DRIVER_NATIVE && this.nativeDetector) {
+            detectPromise = this.nativeDetector.detect(this.video).then(function(texts) {
+                if (!texts || texts.length === 0) return '';
+                texts.sort(function(a, b) {
+                    if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
+                        return a.boundingBox.y - b.boundingBox.y;
+                    }
+                    return a.boundingBox.x - b.boundingBox.x;
+                });
+                return texts.map(function(t) { return t.rawValue; }).join(' ').trim();
+            });
+        } else {
+            detectPromise = Promise.resolve('');
+        }
+
+        return detectPromise.then(function(text) {
+            var filtered = self._filterText(text);
+
+            // Fire success callback if text found
+            if (filtered.length >= self.minTextLength) {
+                if (self.callbacks.onSuccess) {
+                    self.callbacks.onSuccess(filtered, {
+                        result: { format: { formatName: 'TEXT_OCR' } }
+                    }, 'TEXT_OCR');
+                }
+            }
+
+            return filtered;
+        }).catch(function(err) {
+            console.error('OCRManager snapshot error:', err);
+            // Resume scanning on error
+            if (wasScanning) {
+                self.isScanning = true;
+                self._detectLoop();
+            }
+            throw err;
+        });
+    };
+
     // Expose driver constants
     OCRManager.DRIVER_TESSERACT = DRIVER_TESSERACT;
     OCRManager.DRIVER_NATIVE = DRIVER_NATIVE;

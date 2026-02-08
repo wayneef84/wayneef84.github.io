@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
+    var snapshotRow = document.getElementById('snapshot-row');
+    var btnSnapshot = document.getElementById('btn-snapshot');
 
     // --- Init ---
     init();
@@ -116,11 +118,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateDriverRowVisibility() {
-        if (!driverRow) return;
-        if (scanModeSelect.value === 'TEXT_OCR') {
-            driverRow.classList.remove('hidden');
-        } else {
-            driverRow.classList.add('hidden');
+        var isOCR = scanModeSelect.value === 'TEXT_OCR';
+        if (driverRow) {
+            if (isOCR) { driverRow.classList.remove('hidden'); }
+            else { driverRow.classList.add('hidden'); }
+        }
+        if (snapshotRow) {
+            if (isOCR) { snapshotRow.classList.remove('hidden'); }
+            else { snapshotRow.classList.add('hidden'); }
         }
     }
 
@@ -178,6 +183,32 @@ document.addEventListener('DOMContentLoaded', function() {
             settings.feedbackFlash = e.target.value;
             storage.saveSettings(settings);
         });
+
+        // Snapshot Button
+        if (btnSnapshot) {
+            btnSnapshot.addEventListener('click', function() {
+                if (!ocrManager) return;
+                btnSnapshot.disabled = true;
+                btnSnapshot.innerText = 'Scanning...';
+                document.getElementById('scan-status').innerText = 'Capturing snapshot...';
+
+                ocrManager.snapshot().then(function(text) {
+                    btnSnapshot.disabled = false;
+                    btnSnapshot.innerHTML = '&#128247; Snapshot';
+                    if (!text || text.length < 2) {
+                        document.getElementById('scan-status').innerText = 'No text detected. Try again.';
+                        // Resume live scanning
+                        ocrManager.isScanning = true;
+                        ocrManager._detectLoop();
+                    }
+                    // If text was found, onSuccess callback already fired
+                }).catch(function() {
+                    btnSnapshot.disabled = false;
+                    btnSnapshot.innerHTML = '&#128247; Snapshot';
+                    document.getElementById('scan-status').innerText = 'Snapshot failed. Try again.';
+                });
+            });
+        }
 
         // Scan Result Actions
         document.getElementById('btn-copy').addEventListener('click', copyResult);
