@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var filterHint = document.getElementById('filter-hint');
     var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
+    var setOcrScanLine = document.getElementById('set-ocr-scan-line');
 
     // OCR Scan Region (ROI) - Auto-centered, user adjusts size only
     var setOcrRoiEnabled = document.getElementById('set-ocr-roi-enabled');
@@ -106,6 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (setOcrShowRaw && settings.ocrShowRaw !== undefined) {
             setOcrShowRaw.checked = settings.ocrShowRaw;
+        }
+        if (setOcrScanLine && settings.ocrScanLine !== undefined) {
+            setOcrScanLine.checked = settings.ocrScanLine;
         }
 
         // Restore OCR ROI settings (auto-centered, size only)
@@ -263,8 +267,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var scanLine = document.getElementById('scan-line');
         if (!scanLine) return;
 
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+        var showLine = (s.ocrScanLine !== undefined) ? s.ocrScanLine : true;
+
         var isOCR = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
-        if (isOCR) {
+        if (isOCR && showLine) {
             scanLine.style.display = 'block';
         } else {
             scanLine.style.display = 'none';
@@ -524,6 +531,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         if (setOcrShowRaw) setOcrShowRaw.addEventListener('change', function(e) {
             updateSetting('ocrShowRaw', e.target.checked);
+        });
+        if (setOcrScanLine) setOcrScanLine.addEventListener('change', function(e) {
+            updateSetting('ocrScanLine', e.target.checked);
+            updateScanLineVisibility();
         });
 
         // OCR ROI (auto-centered, size only)
