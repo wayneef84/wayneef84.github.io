@@ -9,11 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     var lastResult = null;
     var lastSnapshotImage = '';
     var settings = storage.getSettings();
+    var tempSettings = null; // Transactional settings object
     var userHasInteracted = false;
 
     // --- Elements ---
     var tabBtns = document.querySelectorAll('.tab-btn');
     var tabs = document.querySelectorAll('.tab-content');
+    var videoSourceSelect = document.getElementById('videoSource');
     var scanModeSelect = document.getElementById('scanMode');
     var driverRow = document.getElementById('driver-row');
     var ocrDriverSelect = document.getElementById('ocrDriver');
@@ -35,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var filterValueLabel = document.getElementById('filter-value-label');
     var setFilterValue = document.getElementById('set-filter-value');
     var filterHint = document.getElementById('filter-hint');
+    var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
+    var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
 
     // OCR Tuning
     var setOcrConfidence = document.getElementById('set-ocr-confidence');
@@ -56,6 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
 
     function init() {
+        // Populate video sources
+        populateVideoSources();
+        if (navigator.mediaDevices && navigator.mediaDevices.ondevicechange !== undefined) {
+            navigator.mediaDevices.ondevicechange = populateVideoSources;
+        }
+
         // Restore Settings
         if (settings.detectMode) scanModeSelect.value = settings.detectMode;
         if (settings.actionMode) setAction.value = settings.actionMode;
@@ -73,6 +83,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (setFilterValue && settings.ocrFilterValue) {
             setFilterValue.value = settings.ocrFilterValue;
+        }
+        if (setOcrPreprocess && settings.ocrPreprocessingMode) {
+            setOcrPreprocess.value = settings.ocrPreprocessingMode;
+        }
+        if (setOcrShowRaw && settings.ocrShowRaw !== undefined) {
+            setOcrShowRaw.checked = settings.ocrShowRaw;
         }
 
         // Restore OCR tuning
@@ -142,29 +158,39 @@ document.addEventListener('DOMContentLoaded', function() {
         renderHistory();
         bindEvents();
 
+        // Initialize Settings Transaction State
+        initSettingsTransaction();
+
         if (currentTab === 'scan') {
             showStartButton();
         }
     }
 
+    function initSettingsTransaction() {
+        tempSettings = JSON.parse(JSON.stringify(settings));
+    }
+
     function applyOCRFilterConfig() {
         if (!ocrManager) return;
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
         ocrManager.configure({
-            filterMode: settings.ocrFilterMode || 'NONE',
-            filterValue: settings.ocrFilterValue || '',
-            confirmPopup: settings.ocrConfirmPopup !== undefined ? settings.ocrConfirmPopup : true,
-            confidenceThreshold: parseInt(settings.ocrConfidence, 10) || 40,
-            debounceMs: parseInt(settings.ocrDebounce, 10) || 3000,
-            minTextLength: parseInt(settings.ocrMinLength, 10) || 3
+            filterMode: s.ocrFilterMode || 'NONE',
+            filterValue: s.ocrFilterValue || '',
+            confirmPopup: s.ocrConfirmPopup !== undefined ? s.ocrConfirmPopup : true,
+            confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
+            debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
+            minTextLength: parseInt(s.ocrMinLength, 10) || 3,
+            preprocessingMode: s.ocrPreprocessingMode || 'TRIM'
         });
     }
 
     function applyBarcodeConfig() {
         if (!scanner) return;
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
         scanner.configure({
-            fps: parseInt(settings.barcodeFps, 10) || 10,
-            qrboxWidth: parseInt(settings.barcodeBoxWidth, 10) || 250,
-            qrboxHeight: parseInt(settings.barcodeBoxHeight, 10) || 250
+            fps: parseInt(s.barcodeFps, 10) || 10,
+            qrboxWidth: parseInt(s.barcodeBoxWidth, 10) || 250,
+            qrboxHeight: parseInt(s.barcodeBoxHeight, 10) || 250
         });
     }
 
@@ -223,6 +249,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function populateVideoSources() {
+        if (!videoSourceSelect) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            console.warn('enumerateDevices not supported');
+            return;
+        }
+
+        navigator.mediaDevices.enumerateDevices()
+            .then(function(devices) {
+                var videoDevices = devices.filter(function(device) {
+                    return device.kind === 'videoinput';
+                });
+
+                var currentVal = videoSourceSelect.value || settings.deviceId;
+                videoSourceSelect.innerHTML = '';
+
+                // Add "Default / Auto" option
+                var defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.text = 'Auto / Default Camera';
+                videoSourceSelect.appendChild(defaultOpt);
+
+                videoDevices.forEach(function(device, index) {
+                    var option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || 'Camera ' + (index + 1);
+                    videoSourceSelect.appendChild(option);
+                });
+
+                if (currentVal) {
+                    // Check if device still exists
+                    var exists = videoDevices.some(function(d) { return d.deviceId === currentVal; });
+                    if (exists) {
+                        videoSourceSelect.value = currentVal;
+                    } else {
+                        videoSourceSelect.value = '';
+                        settings.deviceId = ''; // Reset if lost
+                    }
+                } else {
+                    videoSourceSelect.value = '';
+                }
+            })
+            .catch(function(err) {
+                console.error(err.name + ": " + err.message);
+            });
+    }
+
     function updateDriverRowVisibility() {
         var isOCR = scanModeSelect.value === 'TEXT_OCR';
         if (driverRow) {
@@ -236,48 +309,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateFilterUI() {
+        // Updated to use individual blocks for clearer UI
         if (!setFilterMode) return;
-
         var mode = setFilterMode.value;
-        var showValue = (mode !== 'NONE');
 
-        if (filterValueRow) {
-            if (showValue) { filterValueRow.classList.remove('hidden'); }
-            else { filterValueRow.classList.add('hidden'); }
+        // Hide legacy rows if present
+        if (filterValueRow) filterValueRow.classList.add('hidden');
+
+        // Toggle Blocks
+        var blocks = document.querySelectorAll('.filter-block');
+        for(var i=0; i<blocks.length; i++) blocks[i].classList.add('hidden');
+
+        var activeInput = null;
+
+        if (mode === 'MIN_CHARS') {
+            document.getElementById('filter-block-minchars').classList.remove('hidden');
+            activeInput = document.getElementById('set-filter-minchars');
+        } else if (mode === 'REGEX') {
+            document.getElementById('filter-block-regex').classList.remove('hidden');
+            activeInput = document.getElementById('set-filter-regex');
+        } else if (mode === 'FORMAT') {
+            document.getElementById('filter-block-format').classList.remove('hidden');
+            activeInput = document.getElementById('set-filter-format');
         }
 
-        if (filterValueLabel && setFilterValue) {
-            if (mode === 'MIN_CHARS') {
-                filterValueLabel.innerText = 'Min Chars:';
-                setFilterValue.placeholder = 'e.g. 5';
-                setFilterValue.type = 'number';
-            } else if (mode === 'REGEX') {
-                filterValueLabel.innerText = 'Pattern:';
-                setFilterValue.placeholder = 'e.g. ^[A-Z]{3}\\d+';
-                setFilterValue.type = 'text';
-            } else if (mode === 'FORMAT') {
-                filterValueLabel.innerText = 'Format:';
-                setFilterValue.placeholder = 'e.g. ANNNAAA';
-                setFilterValue.type = 'text';
-            } else {
-                setFilterValue.type = 'text';
-                setFilterValue.placeholder = '';
-            }
-        }
-
+        // Hints & Constraints
         if (filterHint) {
+            filterHint.classList.remove('hidden');
             if (mode === 'FORMAT') {
                 filterHint.innerText = 'A = letter, N = number. e.g. ANNNAAA matches B123XYZ';
-                filterHint.classList.remove('hidden');
             } else if (mode === 'REGEX') {
-                filterHint.innerText = 'JavaScript regex pattern to match against detected text';
-                filterHint.classList.remove('hidden');
+                filterHint.innerText = 'JavaScript regex. Default: Alphanumeric, 10 chars.';
+                // Enforce Default if empty
+                if (activeInput && !activeInput.value) {
+                    activeInput.value = '^[a-zA-Z0-9]{10}$';
+                    if (tempSettings) tempSettings.ocrFilterValue = activeInput.value;
+                    else { settings.ocrFilterValue = activeInput.value; storage.saveSettings(settings); }
+                }
             } else if (mode === 'MIN_CHARS') {
-                filterHint.innerText = 'Only accept text with at least this many characters';
-                filterHint.classList.remove('hidden');
+                filterHint.innerText = 'Min length (Default 5).';
+                if (activeInput && (!activeInput.value || parseInt(activeInput.value)<1)) {
+                    activeInput.value = 5;
+                    if (tempSettings) tempSettings.ocrFilterValue = 5;
+                    else { settings.ocrFilterValue = 5; storage.saveSettings(settings); }
+                }
             } else {
                 filterHint.classList.add('hidden');
             }
+        }
+
+        // Bind events for the specific inputs to update the shared setting
+        if (activeInput) {
+            activeInput.oninput = function(e) {
+                var val = e.target.value;
+                if (tempSettings) tempSettings.ocrFilterValue = val;
+                else { settings.ocrFilterValue = val; storage.saveSettings(settings); }
+                applyOCRFilterConfig();
+            };
+            // Restore current value
+            var currentVal = tempSettings ? tempSettings.ocrFilterValue : settings.ocrFilterValue;
+            if (currentVal) activeInput.value = currentVal;
         }
     }
 
@@ -289,76 +380,76 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Scan Mode
+        // Settings Buttons
+        var btnSave = document.getElementById('btn-settings-save');
+        var btnCancel = document.getElementById('btn-settings-cancel');
+        var btnDefault = document.getElementById('btn-settings-default');
+
+        if (btnSave) btnSave.addEventListener('click', saveSettings);
+        if (btnCancel) btnCancel.addEventListener('click', cancelSettings);
+        if (btnDefault) btnDefault.addEventListener('click', defaultSettings);
+
+        // --- DIRECT ACTION INPUTS (Apply immediately in Scan mode, or use temp in Settings) ---
+        // Note: Video Source & Scan Mode are top-level controls, not in "Settings" tab usually,
+        // but if moved there, they should use temp. Assuming they are in Scan tab:
+        if (videoSourceSelect) {
+            videoSourceSelect.addEventListener('change', function(e) {
+                settings.deviceId = e.target.value;
+                storage.saveSettings(settings);
+                if (currentTab === 'scan' && userHasInteracted) startScanner();
+            });
+        }
         scanModeSelect.addEventListener('change', function(e) {
             settings.detectMode = e.target.value;
             storage.saveSettings(settings);
             updateDriverRowVisibility();
-            if (currentTab === 'scan' && userHasInteracted) {
-                startScanner();
-            }
+            if (currentTab === 'scan' && userHasInteracted) startScanner();
         });
-
-        // OCR Driver selector
         if (ocrDriverSelect) {
             ocrDriverSelect.addEventListener('change', function(e) {
                 settings.ocrDriver = e.target.value;
                 storage.saveSettings(settings);
-                if (currentTab === 'scan' && scanModeSelect.value === 'TEXT_OCR' && userHasInteracted) {
-                    startScanner();
-                }
+                if (currentTab === 'scan' && scanModeSelect.value === 'TEXT_OCR' && userHasInteracted) startScanner();
             });
         }
 
-        // Action Settings
-        setAction.addEventListener('change', function(e) {
-            settings.actionMode = e.target.value;
-            storage.saveSettings(settings);
-            updateActionUI();
-        });
-
-        setBaseUrl.addEventListener('input', function(e) {
-            settings.baseUrl = e.target.value;
-            storage.saveSettings(settings);
-        });
-
-        // Feedback Settings
-        setVibrate.addEventListener('change', function(e) {
-            settings.feedbackVibrate = e.target.checked;
-            storage.saveSettings(settings);
-        });
-        setFrame.addEventListener('change', function(e) {
-            settings.feedbackFrame = e.target.value;
-            storage.saveSettings(settings);
-        });
-        setFlash.addEventListener('change', function(e) {
-            settings.feedbackFlash = e.target.value;
-            storage.saveSettings(settings);
-        });
-
-        // OCR Filter Settings
-        if (setConfirmPopup) {
-            setConfirmPopup.addEventListener('change', function(e) {
-                settings.ocrConfirmPopup = e.target.checked;
+        // --- SETTINGS TAB INPUTS (Use tempSettings) ---
+        // Helper to update setting
+        function updateSetting(key, value) {
+            if (currentTab === 'settings' && tempSettings) {
+                tempSettings[key] = value;
+            } else {
+                settings[key] = value;
                 storage.saveSettings(settings);
-                applyOCRFilterConfig();
-            });
+            }
         }
-        if (setFilterMode) {
-            setFilterMode.addEventListener('change', function(e) {
-                settings.ocrFilterMode = e.target.value;
-                storage.saveSettings(settings);
-                updateFilterUI();
-                applyOCRFilterConfig();
-            });
-        }
-        if (setFilterValue) {
-            setFilterValue.addEventListener('input', function(e) {
-                settings.ocrFilterValue = e.target.value;
-                storage.saveSettings(settings);
-                applyOCRFilterConfig();
-            });
-        }
+
+        setAction.addEventListener('change', function(e) { updateSetting('actionMode', e.target.value); updateActionUI(); });
+        setBaseUrl.addEventListener('input', function(e) { updateSetting('baseUrl', e.target.value); });
+        setVibrate.addEventListener('change', function(e) { updateSetting('feedbackVibrate', e.target.checked); });
+        setFrame.addEventListener('change', function(e) { updateSetting('feedbackFrame', e.target.value); });
+        setFlash.addEventListener('change', function(e) { updateSetting('feedbackFlash', e.target.value); });
+
+        if (setConfirmPopup) setConfirmPopup.addEventListener('change', function(e) {
+            updateSetting('ocrConfirmPopup', e.target.checked);
+            applyOCRFilterConfig();
+        });
+        if (setFilterMode) setFilterMode.addEventListener('change', function(e) {
+            updateSetting('ocrFilterMode', e.target.value);
+            updateFilterUI();
+            applyOCRFilterConfig();
+        });
+        if (setFilterValue) setFilterValue.addEventListener('input', function(e) {
+            updateSetting('ocrFilterValue', e.target.value);
+            applyOCRFilterConfig();
+        });
+        if (setOcrPreprocess) setOcrPreprocess.addEventListener('change', function(e) {
+            updateSetting('ocrPreprocessingMode', e.target.value);
+            applyOCRFilterConfig();
+        });
+        if (setOcrShowRaw) setOcrShowRaw.addEventListener('change', function(e) {
+            updateSetting('ocrShowRaw', e.target.checked);
+        });
 
         // OCR Tuning Sliders
         bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
@@ -369,6 +460,9 @@ document.addEventListener('DOMContentLoaded', function() {
         bindRangeSlider(setBarcodeFps, barcodeFpsVal, 'barcodeFps', applyBarcodeConfig);
         bindRangeSlider(setBarcodeBoxW, barcodeBoxWVal, 'barcodeBoxWidth', applyBarcodeConfig);
         bindRangeSlider(setBarcodeBoxH, barcodeBoxHVal, 'barcodeBoxHeight', applyBarcodeConfig);
+
+        // Initialize Manual Toggles
+        setupManualToggles();
 
         // Snapshot Button
         if (btnSnapshot) {
@@ -434,12 +528,122 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function bindRangeSlider(inputEl, displayEl, settingsKey, applyFn) {
         if (!inputEl) return;
+
+        // Sync range -> display & settings
         inputEl.addEventListener('input', function(e) {
-            settings[settingsKey] = parseInt(e.target.value, 10);
-            if (displayEl) displayEl.innerText = e.target.value;
-            storage.saveSettings(settings);
-            if (applyFn) applyFn();
+            var val = parseInt(e.target.value, 10);
+            updateVal(val);
         });
+
+        // Handle linked manual text input if present
+        var manualInput = document.getElementById(inputEl.id + '-manual');
+        if (manualInput) {
+            manualInput.addEventListener('change', function(e) {
+                var val = parseInt(e.target.value, 10);
+                if (isNaN(val)) return;
+
+                // Enforce Min/Max from range attributes
+                var min = parseInt(inputEl.min, 10);
+                var max = parseInt(inputEl.max, 10);
+                if (val < min) val = min;
+                // Allow exceeding max for "Manual Override" (except strictly bounded values like confidence)
+                if (settingsKey === 'ocrConfidence' && val > 100) val = 100;
+
+                inputEl.value = val; // Sync slider visual
+                updateVal(val);
+            });
+        }
+
+        function updateVal(val) {
+            if (currentTab === 'settings' && tempSettings) {
+                tempSettings[settingsKey] = val;
+            } else {
+                settings[settingsKey] = val;
+                storage.saveSettings(settings);
+            }
+            if (displayEl) displayEl.innerText = val;
+            if (applyFn) applyFn();
+        }
+    }
+
+    function setupManualToggles() {
+        var toggles = document.querySelectorAll('.manual-toggle-btn');
+        for (var i = 0; i < toggles.length; i++) {
+            toggles[i].addEventListener('click', function() {
+                var targetId = this.dataset.target;
+                var rangeInput = document.getElementById(targetId);
+                var manualInput = document.getElementById(targetId + '-manual');
+                var displaySpan = document.getElementById(targetId.replace('set-', '') + '-val');
+
+                if (manualInput.classList.contains('hidden')) {
+                    // Switch to Manual
+                    manualInput.classList.remove('hidden');
+                    if (rangeInput) rangeInput.classList.add('hidden');
+                    if (displaySpan) displaySpan.classList.add('hidden');
+                    this.innerText = '🎚️'; // Switch icon to Slider
+                    this.title = "Switch to Slider";
+                } else {
+                    // Switch to Slider
+                    manualInput.classList.add('hidden');
+                    if (rangeInput) rangeInput.classList.remove('hidden');
+                    if (displaySpan) displaySpan.classList.remove('hidden');
+                    this.innerText = '⌨️'; // Switch icon to Keyboard
+                    this.title = "Toggle Manual Input";
+                }
+            });
+        }
+    }
+
+    function getChangeCount() {
+        if (!tempSettings) return 0;
+        var count = 0;
+        var keys = Object.keys(tempSettings);
+        for (var i=0; i<keys.length; i++) {
+            var k = keys[i];
+            if (JSON.stringify(tempSettings[k]) !== JSON.stringify(settings[k])) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    function saveSettings() {
+        var count = getChangeCount();
+        if (count === 0) {
+            switchTab('scan');
+            return;
+        }
+        if (confirm('Save ' + count + ' changes?')) {
+            settings = JSON.parse(JSON.stringify(tempSettings));
+            storage.saveSettings(settings);
+            initSettingsTransaction(); // reset temp
+            applyOCRFilterConfig();
+            applyBarcodeConfig();
+            switchTab('scan');
+        }
+    }
+
+    function cancelSettings() {
+        var count = getChangeCount();
+        if (count > 0) {
+            if (!confirm('Discard ' + count + ' unsaved changes?')) {
+                return;
+            }
+        }
+        initSettingsTransaction(); // Revert temp to match saved
+        // Re-init UI elements to match settings
+        init();
+        switchTab('scan');
+    }
+
+    function defaultSettings() {
+        if (confirm('Revert all settings to defaults? This cannot be undone.')) {
+            storage.clearSettings(); // Clears LS
+            settings = storage.getSettings(); // Reloads defaults
+            initSettingsTransaction();
+            init(); // Refresh UI
+            alert('Settings reset to defaults.');
+        }
     }
 
     function switchTab(tabId) {
@@ -501,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (snapshotRow) snapshotRow.classList.remove('hidden');
 
             var preferredDriver = ocrDriverSelect ? ocrDriverSelect.value : '';
-            ocrManager.start('TEXT_OCR', preferredDriver).catch(function(err) {
+            ocrManager.start('TEXT_OCR', preferredDriver, settings.deviceId).catch(function(err) {
                 statusEl.innerText = 'Text Scanner Failed: ' + err;
             });
             return;
@@ -511,7 +715,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!scanner) return;
         statusEl.innerText = 'Starting ' + mode + '...';
 
-        scanner.start(mode).then(function() {
+        scanner.start(mode, settings.deviceId).then(function() {
             statusEl.innerText = 'Scanning (' + mode + ')...';
         }).catch(function(err) {
             statusEl.innerText = 'Error: ' + err;
@@ -529,6 +733,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
         lastResult = { text: text, format: formatName, mode: mode, image: imageDataUri };
         lastSnapshotImage = imageDataUri;
+
+        // Raw Text Feedback (if enabled)
+        if (settings.ocrShowRaw) {
+            // text passed here is after filtering, but it's the result satisfied by the filter.
+            // For true debug, we'd need OCRManager to emit raw via a different channel, but this works for "what was found".
+            document.getElementById('scan-status').innerText = 'Found: ' + text.substring(0, 50) + (text.length>50?'...':'');
+        }
 
         // URL Input mode
         if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {

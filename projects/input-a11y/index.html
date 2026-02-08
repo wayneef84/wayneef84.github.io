@@ -27,6 +27,10 @@
         <section id="scan" class="tab-content active">
             <div class="controls">
                 <div class="control-row">
+                    <label for="videoSource">Camera:</label>
+                    <select id="videoSource"></select>
+                </div>
+                <div class="control-row">
                     <label for="scanMode">Detection Mode:</label>
                     <select id="scanMode">
                         <option value="TEXT_OCR">Text Scanner</option>
@@ -96,15 +100,17 @@
 
         <!-- HISTORY TAB -->
         <section id="history" class="tab-content">
-            <div class="history-section">
-                <h3>Scanned Items</h3>
-                <ul id="history-scanned" class="history-list"></ul>
-                <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
-            </div>
-            <div class="history-section">
-                <h3>Created Codes</h3>
-                <ul id="history-created" class="history-list"></ul>
-                <button id="clear-created" class="danger-btn">Clear Created</button>
+            <div class="history-container">
+                <div class="history-section">
+                    <h3>Scanned Items</h3>
+                    <ul id="history-scanned" class="history-list"></ul>
+                    <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
+                </div>
+                <div class="history-section">
+                    <h3>Created Codes</h3>
+                    <ul id="history-created" class="history-list"></ul>
+                    <button id="clear-created" class="danger-btn">Clear Created</button>
+                </div>
             </div>
         </section>
 
@@ -159,22 +165,41 @@
                     <label for="set-ocr-confidence">Confidence (%)</label>
                     <div class="range-group">
                         <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
+                        <input type="number" id="set-ocr-confidence-manual" class="manual-input hidden" min="0" max="100" value="40">
                         <span id="ocr-confidence-val" class="range-val">40</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-confidence" title="Toggle Manual Input">⌨️</button>
                     </div>
                 </div>
                 <div class="setting-item">
                     <label for="set-ocr-debounce">Debounce (ms)</label>
                     <div class="range-group">
                         <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
+                        <input type="number" id="set-ocr-debounce-manual" class="manual-input hidden" min="500" max="10000" step="100" value="3000">
                         <span id="ocr-debounce-val" class="range-val">3000</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-debounce" title="Toggle Manual Input">⌨️</button>
                     </div>
                 </div>
                 <div class="setting-item">
                     <label for="set-ocr-minlength">Min Text Length</label>
                     <div class="range-group">
                         <input type="range" id="set-ocr-minlength" min="1" max="20" step="1" value="3">
+                        <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="1" max="50" value="3">
                         <span id="ocr-minlength-val" class="range-val">3</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-minlength" title="Toggle Manual Input">⌨️</button>
                     </div>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-preprocess">Whitespace Mode:</label>
+                    <select id="set-ocr-preprocess">
+                        <option value="TRIM">Trim (Default)</option>
+                        <option value="NONE">None (Raw)</option>
+                        <option value="REMOVE_ALL">Remove All Spaces</option>
+                        <option value="NORMALIZE">Normalize (Single Space)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-show-raw">Show Raw Text:</label>
+                    <input type="checkbox" id="set-ocr-show-raw">
                 </div>
                 <div class="setting-item">
                     <label for="set-filter-mode">Filter Mode:</label>
@@ -185,10 +210,21 @@
                         <option value="FORMAT">Format Mask (A/N)</option>
                     </select>
                 </div>
-                <div id="filter-value-row" class="setting-item hidden">
-                    <label id="filter-value-label" for="set-filter-value">Value:</label>
-                    <input type="text" id="set-filter-value" placeholder="" class="filter-input">
+
+                <!-- Individual Filter Blocks -->
+                <div id="filter-block-minchars" class="setting-item filter-block hidden">
+                    <label for="set-filter-minchars">Min Chars:</label>
+                    <input type="number" id="set-filter-minchars" placeholder="e.g. 5" class="filter-input">
                 </div>
+                <div id="filter-block-regex" class="setting-item filter-block hidden">
+                    <label for="set-filter-regex">Pattern:</label>
+                    <input type="text" id="set-filter-regex" placeholder="e.g. ^[A-Z]{3}\d+" class="filter-input">
+                </div>
+                <div id="filter-block-format" class="setting-item filter-block hidden">
+                    <label for="set-filter-format">Format:</label>
+                    <input type="text" id="set-filter-format" placeholder="e.g. ANNNAAA" class="filter-input">
+                </div>
+
                 <div id="filter-hint" class="filter-hint hidden"></div>
             </div>
 
@@ -198,22 +234,36 @@
                     <label for="set-barcode-fps">Scan FPS</label>
                     <div class="range-group">
                         <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
+                        <input type="number" id="set-barcode-fps-manual" class="manual-input hidden" min="1" max="60" value="10">
                         <span id="barcode-fps-val" class="range-val">10</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-fps" title="Toggle Manual Input">⌨️</button>
                     </div>
                 </div>
                 <div class="setting-item">
                     <label for="set-barcode-box-w">Box Width (px)</label>
                     <div class="range-group">
                         <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
+                        <input type="number" id="set-barcode-box-w-manual" class="manual-input hidden" min="50" max="1000" value="250">
                         <span id="barcode-box-w-val" class="range-val">250</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-box-w" title="Toggle Manual Input">⌨️</button>
                     </div>
                 </div>
                 <div class="setting-item">
                     <label for="set-barcode-box-h">Box Height (px)</label>
                     <div class="range-group">
                         <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
+                        <input type="number" id="set-barcode-box-h-manual" class="manual-input hidden" min="50" max="1000" value="250">
                         <span id="barcode-box-h-val" class="range-val">250</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-box-h" title="Toggle Manual Input">⌨️</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button id="btn-settings-default" class="footer-btn default-btn">Default</button>
+                <div class="footer-actions">
+                    <button id="btn-settings-cancel" class="footer-btn cancel-btn">Cancel</button>
+                    <button id="btn-settings-save" class="footer-btn save-btn">Save</button>
                 </div>
             </div>
         </section>

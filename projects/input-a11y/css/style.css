@@ -588,3 +588,93 @@ button {
         width: 100px;
     }
 }
+
+/* History Center Container */
+.history-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Video Source Selector */
+#videoSource {
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    max-width: 100%;
+}
+
+/* Settings Manual Toggle */
+.manual-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 2px 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+
+.manual-toggle-btn:hover {
+    background: #333;
+}
+
+.manual-input {
+    width: 60px;
+    padding: 4px;
+    background: #2a2a2a;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+/* Settings Footer */
+.settings-footer {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-color);
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--border-color);
+    max-width: 500px;
+    margin: 0 auto;
+    z-index: 100;
+}
+
+.footer-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.save-btn {
+    background: var(--accent-color);
+    color: white;
+}
+.save-btn:hover { background: var(--accent-hover); }
+
+.cancel-btn {
+    background: #555;
+    color: white;
+}
+.cancel-btn:hover { background: #666; }
+
+.default-btn {
+    background: transparent;
+    border: 1px solid #c62828;
+    color: #ef5350;
+}
+.default-btn:hover {
+    background: #c62828;
+    color: white;
+}

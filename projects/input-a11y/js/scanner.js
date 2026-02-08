@@ -17,7 +17,7 @@ class ScannerManager {
         if (opts.qrboxHeight !== undefined) this.qrboxHeight = opts.qrboxHeight;
     }
 
-    async start(mode) {
+    async start(mode, deviceId) {
         try {
             // Stop existing if running
             if (this.instance) {
@@ -60,7 +60,10 @@ class ScannerManager {
             this.instance = new Html5Qrcode(this.elementId, config);
 
             // Start
-            const cameraConfig = { facingMode: "environment" }; // Prefer back camera
+            let cameraConfig = { facingMode: "environment" }; // Prefer back camera
+            if (deviceId) {
+                cameraConfig = { deviceId: { exact: deviceId } };
+            }
 
             await this.instance.start(
                 cameraConfig,
