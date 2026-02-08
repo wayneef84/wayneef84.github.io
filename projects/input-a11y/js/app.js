@@ -281,47 +281,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function populateDriverSelector() {
-        if (!ocrManager || !ocrDriverSelect) return;
-
-        var drivers = ocrManager.getAvailableDrivers();
-        ocrDriverSelect.innerHTML = '';
-
-        for (var i = 0; i < drivers.length; i++) {
-            var opt = document.createElement('option');
-            opt.value = drivers[i].id;
-            opt.textContent = drivers[i].label;
-            if (!drivers[i].available) {
-                opt.disabled = true;
-                opt.textContent += ' (Not Available)';
-            }
-            ocrDriverSelect.appendChild(opt);
-        }
-
-        // Set from saved preference or auto-detect default
-        if (settings.ocrDriver) {
-            ocrDriverSelect.value = settings.ocrDriver;
-        } else {
-            var hasNative = false;
-            for (var j = 0; j < drivers.length; j++) {
-                if (drivers[j].id === 'native' && drivers[j].available) {
-                    hasNative = true;
-                    break;
-                }
-            }
-            ocrDriverSelect.value = hasNative ? 'native' : 'tesseract';
-        }
-    }
-
-    function updateDriverRowVisibility() {
-        if (!driverRow) return;
-        if (scanModeSelect.value === 'TEXT_OCR') {
-            driverRow.classList.remove('hidden');
-        } else {
-            driverRow.classList.add('hidden');
-        }
-    }
-
     function bindEvents() {
         // Tabs
         for (var i = 0; i < tabBtns.length; i++) {
@@ -561,7 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function onScanSuccess(text, result, mode) {
         triggerFeedback();
-        stopAll();
 
         var formatName = 'Unknown';
         if (result && result.result && result.result.format && result.result.format.formatName) {
@@ -769,37 +727,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 '<span>' + time + '</span>' +
                 '</div>' +
                 '</div>' +
-                '</div>';
-            li.setAttribute('data-content', item.content);
-            li.title = 'Click to copy';
-            li.addEventListener('click', function() {
-                var content = this.getAttribute('data-content');
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(content).then(function() {
-                        showToast('Copied!');
-                    });
-                }
-            });
-            ul.appendChild(li);
-        }
-    }
-
-    function renderList(list, elementId) {
-        var ul = document.getElementById(elementId);
-        ul.innerHTML = '';
-        if (list.length === 0) {
-            ul.innerHTML = '<li class="empty">No history</li>';
-            return;
-        }
-        for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            var li = document.createElement('li');
-            var time = new Date(item.timestamp).toLocaleString();
-            li.innerHTML =
-                '<div class="hist-content">' + escapeHtml(item.content) + '</div>' +
-                '<div class="hist-meta">' +
-                '<span>' + (item.format || 'QR') + '</span>' +
-                '<span class="hist-time">' + time + '</span>' +
                 '</div>';
             li.setAttribute('data-content', item.content);
             li.title = 'Click to copy';
