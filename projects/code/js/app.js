@@ -2,10 +2,27 @@
     'use strict';
 
     var cracker;
-    var timerInterval;
+    var timerInterval; // For UI timer display
     var startTime;
     var isRunning = false;
-    var delay = 0;
+    var delay = 0.5; // Default minimum
+    var animationFrameId;
+    var lastFrameTime = 0;
+    var accumulatedTime = 0;
+    var idleTimer;
+
+    // Logarithmic Scale Constants
+    // y = a * b^x
+    // range: 0.5 to 50
+    // slider: 0 to 100
+    var LOG_MIN = 0.5;
+    var LOG_MAX = 50;
+    var SLIDER_MAX = 100;
+    // 50 = 0.5 * b^100 => 100 = b^100 => b = 100^(1/100)
+    var LOG_A = 0.5;
+    var LOG_B = Math.pow(LOG_MAX / LOG_MIN, 1 / SLIDER_MAX);
+
+    var ANCHORS = [0.5, 1, 5, 25, 50];
 
     // DOM Elements
     var els = {
@@ -24,8 +41,8 @@
         confMode: document.getElementById('config-mode'),
         confLength: document.getElementById('config-length'),
         confStrategy: document.getElementById('config-strategy'),
-        confDelay: document.getElementById('config-delay'),
-        delayVal: document.getElementById('delay-val'),
+        confDelaySlider: document.getElementById('config-delay'), // Slider
+        confDelayInput: document.getElementById('delay-input'),   // Number Input
 
         customContainer: document.getElementById('custom-pattern-container'),
         customInput: document.getElementById('custom-pattern-input'),
@@ -43,8 +60,33 @@
     function init() {
         cracker = new CodeCracker();
         bindEvents();
+
+        // Init Delay
+        delay = LOG_MIN;
+        updateDelayUI(delay);
+
         updateConfig();
         generateNewTarget();
+    }
+
+    function getDelayFromSlider(val) {
+        return LOG_A * Math.pow(LOG_B, val);
+    }
+
+    function getSliderFromDelay(ms) {
+        if (ms < LOG_MIN) ms = LOG_MIN;
+        if (ms > LOG_MAX) ms = LOG_MAX;
+        // x = log_b(y/a) = ln(y/a) / ln(b)
+        return Math.log(ms / LOG_A) / Math.log(LOG_B);
+    }
+
+    function updateDelayUI(ms) {
+        // Snap to anchors if close (within 5% relative difference?)
+        // Actually, just let the input be precise, but snap slider visually?
+        // Let's implement snapping on the SLIDER input event.
+
+        els.confDelayInput.value = parseFloat(ms.toFixed(2));
+        els.confDelaySlider.value = getSliderFromDelay(ms);
     }
 
     function bindEvents() {
@@ -59,6 +101,7 @@
                 els.confLength.disabled = false;
             }
             updateConfig();
+            updateInputMode();
             generateNewTarget();
         });
 
@@ -80,9 +123,52 @@
             if (!isRunning) cracker.reset();
         });
 
-        els.confDelay.addEventListener('input', function() {
-            delay = parseInt(this.value, 10);
-            els.delayVal.textContent = delay;
+        // Delay Slider Logic
+        els.confDelaySlider.addEventListener('input', function() {
+            var val = parseFloat(this.value);
+            var calculatedDelay = getDelayFromSlider(val);
+
+            // Snapping
+            // Find nearest anchor
+            var nearest = null;
+            var minDiff = Infinity;
+
+            for (var i = 0; i < ANCHORS.length; i++) {
+                var anchor = ANCHORS[i];
+                var diff = Math.abs(calculatedDelay - anchor);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    nearest = anchor;
+                }
+            }
+
+            // If we are close to an anchor (e.g., within 10% of the anchor value logic distance)
+            // Or just check raw difference?
+            // Let's say if we are within 5 slider steps of the anchor's slider position
+            var nearestSliderVal = getSliderFromDelay(nearest);
+            if (Math.abs(val - nearestSliderVal) < 3) {
+                 calculatedDelay = nearest;
+                 // Don't snap the slider handle while dragging, it feels weird.
+                 // Just snap the value used.
+            }
+
+            delay = calculatedDelay;
+            els.confDelayInput.value = parseFloat(delay.toFixed(2));
+        });
+
+        // Delay Input Logic
+        els.confDelayInput.addEventListener('change', function() {
+            var val = parseFloat(this.value);
+            if (isNaN(val)) val = LOG_MIN;
+            if (val < LOG_MIN) val = LOG_MIN;
+            // if (val > LOG_MAX) val = LOG_MAX; // Allow higher custom input? Prompt says 50, but maybe manual allows more?
+            // Let's clamp to max 500 as per HTML attribute, but slider only goes to 50.
+            // Wait, previous max was 500. Prompt says "millisecond ranges (0.5 to 50 ms)".
+            // Let's stick to the prompt's focus but allow the input to go higher if needed?
+            // "y = a * b^x" implies mapping. If input > 50, slider stays at max.
+
+            delay = val;
+            els.confDelaySlider.value = getSliderFromDelay(delay);
         });
 
         // Controls
@@ -118,12 +204,48 @@
         // User Race Logic
         els.btnUserSubmit.addEventListener('click', handleUserGuess);
         els.userGuessInput.addEventListener('keypress', function(e) {
+            resetIdleTimer();
             if (e.key === 'Enter') handleUserGuess();
         });
+
+        els.userGuessInput.addEventListener('input', resetIdleTimer);
+        els.userGuessInput.addEventListener('focus', resetIdleTimer);
+        els.userGuessInput.addEventListener('blur', clearIdleTimer);
+    }
+
+    function updateInputMode() {
+        // "Numeric Fields ... Triggers UI_KEYBOARD_TYPE_NUMBER"
+        // "Alpha Fields ... Triggers standard QWERTY"
+        var mode = els.confMode.value;
+        if (mode === 'numeric') {
+            els.userGuessInput.inputMode = 'numeric'; // or 'decimal'
+            els.userGuessInput.setAttribute('pattern', '[0-9]*');
+        } else {
+            els.userGuessInput.inputMode = 'text';
+            els.userGuessInput.removeAttribute('pattern');
+        }
+    }
+
+    // Glow / Idle Timer
+    function resetIdleTimer() {
+        els.userGuessInput.classList.remove('glow');
+        clearTimeout(idleTimer);
+
+        if (isRunning && !els.userGuessInput.disabled) {
+            idleTimer = setTimeout(function() {
+                els.userGuessInput.classList.add('glow');
+            }, 5000);
+        }
+    }
+
+    function clearIdleTimer() {
+        clearTimeout(idleTimer);
+        els.userGuessInput.classList.remove('glow');
     }
 
     function handleUserGuess() {
         if (!isRunning) return;
+        resetIdleTimer();
 
         var guess = els.userGuessInput.value.trim().toUpperCase();
         if (guess === cracker.target) {
@@ -156,7 +278,6 @@
         stop();
         cracker.generateTarget();
         resetGame();
-        // Don't update display here, handled in resetGame to keep masked
     }
 
     function resetGame() {
@@ -181,6 +302,8 @@
         els.userGuessInput.value = '';
         els.userGuessInput.disabled = true;
         els.btnUserSubmit.disabled = true;
+
+        clearIdleTimer();
     }
 
     function start() {
@@ -207,14 +330,23 @@
         els.btnUserSubmit.disabled = false;
         els.userGuessInput.focus();
 
+        updateInputMode();
+        resetIdleTimer();
+
         timerInterval = setInterval(updateTimer, 37);
-        gameLoop();
+
+        lastFrameTime = performance.now();
+        accumulatedTime = 0;
+        animationFrameId = requestAnimationFrame(gameLoop);
     }
 
     function stop() {
         if (!isRunning) return;
         isRunning = false;
         clearInterval(timerInterval);
+        cancelAnimationFrame(animationFrameId);
+
+        clearIdleTimer();
 
         els.statusText.textContent = 'STOPPED';
         els.statusText.style.color = '#ff4444';
@@ -231,23 +363,36 @@
         els.btnUserSubmit.disabled = true;
     }
 
-    function gameLoop() {
+    function gameLoop(timestamp) {
         if (!isRunning) return;
 
-        var loopStart = Date.now();
+        var delta = timestamp - lastFrameTime;
+        lastFrameTime = timestamp;
+        accumulatedTime += delta;
 
-        if (delay > 0) {
-             processStep();
-             if (isRunning) {
-                 setTimeout(gameLoop, delay);
-             }
-        } else {
-            while (Date.now() - loopStart < 16 && isRunning) {
-                if (processStep()) break;
+        // High Precision Step
+        // If delay is very small, we might process multiple steps per frame.
+        // If delay is large, we wait until accumulatedTime >= delay.
+
+        // Safety cap to prevent freezing if delay is too small for JS to keep up
+        var maxStepsPerFrame = 1000;
+        var steps = 0;
+
+        while (accumulatedTime >= delay && isRunning) {
+            accumulatedTime -= delay;
+            var won = processStep();
+            steps++;
+            if (won) break;
+
+            if (steps > maxStepsPerFrame) {
+                // We are falling behind. Drop accumulated time to avoid spiral.
+                accumulatedTime = 0;
+                break;
             }
-            if (isRunning) {
-                requestAnimationFrame(gameLoop);
-            }
+        }
+
+        if (isRunning) {
+            animationFrameId = requestAnimationFrame(gameLoop);
         }
     }
 
@@ -264,7 +409,7 @@
     }
 
     function victory(winner) {
-        stop();
+        stop(); // This clears timers
 
         // Reveal Target
         els.targetDisplay.textContent = cracker.target;

@@ -214,6 +214,17 @@ header h1 {
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
+.glow {
+    animation: pulse-glow 1s ease-in-out 5;
+    border-color: #ffd700 !important;
+}
+
+@keyframes pulse-glow {
+    0% { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.2); }
+    50% { border-color: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+    100% { border-color: #38bdf8; box-shadow: 0 0 5px rgba(56, 189, 248, 0.2); }
+}
+
 /* Settings */
 .settings-panel {
     background: var(--panel-bg);
@@ -241,7 +252,7 @@ header h1 {
     gap: 10px;
 }
 
-select, input[type="text"] {
+select, input[type="text"], input[type="number"] {
     background: #0d1117;
     border: 1px solid var(--border-color);
     color: var(--text-color);

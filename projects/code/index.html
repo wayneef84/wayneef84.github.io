@@ -96,8 +96,11 @@
                 </div>
 
                 <div class="setting-group">
-                    <label>Simulation Delay: <span id="delay-val">0</span>ms</label>
-                    <input type="range" id="config-delay" min="0" max="500" value="0" step="10">
+                    <label>Simulation Delay (ms)</label>
+                    <div class="row">
+                        <input type="range" id="config-delay" min="0" max="100" value="0" step="1" style="flex: 2;">
+                        <input type="number" id="delay-input" min="0" max="500" value="0" step="0.5" style="flex: 1;">
+                    </div>
                 </div>
 
                 <div class="setting-group">
