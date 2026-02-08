@@ -64,6 +64,20 @@ All development work happens on the `dev` branch. The `main` branch is the **liv
 
 **Mandate:** All agents must check `LICENSE_AUDIT.md` before importing code. New dependencies must be logged there immediately.
 
+## 🏛️ Legal & Policy Framework
+
+**Central Docs:** [`legal/`](legal/)
+
+**Policy Mapping:**
+All agents must adhere to the specific data and legal policies for each project.
+**Proactive Update:** If you encounter a project missing from this matrix, you must update this table with the correct policy classification.
+
+| Project Name | Data Policy | Legal / Liability | Status |
+| :--- | :--- | :--- | :--- |
+| **Fong Arcade** | Personal / Non-Commercial | Standard MIT / GPL | Updated |
+| **16 TB Archive** | High Privacy / Cold Storage | Internal Only | Pending |
+| **SkyLantern Logistics** | Enterprise / NDA | Amazon Corporate | Active |
+
 ## 📚 Lessons Learned (Accumulated Wisdom)
 
 This section captures hard-won insights from our collaboration. **Add to this list, never delete.**
