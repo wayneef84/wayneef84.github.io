@@ -1,8 +1,7 @@
 // games/cards/poker/5card/negen_poker.js
-import Engine from '../../../../negen/core/Engine.js';
 import CardGame from '../../../../negen/cards/CardGame.js';
 import Evaluator from '../../../../negen/cards/Evaluator.js';
-// CardAssets is global
+// CardAssets is global (loaded via <script> tag in index.html)
 import { RankValues } from '../../../../negen/cards/enums.js';
 
 export default class FiveCardDraw extends CardGame {
