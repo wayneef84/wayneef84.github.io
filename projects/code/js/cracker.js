@@ -47,26 +47,63 @@
         var pattern = this.config.pattern;
 
         if (mode === 'custom') {
-            // Parse pattern e.g. "N-A"
-            // If pattern is shorter than length? Or length is ignored in custom?
-            // Let's assume custom pattern DEFINES the length.
-            // But the UI has a separate length slider.
-            // If custom is selected, we should probably ignore length slider or enforce pattern length.
-            // For this implementation, if custom, we use pattern.
-            var chars = pattern.toUpperCase().split('');
-            for (var i = 0; i < chars.length; i++) {
-                var c = chars[i];
-                if (CHARSETS[c]) {
-                    this.slots.push({
-                        chars: CHARSETS[c],
-                        idx: 0,
-                        isLiteral: false
-                    });
+            // Regex Parser (Simple)
+            var i = 0;
+            while (i < pattern.length) {
+                var char = pattern[i];
+                var template = null;
+
+                if (char === '[') {
+                    // Character Set
+                    var end = pattern.indexOf(']', i);
+                    if (end === -1) {
+                         template = { val: '[', isLiteral: true };
+                         i++;
+                    } else {
+                        var content = pattern.substring(i + 1, end);
+                        var set = this._parseCharSet(content);
+                        template = { chars: set, idx: 0, isLiteral: false };
+                        i = end + 1;
+                    }
+                } else if (char === '\\') {
+                    // Escape sequence
+                    var next = pattern[i + 1];
+                    if (next === 'd') {
+                        template = { chars: CHARSETS['N'], idx: 0, isLiteral: false };
+                    } else if (next === 'w') {
+                        template = { chars: CHARSETS['*'], idx: 0, isLiteral: false };
+                    } else {
+                        template = { val: next, isLiteral: true };
+                    }
+                    i += 2;
+                } else if (char === '.') {
+                     template = { chars: CHARSETS['*'], idx: 0, isLiteral: false };
+                     i++;
                 } else {
-                    this.slots.push({
-                        val: c,
-                        isLiteral: true
-                    });
+                    // Literal
+                    template = { val: char, isLiteral: true };
+                    i++;
+                }
+
+                // Check quantifier {n}
+                var repeat = 1;
+                if (i < pattern.length && pattern[i] === '{') {
+                    var qEnd = pattern.indexOf('}', i);
+                    if (qEnd !== -1) {
+                        var qContent = pattern.substring(i + 1, qEnd);
+                        var r = parseInt(qContent, 10);
+                        if (!isNaN(r) && r > 0) repeat = r;
+                        i = qEnd + 1;
+                    }
+                }
+
+                // Push slots
+                for (var k = 0; k < repeat; k++) {
+                    if (template.isLiteral) {
+                        this.slots.push({ val: template.val, isLiteral: true });
+                    } else {
+                        this.slots.push({ chars: template.chars, idx: 0, isLiteral: false });
+                    }
                 }
             }
         } else {
@@ -84,6 +121,24 @@
                 });
             }
         }
+    };
+
+    CodeCracker.prototype._parseCharSet = function(content) {
+        var set = [];
+        // Handle A-Z, 0-9 ranges
+        for (var i = 0; i < content.length; i++) {
+            if (i + 2 < content.length && content[i+1] === '-') {
+                var start = content.charCodeAt(i);
+                var end = content.charCodeAt(i+2);
+                for (var c = start; c <= end; c++) {
+                    set.push(String.fromCharCode(c));
+                }
+                i += 2;
+            } else {
+                set.push(content[i]);
+            }
+        }
+        return set;
     };
 
     CodeCracker.prototype.reset = function() {

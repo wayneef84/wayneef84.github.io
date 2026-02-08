@@ -247,6 +247,12 @@ var REPO_FILES = [
     "type": "py"
   },
   {
+    "name": "verify_legal_links.py",
+    "path": "../../verification/verify_legal_links.py",
+    "category": "Verification",
+    "type": "py"
+  },
+  {
     "name": "README.md",
     "path": "../../music/README.md",
     "category": "Music",
@@ -841,6 +847,12 @@ var REPO_FILES = [
     "type": "html"
   },
   {
+    "name": "ThirteenCard.js",
+    "path": "../../games/cards/poker/13card/ThirteenCard.js",
+    "category": "Games (Cards)",
+    "type": "js"
+  },
+  {
     "name": "TECHNICAL.md",
     "path": "../../games/cards/poker/13card/TECHNICAL.md",
     "category": "Games (Cards)",
@@ -889,6 +901,12 @@ var REPO_FILES = [
     "type": "html"
   },
   {
+    "name": "TexasHoldem.js",
+    "path": "../../games/cards/poker/holdem/TexasHoldem.js",
+    "category": "Games (Cards)",
+    "type": "js"
+  },
+  {
     "name": "TECHNICAL.md",
     "path": "../../games/cards/poker/holdem/TECHNICAL.md",
     "category": "Games (Cards)",
@@ -899,6 +917,12 @@ var REPO_FILES = [
     "path": "../../games/cards/poker/holdem/MANUAL.md",
     "category": "Games (Cards)",
     "type": "md"
+  },
+  {
+    "name": "BasePokerGame.js",
+    "path": "../../games/cards/poker/shared/BasePokerGame.js",
+    "category": "Games (Cards)",
+    "type": "js"
   },
   {
     "name": "evaluator.js",
@@ -1222,30 +1246,6 @@ var REPO_FILES = [
     "name": "style.css",
     "path": "../../games/board/css/style.css",
     "category": "Games (Board)",
-    "type": "css"
-  },
-  {
-    "name": "index.html",
-    "path": "../../games/code_breaker/index.html",
-    "category": "Games (Code Breaker)",
-    "type": "html"
-  },
-  {
-    "name": "app.js",
-    "path": "../../games/code_breaker/js/app.js",
-    "category": "Games (Code Breaker)",
-    "type": "js"
-  },
-  {
-    "name": "cracker.js",
-    "path": "../../games/code_breaker/js/cracker.js",
-    "category": "Games (Code Breaker)",
-    "type": "js"
-  },
-  {
-    "name": "style.css",
-    "path": "../../games/code_breaker/css/style.css",
-    "category": "Games (Code Breaker)",
     "type": "css"
   },
   {
@@ -1670,6 +1670,30 @@ var REPO_FILES = [
   },
   {
     "name": "index.html",
+    "path": "../../projects/code/index.html",
+    "category": "Projects",
+    "type": "html"
+  },
+  {
+    "name": "app.js",
+    "path": "../../projects/code/js/app.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "cracker.js",
+    "path": "../../projects/code/js/cracker.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "style.css",
+    "path": "../../projects/code/css/style.css",
+    "category": "Projects",
+    "type": "css"
+  },
+  {
+    "name": "index.html",
     "path": "../../projects/md-reader/index.html",
     "category": "Projects",
     "type": "html"
@@ -1967,6 +1991,24 @@ var REPO_FILES = [
     "path": "../../projects/input-a11y/OCR_SETUP.md",
     "category": "Projects",
     "type": "md"
+  },
+  {
+    "name": "worker.min.js",
+    "path": "../../projects/input-a11y/assets/worker.min.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "tesseract.min.js",
+    "path": "../../projects/input-a11y/assets/tesseract.min.js",
+    "category": "Projects",
+    "type": "js"
+  },
+  {
+    "name": "tesseract-core-simd.wasm.js",
+    "path": "../../projects/input-a11y/assets/tesseract-core-simd.wasm.js",
+    "category": "Projects",
+    "type": "js"
   },
   {
     "name": "ocr-manager.js",
