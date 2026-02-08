@@ -65,6 +65,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Init ---
     init();
 
+    function countChanges(original, current) {
+        var count = 0;
+        for (var key in current) {
+            if (current.hasOwnProperty(key)) {
+                if (current[key] !== original[key]) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     function init() {
         // Initialize UI with settings
         updateSettingsUI();
@@ -388,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- Settings Footer Actions ---
         btnSave.addEventListener('click', function() {
             // Commit
+            var count = countChanges(settings, tempSettings);
             settings = JSON.parse(JSON.stringify(tempSettings));
             storage.saveSettings(settings);
             applyOCRFilterConfig();
@@ -397,10 +410,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentTab === 'scan' && userHasInteracted) {
                 startScanner();
             }
-            alert('Settings Saved.');
+            alert('Saved ' + count + ' changes.');
         });
 
         btnCancel.addEventListener('click', function() {
+            // Check for changes
+            var count = countChanges(settings, tempSettings);
+            if (count > 0) {
+                if (!confirm('Discard ' + count + ' unsaved changes?')) {
+                    return;
+                }
+            }
             // Revert
             tempSettings = JSON.parse(JSON.stringify(settings));
             updateSettingsUI();
@@ -408,8 +428,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         btnDefault.addEventListener('click', function() {
             // Reset to defaults
-            tempSettings = storage.getDefaults();
-            updateSettingsUI();
+            if (confirm('Are you sure you want to reset all settings to default regex and character limits?')) {
+                tempSettings = storage.getDefaults();
+                updateSettingsUI();
+            }
         });
 
         // Snapshot Button
