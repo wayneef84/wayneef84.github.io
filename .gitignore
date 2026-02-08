@@ -12,8 +12,3 @@ CONTINUATION_NOTES.md
 # IDE
 .vscode/
 .idea/
-
-# Logs
-server.log
-server_log.txt
-server_output.log
