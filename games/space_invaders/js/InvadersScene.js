@@ -42,7 +42,18 @@ export default class InvadersScene extends Scene {
         const h = 20;
 
         this.enemies = [];
+        // Default Grid if no custom level
+        // Row 0: Rainbow (Special)
+        // Row 1-2: Dive Bombers (Aggressive)
+        // Row 3-4: Basic
+
         for (let r=0; r<this.enemyRows; r++) {
+            let type = 1; // Basic
+            let color = '#fff';
+
+            if (r === 0) { type = 3; color = 'rainbow'; } // Rainbow
+            else if (r < 3) { type = 2; color = '#f0f'; } // Diver
+
             for (let c=0; c<this.enemyCols; c++) {
                 this.enemies.push({
                     x: startX + c * (w + gap),
@@ -50,11 +61,26 @@ export default class InvadersScene extends Scene {
                     w: w,
                     h: h,
                     active: true,
-                    color: '#fff',
+                    color: color,
+                    baseColor: color,
+                    type: type,
                     row: r,
-                    col: c
+                    col: c,
+                    state: 'idle', // idle, diving, returning
+                    diveTargetX: 0,
+                    diveTargetY: 0,
+                    origX: 0,
+                    origY: 0
                 });
             }
+        }
+
+        // Shields
+        this.shields = [];
+        const shieldY = this.height - 100;
+        for(let i=0; i<4; i++) {
+            const sx = 80 + i * 120;
+            this.shields.push({x: sx, y: shieldY, w: 40, h: 30, active: true, health: 10});
         }
     }
 
@@ -75,9 +101,9 @@ export default class InvadersScene extends Scene {
         this.player.x = MathUtils.clamp(this.player.x, 10, this.width - this.player.w - 10);
 
         // Shoot
-        if (this.engine.input.isJustPressed('FIRE') || this.engine.input.pointer.isPressed) {
+        if (this.engine.input.isJustPressed('FIRE') || (this.engine.input.pointer.isJustPressed && this.engine.input.pointer.y > this.height/2)) {
             // Limit player bullets
-            if (this.bullets.filter(b => b.type === 'player').length < 1) {
+            if (this.bullets.filter(b => b.type === 'player').length < 2) {
                 this.bullets.push({
                     x: this.player.x + this.player.w/2 - 2,
                     y: this.player.y - 10,
@@ -91,7 +117,9 @@ export default class InvadersScene extends Scene {
             }
         }
 
-        // --- Enemies ---
+        // --- Enemies Update ---
+        this.updateEnemies(dt);
+
         this.enemyStepTimer += dt;
         if (this.enemyStepTimer >= this.enemyStepInterval) {
             this.stepEnemies();
@@ -130,19 +158,31 @@ export default class InvadersScene extends Scene {
             let hit = false;
 
             if (b.type === 'player') {
+                // Check Enemies
                 for (let e of this.enemies) {
                     if (e.active && Physics.checkAABB(b, e)) {
                         e.active = false;
                         hit = true;
-                        this.score += 10;
-                        this.engine.audio.playTone(200, 'noise', 0.1); // Explosion
+                        this.score += (e.type === 3 ? 50 : 10); // Bonus for Rainbow
+                        this.engine.audio.playTone(200, 'noise', 0.1);
 
-                        // Particles
-                        this.particles.emit(e.x + e.w/2, e.y + e.h/2, 10, { color: '#fff', size: 4, life: 0.6 });
-
-                        // Speed up
+                        this.particles.emit(e.x + e.w/2, e.y + e.h/2, 10, { color: e.color, size: 4, life: 0.6 });
                         this.enemyStepInterval = Math.max(100, this.enemyStepInterval * 0.98);
                         break;
+                    }
+                }
+                // Check Shields (Player hits shield?) -> Damage shield
+                if (!hit) {
+                    for(let s of this.shields) {
+                        if(s.active && Physics.checkAABB(b, s)) {
+                            // Player shot hits shield -> destroys bullet, damages shield?
+                            // Usually player shots pass through bottom of shield in Galaga, but in SI they damage it.
+                            s.health--;
+                            if(s.health<=0) s.active = false;
+                            hit = true;
+                            this.particles.emit(b.x, b.y, 3, { color: '#0ff', size: 2, life: 0.3 });
+                            break;
+                        }
                     }
                 }
             } else if (b.type === 'enemy') {
@@ -154,6 +194,18 @@ export default class InvadersScene extends Scene {
 
                     if (this.lives <= 0) {
                         this.state = 'gameover';
+                    }
+                }
+                // Check Shields
+                if (!hit) {
+                    for(let s of this.shields) {
+                        if(s.active && Physics.checkAABB(b, s)) {
+                            s.health--;
+                            if(s.health<=0) s.active = false;
+                            hit = true;
+                            this.particles.emit(b.x, b.y, 3, { color: '#0ff', size: 2, life: 0.3 });
+                            break;
+                        }
                     }
                 }
             }
@@ -173,11 +225,60 @@ export default class InvadersScene extends Scene {
         }
     }
 
+    updateEnemies(dt) {
+        const time = Date.now();
+        for (let e of this.enemies) {
+            if (!e.active) continue;
+
+            // Type 3: Rainbow - Color Cycle
+            if (e.type === 3) {
+                const hue = (time / 10) % 360;
+                e.color = `hsl(${hue}, 100%, 50%)`;
+            }
+
+            // Type 2: Dive Bomber Logic
+            if (e.type === 2) {
+                if (e.state === 'idle') {
+                    // Chance to dive
+                    if (Math.random() < 0.001) {
+                        e.state = 'diving';
+                        e.origX = e.x;
+                        e.origY = e.y;
+                        e.diveTargetX = this.player.x;
+                        e.diveTargetY = this.player.y;
+                    }
+                } else if (e.state === 'diving') {
+                    // Move towards player
+                    const dx = e.diveTargetX - e.x;
+                    const dy = e.diveTargetY - e.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 10 || e.y > this.height) {
+                        e.state = 'returning';
+                    } else {
+                        e.x += (dx/dist) * 3; // Fast
+                        e.y += (dy/dist) * 3;
+                    }
+                } else if (e.state === 'returning') {
+                    // Return to formation (approximate)
+                    // Actually, just respawn at top or fly off screen?
+                    // Let's fly off screen and reappear at formation
+                    if (e.y > this.height) {
+                        e.y = 0;
+                        e.state = 'idle';
+                        // Need to snap back to grid position... tricky if grid moves.
+                        // Simplified: Diver just dies or wraps.
+                    }
+                     e.y += 5;
+                }
+            }
+        }
+    }
+
     stepEnemies() {
         let moveDown = false;
-        const activeEnemies = this.enemies.filter(e => e.active);
+        const activeEnemies = this.enemies.filter(e => e.active && e.state === 'idle');
 
-        // Check edges
+        // Check edges (only for idle enemies in formation)
         for (let e of activeEnemies) {
             if (this.enemyDir === 1 && e.x + e.w > this.width - 20) {
                 moveDown = true;
@@ -189,7 +290,7 @@ export default class InvadersScene extends Scene {
         if (moveDown) {
             this.enemyDir *= -1;
             for (let e of this.enemies) {
-                e.y += 20;
+                if(e.state === 'idle') e.y += 20;
             }
             // Check invasion
             for (let e of activeEnemies) {
@@ -199,7 +300,7 @@ export default class InvadersScene extends Scene {
             }
         } else {
             for (let e of this.enemies) {
-                e.x += this.enemySpeed * this.enemyDir;
+                if(e.state === 'idle') e.x += this.enemySpeed * this.enemyDir;
             }
         }
         this.engine.audio.playTone(100 - (this.enemyStepInterval/20), 'square', 0.05);
@@ -216,10 +317,26 @@ export default class InvadersScene extends Scene {
         // Enemies
         for (let e of this.enemies) {
             if (e.active) {
-                // Simple alien shape (box with eyes?)
+                // Visual variation
                 renderer.drawRect(e.x, e.y, e.w, e.h, e.color);
+                if (e.type === 2) { // Diver wings
+                     renderer.drawRect(e.x - 5, e.y, 5, 10, e.color);
+                     renderer.drawRect(e.x + e.w, e.y, 5, 10, e.color);
+                }
                 renderer.drawRect(e.x + 5, e.y + 5, 5, 5, '#000'); // Eye
                 renderer.drawRect(e.x + e.w - 10, e.y + 5, 5, 5, '#000'); // Eye
+            }
+        }
+
+        // Shields
+        for(let s of this.shields) {
+            if(s.active) {
+                // "Retro-Glass" Hexagon feel (cyan outline, translucent fill)
+                const alpha = s.health / 10;
+                renderer.ctx.fillStyle = `rgba(0, 255, 255, ${alpha * 0.5})`;
+                renderer.ctx.fillRect(s.x, s.y, s.w, s.h);
+                renderer.ctx.strokeStyle = '#0ff';
+                renderer.ctx.strokeRect(s.x, s.y, s.w, s.h);
             }
         }
 

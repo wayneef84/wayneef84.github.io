@@ -14,7 +14,9 @@ export default class InputManager {
             y: 0,
             isDown: false,
             isPressed: false,
-            isReleased: false
+            isReleased: false,
+            _framePressed: false, // Internal latch
+            _frameReleased: false
         };
 
         // Gamepad State
@@ -90,8 +92,12 @@ export default class InputManager {
 
     update(dt = 0.016) {
         // 1. Reset Single-Frame States
-        this.pointer.isPressed = false;
-        this.pointer.isReleased = false;
+        this.pointer.isPressed = this.pointer._framePressed;
+        this.pointer.isReleased = this.pointer._frameReleased;
+
+        // Clear latches for next frame
+        this.pointer._framePressed = false;
+        this.pointer._frameReleased = false;
 
         // 2. Poll Gamepads
         this._pollGamepads();
@@ -224,10 +230,26 @@ export default class InputManager {
         this.pointer.y = (clientY - rect.top) * scaleY;
     }
 
-    handleMouseDown(e) { this.pointer.isDown = true; this.pointer.isPressed = true; this.updatePointerPos(e, e.target); }
-    handleMouseUp(e) { this.pointer.isDown = false; this.pointer.isReleased = true; }
+    handleMouseDown(e) {
+        this.pointer.isDown = true;
+        this.pointer._framePressed = true; // Latch
+        this.updatePointerPos(e, e.target);
+    }
+    handleMouseUp(e) {
+        this.pointer.isDown = false;
+        this.pointer._frameReleased = true; // Latch
+    }
     handleMouseMove(e) { this.updatePointerPos(e, e.target); }
-    handleTouchStart(e) { e.preventDefault(); this.pointer.isDown = true; this.pointer.isPressed = true; this.updatePointerPos(e, e.target); }
-    handleTouchEnd(e) { e.preventDefault(); this.pointer.isDown = false; this.pointer.isReleased = true; }
+    handleTouchStart(e) {
+        e.preventDefault();
+        this.pointer.isDown = true;
+        this.pointer._framePressed = true;
+        this.updatePointerPos(e, e.target);
+    }
+    handleTouchEnd(e) {
+        e.preventDefault();
+        this.pointer.isDown = false;
+        this.pointer._frameReleased = true;
+    }
     handleTouchMove(e) { e.preventDefault(); this.updatePointerPos(e, e.target); }
 }
