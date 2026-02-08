@@ -58,6 +58,7 @@
             <div id="reader-container">
                 <div id="reader"></div>
                 <div class="scan-line"></div>
+                <div id="scan-roi-overlay" class="hidden"></div>
             </div>
 
             <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
@@ -161,6 +162,50 @@
                     <label for="set-confirm-popup">Confirm Popup:</label>
                     <input type="checkbox" id="set-confirm-popup" checked>
                 </div>
+                <!-- Scan Region Settings -->
+                <div class="setting-item">
+                    <label for="set-ocr-roi-enabled">Custom Region:</label>
+                    <input type="checkbox" id="set-ocr-roi-enabled">
+                </div>
+                <div id="roi-settings-group" class="hidden">
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-top">Top (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-top" min="0" max="100" step="1" value="10">
+                            <input type="number" id="set-ocr-roi-top-manual" class="manual-input hidden" min="0" max="100" value="10">
+                            <span id="ocr-roi-top-val" class="range-val">10</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-top" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-left">Left (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-left" min="0" max="100" step="1" value="10">
+                            <input type="number" id="set-ocr-roi-left-manual" class="manual-input hidden" min="0" max="100" value="10">
+                            <span id="ocr-roi-left-val" class="range-val">10</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-left" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-width">Width (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-width" min="10" max="100" step="1" value="80">
+                            <input type="number" id="set-ocr-roi-width-manual" class="manual-input hidden" min="10" max="100" value="80">
+                            <span id="ocr-roi-width-val" class="range-val">80</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-width" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-height">Height (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-height" min="5" max="100" step="1" value="20">
+                            <input type="number" id="set-ocr-roi-height-manual" class="manual-input hidden" min="5" max="100" value="20">
+                            <span id="ocr-roi-height-val" class="range-val">20</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-height" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="setting-item">
                     <label for="set-ocr-confidence">Confidence (%)</label>
                     <div class="range-group">

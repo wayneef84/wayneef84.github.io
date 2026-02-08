@@ -40,6 +40,7 @@ var OCRManager = (function() {
         this.confirmPopup = true;    // show confirmation modal on OCR result
         this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
         this.preprocessingMode = 'TRIM'; // TRIM, NONE, REMOVE_ALL, NORMALIZE
+        this.roi = null; // { top, left, width, height } in %
 
         // Check native TextDetector support
         if ('TextDetector' in window) {
@@ -64,6 +65,7 @@ var OCRManager = (function() {
         if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
         if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
         if (opts.preprocessingMode !== undefined) this.preprocessingMode = opts.preprocessingMode;
+        if (opts.roi !== undefined) this.roi = opts.roi;
     };
 
     /**
@@ -439,7 +441,20 @@ var OCRManager = (function() {
             return Promise.resolve();
         }
 
-        this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        // Apply ROI if enabled
+        if (this.roi && this.roi.enabled) {
+            var vw = this.video.videoWidth;
+            var vh = this.video.videoHeight;
+            var sx = (this.roi.left / 100) * vw;
+            var sy = (this.roi.top / 100) * vh;
+            var sw = (this.roi.width / 100) * vw;
+            var sh = (this.roi.height / 100) * vh;
+
+            // Clear canvas and draw cropped region
+            this.canvasCtx.drawImage(this.video, sx, sy, sw, sh, 0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        }
 
         return this.tesseractWorker.recognize(this.canvas).then(function(result) {
             if (!self.isScanning) return;
@@ -474,6 +489,25 @@ var OCRManager = (function() {
 
         return this.nativeDetector.detect(this.video).then(function(texts) {
             if (!self.isScanning || !texts || texts.length === 0) return;
+
+            // Filter results by ROI if enabled
+            if (self.roi && self.roi.enabled) {
+                var vw = self.video.videoWidth;
+                var vh = self.video.videoHeight;
+                var roiX = (self.roi.left / 100) * vw;
+                var roiY = (self.roi.top / 100) * vh;
+                var roiW = (self.roi.width / 100) * vw;
+                var roiH = (self.roi.height / 100) * vh;
+
+                texts = texts.filter(function(t) {
+                    var box = t.boundingBox;
+                    var centerX = box.x + box.width / 2;
+                    var centerY = box.y + box.height / 2;
+                    return (centerX >= roiX && centerX <= (roiX + roiW) &&
+                            centerY >= roiY && centerY <= (roiY + roiH));
+                });
+                if (texts.length === 0) return;
+            }
 
             texts.sort(function(a, b) {
                 if (Math.abs(a.boundingBox.y - b.boundingBox.y) > 20) {
@@ -515,8 +549,18 @@ var OCRManager = (function() {
             this._loopTimer = null;
         }
 
-        // Capture frame
-        this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        // Capture frame (respect ROI)
+        if (this.roi && this.roi.enabled) {
+            var vw = this.video.videoWidth;
+            var vh = this.video.videoHeight;
+            var sx = (this.roi.left / 100) * vw;
+            var sy = (this.roi.top / 100) * vh;
+            var sw = (this.roi.width / 100) * vw;
+            var sh = (this.roi.height / 100) * vh;
+            this.canvasCtx.drawImage(this.video, sx, sy, sw, sh, 0, 0, this.canvas.width, this.canvas.height);
+        } else {
+            this.canvasCtx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        }
 
         // Capture image data URI for history (always, regardless of text result)
         var imageDataUri = '';

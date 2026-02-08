@@ -40,6 +40,18 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrPreprocess = document.getElementById('set-ocr-preprocess');
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
 
+    // OCR Scan Region (ROI)
+    var setOcrRoiEnabled = document.getElementById('set-ocr-roi-enabled');
+    var roiSettingsGroup = document.getElementById('roi-settings-group');
+    var setOcrRoiTop = document.getElementById('set-ocr-roi-top');
+    var setOcrRoiLeft = document.getElementById('set-ocr-roi-left');
+    var setOcrRoiWidth = document.getElementById('set-ocr-roi-width');
+    var setOcrRoiHeight = document.getElementById('set-ocr-roi-height');
+    var roiTopVal = document.getElementById('ocr-roi-top-val');
+    var roiLeftVal = document.getElementById('ocr-roi-left-val');
+    var roiWidthVal = document.getElementById('ocr-roi-width-val');
+    var roiHeightVal = document.getElementById('ocr-roi-height-val');
+
     // OCR Tuning
     var setOcrConfidence = document.getElementById('set-ocr-confidence');
     var ocrConfidenceVal = document.getElementById('ocr-confidence-val');
@@ -90,6 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrShowRaw && settings.ocrShowRaw !== undefined) {
             setOcrShowRaw.checked = settings.ocrShowRaw;
         }
+
+        // Restore OCR ROI settings
+        if (setOcrRoiEnabled && settings.ocrRoiEnabled !== undefined) setOcrRoiEnabled.checked = settings.ocrRoiEnabled;
+        if (setOcrRoiTop) setOcrRoiTop.value = settings.ocrRoiTop || 10;
+        if (setOcrRoiLeft) setOcrRoiLeft.value = settings.ocrRoiLeft || 10;
+        if (setOcrRoiWidth) setOcrRoiWidth.value = settings.ocrRoiWidth || 80;
+        if (setOcrRoiHeight) setOcrRoiHeight.value = settings.ocrRoiHeight || 20;
+
+        // Sync ROI display values
+        if (roiTopVal) roiTopVal.innerText = setOcrRoiTop.value;
+        if (roiLeftVal) roiLeftVal.innerText = setOcrRoiLeft.value;
+        if (roiWidthVal) roiWidthVal.innerText = setOcrRoiWidth.value;
+        if (roiHeightVal) roiHeightVal.innerText = setOcrRoiHeight.value;
+
+        updateRoiUI();
 
         // Restore OCR tuning
         if (setOcrConfidence) {
@@ -173,6 +200,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyOCRFilterConfig() {
         if (!ocrManager) return;
         var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+
+        var roiConfig = {
+            enabled: s.ocrRoiEnabled || false,
+            top: parseInt(s.ocrRoiTop, 10) || 10,
+            left: parseInt(s.ocrRoiLeft, 10) || 10,
+            width: parseInt(s.ocrRoiWidth, 10) || 80,
+            height: parseInt(s.ocrRoiHeight, 10) || 20
+        };
+
         ocrManager.configure({
             filterMode: s.ocrFilterMode || 'NONE',
             filterValue: s.ocrFilterValue || '',
@@ -180,8 +216,37 @@ document.addEventListener('DOMContentLoaded', function() {
             confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
             minTextLength: parseInt(s.ocrMinLength, 10) || 3,
-            preprocessingMode: s.ocrPreprocessingMode || 'TRIM'
+            preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
+            roi: roiConfig
         });
+
+        updateRoiOverlay(roiConfig);
+    }
+
+    function updateRoiUI() {
+        var s = (currentTab === 'settings' && tempSettings) ? tempSettings : settings;
+        if (s.ocrRoiEnabled) {
+            roiSettingsGroup.classList.remove('hidden');
+        } else {
+            roiSettingsGroup.classList.add('hidden');
+        }
+    }
+
+    function updateRoiOverlay(roi) {
+        var overlay = document.getElementById('scan-roi-overlay');
+        if (!overlay) return;
+
+        // Only show overlay if ROI is enabled AND we are in OCR mode (or Auto)
+        var isOCR = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
+        if (roi.enabled && isOCR) {
+            overlay.classList.remove('hidden');
+            overlay.style.top = roi.top + '%';
+            overlay.style.left = roi.left + '%';
+            overlay.style.width = roi.width + '%';
+            overlay.style.height = roi.height + '%';
+        } else {
+            overlay.classList.add('hidden');
+        }
     }
 
     function applyBarcodeConfig() {
@@ -450,6 +515,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrShowRaw) setOcrShowRaw.addEventListener('change', function(e) {
             updateSetting('ocrShowRaw', e.target.checked);
         });
+
+        // OCR ROI
+        if (setOcrRoiEnabled) setOcrRoiEnabled.addEventListener('change', function(e) {
+            updateSetting('ocrRoiEnabled', e.target.checked);
+            updateRoiUI();
+            applyOCRFilterConfig();
+        });
+        bindRangeSlider(setOcrRoiTop, roiTopVal, 'ocrRoiTop', applyOCRFilterConfig);
+        bindRangeSlider(setOcrRoiLeft, roiLeftVal, 'ocrRoiLeft', applyOCRFilterConfig);
+        bindRangeSlider(setOcrRoiWidth, roiWidthVal, 'ocrRoiWidth', applyOCRFilterConfig);
+        bindRangeSlider(setOcrRoiHeight, roiHeightVal, 'ocrRoiHeight', applyOCRFilterConfig);
 
         // OCR Tuning Sliders
         bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
