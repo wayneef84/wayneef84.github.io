@@ -6,6 +6,9 @@
     var startTime;
     var isRunning = false;
     var delay = 0;
+    var lastFrameTime = 0;
+    var accumulator = 0;
+    var glowTimer = null;
 
     // DOM Elements
     var els = {
@@ -25,7 +28,7 @@
         confLength: document.getElementById('config-length'),
         confStrategy: document.getElementById('config-strategy'),
         confDelay: document.getElementById('config-delay'),
-        delayVal: document.getElementById('delay-val'),
+        delayInput: document.getElementById('delay-input'),
 
         customContainer: document.getElementById('custom-pattern-container'),
         customInput: document.getElementById('custom-pattern-input'),
@@ -43,6 +46,12 @@
     function init() {
         cracker = new CodeCracker();
         bindEvents();
+
+        // Init Delay
+        if (els.delayInput) {
+            handleDelayInput.call(els.delayInput);
+        }
+
         updateConfig();
         generateNewTarget();
     }
@@ -80,10 +89,9 @@
             if (!isRunning) cracker.reset();
         });
 
-        els.confDelay.addEventListener('input', function() {
-            delay = parseInt(this.value, 10);
-            els.delayVal.textContent = delay;
-        });
+        els.confDelay.addEventListener('input', handleDelaySlider);
+        els.delayInput.addEventListener('change', handleDelayInput); // Change on enter/blur
+        els.delayInput.addEventListener('input', handleDelayInput); // Optional: live update? Might be annoying. Let's stick to change or just input if careful.
 
         // Controls
         els.btnStart.addEventListener('click', start);
@@ -120,6 +128,24 @@
         els.userGuessInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') handleUserGuess();
         });
+
+        // Glow Timer Reset
+        ['input', 'keydown', 'click', 'focus'].forEach(function(evt) {
+            els.userGuessInput.addEventListener(evt, resetGlowTimer);
+        });
+    }
+
+    function resetGlowTimer() {
+        if (!isRunning) return;
+
+        clearTimeout(glowTimer);
+        els.userGuessInput.classList.remove('glow');
+
+        glowTimer = setTimeout(function() {
+            if (isRunning && !els.userGuessInput.disabled) {
+                els.userGuessInput.classList.add('glow');
+            }
+        }, 5000);
     }
 
     function handleUserGuess() {
@@ -144,6 +170,13 @@
         var strat = els.confStrategy.value;
         var pattern = els.customInput.value || 'N-A';
 
+        // Update Keyboard Type
+        if (mode === 'numeric') {
+            els.userGuessInput.inputMode = 'numeric';
+        } else {
+            els.userGuessInput.inputMode = 'text';
+        }
+
         cracker.configure({
             mode: mode,
             length: len,
@@ -157,6 +190,59 @@
         cracker.generateTarget();
         resetGame();
         // Don't update display here, handled in resetGame to keep masked
+    }
+
+    // Logarithmic Slider Logic
+    var ANCHORS = [0.5, 1, 5, 25, 50];
+    var B_CONST = Math.pow(100, 1/100); // ~1.0471
+
+    function toDelay(sliderVal) {
+        return 0.5 * Math.pow(B_CONST, sliderVal);
+    }
+
+    function toSlider(delayVal) {
+        if (delayVal <= 0.5) return 0;
+        return Math.log(delayVal / 0.5) / Math.log(B_CONST);
+    }
+
+    function handleDelaySlider() {
+        var sVal = parseFloat(this.value);
+        var dVal = toDelay(sVal);
+
+        // Snapping
+        for (var i = 0; i < ANCHORS.length; i++) {
+            var a = ANCHORS[i];
+            var aPos = toSlider(a);
+            if (Math.abs(sVal - aPos) < 2.5) { // Snap radius
+                dVal = a;
+                // We don't update this.value immediately to avoid fighting the user's drag,
+                // but we update the input to show the snapped value.
+                // Actually, user asked to snap the handle.
+                // If we do it on 'input', it might be jerky.
+                // Let's just update the input box for now and the delay.
+                break;
+            }
+        }
+
+        // Round for display
+        dVal = parseFloat(dVal.toPrecision(3));
+
+        delay = dVal;
+        els.delayInput.value = dVal;
+    }
+
+    function handleDelayInput() {
+        var dVal = parseFloat(this.value);
+        if (isNaN(dVal) || dVal < 0) return;
+
+        delay = dVal;
+        var sVal = toSlider(dVal);
+
+        // Clamp slider
+        if (sVal < 0) sVal = 0;
+        if (sVal > 100) sVal = 100;
+
+        els.confDelay.value = sVal;
     }
 
     function resetGame() {
@@ -192,6 +278,9 @@
 
         isRunning = true;
         startTime = Date.now();
+        lastFrameTime = performance.now();
+        accumulator = 0;
+
         els.statusText.textContent = 'RUNNING';
         els.statusText.style.color = '#ffd700'; // Gold
 
@@ -206,15 +295,18 @@
         els.userGuessInput.disabled = false;
         els.btnUserSubmit.disabled = false;
         els.userGuessInput.focus();
+        resetGlowTimer();
 
         timerInterval = setInterval(updateTimer, 37);
-        gameLoop();
+        requestAnimationFrame(gameLoop);
     }
 
     function stop() {
         if (!isRunning) return;
         isRunning = false;
         clearInterval(timerInterval);
+        clearTimeout(glowTimer);
+        els.userGuessInput.classList.remove('glow');
 
         els.statusText.textContent = 'STOPPED';
         els.statusText.style.color = '#ff4444';
@@ -231,23 +323,42 @@
         els.btnUserSubmit.disabled = true;
     }
 
-    function gameLoop() {
+    function gameLoop(timestamp) {
         if (!isRunning) return;
 
-        var loopStart = Date.now();
+        if (!timestamp) timestamp = performance.now();
+        var deltaTime = timestamp - lastFrameTime;
+        lastFrameTime = timestamp;
 
-        if (delay > 0) {
-             processStep();
-             if (isRunning) {
-                 setTimeout(gameLoop, delay);
-             }
-        } else {
-            while (Date.now() - loopStart < 16 && isRunning) {
+        if (delay <= 0) {
+            // Max speed mode (limit to 16ms budget)
+            var start = performance.now();
+            while (performance.now() - start < 16 && isRunning) {
                 if (processStep()) break;
             }
-            if (isRunning) {
-                requestAnimationFrame(gameLoop);
+        } else {
+            // Accumulator mode
+            accumulator += deltaTime;
+
+            // Safety cap for accumulator (e.g. if tab was backgrounded)
+            if (accumulator > 1000) accumulator = 1000;
+
+            var steps = Math.floor(accumulator / delay);
+            if (steps > 0) {
+                accumulator -= steps * delay;
+
+                // Cap steps to avoid freezing
+                if (steps > 5000) steps = 5000;
+
+                for (var i = 0; i < steps; i++) {
+                    if (processStep()) break;
+                    if (!isRunning) break;
+                }
             }
+        }
+
+        if (isRunning) {
+            requestAnimationFrame(gameLoop);
         }
     }
 
