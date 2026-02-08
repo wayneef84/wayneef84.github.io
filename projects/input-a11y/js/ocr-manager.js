@@ -94,7 +94,7 @@ var OCRManager = (function() {
      */
     OCRManager.prototype.configure = function(opts) {
         if (opts.alphanumericOnly !== undefined) this.alphanumericOnly = opts.alphanumericOnly;
-        if (opts.minTextLength !== undefined) this.minTextLength = opts.minTextLength;
+        if (opts.minTextLength !== undefined) this.minTextLength = parseInt(opts.minTextLength, 10);
         if (opts.debounceMs !== undefined) this._debounceMs = opts.debounceMs;
         if (opts.filterMode !== undefined) this.filterMode = opts.filterMode;
         if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
@@ -475,7 +475,7 @@ var OCRManager = (function() {
     OCRManager.prototype._passesLengthFilter = function(text) {
         if (!text || text.length === 0) return false;
         if (this.minTextLength === 0) return true; // 0 = off, accept all
-        return text.length === this.minTextLength;
+        return text.length == this.minTextLength;
     };
 
     /**
