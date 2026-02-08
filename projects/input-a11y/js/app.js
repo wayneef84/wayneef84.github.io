@@ -1153,8 +1153,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (editModal) editModal.classList.remove('hidden');
     }
 
-    function closeEditEntry() {
-        // Revert textarea to original (in case user changed it but cancelled)
+    function hasEditPendingChanges() {
+        if (!editText) return false;
+        return editText.value !== _editOriginalContent;
+    }
+
+    function closeEditEntry(force) {
+        if (!force && hasEditPendingChanges()) {
+            if (!confirm('Discard unsaved changes?')) return;
+        }
         if (editText) editText.value = _editOriginalContent;
         if (editModal) editModal.classList.add('hidden');
         _editEntryId = null;
@@ -1170,8 +1177,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         storage.updateItem(_editEntryType, _editEntryId, { content: newContent });
-        _editOriginalContent = ''; // Clear so close doesn't revert
-        closeEditEntry();
+        _editOriginalContent = newContent; // Match so close doesn't prompt
+        closeEditEntry(true);
         renderHistory();
         showToast('Entry updated');
     }
@@ -1180,8 +1187,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!_editEntryId || !_editEntryType) return;
         if (!confirm('Delete this entry? This cannot be undone.')) return;
         storage.removeItem(_editEntryType, _editEntryId);
-        _editOriginalContent = '';
-        closeEditEntry();
+        _editOriginalContent = ''; // Clear so close doesn't prompt
+        closeEditEntry(true);
         renderHistory();
         showToast('Entry deleted');
     }
@@ -1193,8 +1200,17 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Entry deleted');
     }
 
-    if (closeEdit) closeEdit.addEventListener('click', closeEditEntry);
-    if (btnEditCancel) btnEditCancel.addEventListener('click', closeEditEntry);
+    function openUrlForItem(content) {
+        var baseUrl = settings.baseUrl || 'https://www.google.com/search?q=';
+        if (!/^https?:\/\//i.test(baseUrl)) {
+            baseUrl = 'https://' + baseUrl;
+        }
+        var url = baseUrl + encodeURIComponent(content);
+        window.open(url, '_blank');
+    }
+
+    if (closeEdit) closeEdit.addEventListener('click', function() { closeEditEntry(); });
+    if (btnEditCancel) btnEditCancel.addEventListener('click', function() { closeEditEntry(); });
     if (btnEditSave) btnEditSave.addEventListener('click', saveEditEntry);
     if (btnEditDelete) btnEditDelete.addEventListener('click', deleteEditEntry);
     if (editModal) {
@@ -1204,6 +1220,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- History Rendering ---
+    function isUrlMode() {
+        return settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP';
+    }
+
     function renderList(list, elementId) {
         var ul = document.getElementById(elementId);
         var type = (elementId === 'history-scanned') ? 'SCANNED' : 'CREATED';
@@ -1217,9 +1237,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 var li = document.createElement('li');
                 var time = new Date(item.timestamp).toLocaleString();
 
-                // Build row with separate click zones
-                var row = document.createElement('div');
-                row.className = 'hist-row';
+                // --- Top row: thumbnail + content (click to copy) ---
+                var topRow = document.createElement('div');
+                topRow.className = 'hist-row';
 
                 // Thumbnail — clicking opens image preview
                 if (item.image) {
@@ -1232,7 +1252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         e.stopPropagation();
                         openImagePreview(item.image);
                     });
-                    row.appendChild(thumb);
+                    topRow.appendChild(thumb);
                 }
 
                 // Info section
@@ -1244,21 +1264,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 contentDiv.textContent = item.content || '';
                 info.appendChild(contentDiv);
 
-                var meta = document.createElement('div');
-                meta.className = 'hist-meta';
                 var formatSpan = document.createElement('span');
+                formatSpan.className = 'hist-format';
                 formatSpan.textContent = item.format || 'QR';
-                meta.appendChild(formatSpan);
-                var timeSpan = document.createElement('span');
-                timeSpan.textContent = time;
-                meta.appendChild(timeSpan);
-                info.appendChild(meta);
+                info.appendChild(formatSpan);
 
-                row.appendChild(info);
+                topRow.appendChild(info);
+                li.appendChild(topRow);
 
-                // Action buttons container
+                // --- Bottom row: timestamp above, action buttons below ---
+                var bottomRow = document.createElement('div');
+                bottomRow.className = 'hist-bottom';
+
+                var timeDiv = document.createElement('div');
+                timeDiv.className = 'hist-timestamp';
+                timeDiv.textContent = time;
+                bottomRow.appendChild(timeDiv);
+
                 var actionsDiv = document.createElement('div');
-                actionsDiv.className = 'hist-actions';
+                actionsDiv.className = 'hist-actions-row';
+
+                // Open URL button (only if URL_INPUT mode is active)
+                if (isUrlMode()) {
+                    var urlBtn = document.createElement('button');
+                    urlBtn.className = 'hist-action-btn hist-url-btn';
+                    urlBtn.innerHTML = '&#128279;'; // Link icon 🔗
+                    urlBtn.title = 'Open URL';
+                    urlBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openUrlForItem(item.content);
+                    });
+                    actionsDiv.appendChild(urlBtn);
+                }
 
                 // Edit button
                 var editBtn = document.createElement('button');
@@ -1282,9 +1319,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 actionsDiv.appendChild(delBtn);
 
-                row.appendChild(actionsDiv);
-
-                li.appendChild(row);
+                bottomRow.appendChild(actionsDiv);
+                li.appendChild(bottomRow);
 
                 // Clicking text area copies to clipboard
                 li.title = 'Click to copy';

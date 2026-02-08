@@ -389,25 +389,44 @@ button {
     min-width: 0;
 }
 
-/* History Action Buttons */
-.hist-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-    align-self: center;
+/* History Item Layout */
+.hist-format {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 2px;
 }
 
+.hist-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.hist-timestamp {
+    font-size: 0.75rem;
+    color: #555;
+}
+
+.hist-actions-row {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* History Action Buttons */
 .hist-action-btn {
     background: transparent;
     border: 1px solid var(--border-color);
     color: #aaa;
     font-size: 0.85rem;
-    padding: 4px 6px;
+    padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    min-width: 30px;
-    min-height: 30px;
+    min-width: 34px;
+    min-height: 34px;
     transition: background 0.2s, color 0.2s;
     line-height: 1;
 }
@@ -422,6 +441,12 @@ button {
     background: #3a1a1a;
     color: #ef5350;
     border-color: #c62828;
+}
+
+.hist-url-btn:hover {
+    background: #1a2a3a;
+    color: var(--blue);
+    border-color: var(--blue);
 }
 
 /* Image Preview Modal */
@@ -444,14 +469,6 @@ button {
     font-weight: bold;
     word-break: break-all;
     font-size: 0.9rem;
-}
-
-.hist-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 4px;
 }
 
 .danger-btn {
