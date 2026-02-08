@@ -1110,45 +1110,153 @@ document.addEventListener('DOMContentLoaded', function() {
         renderList(created, 'history-created');
     }
 
+    // --- Image Preview Modal ---
+    var previewModal = document.getElementById('image-preview-modal');
+    var previewImage = document.getElementById('preview-image');
+    var previewSaveLink = document.getElementById('preview-save-link');
+    var closePreview = document.querySelector('.close-preview');
+
+    function openImagePreview(imageSrc) {
+        if (!previewModal || !previewImage) return;
+        previewImage.src = imageSrc;
+        previewSaveLink.href = imageSrc;
+        previewModal.classList.remove('hidden');
+    }
+
+    function closeImagePreview() {
+        if (previewModal) previewModal.classList.add('hidden');
+    }
+
+    if (closePreview) closePreview.addEventListener('click', closeImagePreview);
+    if (previewModal) {
+        previewModal.addEventListener('click', function(e) {
+            if (e.target === previewModal) closeImagePreview();
+        });
+    }
+
+    // --- Edit Entry Modal ---
+    var editModal = document.getElementById('edit-entry-modal');
+    var editText = document.getElementById('edit-entry-text');
+    var btnEditSave = document.getElementById('btn-edit-save');
+    var btnEditCancel = document.getElementById('btn-edit-cancel');
+    var closeEdit = document.querySelector('.close-edit');
+    var _editEntryId = null;
+    var _editEntryType = null;
+
+    function openEditEntry(type, id, currentContent) {
+        _editEntryId = id;
+        _editEntryType = type;
+        if (editText) editText.value = currentContent || '';
+        if (editModal) editModal.classList.remove('hidden');
+    }
+
+    function closeEditEntry() {
+        if (editModal) editModal.classList.add('hidden');
+        _editEntryId = null;
+        _editEntryType = null;
+    }
+
+    function saveEditEntry() {
+        if (!_editEntryId || !_editEntryType) return;
+        var newContent = editText ? editText.value : '';
+        if (newContent === '') {
+            showToast('Content cannot be empty');
+            return;
+        }
+        storage.updateItem(_editEntryType, _editEntryId, { content: newContent });
+        closeEditEntry();
+        renderHistory();
+        showToast('Entry updated');
+    }
+
+    if (closeEdit) closeEdit.addEventListener('click', closeEditEntry);
+    if (btnEditCancel) btnEditCancel.addEventListener('click', closeEditEntry);
+    if (btnEditSave) btnEditSave.addEventListener('click', saveEditEntry);
+    if (editModal) {
+        editModal.addEventListener('click', function(e) {
+            if (e.target === editModal) closeEditEntry();
+        });
+    }
+
+    // --- History Rendering ---
     function renderList(list, elementId) {
         var ul = document.getElementById(elementId);
+        var type = (elementId === 'history-scanned') ? 'SCANNED' : 'CREATED';
         ul.innerHTML = '';
         if (list.length === 0) {
             ul.innerHTML = '<li class="empty">No items yet</li>';
             return;
         }
         for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            var li = document.createElement('li');
-            var time = new Date(item.timestamp).toLocaleString();
+            (function(item) {
+                var li = document.createElement('li');
+                var time = new Date(item.timestamp).toLocaleString();
 
-            var thumbHtml = '';
-            if (item.image) {
-                thumbHtml = '<img class="hist-thumb" src="' + item.image + '" alt="Snapshot">';
-            }
+                // Build row with separate click zones
+                var row = document.createElement('div');
+                row.className = 'hist-row';
 
-            li.innerHTML =
-                '<div class="hist-row">' +
-                thumbHtml +
-                '<div class="hist-info">' +
-                '<div class="hist-content">' + escapeHtml(item.content) + '</div>' +
-                '<div class="hist-meta">' +
-                '<span>' + (item.format || 'QR') + '</span>' +
-                '<span>' + time + '</span>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-            li.setAttribute('data-content', item.content);
-            li.title = 'Click to copy';
-            li.addEventListener('click', function() {
-                var content = this.getAttribute('data-content');
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(content).then(function() {
-                        showToast('Copied!');
+                // Thumbnail — clicking opens image preview
+                if (item.image) {
+                    var thumb = document.createElement('img');
+                    thumb.className = 'hist-thumb';
+                    thumb.src = item.image;
+                    thumb.alt = 'Snapshot';
+                    thumb.title = 'Click to preview image';
+                    thumb.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        openImagePreview(item.image);
                     });
+                    row.appendChild(thumb);
                 }
-            });
-            ul.appendChild(li);
+
+                // Info section
+                var info = document.createElement('div');
+                info.className = 'hist-info';
+
+                var contentDiv = document.createElement('div');
+                contentDiv.className = 'hist-content';
+                contentDiv.textContent = item.content || '';
+                info.appendChild(contentDiv);
+
+                var meta = document.createElement('div');
+                meta.className = 'hist-meta';
+                var formatSpan = document.createElement('span');
+                formatSpan.textContent = item.format || 'QR';
+                meta.appendChild(formatSpan);
+                var timeSpan = document.createElement('span');
+                timeSpan.textContent = time;
+                meta.appendChild(timeSpan);
+                info.appendChild(meta);
+
+                row.appendChild(info);
+
+                // Edit button
+                var editBtn = document.createElement('button');
+                editBtn.className = 'hist-edit-btn';
+                editBtn.innerHTML = '&#9998;'; // Pencil icon ✎
+                editBtn.title = 'Edit entry';
+                editBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openEditEntry(type, item.id, item.content);
+                });
+                row.appendChild(editBtn);
+
+                li.appendChild(row);
+
+                // Clicking text area copies to clipboard
+                li.title = 'Click to copy';
+                li.addEventListener('click', function() {
+                    var content = item.content || '';
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(content).then(function() {
+                            showToast('Copied!');
+                        });
+                    }
+                });
+
+                ul.appendChild(li);
+            })(list[i]);
         }
     }
 

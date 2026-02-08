@@ -94,6 +94,22 @@ var StorageManager = (function() {
         localStorage.setItem(key, JSON.stringify(list));
     };
 
+    StorageManager.prototype.updateItem = function(type, id, updates) {
+        var list = this.getHistory(type);
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id === id) {
+                for (var key in updates) {
+                    if (updates.hasOwnProperty(key)) {
+                        list[i][key] = updates[key];
+                    }
+                }
+                break;
+            }
+        }
+        var key = type === 'SCANNED' ? KEYS.HISTORY_SCANNED : KEYS.HISTORY_CREATED;
+        localStorage.setItem(key, JSON.stringify(list));
+    };
+
     StorageManager.prototype.removeItem = function(type, id) {
         var list = this.getHistory(type);
         var filtered = [];
