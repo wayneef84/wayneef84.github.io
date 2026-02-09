@@ -48,6 +48,7 @@ Code that might appear external but is confirmed as custom or fully owned.
 | `games/board/js/xiangqi-ai.js` | **Custom** | MIT (Root) | Implementation of standard Minimax/Alpha-Beta algorithms. |
 | `projects/code/js/cracker.js` | **Custom** | MIT (Root) | Custom brute-force simulation engine. |
 | `projects/md-reader/app.js` | **Custom** | MIT (Root) | Markdown rendering logic and session management. |
+| `projects/regex_builder/index.html` | **Custom** | MIT (Root) | Standalone Regex Builder tool. |
 
 ---
 
