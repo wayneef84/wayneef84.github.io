@@ -45,6 +45,7 @@ var FILES = [
     { category: "Project Specs", name: "Flow", path: "../../docs/projects/FLOW.md" },
 
     // Cookbook
+    { category: "Cookbook", name: "Cookbook Home", path: "../../projects/md-reader/COOKBOOK.md" },
     { category: "Cookbook", name: "Asado", path: "../../projects/md-reader/recipes/asado.md" },
     { category: "Cookbook", name: "Cacik", path: "../../projects/md-reader/recipes/cacik.md" },
     { category: "Cookbook", name: "Flan", path: "../../projects/md-reader/recipes/flan.md" },
