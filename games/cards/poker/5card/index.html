@@ -7,14 +7,14 @@
     <style>
         /* Inherit Base Styles from Blackjack/Shared */
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #064e3b;
             --accent: #ffd700;
         }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0; padding: 0; height: 100dvh; width: 100vw;
-            background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #020617 100%);
+            background: radial-gradient(circle at 50% 30%, #064e3b 0%, #022c22 100%);
             color: white; font-family: system-ui, sans-serif;
             display: flex; flex-direction: column; overflow: hidden;
         }
@@ -25,10 +25,11 @@
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        h1 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        h1 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; font-family: 'Georgia', serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         .balance {
             font-family: monospace; font-size: 1.1rem; color: var(--accent);
             border: 1px solid var(--accent); padding: 4px 8px; border-radius: 8px;
+            background: rgba(0,0,0,0.6);
         }
         .header-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 4px; }
 
@@ -45,7 +46,8 @@
             align-items: center;
         }
         .hand-label {
-            position: absolute; font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase;
+            position: absolute; font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;
+            font-family: 'Georgia', serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
         .dealer-area .hand-label { bottom: -20px; }
         .player-area .hand-label { top: -25px; }
@@ -70,6 +72,7 @@
         .card-slot:hover {
             transform: translateY(-10px);
             z-index: 5;
+            box-shadow: 0 0 15px #ffd700;
         }
         .card-slot canvas { width: 100%; height: 100%; border-radius: 6px; box-shadow: -2px 2px 5px rgba(0,0,0,0.5); }
 
@@ -100,9 +103,17 @@
             box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
         .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
-        .btn-primary { background: var(--accent); color: black; }
+        .btn-primary {
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+            color: #000;
+            box-shadow: 0 4px 0 #92400e;
+        }
         .btn-danger { background: #ef4444; color: white; }
-        .btn-secondary { background: #334155; color: white; }
+        .btn-secondary {
+            background: linear-gradient(180deg, #475569 0%, #1e293b 100%);
+            color: #fff;
+            box-shadow: 0 4px 0 #0f172a;
+        }
 
         .hidden { display: none !important; }
 
@@ -173,7 +184,6 @@
         </div>
 
         <div id="playControls" class="action-row hidden">
-            <button class="btn btn-danger" id="btnFold">Fold</button>
             <button class="btn btn-primary" id="btnDraw">Draw Selected</button>
         </div>
 
@@ -200,7 +210,6 @@
                     playerCards: document.getElementById('playerCards'),
                     btnDeal: document.getElementById('btnDeal'),
                     btnDraw: document.getElementById('btnDraw'),
-                    btnFold: document.getElementById('btnFold'),
                     btnNewHand: document.getElementById('btnNewHand'),
                     btnBack: document.getElementById('btnBack'),
                     message: document.getElementById('message'),
@@ -226,7 +235,6 @@
 
                 // Bind UI
                 this.ui.btnDeal.onclick = () => this.game.startRound();
-                this.ui.btnFold.onclick = () => this.game.fold();
                 this.ui.btnDraw.onclick = () => this.handleDraw();
                 this.ui.btnNewHand.onclick = () => this.resetUI();
                 this.ui.btnBack.onclick = () => window.location.href = '../index.html';
@@ -251,10 +259,6 @@
                             data.winner === 'player1' ? 'YOU WIN!' : (data.winner === 'push' ? 'PUSH' : 'DEALER WINS'),
                             `${data.p1Hand.name} vs ${data.dealerHand.name}`
                         );
-                        this.showControls('end');
-                        break;
-                    case 'FOLD':
-                        this.showMessage('FOLDED', 'House Wins');
                         this.showControls('end');
                         break;
                 }
