@@ -1,6 +1,7 @@
 const projects = [
     // Games
     { name: "Card Games", path: "games/cards/index.html", category: "cards", icon: "🃏", tags: ["Shared Engine"], description: "Blackjack, War, and more built on a robust shared engine." },
+    { name: "Sudoku", path: "games/sudoku/index.html", category: "puzzle", icon: "🧩", tags: ["Classic"], description: "Classic Sudoku puzzle with multiple difficulty levels." },
     { name: "Letter Tracing", path: "games/tracing/index.html", category: "puzzle", icon: "✏️", tags: ["Educational"], description: "Learn to write with voice guidance and stroke validation." },
     { name: "Breakout", path: "games/breakout/index.html", category: "arcade", icon: "🧱", tags: ["Arcade"], description: "Smash bricks with a ball and paddle. Now with particles!" },
     { name: "Pong", path: "games/pong/index.html", category: "arcade", icon: "🏓", tags: ["Arcade"], description: "The original tennis game. 1P vs CPU." },
