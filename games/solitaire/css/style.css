@@ -1,0 +1,161 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #277714; /* Green Felt */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    user-select: none;
+    overflow: hidden;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+#header {
+    padding: 10px 20px;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+button {
+    background: #f1c40f;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+button:hover {
+    background: #f39c12;
+}
+
+#board {
+    flex: 1;
+    padding: 20px;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- Layout --- */
+
+#top-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    height: 160px; /* Card height + slop */
+}
+
+#stock-container {
+    display: flex;
+    gap: 20px;
+    width: 300px; /* Space for stock + waste */
+}
+
+#foundation-container {
+    display: flex;
+    gap: 20px;
+}
+
+#tableau-container {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* --- Piles --- */
+
+.pile {
+    width: 100px;
+    height: 140px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 8px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.pile.tableau {
+    border: none; /* Only show empty slot if needed, usually invisible */
+    /* But we want a placeholder for empty tableau */
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+/* --- Cards --- */
+
+.card {
+    width: 100px;
+    height: 140px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    transition: transform 0.1s ease-out;
+    background-color: white; /* Fallback */
+}
+
+.card canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Selected Card Highlight */
+.card.selected {
+    box-shadow: 0 0 10px 4px #f1c40f;
+    z-index: 100 !important;
+}
+
+/* Dragging visual (if we implement drag) */
+.card.dragging {
+    opacity: 0.8;
+    z-index: 1000 !important;
+    pointer-events: none;
+}
+
+/* Tableau Stacking */
+/* In JS, we will set top: N * offset px */
+
+/* Waste Stacking */
+/* Usually just top 3 visible fanned out.
+   For now, we might just stack them or show top 1. */
+
+/* Foundation Stacking */
+/* Just show top card */
+
+/* Stock */
+/* Just show top card (back) */
+
+/* Empty slot visual */
+.pile:empty::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.1);
+}
+
+.pile.foundation:empty::before {
+    content: 'A';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: rgba(255,255,255,0.2);
+}

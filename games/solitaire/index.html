@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Shared Card Engine -->
+    <script src="../cards/shared/enums.js"></script>
+    <script src="../cards/shared/card.js"></script>
+    <script src="../cards/shared/deck.js"></script>
+    <script src="../cards/shared/pile.js"></script>
+    <script src="../cards/shared/player.js"></script>
+    <script src="../cards/shared/engine.js"></script>
+    <script src="../cards/shared/card-assets.js"></script>
+
+    <!-- Game Rules -->
+    <script src="rules/klondike.js"></script>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="header">
+            <h1>Solitaire</h1>
+            <div id="controls">
+                <button id="btn-restart">New Game</button>
+            </div>
+        </div>
+
+        <div id="board">
+            <div id="top-row">
+                <div id="stock-container">
+                    <div id="stock" class="pile stock" data-pile="stock"></div>
+                    <div id="waste" class="pile waste" data-pile="waste"></div>
+                </div>
+
+                <div id="foundation-container">
+                    <div id="foundation_1" class="pile foundation" data-pile="foundation_1"></div>
+                    <div id="foundation_2" class="pile foundation" data-pile="foundation_2"></div>
+                    <div id="foundation_3" class="pile foundation" data-pile="foundation_3"></div>
+                    <div id="foundation_4" class="pile foundation" data-pile="foundation_4"></div>
+                </div>
+            </div>
+
+            <div id="tableau-container">
+                <div id="tableau_1" class="pile tableau" data-pile="tableau_1"></div>
+                <div id="tableau_2" class="pile tableau" data-pile="tableau_2"></div>
+                <div id="tableau_3" class="pile tableau" data-pile="tableau_3"></div>
+                <div id="tableau_4" class="pile tableau" data-pile="tableau_4"></div>
+                <div id="tableau_5" class="pile tableau" data-pile="tableau_5"></div>
+                <div id="tableau_6" class="pile tableau" data-pile="tableau_6"></div>
+                <div id="tableau_7" class="pile tableau" data-pile="tableau_7"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
