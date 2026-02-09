@@ -8,20 +8,24 @@ To enable offline text recognition, you must download the following **5 files** 
 
 ### 1. Tesseract Library
 **Filename:** `tesseract.min.js`
-**URL:** `https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js`
+**Version:** 5.1.1
+**URL:** `https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js`
 
 ### 2. Tesseract Worker
 **Filename:** `worker.min.js`
-**URL:** `https://unpkg.com/tesseract.js@5.0.3/dist/worker.min.js`
+**Version:** 5.1.1
+**URL:** `https://unpkg.com/tesseract.js@5.1.1/dist/worker.min.js`
 
 ### 3. Tesseract Core (JS Glue)
-**Filename:** `tesseract-core.wasm.js`
-**URL:** `https://unpkg.com/tesseract.js-core@5.0.0/tesseract-core.wasm.js`
+**Filename:** `tesseract-core-simd.wasm.js`
+**Version:** 5.1.0
+**URL:** `https://unpkg.com/tesseract.js-core@5.1.0/tesseract-core-simd.wasm.js`
 
 ### 4. Tesseract Core (WASM Binary)
-**Filename:** `tesseract-core.wasm`
-**URL:** `https://unpkg.com/tesseract.js-core@5.0.0/tesseract-core.wasm`
-*(Note: This is the actual binary required by the JS glue)*
+**Filename:** `tesseract-core-simd.wasm`
+**Version:** 5.1.0
+**URL:** `https://unpkg.com/tesseract.js-core@5.1.0/tesseract-core-simd.wasm`
+*(Note: SIMD variant for better performance. This is the actual binary required by the JS glue)*
 
 ### 5. Language Data (English)
 **Filename:** `eng.traineddata`

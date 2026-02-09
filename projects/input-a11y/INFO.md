@@ -1,6 +1,6 @@
 # Input A11y - Project Info
 
-**Version:** 0.1.0
+**Version:** 0.3.0
 **Type:** Utility
 **Status:** Active Development
 **Last Updated:** 2026-02-08

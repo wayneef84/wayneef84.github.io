@@ -14,16 +14,18 @@
 
 ## Priority 1 (Should Fix)
 
-- [ ] Sanitize image `src` in history rendering — `renderList()` injects `item.image` directly into innerHTML without escaping. Low risk (localStorage only) but should validate data URI format.
-- [ ] History item deletion — `StorageManager.removeItem()` exists but no UI exposes it. Add swipe-to-delete or delete button per history item.
-- [ ] History size limit — No cap on localStorage history. Large snapshot images (JPEG data URIs) will bloat storage. Consider a max-items limit or image compression.
+- [ ] Sanitize image `src` in history rendering — `renderList()` sets `thumb.src = item.image` directly. Low risk (localStorage only) but should validate data URI format.
+- [x] ✅ History item deletion — Edit modal with delete button, plus inline delete button per history item (2026-02-08, G/C)
+- [x] ✅ History size limit — Auto-prune to 50 items per category on insert. Oldest items dropped first. (2026-02-08, C)
 - [ ] Binarization threshold tuning — Currently hardcoded at 128. Consider making configurable via Settings for different lighting conditions.
+
+- [x] ✅ `StorageManager.clearSettings()` missing — Added method; was causing crash on "Default" button (2026-02-08, C)
 
 ## Priority 2 (Enhancements)
 
 - [ ] Batch scan mode — Continuously scan and auto-save without modal interruption
 - [ ] Export history — CSV or JSON download of scan history
-- [ ] Camera selection — Allow user to pick specific camera (front/back/external) instead of defaulting to environment
+- [x] ✅ Camera selection — Video source dropdown with auto-detect + manual selection (2026-02-08, G/C)
 - [ ] Multi-language OCR — Support additional Tesseract language packs beyond English
 - [ ] Adaptive binarization — Use Otsu's method or local adaptive thresholding instead of global threshold
 

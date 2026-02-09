@@ -1,6 +1,6 @@
 # Input A11y - Architecture
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Last Updated:** 2026-02-08
 
 ---
@@ -109,16 +109,56 @@ Camera APIs throw `NotAllowedError` on mobile if started without user gesture. T
 OCR results pass through a configurable filter chain:
 
 ```
-Raw Text → preprocessing (trim/normalize/remove) → alphanumeric strip (optional) → filter mode → min length check → debounce → callback
+Raw Text → preprocessing (trim/normalize/remove) → alphanumeric strip (optional) → filter mode → exact length check → debounce → callback
 ```
 
 Filter modes:
 - **NONE** — Accept all text
 - **REGEX** — Match against a JavaScript regex
 
+Exact Text Length (`ocrMinLength`):
+- `0` = off, accept any non-empty text
+- Any positive integer = require text to be exactly that many characters
+
 ### 7. Snapshot Capture (Legacy)
 
 The legacy `snapshot()` method now delegates to `scanAndVerify()` internally. It is kept for backward compatibility but the new dual-button UI is the preferred interface.
+
+### 8. Transactional Settings (v0.3.0)
+
+Settings use a copy-on-edit pattern:
+1. On entering Settings tab, `tempSettings` is cloned from `settings`
+2. All UI changes modify `tempSettings` only
+3. **Save** commits `tempSettings` to `settings` and persists to localStorage
+4. **Cancel** discards `tempSettings` and reverts UI
+5. **Default** clears localStorage and reloads defaults
+
+The sticky footer shows Save/Cancel/Default buttons. A change counter warns before discarding unsaved edits.
+
+### 9. History CRUD (v0.3.0)
+
+History items support:
+- **Image preview** — Click thumbnail to open full-size modal with Save button
+- **Edit** — Opens modal with textarea; cancel-reverts if text was changed
+- **Delete** — Per-item deletion with confirmation, or bulk clear per category
+- **Open URL** — Visible only when URL Input mode is active; copies text + opens URL
+- **Click-to-copy** — Clicking any history item copies its content to clipboard
+
+### 10. URL Input Mode (v0.3.0)
+
+When `actionMode` is `URL_INPUT`:
+1. Scan result triggers a **verification modal** with candidate text lines
+2. Each candidate is stripped of whitespace and deduped
+3. User taps a candidate to select it
+4. Selected text is saved to history, copied to clipboard, and URL is opened
+5. URL construction: `baseUrl + encodeURIComponent(value)` (if `addValueToUrl` is on)
+
+### 11. Red Scan Line & ROI Overlay
+
+- **Scan line** — Red horizontal line dynamically positioned at the vertical center of the ROI box. Falls back to 50% when ROI is disabled. Visible only in OCR modes.
+- **ROI overlay** — Dashed teal border with darkened surrounding area (CSS `box-shadow: 0 0 0 9999px`)
+- ROI is always auto-centered; user controls width/height percentages only
+- Scan line position is updated in `updateRoiOverlay()` alongside the overlay itself
 
 ---
 
@@ -134,6 +174,8 @@ Uses `localStorage` with three keys:
 
 History items include an `id` field (base36 timestamp + random suffix) for individual deletion.
 
+**Storage limit:** Each category (SCANNED, CREATED) is capped at 50 items (`MAX_HISTORY = 50`). When a new item is added and the list exceeds the cap, the oldest entries are automatically pruned.
+
 ### User Preferences
 
 Settings are persisted in `localStorage` under `input_a11y_settings`. Key OCR preferences:
@@ -143,7 +185,7 @@ Settings are persisted in `localStorage` under `input_a11y_settings`. Key OCR pr
 | `ocrDriver` | auto | Preferred OCR driver (`tesseract` or `native`) |
 | `ocrConfidence` | 40 | Minimum confidence threshold (0-100) |
 | `ocrDebounce` | 3000 | Debounce ms between duplicate results |
-| `ocrMinLength` | 3 | Minimum text length to accept |
+| `ocrMinLength` | 0 | Exact text length filter (0 = off, accepts any length) |
 | `ocrRoiEnabled` | true | Enable region-of-interest cropping |
 | `ocrFilterMode` | NONE | Text filter mode (NONE, REGEX) |
 | `ocrPreprocessingMode` | TRIM | Whitespace handling |

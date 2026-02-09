@@ -295,17 +295,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateRoiOverlay(roi) {
         var overlay = document.getElementById('scan-roi-overlay');
-        if (!overlay) return;
+        var scanLine = document.getElementById('scan-line');
 
         var isOCR = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
         if (roi.enabled && isOCR) {
-            overlay.classList.remove('hidden');
-            overlay.style.top = roi.top + '%';
-            overlay.style.left = roi.left + '%';
-            overlay.style.width = roi.width + '%';
-            overlay.style.height = roi.height + '%';
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.style.top = roi.top + '%';
+                overlay.style.left = roi.left + '%';
+                overlay.style.width = roi.width + '%';
+                overlay.style.height = roi.height + '%';
+            }
+            // Position scan line at vertical center of ROI
+            if (scanLine) {
+                scanLine.style.top = (roi.top + roi.height / 2) + '%';
+            }
         } else {
-            overlay.classList.add('hidden');
+            if (overlay) overlay.classList.add('hidden');
+            // Fall back to 50% center when ROI is disabled
+            if (scanLine) scanLine.style.top = '50%';
         }
     }
 

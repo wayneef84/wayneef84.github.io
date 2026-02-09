@@ -115,7 +115,7 @@ main {
     object-fit: cover;
 }
 
-/* Red Scan Line - fixed centered strip indicator */
+/* Red Scan Line - positioned dynamically by JS to track ROI center */
 #scan-line {
     position: absolute;
     top: 50%;
@@ -126,7 +126,6 @@ main {
     z-index: 15;
     pointer-events: none;
     box-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
-    transform: translateY(-50%);
 }
 
 #btn-scan-resize {

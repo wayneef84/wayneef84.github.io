@@ -5,6 +5,8 @@
  */
 var StorageManager = (function() {
 
+    var MAX_HISTORY = 50;
+
     var KEYS = {
         SETTINGS: 'input_a11y_settings',
         HISTORY_SCANNED: 'input_a11y_history_scanned',
@@ -95,6 +97,10 @@ var StorageManager = (function() {
 
         list.unshift(item);
 
+        if (list.length > MAX_HISTORY) {
+            list = list.slice(0, MAX_HISTORY);
+        }
+
         var key = type === 'SCANNED' ? KEYS.HISTORY_SCANNED : KEYS.HISTORY_CREATED;
         localStorage.setItem(key, JSON.stringify(list));
     };
@@ -130,6 +136,10 @@ var StorageManager = (function() {
     StorageManager.prototype.clearHistory = function(type) {
         var key = type === 'SCANNED' ? KEYS.HISTORY_SCANNED : KEYS.HISTORY_CREATED;
         localStorage.removeItem(key);
+    };
+
+    StorageManager.prototype.clearSettings = function() {
+        localStorage.removeItem(KEYS.SETTINGS);
     };
 
     return StorageManager;
