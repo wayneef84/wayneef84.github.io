@@ -132,11 +132,4 @@ export default class FiveCardDraw extends BasePokerGame {
             pot: potWon
         });
     }
-
-    fold() {
-        this.players[0].isFolded = true;
-        this.state = 'GAME_OVER';
-        this.pot = 0; // House takes it
-        this.emit('FOLD');
-    }
 }
