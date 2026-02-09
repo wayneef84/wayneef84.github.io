@@ -44,6 +44,13 @@ var FILES = [
     { category: "Project Specs", name: "Cards", path: "../../docs/projects/CARDS.md" },
     { category: "Project Specs", name: "Flow", path: "../../docs/projects/FLOW.md" },
 
+    // Cookbook
+    { category: "Cookbook", name: "Asado", path: "../../projects/md-reader/recipes/asado.md" },
+    { category: "Cookbook", name: "Cacik", path: "../../projects/md-reader/recipes/cacik.md" },
+    { category: "Cookbook", name: "Flan", path: "../../projects/md-reader/recipes/flan.md" },
+    { category: "Cookbook", name: "Kabse", path: "../../projects/md-reader/recipes/kabse.md" },
+    { category: "Cookbook", name: "Migas", path: "../../projects/md-reader/recipes/migas.md" },
+
     // Lessons Learned
     { category: "Lessons Learned", name: "Index", path: "../../LL/README.md" },
     { category: "Lessons Learned", name: "Card Engine", path: "../../LL/LL_CARD_ENGINE.md" },
