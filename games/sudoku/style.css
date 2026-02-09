@@ -1,0 +1,182 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.game-header {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    padding: 5px 10px;
+    background: #e0e0e0;
+    border-radius: 4px;
+}
+
+.back-btn:hover {
+    background: #d0d0d0;
+}
+
+h1 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.game-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.controls-top {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+
+select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #3498db;
+    color: white;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button#reset-btn {
+    background-color: #e74c3c;
+}
+
+button#reset-btn:hover {
+    background-color: #c0392b;
+}
+
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #333;
+    border: 2px solid #333;
+    gap: 1px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+/* Thicker borders for subgrids */
+.cell.b-right {
+    border-right: 2px solid #333;
+}
+.cell.b-bottom {
+    border-bottom: 2px solid #333;
+}
+
+.cell.fixed {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.cell.selected {
+    background-color: #bbdefb;
+}
+
+/* Highlight numbers that match selected number */
+.cell.highlight-match {
+    background-color: #e3f2fd;
+}
+
+.cell.error {
+    color: #e74c3c;
+    background-color: #fadbd8;
+}
+
+.controls-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    width: 100%;
+}
+
+.num-btn {
+    aspect-ratio: 1.5;
+    font-size: 1.2rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #333;
+}
+
+.num-btn:hover {
+    background: #e9ecef;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.status-message {
+    min-height: 24px;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+@media (max-width: 400px) {
+    .game-container {
+        padding: 10px;
+    }
+}
