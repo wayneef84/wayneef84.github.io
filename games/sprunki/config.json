@@ -30,6 +30,16 @@
       "base_path": "./assets/packs/phase2/"
     },
     {
+      "id": "phase3",
+      "label": "Phase 3 (Midnight)",
+      "base_path": "./assets/packs/phase3/"
+    },
+    {
+      "id": "phase4",
+      "label": "Phase 4 (Nightmare)",
+      "base_path": "./assets/packs/phase4/"
+    },
+    {
       "id": "reverse",
       "label": "UNO Reverse (Test)",
       "base_path": "./assets/packs/reverse/"
@@ -83,6 +93,18 @@
     { "id": "p2_03", "name": "Bombardino", "type": "effects", "pack_id": "phase2", "audio": "../phase1/audio/e03.wav", "img": "img/bombardino.svg" },
     { "id": "p2_04", "name": "Tralalero", "type": "melodies", "pack_id": "phase2", "audio": "../phase1/audio/m04.wav", "img": "img/tralalero.svg" },
     { "id": "p2_05", "name": "Tung Tung", "type": "beats", "pack_id": "phase2", "audio": "../phase1/audio/b05.wav", "img": "img/tungtung.svg" },
+
+    { "id": "p3_01", "name": "M. Wolf", "type": "beats", "pack_id": "phase3", "audio": "../phase1/audio/b02.wav", "img": "img/m_wolf.svg" },
+    { "id": "p3_02", "name": "M. Owl", "type": "effects", "pack_id": "phase3", "audio": "../phase1/audio/e05.wav", "img": "img/m_owl.svg" },
+    { "id": "p3_03", "name": "M. Moon", "type": "melodies", "pack_id": "phase3", "audio": "../phase1/audio/m05.wav", "img": "img/m_moon.svg" },
+    { "id": "p3_04", "name": "M. Star", "type": "vocals", "pack_id": "phase3", "audio": "../phase1/audio/v01.wav", "img": "img/m_star.svg" },
+    { "id": "p3_05", "name": "M. Shadow", "type": "effects", "pack_id": "phase3", "audio": "../phase1/audio/e01.wav", "img": "img/m_shadow.svg" },
+
+    { "id": "p4_01", "name": "N. Beast", "type": "beats", "pack_id": "phase4", "audio": "../phase1/audio/b04.wav", "img": "img/n_beast.svg" },
+    { "id": "p4_02", "name": "N. Ghost", "type": "vocals", "pack_id": "phase4", "audio": "../phase1/audio/v05.wav", "img": "img/n_ghost.svg" },
+    { "id": "p4_03", "name": "N. Demon", "type": "melodies", "pack_id": "phase4", "audio": "../phase1/audio/m02.wav", "img": "img/n_demon.svg" },
+    { "id": "p4_04", "name": "N. Witch", "type": "effects", "pack_id": "phase4", "audio": "../phase1/audio/e02.wav", "img": "img/n_witch.svg" },
+    { "id": "p4_05", "name": "N. Skeleton", "type": "beats", "pack_id": "phase4", "audio": "../phase1/audio/b03.wav", "img": "img/n_skeleton.svg" },
 
     { "id": "rb01", "name": "Reverse Oren", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b01.wav", "img": "../phase1/img/b01.svg" },
     { "id": "rb02", "name": "Reverse Raddy", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b02.wav", "img": "../phase1/img/b02.svg" },
