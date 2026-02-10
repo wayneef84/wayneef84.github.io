@@ -104,9 +104,9 @@
                         <div class="quick-setting-group">
                             <label>Text Transform:</label>
                             <div class="quick-toggle-group">
-                                <button class="quick-toggle-btn active" data-value="NONE">Original</button>
-                                <button class="quick-toggle-btn" data-value="UPPERCASE">UPPERCASE</button>
-                                <button class="quick-toggle-btn" data-value="LOWERCASE">lowercase</button>
+                                <button class="quick-toggle-btn active" data-value="NONE">✗ None</button>
+                                <button class="quick-toggle-btn" data-value="UPPERCASE">ABC</button>
+                                <button class="quick-toggle-btn" data-value="LOWERCASE">abc</button>
                             </div>
                         </div>
                     </div>
@@ -325,6 +325,14 @@
                 <div class="setting-item">
                     <label for="set-ocr-show-raw">Show Raw Text:</label>
                     <input type="checkbox" id="set-ocr-show-raw">
+                </div>
+                <div class="setting-item">
+                    <label for="set-text-transform">Text Transform:</label>
+                    <select id="set-text-transform">
+                        <option value="NONE">✗ None (Original)</option>
+                        <option value="UPPERCASE">ABC (UPPERCASE)</option>
+                        <option value="LOWERCASE">abc (lowercase)</option>
+                    </select>
                 </div>
                 <div class="setting-item">
                     <label for="set-filter-mode">Filter Mode:</label>

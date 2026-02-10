@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrShowRaw = document.getElementById('set-ocr-show-raw');
     var setOcrScanLine = document.getElementById('set-ocr-scan-line');
     var setOcrShowResize = document.getElementById('set-ocr-show-resize');
+    var setTextTransform = document.getElementById('set-text-transform');
     var scanCharCountIndicator = document.getElementById('scan-char-count-indicator');
 
     // OCR Resize Controls (Scan Tab)
@@ -134,6 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (setOcrShowResize && settings.ocrShowResize !== undefined) {
             setOcrShowResize.checked = settings.ocrShowResize;
+        }
+        if (setTextTransform && settings.ocrTextTransform) {
+            setTextTransform.value = settings.ocrTextTransform;
         }
 
         // Restore OCR ROI settings (auto-centered, size only)
@@ -337,6 +341,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (key === 'ocrMinLength') {
             if (setOcrMinLength) setOcrMinLength.value = value;
             if (ocrMinLengthVal) ocrMinLengthVal.innerText = value;
+        }
+        if (key === 'ocrTextTransform') {
+            if (setTextTransform) setTextTransform.value = value;
         }
 
         // Apply to OCR manager
@@ -727,6 +734,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrShowResize) setOcrShowResize.addEventListener('change', function(e) {
             updateSetting('ocrShowResize', e.target.checked);
             updateResizeControlsVisibility();
+        });
+        if (setTextTransform) setTextTransform.addEventListener('change', function(e) {
+            updateSetting('ocrTextTransform', e.target.value);
+            applyOCRFilterConfig();
         });
 
         // OCR ROI (auto-centered, size only)
