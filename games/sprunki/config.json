@@ -25,6 +25,11 @@
       "base_path": "./assets/packs/phase1/"
     },
     {
+      "id": "phase2",
+      "label": "Phase 2 (Cappuccino & Friends)",
+      "base_path": "./assets/packs/phase2/"
+    },
+    {
       "id": "reverse",
       "label": "UNO Reverse (Test)",
       "base_path": "./assets/packs/reverse/"
@@ -72,6 +77,12 @@
     { "id": "v05", "name": "Black", "type": "vocals", "pack_id": "phase1", "audio": "audio/v05.wav", "img": "img/v05.svg", "horror_audio": "audio/v05.wav", "horror_img": "img/v05.svg" },
 
     { "id": "black_hat", "name": "Black Hat", "type": "special", "pack_id": "phase1", "audio": "audio/v02.wav", "img": "img/black_hat.svg" },
+
+    { "id": "p2_01", "name": "Ballerina", "type": "vocals", "pack_id": "phase2", "audio": "../phase1/audio/v02.wav", "img": "img/ballerina.svg" },
+    { "id": "p2_02", "name": "Assassino", "type": "beats", "pack_id": "phase2", "audio": "../phase1/audio/b01.wav", "img": "img/assassino.svg" },
+    { "id": "p2_03", "name": "Bombardino", "type": "effects", "pack_id": "phase2", "audio": "../phase1/audio/e03.wav", "img": "img/bombardino.svg" },
+    { "id": "p2_04", "name": "Tralalero", "type": "melodies", "pack_id": "phase2", "audio": "../phase1/audio/m04.wav", "img": "img/tralalero.svg" },
+    { "id": "p2_05", "name": "Tung Tung", "type": "beats", "pack_id": "phase2", "audio": "../phase1/audio/b05.wav", "img": "img/tungtung.svg" },
 
     { "id": "rb01", "name": "Reverse Oren", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b01.wav", "img": "../phase1/img/b01.svg" },
     { "id": "rb02", "name": "Reverse Raddy", "type": "beats", "pack_id": "reverse", "audio": "../phase1/audio/b02.wav", "img": "../phase1/img/b02.svg" },
