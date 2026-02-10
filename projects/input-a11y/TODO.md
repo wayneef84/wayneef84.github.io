@@ -42,4 +42,4 @@
 - [ ] Dark/light theme toggle
 - [ ] Sound feedback option (beep on scan)
 - [ ] Share scanned text via Web Share API
-- [ ] PWA support (manifest + service worker for true offline)
+- [x] ✅ PWA support — Manifest + service worker with offline-first caching. App installs to home screen on mobile. (2026-02-09, C)
