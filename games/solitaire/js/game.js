@@ -22,9 +22,53 @@ window.onload = function() {
     // Setup UI
     document.getElementById('btn-restart').onclick = startNewGame;
 
+    // Resize Handler
+    window.addEventListener('resize', resizeBoard);
+    resizeBoard();
+
     // Start Game
     startNewGame();
 };
+
+function resizeBoard() {
+    var board = document.getElementById('board');
+    if (!board) return;
+
+    var baseWidth = 1200; // Matches CSS max-width
+    var scale = Math.min(window.innerWidth / baseWidth, 1);
+
+    // Force layout width to ensure desktop-like layout before scaling
+    if (scale < 1) {
+        board.style.width = baseWidth + 'px';
+        board.style.transformOrigin = 'top left';
+    } else {
+        board.style.width = ''; // Reset to CSS
+        board.style.transformOrigin = 'top center';
+    }
+
+    // Add slight margin for mobile
+    if (scale < 1) scale *= 0.95;
+
+    board.style.transform = 'scale(' + scale + ')';
+
+    // Center the scaled board
+    if (scale < 1) {
+        var scaledWidth = baseWidth * scale;
+        var offset = (window.innerWidth - scaledWidth) / 2;
+        board.style.position = 'absolute'; // Detach from flow to position
+        board.style.left = offset + 'px';
+
+        // Calculate header height dynamically or fallback
+        var header = document.getElementById('header');
+        var headerHeight = header ? header.offsetHeight : 70;
+
+        board.style.top = headerHeight + 'px';
+    } else {
+        board.style.position = 'relative';
+        board.style.left = '';
+        board.style.top = '';
+    }
+}
 
 function startNewGame() {
     engine.init([{ id: 'player1', type: 'human', name: 'Player' }]);

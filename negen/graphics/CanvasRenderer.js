@@ -23,8 +23,10 @@ export default class CanvasRenderer {
         this.height = height;
         this.canvas.width = width * this.dpr;
         this.canvas.height = height * this.dpr;
-        this.canvas.style.width = `${width}px`;
-        this.canvas.style.height = `${height}px`;
+
+        // Use CSS for display size, but set aspect ratio to maintain proportions
+        this.canvas.style.aspectRatio = `${width}/${height}`;
+
         this.ctx.scale(this.dpr, this.dpr);
     }
 
