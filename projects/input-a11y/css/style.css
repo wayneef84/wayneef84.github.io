@@ -125,7 +125,7 @@ main {
     background: rgba(30, 30, 30, 0.5);
     border: 1px solid #333;
     border-radius: 6px;
-    padding: 12px;
+    padding: 10px;
     margin-bottom: 10px;
     max-height: 0;
     overflow: hidden;
@@ -143,17 +143,17 @@ main {
 }
 
 .control-row {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .control-row label {
     flex-shrink: 0;
-    min-width: 120px;
+    min-width: 80px;
     text-align: right;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .control-row select,
@@ -169,7 +169,7 @@ main {
 }
 
 .char-mode-select {
-    width: 80px;
+    width: 70px;
     flex-shrink: 0;
 }
 
