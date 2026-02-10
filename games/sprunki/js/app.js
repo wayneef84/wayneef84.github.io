@@ -10,6 +10,7 @@ var audioCtx = null;     // Web Audio API Context
 var currentPackId = null; // ID of the currently active pack
 var slotCount = 0;       // Current number of active stage slots
 var isPlaying = false;   // Playback state
+var horrorMode = false;  // Horror Mode State
 
 // --- TRACKING OBJECTS ---
 var activeSources = {}; // Maps slotId -> AudioBufferSourceNode
@@ -328,6 +329,26 @@ function onDragMove(e) {
 function onDragEnd(e) {
     if (!dragItem) return;
 
+    // HORROR TRIGGER CHECK
+    if (dragItem.id === 'black_hat') {
+        if (dragGhost) dragGhost.remove();
+        dragGhost = null;
+        var slots = document.querySelectorAll('.slot');
+        for (var i = 0; i < slots.length; i++) slots[i].classList.remove('drag-over');
+
+        var touch = e.changedTouches ? e.changedTouches[0] : e;
+        var elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        var slot = elementBelow ? elementBelow.closest('.slot') : null;
+
+        if (slot && activeSlots[slot.id] && activeSlots[slot.id].id === 'v02') {
+             enableHorrorMode();
+        }
+
+        dragItem = null;
+        isDragging = false;
+        return;
+    }
+
     if (dragGhost) dragGhost.remove();
     dragGhost = null;
     var slots = document.querySelectorAll('.slot');
@@ -345,6 +366,21 @@ function onDragEnd(e) {
 
     dragItem = null;
     isDragging = false;
+}
+
+function enableHorrorMode() {
+    if (horrorMode) return;
+    horrorMode = true;
+    document.body.classList.add('horror');
+
+    // Refresh all active slots
+    for (var key in activeSlots) {
+        if (activeSlots.hasOwnProperty(key)) {
+            var char = activeSlots[key];
+            var slotEl = document.getElementById(key);
+            assignToSlot(slotEl, char);
+        }
+    }
 }
 
 function autoAddChar(char) {
@@ -372,8 +408,11 @@ function assignToSlot(slot, char) {
     }
 
     var ctx = getAudioContext();
-    var audioPath = resolvePath(currentPackBase, char.audio);
-    var imgPath = resolvePath(currentPackBase, char.img);
+
+    // Select assets based on Horror Mode
+    var useHorror = horrorMode && char.horror_audio && char.horror_img;
+    var audioPath = resolvePath(currentPackBase, useHorror ? char.horror_audio : char.audio);
+    var imgPath = resolvePath(currentPackBase, useHorror ? char.horror_img : char.img);
 
     slot.innerHTML = '';
     var img = document.createElement('img');
@@ -405,6 +444,9 @@ function assignToSlot(slot, char) {
             return;
         }
         ctx.decodeAudioData(xhr.response, function (buff) {
+            // Check if slot was cleared or changed while decoding
+            if (!activeSlots[slot.id] || activeSlots[slot.id].id !== char.id) return;
+
             var src = ctx.createBufferSource();
             src.buffer = buff;
             src.loop = true;
@@ -480,6 +522,10 @@ function clearStage() {
         if (activeSlots.hasOwnProperty(key)) delete activeSlots[key];
     }
     activeCharIds = {};
+
+    // Reset Horror Mode
+    horrorMode = false;
+    document.body.classList.remove('horror');
 
     buildStage(slotCount);
     isPlaying = false;

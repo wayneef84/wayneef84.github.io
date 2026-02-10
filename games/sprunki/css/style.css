@@ -222,3 +222,28 @@ input[type=range] { width: 100px; accent-color: #00f3ff; cursor: pointer; }
 #scannerModal .scanner-box {
     width: 100%; max-width: 400px; margin: 0 auto; background: black;
 }
+
+/* --- HORROR MODE --- */
+body.horror {
+    background: #220000;
+}
+
+.horror .slot {
+    border-color: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.horror .slot.active {
+    border-color: #ff0000;
+    background: rgba(255, 0, 0, 0.1);
+}
+
+.horror .slot.active img {
+    filter: invert(1) contrast(1.2);
+    animation: bounce-horror 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes bounce-horror {
+    from { transform: scale(1) rotate(-2deg); }
+    to { transform: scale(1.1) rotate(2deg); }
+}
