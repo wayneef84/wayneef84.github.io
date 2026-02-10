@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="style.css">
     <!-- Highlight.js Theme -->
     <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="app-container">
@@ -129,19 +128,5 @@
             <button id="cte-reset" style="padding:8px; background:var(--bg-primary); color:var(--text-secondary); border:1px solid var(--border); border-radius:4px; cursor:pointer;">Reset</button>
         </div>
     </div>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
-
 </body>
 </html>
