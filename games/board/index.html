@@ -37,7 +37,6 @@
             border: 0;
         }
     </style>
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <a href="#gameContainer" class="skip-link">Skip to game</a>
@@ -131,19 +130,5 @@
 
     <!-- Main Controller -->
     <script src="js/main.js"></script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
-
 </body>
 </html>

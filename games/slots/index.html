@@ -10,7 +10,6 @@
     <title>Dad's Slots v3.0</title>
     
     <link rel="stylesheet" href="css/slots.css?v=3.1">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -148,19 +147,5 @@
         </div> </div> <script src="js/slots_audio.js?v=3.1"></script>
     <script src="js/themes.js?v=3.1"></script>
     <script src="js/slots.js?v=3.1"></script>
-
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
-
 </body>
 </html>
