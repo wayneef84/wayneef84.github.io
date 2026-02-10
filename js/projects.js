@@ -20,7 +20,8 @@ const projects = [
     // Tools / Projects
     { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", tags: ["Utility"], description: "Barcode and QR code scanner with multiple detection modes." },
     { name: "MD Reader", path: "projects/md-reader/index.html", category: "project", icon: "📖", tags: ["Utility"], description: "Markdown reader and documentation viewer." },
-    { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." }
+    { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." },
+    { name: "Input A11y (v1)", path: "projects/input-a11y_v1/index.html", category: "project", icon: "🕰️", tags: ["Historical"], description: "Legacy version of Input A11y.", hiddenInAll: true }
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,7 +86,8 @@ function renderProjects(filter) {
     projects.forEach(project => {
         // Filter logic: show if filter is 'all' OR category matches
         // For 'project' filter, we want to show things with category 'project' (tools)
-        if (filter === 'all' || project.category === filter) {
+        // Hidden items (like historical copies) only show when their specific category is selected
+        if ((filter === 'all' && !project.hiddenInAll) || project.category === filter) {
             const card = document.createElement('a');
             card.href = project.path;
             card.className = 'game-card fade-in';
