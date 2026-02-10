@@ -78,11 +78,114 @@ main {
     margin-bottom: 10px;
 }
 
-.control-row {
-    margin-bottom: 8px;
+/* Camera Select (no label) */
+.camera-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
 }
 
-#scanMode, #ocrDriver {
+/* Settings Toggle Button */
+.settings-toggle-btn {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.settings-toggle-btn:hover {
+    background: #2a2a2a;
+    border-color: var(--teal);
+}
+
+#settings-chevron {
+    transition: transform 0.2s;
+}
+
+#settings-chevron.rotated {
+    transform: rotate(-180deg);
+}
+
+/* Collapsible Settings Panel */
+.scan-settings-panel {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.scan-settings-panel.hidden {
+    max-height: 0;
+    padding: 0 12px;
+    border-color: transparent;
+}
+
+.scan-settings-panel:not(.hidden) {
+    max-height: 500px;
+}
+
+.control-row {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-row label {
+    flex-shrink: 0;
+    min-width: 120px;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.control-row select,
+.control-row input {
+    flex: 1;
+}
+
+/* Character Count Group */
+.char-count-group {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.char-mode-select {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.char-count-input {
+    flex: 1;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.char-count-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#scanMode, #ocrDriver, #scan-text-transform, #scan-char-mode {
     padding: 8px;
     border-radius: 4px;
     background: var(--secondary-bg);
@@ -200,35 +303,6 @@ main {
     box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
 }
 
-#scan-char-count-indicator {
-    position: absolute;
-    bottom: 4px;
-    right: 4px;
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    pointer-events: auto;
-    z-index: 20;
-    font-family: monospace;
-    cursor: pointer;
-    border: 1px solid #555;
-    transition: all 0.2s;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-#scan-char-count-indicator:hover {
-    background: rgba(0, 188, 212, 0.95);
-    border-color: var(--teal);
-    transform: scale(1.08);
-    box-shadow: 0 0 12px rgba(0, 188, 212, 0.6);
-}
-
-#scan-char-count-indicator:active {
-    transform: scale(0.95);
-}
 
 /* Detection Overlay - appears when valid text is detected */
 #detection-overlay {
@@ -299,166 +373,6 @@ main {
     }
 }
 
-/* Quick Settings Overlay */
-#quick-settings-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 150;
-    animation: fadeIn 0.2s ease-in;
-}
-
-#quick-settings-overlay.hidden {
-    display: none;
-}
-
-#quick-settings-panel {
-    background: rgba(30, 30, 30, 0.98);
-    border: 2px solid var(--teal);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 0 30px rgba(0, 188, 212, 0.5);
-    backdrop-filter: blur(10px);
-    min-width: 280px;
-    max-width: 90%;
-}
-
-.quick-settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #444;
-}
-
-.quick-settings-header h3 {
-    margin: 0;
-    color: var(--teal);
-    font-size: 1.1rem;
-}
-
-.quick-close-btn {
-    background: transparent;
-    border: none;
-    color: #888;
-    font-size: 1.8rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    transition: color 0.2s;
-}
-
-.quick-close-btn:hover {
-    color: #fff;
-}
-
-.quick-setting-group {
-    margin-bottom: 16px;
-}
-
-.quick-setting-group:last-child {
-    margin-bottom: 0;
-}
-
-.quick-setting-group > label {
-    display: block;
-    color: #aaa;
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-}
-
-/* Number Input with +/- Buttons */
-.quick-number-input {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.quick-num-btn {
-    background: #333;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 6px;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: bold;
-}
-
-.quick-num-btn:hover {
-    background: var(--teal);
-    border-color: var(--teal);
-}
-
-.quick-num-btn:active {
-    transform: scale(0.95);
-}
-
-#quick-minlength-val {
-    flex: 1;
-    background: #222;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 6px;
-    padding: 8px;
-    text-align: center;
-    font-size: 1.1rem;
-    font-family: monospace;
-    font-weight: bold;
-}
-
-#quick-minlength-val:focus {
-    outline: none;
-    border-color: var(--teal);
-}
-
-/* Toggle Button Group */
-.quick-toggle-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.quick-toggle-btn {
-    flex: 1;
-    min-width: 80px;
-    background: #333;
-    color: #aaa;
-    border: 1px solid #555;
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.quick-toggle-btn:hover {
-    background: #444;
-    color: white;
-}
-
-.quick-toggle-btn.active {
-    background: var(--teal);
-    color: white;
-    border-color: var(--teal);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
-}
-
-.quick-toggle-btn:active {
-    transform: scale(0.97);
-}
 
 .status-msg {
     margin-top: 5px;

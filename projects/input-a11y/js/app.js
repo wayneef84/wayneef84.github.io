@@ -28,13 +28,15 @@ document.addEventListener('DOMContentLoaded', function() {
     var detectionBox = document.getElementById('detection-box');
     var detectionValue = document.getElementById('detection-value');
 
-    // Quick Settings Overlay Elements
-    var quickSettingsOverlay = document.getElementById('quick-settings-overlay');
-    var quickSettingsClose = document.getElementById('quick-settings-close');
-    var quickMinLengthVal = document.getElementById('quick-minlength-val');
-    var quickMinLengthDec = document.getElementById('quick-minlength-dec');
-    var quickMinLengthInc = document.getElementById('quick-minlength-inc');
-    var quickToggleBtns = document.querySelectorAll('.quick-toggle-btn');
+    // Scan Settings Panel Elements
+    var scanSettingsToggle = document.getElementById('scan-settings-toggle');
+    var scanSettingsPanel = document.getElementById('scan-settings-panel');
+    var settingsChevron = document.getElementById('settings-chevron');
+    var scanTextTransform = document.getElementById('scan-text-transform');
+    var scanCharMode = document.getElementById('scan-char-mode');
+    var scanCharCount = document.getElementById('scan-char-count');
+    var textTransformRow = document.getElementById('text-transform-row');
+    var charCountRow = document.getElementById('char-count-row');
 
     // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
@@ -63,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var setOcrScanLine = document.getElementById('set-ocr-scan-line');
     var setOcrShowResize = document.getElementById('set-ocr-show-resize');
     var setTextTransform = document.getElementById('set-text-transform');
-    var scanCharCountIndicator = document.getElementById('scan-char-count-indicator');
 
     // OCR Resize Controls (Scan Tab)
     var btnScanResize = document.getElementById('btn-scan-resize');
@@ -164,13 +165,25 @@ document.addEventListener('DOMContentLoaded', function() {
         updateRoiUI();
         updateResizeControlsVisibility();
 
-        // Bind char count indicator click
-        if (scanCharCountIndicator) {
-            scanCharCountIndicator.addEventListener('click', showQuickSettings);
+        // Restore character count mode (stored as min length for now)
+        var charMode = 'OFF';
+        if (settings.ocrMinLength && settings.ocrMinLength > 0) {
+            charMode = 'MIN'; // Default to MIN for backward compatibility
+        }
+        if (settings.ocrCharMode) charMode = settings.ocrCharMode;
+        if (scanCharMode) scanCharMode.value = charMode;
+        if (scanCharCount) {
+            scanCharCount.value = settings.ocrMinLength || 4;
+            scanCharCount.disabled = (charMode === 'OFF');
         }
 
-        // Bind quick settings controls
-        bindQuickSettingsControls();
+        // Restore text transform in scan tab
+        if (scanTextTransform && settings.ocrTextTransform) {
+            scanTextTransform.value = settings.ocrTextTransform;
+        }
+
+        // Toggle visibility based on scan mode
+        updateScanSettingsVisibility();
 
         // Restore OCR tuning
         if (setOcrConfidence) {
@@ -283,131 +296,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateRoiOverlay(roiConfig);
         updateScanLineVisibility();
-        updateCharCountIndicator(minLength);
     }
 
-    function updateCharCountIndicator(minLength) {
-        if (!scanCharCountIndicator) return;
+    function updateScanSettingsVisibility() {
+        var isOCR = scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO';
 
-        // Always show indicator in TEXT_OCR mode so users can click to configure
-        var isOCRMode = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
+        if (textTransformRow) {
+            textTransformRow.classList.toggle('hidden', !isOCR);
+        }
+        if (charCountRow) {
+            charCountRow.classList.toggle('hidden', !isOCR);
+        }
+    }
 
-        if (isOCRMode) {
-            if (minLength > 0) {
-                scanCharCountIndicator.innerText = 'Min: ' + minLength + '+ chars';
-            } else {
-                scanCharCountIndicator.innerText = '⚙️ Quick Settings';
-            }
-            scanCharCountIndicator.classList.remove('hidden');
-            scanCharCountIndicator.title = 'Click for quick settings';
+    function toggleScanSettings() {
+        if (!scanSettingsPanel || !settingsChevron) return;
+
+        if (scanSettingsPanel.classList.contains('hidden')) {
+            scanSettingsPanel.classList.remove('hidden');
+            settingsChevron.classList.add('rotated');
         } else {
-            scanCharCountIndicator.classList.add('hidden');
-        }
-    }
-
-    function showQuickSettings() {
-        if (!quickSettingsOverlay) return;
-
-        // Populate current values
-        if (quickMinLengthVal) {
-            quickMinLengthVal.value = settings.ocrMinLength || 0;
-        }
-
-        // Set active text transform button
-        var currentTransform = settings.ocrTextTransform || 'NONE';
-        for (var i = 0; i < quickToggleBtns.length; i++) {
-            if (quickToggleBtns[i].dataset.value === currentTransform) {
-                quickToggleBtns[i].classList.add('active');
-            } else {
-                quickToggleBtns[i].classList.remove('active');
-            }
-        }
-
-        quickSettingsOverlay.classList.remove('hidden');
-    }
-
-    function hideQuickSettings() {
-        if (quickSettingsOverlay) {
-            quickSettingsOverlay.classList.add('hidden');
-        }
-    }
-
-    function applyQuickSettingsChange(key, value) {
-        // Update settings
-        settings[key] = value;
-        storage.saveSettings(settings);
-
-        // Sync with Settings tab UI
-        if (key === 'ocrMinLength') {
-            if (setOcrMinLength) setOcrMinLength.value = value;
-            if (ocrMinLengthVal) ocrMinLengthVal.innerText = value;
-        }
-        if (key === 'ocrTextTransform') {
-            if (setTextTransform) setTextTransform.value = value;
-        }
-
-        // Apply to OCR manager
-        applyOCRFilterConfig();
-    }
-
-    function bindQuickSettingsControls() {
-        // Close button
-        if (quickSettingsClose) {
-            quickSettingsClose.addEventListener('click', hideQuickSettings);
-        }
-
-        // Click backdrop to close
-        if (quickSettingsOverlay) {
-            quickSettingsOverlay.addEventListener('click', function(e) {
-                if (e.target === quickSettingsOverlay) {
-                    hideQuickSettings();
-                }
-            });
-        }
-
-        // Min length increment/decrement
-        if (quickMinLengthDec) {
-            quickMinLengthDec.addEventListener('click', function() {
-                var val = parseInt(quickMinLengthVal.value, 10) || 0;
-                if (val > 0) {
-                    val--;
-                    quickMinLengthVal.value = val;
-                    applyQuickSettingsChange('ocrMinLength', val);
-                }
-            });
-        }
-
-        if (quickMinLengthInc) {
-            quickMinLengthInc.addEventListener('click', function() {
-                var val = parseInt(quickMinLengthVal.value, 10) || 0;
-                val++;
-                quickMinLengthVal.value = val;
-                applyQuickSettingsChange('ocrMinLength', val);
-            });
-        }
-
-        // Manual input change
-        if (quickMinLengthVal) {
-            quickMinLengthVal.addEventListener('change', function() {
-                var val = parseInt(this.value, 10);
-                if (isNaN(val) || val < 0) val = 0;
-                this.value = val;
-                applyQuickSettingsChange('ocrMinLength', val);
-            });
-        }
-
-        // Text transform toggle buttons
-        for (var i = 0; i < quickToggleBtns.length; i++) {
-            quickToggleBtns[i].addEventListener('click', function() {
-                // Remove active from all
-                for (var j = 0; j < quickToggleBtns.length; j++) {
-                    quickToggleBtns[j].classList.remove('active');
-                }
-                // Add active to clicked
-                this.classList.add('active');
-                // Apply setting
-                applyQuickSettingsChange('ocrTextTransform', this.dataset.value);
-            });
+            scanSettingsPanel.classList.add('hidden');
+            settingsChevron.classList.remove('rotated');
         }
     }
 
@@ -678,9 +588,71 @@ document.addEventListener('DOMContentLoaded', function() {
             storage.saveSettings(settings);
             updateDriverRowVisibility();
             updateScanLineVisibility();
-            applyOCRFilterConfig(); // Updates ROI overlay visibility too AND char count indicator
+            updateScanSettingsVisibility();
+            applyOCRFilterConfig();
             if (currentTab === 'scan' && userHasInteracted) startScanner();
         });
+
+        // Scan settings toggle
+        if (scanSettingsToggle) {
+            scanSettingsToggle.addEventListener('click', toggleScanSettings);
+        }
+
+        // Scan tab: Text transform
+        if (scanTextTransform) {
+            scanTextTransform.addEventListener('change', function(e) {
+                settings.ocrTextTransform = e.target.value;
+                storage.saveSettings(settings);
+                if (setTextTransform) setTextTransform.value = e.target.value;
+                applyOCRFilterConfig();
+            });
+        }
+
+        // Scan tab: Character count mode
+        if (scanCharMode) {
+            scanCharMode.addEventListener('change', function(e) {
+                var mode = e.target.value;
+                settings.ocrCharMode = mode;
+                storage.saveSettings(settings);
+
+                // Enable/disable count input
+                if (scanCharCount) {
+                    scanCharCount.disabled = (mode === 'OFF');
+                    if (mode !== 'OFF') {
+                        var count = parseInt(scanCharCount.value, 10) || 4;
+                        settings.ocrMinLength = count;
+                        storage.saveSettings(settings);
+                    } else {
+                        settings.ocrMinLength = 0;
+                        storage.saveSettings(settings);
+                    }
+                }
+
+                // Sync with Settings tab
+                if (setOcrMinLength) setOcrMinLength.value = settings.ocrMinLength;
+                if (ocrMinLengthVal) ocrMinLengthVal.innerText = settings.ocrMinLength;
+
+                applyOCRFilterConfig();
+            });
+        }
+
+        // Scan tab: Character count value
+        if (scanCharCount) {
+            scanCharCount.addEventListener('change', function(e) {
+                var count = parseInt(e.target.value, 10);
+                if (isNaN(count) || count < 1) count = 1;
+                this.value = count;
+
+                settings.ocrMinLength = count;
+                storage.saveSettings(settings);
+
+                // Sync with Settings tab
+                if (setOcrMinLength) setOcrMinLength.value = count;
+                if (ocrMinLengthVal) ocrMinLengthVal.innerText = count;
+
+                applyOCRFilterConfig();
+            });
+        }
         if (ocrDriverSelect) {
             ocrDriverSelect.addEventListener('change', function(e) {
                 settings.ocrDriver = e.target.value;
@@ -962,11 +934,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- Keyboard: Escape closes modals ---
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                // Check quick settings overlay first
-                if (quickSettingsOverlay && !quickSettingsOverlay.classList.contains('hidden')) {
-                    hideQuickSettings();
-                    return;
-                }
                 // Check detection overlay
                 if (detectionOverlay && !detectionOverlay.classList.contains('hidden')) {
                     hideDetectionOverlay();

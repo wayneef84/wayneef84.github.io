@@ -42,30 +42,59 @@
         <!-- SCAN TAB -->
         <section id="scan" class="tab-content active">
             <div class="controls">
-                <div class="control-row">
-                    <label for="videoSource">Camera:</label>
-                    <select id="videoSource"></select>
-                </div>
-                <div class="control-row">
-                    <label for="scanMode">Detection Mode:</label>
-                    <select id="scanMode">
-                        <option value="TEXT_OCR">Text Scanner</option>
-                        <option value="AUTO" selected>Auto Detect</option>
-                        <option disabled>--- Specific Formats ---</option>
-                        <option value="QR_CODE">QR Code</option>
-                        <option value="CODE_128">Code 128</option>
-                        <option value="CODE_39">Code 39</option>
-                        <option value="EAN_13">EAN-13</option>
-                        <option value="UPC_A">UPC-A</option>
-                        <option value="UPC_E">UPC-E</option>
-                    </select>
-                </div>
-                <div id="driver-row" class="control-row hidden">
-                    <label for="ocrDriver">OCR Driver:</label>
-                    <select id="ocrDriver">
-                        <option value="tesseract">Tesseract.js (Offline)</option>
-                        <option value="native">Native TextDetector</option>
-                    </select>
+                <!-- Camera (no label) -->
+                <select id="videoSource" class="camera-select"></select>
+
+                <!-- Collapsible Settings -->
+                <button id="scan-settings-toggle" class="settings-toggle-btn">
+                    ⚙️ Scanner Settings <span id="settings-chevron">▼</span>
+                </button>
+
+                <div id="scan-settings-panel" class="scan-settings-panel hidden">
+                    <div class="control-row">
+                        <label for="scanMode">Detection Mode:</label>
+                        <select id="scanMode">
+                            <option value="TEXT_OCR">Text Scanner</option>
+                            <option value="AUTO" selected>Auto Detect</option>
+                            <option disabled>--- Specific Formats ---</option>
+                            <option value="QR_CODE">QR Code</option>
+                            <option value="CODE_128">Code 128</option>
+                            <option value="CODE_39">Code 39</option>
+                            <option value="EAN_13">EAN-13</option>
+                            <option value="UPC_A">UPC-A</option>
+                            <option value="UPC_E">UPC-E</option>
+                        </select>
+                    </div>
+                    <div id="driver-row" class="control-row hidden">
+                        <label for="ocrDriver">OCR Driver:</label>
+                        <select id="ocrDriver">
+                            <option value="tesseract">Tesseract.js (Offline)</option>
+                            <option value="native">Native TextDetector</option>
+                        </select>
+                    </div>
+
+                    <!-- Text Transform -->
+                    <div id="text-transform-row" class="control-row hidden">
+                        <label for="scan-text-transform">Text Transform:</label>
+                        <select id="scan-text-transform">
+                            <option value="NONE">✗</option>
+                            <option value="UPPERCASE">ABC</option>
+                            <option value="LOWERCASE">abc</option>
+                        </select>
+                    </div>
+
+                    <!-- Character Count -->
+                    <div id="char-count-row" class="control-row hidden">
+                        <label for="scan-char-count">Character Count:</label>
+                        <div class="char-count-group">
+                            <select id="scan-char-mode" class="char-mode-select">
+                                <option value="OFF">Off</option>
+                                <option value="MIN">Min</option>
+                                <option value="MAX">Max</option>
+                            </select>
+                            <input type="number" id="scan-char-count" class="char-count-input" min="1" max="100" value="4" disabled>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="scan-status" class="status-msg" role="status" aria-live="polite"></div>
@@ -75,40 +104,11 @@
                 <div id="reader"></div>
                 <div id="scan-line"></div>
                 <div id="scan-roi-overlay" class="hidden"></div>
-                <div id="scan-char-count-indicator" class="hidden"></div>
 
                 <!-- Detection Overlay (appears when text is found) -->
                 <div id="detection-overlay" class="hidden" role="alert" aria-live="assertive">
                     <div id="detection-box">
                         <div id="detection-value"></div>
-                    </div>
-                </div>
-
-                <!-- Quick Settings Overlay (appears when clicking char count) -->
-                <div id="quick-settings-overlay" class="hidden">
-                    <div id="quick-settings-panel">
-                        <div class="quick-settings-header">
-                            <h3>Quick Settings</h3>
-                            <button id="quick-settings-close" class="quick-close-btn" aria-label="Close">&times;</button>
-                        </div>
-
-                        <div class="quick-setting-group">
-                            <label>Min Character Count:</label>
-                            <div class="quick-number-input">
-                                <button id="quick-minlength-dec" class="quick-num-btn">-</button>
-                                <input type="number" id="quick-minlength-val" min="0" max="50" value="0">
-                                <button id="quick-minlength-inc" class="quick-num-btn">+</button>
-                            </div>
-                        </div>
-
-                        <div class="quick-setting-group">
-                            <label>Text Transform:</label>
-                            <div class="quick-toggle-group">
-                                <button class="quick-toggle-btn active" data-value="NONE">✗ None</button>
-                                <button class="quick-toggle-btn" data-value="UPPERCASE">ABC</button>
-                                <button class="quick-toggle-btn" data-value="LOWERCASE">abc</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -329,9 +329,9 @@
                 <div class="setting-item">
                     <label for="set-text-transform">Text Transform:</label>
                     <select id="set-text-transform">
-                        <option value="NONE">✗ None (Original)</option>
-                        <option value="UPPERCASE">ABC (UPPERCASE)</option>
-                        <option value="LOWERCASE">abc (lowercase)</option>
+                        <option value="NONE">✗</option>
+                        <option value="UPPERCASE">ABC</option>
+                        <option value="LOWERCASE">abc</option>
                     </select>
                 </div>
                 <div class="setting-item">
