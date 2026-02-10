@@ -74,6 +74,7 @@ var OCRManager = (function() {
         this.confirmPopup = true;    // show confirmation modal on OCR result
         this.confidenceThreshold = 40; // minimum Tesseract confidence (0-100)
         this.preprocessingMode = 'TRIM'; // TRIM, NONE, REMOVE_ALL, NORMALIZE
+        this.textTransform = 'NONE'; // NONE, UPPERCASE, LOWERCASE
         this.roi = null; // { enabled, top, left, width, height } in %
         this.binarizeEnabled = true; // Smart Canvas binarization
         this.binarizeThreshold = BINARIZE_THRESHOLD;
@@ -101,6 +102,7 @@ var OCRManager = (function() {
         if (opts.confirmPopup !== undefined) this.confirmPopup = opts.confirmPopup;
         if (opts.confidenceThreshold !== undefined) this.confidenceThreshold = opts.confidenceThreshold;
         if (opts.preprocessingMode !== undefined) this.preprocessingMode = opts.preprocessingMode;
+        if (opts.textTransform !== undefined) this.textTransform = opts.textTransform;
         if (opts.roi !== undefined) this.roi = opts.roi;
         if (opts.binarizeEnabled !== undefined) this.binarizeEnabled = opts.binarizeEnabled;
         if (opts.binarizeThreshold !== undefined) this.binarizeThreshold = opts.binarizeThreshold;
@@ -441,7 +443,14 @@ var OCRManager = (function() {
             text = text.trim();
         }
 
-        // 2. Alphanumeric Filter (if enabled)
+        // 2. Text Transformation
+        if (this.textTransform === 'UPPERCASE') {
+            text = text.toUpperCase();
+        } else if (this.textTransform === 'LOWERCASE') {
+            text = text.toLowerCase();
+        }
+
+        // 3. Alphanumeric Filter (if enabled)
         if (this.alphanumericOnly) {
             text = text.replace(/[^a-zA-Z0-9 ]/g, '');
             if (this.preprocessingMode !== 'NONE') text = text.trim();
@@ -468,14 +477,14 @@ var OCRManager = (function() {
     };
 
     /**
-     * Check if text passes the exact length filter.
+     * Check if text passes the minimum length filter.
      * If minTextLength is 0 (off), accept any non-empty text.
-     * Otherwise require exact character count match.
+     * Otherwise require at least minTextLength characters.
      */
     OCRManager.prototype._passesLengthFilter = function(text) {
         if (!text || text.length === 0) return false;
         if (this.minTextLength === 0) return true; // 0 = off, accept all
-        return text.length == this.minTextLength;
+        return text.length >= this.minTextLength;
     };
 
     /**

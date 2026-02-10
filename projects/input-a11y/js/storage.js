@@ -33,6 +33,7 @@ var StorageManager = (function() {
         ocrMinLength: 0,
         ocrRoiWidth: 70,
         ocrRoiHeight: 10,
+        ocrTextTransform: 'NONE', // NONE, UPPERCASE, LOWERCASE
         barcodeFps: 10,
         barcodeBoxWidth: 250,
         barcodeBoxHeight: 250

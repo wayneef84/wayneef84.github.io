@@ -204,14 +204,260 @@ main {
     position: absolute;
     bottom: 4px;
     right: 4px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.85);
     color: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 8px;
     font-size: 0.8rem;
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 20;
     font-family: monospace;
+    cursor: pointer;
+    border: 1px solid #555;
+    transition: all 0.2s;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#scan-char-count-indicator:hover {
+    background: rgba(0, 188, 212, 0.95);
+    border-color: var(--teal);
+    transform: scale(1.08);
+    box-shadow: 0 0 12px rgba(0, 188, 212, 0.6);
+}
+
+#scan-char-count-indicator:active {
+    transform: scale(0.95);
+}
+
+/* Detection Overlay - appears when valid text is detected */
+#detection-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    animation: fadeIn 0.2s ease-in;
+}
+
+#detection-overlay.hidden {
+    display: none;
+}
+
+#detection-box {
+    background: rgba(76, 175, 80, 0.95);
+    border: 5px solid #4CAF50;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-width: 80%;
+    animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+#detection-box:hover {
+    transform: scale(1.05);
+    background: rgba(76, 175, 80, 1);
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8), inset 0 0 40px rgba(255, 255, 255, 0.2);
+}
+
+#detection-box:active {
+    transform: scale(0.98);
+}
+
+#detection-value {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    word-break: break-word;
+    font-family: monospace;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(76, 175, 80, 0.9), inset 0 0 40px rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Quick Settings Overlay */
+#quick-settings-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 150;
+    animation: fadeIn 0.2s ease-in;
+}
+
+#quick-settings-overlay.hidden {
+    display: none;
+}
+
+#quick-settings-panel {
+    background: rgba(30, 30, 30, 0.98);
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 188, 212, 0.5);
+    backdrop-filter: blur(10px);
+    min-width: 280px;
+    max-width: 90%;
+}
+
+.quick-settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.quick-settings-header h3 {
+    margin: 0;
+    color: var(--teal);
+    font-size: 1.1rem;
+}
+
+.quick-close-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    transition: color 0.2s;
+}
+
+.quick-close-btn:hover {
+    color: #fff;
+}
+
+.quick-setting-group {
+    margin-bottom: 16px;
+}
+
+.quick-setting-group:last-child {
+    margin-bottom: 0;
+}
+
+.quick-setting-group > label {
+    display: block;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+/* Number Input with +/- Buttons */
+.quick-number-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quick-num-btn {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+}
+
+.quick-num-btn:hover {
+    background: var(--teal);
+    border-color: var(--teal);
+}
+
+.quick-num-btn:active {
+    transform: scale(0.95);
+}
+
+#quick-minlength-val {
+    flex: 1;
+    background: #222;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+#quick-minlength-val:focus {
+    outline: none;
+    border-color: var(--teal);
+}
+
+/* Toggle Button Group */
+.quick-toggle-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.quick-toggle-btn {
+    flex: 1;
+    min-width: 80px;
+    background: #333;
+    color: #aaa;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.quick-toggle-btn:hover {
+    background: #444;
+    color: white;
+}
+
+.quick-toggle-btn.active {
+    background: var(--teal);
+    color: white;
+    border-color: var(--teal);
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+}
+
+.quick-toggle-btn:active {
+    transform: scale(0.97);
 }
 
 .status-msg {
@@ -246,6 +492,24 @@ main {
     border: 1px solid var(--border-color);
     max-height: 90vh;
     overflow-y: auto;
+}
+
+/* Verify Modal - Transparent Overlay Style */
+#verify-modal {
+    background: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.2s ease-in;
+}
+
+#verify-modal .modal-content {
+    background: rgba(30, 30, 30, 0.95);
+    border: 2px solid var(--teal);
+    box-shadow: 0 0 30px rgba(0, 188, 212, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+#verify-modal h2 {
+    color: var(--teal);
+    margin-top: 0;
 }
 
 .close-modal {
@@ -724,6 +988,16 @@ button {
 }
 
 /* Settings Tab */
+#settings {
+    padding-bottom: 100px; /* Space for fixed footer */
+}
+
+@media (max-width: 768px) {
+    #settings {
+        padding-bottom: 120px; /* Extra space on mobile */
+    }
+}
+
 .settings-section {
     max-width: 500px;
     margin: 0 auto 20px;

@@ -52,7 +52,7 @@
                     </select>
                 </div>
 
-                <div id="scan-status" class="status-msg"></div>
+                <div id="scan-status" class="status-msg" role="status" aria-live="polite"></div>
             </div>
 
             <div id="reader-container">
@@ -61,7 +61,42 @@
                 <div id="scan-roi-overlay" class="hidden"></div>
                 <div id="scan-char-count-indicator" class="hidden"></div>
 
-                <button id="btn-scan-resize" title="Resize Scan Area">⤢</button>
+                <!-- Detection Overlay (appears when text is found) -->
+                <div id="detection-overlay" class="hidden" role="alert" aria-live="assertive">
+                    <div id="detection-box">
+                        <div id="detection-value"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Settings Overlay (appears when clicking char count) -->
+                <div id="quick-settings-overlay" class="hidden">
+                    <div id="quick-settings-panel">
+                        <div class="quick-settings-header">
+                            <h3>Quick Settings</h3>
+                            <button id="quick-settings-close" class="quick-close-btn" aria-label="Close">&times;</button>
+                        </div>
+
+                        <div class="quick-setting-group">
+                            <label>Min Character Count:</label>
+                            <div class="quick-number-input">
+                                <button id="quick-minlength-dec" class="quick-num-btn">-</button>
+                                <input type="number" id="quick-minlength-val" min="0" max="50" value="0">
+                                <button id="quick-minlength-inc" class="quick-num-btn">+</button>
+                            </div>
+                        </div>
+
+                        <div class="quick-setting-group">
+                            <label>Text Transform:</label>
+                            <div class="quick-toggle-group">
+                                <button class="quick-toggle-btn active" data-value="NONE">Original</button>
+                                <button class="quick-toggle-btn" data-value="UPPERCASE">UPPERCASE</button>
+                                <button class="quick-toggle-btn" data-value="LOWERCASE">lowercase</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-scan-resize" title="Resize Scan Area" aria-label="Resize scan area">⤢</button>
                 <div id="scan-resize-overlay" class="hidden">
                     <div class="resize-row">
                         <label>W</label>
@@ -81,9 +116,9 @@
                 </div>
             </div>
 
-            <div id="scan-result" class="modal hidden">
+            <div id="scan-result" class="modal hidden" role="dialog" aria-modal="true" aria-label="Scan result">
                 <div class="modal-content">
-                    <span class="close-modal">&times;</span>
+                    <span class="close-modal" role="button" aria-label="Close" tabindex="0">&times;</span>
                     <h2>Result Found</h2>
                     <p id="result-type">Type: </p>
                     <img id="result-image" class="result-thumb hidden" alt="Snapshot">
@@ -97,9 +132,9 @@
             </div>
 
             <!-- Verify Modal (Scan-to-Verify) -->
-            <div id="verify-modal" class="modal hidden">
+            <div id="verify-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Verify scanned text">
                 <div class="modal-content">
-                    <span class="close-modal close-verify">&times;</span>
+                    <span class="close-modal close-verify" role="button" aria-label="Close" tabindex="0">&times;</span>
                     <h2>Select Text</h2>
                     <p>Choose the correct text to proceed:</p>
                     <ul id="candidate-list"></ul>
@@ -253,14 +288,14 @@
                     </div>
                 </div>
                 <div class="setting-item">
-                    <label for="set-ocr-minlength">Exact Text Length</label>
+                    <label for="set-ocr-minlength">Min Text Length</label>
                     <div class="range-group">
                         <input type="range" id="set-ocr-minlength" min="0" max="20" step="1" value="0">
                         <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="0" max="50" value="0">
                         <span id="ocr-minlength-val" class="range-val">0</span>
                         <button class="manual-toggle-btn" data-target="set-ocr-minlength" title="Toggle Manual Input">⌨️</button>
                     </div>
-                    <span class="filter-hint" style="margin-left:4px;">(0 = Off)</span>
+                    <span class="filter-hint" style="margin-left:4px;">(0 = Off, requires at least N chars)</span>
                 </div>
                 <div class="setting-item">
                     <label for="set-ocr-preprocess">Whitespace Mode:</label>
@@ -336,9 +371,9 @@
     </main>
 
     <!-- Image Preview Modal -->
-    <div id="image-preview-modal" class="modal hidden">
+    <div id="image-preview-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Image preview">
         <div class="modal-content image-preview-content">
-            <span class="close-modal close-preview">&times;</span>
+            <span class="close-modal close-preview" role="button" aria-label="Close" tabindex="0">&times;</span>
             <img id="preview-image" class="preview-full-image" alt="Preview">
             <div class="actions" style="margin-top:12px;">
                 <a id="preview-save-link" class="primary-btn" style="text-decoration:none;display:inline-block;" download="scan_evidence.jpg">Save Image</a>
@@ -347,9 +382,9 @@
     </div>
 
     <!-- Edit Entry Modal -->
-    <div id="edit-entry-modal" class="modal hidden">
+    <div id="edit-entry-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Edit entry">
         <div class="modal-content">
-            <span class="close-modal close-edit">&times;</span>
+            <span class="close-modal close-edit" role="button" aria-label="Close" tabindex="0">&times;</span>
             <h2>Edit Entry</h2>
             <label for="edit-entry-text" style="display:block;text-align:left;margin-bottom:4px;color:#aaa;font-size:0.85rem;">Content:</label>
             <textarea id="edit-entry-text" style="width:100%;height:100px;background:#000;color:#fff;border:1px solid #333;padding:8px;border-radius:4px;font-size:0.9rem;resize:vertical;"></textarea>

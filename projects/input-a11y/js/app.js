@@ -23,6 +23,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var btnScreenshot = document.getElementById('btn-screenshot');
     var btnScanVerify = document.getElementById('btn-scan-verify');
 
+    // Detection Overlay Elements
+    var detectionOverlay = document.getElementById('detection-overlay');
+    var detectionBox = document.getElementById('detection-box');
+    var detectionValue = document.getElementById('detection-value');
+
+    // Quick Settings Overlay Elements
+    var quickSettingsOverlay = document.getElementById('quick-settings-overlay');
+    var quickSettingsClose = document.getElementById('quick-settings-close');
+    var quickMinLengthVal = document.getElementById('quick-minlength-val');
+    var quickMinLengthDec = document.getElementById('quick-minlength-dec');
+    var quickMinLengthInc = document.getElementById('quick-minlength-inc');
+    var quickToggleBtns = document.querySelectorAll('.quick-toggle-btn');
+
     // Settings Elements (now in Settings tab)
     var setAction = document.getElementById('set-action');
     // Verify Modal Elements
@@ -147,6 +160,14 @@ document.addEventListener('DOMContentLoaded', function() {
         updateRoiUI();
         updateResizeControlsVisibility();
 
+        // Bind char count indicator click
+        if (scanCharCountIndicator) {
+            scanCharCountIndicator.addEventListener('click', showQuickSettings);
+        }
+
+        // Bind quick settings controls
+        bindQuickSettingsControls();
+
         // Restore OCR tuning
         if (setOcrConfidence) {
             setOcrConfidence.value = settings.ocrConfidence || 40;
@@ -252,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
             minTextLength: minLength,
             preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
+            textTransform: s.ocrTextTransform || 'NONE',
             roi: roiConfig
         });
 
@@ -262,11 +284,123 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateCharCountIndicator(minLength) {
         if (!scanCharCountIndicator) return;
-        if (minLength > 0) {
-            scanCharCountIndicator.innerText = 'Req: ' + minLength + ' chars';
+
+        // Always show indicator in TEXT_OCR mode so users can click to configure
+        var isOCRMode = (scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO');
+
+        if (isOCRMode) {
+            if (minLength > 0) {
+                scanCharCountIndicator.innerText = 'Min: ' + minLength + '+ chars';
+            } else {
+                scanCharCountIndicator.innerText = '⚙️ Quick Settings';
+            }
             scanCharCountIndicator.classList.remove('hidden');
+            scanCharCountIndicator.title = 'Click for quick settings';
         } else {
             scanCharCountIndicator.classList.add('hidden');
+        }
+    }
+
+    function showQuickSettings() {
+        if (!quickSettingsOverlay) return;
+
+        // Populate current values
+        if (quickMinLengthVal) {
+            quickMinLengthVal.value = settings.ocrMinLength || 0;
+        }
+
+        // Set active text transform button
+        var currentTransform = settings.ocrTextTransform || 'NONE';
+        for (var i = 0; i < quickToggleBtns.length; i++) {
+            if (quickToggleBtns[i].dataset.value === currentTransform) {
+                quickToggleBtns[i].classList.add('active');
+            } else {
+                quickToggleBtns[i].classList.remove('active');
+            }
+        }
+
+        quickSettingsOverlay.classList.remove('hidden');
+    }
+
+    function hideQuickSettings() {
+        if (quickSettingsOverlay) {
+            quickSettingsOverlay.classList.add('hidden');
+        }
+    }
+
+    function applyQuickSettingsChange(key, value) {
+        // Update settings
+        settings[key] = value;
+        storage.saveSettings(settings);
+
+        // Sync with Settings tab UI
+        if (key === 'ocrMinLength') {
+            if (setOcrMinLength) setOcrMinLength.value = value;
+            if (ocrMinLengthVal) ocrMinLengthVal.innerText = value;
+        }
+
+        // Apply to OCR manager
+        applyOCRFilterConfig();
+    }
+
+    function bindQuickSettingsControls() {
+        // Close button
+        if (quickSettingsClose) {
+            quickSettingsClose.addEventListener('click', hideQuickSettings);
+        }
+
+        // Click backdrop to close
+        if (quickSettingsOverlay) {
+            quickSettingsOverlay.addEventListener('click', function(e) {
+                if (e.target === quickSettingsOverlay) {
+                    hideQuickSettings();
+                }
+            });
+        }
+
+        // Min length increment/decrement
+        if (quickMinLengthDec) {
+            quickMinLengthDec.addEventListener('click', function() {
+                var val = parseInt(quickMinLengthVal.value, 10) || 0;
+                if (val > 0) {
+                    val--;
+                    quickMinLengthVal.value = val;
+                    applyQuickSettingsChange('ocrMinLength', val);
+                }
+            });
+        }
+
+        if (quickMinLengthInc) {
+            quickMinLengthInc.addEventListener('click', function() {
+                var val = parseInt(quickMinLengthVal.value, 10) || 0;
+                val++;
+                quickMinLengthVal.value = val;
+                applyQuickSettingsChange('ocrMinLength', val);
+            });
+        }
+
+        // Manual input change
+        if (quickMinLengthVal) {
+            quickMinLengthVal.addEventListener('change', function() {
+                var val = parseInt(this.value, 10);
+                if (isNaN(val) || val < 0) val = 0;
+                this.value = val;
+                applyQuickSettingsChange('ocrMinLength', val);
+            });
+        }
+
+        // Text transform toggle buttons
+        for (var i = 0; i < quickToggleBtns.length; i++) {
+            quickToggleBtns[i].addEventListener('click', function() {
+                // Remove active from all
+                for (var j = 0; j < quickToggleBtns.length; j++) {
+                    quickToggleBtns[j].classList.remove('active');
+                }
+                // Add active to clicked
+                this.classList.add('active');
+                // Apply setting
+                applyQuickSettingsChange('ocrTextTransform', this.dataset.value);
+            });
         }
     }
 
@@ -537,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
             storage.saveSettings(settings);
             updateDriverRowVisibility();
             updateScanLineVisibility();
-            applyOCRFilterConfig(); // Updates ROI overlay visibility too
+            applyOCRFilterConfig(); // Updates ROI overlay visibility too AND char count indicator
             if (currentTab === 'scan' && userHasInteracted) startScanner();
         });
         if (ocrDriverSelect) {
@@ -793,6 +927,60 @@ document.addEventListener('DOMContentLoaded', function() {
             storage.clearHistory('SCANNED');
             renderHistory();
         });
+
+        // --- Auto-restart camera when user returns to this tab/window ---
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible' && currentTab === 'scan' && userHasInteracted) {
+                // Check if any modal is open — don't restart if user is in a modal
+                var scanResult = document.getElementById('scan-result');
+                var verifyMod = document.getElementById('verify-modal');
+                var scanResultOpen = scanResult && !scanResult.classList.contains('hidden');
+                var verifyOpen = verifyMod && !verifyMod.classList.contains('hidden');
+
+                if (!scanResultOpen && !verifyOpen) {
+                    startScanner();
+                }
+            }
+        });
+
+        // --- Cleanup Tesseract worker on page unload ---
+        window.addEventListener('beforeunload', function() {
+            if (ocrManager) ocrManager.terminate();
+        });
+
+        // --- Keyboard: Escape closes modals ---
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Check quick settings overlay first
+                if (quickSettingsOverlay && !quickSettingsOverlay.classList.contains('hidden')) {
+                    hideQuickSettings();
+                    return;
+                }
+                // Check detection overlay
+                if (detectionOverlay && !detectionOverlay.classList.contains('hidden')) {
+                    hideDetectionOverlay();
+                    startScanner();
+                    return;
+                }
+                var scanResult = document.getElementById('scan-result');
+                if (scanResult && !scanResult.classList.contains('hidden')) {
+                    closeResultModal();
+                    return;
+                }
+                if (verifyModal && !verifyModal.classList.contains('hidden')) {
+                    closeVerifyModal();
+                    return;
+                }
+                if (previewModal && !previewModal.classList.contains('hidden')) {
+                    closeImagePreview();
+                    return;
+                }
+                if (editModal && !editModal.classList.contains('hidden')) {
+                    closeEditEntry();
+                    return;
+                }
+            }
+        });
     }
 
     function bindRangeSlider(inputEl, displayEl, settingsKey, applyFn) {
@@ -991,6 +1179,77 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function showDetectionOverlay(text, result, mode) {
+        if (!detectionOverlay || !detectionValue) return;
+
+        // Stop scanning
+        stopAll();
+
+        // Truncate text if too long
+        var displayText = text;
+        var MAX_LENGTH = 50;
+        if (displayText.length > MAX_LENGTH) {
+            displayText = displayText.substring(0, MAX_LENGTH) + '...';
+        }
+
+        detectionValue.innerText = displayText;
+        detectionOverlay.classList.remove('hidden');
+
+        var formatName = 'Unknown';
+        if (result && result.result && result.result.format && result.result.format.formatName) {
+            formatName = result.result.format.formatName;
+        }
+
+        var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
+        lastResult = { text: text, format: formatName, mode: mode, image: imageDataUri };
+        lastSnapshotImage = imageDataUri;
+
+        // Click to navigate
+        detectionBox.onclick = function() {
+            hideDetectionOverlay();
+
+            // Save to history
+            storage.addItem('SCANNED', {
+                content: text,
+                format: formatName,
+                mode: mode,
+                image: imageDataUri
+            });
+            renderHistory();
+
+            // URL Input mode - navigate to URL
+            if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
+                executeUrlRedirect(text);
+            } else {
+                // For other modes, just copy and restart
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text)
+                        .then(function() { showToast('Copied: ' + text.substring(0, 30)); })
+                        .catch(function() { showToast('Text detected'); });
+                } else {
+                    showToast('Text detected');
+                }
+                startScanner();
+            }
+        };
+
+        // Click outside to dismiss
+        detectionOverlay.onclick = function(e) {
+            if (e.target === detectionOverlay) {
+                hideDetectionOverlay();
+                startScanner();
+            }
+        };
+    }
+
+    function hideDetectionOverlay() {
+        if (detectionOverlay) {
+            detectionOverlay.classList.add('hidden');
+            if (detectionBox) detectionBox.onclick = null;
+            detectionOverlay.onclick = null;
+        }
+    }
+
     function onScanSuccess(text, result, mode) {
         triggerFeedback();
 
@@ -1010,34 +1269,22 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('scan-status').innerText = 'Found: ' + text.substring(0, 50) + (text.length>50?'...':'');
         }
 
-        // URL Input mode
+        // URL Input mode OR OCR without confirm popup - show detection overlay
         if (settings.actionMode === 'URL_INPUT' || settings.actionMode === 'URL_LOOKUP') {
-            stopAll();
-            handleScanToVerify(text);
+            showDetectionOverlay(text, result, mode);
             return;
         }
 
         // OCR mode: check confirm popup
         if (mode === 'TEXT_OCR' || mode === 'OCR') {
             if (!settings.ocrConfirmPopup) {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text)
-                        .then(function() { showToast('Copied: ' + text.substring(0, 30)); })
-                        .catch(function() { showToast('Text detected'); });
-                } else {
-                    showToast('Text detected');
-                }
-                storage.addItem('SCANNED', {
-                    content: text,
-                    format: formatName,
-                    mode: mode,
-                    image: imageDataUri
-                });
+                // Show detection overlay instead of auto-copying
+                showDetectionOverlay(text, result, mode);
                 return;
             }
         }
 
-        // Show Modal
+        // Show Modal (traditional flow)
         stopAll();
         var modal = document.getElementById('scan-result');
         document.getElementById('result-type').innerText = 'Type: ' + formatName;
@@ -1153,11 +1400,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (silent !== true) startScanner();
     }
 
+    // Make verify modal backdrop clickable to dismiss
+    if (verifyModal) {
+        verifyModal.addEventListener('click', function(e) {
+            if (e.target === verifyModal) {
+                closeVerifyModal();
+            }
+        });
+    }
+
     function showToast(message) {
         var toast = document.getElementById('toast-msg');
         if (!toast) {
             toast = document.createElement('div');
             toast.id = 'toast-msg';
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
             toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);' +
                 'background:rgba(0,0,0,0.85);color:white;padding:10px 20px;border-radius:20px;' +
                 'z-index:1000;transition:opacity 0.3s;font-size:0.9rem;';
@@ -1206,7 +1464,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function closeResultModal() {
         document.getElementById('scan-result').classList.add('hidden');
-        startScanner();
+        if (currentTab === 'scan' && userHasInteracted) {
+            startScanner();
+        }
     }
 
     function copyResult(silent) {
@@ -1443,8 +1703,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (isUrlMode()) {
                     var urlBtn = document.createElement('button');
                     urlBtn.className = 'hist-action-btn hist-url-btn';
-                    urlBtn.innerHTML = '&#128279;'; // Link icon 🔗
+                    urlBtn.textContent = '\uD83D\uDD17'; // Link icon 🔗
                     urlBtn.title = 'Open URL';
+                    urlBtn.setAttribute('aria-label', 'Open URL');
                     urlBtn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         openUrlForItem(item.content);
@@ -1455,8 +1716,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Edit button
                 var editBtn = document.createElement('button');
                 editBtn.className = 'hist-action-btn hist-edit-btn';
-                editBtn.innerHTML = '&#9998;'; // Pencil icon ✎
+                editBtn.textContent = '\u270E'; // Pencil icon ✎
                 editBtn.title = 'Edit entry';
+                editBtn.setAttribute('aria-label', 'Edit entry');
                 editBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     openEditEntry(type, item.id, item.content);
@@ -1466,8 +1728,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Delete button
                 var delBtn = document.createElement('button');
                 delBtn.className = 'hist-action-btn hist-delete-btn';
-                delBtn.innerHTML = '&#128465;'; // Wastebasket icon 🗑
+                delBtn.textContent = '\uD83D\uDDD1'; // Wastebasket icon 🗑
                 delBtn.title = 'Delete entry';
+                delBtn.setAttribute('aria-label', 'Delete entry');
                 delBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     deleteHistoryItem(type, item.id);

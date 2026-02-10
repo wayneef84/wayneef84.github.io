@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input A11y (F.O.N.G.)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Shared Libraries -->
+    <script src="../../games/lib/html5-qrcode.min.js"></script>
+    <script src="../../games/lib/qrcode.min.js"></script>
+    <!-- Tesseract.js (Offline OCR) - Apache 2.0 License -->
+    <script src="assets/tesseract.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="scan">Scan</button>
+            <button class="tab-btn" data-tab="generate">Generate</button>
+            <button class="tab-btn" data-tab="history">History</button>
+            <button class="tab-btn" data-tab="settings">Settings</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- SCAN TAB -->
+        <section id="scan" class="tab-content active">
+            <div class="controls">
+                <div class="control-row">
+                    <label for="videoSource">Camera:</label>
+                    <select id="videoSource"></select>
+                </div>
+                <div class="control-row">
+                    <label for="scanMode">Detection Mode:</label>
+                    <select id="scanMode">
+                        <option value="TEXT_OCR">Text Scanner</option>
+                        <option value="AUTO" selected>Auto Detect</option>
+                        <option disabled>--- Specific Formats ---</option>
+                        <option value="QR_CODE">QR Code</option>
+                        <option value="CODE_128">Code 128</option>
+                        <option value="CODE_39">Code 39</option>
+                        <option value="EAN_13">EAN-13</option>
+                        <option value="UPC_A">UPC-A</option>
+                        <option value="UPC_E">UPC-E</option>
+                    </select>
+                </div>
+                <div id="driver-row" class="control-row hidden">
+                    <label for="ocrDriver">OCR Driver:</label>
+                    <select id="ocrDriver">
+                        <option value="tesseract">Tesseract.js (Offline)</option>
+                        <option value="native">Native TextDetector</option>
+                    </select>
+                </div>
+
+                <div id="scan-status" class="status-msg" role="status" aria-live="polite"></div>
+            </div>
+
+            <div id="reader-container">
+                <div id="reader"></div>
+                <div id="scan-line"></div>
+                <div id="scan-roi-overlay" class="hidden"></div>
+                <div id="scan-char-count-indicator" class="hidden"></div>
+
+                <button id="btn-scan-resize" title="Resize Scan Area" aria-label="Resize scan area">⤢</button>
+                <div id="scan-resize-overlay" class="hidden">
+                    <div class="resize-row">
+                        <label>W</label>
+                        <input type="range" id="scan-roi-w-slider" min="10" max="100">
+                    </div>
+                    <div class="resize-row">
+                        <label>H</label>
+                        <input type="range" id="scan-roi-h-slider" min="5" max="100">
+                    </div>
+                </div>
+            </div>
+
+            <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
+                <div class="dual-btn-group">
+                    <button id="btn-screenshot" class="screenshot-btn" title="Save raw camera image as evidence">Screenshot Evidence</button>
+                    <button id="btn-scan-verify" class="scan-verify-btn" title="Run OCR with pre-processing pipeline">Scan &amp; Verify</button>
+                </div>
+            </div>
+
+            <div id="scan-result" class="modal hidden" role="dialog" aria-modal="true" aria-label="Scan result">
+                <div class="modal-content">
+                    <span class="close-modal" role="button" aria-label="Close" tabindex="0">&times;</span>
+                    <h2>Result Found</h2>
+                    <p id="result-type">Type: </p>
+                    <img id="result-image" class="result-thumb hidden" alt="Snapshot">
+                    <textarea id="result-text" readonly></textarea>
+                    <div class="actions">
+                        <button id="btn-copy">Copy</button>
+                        <button id="btn-save-scan">Save to History</button>
+                        <button id="btn-rescan">Scan Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verify Modal (Scan-to-Verify) -->
+            <div id="verify-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Verify scanned text">
+                <div class="modal-content">
+                    <span class="close-modal close-verify" role="button" aria-label="Close" tabindex="0">&times;</span>
+                    <h2>Select Text</h2>
+                    <p>Choose the correct text to proceed:</p>
+                    <ul id="candidate-list"></ul>
+                    <div class="actions">
+                        <button id="btn-verify-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GENERATE TAB -->
+        <section id="generate" class="tab-content">
+            <div class="input-group">
+                <label for="gen-text">Content:</label>
+                <input type="text" id="gen-text" placeholder="Enter text or URL">
+            </div>
+
+            <button id="btn-generate" class="primary-btn">Generate QR</button>
+
+            <div id="qr-output">
+                <!-- QR Code Canvas will be appended here -->
+            </div>
+
+            <div id="gen-actions" class="hidden">
+                <button id="btn-download">Download</button>
+            </div>
+        </section>
+
+        <!-- HISTORY TAB -->
+        <section id="history" class="tab-content">
+            <div class="history-container">
+                <div class="history-section">
+                    <h3>Scanned Items</h3>
+                    <ul id="history-scanned" class="history-list"></ul>
+                    <button id="clear-scanned" class="danger-btn">Clear Scanned</button>
+                </div>
+                <div class="history-section">
+                    <h3>Created Codes</h3>
+                    <ul id="history-created" class="history-list"></ul>
+                    <button id="clear-created" class="danger-btn">Clear Created</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SETTINGS TAB -->
+        <section id="settings" class="tab-content">
+            <div class="settings-section">
+                <h3 class="settings-heading">Scan Action</h3>
+                <div class="setting-item">
+                    <label for="set-action">On Scan:</label>
+                    <select id="set-action">
+                        <option value="FREE">Free Scan (History)</option>
+                        <option value="URL_INPUT">URL Input (Open Link)</option>
+                    </select>
+                </div>
+                <div id="url-config" class="hidden">
+                    <div class="setting-item">
+                        <label for="set-base-url">Base URL:</label>
+                        <input type="text" id="set-base-url" placeholder="www.google.com/?q=" class="filter-input" style="max-width:220px;">
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-add-value-to-url">Add value to url:</label>
+                        <input type="checkbox" id="set-add-value-to-url">
+                    </div>
+                    <div id="add-value-hint" class="filter-hint">When ON, appends scanned value to end of Base URL. When OFF, opens Base URL as-is and copies value to clipboard.</div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3 class="settings-heading">Feedback</h3>
+                <div class="setting-item">
+                    <label for="set-vibrate">Vibrate:</label>
+                    <input type="checkbox" id="set-vibrate">
+                </div>
+                <div class="setting-item">
+                    <label for="set-frame">Green Frame:</label>
+                    <select id="set-frame">
+                        <option value="OFF">Off</option>
+                        <option value="SCANNER">Scanner Only</option>
+                        <option value="SCREEN">Full Screen</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="set-flash">Screen Flash:</label>
+                    <select id="set-flash">
+                        <option value="OFF">Off</option>
+                        <option value="SCANNER">Scanner Only</option>
+                        <option value="SCREEN">Full Screen</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3 class="settings-heading">Text Scanner (OCR)</h3>
+                <div class="setting-item">
+                    <label for="set-confirm-popup">Confirm Popup:</label>
+                    <input type="checkbox" id="set-confirm-popup" checked>
+                </div>
+                <!-- Scan Region: Auto-centered, user can toggle & adjust size only -->
+                <div class="setting-item">
+                    <label for="set-ocr-roi-enabled">Scan Region Box:</label>
+                    <input type="checkbox" id="set-ocr-roi-enabled" checked>
+                </div>
+                <div id="roi-settings-group" class="hidden indented-setting">
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-width">Width (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-width" min="10" max="100" step="1" value="90">
+                            <input type="number" id="set-ocr-roi-width-manual" class="manual-input hidden" min="10" max="100" value="90">
+                            <span id="ocr-roi-width-val" class="range-val">90</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-width" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label for="set-ocr-roi-height">Height (%)</label>
+                        <div class="range-group">
+                            <input type="range" id="set-ocr-roi-height" min="5" max="100" step="1" value="10">
+                            <input type="number" id="set-ocr-roi-height-manual" class="manual-input hidden" min="5" max="100" value="10">
+                            <span id="ocr-roi-height-val" class="range-val">10</span>
+                            <button class="manual-toggle-btn" data-target="set-ocr-roi-height" title="Toggle Manual Input">⌨️</button>
+                        </div>
+                    </div>
+                    <div class="filter-hint">Box is always centered. Red line shows scan position.</div>
+                </div>
+
+                <div class="setting-item">
+                    <label for="set-ocr-scan-line">Show Scan Line:</label>
+                    <input type="checkbox" id="set-ocr-scan-line" checked>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-show-resize">Show Resize Controls:</label>
+                    <input type="checkbox" id="set-ocr-show-resize" checked>
+                </div>
+
+                <div class="setting-item">
+                    <label for="set-ocr-confidence">Confidence (%)</label>
+                    <div class="range-group">
+                        <input type="range" id="set-ocr-confidence" min="0" max="100" step="5" value="40">
+                        <input type="number" id="set-ocr-confidence-manual" class="manual-input hidden" min="0" max="100" value="40">
+                        <span id="ocr-confidence-val" class="range-val">40</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-confidence" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-debounce">Debounce (ms)</label>
+                    <div class="range-group">
+                        <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
+                        <input type="number" id="set-ocr-debounce-manual" class="manual-input hidden" min="500" max="10000" step="100" value="3000">
+                        <span id="ocr-debounce-val" class="range-val">3000</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-debounce" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-minlength">Exact Text Length</label>
+                    <div class="range-group">
+                        <input type="range" id="set-ocr-minlength" min="0" max="20" step="1" value="0">
+                        <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="0" max="50" value="0">
+                        <span id="ocr-minlength-val" class="range-val">0</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-minlength" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                    <span class="filter-hint" style="margin-left:4px;">(0 = Off)</span>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-preprocess">Whitespace Mode:</label>
+                    <select id="set-ocr-preprocess">
+                        <option value="TRIM">Trim (Default)</option>
+                        <option value="NONE">None (Raw)</option>
+                        <option value="REMOVE_ALL">Remove All Spaces</option>
+                        <option value="NORMALIZE">Normalize (Single Space)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="set-ocr-show-raw">Show Raw Text:</label>
+                    <input type="checkbox" id="set-ocr-show-raw">
+                </div>
+                <div class="setting-item">
+                    <label for="set-filter-mode">Filter Mode:</label>
+                    <select id="set-filter-mode">
+                        <option value="NONE">None (Accept All)</option>
+                        <option value="REGEX">Regex Pattern</option>
+                    </select>
+                </div>
+
+                <!-- Individual Filter Blocks -->
+                <div id="filter-block-regex" class="setting-item filter-block hidden">
+                    <label for="set-filter-regex">Pattern:</label>
+                    <input type="text" id="set-filter-regex" placeholder="e.g. ^[A-Z]{3}\d+" class="filter-input">
+                </div>
+
+                <div id="filter-hint" class="filter-hint hidden"></div>
+            </div>
+
+            <div class="settings-section">
+                <h3 class="settings-heading">Barcode Scanner</h3>
+                <div class="setting-item">
+                    <label for="set-barcode-fps">Scan FPS</label>
+                    <div class="range-group">
+                        <input type="range" id="set-barcode-fps" min="1" max="30" step="1" value="10">
+                        <input type="number" id="set-barcode-fps-manual" class="manual-input hidden" min="1" max="60" value="10">
+                        <span id="barcode-fps-val" class="range-val">10</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-fps" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="set-barcode-box-w">Box Width (px)</label>
+                    <div class="range-group">
+                        <input type="range" id="set-barcode-box-w" min="100" max="500" step="10" value="250">
+                        <input type="number" id="set-barcode-box-w-manual" class="manual-input hidden" min="50" max="1000" value="250">
+                        <span id="barcode-box-w-val" class="range-val">250</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-box-w" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="set-barcode-box-h">Box Height (px)</label>
+                    <div class="range-group">
+                        <input type="range" id="set-barcode-box-h" min="100" max="500" step="10" value="250">
+                        <input type="number" id="set-barcode-box-h-manual" class="manual-input hidden" min="50" max="1000" value="250">
+                        <span id="barcode-box-h-val" class="range-val">250</span>
+                        <button class="manual-toggle-btn" data-target="set-barcode-box-h" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <div class="settings-footer-inner">
+                    <button id="btn-settings-default" class="footer-btn default-btn">Default</button>
+                    <div class="footer-actions">
+                        <button id="btn-settings-cancel" class="footer-btn cancel-btn">Cancel</button>
+                        <button id="btn-settings-save" class="footer-btn save-btn">Save</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Image preview">
+        <div class="modal-content image-preview-content">
+            <span class="close-modal close-preview" role="button" aria-label="Close" tabindex="0">&times;</span>
+            <img id="preview-image" class="preview-full-image" alt="Preview">
+            <div class="actions" style="margin-top:12px;">
+                <a id="preview-save-link" class="primary-btn" style="text-decoration:none;display:inline-block;" download="scan_evidence.jpg">Save Image</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Entry Modal -->
+    <div id="edit-entry-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Edit entry">
+        <div class="modal-content">
+            <span class="close-modal close-edit" role="button" aria-label="Close" tabindex="0">&times;</span>
+            <h2>Edit Entry</h2>
+            <label for="edit-entry-text" style="display:block;text-align:left;margin-bottom:4px;color:#aaa;font-size:0.85rem;">Content:</label>
+            <textarea id="edit-entry-text" style="width:100%;height:100px;background:#000;color:#fff;border:1px solid #333;padding:8px;border-radius:4px;font-size:0.9rem;resize:vertical;"></textarea>
+            <div class="actions" style="margin-top:12px;">
+                <button id="btn-edit-save" class="primary-btn">Save</button>
+                <button id="btn-edit-cancel" style="background:#444;color:white;">Cancel</button>
+                <button id="btn-edit-delete" class="danger-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/ocr-manager.js"></script>
+    <script src="js/generator.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
