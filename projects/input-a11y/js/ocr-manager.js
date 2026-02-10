@@ -492,12 +492,21 @@ var OCRManager = (function() {
         var mode = this.charMode || 'OFF';
         var count = this.minTextLength || 0;
 
-        if (mode === 'OFF') return true; // Accept all
-        if (mode === 'MIN') return text.length >= count; // At least N chars
-        if (mode === 'MAX') return text.length <= count; // At most N chars
-        if (mode === 'REQ') return text.length === count; // Exactly N chars
+        var passes = false;
+        if (mode === 'OFF') {
+            passes = true; // Accept all
+        } else if (mode === 'MIN') {
+            passes = text.length >= count; // At least N chars
+        } else if (mode === 'MAX') {
+            passes = text.length <= count; // At most N chars
+        } else if (mode === 'REQ') {
+            passes = text.length === count; // Exactly N chars
+        } else {
+            passes = true; // Default: accept
+        }
 
-        return true; // Default: accept
+        console.log('[OCR Filter] Mode:', mode, 'Count:', count, 'Text length:', text.length, 'Passes:', passes, 'Text:', text.substring(0, 20));
+        return passes;
     };
 
     /**
