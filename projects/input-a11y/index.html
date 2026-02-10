@@ -420,6 +420,10 @@
         </div>
     </div>
 
+    <button id="update-btn" style="display:none; position:fixed; bottom:20px; right:20px; z-index:1000;" onclick="forceUpdate()">
+        Update Available - Refresh Now
+    </button>
+
     <!-- Scripts -->
     <script src="js/storage.js"></script>
     <script src="js/scanner.js"></script>
@@ -429,16 +433,35 @@
 
     <!-- Service Worker Registration -->
     <script>
+    let newWorker;
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('./sw.js')
-                .then(function(registration) {
-                    console.log('ServiceWorker registered:', registration.scope);
-                })
-                .catch(function(err) {
-                    console.log('ServiceWorker registration failed:', err);
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                console.log('ServiceWorker registered:', reg.scope);
+
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Update available
+                            const btn = document.getElementById('update-btn');
+                            if (btn) btn.style.display = 'block';
+                        }
+                    });
                 });
+            }).catch(err => console.log('ServiceWorker registration failed:', err));
+
+            // Reload when the new worker takes control
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
         });
+    }
+
+    function forceUpdate() {
+        if (newWorker) {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
     }
     </script>
 
