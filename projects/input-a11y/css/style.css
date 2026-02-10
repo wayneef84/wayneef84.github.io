@@ -996,6 +996,28 @@ button {
     transition: all 0.3s ease-out;
 }
 
+/* Character Count Indicator (bottom right of scanner) */
+.char-count-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.75);
+    color: var(--teal);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: monospace;
+    font-weight: bold;
+    border: 1px solid var(--teal);
+    box-shadow: 0 2px 8px rgba(0, 188, 212, 0.4);
+    pointer-events: none;
+}
+
+.char-count-indicator.hidden {
+    display: none;
+}
+
 /* Mobile QR Icon */
 #mobile-page-qr {
     position: fixed;

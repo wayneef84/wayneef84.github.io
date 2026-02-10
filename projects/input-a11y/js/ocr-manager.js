@@ -69,6 +69,7 @@ var OCRManager = (function() {
         // Config
         this.alphanumericOnly = false;
         this.minTextLength = 3;
+        this.charMode = 'OFF'; // OFF, MIN, MAX, REQ
         this.filterMode = 'NONE';   // NONE, REGEX
         this.filterValue = '';       // filter value depends on mode
         this.confirmPopup = true;    // show confirmation modal on OCR result
@@ -96,6 +97,7 @@ var OCRManager = (function() {
     OCRManager.prototype.configure = function(opts) {
         if (opts.alphanumericOnly !== undefined) this.alphanumericOnly = opts.alphanumericOnly;
         if (opts.minTextLength !== undefined) this.minTextLength = parseInt(opts.minTextLength, 10);
+        if (opts.charMode !== undefined) this.charMode = opts.charMode;
         if (opts.debounceMs !== undefined) this._debounceMs = opts.debounceMs;
         if (opts.filterMode !== undefined) this.filterMode = opts.filterMode;
         if (opts.filterValue !== undefined) this.filterValue = opts.filterValue;
@@ -477,14 +479,25 @@ var OCRManager = (function() {
     };
 
     /**
-     * Check if text passes the minimum length filter.
-     * If minTextLength is 0 (off), accept any non-empty text.
-     * Otherwise require at least minTextLength characters.
+     * Check if text passes the character count filter.
+     * Modes:
+     * - OFF: accept any non-empty text
+     * - MIN: require at least minTextLength characters
+     * - MAX: require at most minTextLength characters
+     * - REQ: require exactly minTextLength characters
      */
     OCRManager.prototype._passesLengthFilter = function(text) {
         if (!text || text.length === 0) return false;
-        if (this.minTextLength === 0) return true; // 0 = off, accept all
-        return text.length >= this.minTextLength;
+
+        var mode = this.charMode || 'OFF';
+        var count = this.minTextLength || 0;
+
+        if (mode === 'OFF') return true; // Accept all
+        if (mode === 'MIN') return text.length >= count; // At least N chars
+        if (mode === 'MAX') return text.length <= count; // At most N chars
+        if (mode === 'REQ') return text.length === count; // Exactly N chars
+
+        return true; // Default: accept
     };
 
     /**

@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var detectionBox = document.getElementById('detection-box');
     var detectionValue = document.getElementById('detection-value');
 
+    // Character Count Indicator
+    var charCountIndicator = document.getElementById('char-count-indicator');
+
     // Scan Settings Panel Elements
     var scanSettingsToggle = document.getElementById('scan-settings-toggle');
     var scanSettingsPanel = document.getElementById('scan-settings-panel');
@@ -85,8 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var ocrConfidenceVal = document.getElementById('ocr-confidence-val');
     var setOcrDebounce = document.getElementById('set-ocr-debounce');
     var ocrDebounceVal = document.getElementById('ocr-debounce-val');
-    var setOcrMinLength = document.getElementById('set-ocr-minlength');
-    var ocrMinLengthVal = document.getElementById('ocr-minlength-val');
+
+    // Character count controls in Settings tab
+    var setCharMode = document.getElementById('set-char-mode');
+    var setCharCount = document.getElementById('set-char-count');
 
     // Barcode Settings
     var setBarcodeFps = document.getElementById('set-barcode-fps');
@@ -171,10 +176,20 @@ document.addEventListener('DOMContentLoaded', function() {
             charMode = 'MIN'; // Default to MIN for backward compatibility
         }
         if (settings.ocrCharMode) charMode = settings.ocrCharMode;
+        var charCountValue = settings.ocrMinLength || 4;
+
+        // Sync scan tab
         if (scanCharMode) scanCharMode.value = charMode;
         if (scanCharCount) {
-            scanCharCount.value = settings.ocrMinLength || 4;
+            scanCharCount.value = charCountValue;
             scanCharCount.disabled = (charMode === 'OFF');
+        }
+
+        // Sync settings tab
+        if (setCharMode) setCharMode.value = charMode;
+        if (setCharCount) {
+            setCharCount.value = charCountValue;
+            setCharCount.disabled = (charMode === 'OFF');
         }
 
         // Restore text transform in scan tab
@@ -193,10 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setOcrDebounce) {
             setOcrDebounce.value = settings.ocrDebounce || 3000;
             if (ocrDebounceVal) ocrDebounceVal.innerText = setOcrDebounce.value;
-        }
-        if (setOcrMinLength) {
-            setOcrMinLength.value = (settings.ocrMinLength !== undefined) ? settings.ocrMinLength : 0;
-            if (ocrMinLengthVal) ocrMinLengthVal.innerText = setOcrMinLength.value;
         }
 
         // Restore barcode settings
@@ -281,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var roiConfig = buildRoiConfig();
 
         var minLength = (s.ocrMinLength !== undefined) ? parseInt(s.ocrMinLength, 10) : 0;
+        var charMode = s.ocrCharMode || 'OFF';
 
         ocrManager.configure({
             filterMode: s.ocrFilterMode || 'NONE',
@@ -289,6 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
             minTextLength: minLength,
+            charMode: charMode,
             preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
             textTransform: s.ocrTextTransform || 'NONE',
             roi: roiConfig
@@ -307,6 +320,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (charCountRow) {
             charCountRow.classList.toggle('hidden', !isOCR);
         }
+
+        updateCharCountIndicator();
+    }
+
+    function updateCharCountIndicator() {
+        if (!charCountIndicator) return;
+
+        var isOCR = scanModeSelect.value === 'TEXT_OCR' || scanModeSelect.value === 'AUTO';
+        var mode = settings.ocrCharMode || 'OFF';
+        var count = settings.ocrMinLength || 0;
+
+        if (!isOCR || mode === 'OFF') {
+            charCountIndicator.classList.add('hidden');
+            return;
+        }
+
+        var label = '';
+        if (mode === 'MIN') label = 'Min: ' + count;
+        else if (mode === 'MAX') label = 'Max: ' + count;
+        else if (mode === 'REQ') label = 'Req: ' + count;
+
+        charCountIndicator.innerText = label;
+        charCountIndicator.classList.remove('hidden');
     }
 
     function toggleScanSettings() {
@@ -629,9 +665,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Sync with Settings tab
-                if (setOcrMinLength) setOcrMinLength.value = settings.ocrMinLength;
-                if (ocrMinLengthVal) ocrMinLengthVal.innerText = settings.ocrMinLength;
+                if (setCharMode) setCharMode.value = mode;
+                if (setCharCount) {
+                    setCharCount.value = settings.ocrMinLength || 4;
+                    setCharCount.disabled = (mode === 'OFF');
+                }
 
+                updateCharCountIndicator();
                 applyOCRFilterConfig();
             });
         }
@@ -647,9 +687,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 storage.saveSettings(settings);
 
                 // Sync with Settings tab
-                if (setOcrMinLength) setOcrMinLength.value = count;
-                if (ocrMinLengthVal) ocrMinLengthVal.innerText = count;
+                if (setCharCount) setCharCount.value = count;
 
+                updateCharCountIndicator();
+                applyOCRFilterConfig();
+            });
+        }
+
+        // Settings tab: Character mode
+        if (setCharMode) {
+            setCharMode.addEventListener('change', function(e) {
+                var mode = e.target.value;
+                settings.ocrCharMode = mode;
+                storage.saveSettings(settings);
+
+                // Enable/disable count input
+                if (setCharCount) {
+                    setCharCount.disabled = (mode === 'OFF');
+                    if (mode !== 'OFF') {
+                        var count = parseInt(setCharCount.value, 10) || 4;
+                        settings.ocrMinLength = count;
+                        storage.saveSettings(settings);
+                    } else {
+                        settings.ocrMinLength = 0;
+                        storage.saveSettings(settings);
+                    }
+                }
+
+                // Sync with scan tab
+                if (scanCharMode) scanCharMode.value = mode;
+                if (scanCharCount) {
+                    scanCharCount.value = settings.ocrMinLength || 4;
+                    scanCharCount.disabled = (mode === 'OFF');
+                }
+
+                updateCharCountIndicator();
+                applyOCRFilterConfig();
+            });
+        }
+
+        // Settings tab: Character count value
+        if (setCharCount) {
+            setCharCount.addEventListener('change', function(e) {
+                var count = parseInt(e.target.value, 10);
+                if (isNaN(count) || count < 1) count = 1;
+                this.value = count;
+
+                settings.ocrMinLength = count;
+                storage.saveSettings(settings);
+
+                // Sync with scan tab
+                if (scanCharCount) scanCharCount.value = count;
+
+                updateCharCountIndicator();
                 applyOCRFilterConfig();
             });
         }
@@ -776,7 +866,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // OCR Tuning Sliders
         bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
         bindRangeSlider(setOcrDebounce, ocrDebounceVal, 'ocrDebounce', applyOCRFilterConfig);
-        bindRangeSlider(setOcrMinLength, ocrMinLengthVal, 'ocrMinLength', applyOCRFilterConfig);
 
         // Barcode Tuning Sliders
         bindRangeSlider(setBarcodeFps, barcodeFpsVal, 'barcodeFps', applyBarcodeConfig);

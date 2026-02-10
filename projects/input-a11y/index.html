@@ -91,6 +91,7 @@
                                 <option value="OFF">Off</option>
                                 <option value="MIN">Min</option>
                                 <option value="MAX">Max</option>
+                                <option value="REQ">Req</option>
                             </select>
                             <input type="number" id="scan-char-count" class="char-count-input" min="1" max="100" value="4" disabled>
                         </div>
@@ -123,6 +124,9 @@
                         <input type="range" id="scan-roi-h-slider" min="5" max="100">
                     </div>
                 </div>
+
+                <!-- Character Count Indicator (bottom right) -->
+                <div id="char-count-indicator" class="char-count-indicator hidden"></div>
             </div>
 
             <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
@@ -304,14 +308,16 @@
                     </div>
                 </div>
                 <div class="setting-item">
-                    <label for="set-ocr-minlength">Min Text Length</label>
-                    <div class="range-group">
-                        <input type="range" id="set-ocr-minlength" min="0" max="20" step="1" value="0">
-                        <input type="number" id="set-ocr-minlength-manual" class="manual-input hidden" min="0" max="50" value="0">
-                        <span id="ocr-minlength-val" class="range-val">0</span>
-                        <button class="manual-toggle-btn" data-target="set-ocr-minlength" title="Toggle Manual Input">⌨️</button>
+                    <label for="set-char-count">Character Count:</label>
+                    <div class="char-count-group">
+                        <select id="set-char-mode" class="char-mode-select">
+                            <option value="OFF">Off</option>
+                            <option value="MIN">Min</option>
+                            <option value="MAX">Max</option>
+                            <option value="REQ">Req</option>
+                        </select>
+                        <input type="number" id="set-char-count" class="char-count-input" min="1" max="100" value="4" disabled>
                     </div>
-                    <span class="filter-hint" style="margin-left:4px;">(0 = Off, requires at least N chars)</span>
                 </div>
                 <div class="setting-item">
                     <label for="set-ocr-preprocess">Whitespace Mode:</label>
