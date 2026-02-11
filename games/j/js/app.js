@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const dom = {
-        packTitle: document.getElementById('packTitle'),
+        packSelect: document.getElementById('packSelect'),
         qCount: document.getElementById('qCount'),
         questionText: document.getElementById('questionText'),
         mediaContainer: document.getElementById('mediaContainer'),
@@ -35,22 +35,57 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     async function init() {
-        // Load Pack
+        setupEngine();
+        bindEvents();
+
+        // Load Manifest and Initial Pack
         try {
-            const response = await fetch('packs/sprunki_v1.json');
-            if (!response.ok) throw new Error('Failed to load pack');
-            currentPackData = await response.json();
+            const response = await fetch('packs/manifest.json');
+            if (!response.ok) throw new Error('Failed to load manifest');
+            const manifest = await response.json();
 
-            dom.packTitle.textContent = currentPackData.meta.title.toUpperCase();
+            // Populate Selector
+            dom.packSelect.innerHTML = '';
+            manifest.forEach(pack => {
+                const opt = document.createElement('option');
+                opt.value = pack.path;
+                opt.textContent = pack.title.toUpperCase();
+                dom.packSelect.appendChild(opt);
+            });
 
-            setupEngine();
-            bindEvents();
+            // Bind Selector Change
+            dom.packSelect.addEventListener('change', (e) => {
+                loadGamePack(e.target.value);
+            });
 
-            // Start
-            engine.startRound();
+            // Load First Pack
+            if (manifest.length > 0) {
+                loadGamePack(manifest[0].path);
+            }
+
         } catch (e) {
             console.error(e);
-            dom.questionText.textContent = "Error loading game pack. Please refresh.";
+            dom.questionText.textContent = "Error loading game configuration. Please refresh.";
+        }
+    }
+
+    async function loadGamePack(path) {
+        try {
+            // Reset / Loading State
+            dom.questionText.textContent = "Loading...";
+            dom.endScreen.classList.add('hidden');
+
+            const response = await fetch(path);
+            if (!response.ok) throw new Error('Failed to load pack: ' + path);
+            currentPackData = await response.json();
+
+            // Configure Engine
+            engine.loadPack(currentPackData);
+            engine.startRound();
+
+        } catch (e) {
+            console.error(e);
+            dom.questionText.textContent = "Error loading pack.";
         }
     }
 
@@ -63,8 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             onFeedback: showFeedback,
             onGameEnd: showEndScreen
         });
-
-        engine.loadPack(currentPackData);
     }
 
     function bindEvents() {
@@ -79,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.lockToggle.addEventListener('change', (e) => {
             engine.settings.lockFastForward = e.target.checked;
             updateNextButtonState();
+
+            // FIX: If we enable auto-forward while waiting, trigger it immediately
+            if (engine.settings.lockFastForward && engine.state === 'WAITING_FOR_NEXT') {
+                engine.triggerFastForward();
+            }
         });
 
         // Next Button
