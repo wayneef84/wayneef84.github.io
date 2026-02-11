@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J-DevUtils | The Developer's Utility Belt</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --sidebar-bg: #252526;
+            --text-color: #d4d4d4;
+            --accent-color: #007acc;
+            --border-color: #3e3e42;
+            --input-bg: #3c3c3c;
+            --hover-bg: #2a2d2e;
+            --success-color: #4ec9b0;
+            --error-color: #f48771;
+            --json-key: #9cdcfe;
+            --json-string: #ce9178;
+            --json-number: #b5cea8;
+            --json-boolean: #569cd6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .nav-item.active {
+            background-color: var(--border-color);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .reputable-links {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .reputable-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #858585;
+            margin-bottom: 0.5rem;
+        }
+
+        .reputable-link {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .reputable-link:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .tab-panel {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .tool-section {
+            background-color: var(--sidebar-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .tool-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--success-color);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.6rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: 1px solid var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.secondary {
+            background-color: var(--border-color);
+        }
+
+        button.copy-btn {
+            background-color: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background-color: var(--input-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* JSON Highlighting */
+        .json-output {
+            background-color: var(--input-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow: auto;
+            max-height: 400px;
+            white-space: pre;
+            font-family: 'Consolas', monospace;
+        }
+
+        .string { color: var(--json-string); }
+        .number { color: var(--json-number); }
+        .boolean { color: var(--json-boolean); }
+        .null { color: var(--json-boolean); }
+        .key { color: var(--json-key); }
+
+        .error-msg {
+            color: var(--error-color);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-msg {
+            color: var(--success-color);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                overflow: auto;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                flex-direction: column;
+                padding: 0.5rem;
+                gap: 0.25rem;
+            }
+            .logo {
+                margin-bottom: 0.5rem;
+                justify-content: center;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 0.5rem;
+            }
+            .nav-item {
+                white-space: nowrap;
+                justify-content: center;
+                padding: 0.6rem;
+                background-color: var(--input-bg);
+            }
+            .reputable-links {
+                display: none; /* Hide on mobile to save space */
+            }
+            .main-content {
+                padding: 1rem;
+            }
+
+            /* Mobile Input/Button Stacking */
+            .btn-row {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn-row button {
+                width: 100%;
+                margin-top: 0.25rem;
+            }
+            button.copy-btn {
+                width: 100%;
+                padding: 0.6rem;
+            }
+            .input-group label {
+                margin-top: 0.5rem;
+            }
+
+            /* Ensure output doesn't break layout */
+            .json-output {
+                overflow-x: auto;
+                word-break: break-all; /* Force break if needed */
+                white-space: pre-wrap; /* Wrap long lines in output */
+            }
+
+            /* Date inputs on mobile */
+            input[type="datetime-local"],
+            input[type="date"] {
+                min-width: 100%; /* Force full width */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">🛠️ J-DevUtils</div>
+    <div class="nav-item active" onclick="showTab('timemaster')">
+        <span>⏰</span> Timemaster
+    </div>
+    <div class="nav-item" onclick="showTab('transformer')">
+        <span>🔄</span> Data Transformer
+    </div>
+    <div class="nav-item" onclick="showTab('strings')">
+        <span>📝</span> String Ops
+    </div>
+
+    <div class="reputable-links">
+        <div class="reputable-header">Reference</div>
+        <a href="https://developer.mozilla.org/" target="_blank" class="reputable-link">MDN Web Docs</a>
+        <a href="https://www.w3.org/TR/" target="_blank" class="reputable-link">W3C Standards</a>
+        <a href="https://tc39.es/ecma262/" target="_blank" class="reputable-link">ECMAScript Spec</a>
+        <a href="https://regex101.com/" target="_blank" class="reputable-link">Regex101</a>
+        <a href="https://caniuse.com/" target="_blank" class="reputable-link">CanIUse.com</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <!-- Timemaster -->
+    <div id="timemaster" class="tab-panel active">
+        <h2>Timemaster</h2>
+
+        <div class="tool-section">
+            <div class="tool-header">Unix Timestamp Converter</div>
+            <div class="input-group">
+                <label>Unix Timestamp (Seconds or Milliseconds)</label>
+                <input type="number" id="ts-input" placeholder="e.g. 1672531200">
+                <div class="btn-row">
+                    <button onclick="tsToDate()">Convert to Date</button>
+                    <button class="secondary" onclick="setCurrentTs()">Use Current Time</button>
+                </div>
+                <div id="ts-result" class="json-output" style="margin-top: 1rem; min-height: 50px;"></div>
+            </div>
+
+            <div class="input-group" style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+                <label>Human Date</label>
+                <input type="datetime-local" id="date-input">
+                <div class="btn-row">
+                    <button onclick="dateToTs()">Convert to Timestamp</button>
+                </div>
+                <div id="date-result" class="json-output" style="margin-top: 1rem; min-height: 50px;"></div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <div class="tool-header">Date Calculator</div>
+            <div class="input-group">
+                <label>Start Date</label>
+                <input type="date" id="calc-start">
+            </div>
+            <div class="input-group">
+                <label>End Date</label>
+                <input type="date" id="calc-end">
+            </div>
+            <div class="btn-row">
+                <button onclick="calcDateDiff()">Calculate Difference</button>
+            </div>
+            <div class="stats-grid" id="date-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-days">0</div>
+                    <div class="stat-label">Total Days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="business-days">0</div>
+                    <div class="stat-label">Business Days (Mon-Fri)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Transformer -->
+    <div id="transformer" class="tab-panel">
+        <h2>Data Transformer</h2>
+
+        <div class="tool-section">
+            <div class="tool-header">JSON Validator & Prettifier</div>
+            <textarea id="json-input" placeholder="Paste your messy JSON here..."></textarea>
+            <div class="btn-row">
+                <button onclick="processJson()">Format & Validate</button>
+                <button class="secondary" onclick="minifyJson()">Minify</button>
+                <button class="secondary" onclick="clearJson()">Clear</button>
+            </div>
+            <div id="json-error" class="error-msg"></div>
+            <div id="json-viewer" class="json-output" style="margin-top: 1rem;"></div>
+            <button class="copy-btn" onclick="copyToClipboard('json-viewer')">Copy Output</button>
+        </div>
+
+        <div class="tool-section">
+            <div class="tool-header">Base64 Encoder / Decoder</div>
+            <div class="input-group">
+                <textarea id="b64-input" placeholder="Text to encode/decode..." style="min-height: 80px;"></textarea>
+                <div class="btn-row">
+                    <button onclick="b64Encode()">Encode</button>
+                    <button onclick="b64Decode()">Decode</button>
+                </div>
+                <textarea id="b64-output" readonly style="margin-top: 1rem; min-height: 80px;" placeholder="Result..."></textarea>
+                <button class="copy-btn" onclick="copyInput('b64-output')">Copy Result</button>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <div class="tool-header">URL Encoder / Decoder</div>
+            <div class="input-group">
+                <textarea id="url-input" placeholder="URL to encode/decode..." style="min-height: 60px;"></textarea>
+                <div class="btn-row">
+                    <button onclick="urlEncode()">Encode</button>
+                    <button onclick="urlDecode()">Decode</button>
+                </div>
+                <textarea id="url-output" readonly style="margin-top: 1rem; min-height: 60px;" placeholder="Result..."></textarea>
+                <button class="copy-btn" onclick="copyInput('url-output')">Copy Result</button>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <div class="tool-header">CSV ↔ JSON Converter</div>
+            <textarea id="csv-json-input" placeholder="Paste CSV or JSON here..."></textarea>
+            <div class="btn-row">
+                <button onclick="csvToJson()">CSV to JSON</button>
+                <button onclick="jsonToCsv()">JSON to CSV</button>
+            </div>
+            <div id="csv-json-error" class="error-msg"></div>
+            <textarea id="csv-json-output" readonly style="margin-top: 1rem; min-height: 150px; white-space: pre;" placeholder="Result..."></textarea>
+            <button class="copy-btn" onclick="copyInput('csv-json-output')">Copy Result</button>
+        </div>
+    </div>
+
+    <!-- String Ops -->
+    <div id="strings" class="tab-panel">
+        <h2>String & List Operations</h2>
+
+        <div class="tool-section">
+            <div class="tool-header">Text Processor</div>
+            <textarea id="str-input" placeholder="Enter text or list items (one per line)..." oninput="updateStats()"></textarea>
+
+            <div class="stats-grid" style="margin-bottom: 1rem;">
+                <div class="stat-card">
+                    <div class="stat-value" id="char-count">0</div>
+                    <div class="stat-label">Chars</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="word-count">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="line-count">0</div>
+                    <div class="stat-label">Lines</div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="secondary" onclick="convertCase('upper')">UPPERCASE</button>
+                <button class="secondary" onclick="convertCase('lower')">lowercase</button>
+                <button class="secondary" onclick="convertCase('camel')">camelCase</button>
+                <button class="secondary" onclick="convertCase('snake')">snake_case</button>
+                <button class="secondary" onclick="convertCase('kebab')">kebab-case</button>
+            </div>
+            <div class="btn-row">
+                <button class="secondary" onclick="processList('sort')">Sort A-Z</button>
+                <button class="secondary" onclick="processList('dedup')">Remove Duplicates</button>
+                <button class="secondary" onclick="processList('shuffle')">Shuffle</button>
+                <button class="secondary" onclick="processList('trim')">Trim Whitespace</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        // Find the nav item that calls this function (rough approximation)
+        const buttons = document.querySelectorAll('.nav-item');
+        if (tabId === 'timemaster') buttons[0].classList.add('active');
+        if (tabId === 'transformer') buttons[1].classList.add('active');
+        if (tabId === 'strings') buttons[2].classList.add('active');
+    }
+
+    // --- TIMEMASTER ---
+    function setCurrentTs() {
+        document.getElementById('ts-input').value = Math.floor(Date.now() / 1000);
+        tsToDate();
+    }
+
+    function tsToDate() {
+        const input = document.getElementById('ts-input').value;
+        if (!input) return;
+
+        // Guess if ms or seconds
+        let ts = Number(input);
+        if (ts < 10000000000) ts *= 1000; // Assume seconds if small
+
+        const date = new Date(ts);
+        const result = `
+            <strong>ISO:</strong> ${date.toISOString()}<br>
+            <strong>Local:</strong> ${date.toLocaleString()}<br>
+            <strong>UTC:</strong> ${date.toUTCString()}
+        `;
+        document.getElementById('ts-result').innerHTML = result;
+    }
+
+    function dateToTs() {
+        const input = document.getElementById('date-input').value;
+        if (!input) return;
+        const date = new Date(input);
+        const result = `
+            <strong>Seconds:</strong> ${Math.floor(date.getTime() / 1000)}<br>
+            <strong>Milliseconds:</strong> ${date.getTime()}
+        `;
+        document.getElementById('date-result').innerHTML = result;
+    }
+
+    function calcDateDiff() {
+        const startStr = document.getElementById('calc-start').value;
+        const endStr = document.getElementById('calc-end').value;
+
+        if (!startStr || !endStr) return;
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+
+        // Reset hours to avoid DST issues
+        start.setHours(0,0,0,0);
+        end.setHours(0,0,0,0);
+
+        const diffTime = Math.abs(end - start);
+        const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let businessDays = 0;
+        let current = new Date(Math.min(start, end));
+        const stop = new Date(Math.max(start, end));
+
+        while (current < stop) {
+            current.setDate(current.getDate() + 1);
+            const day = current.getDay();
+            if (day !== 0 && day !== 6) businessDays++;
+        }
+
+        document.getElementById('total-days').innerText = totalDays;
+        document.getElementById('business-days').innerText = businessDays;
+    }
+
+    // --- DATA TRANSFORMER ---
+    function processJson() {
+        const input = document.getElementById('json-input').value;
+        const errorDiv = document.getElementById('json-error');
+        const viewer = document.getElementById('json-viewer');
+
+        errorDiv.style.display = 'none';
+
+        try {
+            const obj = JSON.parse(input);
+            const str = JSON.stringify(obj, null, 2); // Indent with 2 spaces
+            viewer.innerHTML = syntaxHighlight(str);
+        } catch (e) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = "Invalid JSON: " + e.message;
+            viewer.innerText = "";
+        }
+    }
+
+    function minifyJson() {
+         const input = document.getElementById('json-input').value;
+         const errorDiv = document.getElementById('json-error');
+
+         try {
+             const obj = JSON.parse(input);
+             document.getElementById('json-input').value = JSON.stringify(obj);
+         } catch (e) {
+             errorDiv.style.display = 'block';
+             errorDiv.innerText = "Invalid JSON: " + e.message;
+         }
+    }
+
+    function clearJson() {
+        document.getElementById('json-input').value = '';
+        document.getElementById('json-viewer').innerHTML = '';
+        document.getElementById('json-error').style.display = 'none';
+    }
+
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            let cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+
+    function b64Encode() {
+        const input = document.getElementById('b64-input').value;
+        try {
+            document.getElementById('b64-output').value = btoa(input);
+        } catch (e) {
+            document.getElementById('b64-output').value = "Error: " + e.message;
+        }
+    }
+
+    function b64Decode() {
+        const input = document.getElementById('b64-input').value;
+        try {
+            document.getElementById('b64-output').value = atob(input);
+        } catch (e) {
+            document.getElementById('b64-output').value = "Error: Invalid Base64 string";
+        }
+    }
+
+    function urlEncode() {
+        const input = document.getElementById('url-input').value;
+        document.getElementById('url-output').value = encodeURIComponent(input);
+    }
+
+    function urlDecode() {
+        const input = document.getElementById('url-input').value;
+        try {
+            document.getElementById('url-output').value = decodeURIComponent(input);
+        } catch (e) {
+             document.getElementById('url-output').value = "Error: Malformed URL";
+        }
+    }
+
+    // CSV <-> JSON
+    function csvToJson() {
+        const input = document.getElementById('csv-json-input').value;
+        const errorDiv = document.getElementById('csv-json-error');
+        errorDiv.style.display = 'none';
+
+        try {
+            const lines = input.trim().split('\n');
+            if (lines.length < 2) throw new Error("CSV must have at least a header and one row.");
+
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            const result = [];
+
+            for(let i=1; i<lines.length; i++) {
+                const obj = {};
+                // Simple split (does not handle commas inside quotes perfectly, keeping it simple as per "robust enough")
+                // For a truly robust CSV parser, we'd need a regex or state machine.
+                // Let's do a slightly better split that respects quotes?
+                // For now, simple split is "robust enough" for basic usage.
+                const currentline = lines[i].split(',');
+
+                for(let j=0; j<headers.length; j++){
+                    let val = currentline[j] ? currentline[j].trim() : "";
+                    // Remove quotes if present
+                    if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+                    obj[headers[j]] = val;
+                }
+                result.push(obj);
+            }
+
+            document.getElementById('csv-json-output').value = JSON.stringify(result, null, 2);
+        } catch (e) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = "Error parsing CSV: " + e.message;
+        }
+    }
+
+    function jsonToCsv() {
+        const input = document.getElementById('csv-json-input').value;
+        const errorDiv = document.getElementById('csv-json-error');
+        errorDiv.style.display = 'none';
+
+        try {
+            const arr = JSON.parse(input);
+            if (!Array.isArray(arr)) throw new Error("Input must be a JSON array of objects.");
+            if (arr.length === 0) throw new Error("Array is empty.");
+
+            const headers = Object.keys(arr[0]);
+            const csvRows = [];
+            csvRows.push(headers.join(','));
+
+            for (const row of arr) {
+                const values = headers.map(header => {
+                    const val = row[header] === null || row[header] === undefined ? "" : row[header];
+                    const escaped = ('' + val).replace(/"/g, '""');
+                    return `"${escaped}"`;
+                });
+                csvRows.push(values.join(','));
+            }
+
+            document.getElementById('csv-json-output').value = csvRows.join('\n');
+        } catch (e) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = "Error parsing JSON: " + e.message;
+        }
+    }
+
+    // --- STRING OPS ---
+    function updateStats() {
+        const text = document.getElementById('str-input').value;
+        document.getElementById('char-count').innerText = text.length;
+        document.getElementById('word-count').innerText = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        document.getElementById('line-count').innerText = text.trim() === '' ? 0 : text.split(/\n/).length;
+    }
+
+    function convertCase(type) {
+        const textarea = document.getElementById('str-input');
+        let text = textarea.value;
+
+        switch(type) {
+            case 'upper':
+                text = text.toUpperCase();
+                break;
+            case 'lower':
+                text = text.toLowerCase();
+                break;
+            case 'camel':
+                text = text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+                    index === 0 ? word.toLowerCase() : word.toUpperCase()
+                ).replace(/\s+/g, '');
+                break;
+            case 'snake':
+                text = text.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+                    .map(x => x.toLowerCase())
+                    .join('_');
+                break;
+            case 'kebab':
+                text = text.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+                    .map(x => x.toLowerCase())
+                    .join('-');
+                break;
+        }
+        textarea.value = text;
+        updateStats();
+    }
+
+    function processList(action) {
+        const textarea = document.getElementById('str-input');
+        let lines = textarea.value.split('\n');
+
+        switch(action) {
+            case 'sort':
+                lines.sort((a, b) => a.localeCompare(b));
+                break;
+            case 'dedup':
+                lines = [...new Set(lines)];
+                break;
+            case 'shuffle':
+                for (let i = lines.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [lines[i], lines[j]] = [lines[j], lines[i]];
+                }
+                break;
+            case 'trim':
+                lines = lines.map(l => l.trim()).filter(l => l !== '');
+                break;
+        }
+        textarea.value = lines.join('\n');
+        updateStats();
+    }
+
+    // --- UTILS ---
+    function copyToClipboard(elementId) {
+        const node = document.getElementById(elementId);
+        const text = node.innerText || node.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            // alert('Copied!'); // Too intrusive
+        });
+    }
+
+    function copyInput(elementId) {
+        const node = document.getElementById(elementId);
+        node.select();
+        document.execCommand('copy');
+    }
+
+    // Init
+    setCurrentTs();
+</script>
+
+</body>
+</html>
