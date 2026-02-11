@@ -17,11 +17,16 @@ const projects = [
     { name: "SKYbreakers", path: "games/sky_breakers/index.html", category: "arcade", icon: "🚀", tags: ["Arcade"], description: "Break through the sky in this high-flying arcade game." },
     { name: "Minesweeper+", path: "games/minesweeper/index.html", category: "puzzle", icon: "💣", tags: ["Classic"], description: "Classic Minesweeper with lives, power-ups, and custom themes." },
     { name: "Mahjong", path: "games/mahjong/index.html", category: "puzzle", icon: "🀄", tags: ["Classic"], description: "Classic Mahjong Solitaire tile matching game." },
+    { name: "Solitaire", path: "games/solitaire/index.html", category: "cards", icon: "♠️", tags: ["Classic"], description: "The classic patience card game. Klondike rules." },
+    { name: "PuzzLLer", path: "games/puzzller/index.html", category: "puzzle", icon: "🧠", tags: ["Logic"], description: "Navigate grids and solve logic puzzles." },
+    { name: "C.o.D.E.", path: "projects/code/index.html", category: "puzzle", icon: "📟", tags: ["Simulation"], description: "Hacking simulator. Crack the numeric code against time." },
 
     // Tools / Projects
     { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", tags: ["Utility"], description: "Barcode and QR code scanner with multiple detection modes." },
     { name: "MD Reader", path: "projects/md-reader/index.html", category: "project", icon: "📖", tags: ["Utility"], description: "Markdown reader and documentation viewer." },
     { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." },
+    { name: "Regex Builder", path: "projects/regex_builder/index.html", category: "project", icon: "☃️", tags: ["Dev Tool"], description: "Build and test regular expressions with a winter theme." },
+    { name: "Shipment Tracker", path: "projects/shipment-tracker/index.html", category: "project", icon: "📦", tags: ["Utility"], description: "Track packages from DHL, FedEx, UPS and more." }
     { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." }
 ];
 
