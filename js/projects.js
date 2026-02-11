@@ -34,7 +34,7 @@ const projects = [
 ];
 
 // Initialize function
-const init = () => {
+function init() {
     try {
         initTheme();
     } catch (e) {
@@ -52,7 +52,7 @@ const init = () => {
     } catch (e) {
         console.warn("Filter initialization failed:", e);
     }
-};
+}
 
 // Handle Loading State
 if (document.readyState === 'loading') {
