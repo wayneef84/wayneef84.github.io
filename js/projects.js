@@ -21,7 +21,8 @@ const projects = [
     // Tools / Projects
     { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", tags: ["Utility"], description: "Barcode and QR code scanner with multiple detection modes." },
     { name: "MD Reader", path: "projects/md-reader/index.html", category: "project", icon: "📖", tags: ["Utility"], description: "Markdown reader and documentation viewer." },
-    { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." }
+    { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." },
+    { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." }
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
