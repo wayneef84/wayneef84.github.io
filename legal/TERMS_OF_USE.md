@@ -3,7 +3,7 @@
 **Effective Date:** January 1, 2026
 **Version:** 1.0 (Standard)
 
-These Terms of Use ("Terms") govern your access to and use of the **F.O.N.G. (Founding & Forging)** services and repository. By accessing or using the services, you agree to be bound by these Terms.
+These Terms of Use ("Terms") govern your access to and use of the **F.O.N.G.** services and repository. By accessing or using the services, you agree to be bound by these Terms.
 
 ## 1. Acceptance of Terms
 By accessing or using the services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree, you may not access or use the services.

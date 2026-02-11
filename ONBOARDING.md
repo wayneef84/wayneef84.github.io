@@ -1,12 +1,12 @@
 # 🚀 ONBOARDING: START HERE
 
 ## 1. The Mission
-Welcome to the **F.O.N.G.** (Founding & Forging) repository. This is a monolithic collection of browser-based games, utilities, and the **NEGEN** (New Engine) game engine.
+Welcome to the **F.O.N.G.** repository. This is a monolithic collection of browser-based games, utilities, and the **NEGEN** (New Engine) game engine.
 Your goal is to maintain, expand, and refactor this codebase while adhering to the **C-G-J Alliance** (The Conjugators) protocol.
 
 **Naming Convention:**
 *   **User-Facing:** Always use **"F.O.N.G."** in titles, headers, and visible UI text.
-*   **Internal/Legacy:** You may see "Founding & Forging" or "Fong Family Arcade" in old comments or logs. Preserve these for history, but use the new name for anything new.
+*   **Internal/Legacy:** You may see "Fong Family Arcade" in old comments or logs. Preserve these for history, but use the new name for anything new.
 
 ## 2. The Conjugators (Who are you?)
 Identify your role immediately:

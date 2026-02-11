@@ -325,7 +325,7 @@ The Shipment Tracker project was conceived as a utility tool to aggregate shipme
 - https://claude.ai/code
 
 **Special Thanks:**
-- Founding & Forging games for UI pattern inspiration
+- F.O.N.G. games for UI pattern inspiration
 - SheetJS community for Excel export capabilities
 - DHL, FedEx, UPS for public API access
 

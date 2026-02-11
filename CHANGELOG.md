@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Founding & Forging project will be documented in this file.
+All notable changes to the F.O.N.G. project will be documented in this file.
 
 ## [Unreleased]
 ### Planned Features

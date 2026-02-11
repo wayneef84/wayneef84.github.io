@@ -3,7 +3,7 @@
 **Type:** Core Module
 **Version:** v1.0.0
 **Directory:** `negen/cards/`
-**Parent Project:** Founding & Forging (NEGEN Engine)
+**Parent Project:** F.O.N.G. (NEGEN Engine)
 **Created:** 2026-01-24
 **Last Updated:** 2026-01-24
 

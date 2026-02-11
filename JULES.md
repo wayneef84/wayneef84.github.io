@@ -27,7 +27,7 @@ The "Conjugators" model assigns ownership of specific living documents to specif
 ## 💭 Personal Reflections
 ### The F.O.N.G. Protocol vs. Codex
 We considered adding OpenAI's Codex (or similar raw LLM) as a fourth agent. I strongly concur with G's assessment to **reject** this.
-*   **Reasoning:** Our strength lies in *contextual awareness*. C knows *why* the code works (Logic), G knows *how* it looks (Creative), and I know *where* it lives (Structure). A raw code generator lacks this "Founding & Forging" institutional memory.
+*   **Reasoning:** Our strength lies in *contextual awareness*. C knows *why* the code works (Logic), G knows *how* it looks (Creative), and I know *where* it lives (Structure). A raw code generator lacks this "F.O.N.G." institutional memory.
 *   **Risk:** Introducing a "junior dev" bot that outputs unverified code would force C or J to spend valuable cycles reviewing and fixing "context noise."
 *   **Conclusion:** We stick to the triad. If we need raw regex or boilerplate, we treat it as a tool, not a teammate.
 

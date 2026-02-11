@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Dad's Casino** is a browser-based casino game collection featuring multiple games:
+**F.O.N.G.** (formerly Dad's Casino) is a browser-based game collection for the whole family:
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system
 - **Xiangqi** (v0.3.1 - Complete): Fully playable Chinese Chess with AI opponent (Red or Black), 3 difficulty levels, complete rule validation
@@ -657,7 +657,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Founding & Forging** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+**F.O.N.G.** (formerly Dad's Casino) is a browser-based game collection for the whole family:
 - **Letter Tracing** (v1.0): Educational app with 5 guidance modes, particle rewards, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.
@@ -673,7 +673,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Founding & Forging** (formerly Dad's Casino) is a browser-based game collection for the whole family:
+**F.O.N.G.** (formerly Dad's Casino) is a browser-based game collection for the whole family:
 - **Letter Tracing** (v5.1): Educational app with A-B-C audio architecture, voice speed control, and rigorous stroke validation.
 - **Slots Game** (v3.0): A 5-reel, 4-row slot machine with 20 themes, bonus features, and Dad Mode physics.
 - **Sprunki Mixer**: A web-based music mixer with drag-and-drop character system.

@@ -3,7 +3,7 @@
 **Last Updated:** January 1, 2026
 **Effective Date:** January 1, 2026
 
-**F.O.N.G. (Founding & Forging)** respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and share information when you access our services.
+**F.O.N.G.** respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and share information when you access our services.
 
 ## 1. Information We Collect
 We collect the following types of information:
