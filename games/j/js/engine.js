@@ -18,6 +18,9 @@ class QuizEngine {
         this.timer = null;
         this.timeLeft = 0;
 
+        // State Machine: INIT -> PLAYING -> WAITING_FOR_NEXT -> TRANSITIONING -> ENDED
+        this.state = 'INIT';
+
         // Callback hooks
         this.onTick = config.onTick || (() => {});
         this.onQuestionLoaded = config.onQuestionLoaded || (() => {});
@@ -42,6 +45,7 @@ class QuizEngine {
         this.score = 0;
         this.streak = 0;
         this.history = [];
+        this.state = 'PLAYING';
         this.nextQuestion();
     }
 
@@ -51,6 +55,7 @@ class QuizEngine {
             return;
         }
 
+        this.state = 'PLAYING';
         const currentQ = this.questions[this.currentIndex];
         this.timeLeft = this.settings.timerPerQuestion;
 
@@ -93,14 +98,19 @@ class QuizEngine {
         });
 
         if (this.settings.lockFastForward) {
+            this.state = 'TRANSITIONING';
             setTimeout(() => {
                 this.currentIndex++;
                 this.nextQuestion();
             }, 1500); // Slight delay even in fast mode to register fail
+        } else {
+            this.state = 'WAITING_FOR_NEXT';
         }
     }
 
     selectAnswer(selectedOption) {
+        if (this.state !== 'PLAYING') return; // Prevent multiple clicks
+
         if (this.timer) clearInterval(this.timer);
 
         const currentQ = this.questions[this.currentIndex];
@@ -131,17 +141,22 @@ class QuizEngine {
 
         // LOCK FAST FORWARD LOGIC
         if (this.settings.lockFastForward) {
+            this.state = 'TRANSITIONING';
             // Immediate transition, small delay for visual feedback
             setTimeout(() => {
                 this.currentIndex++;
                 this.nextQuestion();
             }, 800);
+        } else {
+            this.state = 'WAITING_FOR_NEXT';
         }
         // If not locked, we wait for user to click "Next"
     }
 
     // "Fast Forward" button action (Manual Next)
     triggerFastForward() {
+        if (this.state === 'TRANSITIONING' || this.state === 'ENDED') return;
+
         if (this.timer) clearInterval(this.timer);
         this.currentIndex++;
         this.nextQuestion();
@@ -159,6 +174,7 @@ class QuizEngine {
     }
 
     endGame() {
+        this.state = 'ENDED';
         if (this.timer) clearInterval(this.timer);
         // Save to LocalStorage if needed
         // localStorage.setItem('j_history', JSON.stringify(this.history));
