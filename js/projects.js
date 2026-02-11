@@ -76,6 +76,26 @@ function initFilters() {
 
 function renderProjects(filter) {
     const grid = document.getElementById('grid');
+    const aboutView = document.getElementById('about-view');
+
+    // Handle About View
+    if (filter === 'about') {
+        if (grid) grid.classList.add('hidden');
+        if (aboutView) {
+            aboutView.classList.remove('hidden');
+            // Initialize about section if needed
+            if (typeof initAboutSection === 'function' && !aboutView.dataset.initialized) {
+                initAboutSection();
+                aboutView.dataset.initialized = 'true';
+            }
+        }
+        return;
+    }
+
+    // Handle Standard Grid View
+    if (aboutView) aboutView.classList.add('hidden');
+    if (grid) grid.classList.remove('hidden');
+
     if (!grid) return;
 
     grid.innerHTML = '';
