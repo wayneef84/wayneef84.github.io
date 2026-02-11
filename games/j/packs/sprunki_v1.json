@@ -1,6 +1,133 @@
 {
-    "meta": { "id": "sprunki_v1", "title": "Sprunki Demo", "version": "1.0" },
-    "questions": [
-        { "id": "q1", "text": "Sample Question?", "options": {"A": "1", "B": "2"}, "correct": "A" }
-    ]
+  "meta": {
+    "id": "sprunki_001",
+    "title": "Sprunki Beats & Lore",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Gaming", "Music", "Horror"],
+    "questionCount": 10
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "In the standard Sprunki Incredibox mod, which accessory typically triggers the 'Horror' mode transformation?",
+      "media": null,
+      "options": {
+        "A": "The Red Cap",
+        "B": "The Black Hat",
+        "C": "The Sunglasses",
+        "D": "The Gold Chain"
+      },
+      "correct": "B",
+      "explanation": "Placing the Black Hat on the central character (Wenda) shifts the game into its dark/horror state."
+    },
+    {
+      "id": "q002",
+      "text": "Which platform was the Sprunki mod originally created on?",
+      "options": {
+        "A": "Unity",
+        "B": "Unreal Engine",
+        "C": "Scratch",
+        "D": "Roblox"
+      },
+      "correct": "C",
+      "explanation": "Sprunki gained fame as a project on the MIT Scratch platform before expanding."
+    },
+    {
+      "id": "q003",
+      "text": "What is the name of the studio that created the original Incredibox game?",
+      "options": {
+        "A": "So Far So Good",
+        "B": "Supercell",
+        "C": "Ketchapp",
+        "D": "Voodoo"
+      },
+      "correct": "A",
+      "explanation": "The French studio 'So Far So Good' released the original Incredibox in 2009."
+    },
+    {
+      "id": "q004",
+      "text": "In the Sprunki lore, what visual change indicates a character has been corrupted?",
+      "options": {
+        "A": "They turn invisible",
+        "B": "They wear a mask",
+        "C": "Bleeding eyes or dark void faces",
+        "D": "They glow bright blue"
+      },
+      "correct": "C",
+      "explanation": "Horror mode features gore, bleeding eyes, and dark, distorted features."
+    },
+    {
+      "id": "q005",
+      "text": "How many main character slots are available to mix in a standard Incredibox version?",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "10",
+        "D": "12"
+      },
+      "correct": "B",
+      "explanation": "Most versions features 7 distinctive characters/slots to build the mix."
+    },
+    {
+      "id": "q006",
+      "text": "Which of these is NOT a standard sound category in the game?",
+      "options": {
+        "A": "Beats",
+        "B": "Effects",
+        "C": "Melodies",
+        "D": "Explosions"
+      },
+      "correct": "D",
+      "explanation": "Standard categories are Beats, Effects, Melodies, and Voices. Explosions are not a category."
+    },
+    {
+      "id": "q007",
+      "text": "What is the primary color of the 'Sunny' (Oren) character in their default state?",
+      "options": {
+        "A": "Blue",
+        "B": "Orange",
+        "C": "Purple",
+        "D": "Green"
+      },
+      "correct": "B",
+      "explanation": "Oren is associated with the color Orange."
+    },
+    {
+      "id": "q008",
+      "text": "The Sprunki mod became a viral sensation primarily on which social media platform?",
+      "options": {
+        "A": "Facebook",
+        "B": "TikTok",
+        "C": "LinkedIn",
+        "D": "MySpace"
+      },
+      "correct": "B",
+      "explanation": "Like many modern mods, it gained massive traction via TikTok trends and edits."
+    },
+    {
+      "id": "q009",
+      "text": "In the horror mode, the music style shifts from upbeat rhythms to what?",
+      "options": {
+        "A": "Classical Piano",
+        "B": "Distorted, dissonance & screams",
+        "C": "Smooth Jazz",
+        "D": "Country & Western"
+      },
+      "correct": "B",
+      "explanation": "The audio becomes distorted, glitchy, and unsettling to match the visuals."
+    },
+    {
+      "id": "q010",
+      "text": "Which year represents the release of the original Incredibox (V1)?",
+      "options": {
+        "A": "2009",
+        "B": "2015",
+        "C": "2020",
+        "D": "1999"
+      },
+      "correct": "A",
+      "explanation": "The first version was released as a Flash game in 2009."
+    }
+  ]
 }
