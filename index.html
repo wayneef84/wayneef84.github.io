@@ -614,8 +614,62 @@
         <p style="opacity: 0.6; font-size: 0.8em; margin-top: 5px;">v1.5 - 2026-02-05</p>
     </footer>
 
-    <script src="js/projects.js"></script>
+    <script src="js/projects.js" onerror="handleProjectsError()"></script>
     <script src="js/about_data.js"></script>
     <script src="js/about_logic.js"></script>
+
+    <script>
+    // Failsafe: Check if projects.js loaded successfully
+    function handleProjectsError() {
+        console.error('projects.js failed to load - using fallback');
+        loadFallbackProjects();
+    }
+
+    // Verify projects loaded after a brief delay
+    setTimeout(function() {
+        if (typeof projects === 'undefined' || typeof init !== 'function') {
+            console.warn('projects.js not initialized - loading fallback');
+            loadFallbackProjects();
+        }
+    }, 100);
+
+    function loadFallbackProjects() {
+        var grid = document.getElementById('grid');
+        if (!grid) return;
+
+        // Minimal fallback project list
+        var fallbackProjects = [
+            { name: "Card Games", path: "games/cards/index.html", category: "cards", icon: "🃏", description: "Blackjack, War, and more" },
+            { name: "Letter Tracing", path: "games/tracing/index.html", category: "puzzle", icon: "✏️", description: "Educational tracing game" },
+            { name: "Slots", path: "games/slots/index.html", category: "arcade", icon: "🎰", description: "Slot machine game" },
+            { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", description: "Barcode & QR scanner" },
+            { name: "Shipment Tracker", path: "projects/shipment-tracker/index.html", category: "project", icon: "📦", description: "Package tracking" }
+        ];
+
+        grid.innerHTML = '';
+        fallbackProjects.forEach(function(project) {
+            var card = document.createElement('a');
+            card.href = project.path;
+            card.className = 'game-card';
+            card.innerHTML = '<div class="icon">' + project.icon + '</div>' +
+                           '<h3>' + project.name + '</h3>' +
+                           '<p>' + project.description + '</p>';
+            grid.appendChild(card);
+        });
+
+        // Add error message
+        var warning = document.createElement('div');
+        warning.style.cssText = 'text-align:center;color:var(--accent);padding:20px;font-size:0.9em;';
+        warning.textContent = '⚠️ Limited mode - Some projects may not be visible';
+        grid.parentNode.insertBefore(warning, grid);
+
+        // Disable filters since we don't have full data
+        var filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(function(btn) {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+        });
+    }
+    </script>
 </body>
 </html>

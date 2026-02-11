@@ -28,7 +28,7 @@ const projects = [
     { name: "Cookbook", path: "projects/md-reader/index.html#COOKBOOK.md", category: "project", icon: "🍳", tags: ["Utility"], description: "Family recipes and cooking guide." },
     { name: "Regex Builder", path: "projects/regex_builder/index.html", category: "project", icon: "☃️", tags: ["Dev Tool"], description: "Build and test regular expressions with a winter theme." },
     { name: "Shipment Tracker", path: "projects/shipment-tracker/index.html", category: "project", icon: "📦", tags: ["Utility"], description: "Track packages from DHL, FedEx, UPS and more." },
-    { name: "Test Portal", path: "projects/internal-tests/index.html", category: "project", icon: "🧪", tags: ["Internal"], description: "Centralized testing hub for F.O.N.G. codebase." }
+    { name: "Test Portal", path: "projects/internal-tests/index.html", category: "project", icon: "🧪", tags: ["Internal"], description: "Centralized testing hub for F.O.N.G. codebase." },
     { name: "J-DevUtils", path: "projects/dev-utils/index.html", category: "project", icon: "🛠️", tags: ["Dev Tool"], description: "The Developer's Utility Belt: Timestamps, JSON, Base64, and more." },
     { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." }
 ];
