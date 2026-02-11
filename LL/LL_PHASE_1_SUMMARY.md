@@ -1,4 +1,4 @@
-# Phase 1 Summary: Founding & Forging Overhaul
+# Phase 1 Summary: F.O.N.G. Overhaul
 
 **Date:** 2026-02-05
 **Y-Level:** Y=4 (C4)
@@ -22,7 +22,7 @@ Jules delivered the core functional overhaul:
 - **Open in New Tab:** Generates standalone HTML blob
 
 ### Project Renaming
-- Rebranded from "Fong Family Arcade" to "Founding & Forging"
+- Rebranded from "Fong Family Arcade" to "F.O.N.G."
 - Updated `index.html`, navigation, titles across all games
 
 ### Card Game Fixes
