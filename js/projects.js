@@ -17,6 +17,7 @@ const projects = [
     { name: "SKYbreakers", path: "games/sky_breakers/index.html", category: "arcade", icon: "🚀", tags: ["Arcade"], description: "Break through the sky in this high-flying arcade game." },
     { name: "Minesweeper+", path: "games/minesweeper/index.html", category: "puzzle", icon: "💣", tags: ["Classic"], description: "Classic Minesweeper with lives, power-ups, and custom themes." },
     { name: "Mahjong", path: "games/mahjong/index.html", category: "puzzle", icon: "🀄", tags: ["Classic"], description: "Classic Mahjong Solitaire tile matching game." },
+    { name: "J: Speed Quiz", path: "games/j/index.html", category: "arcade", icon: "⚡", tags: ["Trivia"], description: "High-velocity quiz engine. Test your reflexes and knowledge." },
 
     // Tools / Projects
     { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", tags: ["Utility"], description: "Barcode and QR code scanner with multiple detection modes." },
