@@ -1,10 +1,11 @@
 # F.O.N.G. Project Registry
-**Last Updated:** 2026-02-05
+**Last Updated:** 2026-02-06
 
 This document serves as the central directory for all applications, games, and utilities within the F.O.N.G. repository.
 
 | Project Name | Path | Type | Summary | Created Date |
 | :--- | :--- | :--- | :--- | :--- |
+| **J-DevUtils** | `/projects/dev-utils/` | Utility | The Developer's Utility Belt: Timestamps, JSON, Base64. | 2026-02-06 |
 | **NEGEN Engine** | `/negen/` | Engine | Modular game engine with hybrid DOM/Canvas rendering. | 2026-01-01 |
 | **Shipment Tracker** | `/projects/shipment-tracker/` | Utility | Multi-carrier tracking dashboard with local persistence. | 2026-01-15 |
 | **Markdown Reader** | `/projects/md-reader/` | Utility | In-browser documentation viewer with advanced parsing. | 2026-01-20 |
