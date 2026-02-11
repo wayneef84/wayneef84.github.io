@@ -1,6 +1,6 @@
 # Input A11y - TODO / Roadmap
 
-**Last Updated:** 2026-02-09
+**Last Updated:** 2026-02-11
 
 ---
 
@@ -16,6 +16,10 @@
 - [x] ✅ Min Character Length (not exact) — Changed from exact match to minimum length requirement. Click the on-screen indicator to quickly adjust via prompt. (2026-02-09, C)
 - [x] ✅ Quick Settings Overlay — Click the character count indicator to open a visual overlay with +/- buttons for min length and toggle buttons for text transformation (Original/UPPERCASE/lowercase). No more prompts! (2026-02-09, C)
 - [x] ✅ Text Transformation — OCR results can be auto-transformed to UPPERCASE, lowercase, or left as Original. Applied after whitespace processing but before filtering. (2026-02-09, C)
+- [x] ✅ Google Search Integration — Default URL changed to Google Search with value concatenation enabled. Scanned values auto-append to search query. (2026-02-11, J)
+- [x] ✅ Google Lens Image Upload — Camera icon (📷) in history allows uploading saved images directly to Google Lens for reverse image search. (2026-02-11, J)
+- [x] ✅ Screenshot → Google Lens — New button in scan mode captures camera frame and immediately uploads to Google Lens. Perfect for quick product identification. (2026-02-11, C)
+- [x] ✅ Theme System — 4 themes available: Dark (default), High Contrast, Black & White, Light. Configurable in Settings > Appearance. (2026-02-11, C)
 
 ## Priority 1 (Should Fix)
 
@@ -39,7 +43,7 @@
 
 ## Priority 3 (Nice to Have)
 
-- [ ] Dark/light theme toggle
+- [x] ✅ Theme system — Dark, High Contrast, Black & White, Light themes (2026-02-11, C)
 - [ ] Sound feedback option (beep on scan)
 - [ ] Share scanned text via Web Share API
 - [x] ✅ PWA support — Manifest + service worker with offline-first caching. App installs to home screen on mobile. (2026-02-09, C)

@@ -132,6 +132,7 @@
             <div id="snapshot-row" class="hidden" style="text-align:center;margin-top:10px;">
                 <div class="dual-btn-group">
                     <button id="btn-screenshot" class="screenshot-btn" title="Save raw camera image as evidence">Screenshot Evidence</button>
+                    <button id="btn-screenshot-lens" class="screenshot-lens-btn" title="Screenshot and search with Google Lens">📷 Screenshot → Lens</button>
                     <button id="btn-scan-verify" class="scan-verify-btn" title="Run OCR with pre-processing pipeline">Scan &amp; Verify</button>
                 </div>
             </div>
@@ -243,6 +244,19 @@
                         <option value="OFF">Off</option>
                         <option value="SCANNER">Scanner Only</option>
                         <option value="SCREEN">Full Screen</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3 class="settings-heading">Appearance</h3>
+                <div class="setting-item">
+                    <label for="set-theme">Theme:</label>
+                    <select id="set-theme">
+                        <option value="dark">Dark (Default)</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="bw">Black & White</option>
+                        <option value="light">Light</option>
                     </select>
                 </div>
             </div>

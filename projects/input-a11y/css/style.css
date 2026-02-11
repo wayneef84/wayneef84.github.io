@@ -10,6 +10,45 @@
     --blue: #2196F3;
 }
 
+/* High Contrast Theme */
+body[data-theme="contrast"] {
+    --bg-color: #000;
+    --text-color: #fff;
+    --accent-color: #FFD700;
+    --accent-hover: #FFC700;
+    --secondary-bg: #111;
+    --border-color: #FFD700;
+    --teal: #00FFFF;
+    --teal-hover: #00DDDD;
+    --blue: #00BFFF;
+}
+
+/* Black & White Theme */
+body[data-theme="bw"] {
+    --bg-color: #000;
+    --text-color: #fff;
+    --accent-color: #fff;
+    --accent-hover: #ddd;
+    --secondary-bg: #111;
+    --border-color: #fff;
+    --teal: #fff;
+    --teal-hover: #ddd;
+    --blue: #fff;
+}
+
+/* Light Theme */
+body[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #212121;
+    --accent-color: #4CAF50;
+    --accent-hover: #45a049;
+    --secondary-bg: #f5f5f5;
+    --border-color: #ddd;
+    --teal: #00BCD4;
+    --teal-hover: #00ACC1;
+    --blue: #2196F3;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-color);

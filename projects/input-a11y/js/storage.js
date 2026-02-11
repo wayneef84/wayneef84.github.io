@@ -22,6 +22,7 @@ var StorageManager = (function() {
         feedbackVibrate: true,
         feedbackFrame: 'SCANNER',
         feedbackFlash: 'SCANNER',
+        theme: 'dark', // dark, contrast, bw, light
         ocrDriver: '',
         ocrFilterMode: 'NONE',
         ocrFilterValue: '',

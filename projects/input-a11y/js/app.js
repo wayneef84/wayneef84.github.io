@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var setVibrate = document.getElementById('set-vibrate');
     var setFrame = document.getElementById('set-frame');
     var setFlash = document.getElementById('set-flash');
+    var setTheme = document.getElementById('set-theme');
 
     // OCR Filter Settings
     var setConfirmPopup = document.getElementById('set-confirm-popup');
@@ -119,6 +120,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (settings.feedbackVibrate !== undefined) setVibrate.checked = settings.feedbackVibrate;
         if (settings.feedbackFrame) setFrame.value = settings.feedbackFrame;
         if (settings.feedbackFlash) setFlash.value = settings.feedbackFlash;
+        if (settings.theme) {
+            setTheme.value = settings.theme;
+            applyTheme(settings.theme);
+        }
 
         // Restore OCR filter settings
         if (setConfirmPopup && settings.ocrConfirmPopup !== undefined) {
@@ -273,6 +278,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initSettingsTransaction() {
         tempSettings = JSON.parse(JSON.stringify(settings));
+    }
+
+    function applyTheme(themeName) {
+        var validThemes = ['dark', 'contrast', 'bw', 'light'];
+        if (validThemes.indexOf(themeName) === -1) themeName = 'dark';
+        document.body.setAttribute('data-theme', themeName);
     }
 
     function buildRoiConfig() {
@@ -768,6 +779,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setVibrate.addEventListener('change', function(e) { updateSetting('feedbackVibrate', e.target.checked); });
         setFrame.addEventListener('change', function(e) { updateSetting('feedbackFrame', e.target.value); });
         setFlash.addEventListener('change', function(e) { updateSetting('feedbackFlash', e.target.value); });
+        if (setTheme) setTheme.addEventListener('change', function(e) {
+            var theme = e.target.value;
+            updateSetting('theme', theme);
+            applyTheme(theme);
+        });
 
         if (setConfirmPopup) setConfirmPopup.addEventListener('change', function(e) {
             updateSetting('ocrConfirmPopup', e.target.checked);
@@ -903,6 +919,48 @@ document.addEventListener('DOMContentLoaded', function() {
                     btnScreenshot.disabled = false;
                     btnScreenshot.innerText = 'Screenshot Evidence';
                     document.getElementById('scan-status').innerText = 'Screenshot failed. Try again.';
+                });
+            });
+        }
+
+        // Screenshot → Google Lens Button — captures and uploads to Google Lens
+        var btnScreenshotLens = document.getElementById('btn-screenshot-lens');
+        if (btnScreenshotLens) {
+            btnScreenshotLens.addEventListener('click', function() {
+                if (!ocrManager) return;
+                btnScreenshotLens.disabled = true;
+                var originalText = btnScreenshotLens.innerHTML;
+                btnScreenshotLens.innerHTML = 'Uploading...';
+
+                ocrManager.screenshotEvidence().then(function(result) {
+                    btnScreenshotLens.disabled = false;
+                    btnScreenshotLens.innerHTML = originalText;
+
+                    var imageDataUri = (result && result.imageDataUri) ? result.imageDataUri : '';
+
+                    if (!imageDataUri) {
+                        document.getElementById('scan-status').innerText = 'Screenshot failed.';
+                        showToast('Screenshot failed');
+                        return;
+                    }
+
+                    // Save to history
+                    storage.addItem('SCANNED', {
+                        content: '(Google Lens screenshot)',
+                        format: 'LENS_SCREENSHOT',
+                        mode: 'TEXT_OCR',
+                        image: imageDataUri
+                    });
+                    renderHistory();
+
+                    // Upload to Google Lens
+                    searchImageOnGoogle(imageDataUri);
+                    document.getElementById('scan-status').innerText = 'Screenshot uploaded to Google Lens.';
+                }).catch(function() {
+                    btnScreenshotLens.disabled = false;
+                    btnScreenshotLens.innerHTML = originalText;
+                    document.getElementById('scan-status').innerText = 'Screenshot failed. Try again.';
+                    showToast('Screenshot failed');
                 });
             });
         }
