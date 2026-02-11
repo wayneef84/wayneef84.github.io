@@ -7,7 +7,7 @@
  * @version 2.0.0 (Hybrid Generic/Legacy)
  * @author F.O.N.G.
  * @version 2.1.0 (Legacy-only, NegenDB references removed)
- * @author Founding & Forging
+ * @author Wayne Fong
  */
 
 (function(window) {

@@ -3,7 +3,7 @@
 **Effective Date:** January 1, 2026
 **Version:** 2.0 (SkyLantern Compliance Update)
 
-This Master Service Agreement ("Agreement") is entered into by and between **F.O.N.G. (Founding & Forging)** ("Provider") and the authorized user or entity ("Client") accessing the services provided within this repository.
+This Master Service Agreement ("Agreement") is entered into by and between **F.O.N.G.** ("Provider") and the authorized user or entity ("Client") accessing the services provided within this repository.
 
 ## 1. Scope of Services
 Provider agrees to grant Client access to the software, digital archives, and logistical tools hosted within this repository, specifically including but not limited to:
