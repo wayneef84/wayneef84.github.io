@@ -101,8 +101,29 @@ function renderSidebar() {
 
     sidebar.appendChild(ul);
 
-    // Default: Expand All as per prompt "Default State: All items Expanded"
-    toggleSidebar(true);
+    // Default: Expand Members and Years, Collapse Months and Days
+    setInitialExpansion();
+}
+
+function setInitialExpansion() {
+    const members = document.querySelectorAll('.tree-node-container.type-member');
+    members.forEach(node => node.classList.remove('collapsed'));
+
+    const years = document.querySelectorAll('.tree-node-container.type-year');
+    years.forEach(node => node.classList.remove('collapsed'));
+
+    const months = document.querySelectorAll('.tree-node-container.type-month');
+    months.forEach(node => node.classList.add('collapsed'));
+
+    const days = document.querySelectorAll('.tree-node-container.type-day');
+    days.forEach(node => node.classList.add('collapsed'));
+
+    // Reset toggle button state to "Expand All" since we have hidden items
+    const toggleAllBtn = document.getElementById('sidebar-toggle-all');
+    if (toggleAllBtn) {
+        toggleAllBtn.dataset.state = 'collapsed';
+        toggleAllBtn.textContent = 'Expand All';
+    }
 }
 
 function createTreeNode(label, type, id) {

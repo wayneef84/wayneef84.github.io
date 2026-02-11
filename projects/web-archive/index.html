@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Archive // Curator Interface</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABDSURBVDhPY/wPBAw4gI0R5f/Tpk0D4x8o/w/K/4fS/6H0fyj9H0r/h9L/ofR/KP0fSv+H0v+h9H8o/R9K/4fS//9DAQAykB0h9g51/wAAAABJRU5ErkJggg==">
+</head>
+<body>
+
+    <div class="scanlines"></div>
+
+    <div id="console-wrapper">
+        <!-- Decor -->
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+
+        <header>
+            <h1>ARCHIVE.SYS [V2.0]</h1>
+            <div class="status-indicator">
+                <span>SYSTEM ONLINE</span>
+                <div class="blink"></div>
+            </div>
+        </header>
+
+        <aside>
+            <div class="nav-label">DATABASE SELECT</div>
+            <button class="nav-btn" data-target="artifact_index.html" data-desc="Recovered Index Protocol. Early search directory structure. Circa 1996. Note the manual categorization hierarchies.">
+                Exhibit 01: The Index
+            </button>
+            <button class="nav-btn" data-target="artifact_home.html" data-desc="Personal Home Page. Geocities-era artifact. Circa 1999. Demonstrates high-contrast color schemes and animated elements.">
+                Exhibit 02: User Space
+            </button>
+            <button class="nav-btn" data-target="artifact_corp.html" data-desc="Corporate Presence. 'Dot Com' bubble era. Minimalist design, buzzword density 95%.">
+                Exhibit 03: The Enterprise
+            </button>
+
+            <div style="flex-grow:1"></div>
+            <div class="audio-toggle">[MUTE AUDIO]</div>
+        </aside>
+
+        <main>
+            <iframe id="viewport" src="about:blank"></iframe>
+        </main>
+
+        <footer id="console-log">
+            <!-- JS will inject logs here -->
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -17,6 +17,7 @@ const projects = [
     { name: "SKYbreakers", path: "games/sky_breakers/index.html", category: "arcade", icon: "🚀", tags: ["Arcade"], description: "Break through the sky in this high-flying arcade game." },
     { name: "Minesweeper+", path: "games/minesweeper/index.html", category: "puzzle", icon: "💣", tags: ["Classic"], description: "Classic Minesweeper with lives, power-ups, and custom themes." },
     { name: "Mahjong", path: "games/mahjong/index.html", category: "puzzle", icon: "🀄", tags: ["Classic"], description: "Classic Mahjong Solitaire tile matching game." },
+    { name: "J: Speed Quiz", path: "games/j/index.html", category: "arcade", icon: "⚡", tags: ["Trivia"], description: "High-velocity quiz engine. Test your reflexes and knowledge." },
     { name: "Solitaire", path: "games/solitaire/index.html", category: "cards", icon: "♠️", tags: ["Classic"], description: "The classic patience card game. Klondike rules." },
     { name: "PuzzLLer", path: "games/puzzller/index.html", category: "puzzle", icon: "🧠", tags: ["Logic"], description: "Navigate grids and solve logic puzzles." },
     { name: "C.o.D.E.", path: "projects/code/index.html", category: "puzzle", icon: "📟", tags: ["Simulation"], description: "Hacking simulator. Crack the numeric code against time." },
@@ -28,24 +29,54 @@ const projects = [
     { name: "Regex Builder", path: "projects/regex_builder/index.html", category: "project", icon: "☃️", tags: ["Dev Tool"], description: "Build and test regular expressions with a winter theme." },
     { name: "Shipment Tracker", path: "projects/shipment-tracker/index.html", category: "project", icon: "📦", tags: ["Utility"], description: "Track packages from DHL, FedEx, UPS and more." },
     { name: "Test Portal", path: "projects/internal-tests/index.html", category: "project", icon: "🧪", tags: ["Internal"], description: "Centralized testing hub for F.O.N.G. codebase." }
+    { name: "J-DevUtils", path: "projects/dev-utils/index.html", category: "project", icon: "🛠️", tags: ["Dev Tool"], description: "The Developer's Utility Belt: Timestamps, JSON, Base64, and more." },
+    { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    renderProjects('all');
-    initFilters();
-});
+// Initialize function
+const init = () => {
+    try {
+        initTheme();
+    } catch (e) {
+        console.warn("Theme initialization failed:", e);
+    }
+
+    try {
+        renderProjects('all');
+    } catch (e) {
+        console.error("Project rendering failed:", e);
+    }
+
+    try {
+        initFilters();
+    } catch (e) {
+        console.warn("Filter initialization failed:", e);
+    }
+};
+
+// Handle Loading State
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
 
 function initTheme() {
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
-    const savedTheme = localStorage.getItem('fong_theme');
+
+    let savedTheme = null;
+    try {
+        savedTheme = localStorage.getItem('fong_theme');
+    } catch (e) {
+        // LocalStorage might be disabled
+    }
 
     if (savedTheme === 'light') {
         body.classList.add('light-mode');
-        themeToggle.textContent = '🌙';
+        if (themeToggle) themeToggle.textContent = '🌙';
     } else {
-        themeToggle.textContent = '☀️';
+        if (themeToggle) themeToggle.textContent = '☀️';
     }
 
     if (themeToggle) {
@@ -53,7 +84,11 @@ function initTheme() {
             body.classList.toggle('light-mode');
             const isLight = body.classList.contains('light-mode');
             themeToggle.textContent = isLight ? '🌙' : '☀️';
-            localStorage.setItem('fong_theme', isLight ? 'light' : 'dark');
+            try {
+                localStorage.setItem('fong_theme', isLight ? 'light' : 'dark');
+            } catch (e) {
+                // Ignore storage errors
+            }
         });
     }
 }
@@ -110,29 +145,33 @@ function renderProjects(filter) {
     let delay = 0.1;
 
     projects.forEach(project => {
-        // Filter logic: show if filter is 'all' OR category matches
-        // For 'project' filter, we want to show things with category 'project' (tools)
-        if (filter === 'all' || project.category === filter) {
-            const card = document.createElement('a');
-            card.href = project.path;
-            card.className = 'game-card fade-in';
-            if (project.category === 'project') {
-                card.classList.add('project');
+        try {
+            // Filter logic: show if filter is 'all' OR category matches
+            // For 'project' filter, we want to show things with category 'project' (tools)
+            if (filter === 'all' || project.category === filter) {
+                const card = document.createElement('a');
+                card.href = project.path;
+                card.className = 'game-card fade-in';
+                if (project.category === 'project') {
+                    card.classList.add('project');
+                }
+                card.dataset.category = project.category;
+                card.style.animationDelay = `${delay}s`;
+
+                card.innerHTML = `
+                    <div class="card-icon" role="img" aria-label="${project.name}">${project.icon}</div>
+                    <div class="card-content">
+                        <span class="game-tag">${project.tags ? project.tags[0] : ''}</span>
+                        <h3 class="game-title">${project.name}</h3>
+                        <p class="game-desc">${project.description}</p>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+                delay += 0.05;
             }
-            card.dataset.category = project.category;
-            card.style.animationDelay = `${delay}s`;
-
-            card.innerHTML = `
-                <div class="card-icon" role="img" aria-label="${project.name}">${project.icon}</div>
-                <div class="card-content">
-                    <span class="game-tag">${project.tags[0]}</span>
-                    <h3 class="game-title">${project.name}</h3>
-                    <p class="game-desc">${project.description}</p>
-                </div>
-            `;
-
-            grid.appendChild(card);
-            delay += 0.05;
+        } catch (err) {
+            console.error("Error rendering project:", project, err);
         }
     });
 }
