@@ -1766,6 +1766,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 var actionsDiv = document.createElement('div');
                 actionsDiv.className = 'hist-actions-row';
 
+                // Google Lens / Image Search Button (if image exists)
+                if (item.image) {
+                    var lensBtn = document.createElement('button');
+                    lensBtn.className = 'hist-action-btn hist-lens-btn';
+                    lensBtn.textContent = '📷'; // Camera icon
+                    lensBtn.title = 'Google Lens Search';
+                    lensBtn.setAttribute('aria-label', 'Google Lens Search');
+                    lensBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        searchImageOnGoogle(item.image);
+                    });
+                    actionsDiv.appendChild(lensBtn);
+                }
+
                 // Open URL button (only if URL_INPUT mode is active)
                 if (isUrlMode()) {
                     var urlBtn = document.createElement('button');
@@ -1831,5 +1845,47 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
+    }
+
+    function searchImageOnGoogle(base64Data) {
+        if (!base64Data) return;
+
+        // Extract raw base64 string (remove data URI prefix if present)
+        var content = base64Data;
+        if (content.indexOf(',') !== -1) {
+            content = content.split(',')[1];
+        }
+
+        // Create a hidden form to submit to Google Search by Image
+        // Note: 'image_content' parameter works with base64 data in multipart/form-data
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'https://www.google.com/searchbyimage/upload';
+        form.target = '_blank';
+        form.enctype = 'multipart/form-data';
+        form.style.display = 'none';
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'image_content';
+        input.value = content;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+
+        try {
+            form.submit();
+            showToast('Opening Google Lens...');
+        } catch (e) {
+            console.error('Image search failed', e);
+            showToast('Search failed');
+        }
+
+        // Clean up
+        setTimeout(function() {
+            if (document.body.contains(form)) {
+                document.body.removeChild(form);
+            }
+        }, 2000);
     }
 });
