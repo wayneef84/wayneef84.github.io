@@ -278,21 +278,9 @@
             }
             .sidebar {
                 width: 100%;
-                flex-direction: column;
+                flex-direction: row;
+                overflow-x: auto;
                 padding: 0.5rem;
-                gap: 0.25rem;
-            }
-            .logo {
-                margin-bottom: 0.5rem;
-                justify-content: center;
-                border-bottom: 1px solid var(--border-color);
-                padding-bottom: 0.5rem;
-            }
-            .nav-item {
-                white-space: nowrap;
-                justify-content: center;
-                padding: 0.6rem;
-                background-color: var(--input-bg);
             }
             .reputable-links {
                 display: none; /* Hide on mobile to save space */
@@ -300,35 +288,8 @@
             .main-content {
                 padding: 1rem;
             }
-
-            /* Mobile Input/Button Stacking */
-            .btn-row {
-                flex-direction: column;
-                width: 100%;
-            }
-            .btn-row button {
-                width: 100%;
-                margin-top: 0.25rem;
-            }
-            button.copy-btn {
-                width: 100%;
-                padding: 0.6rem;
-            }
-            .input-group label {
-                margin-top: 0.5rem;
-            }
-
-            /* Ensure output doesn't break layout */
-            .json-output {
-                overflow-x: auto;
-                word-break: break-all; /* Force break if needed */
-                white-space: pre-wrap; /* Wrap long lines in output */
-            }
-
-            /* Date inputs on mobile */
-            input[type="datetime-local"],
-            input[type="date"] {
-                min-width: 100%; /* Force full width */
+            .nav-item {
+                white-space: nowrap;
             }
         }
     </style>
