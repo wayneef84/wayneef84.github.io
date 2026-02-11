@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Solitaire</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="../../favicon.svg">
+</head>
+<body>
+
+    <h1>Mahjong Solitaire</h1>
+
+    <div id="stats">
+        <div class="stat-box">
+            <span class="stat-label">SCORE</span>
+            <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">HINTS</span>
+            <span class="stat-value" id="hints">3</span>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+    </div>
+
+    <div id="controls">
+        <button id="btn-new" class="btn">New Game</button>
+        <button id="btn-shuffle" class="btn btn-secondary">Shuffle</button>
+        <button id="btn-hint" class="btn btn-secondary">Hint</button>
+        <button id="btn-undo" class="btn btn-secondary">Undo</button>
+    </div>
+
+    <!-- Game Logic -->
+    <script src="js/data.js"></script>
+    <script src="js/tile.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+
+    <script>
+        // Init Game
+        window.onload = function() {
+            var game = new MahjongGame('gameCanvas');
+
+            // Bind Buttons
+            document.getElementById('btn-new').onclick = function() {
+                game.newGame();
+            };
+
+            document.getElementById('btn-shuffle').onclick = function() {
+                game.shuffle();
+            };
+
+            document.getElementById('btn-hint').onclick = function() {
+                game.hint();
+            };
+
+            document.getElementById('btn-undo').onclick = function() {
+                game.undo();
+            };
+        };
+    </script>
+
+</body>
+</html>
