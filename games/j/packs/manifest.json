@@ -125,14 +125,6 @@
             "count": 80
         },
         {
-            "id": "logo_quiz",
-            "groupId": "visual",
-            "title": "Logo Quiz",
-            "path": "packs/logo_quiz.json",
-            "icon": "\u2753",
-            "count": 10
-        },
-        {
             "id": "modern_history",
             "groupId": "pub_trivia",
             "title": "Modern History",
@@ -275,14 +267,6 @@
             "path": "packs/rust_belt_rock.json",
             "icon": "\u2753",
             "count": 15
-        },
-        {
-            "id": "flags_quiz",
-            "groupId": "visual",
-            "title": "Flag Identification",
-            "path": "packs/flags_quiz.json",
-            "icon": "\u2753",
-            "count": 10
         },
         {
             "id": "pmi_pm",

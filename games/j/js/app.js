@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     '<div class="pack-info">' +
                         '<div class="pack-name">' + pack.title + '</div>' +
                         '<div class="pack-meta">' +
-                            '<span class="pack-category">' + (pack.category || 'General') + '</span>' +
+                            '<span class="pack-category">' + (group.title || 'General') + '</span>' +
                             '<span class="pack-count">' + (pack.count || '?') + ' Q</span>' +
                         '</div>' +
                     '</div>' + bestHtml;
@@ -339,10 +339,13 @@ document.addEventListener('DOMContentLoaded', function() {
             label.style.padding = '5px 0';
             label.style.cursor = 'pointer';
 
+            var group = MANIFEST.groups.find(g => g.id === pack.groupId);
+            var groupName = group ? group.title : (pack.category || 'General');
+
             label.innerHTML = `
                 <input type="checkbox" name="mixPack" value="${pack.path}" style="margin-right: 10px;">
                 <span style="flex:1;">${pack.title}</span>
-                <span style="font-size:0.8rem; opacity:0.6;">${pack.category}</span>
+                <span style="font-size:0.8rem; opacity:0.6;">${groupName}</span>
             `;
             dom.multiPackList.appendChild(label);
         });
