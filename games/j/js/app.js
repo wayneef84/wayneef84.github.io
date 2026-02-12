@@ -695,6 +695,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedBtn) selectedBtn.classList.add('incorrect');
             }
         } else {
+            // Show feedback overlay
+            dom.feedbackArea.classList.remove('hidden');
+
+            if (data.correct) {
+                dom.feedbackTitle.textContent = "CORRECT!";
+                dom.feedbackTitle.style.color = "var(--correct)";
+                dom.feedbackText.textContent = "";
+            } else if (data.timeOut) {
+                dom.feedbackTitle.textContent = "TIME'S UP!";
+                dom.feedbackTitle.style.color = "var(--incorrect)";
+                dom.feedbackText.textContent = "The correct answer was (" + data.correctAnswer + ")";
+            } else {
+                dom.feedbackTitle.textContent = "WRONG!";
+                dom.feedbackTitle.style.color = "var(--incorrect)";
+                dom.feedbackText.textContent = "The correct answer was (" + data.correctAnswer + ")";
+            }
+
             if (correctBtn) correctBtn.classList.add('correct');
             if (!data.correct && !data.timeOut && data.selected) {
                 var selectedBtn = dom.answers[data.selected];

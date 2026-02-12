@@ -243,9 +243,9 @@ body {
 }
 
 .option-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-weight: 800;
 }
 
 .option-text {
