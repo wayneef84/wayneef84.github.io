@@ -730,4 +730,3 @@ input:checked + .slider:before {
         min-height: 60px;
     }
 }
-@import "selector.css";
