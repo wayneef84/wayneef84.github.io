@@ -28,6 +28,18 @@ class InputHandler {
     update() {
         this.justPressed = {};
     }
+
+    // Method to simulate key presses from touch controls
+    simulateKey(code, isDown) {
+        if (isDown) {
+            if (!this.keys[code]) { // Only trigger justPressed if not already held
+                this.justPressed[code] = true;
+            }
+            this.keys[code] = true;
+        } else {
+            this.keys[code] = false;
+        }
+    }
 }
 
 // Export for module usage or global scope
