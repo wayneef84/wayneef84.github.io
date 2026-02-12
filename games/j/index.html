@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>J: The Speed of Knowledge</title>
-    <meta name="description" content="A high-velocity quiz engine. Lock fast forward and test your reflexes.">
+    <meta name="description" content="A high-velocity quiz engine with 1000+ questions across 17 packs.">
 
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
     <link rel="manifest" href="manifest.json">
@@ -13,76 +13,107 @@
 <body>
 
     <div class="app-container">
-        <!-- Header: Progress & Stats -->
-        <header class="game-header">
-            <div class="top-row">
-                <a href="../../index.html" class="home-btn" aria-label="Home">🏠</a>
-                <div class="score-display">SCORE: <span id="scoreValue">0</span></div>
-                <div class="streak-display">🔥 <span id="streakValue">0</span></div>
-            </div>
 
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-
-            <div class="timer-display" id="timerDisplay">15</div>
-        </header>
-
-        <!-- Main Game Area -->
-        <main class="game-board">
-            <!-- Question Card -->
-            <div class="question-card">
-                <div class="question-meta">
-                    <span id="packTitle" class="pack-tag">LOADING...</span>
-                    <span id="qCount" class="q-count">1/10</span>
+        <!-- ==============================
+             PACK SELECTOR SCREEN
+             ============================== -->
+        <div id="packSelector" class="pack-selector">
+            <div class="selector-header">
+                <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
+                <div class="selector-title">
+                    <h1>J: Speed Quiz</h1>
+                    <p class="selector-subtitle">
+                        <span id="totalPacks">0</span> packs &middot;
+                        <span id="totalQuestions">0</span> questions
+                    </p>
                 </div>
-                <h2 id="questionText" class="question-text">Loading question...</h2>
-                <div id="mediaContainer" class="media-container hidden">
-                    <!-- Image or Video will be injected here -->
+                <div class="selector-spacer"></div>
+            </div>
+
+            <div class="search-container">
+                <input type="search" id="packSearch" class="pack-search" placeholder="Search packs..." autocomplete="off">
+            </div>
+
+            <div class="pack-grid" id="packGrid">
+                <!-- Pack cards rendered by app.js -->
+            </div>
+        </div>
+
+        <!-- ==============================
+             GAME SCREEN
+             ============================== -->
+        <div id="gameContainer" class="hidden">
+            <!-- Header: Progress & Stats -->
+            <header class="game-header">
+                <div class="top-row">
+                    <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
+                    <div class="score-display">SCORE: <span id="scoreValue">0</span></div>
+                    <div class="streak-display">&#x1F525; <span id="streakValue">0</span></div>
                 </div>
-            </div>
 
-            <!-- Answer Grid -->
-            <div class="answer-grid" id="answerGrid">
-                <button class="answer-btn" data-option="A" disabled>
-                    <span class="option-label">A</span>
-                    <span class="option-text">Option A</span>
-                </button>
-                <button class="answer-btn" data-option="B" disabled>
-                    <span class="option-label">B</span>
-                    <span class="option-text">Option B</span>
-                </button>
-                <button class="answer-btn" data-option="C" disabled>
-                    <span class="option-label">C</span>
-                    <span class="option-text">Option C</span>
-                </button>
-                <button class="answer-btn" data-option="D" disabled>
-                    <span class="option-label">D</span>
-                    <span class="option-text">Option D</span>
-                </button>
-            </div>
-
-            <!-- Feedback / Explanation -->
-            <div id="feedbackArea" class="feedback-overlay hidden">
-                <div class="feedback-content">
-                    <h3 id="feedbackTitle">CORRECT!</h3>
-                    <p id="feedbackText">Explanation goes here.</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
                 </div>
-            </div>
-        </main>
 
-        <!-- Footer Controls -->
-        <footer class="game-controls">
-            <div class="control-group">
-                <label class="switch">
-                    <input type="checkbox" id="lockToggle">
-                    <span class="slider round"></span>
-                </label>
-                <span class="switch-label">LOCK FAST FORWARD</span>
-            </div>
+                <div class="timer-display" id="timerDisplay">15</div>
+            </header>
 
-            <button id="nextBtn" class="next-btn" disabled>NEXT >></button>
-        </footer>
+            <!-- Main Game Area -->
+            <main class="game-board">
+                <!-- Question Card -->
+                <div class="question-card">
+                    <div class="question-meta">
+                        <span id="packTitle" class="pack-tag">LOADING...</span>
+                        <span id="qCount" class="q-count">1/10</span>
+                    </div>
+                    <h2 id="questionText" class="question-text">Loading question...</h2>
+                    <div id="mediaContainer" class="media-container hidden">
+                        <!-- Image or Video will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Answer Grid -->
+                <div class="answer-grid" id="answerGrid">
+                    <button class="answer-btn" data-option="A" disabled>
+                        <span class="option-label">A</span>
+                        <span class="option-text">Option A</span>
+                    </button>
+                    <button class="answer-btn" data-option="B" disabled>
+                        <span class="option-label">B</span>
+                        <span class="option-text">Option B</span>
+                    </button>
+                    <button class="answer-btn" data-option="C" disabled>
+                        <span class="option-label">C</span>
+                        <span class="option-text">Option C</span>
+                    </button>
+                    <button class="answer-btn" data-option="D" disabled>
+                        <span class="option-label">D</span>
+                        <span class="option-text">Option D</span>
+                    </button>
+                </div>
+
+                <!-- Feedback / Explanation -->
+                <div id="feedbackArea" class="feedback-overlay hidden">
+                    <div class="feedback-content">
+                        <h3 id="feedbackTitle">CORRECT!</h3>
+                        <p id="feedbackText">Explanation goes here.</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer Controls -->
+            <footer class="game-controls">
+                <div class="control-group">
+                    <label class="switch">
+                        <input type="checkbox" id="lockToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="switch-label">LOCK FAST FORWARD</span>
+                </div>
+
+                <button id="nextBtn" class="next-btn" disabled>NEXT &gt;&gt;</button>
+            </footer>
+        </div>
 
         <!-- End Screen Overlay -->
         <div id="endScreen" class="modal-overlay hidden">
@@ -106,6 +137,7 @@
                 </div>
                 <div class="action-buttons">
                     <button id="restartBtn" class="primary-btn">PLAY AGAIN</button>
+                    <a href="#" id="changePack" class="secondary-btn">CHANGE PACK</a>
                     <a href="../../index.html" class="secondary-btn">EXIT</a>
                 </div>
             </div>

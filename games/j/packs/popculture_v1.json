@@ -1,0 +1,572 @@
+{
+  "meta": {
+    "id": "popculture_001",
+    "title": "Pop Culture",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Pop Culture", "TV", "Celebrities", "Trends"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which TV series features a chemistry teacher who turns to manufacturing methamphetamine?",
+      "options": { "A": "Ozark", "B": "Breaking Bad", "C": "Narcos", "D": "Weeds" },
+      "correct": "B",
+      "explanation": "Breaking Bad (2008-2013) stars Bryan Cranston as Walter White, a chemistry teacher turned drug manufacturer."
+    },
+    {
+      "id": "q002",
+      "text": "What is the name of the fictional country in the Marvel movie Black Panther?",
+      "options": { "A": "Genosha", "B": "Latveria", "C": "Wakanda", "D": "Sokovia" },
+      "correct": "C",
+      "explanation": "Wakanda is the fictional African nation home to T'Challa, the Black Panther."
+    },
+    {
+      "id": "q003",
+      "text": "Which social media platform is known for its disappearing photo and video messages?",
+      "options": { "A": "Twitter", "B": "Pinterest", "C": "Snapchat", "D": "LinkedIn" },
+      "correct": "C",
+      "explanation": "Snapchat, launched in 2011, popularized the concept of disappearing messages and stories."
+    },
+    {
+      "id": "q004",
+      "text": "Who played Iron Man in the Marvel Cinematic Universe?",
+      "options": { "A": "Chris Evans", "B": "Chris Hemsworth", "C": "Robert Downey Jr.", "D": "Mark Ruffalo" },
+      "correct": "C",
+      "explanation": "Robert Downey Jr. portrayed Tony Stark / Iron Man from 2008's Iron Man through 2019's Avengers: Endgame."
+    },
+    {
+      "id": "q005",
+      "text": "Which animated TV show features the town of Springfield?",
+      "options": { "A": "Family Guy", "B": "South Park", "C": "The Simpsons", "D": "Futurama" },
+      "correct": "C",
+      "explanation": "The Simpsons, which debuted in 1989, is set in the fictional town of Springfield."
+    },
+    {
+      "id": "q006",
+      "text": "What was the name of the viral dance challenge associated with Drake's 'In My Feelings'?",
+      "options": { "A": "Floss Challenge", "B": "Ice Bucket Challenge", "C": "Kiki Challenge", "D": "Mannequin Challenge" },
+      "correct": "C",
+      "explanation": "The Kiki Challenge (or In My Feelings Challenge) went viral in 2018 with people dancing alongside moving cars."
+    },
+    {
+      "id": "q007",
+      "text": "Which reality TV show features contestants competing on a deserted island for a million-dollar prize?",
+      "options": { "A": "The Amazing Race", "B": "Survivor", "C": "Big Brother", "D": "Fear Factor" },
+      "correct": "B",
+      "explanation": "Survivor, hosted by Jeff Probst, premiered in 2000 and features contestants competing in challenges on remote locations."
+    },
+    {
+      "id": "q008",
+      "text": "In the DC Universe, what is Batman's real name?",
+      "options": { "A": "Clark Kent", "B": "Hal Jordan", "C": "Barry Allen", "D": "Bruce Wayne" },
+      "correct": "D",
+      "explanation": "Bruce Wayne is the billionaire alter ego of Batman, the Dark Knight of Gotham City."
+    },
+    {
+      "id": "q009",
+      "text": "Which K-pop group released the hit song 'Dynamite' in 2020?",
+      "options": { "A": "BLACKPINK", "B": "EXO", "C": "BTS", "D": "TWICE" },
+      "correct": "C",
+      "explanation": "BTS released 'Dynamite' in August 2020, their first song entirely in English, which debuted at No. 1 on the Billboard Hot 100."
+    },
+    {
+      "id": "q010",
+      "text": "Which actress played Katniss Everdeen in The Hunger Games film series?",
+      "options": { "A": "Shailene Woodley", "B": "Jennifer Lawrence", "C": "Emma Stone", "D": "Scarlett Johansson" },
+      "correct": "B",
+      "explanation": "Jennifer Lawrence starred as Katniss Everdeen across all four Hunger Games films (2012-2015)."
+    },
+    {
+      "id": "q011",
+      "text": "What color is the 'like' button on Facebook?",
+      "options": { "A": "Red", "B": "Green", "C": "Blue", "D": "Yellow" },
+      "correct": "C",
+      "explanation": "Facebook's like button (thumbs up) is displayed in the platform's signature blue color."
+    },
+    {
+      "id": "q012",
+      "text": "Which Marvel superhero is known as the 'God of Thunder'?",
+      "options": { "A": "Captain America", "B": "Thor", "C": "Hulk", "D": "Doctor Strange" },
+      "correct": "B",
+      "explanation": "Thor, based on the Norse deity, is known as the God of Thunder in the Marvel Universe."
+    },
+    {
+      "id": "q013",
+      "text": "Which TV show popularized the phrase 'Winter is Coming'?",
+      "options": { "A": "The Witcher", "B": "Game of Thrones", "C": "Vikings", "D": "Lord of the Rings: Rings of Power" },
+      "correct": "B",
+      "explanation": "'Winter is Coming' is the motto of House Stark in Game of Thrones, based on George R.R. Martin's novels."
+    },
+    {
+      "id": "q014",
+      "text": "Which comedian and actor starred in the sitcom 'Seinfeld'?",
+      "options": { "A": "Ray Romano", "B": "Tim Allen", "C": "Jerry Seinfeld", "D": "Larry David" },
+      "correct": "C",
+      "explanation": "Jerry Seinfeld co-created and starred in Seinfeld (1989-1998), often called 'the show about nothing.'"
+    },
+    {
+      "id": "q015",
+      "text": "What is the name of the viral 2015 internet debate about a dress being blue/black or white/gold?",
+      "options": { "A": "The Dress", "B": "The Color Wars", "C": "Dressgate", "D": "Color Illusion" },
+      "correct": "A",
+      "explanation": "The Dress went viral in February 2015 when people disagreed on whether a photo showed a blue-and-black or white-and-gold dress."
+    },
+    {
+      "id": "q016",
+      "text": "Which animated film features the song 'Let It Go'?",
+      "options": { "A": "Tangled", "B": "Moana", "C": "Frozen", "D": "Brave" },
+      "correct": "C",
+      "explanation": "Frozen (2013) features 'Let It Go,' performed by Idina Menzel as Queen Elsa, which won the Academy Award for Best Original Song."
+    },
+    {
+      "id": "q017",
+      "text": "Who is the host of 'The Tonight Show' as of 2024?",
+      "options": { "A": "Conan O'Brien", "B": "Jimmy Fallon", "C": "Jimmy Kimmel", "D": "Stephen Colbert" },
+      "correct": "B",
+      "explanation": "Jimmy Fallon has hosted The Tonight Show on NBC since 2014."
+    },
+    {
+      "id": "q018",
+      "text": "In which year did the original iPhone launch?",
+      "options": { "A": "2005", "B": "2006", "C": "2007", "D": "2008" },
+      "correct": "C",
+      "explanation": "Steve Jobs unveiled the first iPhone on January 9, 2007, and it went on sale June 29, 2007."
+    },
+    {
+      "id": "q019",
+      "text": "Which superhero's origin story involves being bitten by a radioactive spider?",
+      "options": { "A": "Ant-Man", "B": "Spider-Man", "C": "The Fly", "D": "Venom" },
+      "correct": "B",
+      "explanation": "Peter Parker gained his powers after being bitten by a radioactive spider, becoming Spider-Man."
+    },
+    {
+      "id": "q020",
+      "text": "What is the name of the fictional high school in 'Stranger Things'?",
+      "options": { "A": "Hawkins High School", "B": "Sunnydale High", "C": "Rydell High", "D": "Shermer High" },
+      "correct": "A",
+      "explanation": "Stranger Things is set in the fictional town of Hawkins, Indiana, and the older characters attend Hawkins High School."
+    },
+    {
+      "id": "q021",
+      "text": "Which fashion designer is known for the iconic little black dress and Chanel No. 5 perfume?",
+      "options": { "A": "Donatella Versace", "B": "Coco Chanel", "C": "Christian Dior", "D": "Vera Wang" },
+      "correct": "B",
+      "explanation": "Coco Chanel revolutionized women's fashion and introduced Chanel No. 5 in 1921, one of the world's best-selling perfumes."
+    },
+    {
+      "id": "q022",
+      "text": "What is the highest-grossing film of all time (not adjusted for inflation)?",
+      "options": { "A": "Avengers: Endgame", "B": "Avatar", "C": "Titanic", "D": "Star Wars: The Force Awakens" },
+      "correct": "B",
+      "explanation": "Avatar (2009) holds the record as the highest-grossing film of all time with over $2.9 billion worldwide."
+    },
+    {
+      "id": "q023",
+      "text": "Which TikTok trend involved people pretending to be NPCs (non-player characters)?",
+      "options": { "A": "Devious Lick", "B": "NPC Streaming", "C": "Buss It Challenge", "D": "Silhouette Challenge" },
+      "correct": "B",
+      "explanation": "NPC Streaming became a major TikTok trend in 2023, with creators acting like video game NPCs repeating phrases on livestreams."
+    },
+    {
+      "id": "q024",
+      "text": "Which comic book publisher created Superman?",
+      "options": { "A": "Marvel Comics", "B": "Image Comics", "C": "DC Comics", "D": "Dark Horse Comics" },
+      "correct": "C",
+      "explanation": "Superman first appeared in Action Comics #1 in 1938, published by DC Comics (then National Allied Publications)."
+    },
+    {
+      "id": "q025",
+      "text": "Who played the Joker in the 2019 film 'Joker'?",
+      "options": { "A": "Jared Leto", "B": "Heath Ledger", "C": "Jack Nicholson", "D": "Joaquin Phoenix" },
+      "correct": "D",
+      "explanation": "Joaquin Phoenix won the Academy Award for Best Actor for his portrayal of Arthur Fleck in the 2019 film Joker."
+    },
+    {
+      "id": "q026",
+      "text": "Which animated series features characters named Finn and Jake?",
+      "options": { "A": "Regular Show", "B": "Adventure Time", "C": "Steven Universe", "D": "Gravity Falls" },
+      "correct": "B",
+      "explanation": "Adventure Time (2010-2018) follows Finn the Human and Jake the Dog in the Land of Ooo."
+    },
+    {
+      "id": "q027",
+      "text": "What was the name of Kim Kardashian and Kanye West's first child?",
+      "options": { "A": "Saint", "B": "Chicago", "C": "North", "D": "Psalm" },
+      "correct": "C",
+      "explanation": "North West was born on June 15, 2013, as the first child of Kim Kardashian and Kanye West."
+    },
+    {
+      "id": "q028",
+      "text": "Which streaming service produced the series 'Squid Game'?",
+      "options": { "A": "Amazon Prime", "B": "Disney+", "C": "Hulu", "D": "Netflix" },
+      "correct": "D",
+      "explanation": "Squid Game, a South Korean survival drama, premiered on Netflix in September 2021 and became its most-watched series."
+    },
+    {
+      "id": "q029",
+      "text": "What is the name of the Infinity Stones wielder's glove in the Marvel Cinematic Universe?",
+      "options": { "A": "The Power Glove", "B": "The Infinity Gauntlet", "C": "The Cosmic Hand", "D": "The Eternal Fist" },
+      "correct": "B",
+      "explanation": "The Infinity Gauntlet is a metal glove designed to hold all six Infinity Stones, famously wielded by Thanos."
+    },
+    {
+      "id": "q030",
+      "text": "Which reality competition show features aspiring fashion designers?",
+      "options": { "A": "America's Next Top Model", "B": "Project Runway", "C": "Queer Eye", "D": "Say Yes to the Dress" },
+      "correct": "B",
+      "explanation": "Project Runway, originally hosted by Heidi Klum and judged by Tim Gunn, features designers competing in fashion challenges."
+    },
+    {
+      "id": "q031",
+      "text": "Which actor played Captain Jack Sparrow in the Pirates of the Caribbean franchise?",
+      "options": { "A": "Orlando Bloom", "B": "Brad Pitt", "C": "Johnny Depp", "D": "Leonardo DiCaprio" },
+      "correct": "C",
+      "explanation": "Johnny Depp created the iconic role of Captain Jack Sparrow, first appearing in The Curse of the Black Pearl (2003)."
+    },
+    {
+      "id": "q032",
+      "text": "What meme features a woman yelling at a confused white cat sitting at a dinner table?",
+      "options": { "A": "Grumpy Cat", "B": "Distracted Boyfriend", "C": "Woman Yelling at a Cat", "D": "This Is Fine" },
+      "correct": "C",
+      "explanation": "The Woman Yelling at a Cat meme combines a scene from Real Housewives of Beverly Hills with a photo of a cat named Smudge."
+    },
+    {
+      "id": "q033",
+      "text": "Which boy band had members named Justin Timberlake and JC Chasez?",
+      "options": { "A": "Backstreet Boys", "B": "*NSYNC", "C": "98 Degrees", "D": "New Kids on the Block" },
+      "correct": "B",
+      "explanation": "*NSYNC, active from 1995 to 2002, featured Justin Timberlake, JC Chasez, Chris Kirkpatrick, Joey Fatone, and Lance Bass."
+    },
+    {
+      "id": "q034",
+      "text": "In which TV show does a high school student named Eleven have telekinetic powers?",
+      "options": { "A": "The Umbrella Academy", "B": "Stranger Things", "C": "Locke & Key", "D": "Dark" },
+      "correct": "B",
+      "explanation": "Eleven, played by Millie Bobby Brown, is a central character in Stranger Things with psychokinetic abilities."
+    },
+    {
+      "id": "q035",
+      "text": "Which Marvel character is known for saying 'I am Groot'?",
+      "options": { "A": "Rocket", "B": "Drax", "C": "Groot", "D": "Star-Lord" },
+      "correct": "C",
+      "explanation": "Groot, a tree-like creature from Guardians of the Galaxy, can only say the phrase 'I am Groot' in varying intonations."
+    },
+    {
+      "id": "q036",
+      "text": "Which YouTube video was the first to reach one billion views?",
+      "options": { "A": "Baby Shark", "B": "Despacito", "C": "Gangnam Style", "D": "See You Again" },
+      "correct": "C",
+      "explanation": "PSY's 'Gangnam Style' became the first YouTube video to reach one billion views in December 2012."
+    },
+    {
+      "id": "q037",
+      "text": "Who created the comic book characters the X-Men?",
+      "options": { "A": "Stan Lee and Jack Kirby", "B": "Todd McFarlane", "C": "Frank Miller", "D": "Alan Moore" },
+      "correct": "A",
+      "explanation": "Stan Lee and Jack Kirby created the X-Men, who first appeared in The X-Men #1 in September 1963."
+    },
+    {
+      "id": "q038",
+      "text": "Which TV series features dragons and is based on books by George R.R. Martin?",
+      "options": { "A": "The Witcher", "B": "Game of Thrones", "C": "Merlin", "D": "Eragon" },
+      "correct": "B",
+      "explanation": "Game of Thrones (2011-2019) is based on Martin's A Song of Ice and Fire series and prominently features dragons."
+    },
+    {
+      "id": "q039",
+      "text": "Which pop star is known as the 'Queen of Pop'?",
+      "options": { "A": "Beyonce", "B": "Lady Gaga", "C": "Madonna", "D": "Britney Spears" },
+      "correct": "C",
+      "explanation": "Madonna has been referred to as the Queen of Pop since the 1980s, recognized for her influence on music and culture."
+    },
+    {
+      "id": "q040",
+      "text": "What is the name of the AI assistant in the movie 'Her' (2013)?",
+      "options": { "A": "Alexa", "B": "Samantha", "C": "Siri", "D": "Cortana" },
+      "correct": "B",
+      "explanation": "In the film Her, Joaquin Phoenix's character falls in love with an AI operating system named Samantha, voiced by Scarlett Johansson."
+    },
+    {
+      "id": "q041",
+      "text": "Which Avenger wields a vibranium shield?",
+      "options": { "A": "Thor", "B": "Black Widow", "C": "Captain America", "D": "Hawkeye" },
+      "correct": "C",
+      "explanation": "Captain America's iconic circular shield is made of vibranium, a fictional metal from Wakanda."
+    },
+    {
+      "id": "q042",
+      "text": "Which show features the catchphrase 'That's what she said'?",
+      "options": { "A": "Brooklyn Nine-Nine", "B": "Parks and Recreation", "C": "The Office", "D": "30 Rock" },
+      "correct": "C",
+      "explanation": "Michael Scott, played by Steve Carell in The Office (US), is famous for frequently using the phrase 'That's what she said.'"
+    },
+    {
+      "id": "q043",
+      "text": "What was the first feature-length Pixar movie?",
+      "options": { "A": "A Bug's Life", "B": "Monsters, Inc.", "C": "Finding Nemo", "D": "Toy Story" },
+      "correct": "D",
+      "explanation": "Toy Story (1995) was Pixar's first feature film and the first entirely computer-animated feature film."
+    },
+    {
+      "id": "q044",
+      "text": "Which celebrity chef is known for the phrase 'Bam!' and his Creole cooking?",
+      "options": { "A": "Gordon Ramsay", "B": "Guy Fieri", "C": "Emeril Lagasse", "D": "Bobby Flay" },
+      "correct": "C",
+      "explanation": "Emeril Lagasse is famous for his catchphrase 'Bam!' and his New Orleans-style Creole and Cajun cooking."
+    },
+    {
+      "id": "q045",
+      "text": "Which DC Comics character is an Amazonian warrior princess?",
+      "options": { "A": "Batgirl", "B": "Supergirl", "C": "Wonder Woman", "D": "Hawkgirl" },
+      "correct": "C",
+      "explanation": "Wonder Woman, also known as Diana Prince, is an Amazonian warrior princess from the island of Themyscira."
+    },
+    {
+      "id": "q046",
+      "text": "Which viral internet challenge involved dumping ice water over one's head for charity?",
+      "options": { "A": "Mannequin Challenge", "B": "Ice Bucket Challenge", "C": "Bottle Cap Challenge", "D": "Tide Pod Challenge" },
+      "correct": "B",
+      "explanation": "The Ice Bucket Challenge went viral in 2014 to raise awareness and funds for ALS (amyotrophic lateral sclerosis)."
+    },
+    {
+      "id": "q047",
+      "text": "Who directed the film 'Pulp Fiction'?",
+      "options": { "A": "Martin Scorsese", "B": "David Fincher", "C": "Quentin Tarantino", "D": "Christopher Nolan" },
+      "correct": "C",
+      "explanation": "Quentin Tarantino wrote and directed Pulp Fiction (1994), which won the Palme d'Or at the Cannes Film Festival."
+    },
+    {
+      "id": "q048",
+      "text": "Which anime series features a boy named Goku who searches for Dragon Balls?",
+      "options": { "A": "Naruto", "B": "One Piece", "C": "Dragon Ball", "D": "Bleach" },
+      "correct": "C",
+      "explanation": "Dragon Ball, created by Akira Toriyama, follows Goku from childhood through adulthood as he trains in martial arts."
+    },
+    {
+      "id": "q049",
+      "text": "Which social media platform uses the hashtag symbol (#) to categorize content?",
+      "options": { "A": "All major platforms now use hashtags", "B": "Only Instagram", "C": "Only Facebook", "D": "Only TikTok" },
+      "correct": "A",
+      "explanation": "While Twitter popularized hashtags in 2007, virtually all major social media platforms now support hashtag categorization."
+    },
+    {
+      "id": "q050",
+      "text": "What is the name of the fictional metal in the Marvel Universe that Wolverine's claws are coated with?",
+      "options": { "A": "Vibranium", "B": "Uru", "C": "Adamantium", "D": "Carbonadium" },
+      "correct": "C",
+      "explanation": "Wolverine's skeleton and claws are bonded with adamantium, an virtually indestructible fictional metal alloy."
+    },
+    {
+      "id": "q051",
+      "text": "Which TV show features a paper company called Dunder Mifflin?",
+      "options": { "A": "Silicon Valley", "B": "The Office", "C": "Workaholics", "D": "Better Off Ted" },
+      "correct": "B",
+      "explanation": "The Office (US) is set at the Scranton, Pennsylvania branch of the fictional Dunder Mifflin Paper Company."
+    },
+    {
+      "id": "q052",
+      "text": "Which rapper's real name is Marshall Bruce Mathers III?",
+      "options": { "A": "Jay-Z", "B": "Kanye West", "C": "Eminem", "D": "Snoop Dogg" },
+      "correct": "C",
+      "explanation": "Eminem, born Marshall Bruce Mathers III, is one of the best-selling music artists of all time."
+    },
+    {
+      "id": "q053",
+      "text": "Which Netflix series is set in a women's prison?",
+      "options": { "A": "Wentworth", "B": "Orange Is the New Black", "C": "Prison Break", "D": "Oz" },
+      "correct": "B",
+      "explanation": "Orange Is the New Black (2013-2019) is set in the fictional Litchfield Penitentiary and was one of Netflix's first hit original series."
+    },
+    {
+      "id": "q054",
+      "text": "What is the name of the dragon in the animated film 'Shrek'?",
+      "options": { "A": "Smaug", "B": "Toothless", "C": "Dragon", "D": "Mushu" },
+      "correct": "C",
+      "explanation": "The dragon in Shrek is simply called Dragon. She guards Princess Fiona's tower and later becomes Donkey's love interest."
+    },
+    {
+      "id": "q055",
+      "text": "Which celebrity hosted the most episodes of 'Saturday Night Live' as of 2024?",
+      "options": { "A": "Alec Baldwin", "B": "Steve Martin", "C": "John Mulaney", "D": "Tom Hanks" },
+      "correct": "A",
+      "explanation": "Alec Baldwin holds the record for most SNL hosting appearances, having hosted 17 times."
+    },
+    {
+      "id": "q056",
+      "text": "Which MCU film features the snap that eliminates half of all life in the universe?",
+      "options": { "A": "Avengers: Age of Ultron", "B": "Avengers: Infinity War", "C": "Avengers: Endgame", "D": "Captain Marvel" },
+      "correct": "B",
+      "explanation": "In Avengers: Infinity War (2018), Thanos collects all six Infinity Stones and snaps his fingers, erasing half of all life."
+    },
+    {
+      "id": "q057",
+      "text": "Which reality TV family is associated with the show 'Keeping Up with the Kardashians'?",
+      "options": { "A": "The Hiltons", "B": "The Osbournes", "C": "The Kardashian-Jenners", "D": "The Baldwins" },
+      "correct": "C",
+      "explanation": "Keeping Up with the Kardashians (2007-2021) followed the Kardashian-Jenner family, including Kim, Khloe, Kourtney, and their parents."
+    },
+    {
+      "id": "q058",
+      "text": "What does the meme 'This Is Fine' depict?",
+      "options": { "A": "A cat sitting in a box", "B": "A dog sitting in a burning room", "C": "A man walking away from an explosion", "D": "A frog on a unicycle" },
+      "correct": "B",
+      "explanation": "The 'This Is Fine' meme comes from a webcomic by KC Green showing a dog calmly drinking coffee in a room engulfed in flames."
+    },
+    {
+      "id": "q059",
+      "text": "Which singer is known as 'Queen Bey'?",
+      "options": { "A": "Rihanna", "B": "Adele", "C": "Beyonce", "D": "Taylor Swift" },
+      "correct": "C",
+      "explanation": "Beyonce Knowles-Carter is often referred to as Queen Bey by her fans, known as the BeyHive."
+    },
+    {
+      "id": "q060",
+      "text": "In 'The Mandalorian', what is the popular nickname fans gave to the Child?",
+      "options": { "A": "Mini Yoda", "B": "Baby Yoda", "C": "Little Green", "D": "Yoda Jr." },
+      "correct": "B",
+      "explanation": "The Child, later revealed to be named Grogu, was widely called Baby Yoda by fans due to his resemblance to Yoda."
+    },
+    {
+      "id": "q061",
+      "text": "Which app became famous for short-form lip-syncing videos before merging into TikTok?",
+      "options": { "A": "Vine", "B": "Musical.ly", "C": "Dubsmash", "D": "Triller" },
+      "correct": "B",
+      "explanation": "Musical.ly was a social media app for creating short lip-sync videos that merged with TikTok in August 2018."
+    },
+    {
+      "id": "q062",
+      "text": "Which superhero team includes members like Cyclops, Storm, and Jean Grey?",
+      "options": { "A": "The Avengers", "B": "The Justice League", "C": "The X-Men", "D": "The Fantastic Four" },
+      "correct": "C",
+      "explanation": "The X-Men are Marvel's team of mutant superheroes, with Cyclops, Storm, and Jean Grey among its most iconic members."
+    },
+    {
+      "id": "q063",
+      "text": "Which TV show features the quote 'You know nothing, Jon Snow'?",
+      "options": { "A": "The Last Kingdom", "B": "Game of Thrones", "C": "House of the Dragon", "D": "The Wheel of Time" },
+      "correct": "B",
+      "explanation": "Ygritte repeatedly tells Jon Snow this iconic line in Game of Thrones, and it became one of the show's most quoted phrases."
+    },
+    {
+      "id": "q064",
+      "text": "Who played the lead role in the movie 'Forrest Gump'?",
+      "options": { "A": "Robin Williams", "B": "Tom Hanks", "C": "Jim Carrey", "D": "Kevin Costner" },
+      "correct": "B",
+      "explanation": "Tom Hanks won the Academy Award for Best Actor for his portrayal of Forrest Gump in the 1994 film."
+    },
+    {
+      "id": "q065",
+      "text": "What is the name of SpongeBob's pet snail?",
+      "options": { "A": "Sheldon", "B": "Patrick", "C": "Gary", "D": "Larry" },
+      "correct": "C",
+      "explanation": "Gary the Snail is SpongeBob SquarePants' pet, who meows like a cat in the animated series."
+    },
+    {
+      "id": "q066",
+      "text": "Which fashion brand is known for its iconic red-soled shoes?",
+      "options": { "A": "Jimmy Choo", "B": "Manolo Blahnik", "C": "Christian Louboutin", "D": "Gucci" },
+      "correct": "C",
+      "explanation": "Christian Louboutin's signature red lacquered soles have been a trademark of the luxury shoe brand since 1993."
+    },
+    {
+      "id": "q067",
+      "text": "Which actor portrayed Wolverine in the X-Men film series?",
+      "options": { "A": "Russell Crowe", "B": "Hugh Jackman", "C": "Christian Bale", "D": "Liam Neeson" },
+      "correct": "B",
+      "explanation": "Hugh Jackman played Wolverine/Logan in X-Men films from 2000 to 2017, and returned in Deadpool & Wolverine (2024)."
+    },
+    {
+      "id": "q068",
+      "text": "Which streaming platform released 'The Mandalorian'?",
+      "options": { "A": "Netflix", "B": "Hulu", "C": "Disney+", "D": "HBO Max" },
+      "correct": "C",
+      "explanation": "The Mandalorian was one of the launch titles for Disney+ in November 2019, set in the Star Wars universe."
+    },
+    {
+      "id": "q069",
+      "text": "What video game franchise is Mario from?",
+      "options": { "A": "Sonic the Hedgehog", "B": "Super Mario Bros.", "C": "The Legend of Zelda", "D": "Mega Man" },
+      "correct": "B",
+      "explanation": "Mario is Nintendo's iconic mascot, starring in the Super Mario Bros. franchise since 1985."
+    },
+    {
+      "id": "q070",
+      "text": "Which rapper is associated with the phrase 'Yeezy' as a brand name?",
+      "options": { "A": "Drake", "B": "Travis Scott", "C": "Kanye West", "D": "Pharrell Williams" },
+      "correct": "C",
+      "explanation": "Kanye West (now Ye) created the Yeezy brand, including a highly popular sneaker line originally in collaboration with Adidas."
+    },
+    {
+      "id": "q071",
+      "text": "Which sitcom features six friends living in New York City and often gathering at Central Perk?",
+      "options": { "A": "Seinfeld", "B": "How I Met Your Mother", "C": "Friends", "D": "Will & Grace" },
+      "correct": "C",
+      "explanation": "Friends (1994-2004) follows six friends in New York City who frequently gather at the Central Perk coffee shop."
+    },
+    {
+      "id": "q072",
+      "text": "What is the name of Thanos's home planet in the MCU?",
+      "options": { "A": "Xandar", "B": "Titan", "C": "Knowhere", "D": "Vormir" },
+      "correct": "B",
+      "explanation": "Thanos is from the planet Titan, which is shown as a ruined world in Avengers: Infinity War."
+    },
+    {
+      "id": "q073",
+      "text": "Which animated show features characters named Rick and Morty traveling through dimensions?",
+      "options": { "A": "Futurama", "B": "Rick and Morty", "C": "Solar Opposites", "D": "Final Space" },
+      "correct": "B",
+      "explanation": "Rick and Morty, created by Justin Roiland and Dan Harmon, follows mad scientist Rick and his grandson Morty on interdimensional adventures."
+    },
+    {
+      "id": "q074",
+      "text": "Which singer released the album 'Lemonade' in 2016?",
+      "options": { "A": "Adele", "B": "Rihanna", "C": "Taylor Swift", "D": "Beyonce" },
+      "correct": "D",
+      "explanation": "Beyonce released the visual album Lemonade on April 23, 2016, accompanied by an HBO special."
+    },
+    {
+      "id": "q075",
+      "text": "In the Harry Potter series, what is the name of the three-headed dog guarding the trapdoor?",
+      "options": { "A": "Fang", "B": "Fluffy", "C": "Norbert", "D": "Buckbeak" },
+      "correct": "B",
+      "explanation": "Fluffy is the three-headed dog belonging to Hagrid that guards the trapdoor to the Philosopher's Stone."
+    },
+    {
+      "id": "q076",
+      "text": "Which viral video featured a double rainbow and an extremely enthusiastic narrator?",
+      "options": { "A": "Charlie Bit My Finger", "B": "David After Dentist", "C": "Double Rainbow", "D": "Keyboard Cat" },
+      "correct": "C",
+      "explanation": "The Double Rainbow video, posted by Paul 'Bear' Vasquez in 2010, went viral for his ecstatic reaction to a double rainbow."
+    },
+    {
+      "id": "q077",
+      "text": "Which TV series features a chemistry teacher's transformation and uses the periodic table in its logo?",
+      "options": { "A": "Dexter", "B": "Breaking Bad", "C": "The Wire", "D": "Better Call Saul" },
+      "correct": "B",
+      "explanation": "Breaking Bad's logo stylizes 'Br' and 'Ba' as periodic table elements (Bromine and Barium)."
+    },
+    {
+      "id": "q078",
+      "text": "Which Marvel villain is known as the 'Mad Titan'?",
+      "options": { "A": "Loki", "B": "Ultron", "C": "Thanos", "D": "Galactus" },
+      "correct": "C",
+      "explanation": "Thanos, the main antagonist of the Infinity Saga, is known as the Mad Titan, obsessed with balancing the universe."
+    },
+    {
+      "id": "q079",
+      "text": "Which celebrity couple was nicknamed 'Bennifer' by the media?",
+      "options": { "A": "Brad Pitt and Jennifer Aniston", "B": "Ben Affleck and Jennifer Lopez", "C": "Ben Stiller and Jennifer Coolidge", "D": "Benedict Cumberbatch and Jennifer Lawrence" },
+      "correct": "B",
+      "explanation": "Ben Affleck and Jennifer Lopez were dubbed 'Bennifer' during their early 2000s relationship and again when they reunited and married in 2022."
+    },
+    {
+      "id": "q080",
+      "text": "Which animated Disney film features a character who must 'find their own way' on a voyage across the ocean?",
+      "options": { "A": "Frozen", "B": "Brave", "C": "Moana", "D": "Encanto" },
+      "correct": "C",
+      "explanation": "Moana (2016) follows the titular character as she sails across the Pacific Ocean to save her island, guided by the demigod Maui."
+    }
+  ]
+}

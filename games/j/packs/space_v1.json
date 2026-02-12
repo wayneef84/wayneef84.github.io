@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "space_001",
+    "title": "Space & Astronomy",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Space", "Astronomy", "NASA", "Planets"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which planet is closest to the Sun?",
+      "options": {
+        "A": "Venus",
+        "B": "Mercury",
+        "C": "Mars",
+        "D": "Earth"
+      },
+      "correct": "B",
+      "explanation": "Mercury orbits at an average distance of about 36 million miles from the Sun, making it the closest planet."
+    },
+    {
+      "id": "q002",
+      "text": "What is the largest planet in our solar system?",
+      "options": {
+        "A": "Saturn",
+        "B": "Neptune",
+        "C": "Jupiter",
+        "D": "Uranus"
+      },
+      "correct": "C",
+      "explanation": "Jupiter has a mass more than twice that of all the other planets combined and a diameter of about 86,881 miles."
+    },
+    {
+      "id": "q003",
+      "text": "How long does it take light from the Sun to reach Earth?",
+      "options": {
+        "A": "About 8 minutes",
+        "B": "About 1 minute",
+        "C": "About 30 minutes",
+        "D": "About 1 hour"
+      },
+      "correct": "A",
+      "explanation": "Sunlight travels approximately 93 million miles to Earth, taking about 8 minutes and 20 seconds at the speed of light."
+    },
+    {
+      "id": "q004",
+      "text": "Who was the first human to walk on the Moon?",
+      "options": {
+        "A": "Buzz Aldrin",
+        "B": "John Glenn",
+        "C": "Yuri Gagarin",
+        "D": "Neil Armstrong"
+      },
+      "correct": "D",
+      "explanation": "Neil Armstrong stepped onto the lunar surface on July 20, 1969, during the Apollo 11 mission."
+    },
+    {
+      "id": "q005",
+      "text": "What galaxy do we live in?",
+      "options": {
+        "A": "Andromeda",
+        "B": "Milky Way",
+        "C": "Triangulum",
+        "D": "Sombrero"
+      },
+      "correct": "B",
+      "explanation": "Our solar system is located in the Milky Way galaxy, a barred spiral galaxy containing 100-400 billion stars."
+    },
+    {
+      "id": "q006",
+      "text": "Which planet is known as the 'Red Planet'?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Venus",
+        "C": "Mars",
+        "D": "Saturn"
+      },
+      "correct": "C",
+      "explanation": "Mars appears reddish due to iron oxide (rust) prevalent on its surface."
+    },
+    {
+      "id": "q007",
+      "text": "What is the name of the first artificial satellite launched into space?",
+      "options": {
+        "A": "Explorer 1",
+        "B": "Vanguard 1",
+        "C": "Sputnik 1",
+        "D": "Luna 1"
+      },
+      "correct": "C",
+      "explanation": "Sputnik 1 was launched by the Soviet Union on October 4, 1957, marking the start of the space age."
+    },
+    {
+      "id": "q008",
+      "text": "How many planets are in our solar system?",
+      "options": {
+        "A": "7",
+        "B": "8",
+        "C": "9",
+        "D": "10"
+      },
+      "correct": "B",
+      "explanation": "There are 8 recognized planets. Pluto was reclassified as a dwarf planet by the IAU in 2006."
+    },
+    {
+      "id": "q009",
+      "text": "What is the hottest planet in our solar system?",
+      "options": {
+        "A": "Mercury",
+        "B": "Mars",
+        "C": "Venus",
+        "D": "Jupiter"
+      },
+      "correct": "C",
+      "explanation": "Despite being farther from the Sun than Mercury, Venus has a thick CO2 atmosphere that traps heat, reaching surface temperatures of about 900 degrees F."
+    },
+    {
+      "id": "q010",
+      "text": "What type of star is our Sun?",
+      "options": {
+        "A": "Red giant",
+        "B": "White dwarf",
+        "C": "Yellow dwarf (G-type main-sequence)",
+        "D": "Blue supergiant"
+      },
+      "correct": "C",
+      "explanation": "The Sun is classified as a G-type main-sequence star (G2V), commonly called a yellow dwarf."
+    },
+    {
+      "id": "q011",
+      "text": "Which space telescope was launched in 1990 and orbits Earth?",
+      "options": {
+        "A": "James Webb Space Telescope",
+        "B": "Spitzer Space Telescope",
+        "C": "Chandra X-ray Observatory",
+        "D": "Hubble Space Telescope"
+      },
+      "correct": "D",
+      "explanation": "The Hubble Space Telescope was deployed from the Space Shuttle Discovery on April 24, 1990."
+    },
+    {
+      "id": "q012",
+      "text": "What force keeps planets in orbit around the Sun?",
+      "options": {
+        "A": "Magnetism",
+        "B": "Gravity",
+        "C": "Nuclear force",
+        "D": "Centrifugal force"
+      },
+      "correct": "B",
+      "explanation": "Gravity is the fundamental force that keeps planets, moons, and other objects in orbit around more massive bodies."
+    },
+    {
+      "id": "q013",
+      "text": "Which planet has the most moons in our solar system?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Saturn",
+        "C": "Uranus",
+        "D": "Neptune"
+      },
+      "correct": "B",
+      "explanation": "Saturn has over 140 confirmed moons, surpassing Jupiter's count of confirmed natural satellites."
+    },
+    {
+      "id": "q014",
+      "text": "What is the closest star to Earth after the Sun?",
+      "options": {
+        "A": "Sirius",
+        "B": "Alpha Centauri (Proxima Centauri)",
+        "C": "Betelgeuse",
+        "D": "Barnard's Star"
+      },
+      "correct": "B",
+      "explanation": "Proxima Centauri, part of the Alpha Centauri system, is about 4.24 light-years from Earth."
+    },
+    {
+      "id": "q015",
+      "text": "What are Saturn's rings primarily made of?",
+      "options": {
+        "A": "Gas and dust",
+        "B": "Solid rock",
+        "C": "Ice and rock particles",
+        "D": "Liquid metal"
+      },
+      "correct": "C",
+      "explanation": "Saturn's rings are composed mostly of ice particles ranging from tiny grains to house-sized chunks, along with rocky debris."
+    },
+    {
+      "id": "q016",
+      "text": "Who was the first human in space?",
+      "options": {
+        "A": "Alan Shepard",
+        "B": "John Glenn",
+        "C": "Yuri Gagarin",
+        "D": "Neil Armstrong"
+      },
+      "correct": "C",
+      "explanation": "Soviet cosmonaut Yuri Gagarin became the first human in space on April 12, 1961, aboard Vostok 1."
+    },
+    {
+      "id": "q017",
+      "text": "What is a light-year a measure of?",
+      "options": {
+        "A": "Time",
+        "B": "Brightness",
+        "C": "Distance",
+        "D": "Speed"
+      },
+      "correct": "C",
+      "explanation": "A light-year is the distance light travels in one year, approximately 5.88 trillion miles (9.46 trillion km)."
+    },
+    {
+      "id": "q018",
+      "text": "Which planet rotates on its side with an axial tilt of about 98 degrees?",
+      "options": {
+        "A": "Neptune",
+        "B": "Saturn",
+        "C": "Uranus",
+        "D": "Pluto"
+      },
+      "correct": "C",
+      "explanation": "Uranus has an extreme axial tilt of about 98 degrees, likely caused by a massive ancient collision."
+    },
+    {
+      "id": "q019",
+      "text": "What is the name of the region beyond Neptune where many icy bodies orbit?",
+      "options": {
+        "A": "Asteroid Belt",
+        "B": "Oort Cloud",
+        "C": "Kuiper Belt",
+        "D": "Heliosphere"
+      },
+      "correct": "C",
+      "explanation": "The Kuiper Belt extends from Neptune's orbit (about 30 AU) outward to roughly 50 AU and contains dwarf planets like Pluto and Eris."
+    },
+    {
+      "id": "q020",
+      "text": "What phenomenon occurs when a massive star collapses and its gravity is so strong that nothing can escape, not even light?",
+      "options": {
+        "A": "Supernova",
+        "B": "Neutron star",
+        "C": "Black hole",
+        "D": "Pulsar"
+      },
+      "correct": "C",
+      "explanation": "A black hole forms when a massive star's core collapses, creating a region of spacetime with gravity so intense that nothing can escape its event horizon."
+    },
+    {
+      "id": "q021",
+      "text": "Which NASA rover landed on Mars in February 2021?",
+      "options": {
+        "A": "Curiosity",
+        "B": "Opportunity",
+        "C": "Spirit",
+        "D": "Perseverance"
+      },
+      "correct": "D",
+      "explanation": "The Perseverance rover landed in Jezero Crater on February 18, 2021, to search for signs of ancient microbial life."
+    },
+    {
+      "id": "q022",
+      "text": "What is the Great Red Spot on Jupiter?",
+      "options": {
+        "A": "A volcano",
+        "B": "A giant storm",
+        "C": "An impact crater",
+        "D": "A mountain range"
+      },
+      "correct": "B",
+      "explanation": "The Great Red Spot is a persistent high-pressure storm system larger than Earth that has been raging for at least 350 years."
+    },
+    {
+      "id": "q023",
+      "text": "Which constellation contains the North Star (Polaris)?",
+      "options": {
+        "A": "Ursa Major",
+        "B": "Orion",
+        "C": "Ursa Minor",
+        "D": "Cassiopeia"
+      },
+      "correct": "C",
+      "explanation": "Polaris is located at the tip of the handle of Ursa Minor (the Little Dipper)."
+    },
+    {
+      "id": "q024",
+      "text": "What is the name of the boundary where the Sun's solar wind is stopped by interstellar medium?",
+      "options": {
+        "A": "Heliopause",
+        "B": "Magnetosphere",
+        "C": "Thermosphere",
+        "D": "Exosphere"
+      },
+      "correct": "A",
+      "explanation": "The heliopause is the boundary where the Sun's solar wind is no longer strong enough to push against interstellar gas."
+    },
+    {
+      "id": "q025",
+      "text": "How old is the Sun, approximately?",
+      "options": {
+        "A": "1 billion years",
+        "B": "4.6 billion years",
+        "C": "10 billion years",
+        "D": "13.8 billion years"
+      },
+      "correct": "B",
+      "explanation": "The Sun formed approximately 4.6 billion years ago from a collapsing cloud of hydrogen and helium gas."
+    },
+    {
+      "id": "q026",
+      "text": "What is the International Space Station's approximate orbital altitude?",
+      "options": {
+        "A": "100 miles",
+        "B": "250 miles",
+        "C": "500 miles",
+        "D": "1,000 miles"
+      },
+      "correct": "B",
+      "explanation": "The ISS orbits at an altitude of approximately 250 miles (408 km) above Earth's surface."
+    },
+    {
+      "id": "q027",
+      "text": "Which moon of Jupiter is believed to have a subsurface ocean beneath its icy crust?",
+      "options": {
+        "A": "Io",
+        "B": "Ganymede",
+        "C": "Europa",
+        "D": "Callisto"
+      },
+      "correct": "C",
+      "explanation": "Europa is one of the most promising candidates for extraterrestrial life due to evidence of a liquid water ocean beneath its ice shell."
+    },
+    {
+      "id": "q028",
+      "text": "What causes a solar eclipse?",
+      "options": {
+        "A": "Earth passes between the Sun and Moon",
+        "B": "The Moon passes between Earth and the Sun",
+        "C": "The Sun moves behind Jupiter",
+        "D": "Earth's shadow falls on the Sun"
+      },
+      "correct": "B",
+      "explanation": "A solar eclipse occurs when the Moon passes between Earth and the Sun, blocking sunlight from reaching parts of Earth."
+    },
+    {
+      "id": "q029",
+      "text": "Which planet has the shortest year (orbital period)?",
+      "options": {
+        "A": "Venus",
+        "B": "Earth",
+        "C": "Mercury",
+        "D": "Mars"
+      },
+      "correct": "C",
+      "explanation": "Mercury completes one orbit around the Sun in just about 88 Earth days, the shortest of any planet."
+    },
+    {
+      "id": "q030",
+      "text": "What element makes up most of the Sun's mass?",
+      "options": {
+        "A": "Helium",
+        "B": "Carbon",
+        "C": "Hydrogen",
+        "D": "Oxygen"
+      },
+      "correct": "C",
+      "explanation": "Hydrogen makes up about 73% of the Sun's mass. Nuclear fusion converts hydrogen into helium in the Sun's core."
+    },
+    {
+      "id": "q031",
+      "text": "What was the name of the space shuttle that tragically broke apart 73 seconds after launch in 1986?",
+      "options": {
+        "A": "Columbia",
+        "B": "Discovery",
+        "C": "Challenger",
+        "D": "Atlantis"
+      },
+      "correct": "C",
+      "explanation": "Space Shuttle Challenger broke apart on January 28, 1986, due to the failure of an O-ring seal on a solid rocket booster."
+    },
+    {
+      "id": "q032",
+      "text": "What is the approximate age of the universe?",
+      "options": {
+        "A": "4.6 billion years",
+        "B": "8 billion years",
+        "C": "13.8 billion years",
+        "D": "20 billion years"
+      },
+      "correct": "C",
+      "explanation": "Based on observations of the cosmic microwave background radiation, the universe is approximately 13.8 billion years old."
+    },
+    {
+      "id": "q033",
+      "text": "Which dwarf planet was formerly classified as the ninth planet of our solar system?",
+      "options": {
+        "A": "Eris",
+        "B": "Ceres",
+        "C": "Haumea",
+        "D": "Pluto"
+      },
+      "correct": "D",
+      "explanation": "Pluto was reclassified as a dwarf planet by the International Astronomical Union in August 2006."
+    },
+    {
+      "id": "q034",
+      "text": "What is the name of the largest volcano in the solar system, located on Mars?",
+      "options": {
+        "A": "Mount Etna",
+        "B": "Olympus Mons",
+        "C": "Mauna Kea",
+        "D": "Maxwell Montes"
+      },
+      "correct": "B",
+      "explanation": "Olympus Mons on Mars stands about 13.6 miles (22 km) high, roughly 2.5 times the height of Mount Everest."
+    },
+    {
+      "id": "q035",
+      "text": "What does NASA stand for?",
+      "options": {
+        "A": "National Association of Space Administrators",
+        "B": "National Aeronautics and Space Administration",
+        "C": "North American Space Agency",
+        "D": "National Aerospace and Science Administration"
+      },
+      "correct": "B",
+      "explanation": "NASA stands for the National Aeronautics and Space Administration, established in 1958."
+    },
+    {
+      "id": "q036",
+      "text": "Which spacecraft was the first to fly past Pluto?",
+      "options": {
+        "A": "Voyager 1",
+        "B": "Voyager 2",
+        "C": "New Horizons",
+        "D": "Pioneer 10"
+      },
+      "correct": "C",
+      "explanation": "NASA's New Horizons spacecraft performed a flyby of Pluto on July 14, 2015, sending back the first close-up images."
+    },
+    {
+      "id": "q037",
+      "text": "What is the Asteroid Belt located between?",
+      "options": {
+        "A": "Earth and Mars",
+        "B": "Mars and Jupiter",
+        "C": "Jupiter and Saturn",
+        "D": "Saturn and Uranus"
+      },
+      "correct": "B",
+      "explanation": "The main Asteroid Belt lies between the orbits of Mars and Jupiter, roughly 2.2 to 3.2 AU from the Sun."
+    },
+    {
+      "id": "q038",
+      "text": "What is the Chandrasekhar limit?",
+      "options": {
+        "A": "The maximum distance a telescope can see",
+        "B": "The maximum mass of a stable white dwarf star (about 1.4 solar masses)",
+        "C": "The speed limit of light in a vacuum",
+        "D": "The closest distance a spacecraft can approach a black hole"
+      },
+      "correct": "B",
+      "explanation": "The Chandrasekhar limit (about 1.4 solar masses) is the maximum mass a white dwarf can have before it collapses further into a neutron star or black hole."
+    },
+    {
+      "id": "q039",
+      "text": "Which famous astronomer proposed the heliocentric model of the solar system?",
+      "options": {
+        "A": "Galileo Galilei",
+        "B": "Johannes Kepler",
+        "C": "Nicolaus Copernicus",
+        "D": "Isaac Newton"
+      },
+      "correct": "C",
+      "explanation": "Nicolaus Copernicus published his heliocentric theory in 1543, proposing that the Earth and planets revolve around the Sun."
+    },
+    {
+      "id": "q040",
+      "text": "What is a supernova?",
+      "options": {
+        "A": "A newly formed star",
+        "B": "The explosive death of a massive star",
+        "C": "A type of comet",
+        "D": "A collision between two galaxies"
+      },
+      "correct": "B",
+      "explanation": "A supernova is a powerful explosion that occurs at the end of a massive star's life, briefly outshining an entire galaxy."
+    },
+    {
+      "id": "q041",
+      "text": "Which planet has the longest day (slowest rotation)?",
+      "options": {
+        "A": "Mercury",
+        "B": "Venus",
+        "C": "Jupiter",
+        "D": "Neptune"
+      },
+      "correct": "B",
+      "explanation": "Venus rotates extremely slowly and retrograde. One Venusian sidereal day takes about 243 Earth days."
+    },
+    {
+      "id": "q042",
+      "text": "What is the cosmic microwave background (CMB)?",
+      "options": {
+        "A": "Radiation emitted by the Sun",
+        "B": "Radio signals from alien civilizations",
+        "C": "Residual radiation from the early universe after the Big Bang",
+        "D": "Light reflected by interstellar dust"
+      },
+      "correct": "C",
+      "explanation": "The CMB is thermal radiation left over from about 380,000 years after the Big Bang, discovered accidentally in 1965 by Penzias and Wilson."
+    },
+    {
+      "id": "q043",
+      "text": "Which moon in our solar system has a thick atmosphere and liquid methane lakes?",
+      "options": {
+        "A": "Europa",
+        "B": "Titan",
+        "C": "Triton",
+        "D": "Enceladus"
+      },
+      "correct": "B",
+      "explanation": "Titan, Saturn's largest moon, has a dense nitrogen atmosphere and is the only known moon with stable liquid on its surface (methane and ethane lakes)."
+    },
+    {
+      "id": "q044",
+      "text": "What year did the Apollo 11 mission land on the Moon?",
+      "options": {
+        "A": "1967",
+        "B": "1968",
+        "C": "1969",
+        "D": "1970"
+      },
+      "correct": "C",
+      "explanation": "Apollo 11 landed on the Moon on July 20, 1969, in the Sea of Tranquility."
+    },
+    {
+      "id": "q045",
+      "text": "What is the Hertzsprung-Russell diagram used for?",
+      "options": {
+        "A": "Mapping galaxy locations",
+        "B": "Classifying stars by luminosity and temperature",
+        "C": "Tracking asteroid orbits",
+        "D": "Measuring distances to planets"
+      },
+      "correct": "B",
+      "explanation": "The H-R diagram plots stars by their luminosity versus surface temperature, revealing stellar classification groups like the main sequence, giants, and white dwarfs."
+    },
+    {
+      "id": "q046",
+      "text": "Which spacecraft carried the Golden Record, a message intended for extraterrestrial life?",
+      "options": {
+        "A": "Pioneer 10 and 11",
+        "B": "Voyager 1 and 2",
+        "C": "Cassini",
+        "D": "Galileo"
+      },
+      "correct": "B",
+      "explanation": "The Voyager 1 and 2 spacecraft, launched in 1977, each carry a Golden Record containing sounds and images of Earth."
+    },
+    {
+      "id": "q047",
+      "text": "What is the name of the supermassive black hole at the center of the Milky Way?",
+      "options": {
+        "A": "Cygnus X-1",
+        "B": "M87*",
+        "C": "Sagittarius A*",
+        "D": "TON 618"
+      },
+      "correct": "C",
+      "explanation": "Sagittarius A* (Sgr A*) is the supermassive black hole at the center of our galaxy, with a mass of about 4 million times that of the Sun."
+    },
+    {
+      "id": "q048",
+      "text": "What process powers the Sun and other stars?",
+      "options": {
+        "A": "Nuclear fission",
+        "B": "Chemical combustion",
+        "C": "Nuclear fusion",
+        "D": "Gravitational compression"
+      },
+      "correct": "C",
+      "explanation": "Stars are powered by nuclear fusion, where hydrogen atoms fuse into helium in the core, releasing enormous amounts of energy."
+    },
+    {
+      "id": "q049",
+      "text": "Which planet has the most prominent ring system visible from Earth?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Uranus",
+        "C": "Neptune",
+        "D": "Saturn"
+      },
+      "correct": "D",
+      "explanation": "Saturn's ring system is the most extensive and visible, stretching up to 282,000 km from the planet but only about 10 meters thick."
+    },
+    {
+      "id": "q050",
+      "text": "What is a neutron star?",
+      "options": {
+        "A": "A star made entirely of neutrons that forms after a supernova",
+        "B": "A star with no electrical charge",
+        "C": "A star that emits only neutron particles",
+        "D": "A theoretical star that has never been observed"
+      },
+      "correct": "A",
+      "explanation": "A neutron star is the collapsed core of a massive star after a supernova, composed almost entirely of neutrons, incredibly dense and typically only about 20 km in diameter."
+    },
+    {
+      "id": "q051",
+      "text": "Which space probe entered orbit around Saturn in 2004?",
+      "options": {
+        "A": "Galileo",
+        "B": "Juno",
+        "C": "Cassini",
+        "D": "Magellan"
+      },
+      "correct": "C",
+      "explanation": "The Cassini spacecraft entered Saturn's orbit on July 1, 2004, and studied the planet and its moons until its planned deorbit in September 2017."
+    },
+    {
+      "id": "q052",
+      "text": "What is the Oort Cloud?",
+      "options": {
+        "A": "A nebula near the Sun",
+        "B": "A theoretical spherical shell of icy objects surrounding the solar system at great distance",
+        "C": "A ring of dust around Jupiter",
+        "D": "A galaxy cluster near the Milky Way"
+      },
+      "correct": "B",
+      "explanation": "The Oort Cloud is a hypothesized spherical region of icy planetesimals extending roughly 2,000 to 100,000 AU from the Sun, believed to be the source of long-period comets."
+    },
+    {
+      "id": "q053",
+      "text": "What is the brightest star in the night sky as seen from Earth?",
+      "options": {
+        "A": "Polaris",
+        "B": "Betelgeuse",
+        "C": "Sirius",
+        "D": "Rigel"
+      },
+      "correct": "C",
+      "explanation": "Sirius (the Dog Star) in Canis Major has an apparent magnitude of -1.46, making it the brightest star visible from Earth."
+    },
+    {
+      "id": "q054",
+      "text": "What are the two main types of planets in our solar system?",
+      "options": {
+        "A": "Hot planets and cold planets",
+        "B": "Terrestrial (rocky) and gas giant (Jovian)",
+        "C": "Ringed planets and unringed planets",
+        "D": "Inner planets and dwarf planets"
+      },
+      "correct": "B",
+      "explanation": "The four inner terrestrial planets (Mercury, Venus, Earth, Mars) are rocky, while the four outer Jovian planets (Jupiter, Saturn, Uranus, Neptune) are gas or ice giants."
+    },
+    {
+      "id": "q055",
+      "text": "What was the first space station?",
+      "options": {
+        "A": "Mir",
+        "B": "ISS",
+        "C": "Skylab",
+        "D": "Salyut 1"
+      },
+      "correct": "D",
+      "explanation": "Salyut 1 was the first space station, launched by the Soviet Union on April 19, 1971."
+    },
+    {
+      "id": "q056",
+      "text": "What is the term for the point in a planet's orbit when it is closest to the Sun?",
+      "options": {
+        "A": "Aphelion",
+        "B": "Perihelion",
+        "C": "Perigee",
+        "D": "Apogee"
+      },
+      "correct": "B",
+      "explanation": "Perihelion is the point in a planet's elliptical orbit nearest to the Sun. Aphelion is the farthest point."
+    },
+    {
+      "id": "q057",
+      "text": "Which constellation is shaped like a hunter and contains the stars Betelgeuse and Rigel?",
+      "options": {
+        "A": "Scorpius",
+        "B": "Leo",
+        "C": "Orion",
+        "D": "Sagittarius"
+      },
+      "correct": "C",
+      "explanation": "Orion the Hunter is one of the most recognizable constellations, with Betelgeuse marking a shoulder and Rigel marking a foot."
+    },
+    {
+      "id": "q058",
+      "text": "What is dark matter?",
+      "options": {
+        "A": "Matter that absorbs all light like a black hole",
+        "B": "Invisible matter that does not interact with light but exerts gravitational effects",
+        "C": "Antimatter found in deep space",
+        "D": "Dust clouds that block starlight"
+      },
+      "correct": "B",
+      "explanation": "Dark matter is a hypothetical form of matter that does not emit or interact with electromagnetic radiation but accounts for about 27% of the universe's mass-energy."
+    },
+    {
+      "id": "q059",
+      "text": "Which Apollo mission was the famous 'successful failure' that safely returned its crew after an oxygen tank explosion?",
+      "options": {
+        "A": "Apollo 1",
+        "B": "Apollo 8",
+        "C": "Apollo 13",
+        "D": "Apollo 17"
+      },
+      "correct": "C",
+      "explanation": "Apollo 13 experienced an oxygen tank explosion on April 13, 1970. The crew used the lunar module as a lifeboat and returned safely to Earth."
+    },
+    {
+      "id": "q060",
+      "text": "What is the James Webb Space Telescope primarily designed to observe?",
+      "options": {
+        "A": "X-ray emissions from black holes",
+        "B": "Infrared light from distant galaxies, stars, and exoplanets",
+        "C": "Radio waves from pulsars",
+        "D": "Ultraviolet light from nearby stars"
+      },
+      "correct": "B",
+      "explanation": "JWST is an infrared telescope designed to see the earliest galaxies, study star formation, and analyze exoplanet atmospheres. It launched on December 25, 2021."
+    },
+    {
+      "id": "q061",
+      "text": "What is a pulsar?",
+      "options": {
+        "A": "A planet that pulses with heat",
+        "B": "A rapidly rotating neutron star that emits beams of electromagnetic radiation",
+        "C": "A dying red giant",
+        "D": "A type of quasar"
+      },
+      "correct": "B",
+      "explanation": "A pulsar is a highly magnetized, rapidly spinning neutron star that emits beams of radiation from its poles, appearing to pulse as it rotates."
+    },
+    {
+      "id": "q062",
+      "text": "Which planet rotates the fastest in our solar system?",
+      "options": {
+        "A": "Earth",
+        "B": "Saturn",
+        "C": "Jupiter",
+        "D": "Mars"
+      },
+      "correct": "C",
+      "explanation": "Jupiter completes one rotation in about 9 hours and 56 minutes, despite being the largest planet in our solar system."
+    },
+    {
+      "id": "q063",
+      "text": "What is the Roche limit?",
+      "options": {
+        "A": "The maximum size of a star",
+        "B": "The distance within which a celestial body will be torn apart by tidal forces",
+        "C": "The minimum mass required for fusion",
+        "D": "The edge of the observable universe"
+      },
+      "correct": "B",
+      "explanation": "The Roche limit is the minimum distance at which a moon or other body can orbit without being torn apart by tidal forces from the larger body it orbits."
+    },
+    {
+      "id": "q064",
+      "text": "Who first observed the moons of Jupiter through a telescope?",
+      "options": {
+        "A": "Isaac Newton",
+        "B": "Copernicus",
+        "C": "Galileo Galilei",
+        "D": "Tycho Brahe"
+      },
+      "correct": "C",
+      "explanation": "Galileo Galilei observed Jupiter's four largest moons (Io, Europa, Ganymede, and Callisto) in January 1610, now called the Galilean moons."
+    },
+    {
+      "id": "q065",
+      "text": "What is the largest known structure in the observable universe?",
+      "options": {
+        "A": "The Milky Way",
+        "B": "The Hercules-Corona Borealis Great Wall",
+        "C": "The Andromeda Galaxy",
+        "D": "The Virgo Supercluster"
+      },
+      "correct": "B",
+      "explanation": "The Hercules-Corona Borealis Great Wall is a massive galaxy filament stretching about 10 billion light-years, the largest known structure in the observable universe."
+    },
+    {
+      "id": "q066",
+      "text": "What is the Doppler effect used for in astronomy?",
+      "options": {
+        "A": "Measuring the temperature of stars",
+        "B": "Determining the chemical composition of planets",
+        "C": "Measuring the velocity of objects moving toward or away from us via wavelength shift",
+        "D": "Counting the number of stars in a galaxy"
+      },
+      "correct": "C",
+      "explanation": "In astronomy, the Doppler effect causes light from objects moving away to shift toward red (redshift) and toward blue (blueshift) for approaching objects."
+    },
+    {
+      "id": "q067",
+      "text": "Which moon of Saturn shoots geysers of water ice into space?",
+      "options": {
+        "A": "Titan",
+        "B": "Mimas",
+        "C": "Enceladus",
+        "D": "Rhea"
+      },
+      "correct": "C",
+      "explanation": "Enceladus has active cryovolcanic geysers at its south pole that shoot plumes of water vapor and ice particles into space, feeding Saturn's E ring."
+    },
+    {
+      "id": "q068",
+      "text": "What is the speed of light in a vacuum?",
+      "options": {
+        "A": "186,000 miles per second",
+        "B": "86,000 miles per second",
+        "C": "500,000 miles per second",
+        "D": "1 million miles per second"
+      },
+      "correct": "A",
+      "explanation": "Light travels at approximately 186,000 miles per second (about 300,000 km/s) in a vacuum."
+    },
+    {
+      "id": "q069",
+      "text": "What is a quasar?",
+      "options": {
+        "A": "A type of asteroid",
+        "B": "An extremely luminous active galactic nucleus powered by a supermassive black hole",
+        "C": "A dying red star",
+        "D": "A theoretical particle"
+      },
+      "correct": "B",
+      "explanation": "Quasars are among the most luminous objects in the universe, powered by accretion of material onto supermassive black holes at the centers of distant galaxies."
+    },
+    {
+      "id": "q070",
+      "text": "Which planet has winds that can exceed 1,200 mph, the fastest in the solar system?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Saturn",
+        "C": "Uranus",
+        "D": "Neptune"
+      },
+      "correct": "D",
+      "explanation": "Neptune has the fastest winds in the solar system, with speeds reaching over 1,200 mph (2,000 km/h)."
+    },
+    {
+      "id": "q071",
+      "text": "What did Edwin Hubble discover in the 1920s?",
+      "options": {
+        "A": "Pluto",
+        "B": "That the universe is expanding",
+        "C": "Black holes",
+        "D": "The asteroid belt"
+      },
+      "correct": "B",
+      "explanation": "Edwin Hubble demonstrated that galaxies are moving away from each other, showing that the universe is expanding, which became Hubble's Law."
+    },
+    {
+      "id": "q072",
+      "text": "What is the Crab Nebula?",
+      "options": {
+        "A": "A planetary nebula around a dying star",
+        "B": "A supernova remnant from an explosion observed in 1054 AD",
+        "C": "A region where new stars are forming",
+        "D": "A galaxy in the Virgo cluster"
+      },
+      "correct": "B",
+      "explanation": "The Crab Nebula (M1) is the remnant of a supernova that was observed by Chinese and other astronomers in 1054 AD. It contains a pulsar at its center."
+    },
+    {
+      "id": "q073",
+      "text": "What is the name of the closest major galaxy to the Milky Way?",
+      "options": {
+        "A": "Triangulum Galaxy",
+        "B": "Whirlpool Galaxy",
+        "C": "Andromeda Galaxy",
+        "D": "Sombrero Galaxy"
+      },
+      "correct": "C",
+      "explanation": "The Andromeda Galaxy (M31) is about 2.5 million light-years away and is the nearest large galaxy to the Milky Way. It is expected to collide with our galaxy in about 4.5 billion years."
+    },
+    {
+      "id": "q074",
+      "text": "What are Lagrange points?",
+      "options": {
+        "A": "Points where black holes form",
+        "B": "Positions in space where gravitational forces of two large bodies balance with orbital motion, allowing a small object to remain stable",
+        "C": "The edges of a galaxy",
+        "D": "Points where light cannot reach"
+      },
+      "correct": "B",
+      "explanation": "Lagrange points are five positions in a two-body orbital system where a small object can maintain a stable position. JWST orbits at the Sun-Earth L2 point."
+    },
+    {
+      "id": "q075",
+      "text": "Which element is created in the cores of massive stars and is essential for life on Earth?",
+      "options": {
+        "A": "Hydrogen",
+        "B": "Helium",
+        "C": "Carbon",
+        "D": "Nitrogen"
+      },
+      "correct": "C",
+      "explanation": "Carbon is formed through the triple-alpha process in the cores of massive stars and is the basis of all known life. As Carl Sagan said, we are made of star stuff."
+    },
+    {
+      "id": "q076",
+      "text": "What was the first spacecraft to land on another planet?",
+      "options": {
+        "A": "Viking 1",
+        "B": "Venera 7",
+        "C": "Mars Pathfinder",
+        "D": "Pioneer Venus"
+      },
+      "correct": "B",
+      "explanation": "The Soviet Venera 7 became the first spacecraft to successfully land on another planet when it touched down on Venus on December 15, 1970, and transmitted data for about 23 minutes."
+    },
+    {
+      "id": "q077",
+      "text": "What is an exoplanet?",
+      "options": {
+        "A": "A planet that has been ejected from its solar system",
+        "B": "A planet that orbits a star outside our solar system",
+        "C": "A dwarf planet like Pluto",
+        "D": "A gas cloud that could become a planet"
+      },
+      "correct": "B",
+      "explanation": "An exoplanet is any planet that orbits a star other than our Sun. Thousands have been discovered, many by the Kepler Space Telescope."
+    },
+    {
+      "id": "q078",
+      "text": "What is a white dwarf?",
+      "options": {
+        "A": "A very small, hot, newly formed star",
+        "B": "The dense remnant core of a low-to-medium mass star after it sheds its outer layers",
+        "C": "A star hidden behind a nebula",
+        "D": "A type of galaxy"
+      },
+      "correct": "B",
+      "explanation": "A white dwarf is the remnant of a star (like our Sun) that has exhausted its nuclear fuel and shed its outer layers, leaving behind a dense, Earth-sized core."
+    },
+    {
+      "id": "q079",
+      "text": "What phenomenon causes the tails of comets?",
+      "options": {
+        "A": "Friction with space dust",
+        "B": "Solar radiation and solar wind causing sublimation of the comet's ice",
+        "C": "Gravitational pull from nearby planets",
+        "D": "Magnetic fields in the solar system"
+      },
+      "correct": "B",
+      "explanation": "As comets approach the Sun, solar radiation and solar wind cause ices to sublimate, releasing gas and dust that form the coma and tail, always pointing away from the Sun."
+    },
+    {
+      "id": "q080",
+      "text": "What is gravitational lensing?",
+      "options": {
+        "A": "Using gravity to propel spacecraft",
+        "B": "A telescope that uses gravity to focus light",
+        "C": "The bending of light from a distant source by a massive object's gravity, as predicted by general relativity",
+        "D": "The effect of gravity on radio signals"
+      },
+      "correct": "C",
+      "explanation": "Gravitational lensing occurs when a massive object like a galaxy cluster bends the light from a more distant object, magnifying and distorting its image, as predicted by Einstein's general relativity."
+    }
+  ]
+}

@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "science_001",
+    "title": "General Science",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Science", "Biology", "Chemistry", "Physics"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is the chemical symbol for gold?",
+      "options": {
+        "A": "Go",
+        "B": "Au",
+        "C": "Gd",
+        "D": "Ag"
+      },
+      "correct": "B",
+      "explanation": "Gold's chemical symbol Au comes from its Latin name 'aurum'."
+    },
+    {
+      "id": "q002",
+      "text": "What is the powerhouse of the cell?",
+      "options": {
+        "A": "Nucleus",
+        "B": "Ribosome",
+        "C": "Mitochondria",
+        "D": "Golgi apparatus"
+      },
+      "correct": "C",
+      "explanation": "Mitochondria generate most of the cell's supply of ATP, the main energy currency."
+    },
+    {
+      "id": "q003",
+      "text": "What planet is known as the Red Planet?",
+      "options": {
+        "A": "Venus",
+        "B": "Jupiter",
+        "C": "Mars",
+        "D": "Saturn"
+      },
+      "correct": "C",
+      "explanation": "Mars appears red due to iron oxide (rust) on its surface."
+    },
+    {
+      "id": "q004",
+      "text": "What is the speed of light in a vacuum, approximately?",
+      "options": {
+        "A": "300,000 km/s",
+        "B": "150,000 km/s",
+        "C": "1,000,000 km/s",
+        "D": "30,000 km/s"
+      },
+      "correct": "A",
+      "explanation": "The speed of light in a vacuum is approximately 299,792 km/s, roughly 300,000 km/s."
+    },
+    {
+      "id": "q005",
+      "text": "How many bones are in the adult human body?",
+      "options": {
+        "A": "186",
+        "B": "206",
+        "C": "226",
+        "D": "256"
+      },
+      "correct": "B",
+      "explanation": "An adult human skeleton consists of 206 bones."
+    },
+    {
+      "id": "q006",
+      "text": "What gas do plants absorb from the atmosphere during photosynthesis?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Nitrogen",
+        "C": "Carbon dioxide",
+        "D": "Hydrogen"
+      },
+      "correct": "C",
+      "explanation": "Plants absorb carbon dioxide and use it along with water and sunlight to produce glucose and oxygen."
+    },
+    {
+      "id": "q007",
+      "text": "What is the most abundant gas in Earth's atmosphere?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Carbon dioxide",
+        "C": "Hydrogen",
+        "D": "Nitrogen"
+      },
+      "correct": "D",
+      "explanation": "Nitrogen makes up about 78% of Earth's atmosphere."
+    },
+    {
+      "id": "q008",
+      "text": "What is the atomic number of carbon?",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "8",
+        "D": "12"
+      },
+      "correct": "B",
+      "explanation": "Carbon has an atomic number of 6, meaning it has 6 protons in its nucleus."
+    },
+    {
+      "id": "q009",
+      "text": "Which type of rock is formed from cooled magma or lava?",
+      "options": {
+        "A": "Sedimentary",
+        "B": "Metamorphic",
+        "C": "Igneous",
+        "D": "Limestone"
+      },
+      "correct": "C",
+      "explanation": "Igneous rocks form when molten rock (magma or lava) cools and solidifies."
+    },
+    {
+      "id": "q010",
+      "text": "What force keeps planets in orbit around the Sun?",
+      "options": {
+        "A": "Magnetism",
+        "B": "Friction",
+        "C": "Gravity",
+        "D": "Centrifugal force"
+      },
+      "correct": "C",
+      "explanation": "Gravity is the fundamental force that keeps planets in orbit around the Sun."
+    },
+    {
+      "id": "q011",
+      "text": "What is the pH of pure water at 25 degrees Celsius?",
+      "options": {
+        "A": "0",
+        "B": "5",
+        "C": "7",
+        "D": "14"
+      },
+      "correct": "C",
+      "explanation": "Pure water has a neutral pH of 7 at 25 degrees Celsius."
+    },
+    {
+      "id": "q012",
+      "text": "What is the largest organ in the human body?",
+      "options": {
+        "A": "Liver",
+        "B": "Brain",
+        "C": "Lungs",
+        "D": "Skin"
+      },
+      "correct": "D",
+      "explanation": "The skin is the largest organ, covering approximately 1.5 to 2 square meters in adults."
+    },
+    {
+      "id": "q013",
+      "text": "Which subatomic particle has a negative charge?",
+      "options": {
+        "A": "Proton",
+        "B": "Neutron",
+        "C": "Electron",
+        "D": "Photon"
+      },
+      "correct": "C",
+      "explanation": "Electrons carry a negative electrical charge of -1."
+    },
+    {
+      "id": "q014",
+      "text": "What is the hardest natural substance on Earth?",
+      "options": {
+        "A": "Quartz",
+        "B": "Topaz",
+        "C": "Diamond",
+        "D": "Corundum"
+      },
+      "correct": "C",
+      "explanation": "Diamond is rated 10 on the Mohs hardness scale, making it the hardest natural substance."
+    },
+    {
+      "id": "q015",
+      "text": "What is the chemical formula for table salt?",
+      "options": {
+        "A": "NaO",
+        "B": "KCl",
+        "C": "NaCl",
+        "D": "CaCl2"
+      },
+      "correct": "C",
+      "explanation": "Table salt is sodium chloride, with one sodium atom bonded to one chlorine atom."
+    },
+    {
+      "id": "q016",
+      "text": "How many chambers does the human heart have?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "correct": "C",
+      "explanation": "The human heart has four chambers: two atria and two ventricles."
+    },
+    {
+      "id": "q017",
+      "text": "What layer of Earth's atmosphere contains the ozone layer?",
+      "options": {
+        "A": "Troposphere",
+        "B": "Stratosphere",
+        "C": "Mesosphere",
+        "D": "Thermosphere"
+      },
+      "correct": "B",
+      "explanation": "The ozone layer is found in the stratosphere, about 15-35 km above Earth's surface."
+    },
+    {
+      "id": "q018",
+      "text": "What is Newton's first law of motion also known as?",
+      "options": {
+        "A": "Law of acceleration",
+        "B": "Law of gravity",
+        "C": "Law of inertia",
+        "D": "Law of reaction"
+      },
+      "correct": "C",
+      "explanation": "Newton's first law states an object at rest stays at rest unless acted on by an external force, which is the concept of inertia."
+    },
+    {
+      "id": "q019",
+      "text": "What molecule carries genetic information in most organisms?",
+      "options": {
+        "A": "RNA",
+        "B": "ATP",
+        "C": "DNA",
+        "D": "Protein"
+      },
+      "correct": "C",
+      "explanation": "DNA (deoxyribonucleic acid) carries the genetic instructions for the development and function of living organisms."
+    },
+    {
+      "id": "q020",
+      "text": "What is the boiling point of water at sea level in Celsius?",
+      "options": {
+        "A": "90",
+        "B": "100",
+        "C": "110",
+        "D": "212"
+      },
+      "correct": "B",
+      "explanation": "Water boils at 100 degrees Celsius (212 degrees Fahrenheit) at standard atmospheric pressure."
+    },
+    {
+      "id": "q021",
+      "text": "Which element has the atomic number 1?",
+      "options": {
+        "A": "Helium",
+        "B": "Lithium",
+        "C": "Hydrogen",
+        "D": "Oxygen"
+      },
+      "correct": "C",
+      "explanation": "Hydrogen has one proton, giving it atomic number 1. It is the lightest and most abundant element."
+    },
+    {
+      "id": "q022",
+      "text": "What is the process by which liquid water becomes water vapor?",
+      "options": {
+        "A": "Condensation",
+        "B": "Evaporation",
+        "C": "Sublimation",
+        "D": "Precipitation"
+      },
+      "correct": "B",
+      "explanation": "Evaporation is the process where liquid water changes to water vapor, typically at the surface of a liquid."
+    },
+    {
+      "id": "q023",
+      "text": "What type of bond involves the sharing of electrons between atoms?",
+      "options": {
+        "A": "Ionic bond",
+        "B": "Hydrogen bond",
+        "C": "Covalent bond",
+        "D": "Metallic bond"
+      },
+      "correct": "C",
+      "explanation": "In a covalent bond, atoms share one or more pairs of electrons to achieve stability."
+    },
+    {
+      "id": "q024",
+      "text": "What is the main component of the Sun?",
+      "options": {
+        "A": "Helium",
+        "B": "Oxygen",
+        "C": "Hydrogen",
+        "D": "Carbon"
+      },
+      "correct": "C",
+      "explanation": "The Sun is composed of approximately 73% hydrogen by mass."
+    },
+    {
+      "id": "q025",
+      "text": "Which blood cells are responsible for fighting infection?",
+      "options": {
+        "A": "Red blood cells",
+        "B": "Platelets",
+        "C": "White blood cells",
+        "D": "Plasma cells"
+      },
+      "correct": "C",
+      "explanation": "White blood cells (leukocytes) are the primary cells of the immune system that fight infections."
+    },
+    {
+      "id": "q026",
+      "text": "What is the unit of electrical resistance?",
+      "options": {
+        "A": "Volt",
+        "B": "Ampere",
+        "C": "Watt",
+        "D": "Ohm"
+      },
+      "correct": "D",
+      "explanation": "The ohm is the SI unit of electrical resistance, named after Georg Ohm."
+    },
+    {
+      "id": "q027",
+      "text": "What scale is used to measure the magnitude of earthquakes?",
+      "options": {
+        "A": "Beaufort scale",
+        "B": "Richter scale",
+        "C": "Kelvin scale",
+        "D": "Fahrenheit scale"
+      },
+      "correct": "B",
+      "explanation": "The Richter scale (and the related moment magnitude scale) measures earthquake magnitude."
+    },
+    {
+      "id": "q028",
+      "text": "What organelle is responsible for protein synthesis in cells?",
+      "options": {
+        "A": "Mitochondria",
+        "B": "Ribosome",
+        "C": "Lysosome",
+        "D": "Nucleus"
+      },
+      "correct": "B",
+      "explanation": "Ribosomes are the cellular structures that translate mRNA into proteins."
+    },
+    {
+      "id": "q029",
+      "text": "What is the chemical formula for methane?",
+      "options": {
+        "A": "CO2",
+        "B": "CH4",
+        "C": "C2H6",
+        "D": "NH3"
+      },
+      "correct": "B",
+      "explanation": "Methane consists of one carbon atom bonded to four hydrogen atoms (CH4)."
+    },
+    {
+      "id": "q030",
+      "text": "What phenomenon causes the tides on Earth?",
+      "options": {
+        "A": "Solar wind",
+        "B": "Earth's rotation",
+        "C": "Gravitational pull of the Moon and Sun",
+        "D": "Ocean currents"
+      },
+      "correct": "C",
+      "explanation": "Tides are primarily caused by the gravitational pull of the Moon, with a smaller contribution from the Sun."
+    },
+    {
+      "id": "q031",
+      "text": "What is absolute zero in Celsius?",
+      "options": {
+        "A": "-100",
+        "B": "-273.15",
+        "C": "-459.67",
+        "D": "0"
+      },
+      "correct": "B",
+      "explanation": "Absolute zero is -273.15 degrees Celsius (0 Kelvin), the lowest possible temperature."
+    },
+    {
+      "id": "q032",
+      "text": "What structure in plant cells is not found in animal cells?",
+      "options": {
+        "A": "Nucleus",
+        "B": "Cell wall",
+        "C": "Mitochondria",
+        "D": "Ribosome"
+      },
+      "correct": "B",
+      "explanation": "Plant cells have a rigid cell wall made of cellulose that animal cells lack."
+    },
+    {
+      "id": "q033",
+      "text": "What is the SI unit of force?",
+      "options": {
+        "A": "Joule",
+        "B": "Pascal",
+        "C": "Newton",
+        "D": "Watt"
+      },
+      "correct": "C",
+      "explanation": "The newton (N) is the SI unit of force, equal to the force needed to accelerate 1 kg at 1 m/s squared."
+    },
+    {
+      "id": "q034",
+      "text": "What type of wave is sound?",
+      "options": {
+        "A": "Transverse wave",
+        "B": "Electromagnetic wave",
+        "C": "Longitudinal wave",
+        "D": "Surface wave"
+      },
+      "correct": "C",
+      "explanation": "Sound travels as a longitudinal wave, where particles vibrate parallel to the direction of wave travel."
+    },
+    {
+      "id": "q035",
+      "text": "How many pairs of chromosomes do humans have?",
+      "options": {
+        "A": "21",
+        "B": "22",
+        "C": "23",
+        "D": "46"
+      },
+      "correct": "C",
+      "explanation": "Humans have 23 pairs of chromosomes, for a total of 46 chromosomes per cell."
+    },
+    {
+      "id": "q036",
+      "text": "What is the most abundant element in the universe?",
+      "options": {
+        "A": "Oxygen",
+        "B": "Carbon",
+        "C": "Helium",
+        "D": "Hydrogen"
+      },
+      "correct": "D",
+      "explanation": "Hydrogen is the most abundant element, making up about 75% of the universe's normal matter by mass."
+    },
+    {
+      "id": "q037",
+      "text": "What part of the brain controls balance and coordination?",
+      "options": {
+        "A": "Cerebrum",
+        "B": "Cerebellum",
+        "C": "Medulla oblongata",
+        "D": "Hypothalamus"
+      },
+      "correct": "B",
+      "explanation": "The cerebellum coordinates voluntary movements, balance, and motor learning."
+    },
+    {
+      "id": "q038",
+      "text": "What is the process of cell division in somatic cells called?",
+      "options": {
+        "A": "Meiosis",
+        "B": "Binary fission",
+        "C": "Mitosis",
+        "D": "Budding"
+      },
+      "correct": "C",
+      "explanation": "Mitosis is the process by which somatic cells divide to produce two genetically identical daughter cells."
+    },
+    {
+      "id": "q039",
+      "text": "What is the chemical symbol for potassium?",
+      "options": {
+        "A": "Po",
+        "B": "Pt",
+        "C": "P",
+        "D": "K"
+      },
+      "correct": "D",
+      "explanation": "Potassium's symbol K comes from its Latin name 'kalium'."
+    },
+    {
+      "id": "q040",
+      "text": "What type of electromagnetic radiation has the longest wavelength?",
+      "options": {
+        "A": "Gamma rays",
+        "B": "X-rays",
+        "C": "Radio waves",
+        "D": "Ultraviolet"
+      },
+      "correct": "C",
+      "explanation": "Radio waves have the longest wavelengths in the electromagnetic spectrum, ranging from millimeters to kilometers."
+    },
+    {
+      "id": "q041",
+      "text": "What is the innermost layer of the Earth called?",
+      "options": {
+        "A": "Mantle",
+        "B": "Outer core",
+        "C": "Inner core",
+        "D": "Crust"
+      },
+      "correct": "C",
+      "explanation": "The inner core is the solid, innermost layer of Earth, composed mainly of iron and nickel."
+    },
+    {
+      "id": "q042",
+      "text": "What vitamin is produced when human skin is exposed to sunlight?",
+      "options": {
+        "A": "Vitamin A",
+        "B": "Vitamin B12",
+        "C": "Vitamin C",
+        "D": "Vitamin D"
+      },
+      "correct": "D",
+      "explanation": "The skin produces vitamin D when exposed to ultraviolet B (UVB) radiation from sunlight."
+    },
+    {
+      "id": "q043",
+      "text": "What is Avogadro's number approximately equal to?",
+      "options": {
+        "A": "6.022 x 10^23",
+        "B": "3.14 x 10^15",
+        "C": "1.602 x 10^-19",
+        "D": "9.81 x 10^10"
+      },
+      "correct": "A",
+      "explanation": "Avogadro's number is approximately 6.022 x 10^23, representing the number of particles in one mole of a substance."
+    },
+    {
+      "id": "q044",
+      "text": "What is the function of the enzyme amylase?",
+      "options": {
+        "A": "Breaks down fats",
+        "B": "Breaks down proteins",
+        "C": "Breaks down starch",
+        "D": "Breaks down cellulose"
+      },
+      "correct": "C",
+      "explanation": "Amylase is a digestive enzyme that breaks down starch into simple sugars like maltose."
+    },
+    {
+      "id": "q045",
+      "text": "What is the term for an animal that eats both plants and animals?",
+      "options": {
+        "A": "Herbivore",
+        "B": "Carnivore",
+        "C": "Omnivore",
+        "D": "Decomposer"
+      },
+      "correct": "C",
+      "explanation": "Omnivores eat both plant and animal matter. Examples include bears, pigs, and humans."
+    },
+    {
+      "id": "q046",
+      "text": "What is the formula for calculating kinetic energy?",
+      "options": {
+        "A": "KE = mgh",
+        "B": "KE = 1/2 mv^2",
+        "C": "KE = Fd",
+        "D": "KE = mc^2"
+      },
+      "correct": "B",
+      "explanation": "Kinetic energy equals one half times mass times velocity squared (KE = 1/2 mv^2)."
+    },
+    {
+      "id": "q047",
+      "text": "What mineral is the main component of limestone?",
+      "options": {
+        "A": "Quartz",
+        "B": "Feldspar",
+        "C": "Calcite",
+        "D": "Mica"
+      },
+      "correct": "C",
+      "explanation": "Limestone is primarily composed of calcite (calcium carbonate, CaCO3)."
+    },
+    {
+      "id": "q048",
+      "text": "What is the name of the process by which organisms that are better adapted to their environment tend to survive?",
+      "options": {
+        "A": "Genetic drift",
+        "B": "Mutation",
+        "C": "Natural selection",
+        "D": "Gene flow"
+      },
+      "correct": "C",
+      "explanation": "Natural selection, proposed by Charles Darwin, describes how organisms with favorable traits are more likely to survive and reproduce."
+    },
+    {
+      "id": "q049",
+      "text": "What is the charge of a neutron?",
+      "options": {
+        "A": "Positive",
+        "B": "Negative",
+        "C": "Neutral",
+        "D": "Variable"
+      },
+      "correct": "C",
+      "explanation": "Neutrons have no electrical charge; they are electrically neutral particles found in the atomic nucleus."
+    },
+    {
+      "id": "q050",
+      "text": "Which planet has the most moons in our solar system?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Saturn",
+        "C": "Uranus",
+        "D": "Neptune"
+      },
+      "correct": "B",
+      "explanation": "Saturn has the most confirmed moons, with over 140 known natural satellites."
+    },
+    {
+      "id": "q051",
+      "text": "What is the primary function of red blood cells?",
+      "options": {
+        "A": "Fighting infections",
+        "B": "Transporting oxygen",
+        "C": "Blood clotting",
+        "D": "Producing antibodies"
+      },
+      "correct": "B",
+      "explanation": "Red blood cells contain hemoglobin, which binds to oxygen and transports it from the lungs to tissues throughout the body."
+    },
+    {
+      "id": "q052",
+      "text": "What is the second law of thermodynamics primarily about?",
+      "options": {
+        "A": "Conservation of energy",
+        "B": "Entropy tends to increase",
+        "C": "Absolute zero is unattainable",
+        "D": "Force equals mass times acceleration"
+      },
+      "correct": "B",
+      "explanation": "The second law of thermodynamics states that the total entropy of an isolated system tends to increase over time."
+    },
+    {
+      "id": "q053",
+      "text": "What is the most common type of chemical bond in organic molecules?",
+      "options": {
+        "A": "Ionic bond",
+        "B": "Metallic bond",
+        "C": "Covalent bond",
+        "D": "Hydrogen bond"
+      },
+      "correct": "C",
+      "explanation": "Organic molecules are primarily held together by covalent bonds, where atoms share electron pairs."
+    },
+    {
+      "id": "q054",
+      "text": "What causes the seasons on Earth?",
+      "options": {
+        "A": "Distance from the Sun",
+        "B": "The tilt of Earth's axis",
+        "C": "The speed of Earth's orbit",
+        "D": "Solar flares"
+      },
+      "correct": "B",
+      "explanation": "Earth's axial tilt of about 23.5 degrees causes different hemispheres to receive varying amounts of sunlight throughout the year."
+    },
+    {
+      "id": "q055",
+      "text": "What is the monomer of proteins?",
+      "options": {
+        "A": "Nucleotides",
+        "B": "Fatty acids",
+        "C": "Amino acids",
+        "D": "Monosaccharides"
+      },
+      "correct": "C",
+      "explanation": "Proteins are polymers made up of amino acid monomers linked by peptide bonds."
+    },
+    {
+      "id": "q056",
+      "text": "What element is liquid at room temperature and is used in thermometers?",
+      "options": {
+        "A": "Lead",
+        "B": "Mercury",
+        "C": "Bromine",
+        "D": "Gallium"
+      },
+      "correct": "B",
+      "explanation": "Mercury is a metal that is liquid at room temperature and was historically used in thermometers."
+    },
+    {
+      "id": "q057",
+      "text": "What is the term for the bending of light as it passes from one medium to another?",
+      "options": {
+        "A": "Reflection",
+        "B": "Diffraction",
+        "C": "Refraction",
+        "D": "Absorption"
+      },
+      "correct": "C",
+      "explanation": "Refraction is the bending of light when it passes between media with different densities, such as air and water."
+    },
+    {
+      "id": "q058",
+      "text": "What is the approximate age of Earth?",
+      "options": {
+        "A": "1.5 billion years",
+        "B": "4.5 billion years",
+        "C": "6.5 billion years",
+        "D": "10 billion years"
+      },
+      "correct": "B",
+      "explanation": "Earth is approximately 4.5 billion years old, as determined by radiometric dating of rocks and meteorites."
+    },
+    {
+      "id": "q059",
+      "text": "What is the process by which bacteria reproduce?",
+      "options": {
+        "A": "Mitosis",
+        "B": "Meiosis",
+        "C": "Binary fission",
+        "D": "Budding"
+      },
+      "correct": "C",
+      "explanation": "Bacteria reproduce asexually through binary fission, where a single cell divides into two identical daughter cells."
+    },
+    {
+      "id": "q060",
+      "text": "What is the Heisenberg Uncertainty Principle?",
+      "options": {
+        "A": "Energy cannot be created or destroyed",
+        "B": "You cannot simultaneously know a particle's exact position and momentum",
+        "C": "Every action has an equal and opposite reaction",
+        "D": "The entropy of the universe always increases"
+      },
+      "correct": "B",
+      "explanation": "The Heisenberg Uncertainty Principle states that the more precisely you know a particle's position, the less precisely you can know its momentum, and vice versa."
+    },
+    {
+      "id": "q061",
+      "text": "What type of rock is marble?",
+      "options": {
+        "A": "Igneous",
+        "B": "Sedimentary",
+        "C": "Metamorphic",
+        "D": "Volcanic"
+      },
+      "correct": "C",
+      "explanation": "Marble is a metamorphic rock formed when limestone is subjected to heat and pressure."
+    },
+    {
+      "id": "q062",
+      "text": "What is the function of the pancreas?",
+      "options": {
+        "A": "Filter blood",
+        "B": "Produce bile",
+        "C": "Produce insulin and digestive enzymes",
+        "D": "Store vitamins"
+      },
+      "correct": "C",
+      "explanation": "The pancreas produces insulin (to regulate blood sugar) and digestive enzymes (to break down food)."
+    },
+    {
+      "id": "q063",
+      "text": "What noble gas is commonly used in bright advertising signs?",
+      "options": {
+        "A": "Helium",
+        "B": "Argon",
+        "C": "Neon",
+        "D": "Krypton"
+      },
+      "correct": "C",
+      "explanation": "Neon gas emits a bright red-orange glow when electrically charged and is iconic in illuminated signs."
+    },
+    {
+      "id": "q064",
+      "text": "What is the relationship described by Ohm's Law?",
+      "options": {
+        "A": "Force = Mass x Acceleration",
+        "B": "Voltage = Current x Resistance",
+        "C": "Energy = Mass x Speed of Light squared",
+        "D": "Power = Work / Time"
+      },
+      "correct": "B",
+      "explanation": "Ohm's Law states that voltage (V) equals current (I) times resistance (R): V = IR."
+    },
+    {
+      "id": "q065",
+      "text": "What boundary between tectonic plates involves them sliding past each other?",
+      "options": {
+        "A": "Convergent boundary",
+        "B": "Divergent boundary",
+        "C": "Transform boundary",
+        "D": "Subduction zone"
+      },
+      "correct": "C",
+      "explanation": "At transform boundaries, tectonic plates slide horizontally past each other. The San Andreas Fault is a famous example."
+    },
+    {
+      "id": "q066",
+      "text": "What is the double helix structure associated with?",
+      "options": {
+        "A": "Proteins",
+        "B": "RNA",
+        "C": "DNA",
+        "D": "Lipids"
+      },
+      "correct": "C",
+      "explanation": "DNA has a double helix structure, first described by Watson and Crick in 1953."
+    },
+    {
+      "id": "q067",
+      "text": "What is the valence of carbon in most organic compounds?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6"
+      },
+      "correct": "C",
+      "explanation": "Carbon has a valence of 4, meaning it can form four covalent bonds with other atoms."
+    },
+    {
+      "id": "q068",
+      "text": "What phenomenon explains why a moving ambulance siren changes pitch as it passes?",
+      "options": {
+        "A": "Resonance",
+        "B": "Interference",
+        "C": "Doppler effect",
+        "D": "Diffraction"
+      },
+      "correct": "C",
+      "explanation": "The Doppler effect causes the perceived frequency of a wave to change as the source moves relative to the observer."
+    },
+    {
+      "id": "q069",
+      "text": "What is the largest planet in our solar system?",
+      "options": {
+        "A": "Saturn",
+        "B": "Neptune",
+        "C": "Jupiter",
+        "D": "Uranus"
+      },
+      "correct": "C",
+      "explanation": "Jupiter is the largest planet, with a diameter of about 139,820 km, more than 11 times that of Earth."
+    },
+    {
+      "id": "q070",
+      "text": "What is the main function of the lymphatic system?",
+      "options": {
+        "A": "Gas exchange",
+        "B": "Nutrient absorption",
+        "C": "Immune defense and fluid balance",
+        "D": "Hormone production"
+      },
+      "correct": "C",
+      "explanation": "The lymphatic system maintains fluid balance, absorbs fats, and is a key part of the immune system."
+    },
+    {
+      "id": "q071",
+      "text": "What are isotopes?",
+      "options": {
+        "A": "Atoms with different numbers of protons",
+        "B": "Atoms with different numbers of neutrons",
+        "C": "Atoms with different numbers of electrons",
+        "D": "Different elements with the same mass"
+      },
+      "correct": "B",
+      "explanation": "Isotopes are atoms of the same element that have the same number of protons but different numbers of neutrons."
+    },
+    {
+      "id": "q072",
+      "text": "What state of matter has a fixed volume but no fixed shape?",
+      "options": {
+        "A": "Solid",
+        "B": "Liquid",
+        "C": "Gas",
+        "D": "Plasma"
+      },
+      "correct": "B",
+      "explanation": "Liquids have a definite volume but take the shape of their container."
+    },
+    {
+      "id": "q073",
+      "text": "What is the name of the supercontinent that existed about 250 million years ago?",
+      "options": {
+        "A": "Gondwana",
+        "B": "Laurasia",
+        "C": "Pangaea",
+        "D": "Rodinia"
+      },
+      "correct": "C",
+      "explanation": "Pangaea was a supercontinent that began to break apart about 200 million years ago, eventually forming today's continents."
+    },
+    {
+      "id": "q074",
+      "text": "What pigment gives plants their green color?",
+      "options": {
+        "A": "Carotene",
+        "B": "Chlorophyll",
+        "C": "Xanthophyll",
+        "D": "Anthocyanin"
+      },
+      "correct": "B",
+      "explanation": "Chlorophyll absorbs red and blue light while reflecting green, giving plants their characteristic color."
+    },
+    {
+      "id": "q075",
+      "text": "What is the half-life of Carbon-14 approximately?",
+      "options": {
+        "A": "730 years",
+        "B": "5,730 years",
+        "C": "57,300 years",
+        "D": "573,000 years"
+      },
+      "correct": "B",
+      "explanation": "Carbon-14 has a half-life of approximately 5,730 years, making it useful for dating organic materials up to about 50,000 years old."
+    },
+    {
+      "id": "q076",
+      "text": "What is the acceleration due to gravity on Earth's surface, approximately?",
+      "options": {
+        "A": "3.7 m/s^2",
+        "B": "9.8 m/s^2",
+        "C": "15.2 m/s^2",
+        "D": "24.8 m/s^2"
+      },
+      "correct": "B",
+      "explanation": "The acceleration due to gravity at Earth's surface is approximately 9.8 m/s^2 (often rounded to 10 m/s^2)."
+    },
+    {
+      "id": "q077",
+      "text": "What is the term for an organism that can produce its own food?",
+      "options": {
+        "A": "Heterotroph",
+        "B": "Autotroph",
+        "C": "Decomposer",
+        "D": "Consumer"
+      },
+      "correct": "B",
+      "explanation": "Autotrophs (like plants and some bacteria) produce their own food through photosynthesis or chemosynthesis."
+    },
+    {
+      "id": "q078",
+      "text": "What is the strongest type of intermolecular force?",
+      "options": {
+        "A": "London dispersion forces",
+        "B": "Dipole-dipole interactions",
+        "C": "Hydrogen bonding",
+        "D": "Ion-dipole forces"
+      },
+      "correct": "D",
+      "explanation": "Ion-dipole forces (between an ion and a polar molecule) are the strongest intermolecular forces."
+    },
+    {
+      "id": "q079",
+      "text": "What is the Mohs hardness of talc?",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "5"
+      },
+      "correct": "A",
+      "explanation": "Talc has a Mohs hardness of 1, making it the softest mineral on the scale."
+    },
+    {
+      "id": "q080",
+      "text": "What is the theory that describes the behavior of objects at very small scales, such as atoms and photons?",
+      "options": {
+        "A": "General relativity",
+        "B": "String theory",
+        "C": "Quantum mechanics",
+        "D": "Classical mechanics"
+      },
+      "correct": "C",
+      "explanation": "Quantum mechanics describes the behavior of matter and energy at atomic and subatomic scales, where classical physics breaks down."
+    }
+  ]
+}

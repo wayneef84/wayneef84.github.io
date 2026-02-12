@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "music_001",
+    "title": "Music & Artists",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Music", "Artists", "Genres", "Instruments"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which band released the album 'Abbey Road' in 1969?",
+      "options": {
+        "A": "The Rolling Stones",
+        "B": "The Beatles",
+        "C": "The Who",
+        "D": "Led Zeppelin"
+      },
+      "correct": "B",
+      "explanation": "Abbey Road was the eleventh studio album by The Beatles, released in September 1969."
+    },
+    {
+      "id": "q002",
+      "text": "How many strings does a standard guitar have?",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "8"
+      },
+      "correct": "C",
+      "explanation": "A standard guitar has 6 strings, typically tuned E-A-D-G-B-E."
+    },
+    {
+      "id": "q003",
+      "text": "What does the musical term 'forte' mean?",
+      "options": {
+        "A": "Slowly",
+        "B": "Softly",
+        "C": "Loudly",
+        "D": "Quickly"
+      },
+      "correct": "C",
+      "explanation": "Forte is an Italian musical term meaning loud or strong."
+    },
+    {
+      "id": "q004",
+      "text": "Which artist is known as the 'King of Pop'?",
+      "options": {
+        "A": "Prince",
+        "B": "Elvis Presley",
+        "C": "Michael Jackson",
+        "D": "Stevie Wonder"
+      },
+      "correct": "C",
+      "explanation": "Michael Jackson earned the title 'King of Pop' due to his massive influence on music and culture."
+    },
+    {
+      "id": "q005",
+      "text": "What instrument does a drummer in a standard rock band primarily play?",
+      "options": {
+        "A": "Timpani",
+        "B": "Drum kit",
+        "C": "Bongos",
+        "D": "Xylophone"
+      },
+      "correct": "B",
+      "explanation": "A standard rock drummer plays a drum kit, which includes bass drum, snare, toms, hi-hat, and cymbals."
+    },
+    {
+      "id": "q006",
+      "text": "Which composer wrote the 'Moonlight Sonata'?",
+      "options": {
+        "A": "Wolfgang Amadeus Mozart",
+        "B": "Johann Sebastian Bach",
+        "C": "Ludwig van Beethoven",
+        "D": "Frederic Chopin"
+      },
+      "correct": "C",
+      "explanation": "Beethoven composed Piano Sonata No. 14, commonly known as the Moonlight Sonata, in 1801."
+    },
+    {
+      "id": "q007",
+      "text": "What genre of music originated in the African American communities of New Orleans in the late 19th century?",
+      "options": {
+        "A": "Blues",
+        "B": "Jazz",
+        "C": "Rock and Roll",
+        "D": "Gospel"
+      },
+      "correct": "B",
+      "explanation": "Jazz originated in New Orleans in the late 19th and early 20th centuries, blending African and European musical traditions."
+    },
+    {
+      "id": "q008",
+      "text": "Which one-hit wonder band sang 'Take On Me' in 1985?",
+      "options": {
+        "A": "Flock of Seagulls",
+        "B": "Devo",
+        "C": "a-ha",
+        "D": "Kajagoogoo"
+      },
+      "correct": "C",
+      "explanation": "The Norwegian band a-ha had their biggest hit with 'Take On Me,' known for its innovative rotoscope music video."
+    },
+    {
+      "id": "q009",
+      "text": "What is the largest instrument in the string family of a standard orchestra?",
+      "options": {
+        "A": "Cello",
+        "B": "Viola",
+        "C": "Double bass",
+        "D": "Harp"
+      },
+      "correct": "C",
+      "explanation": "The double bass (also called contrabass) is the largest and lowest-pitched bowed string instrument in the orchestra."
+    },
+    {
+      "id": "q010",
+      "text": "Which famous music festival took place on a dairy farm in Bethel, New York, in August 1969?",
+      "options": {
+        "A": "Monterey Pop Festival",
+        "B": "Woodstock",
+        "C": "Isle of Wight Festival",
+        "D": "Glastonbury"
+      },
+      "correct": "B",
+      "explanation": "Woodstock attracted over 400,000 people and became a defining moment of the 1960s counterculture."
+    },
+    {
+      "id": "q011",
+      "text": "What is the best-selling album of all time worldwide?",
+      "options": {
+        "A": "Back in Black by AC/DC",
+        "B": "The Dark Side of the Moon by Pink Floyd",
+        "C": "Thriller by Michael Jackson",
+        "D": "Rumours by Fleetwood Mac"
+      },
+      "correct": "C",
+      "explanation": "Thriller by Michael Jackson has sold an estimated 66-70 million copies worldwide, making it the best-selling album ever."
+    },
+    {
+      "id": "q012",
+      "text": "In music notation, how many beats does a whole note receive in 4/4 time?",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4"
+      },
+      "correct": "D",
+      "explanation": "In 4/4 time, a whole note receives 4 beats, filling an entire measure."
+    },
+    {
+      "id": "q013",
+      "text": "Which rapper's real name is Marshall Bruce Mathers III?",
+      "options": {
+        "A": "Jay-Z",
+        "B": "Eminem",
+        "C": "Kanye West",
+        "D": "Snoop Dogg"
+      },
+      "correct": "B",
+      "explanation": "Eminem, born Marshall Bruce Mathers III, is one of the best-selling music artists of all time."
+    },
+    {
+      "id": "q014",
+      "text": "What key is traditionally considered the 'saddest' key in classical music?",
+      "options": {
+        "A": "C major",
+        "B": "G major",
+        "C": "D minor",
+        "D": "A major"
+      },
+      "correct": "C",
+      "explanation": "D minor has historically been associated with melancholy and sadness in Western classical music tradition."
+    },
+    {
+      "id": "q015",
+      "text": "Which country is the origin of reggae music?",
+      "options": {
+        "A": "Cuba",
+        "B": "Trinidad and Tobago",
+        "C": "Jamaica",
+        "D": "Brazil"
+      },
+      "correct": "C",
+      "explanation": "Reggae originated in Jamaica in the late 1960s, with Bob Marley becoming its most famous ambassador."
+    },
+    {
+      "id": "q016",
+      "text": "What instrument is Yo-Yo Ma famous for playing?",
+      "options": {
+        "A": "Violin",
+        "B": "Piano",
+        "C": "Cello",
+        "D": "Flute"
+      },
+      "correct": "C",
+      "explanation": "Yo-Yo Ma is a world-renowned cellist who has won 19 Grammy Awards."
+    },
+    {
+      "id": "q017",
+      "text": "Which artist recorded the album 'Purple Rain' in 1984?",
+      "options": {
+        "A": "Michael Jackson",
+        "B": "David Bowie",
+        "C": "Prince",
+        "D": "George Michael"
+      },
+      "correct": "C",
+      "explanation": "Purple Rain was Prince's sixth studio album and the soundtrack to the film of the same name."
+    },
+    {
+      "id": "q018",
+      "text": "How many keys does a standard piano have?",
+      "options": {
+        "A": "76",
+        "B": "88",
+        "C": "92",
+        "D": "100"
+      },
+      "correct": "B",
+      "explanation": "A standard full-size piano has 88 keys: 52 white and 36 black."
+    },
+    {
+      "id": "q019",
+      "text": "Which band is known for the song 'Bohemian Rhapsody'?",
+      "options": {
+        "A": "Led Zeppelin",
+        "B": "Queen",
+        "C": "Pink Floyd",
+        "D": "The Eagles"
+      },
+      "correct": "B",
+      "explanation": "Queen released 'Bohemian Rhapsody' in 1975, written by Freddie Mercury for their album A Night at the Opera."
+    },
+    {
+      "id": "q020",
+      "text": "What musical term describes gradually getting louder?",
+      "options": {
+        "A": "Diminuendo",
+        "B": "Staccato",
+        "C": "Crescendo",
+        "D": "Legato"
+      },
+      "correct": "C",
+      "explanation": "Crescendo is an Italian term meaning a gradual increase in loudness."
+    },
+    {
+      "id": "q021",
+      "text": "Which composer is known as the 'Father of the Symphony'?",
+      "options": {
+        "A": "Mozart",
+        "B": "Haydn",
+        "C": "Beethoven",
+        "D": "Vivaldi"
+      },
+      "correct": "B",
+      "explanation": "Franz Joseph Haydn is often called the Father of the Symphony, having written 104 numbered symphonies."
+    },
+    {
+      "id": "q022",
+      "text": "What is the annual Grammy Awards ceremony officially called?",
+      "options": {
+        "A": "The Academy Awards of Music",
+        "B": "The Music Awards Gala",
+        "C": "The Grammy Awards",
+        "D": "The Recording Academy Awards"
+      },
+      "correct": "C",
+      "explanation": "The Grammy Awards, presented by the Recording Academy, recognize outstanding achievements in the music industry."
+    },
+    {
+      "id": "q023",
+      "text": "Which artist has won the most Grammy Awards of all time?",
+      "options": {
+        "A": "Quincy Jones",
+        "B": "Beyonce",
+        "C": "Georg Solti",
+        "D": "Stevie Wonder"
+      },
+      "correct": "B",
+      "explanation": "Beyonce holds the record for the most Grammy wins of all time, surpassing Georg Solti's long-held record."
+    },
+    {
+      "id": "q024",
+      "text": "What type of instrument is a didgeridoo?",
+      "options": {
+        "A": "String",
+        "B": "Percussion",
+        "C": "Wind",
+        "D": "Keyboard"
+      },
+      "correct": "C",
+      "explanation": "The didgeridoo is an Australian Aboriginal wind instrument, traditionally made from eucalyptus wood."
+    },
+    {
+      "id": "q025",
+      "text": "Which band released 'Stairway to Heaven'?",
+      "options": {
+        "A": "Black Sabbath",
+        "B": "Deep Purple",
+        "C": "Led Zeppelin",
+        "D": "The Doors"
+      },
+      "correct": "C",
+      "explanation": "Led Zeppelin released 'Stairway to Heaven' on their 1971 album Led Zeppelin IV."
+    },
+    {
+      "id": "q026",
+      "text": "In a standard musical scale, how many notes are there before the scale repeats?",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "8",
+        "D": "12"
+      },
+      "correct": "B",
+      "explanation": "A standard major or minor scale has 7 unique notes before repeating the root note an octave higher."
+    },
+    {
+      "id": "q027",
+      "text": "Which genre of music is characterized by a 'four-on-the-floor' beat and originated in Chicago clubs in the early 1980s?",
+      "options": {
+        "A": "Techno",
+        "B": "House",
+        "C": "Drum and Bass",
+        "D": "Trance"
+      },
+      "correct": "B",
+      "explanation": "House music originated in Chicago in the early 1980s, named after The Warehouse nightclub."
+    },
+    {
+      "id": "q028",
+      "text": "What was Elvis Presley's first number-one hit in the United States?",
+      "options": {
+        "A": "Jailhouse Rock",
+        "B": "Hound Dog",
+        "C": "Heartbreak Hotel",
+        "D": "Love Me Tender"
+      },
+      "correct": "C",
+      "explanation": "Heartbreak Hotel reached number one on the Billboard pop chart in 1956, becoming Elvis's first chart-topping single."
+    },
+    {
+      "id": "q029",
+      "text": "Which instrument family does the French horn belong to?",
+      "options": {
+        "A": "Woodwind",
+        "B": "Brass",
+        "C": "Percussion",
+        "D": "String"
+      },
+      "correct": "B",
+      "explanation": "The French horn is a brass instrument, played by buzzing the lips into a mouthpiece."
+    },
+    {
+      "id": "q030",
+      "text": "Who composed 'The Four Seasons'?",
+      "options": {
+        "A": "Johann Sebastian Bach",
+        "B": "Antonio Vivaldi",
+        "C": "George Frideric Handel",
+        "D": "Franz Schubert"
+      },
+      "correct": "B",
+      "explanation": "Antonio Vivaldi composed The Four Seasons around 1723, a set of four violin concertos."
+    },
+    {
+      "id": "q031",
+      "text": "Which music festival is held annually in Indio, California?",
+      "options": {
+        "A": "Lollapalooza",
+        "B": "Bonnaroo",
+        "C": "Coachella",
+        "D": "Austin City Limits"
+      },
+      "correct": "C",
+      "explanation": "The Coachella Valley Music and Arts Festival has been held annually in Indio, California since 1999."
+    },
+    {
+      "id": "q032",
+      "text": "What is the term for the speed or pace of a piece of music?",
+      "options": {
+        "A": "Pitch",
+        "B": "Tempo",
+        "C": "Timbre",
+        "D": "Dynamics"
+      },
+      "correct": "B",
+      "explanation": "Tempo refers to the speed at which a piece of music is played, typically measured in beats per minute (BPM)."
+    },
+    {
+      "id": "q033",
+      "text": "Which singer is known as the 'Queen of Soul'?",
+      "options": {
+        "A": "Diana Ross",
+        "B": "Aretha Franklin",
+        "C": "Whitney Houston",
+        "D": "Tina Turner"
+      },
+      "correct": "B",
+      "explanation": "Aretha Franklin earned the title 'Queen of Soul' for her powerful voice and contributions to soul, R&B, and gospel music."
+    },
+    {
+      "id": "q034",
+      "text": "What does 'BPM' stand for in music?",
+      "options": {
+        "A": "Bass Per Measure",
+        "B": "Beats Per Minute",
+        "C": "Bars Per Movement",
+        "D": "Base Pitch Modifier"
+      },
+      "correct": "B",
+      "explanation": "BPM stands for Beats Per Minute and is used to measure the tempo of a piece of music."
+    },
+    {
+      "id": "q035",
+      "text": "Which band had the hit 'Smells Like Teen Spirit' in 1991?",
+      "options": {
+        "A": "Pearl Jam",
+        "B": "Soundgarden",
+        "C": "Nirvana",
+        "D": "Alice in Chains"
+      },
+      "correct": "C",
+      "explanation": "Nirvana's 'Smells Like Teen Spirit' became the anthem of the grunge movement and is from the album Nevermind."
+    },
+    {
+      "id": "q036",
+      "text": "What is the lowest female singing voice type?",
+      "options": {
+        "A": "Soprano",
+        "B": "Mezzo-soprano",
+        "C": "Contralto",
+        "D": "Tenor"
+      },
+      "correct": "C",
+      "explanation": "Contralto (or alto) is the lowest female singing voice type, with a range typically from F3 to F5."
+    },
+    {
+      "id": "q037",
+      "text": "Which legendary guitarist was known for playing a left-handed Fender Stratocaster upside down?",
+      "options": {
+        "A": "Eric Clapton",
+        "B": "Jimi Hendrix",
+        "C": "Jimmy Page",
+        "D": "B.B. King"
+      },
+      "correct": "B",
+      "explanation": "Jimi Hendrix, a left-handed player, famously played a right-handed Stratocaster flipped upside down."
+    },
+    {
+      "id": "q038",
+      "text": "What genre did the band Kraftwerk help pioneer in the 1970s?",
+      "options": {
+        "A": "Punk rock",
+        "B": "Progressive rock",
+        "C": "Electronic music",
+        "D": "New wave"
+      },
+      "correct": "C",
+      "explanation": "The German band Kraftwerk are widely regarded as pioneers of electronic music, influencing synth-pop, techno, and more."
+    },
+    {
+      "id": "q039",
+      "text": "How many musicians are in a string quartet?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "correct": "B",
+      "explanation": "A string quartet consists of 4 musicians: two violinists, a violist, and a cellist."
+    },
+    {
+      "id": "q040",
+      "text": "Which artist released the album 'Lemonade' in 2016?",
+      "options": {
+        "A": "Rihanna",
+        "B": "Adele",
+        "C": "Beyonce",
+        "D": "Taylor Swift"
+      },
+      "correct": "C",
+      "explanation": "Beyonce released Lemonade as a visual album in April 2016 to critical acclaim."
+    },
+    {
+      "id": "q041",
+      "text": "What is the Italian term for playing music very softly?",
+      "options": {
+        "A": "Fortissimo",
+        "B": "Mezzo piano",
+        "C": "Pianissimo",
+        "D": "Sforzando"
+      },
+      "correct": "C",
+      "explanation": "Pianissimo (pp) means very soft, softer than piano (p)."
+    },
+    {
+      "id": "q042",
+      "text": "Which classical composer became deaf later in life but continued to compose?",
+      "options": {
+        "A": "Mozart",
+        "B": "Bach",
+        "C": "Beethoven",
+        "D": "Handel"
+      },
+      "correct": "C",
+      "explanation": "Beethoven began losing his hearing in his late 20s and was nearly totally deaf by his mid-40s, yet composed some of his greatest works."
+    },
+    {
+      "id": "q043",
+      "text": "What is the name of the annual UK music festival held at Worthy Farm in Somerset?",
+      "options": {
+        "A": "Reading Festival",
+        "B": "Glastonbury",
+        "C": "Download Festival",
+        "D": "Isle of Wight Festival"
+      },
+      "correct": "B",
+      "explanation": "Glastonbury Festival has been held at Worthy Farm in Pilton, Somerset since 1970."
+    },
+    {
+      "id": "q044",
+      "text": "Which one-hit wonder band performed 'Come On Eileen' in 1982?",
+      "options": {
+        "A": "Dexys Midnight Runners",
+        "B": "Soft Cell",
+        "C": "Madness",
+        "D": "The Specials"
+      },
+      "correct": "A",
+      "explanation": "Dexys Midnight Runners had their biggest hit with 'Come On Eileen,' which topped charts on both sides of the Atlantic."
+    },
+    {
+      "id": "q045",
+      "text": "What instrument does a concertmaster of an orchestra play?",
+      "options": {
+        "A": "Cello",
+        "B": "Piano",
+        "C": "Violin",
+        "D": "Flute"
+      },
+      "correct": "C",
+      "explanation": "The concertmaster is the lead first violinist of the orchestra, sitting in the first chair."
+    },
+    {
+      "id": "q046",
+      "text": "Which country is K-pop originally from?",
+      "options": {
+        "A": "Japan",
+        "B": "China",
+        "C": "South Korea",
+        "D": "Thailand"
+      },
+      "correct": "C",
+      "explanation": "K-pop (Korean pop) originated in South Korea and has become a global cultural phenomenon."
+    },
+    {
+      "id": "q047",
+      "text": "What is the interval between two notes that are 12 semitones apart called?",
+      "options": {
+        "A": "Fifth",
+        "B": "Seventh",
+        "C": "Octave",
+        "D": "Tritone"
+      },
+      "correct": "C",
+      "explanation": "An octave spans 12 semitones (half steps) and represents the same note at a higher or lower pitch."
+    },
+    {
+      "id": "q048",
+      "text": "Which hip-hop group released the album 'Licensed to Ill' in 1986?",
+      "options": {
+        "A": "Run-DMC",
+        "B": "Beastie Boys",
+        "C": "Public Enemy",
+        "D": "N.W.A."
+      },
+      "correct": "B",
+      "explanation": "Licensed to Ill by the Beastie Boys was the first rap album to reach number one on the Billboard 200."
+    },
+    {
+      "id": "q049",
+      "text": "Which woodwind instrument is typically the highest-pitched in an orchestra?",
+      "options": {
+        "A": "Oboe",
+        "B": "Clarinet",
+        "C": "Piccolo",
+        "D": "Flute"
+      },
+      "correct": "C",
+      "explanation": "The piccolo is the highest-pitched woodwind instrument, sounding one octave higher than a standard flute."
+    },
+    {
+      "id": "q050",
+      "text": "Who wrote the opera 'The Marriage of Figaro'?",
+      "options": {
+        "A": "Giuseppe Verdi",
+        "B": "Wolfgang Amadeus Mozart",
+        "C": "Richard Wagner",
+        "D": "Giacomo Puccini"
+      },
+      "correct": "B",
+      "explanation": "Mozart composed The Marriage of Figaro in 1786, with a libretto by Lorenzo Da Ponte."
+    },
+    {
+      "id": "q051",
+      "text": "What record label did The Beatles found in 1968?",
+      "options": {
+        "A": "Parlophone",
+        "B": "Capitol Records",
+        "C": "Apple Records",
+        "D": "EMI"
+      },
+      "correct": "C",
+      "explanation": "The Beatles founded Apple Records in 1968 as part of their Apple Corps multimedia corporation."
+    },
+    {
+      "id": "q052",
+      "text": "Which Grammy Award category is considered the most prestigious?",
+      "options": {
+        "A": "Best New Artist",
+        "B": "Song of the Year",
+        "C": "Album of the Year",
+        "D": "Record of the Year"
+      },
+      "correct": "C",
+      "explanation": "Album of the Year is widely considered the most prestigious Grammy, awarded to the artist and production team."
+    },
+    {
+      "id": "q053",
+      "text": "What is a group of five musicians called?",
+      "options": {
+        "A": "Quartet",
+        "B": "Quintet",
+        "C": "Sextet",
+        "D": "Ensemble"
+      },
+      "correct": "B",
+      "explanation": "A quintet is a group of five musicians performing together."
+    },
+    {
+      "id": "q054",
+      "text": "Which artist is credited with popularizing the 'moonwalk' dance move?",
+      "options": {
+        "A": "James Brown",
+        "B": "Michael Jackson",
+        "C": "Fred Astaire",
+        "D": "Usher"
+      },
+      "correct": "B",
+      "explanation": "Michael Jackson popularized the moonwalk, first performing it during a TV special in 1983."
+    },
+    {
+      "id": "q055",
+      "text": "What does the time signature 3/4 mean?",
+      "options": {
+        "A": "3 beats per measure, quarter note gets one beat",
+        "B": "4 beats per measure, third note gets one beat",
+        "C": "3 measures per section",
+        "D": "Three-fourths of a beat per note"
+      },
+      "correct": "A",
+      "explanation": "In 3/4 time, there are 3 beats per measure and the quarter note receives one beat. Waltzes are commonly in 3/4."
+    },
+    {
+      "id": "q056",
+      "text": "Which band's lead singer was Freddie Mercury?",
+      "options": {
+        "A": "Def Leppard",
+        "B": "Queen",
+        "C": "Genesis",
+        "D": "Journey"
+      },
+      "correct": "B",
+      "explanation": "Freddie Mercury was the iconic lead vocalist of Queen from the band's formation in 1970 until his death in 1991."
+    },
+    {
+      "id": "q057",
+      "text": "What genre of music is characterized by its use of a 'backbeat' and originated in the 1940s-50s African American communities?",
+      "options": {
+        "A": "Country",
+        "B": "Rhythm and Blues (R&B)",
+        "C": "Folk",
+        "D": "Bluegrass"
+      },
+      "correct": "B",
+      "explanation": "R&B originated in African American communities in the 1940s, combining jazz, gospel, and blues elements."
+    },
+    {
+      "id": "q058",
+      "text": "Which instrument is Pablo Casals most famous for playing?",
+      "options": {
+        "A": "Violin",
+        "B": "Piano",
+        "C": "Cello",
+        "D": "Guitar"
+      },
+      "correct": "C",
+      "explanation": "Pablo Casals was a legendary Spanish cellist, widely regarded as one of the greatest cellists of all time."
+    },
+    {
+      "id": "q059",
+      "text": "What is the name of the clef typically used for higher-pitched instruments like flute and violin?",
+      "options": {
+        "A": "Bass clef",
+        "B": "Treble clef",
+        "C": "Alto clef",
+        "D": "Tenor clef"
+      },
+      "correct": "B",
+      "explanation": "The treble clef (or G clef) is used for higher-pitched instruments and the right hand of piano music."
+    },
+    {
+      "id": "q060",
+      "text": "Which one-hit wonder artist sang 'Somebody That I Used to Know' in 2011?",
+      "options": {
+        "A": "Gotye",
+        "B": "Owl City",
+        "C": "LMFAO",
+        "D": "Carly Rae Jepsen"
+      },
+      "correct": "A",
+      "explanation": "Gotye (Wouter De Backer) had a worldwide hit with 'Somebody That I Used to Know' featuring Kimbra."
+    },
+    {
+      "id": "q061",
+      "text": "Which famous composer wrote 'The Nutcracker' ballet?",
+      "options": {
+        "A": "Igor Stravinsky",
+        "B": "Sergei Prokofiev",
+        "C": "Pyotr Ilyich Tchaikovsky",
+        "D": "Nikolai Rimsky-Korsakov"
+      },
+      "correct": "C",
+      "explanation": "Tchaikovsky composed The Nutcracker in 1892, and it has become one of the most popular ballets performed during the holiday season."
+    },
+    {
+      "id": "q062",
+      "text": "What music genre is most associated with Nashville, Tennessee?",
+      "options": {
+        "A": "Jazz",
+        "B": "Blues",
+        "C": "Country",
+        "D": "Soul"
+      },
+      "correct": "C",
+      "explanation": "Nashville is known as 'Music City' and is the historic center of the country music industry."
+    },
+    {
+      "id": "q063",
+      "text": "How many valves does a standard trumpet have?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "correct": "B",
+      "explanation": "A standard trumpet has 3 piston valves that are used to change the pitch."
+    },
+    {
+      "id": "q064",
+      "text": "Which album by Pink Floyd features a prism on its cover?",
+      "options": {
+        "A": "The Wall",
+        "B": "Wish You Were Here",
+        "C": "The Dark Side of the Moon",
+        "D": "Animals"
+      },
+      "correct": "C",
+      "explanation": "The Dark Side of the Moon (1973) features the iconic prism cover art designed by Storm Thorgerson."
+    },
+    {
+      "id": "q065",
+      "text": "What is the term for a recurring musical theme associated with a character or idea in an opera or film score?",
+      "options": {
+        "A": "Riff",
+        "B": "Leitmotif",
+        "C": "Cadenza",
+        "D": "Ostinato"
+      },
+      "correct": "B",
+      "explanation": "A leitmotif is a recurring musical theme associated with a particular person, place, or idea, popularized by Wagner."
+    },
+    {
+      "id": "q066",
+      "text": "Which artist released '21' and '25', two of the best-selling albums of the 2010s?",
+      "options": {
+        "A": "Taylor Swift",
+        "B": "Lady Gaga",
+        "C": "Adele",
+        "D": "Rihanna"
+      },
+      "correct": "C",
+      "explanation": "Adele's albums 21 (2011) and 25 (2015) were massive commercial successes, each selling over 20 million copies."
+    },
+    {
+      "id": "q067",
+      "text": "What is the standard tuning of the four strings on a bass guitar from lowest to highest?",
+      "options": {
+        "A": "E-A-D-G",
+        "B": "D-G-B-E",
+        "C": "G-D-A-E",
+        "D": "C-F-A-D"
+      },
+      "correct": "A",
+      "explanation": "A standard 4-string bass guitar is tuned E-A-D-G, the same as the lowest four strings of a guitar."
+    },
+    {
+      "id": "q068",
+      "text": "Which music festival in Pilton, England is the largest greenfield festival in the world?",
+      "options": {
+        "A": "Glastonbury",
+        "B": "Download Festival",
+        "C": "Reading Festival",
+        "D": "Creamfields"
+      },
+      "correct": "A",
+      "explanation": "Glastonbury Festival, held at Worthy Farm in Pilton, is the largest greenfield music festival in the world."
+    },
+    {
+      "id": "q069",
+      "text": "Which composer wrote the 'Ride of the Valkyries'?",
+      "options": {
+        "A": "Johannes Brahms",
+        "B": "Richard Wagner",
+        "C": "Gustav Mahler",
+        "D": "Richard Strauss"
+      },
+      "correct": "B",
+      "explanation": "Richard Wagner composed the Ride of the Valkyries as part of his opera Die Walkure, the second of the Ring Cycle."
+    },
+    {
+      "id": "q070",
+      "text": "What type of music uses a 12-bar chord progression as its most common form?",
+      "options": {
+        "A": "Classical",
+        "B": "Blues",
+        "C": "Reggae",
+        "D": "Polka"
+      },
+      "correct": "B",
+      "explanation": "The 12-bar blues is one of the most prominent chord progressions in popular music, foundational to blues and rock."
+    },
+    {
+      "id": "q071",
+      "text": "Which K-pop group released the album 'Map of the Soul: 7' in 2020?",
+      "options": {
+        "A": "BLACKPINK",
+        "B": "EXO",
+        "C": "BTS",
+        "D": "TWICE"
+      },
+      "correct": "C",
+      "explanation": "BTS released Map of the Soul: 7 in February 2020, which debuted at number one in multiple countries."
+    },
+    {
+      "id": "q072",
+      "text": "What does 'a cappella' mean in music?",
+      "options": {
+        "A": "With orchestra",
+        "B": "Without instrumental accompaniment",
+        "C": "At a fast tempo",
+        "D": "In a church style"
+      },
+      "correct": "B",
+      "explanation": "A cappella refers to singing without instrumental accompaniment. The term comes from Italian meaning 'in the manner of the chapel.'"
+    },
+    {
+      "id": "q073",
+      "text": "Which one-hit wonder band sang 'Tainted Love' in 1981?",
+      "options": {
+        "A": "Tears for Fears",
+        "B": "Soft Cell",
+        "C": "Depeche Mode",
+        "D": "New Order"
+      },
+      "correct": "B",
+      "explanation": "Soft Cell's synth-pop cover of 'Tainted Love' became one of the biggest hits of the 1980s."
+    },
+    {
+      "id": "q074",
+      "text": "What instrument family does the saxophone belong to?",
+      "options": {
+        "A": "Brass",
+        "B": "Woodwind",
+        "C": "String",
+        "D": "Percussion"
+      },
+      "correct": "B",
+      "explanation": "Despite being made of brass, the saxophone is classified as a woodwind instrument because it uses a reed to produce sound."
+    },
+    {
+      "id": "q075",
+      "text": "Which rock band was fronted by vocalist Robert Plant?",
+      "options": {
+        "A": "The Who",
+        "B": "Led Zeppelin",
+        "C": "Deep Purple",
+        "D": "Black Sabbath"
+      },
+      "correct": "B",
+      "explanation": "Robert Plant was the lead vocalist of Led Zeppelin from the band's formation in 1968."
+    },
+    {
+      "id": "q076",
+      "text": "What is the highest male singing voice type?",
+      "options": {
+        "A": "Baritone",
+        "B": "Bass",
+        "C": "Tenor",
+        "D": "Countertenor"
+      },
+      "correct": "D",
+      "explanation": "Countertenor is the highest male voice type, singing in the alto or mezzo-soprano range using falsetto or head voice."
+    },
+    {
+      "id": "q077",
+      "text": "Which city is most associated with the birth of Motown Records?",
+      "options": {
+        "A": "New York",
+        "B": "Detroit",
+        "C": "Chicago",
+        "D": "Memphis"
+      },
+      "correct": "B",
+      "explanation": "Motown Records was founded by Berry Gordy in Detroit, Michigan in 1959. The name comes from 'Motor Town.'"
+    },
+    {
+      "id": "q078",
+      "text": "What musical term describes a note that is neither sharp nor flat?",
+      "options": {
+        "A": "Augmented",
+        "B": "Natural",
+        "C": "Diminished",
+        "D": "Neutral"
+      },
+      "correct": "B",
+      "explanation": "A natural note is one that is neither sharp nor flat, indicated by the natural sign in music notation."
+    },
+    {
+      "id": "q079",
+      "text": "Which composer wrote 'Clair de Lune'?",
+      "options": {
+        "A": "Maurice Ravel",
+        "B": "Claude Debussy",
+        "C": "Erik Satie",
+        "D": "Camille Saint-Saens"
+      },
+      "correct": "B",
+      "explanation": "Claude Debussy composed Clair de Lune as the third movement of his Suite bergamasque, published in 1905."
+    },
+    {
+      "id": "q080",
+      "text": "Which legendary music festival was held at Max Yasgur's farm?",
+      "options": {
+        "A": "Altamont Free Concert",
+        "B": "Monterey Pop Festival",
+        "C": "Woodstock",
+        "D": "Newport Folk Festival"
+      },
+      "correct": "C",
+      "explanation": "The 1969 Woodstock festival was held on Max Yasgur's dairy farm in Bethel, New York."
+    }
+  ]
+}

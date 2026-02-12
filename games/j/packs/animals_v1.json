@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "animals_001",
+    "title": "Animals & Nature",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Animals", "Nature", "Wildlife", "Marine"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is the fastest land animal?",
+      "options": {
+        "A": "Pronghorn antelope",
+        "B": "Cheetah",
+        "C": "Greyhound",
+        "D": "Lion"
+      },
+      "correct": "B",
+      "explanation": "The cheetah can reach speeds of up to 70 mph (112 km/h) in short bursts."
+    },
+    {
+      "id": "q002",
+      "text": "Which bird is known for its ability to mimic human speech?",
+      "options": {
+        "A": "Bald eagle",
+        "B": "Crow",
+        "C": "African grey parrot",
+        "D": "Blue jay"
+      },
+      "correct": "C",
+      "explanation": "African grey parrots are considered one of the best mimics in the animal kingdom, capable of learning hundreds of words."
+    },
+    {
+      "id": "q003",
+      "text": "What is the largest animal to have ever lived on Earth?",
+      "options": {
+        "A": "African elephant",
+        "B": "Tyrannosaurus rex",
+        "C": "Blue whale",
+        "D": "Argentinosaurus"
+      },
+      "correct": "C",
+      "explanation": "The blue whale can reach lengths of up to 100 feet and weigh over 200 tons, making it the largest animal ever known."
+    },
+    {
+      "id": "q004",
+      "text": "How many legs does a spider have?",
+      "options": {
+        "A": "6",
+        "B": "8",
+        "C": "10",
+        "D": "12"
+      },
+      "correct": "B",
+      "explanation": "All spiders are arachnids and have 8 legs, distinguishing them from insects which have 6."
+    },
+    {
+      "id": "q005",
+      "text": "Which marine animal has three hearts?",
+      "options": {
+        "A": "Jellyfish",
+        "B": "Sea turtle",
+        "C": "Octopus",
+        "D": "Dolphin"
+      },
+      "correct": "C",
+      "explanation": "Octopuses have three hearts: two pump blood to the gills and one pumps it to the rest of the body."
+    },
+    {
+      "id": "q006",
+      "text": "What is a group of wolves called?",
+      "options": {
+        "A": "Herd",
+        "B": "Flock",
+        "C": "Pack",
+        "D": "Pride"
+      },
+      "correct": "C",
+      "explanation": "A group of wolves is called a pack, typically led by an alpha pair."
+    },
+    {
+      "id": "q007",
+      "text": "Which reptile is known for changing its color to blend in with its surroundings?",
+      "options": {
+        "A": "Iguana",
+        "B": "Gecko",
+        "C": "Chameleon",
+        "D": "Komodo dragon"
+      },
+      "correct": "C",
+      "explanation": "Chameleons can change color for camouflage, temperature regulation, and communication with other chameleons."
+    },
+    {
+      "id": "q008",
+      "text": "What is the only mammal capable of true sustained flight?",
+      "options": {
+        "A": "Flying squirrel",
+        "B": "Sugar glider",
+        "C": "Colugo",
+        "D": "Bat"
+      },
+      "correct": "D",
+      "explanation": "Bats are the only mammals that can truly fly. Flying squirrels and sugar gliders only glide."
+    },
+    {
+      "id": "q009",
+      "text": "Which insect is responsible for pollinating the majority of the world's crops?",
+      "options": {
+        "A": "Butterfly",
+        "B": "Honeybee",
+        "C": "Beetle",
+        "D": "Moth"
+      },
+      "correct": "B",
+      "explanation": "Honeybees are the most important pollinators for agriculture, responsible for pollinating roughly one-third of food crops."
+    },
+    {
+      "id": "q010",
+      "text": "What is the largest species of penguin?",
+      "options": {
+        "A": "King penguin",
+        "B": "Gentoo penguin",
+        "C": "Emperor penguin",
+        "D": "Macaroni penguin"
+      },
+      "correct": "C",
+      "explanation": "Emperor penguins are the tallest and heaviest of all penguin species, standing up to 4 feet tall."
+    },
+    {
+      "id": "q011",
+      "text": "Which animal has the longest lifespan?",
+      "options": {
+        "A": "Galapagos tortoise",
+        "B": "Greenland shark",
+        "C": "Bowhead whale",
+        "D": "African elephant"
+      },
+      "correct": "B",
+      "explanation": "Greenland sharks can live for over 400 years, making them the longest-lived vertebrates known."
+    },
+    {
+      "id": "q012",
+      "text": "What type of animal is a Komodo dragon?",
+      "options": {
+        "A": "Dinosaur",
+        "B": "Crocodilian",
+        "C": "Monitor lizard",
+        "D": "Snake"
+      },
+      "correct": "C",
+      "explanation": "The Komodo dragon is the largest living species of monitor lizard, found in Indonesia."
+    },
+    {
+      "id": "q013",
+      "text": "Which animal produces the loudest sound in the animal kingdom?",
+      "options": {
+        "A": "Howler monkey",
+        "B": "Blue whale",
+        "C": "Sperm whale",
+        "D": "African elephant"
+      },
+      "correct": "C",
+      "explanation": "Sperm whales produce clicks that can reach 230 decibels, the loudest sound made by any animal."
+    },
+    {
+      "id": "q014",
+      "text": "What is the primary diet of a panda bear?",
+      "options": {
+        "A": "Fish",
+        "B": "Berries",
+        "C": "Bamboo",
+        "D": "Insects"
+      },
+      "correct": "C",
+      "explanation": "Giant pandas eat almost exclusively bamboo, consuming up to 38 kg (84 lbs) per day."
+    },
+    {
+      "id": "q015",
+      "text": "Which bird lays the largest eggs?",
+      "options": {
+        "A": "Emu",
+        "B": "Ostrich",
+        "C": "Cassowary",
+        "D": "Albatross"
+      },
+      "correct": "B",
+      "explanation": "Ostrich eggs are the largest of any living bird, weighing about 1.4 kg (3 lbs) each."
+    },
+    {
+      "id": "q016",
+      "text": "What is the name for a baby kangaroo?",
+      "options": {
+        "A": "Cub",
+        "B": "Pup",
+        "C": "Joey",
+        "D": "Kit"
+      },
+      "correct": "C",
+      "explanation": "A baby kangaroo is called a joey. It is born very undeveloped and continues growing in its mother's pouch."
+    },
+    {
+      "id": "q017",
+      "text": "Which sea creature is known for squirting ink as a defense mechanism?",
+      "options": {
+        "A": "Sea cucumber",
+        "B": "Pufferfish",
+        "C": "Squid",
+        "D": "Starfish"
+      },
+      "correct": "C",
+      "explanation": "Squid release a cloud of dark ink to confuse predators while they escape."
+    },
+    {
+      "id": "q018",
+      "text": "How many species of rhinoceros exist today?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "7"
+      },
+      "correct": "C",
+      "explanation": "There are five living species: white, black, Indian, Javan, and Sumatran rhinoceros."
+    },
+    {
+      "id": "q019",
+      "text": "Which animal is known as the 'ship of the desert'?",
+      "options": {
+        "A": "Horse",
+        "B": "Camel",
+        "C": "Donkey",
+        "D": "Yak"
+      },
+      "correct": "B",
+      "explanation": "Camels are called the ship of the desert because of their ability to travel long distances across arid terrain."
+    },
+    {
+      "id": "q020",
+      "text": "What type of animal is a seahorse?",
+      "options": {
+        "A": "Crustacean",
+        "B": "Mollusk",
+        "C": "Fish",
+        "D": "Reptile"
+      },
+      "correct": "C",
+      "explanation": "Seahorses are fish belonging to the genus Hippocampus. They breathe through gills and have a swim bladder."
+    },
+    {
+      "id": "q021",
+      "text": "Which great ape is the closest living relative to humans?",
+      "options": {
+        "A": "Gorilla",
+        "B": "Orangutan",
+        "C": "Bonobo",
+        "D": "Gibbon"
+      },
+      "correct": "C",
+      "explanation": "Bonobos and chimpanzees are equally our closest relatives, sharing about 98.7% of our DNA. Bonobos are slightly closer in some behavioral traits."
+    },
+    {
+      "id": "q022",
+      "text": "What is the largest species of shark?",
+      "options": {
+        "A": "Great white shark",
+        "B": "Hammerhead shark",
+        "C": "Whale shark",
+        "D": "Tiger shark"
+      },
+      "correct": "C",
+      "explanation": "The whale shark is the largest fish in the sea, reaching lengths of over 40 feet. Despite its size, it feeds on plankton."
+    },
+    {
+      "id": "q023",
+      "text": "Which continent are lemurs native to?",
+      "options": {
+        "A": "Africa (mainland)",
+        "B": "South America",
+        "C": "Madagascar",
+        "D": "Southeast Asia"
+      },
+      "correct": "C",
+      "explanation": "Lemurs are endemic to Madagascar, the island off the southeast coast of Africa. They are found nowhere else in the wild."
+    },
+    {
+      "id": "q024",
+      "text": "What defense mechanism does a porcupine use?",
+      "options": {
+        "A": "Venom",
+        "B": "Camouflage",
+        "C": "Quills",
+        "D": "Spraying"
+      },
+      "correct": "C",
+      "explanation": "Porcupines are covered in sharp quills (modified hairs) that detach and embed into predators on contact."
+    },
+    {
+      "id": "q025",
+      "text": "Which insect undergoes a complete metamorphosis through four life stages: egg, larva, pupa, and adult?",
+      "options": {
+        "A": "Grasshopper",
+        "B": "Dragonfly",
+        "C": "Butterfly",
+        "D": "Cockroach"
+      },
+      "correct": "C",
+      "explanation": "Butterflies undergo complete metamorphosis: egg, caterpillar (larva), chrysalis (pupa), and adult butterfly."
+    },
+    {
+      "id": "q026",
+      "text": "What is unique about the platypus among mammals?",
+      "options": {
+        "A": "It can fly",
+        "B": "It lays eggs",
+        "C": "It has no fur",
+        "D": "It has no teeth as an adult"
+      },
+      "correct": "B",
+      "explanation": "The platypus is one of only five species of monotremes, mammals that lay eggs instead of giving live birth."
+    },
+    {
+      "id": "q027",
+      "text": "What is the largest land animal currently alive?",
+      "options": {
+        "A": "White rhinoceros",
+        "B": "Hippopotamus",
+        "C": "African bush elephant",
+        "D": "Giraffe"
+      },
+      "correct": "C",
+      "explanation": "The African bush elephant is the largest living land animal, weighing up to 6,000 kg (13,000 lbs)."
+    },
+    {
+      "id": "q028",
+      "text": "Which venomous snake is the longest in the world?",
+      "options": {
+        "A": "Black mamba",
+        "B": "King cobra",
+        "C": "Inland taipan",
+        "D": "Eastern diamondback rattlesnake"
+      },
+      "correct": "B",
+      "explanation": "The king cobra is the world's longest venomous snake, reaching lengths of up to 18 feet (5.5 meters)."
+    },
+    {
+      "id": "q029",
+      "text": "What is the term for animals that are active primarily at night?",
+      "options": {
+        "A": "Diurnal",
+        "B": "Crepuscular",
+        "C": "Nocturnal",
+        "D": "Cathemeral"
+      },
+      "correct": "C",
+      "explanation": "Nocturnal animals are most active during the night. Diurnal means active during the day, and crepuscular means active at dawn and dusk."
+    },
+    {
+      "id": "q030",
+      "text": "Which bird can fly backward?",
+      "options": {
+        "A": "Kingfisher",
+        "B": "Hummingbird",
+        "C": "Swift",
+        "D": "Sparrow"
+      },
+      "correct": "B",
+      "explanation": "Hummingbirds are the only birds that can sustain flight in a backward direction thanks to their unique wing rotation."
+    },
+    {
+      "id": "q031",
+      "text": "What color is the blood of a horseshoe crab?",
+      "options": {
+        "A": "Red",
+        "B": "Green",
+        "C": "Blue",
+        "D": "Clear"
+      },
+      "correct": "C",
+      "explanation": "Horseshoe crab blood is blue because it contains copper-based hemocyanin instead of iron-based hemoglobin."
+    },
+    {
+      "id": "q032",
+      "text": "Which mammal has the longest gestation period?",
+      "options": {
+        "A": "Blue whale",
+        "B": "African elephant",
+        "C": "Giraffe",
+        "D": "Rhinoceros"
+      },
+      "correct": "B",
+      "explanation": "African elephants have the longest gestation period of any mammal at approximately 22 months."
+    },
+    {
+      "id": "q033",
+      "text": "What is the world's most venomous spider by LD50?",
+      "options": {
+        "A": "Black widow",
+        "B": "Brazilian wandering spider",
+        "C": "Sydney funnel-web spider",
+        "D": "Brown recluse"
+      },
+      "correct": "C",
+      "explanation": "The Sydney funnel-web spider is considered the most dangerous spider to humans, with highly toxic venom that can be fatal without treatment."
+    },
+    {
+      "id": "q034",
+      "text": "What is a group of flamingos called?",
+      "options": {
+        "A": "A colony",
+        "B": "A flamboyance",
+        "C": "A flock",
+        "D": "A stand"
+      },
+      "correct": "B",
+      "explanation": "A group of flamingos is called a flamboyance, a fitting name for these colorful birds."
+    },
+    {
+      "id": "q035",
+      "text": "Which animal can regenerate its limbs?",
+      "options": {
+        "A": "Gecko",
+        "B": "Starfish",
+        "C": "Axolotl",
+        "D": "Both B and C"
+      },
+      "correct": "D",
+      "explanation": "Both starfish and axolotls can regenerate lost limbs. Axolotls can even regenerate parts of their brain and heart."
+    },
+    {
+      "id": "q036",
+      "text": "What is the only continent where giraffes live in the wild?",
+      "options": {
+        "A": "Asia",
+        "B": "South America",
+        "C": "Africa",
+        "D": "Australia"
+      },
+      "correct": "C",
+      "explanation": "Giraffes are native to Africa and are found in the wild across several sub-Saharan African countries."
+    },
+    {
+      "id": "q037",
+      "text": "Which animal has the strongest bite force ever recorded?",
+      "options": {
+        "A": "Great white shark",
+        "B": "Saltwater crocodile",
+        "C": "Hippopotamus",
+        "D": "Grizzly bear"
+      },
+      "correct": "B",
+      "explanation": "The saltwater crocodile has the strongest measured bite force of any living animal at about 3,700 PSI."
+    },
+    {
+      "id": "q038",
+      "text": "What is the process called when birds travel long distances seasonally?",
+      "options": {
+        "A": "Hibernation",
+        "B": "Estivation",
+        "C": "Migration",
+        "D": "Nomadism"
+      },
+      "correct": "C",
+      "explanation": "Migration is the seasonal movement of animals between regions, commonly seen in birds traveling to warmer climates in winter."
+    },
+    {
+      "id": "q039",
+      "text": "Which animal's fingerprints are virtually indistinguishable from human fingerprints?",
+      "options": {
+        "A": "Chimpanzee",
+        "B": "Gorilla",
+        "C": "Koala",
+        "D": "Orangutan"
+      },
+      "correct": "C",
+      "explanation": "Koala fingerprints are so similar to human fingerprints that they can be confused even under a microscope."
+    },
+    {
+      "id": "q040",
+      "text": "What kind of animal is a Gila monster?",
+      "options": {
+        "A": "Amphibian",
+        "B": "Lizard",
+        "C": "Snake",
+        "D": "Salamander"
+      },
+      "correct": "B",
+      "explanation": "The Gila monster is a venomous lizard native to the southwestern United States and northwestern Mexico."
+    },
+    {
+      "id": "q041",
+      "text": "How do dolphins sleep without drowning?",
+      "options": {
+        "A": "They float on the surface",
+        "B": "They hold their breath for hours",
+        "C": "They sleep with one brain hemisphere at a time",
+        "D": "They sleep on the ocean floor"
+      },
+      "correct": "C",
+      "explanation": "Dolphins practice unihemispheric sleep, shutting down one half of the brain while the other stays alert to breathe and watch for predators."
+    },
+    {
+      "id": "q042",
+      "text": "Which insect can carry objects 50 times its own body weight?",
+      "options": {
+        "A": "Ant",
+        "B": "Dung beetle",
+        "C": "Grasshopper",
+        "D": "Termite"
+      },
+      "correct": "A",
+      "explanation": "Ants can carry 10 to 50 times their own body weight, depending on the species, thanks to their proportionally strong muscles."
+    },
+    {
+      "id": "q043",
+      "text": "What is the largest living reptile?",
+      "options": {
+        "A": "Komodo dragon",
+        "B": "Leatherback sea turtle",
+        "C": "Saltwater crocodile",
+        "D": "Green anaconda"
+      },
+      "correct": "C",
+      "explanation": "The saltwater crocodile is the largest living reptile, with males reaching over 20 feet in length and weighing over 1,000 kg."
+    },
+    {
+      "id": "q044",
+      "text": "Which bird has the largest wingspan of any living bird?",
+      "options": {
+        "A": "Andean condor",
+        "B": "Wandering albatross",
+        "C": "California condor",
+        "D": "Marabou stork"
+      },
+      "correct": "B",
+      "explanation": "The wandering albatross has the largest wingspan of any living bird, reaching up to 3.5 meters (11.5 feet)."
+    },
+    {
+      "id": "q045",
+      "text": "What is the primary reason coral reefs are bleaching worldwide?",
+      "options": {
+        "A": "Overfishing",
+        "B": "Plastic pollution",
+        "C": "Rising ocean temperatures",
+        "D": "Oil spills"
+      },
+      "correct": "C",
+      "explanation": "Coral bleaching is primarily caused by rising ocean temperatures due to climate change, which stresses the coral and expels the symbiotic algae living in their tissues."
+    },
+    {
+      "id": "q046",
+      "text": "Which animal is known for having the best sense of smell?",
+      "options": {
+        "A": "Bloodhound",
+        "B": "African elephant",
+        "C": "Grizzly bear",
+        "D": "Shark"
+      },
+      "correct": "B",
+      "explanation": "African elephants have the most olfactory receptor genes of any mammal, giving them an extraordinary sense of smell."
+    },
+    {
+      "id": "q047",
+      "text": "What is the collective name for a group of crows?",
+      "options": {
+        "A": "A flock",
+        "B": "A murder",
+        "C": "A parliament",
+        "D": "A conspiracy"
+      },
+      "correct": "B",
+      "explanation": "A group of crows is called a murder, one of the most well-known collective animal nouns."
+    },
+    {
+      "id": "q048",
+      "text": "Which ocean zone is known as the 'twilight zone' where light begins to fade?",
+      "options": {
+        "A": "Epipelagic zone",
+        "B": "Mesopelagic zone",
+        "C": "Bathypelagic zone",
+        "D": "Abyssopelagic zone"
+      },
+      "correct": "B",
+      "explanation": "The mesopelagic zone (200-1000m depth) is called the twilight zone because sunlight fades significantly at this depth."
+    },
+    {
+      "id": "q049",
+      "text": "What is the smallest species of bear?",
+      "options": {
+        "A": "Spectacled bear",
+        "B": "Sloth bear",
+        "C": "Sun bear",
+        "D": "American black bear"
+      },
+      "correct": "C",
+      "explanation": "The sun bear is the smallest bear species, standing about 70 cm tall at the shoulder and weighing 25-65 kg."
+    },
+    {
+      "id": "q050",
+      "text": "Which endangered big cat is native to the Russian Far East?",
+      "options": {
+        "A": "Snow leopard",
+        "B": "Amur leopard",
+        "C": "Clouded leopard",
+        "D": "Siberian lynx"
+      },
+      "correct": "B",
+      "explanation": "The Amur leopard is critically endangered with fewer than 100 left in the wild, living primarily in the Russian Far East."
+    },
+    {
+      "id": "q051",
+      "text": "What is the main characteristic that distinguishes amphibians from reptiles?",
+      "options": {
+        "A": "Amphibians are warm-blooded",
+        "B": "Amphibians have permeable skin and typically require water for reproduction",
+        "C": "Amphibians have scales",
+        "D": "Amphibians only live in water"
+      },
+      "correct": "B",
+      "explanation": "Amphibians have moist, permeable skin and most lay eggs in water, while reptiles have dry, scaly skin and lay eggs on land."
+    },
+    {
+      "id": "q052",
+      "text": "Which animal sleeps the most hours per day (up to 22 hours)?",
+      "options": {
+        "A": "Sloth",
+        "B": "Koala",
+        "C": "Cat",
+        "D": "Brown bat"
+      },
+      "correct": "B",
+      "explanation": "Koalas sleep up to 22 hours per day due to the low nutritional value of their eucalyptus leaf diet, which requires extended rest to conserve energy."
+    },
+    {
+      "id": "q053",
+      "text": "What is the term for an animal that eats both plants and meat?",
+      "options": {
+        "A": "Herbivore",
+        "B": "Carnivore",
+        "C": "Omnivore",
+        "D": "Insectivore"
+      },
+      "correct": "C",
+      "explanation": "Omnivores eat both plant and animal matter. Common examples include bears, pigs, and humans."
+    },
+    {
+      "id": "q054",
+      "text": "Which fish is known for its ability to produce electric shocks?",
+      "options": {
+        "A": "Catfish",
+        "B": "Electric eel",
+        "C": "Stingray",
+        "D": "Pufferfish"
+      },
+      "correct": "B",
+      "explanation": "Electric eels can generate up to 860 volts of electricity, which they use for hunting and self-defense."
+    },
+    {
+      "id": "q055",
+      "text": "What is the largest species of turtle?",
+      "options": {
+        "A": "Galapagos tortoise",
+        "B": "Aldabra giant tortoise",
+        "C": "Leatherback sea turtle",
+        "D": "Green sea turtle"
+      },
+      "correct": "C",
+      "explanation": "The leatherback sea turtle is the largest turtle species, reaching up to 2 meters in length and 700 kg in weight."
+    },
+    {
+      "id": "q056",
+      "text": "Which animal is the national symbol of Australia?",
+      "options": {
+        "A": "Koala",
+        "B": "Platypus",
+        "C": "Kangaroo",
+        "D": "Wombat"
+      },
+      "correct": "C",
+      "explanation": "The kangaroo appears on Australia's coat of arms and is widely recognized as the country's national animal symbol."
+    },
+    {
+      "id": "q057",
+      "text": "What structure do beavers build to create ponds?",
+      "options": {
+        "A": "Burrows",
+        "B": "Lodges",
+        "C": "Dams",
+        "D": "Nests"
+      },
+      "correct": "C",
+      "explanation": "Beavers build dams across streams using sticks, mud, and rocks to create deep ponds where they build their lodges."
+    },
+    {
+      "id": "q058",
+      "text": "Which snake is the longest in the world?",
+      "options": {
+        "A": "Green anaconda",
+        "B": "King cobra",
+        "C": "Reticulated python",
+        "D": "Burmese python"
+      },
+      "correct": "C",
+      "explanation": "The reticulated python is the world's longest snake, with confirmed lengths exceeding 6.25 meters (20.5 feet)."
+    },
+    {
+      "id": "q059",
+      "text": "What is the primary role of a queen bee in a hive?",
+      "options": {
+        "A": "Collecting nectar",
+        "B": "Defending the hive",
+        "C": "Laying eggs",
+        "D": "Building honeycomb"
+      },
+      "correct": "C",
+      "explanation": "The queen bee's primary role is reproduction. She can lay up to 2,000 eggs per day during peak season."
+    },
+    {
+      "id": "q060",
+      "text": "Which deep-sea creature produces its own light through bioluminescence?",
+      "options": {
+        "A": "Hagfish",
+        "B": "Anglerfish",
+        "C": "Goblin shark",
+        "D": "Giant squid"
+      },
+      "correct": "B",
+      "explanation": "Anglerfish have a bioluminescent lure (esca) on their head that they use to attract prey in the deep ocean."
+    },
+    {
+      "id": "q061",
+      "text": "What is the fastest bird in level flight?",
+      "options": {
+        "A": "Peregrine falcon",
+        "B": "Common swift",
+        "C": "White-throated needletail",
+        "D": "Frigatebird"
+      },
+      "correct": "C",
+      "explanation": "The white-throated needletail is considered the fastest bird in level (powered) flight at up to 170 km/h. The peregrine falcon is fastest in a dive."
+    },
+    {
+      "id": "q062",
+      "text": "Which animal uses echolocation to navigate and find food?",
+      "options": {
+        "A": "Eagle",
+        "B": "Bat",
+        "C": "Owl",
+        "D": "Hawk"
+      },
+      "correct": "B",
+      "explanation": "Most bat species use echolocation, emitting high-frequency sounds and interpreting the echoes to navigate and locate prey in darkness."
+    },
+    {
+      "id": "q063",
+      "text": "What phylum do insects, spiders, and crustaceans all belong to?",
+      "options": {
+        "A": "Mollusca",
+        "B": "Chordata",
+        "C": "Arthropoda",
+        "D": "Annelida"
+      },
+      "correct": "C",
+      "explanation": "All insects, arachnids, and crustaceans belong to the phylum Arthropoda, characterized by exoskeletons and jointed legs."
+    },
+    {
+      "id": "q064",
+      "text": "Which animal can survive being frozen solid and thaw back to life?",
+      "options": {
+        "A": "Arctic fox",
+        "B": "Wood frog",
+        "C": "Polar bear",
+        "D": "Snowy owl"
+      },
+      "correct": "B",
+      "explanation": "The wood frog can survive having up to 65% of its body water frozen by producing a natural antifreeze compound in its cells."
+    },
+    {
+      "id": "q065",
+      "text": "What is the tallest animal in the world?",
+      "options": {
+        "A": "African elephant",
+        "B": "Giraffe",
+        "C": "Moose",
+        "D": "Camel"
+      },
+      "correct": "B",
+      "explanation": "Giraffes are the tallest living animals, with males reaching heights of up to 5.7 meters (18.7 feet)."
+    },
+    {
+      "id": "q066",
+      "text": "Which marine mammal is known for holding hands while sleeping to avoid drifting apart?",
+      "options": {
+        "A": "Seal",
+        "B": "Manatee",
+        "C": "Sea otter",
+        "D": "Walrus"
+      },
+      "correct": "C",
+      "explanation": "Sea otters hold hands (or wrap themselves in kelp) while sleeping on their backs to keep from drifting apart."
+    },
+    {
+      "id": "q067",
+      "text": "Which continent has no native reptile species?",
+      "options": {
+        "A": "Australia",
+        "B": "Antarctica",
+        "C": "Europe",
+        "D": "South America"
+      },
+      "correct": "B",
+      "explanation": "Antarctica is too cold to support any native reptile species. Reptiles are cold-blooded and cannot survive in extreme polar climates."
+    },
+    {
+      "id": "q068",
+      "text": "What is the largest primate in the world?",
+      "options": {
+        "A": "Chimpanzee",
+        "B": "Eastern gorilla",
+        "C": "Orangutan",
+        "D": "Human"
+      },
+      "correct": "B",
+      "explanation": "The eastern gorilla is the largest living primate, with males weighing up to 205 kg (450 lbs)."
+    },
+    {
+      "id": "q069",
+      "text": "Which adaptation allows Arctic animals like polar bears and Arctic foxes to survive extreme cold?",
+      "options": {
+        "A": "Hollow fur for insulation",
+        "B": "Ability to hibernate year-round",
+        "C": "Warm-blooded metabolism only",
+        "D": "Burrowing underground permanently"
+      },
+      "correct": "A",
+      "explanation": "Polar bears have hollow, transparent fur that traps air for insulation and black skin underneath to absorb heat from the sun."
+    },
+    {
+      "id": "q070",
+      "text": "What is the world's most trafficked animal?",
+      "options": {
+        "A": "Elephant",
+        "B": "Tiger",
+        "C": "Pangolin",
+        "D": "Rhinoceros"
+      },
+      "correct": "C",
+      "explanation": "Pangolins are the most trafficked mammals in the world, hunted for their scales and meat despite being critically endangered."
+    },
+    {
+      "id": "q071",
+      "text": "Which animal has blue blood due to copper-based hemocyanin?",
+      "options": {
+        "A": "Octopus",
+        "B": "Lobster",
+        "C": "Horseshoe crab",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Octopuses, lobsters, and horseshoe crabs all have blue blood because they use copper-based hemocyanin instead of iron-based hemoglobin."
+    },
+    {
+      "id": "q072",
+      "text": "Which species of whale is known for its complex songs that can last for hours?",
+      "options": {
+        "A": "Blue whale",
+        "B": "Humpback whale",
+        "C": "Orca",
+        "D": "Gray whale"
+      },
+      "correct": "B",
+      "explanation": "Humpback whales are famous for their elaborate songs, which can last up to 20 hours and evolve over time within a population."
+    },
+    {
+      "id": "q073",
+      "text": "What is the name for the seasonal shedding and regrowth of an animal's fur or feathers?",
+      "options": {
+        "A": "Metamorphosis",
+        "B": "Molting",
+        "C": "Hibernation",
+        "D": "Migration"
+      },
+      "correct": "B",
+      "explanation": "Molting is the process of shedding old feathers, fur, skin, or exoskeleton to make way for new growth."
+    },
+    {
+      "id": "q074",
+      "text": "Which tiny organism forms the base of most marine food chains?",
+      "options": {
+        "A": "Krill",
+        "B": "Phytoplankton",
+        "C": "Zooplankton",
+        "D": "Algae"
+      },
+      "correct": "B",
+      "explanation": "Phytoplankton are microscopic photosynthetic organisms that form the base of most ocean food chains and produce roughly half of Earth's oxygen."
+    },
+    {
+      "id": "q075",
+      "text": "Which flightless bird is native to New Zealand and is roughly the size of a chicken?",
+      "options": {
+        "A": "Cassowary",
+        "B": "Emu",
+        "C": "Kiwi",
+        "D": "Kakapo"
+      },
+      "correct": "C",
+      "explanation": "The kiwi is a small, flightless bird native to New Zealand. It is roughly the size of a chicken and is the national symbol of New Zealand."
+    },
+    {
+      "id": "q076",
+      "text": "What unique feature do narwhals have?",
+      "options": {
+        "A": "Bioluminescent skin",
+        "B": "A long spiral tusk",
+        "C": "Four flippers",
+        "D": "Electric sensory organs"
+      },
+      "correct": "B",
+      "explanation": "Narwhals have a long, spiral tusk that is actually an elongated upper left canine tooth, reaching up to 3 meters in length."
+    },
+    {
+      "id": "q077",
+      "text": "Which animal is considered a 'keystone species' in the North American prairie ecosystem?",
+      "options": {
+        "A": "Bison",
+        "B": "Prairie dog",
+        "C": "Coyote",
+        "D": "Pronghorn"
+      },
+      "correct": "B",
+      "explanation": "Prairie dogs are a keystone species because their burrows provide shelter for many other species, and their grazing shapes the prairie landscape."
+    },
+    {
+      "id": "q078",
+      "text": "What is the only bird known to fly non-stop for months without landing?",
+      "options": {
+        "A": "Arctic tern",
+        "B": "Common swift",
+        "C": "Albatross",
+        "D": "Frigatebird"
+      },
+      "correct": "B",
+      "explanation": "Common swifts can fly continuously for up to 10 months without landing, eating, drinking, and even sleeping on the wing."
+    },
+    {
+      "id": "q079",
+      "text": "Which classification of animals are frogs, toads, and salamanders?",
+      "options": {
+        "A": "Reptiles",
+        "B": "Amphibians",
+        "C": "Mammals",
+        "D": "Fish"
+      },
+      "correct": "B",
+      "explanation": "Frogs, toads, and salamanders are all amphibians, a class of cold-blooded vertebrates that typically live both in water and on land."
+    },
+    {
+      "id": "q080",
+      "text": "Which extinct bird, native to Mauritius, became a symbol of extinction?",
+      "options": {
+        "A": "Passenger pigeon",
+        "B": "Great auk",
+        "C": "Dodo",
+        "D": "Moa"
+      },
+      "correct": "C",
+      "explanation": "The dodo was a flightless bird native to Mauritius that went extinct in the late 17th century due to hunting and habitat destruction by humans."
+    }
+  ]
+}
