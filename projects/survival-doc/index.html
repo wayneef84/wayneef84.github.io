@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SURVIVAL MANUAL</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        /* Base reset to ensure fonts load before JS kicks in if possible,
+           though main styles are in theme.css */
+        body { margin: 0; padding: 0; background: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="survival-container">
+        <!-- The Book Structure -->
+        <div class="book">
+            <!-- Spine / Navigation -->
+            <div class="spine">
+                <div class="spine-title">SURVIVAL<br>MANUAL</div>
+                <nav id="spine-nav">
+                    <!-- Navigation items will be injected here -->
+                </nav>
+            </div>
+
+            <!-- Left Page (Situation & Gear) -->
+            <div class="page page-left" id="page-left">
+                <div class="page-content">
+                    <header class="entry-header">
+                        <div class="hazard-strip"></div>
+                        <h1 id="entry-title">LOADING...</h1>
+                        <div class="hazard-strip"></div>
+                    </header>
+
+                    <section class="section-situation">
+                        <h2>THE SITUATION</h2>
+                        <p id="entry-situation">...</p>
+                    </section>
+
+                    <section class="section-gear">
+                        <h2>ESSENTIAL GEAR</h2>
+                        <ul id="entry-gear">
+                            <!-- Gear items -->
+                        </ul>
+                    </section>
+                </div>
+                <div class="page-number">PG. <span id="pg-num-left">01</span></div>
+            </div>
+
+            <!-- Right Page (Tips & Worst Case) -->
+            <div class="page page-right" id="page-right">
+                <div class="face face-front">
+                    <div class="page-content">
+                        <section class="section-tip">
+                            <div class="tip-box">
+                                <h3>SURVIVAL TIP</h3>
+                                <p id="entry-tip">...</p>
+                            </div>
+                        </section>
+
+                        <section class="section-worst-case">
+                            <div class="danger-box">
+                                <div class="danger-icon">⚠️</div>
+                                <h3>WORST-CASE SCENARIO</h3>
+                                <h4 id="wc-scenario">...</h4>
+                                <p id="wc-action">...</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="page-number">PG. <span id="pg-num-right">02</span></div>
+                </div>
+
+                <!-- Back Face (The Cover when closed) -->
+                <div class="face face-back">
+                    <div class="cover-design">
+                        <div class="hazard-strip-vertical"></div>
+                        <div class="cover-title">
+                            <h1>SURVIVAL<br>MANUAL</h1>
+                            <p>WORST-CASE SCENARIO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data and Logic -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

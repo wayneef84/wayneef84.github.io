@@ -1,0 +1,408 @@
+:root {
+    --color-yellow: #FFD900;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --border-width: 3px; /* Slightly thicker for impact */
+    --font-header: 'Impact', 'Oswald', 'Helvetica Neue Condensed', sans-serif;
+    --font-body: 'Courier New', 'American Typewriter', monospace;
+    --spine-width: 60px;
+    --page-width: 400px;
+    --page-height: 600px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #222; /* Dark background to make the book pop */
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-body);
+    color: var(--color-black);
+    overflow: hidden;
+}
+
+.survival-container {
+    perspective: 1500px; /* Essential for 3D page turns */
+    transform-style: preserve-3d;
+}
+
+.book {
+    display: flex;
+    position: relative;
+    width: calc(var(--page-width) * 2 + var(--spine-width));
+    height: var(--page-height);
+    background: var(--color-black); /* Binding color */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: rotateX(10deg); /* Slight tilt for presentation */
+    transition: transform 0.5s ease;
+}
+
+/* --- THE SPINE --- */
+.spine {
+    width: var(--spine-width);
+    height: 100%;
+    background: var(--color-yellow);
+    border-right: var(--border-width) solid var(--color-black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    z-index: 10; /* Spine stays on top */
+    position: relative;
+}
+
+.spine-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: var(--font-header);
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    transform: rotate(180deg); /* Read top-down */
+    margin-bottom: auto; /* Push nav down */
+}
+
+#spine-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 20px;
+    width: 100%;
+    align-items: center;
+}
+
+.nav-dot {
+    width: 20px;
+    height: 20px;
+    background: var(--color-white);
+    border: 2px solid var(--color-black);
+    border-radius: 50%; /* Or keep it square for "rough" look? Let's go circle for buttons */
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.nav-dot:hover {
+    background: var(--color-black);
+}
+
+.nav-dot.active {
+    background: var(--color-black);
+    box-shadow: 0 0 0 4px var(--color-yellow), 0 0 0 6px var(--color-black);
+}
+
+
+/* --- PAGES --- */
+.page {
+    width: var(--page-width);
+    height: 100%;
+    background: var(--color-white);
+    border: var(--border-width) solid var(--color-black);
+    /* padding: 30px;  Moved to content/faces */
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backface-visibility: hidden; /* Hide back when flipped */
+    transform-origin: left center; /* Hinged on the left */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Stiff cardstock feel */
+}
+
+.page-content {
+    /* If direct child of page (left page) or face (right page) */
+    padding: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.page-left {
+    left: var(--spine-width);
+    z-index: 5;
+    /* Static base page usually */
+}
+
+.page-right {
+    left: calc(var(--spine-width) + var(--page-width)); /* Positioned next to left page */
+    z-index: 6; /* On top when closed */
+    border-left: none; /* Merged look */
+    transform-style: preserve-3d; /* Key for faces */
+    backface-visibility: visible; /* Container is visible */
+    background: transparent; /* Background on faces */
+    border: none; /* Border on faces */
+}
+
+/* Page Turn Logic handled by classes */
+.page.flipped {
+    transform: rotateY(-180deg);
+}
+
+/* Faces for Right Page */
+.face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: var(--border-width) solid var(--color-black);
+    background: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.face-front {
+    z-index: 2;
+    border-left: none; /* Match original page-right style */
+}
+
+.face-back {
+    transform: rotateY(180deg);
+    z-index: 1;
+    background: var(--color-yellow);
+    border-right: none; /* Because it flips to become the "left" edge of the cover */
+    /* When flipped -180, this is facing 0. Left edge is the spine. */
+    /* The spine is on the left of the original position. */
+    /* When rotated -180, the right edge becomes the left edge visually? */
+    /* Let's keep borders simple. */
+    border: var(--border-width) solid var(--color-black);
+}
+
+/* Cover Design */
+.cover-design {
+    padding: 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 4px solid var(--color-black);
+    margin: 10px;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--color-yellow),
+        var(--color-yellow) 20px,
+        #e6c300 20px,
+        #e6c300 40px
+    );
+}
+
+.cover-title {
+    background: var(--color-black);
+    color: var(--color-yellow);
+    padding: 20px;
+    transform: rotate(-5deg);
+    border: 3px solid var(--color-white);
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.2);
+}
+
+.cover-title h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.cover-title p {
+    color: var(--color-white);
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+
+/* --- TYPOGRAPHY & LAYOUT --- */
+h1, h2, h3, h4 {
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+}
+
+p, li {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600; /* Bold courier */
+}
+
+.entry-header {
+    margin-bottom: 20px;
+    border-bottom: var(--border-width) solid var(--color-black);
+    padding-bottom: 10px;
+}
+
+h1#entry-title {
+    font-size: 42px;
+    background: var(--color-yellow);
+    padding: 10px;
+    border: var(--border-width) solid var(--color-black);
+    text-align: center;
+    box-shadow: 5px 5px 0 var(--color-black);
+}
+
+.section-situation h2, .section-gear h2 {
+    font-size: 24px;
+    border-bottom: 2px solid var(--color-black);
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+#entry-gear {
+    list-style-type: square;
+    padding-left: 20px;
+}
+
+#entry-gear li {
+    margin-bottom: 5px;
+}
+
+/* --- SURVIVAL TIP --- */
+.tip-box {
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 15px;
+    border: var(--border-width) solid var(--color-black); /* Redundant but keeps box model consistent */
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.tip-box h3 {
+    color: var(--color-yellow);
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-white);
+    padding-bottom: 5px;
+}
+
+
+/* --- WORST-CASE SCENARIO --- */
+.section-worst-case {
+    margin-top: auto;
+}
+
+.danger-box {
+    border: 4px solid var(--color-black);
+    padding: 15px;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--color-yellow),
+        var(--color-yellow) 10px,
+        var(--color-white) 10px,
+        var(--color-white) 20px
+    );
+    position: relative;
+}
+
+.danger-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.9); /* Fade out the stripes for readability */
+    z-index: 0;
+}
+
+.danger-box > * {
+    position: relative;
+    z-index: 1;
+}
+
+.danger-icon {
+    font-size: 40px;
+    position: absolute;
+    top: -25px;
+    right: -15px;
+    background: var(--color-white);
+    border: 2px solid var(--color-black);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 3px 3px 0 var(--color-black);
+}
+
+.danger-box h3 {
+    background: var(--color-black);
+    color: var(--color-yellow);
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 18px;
+    transform: rotate(-2deg);
+    margin-bottom: 15px;
+}
+
+.danger-box h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+}
+
+.page-number {
+    text-align: right;
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 10px;
+    border-top: 1px solid var(--color-black);
+    padding-top: 5px;
+}
+
+/* --- TECHNICAL LINE-ART FILTER --- */
+img.technical-drawing {
+    filter: grayscale(100%) contrast(150%) brightness(1.1);
+    border: 2px solid var(--color-black);
+    mix-blend-mode: multiply; /* If on white bg */
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+    .book {
+        transform: none;
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .spine {
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        border-right: none;
+        border-bottom: var(--border-width) solid var(--color-black);
+        padding: 0 20px;
+    }
+
+    .spine-title {
+        writing-mode: horizontal-tb;
+        transform: none;
+        margin-bottom: 0;
+    }
+
+    #spine-nav {
+        flex-direction: row;
+        width: auto;
+        margin-left: auto;
+        padding-bottom: 0;
+    }
+
+    .page {
+        position: relative;
+        width: 100%;
+        left: 0;
+        height: auto;
+        min-height: 500px;
+        border-left: var(--border-width) solid var(--color-black); /* Restore border */
+        margin-bottom: 20px;
+    }
+
+    .page-right {
+        border-top: none; /* Connect pages visually */
+    }
+}
