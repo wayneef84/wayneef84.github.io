@@ -201,6 +201,7 @@ body {
     transform: translateY(1px);
 }
 
+/* Normal states (when Lock Fast Forward is OFF) */
 .answer-btn.correct {
     background: rgba(34, 197, 94, 0.2);
     border-color: var(--correct);
@@ -213,6 +214,34 @@ body {
     opacity: 0.7;
 }
 
+/* Pop Effect for Fast Forward Mode */
+.answer-btn.pop-correct {
+    animation: popAndFade 0.6s ease-out forwards;
+    z-index: 10;
+}
+
+@keyframes popAndFade {
+    0% {
+        transform: scale(1);
+        background: rgba(34, 197, 94, 0.2);
+        border-color: var(--correct);
+    }
+    30% {
+        transform: scale(1.1);
+        background: rgba(34, 197, 94, 0.4);
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+        border-color: var(--correct);
+    }
+    80% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0; /* Fade out as it disappears */
+    }
+}
+
 .option-label {
     font-size: 0.8rem;
     color: var(--text-secondary);
@@ -222,6 +251,13 @@ body {
 .option-text {
     font-size: 1rem;
     font-weight: 500;
+}
+
+.option-image {
+    max-width: 100%;
+    max-height: 100px;
+    border-radius: 4px;
+    object-fit: contain;
 }
 
 /* Footer Controls */
@@ -370,6 +406,59 @@ input:checked + .slider:before {
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
     max-width: 90%;
     width: 400px;
+}
+
+.setup-content {
+    padding: 30px;
+}
+
+.setup-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.setup-label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.radio-group {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.radio-btn {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-btn input {
+    opacity: 0;
+    position: absolute;
+}
+
+.radio-btn span {
+    display: block;
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.radio-btn input:checked + span {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .score-circle {

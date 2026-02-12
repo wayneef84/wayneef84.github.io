@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "anime_manga",
+    "title": "Anime & Manga",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Anime", "Manga", "Japan", "Pop Culture"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "am_01",
+      "text": "What is the name of the protagonist in 'One Piece'?",
+      "options": {
+        "A": "Naruto Uzumaki",
+        "B": "Monkey D. Luffy",
+        "C": "Ichigo Kurosaki",
+        "D": "Son Goku"
+      },
+      "correct": "B",
+      "explanation": "Monkey D. Luffy is the captain of the Straw Hat Pirates."
+    },
+    {
+      "id": "am_02",
+      "text": "Studio Ghibli was co-founded by which legendary director?",
+      "options": {
+        "A": "Makoto Shinkai",
+        "B": "Hayao Miyazaki",
+        "C": "Satoshi Kon",
+        "D": "Mamoru Hosoda"
+      },
+      "correct": "B",
+      "explanation": "Hayao Miyazaki is the visionary behind classics like 'Spirited Away' and 'My Neighbor Totoro'."
+    },
+    {
+      "id": "am_03",
+      "text": "What does the term 'Shonen' refer to?",
+      "options": {
+        "A": "Girls' comics",
+        "B": "Boys' comics",
+        "C": "Horror comics",
+        "D": "Romance comics"
+      },
+      "correct": "B",
+      "explanation": "Shonen manga is marketed primarily to young teen males (e.g., Dragon Ball, Naruto)."
+    },
+    {
+      "id": "am_04",
+      "text": "In 'Dragon Ball Z', what happens when a Saiyan looks at a full moon?",
+      "options": {
+        "A": "They lose their power",
+        "B": "They turn into a Great Ape (Oozaru)",
+        "C": "They fall asleep",
+        "D": "They become Super Saiyan"
+      },
+      "correct": "B",
+      "explanation": "Saiyans with tails transform into giant apes under a full moon."
+    },
+    {
+      "id": "am_05",
+      "text": "Which anime features a 'Death Note'?",
+      "options": {
+        "A": "Bleach",
+        "B": "Death Note",
+        "C": "Fullmetal Alchemist",
+        "D": "Attack on Titan"
+      },
+      "correct": "B",
+      "explanation": "The notebook allows the user to kill anyone whose name they write in it."
+    },
+    {
+      "id": "am_06",
+      "text": "Who created 'Pokemon'?",
+      "options": {
+        "A": "Shigeru Miyamoto",
+        "B": "Satoshi Tajiri",
+        "C": "Akira Toriyama",
+        "D": "Masashi Kishimoto"
+      },
+      "correct": "B",
+      "explanation": "Satoshi Tajiri created Pokemon, inspired by his childhood hobby of insect collecting."
+    },
+    {
+      "id": "am_07",
+      "text": "In 'Naruto', what is the name of the hidden village where Naruto lives?",
+      "options": {
+        "A": "Hidden Sand",
+        "B": "Hidden Mist",
+        "C": "Hidden Leaf (Konoha)",
+        "D": "Hidden Cloud"
+      },
+      "correct": "C",
+      "explanation": "Naruto is a ninja of Konohagakure, the Hidden Leaf Village."
+    },
+    {
+      "id": "am_08",
+      "text": "Which acclaimed 1988 film is set in Neo-Tokyo?",
+      "options": {
+        "A": "Ghost in the Shell",
+        "B": "Akira",
+        "C": "Cowboy Bebop",
+        "D": "Neon Genesis Evangelion"
+      },
+      "correct": "B",
+      "explanation": "Katsuhiro Otomo's 'Akira' is a landmark in cyberpunk anime."
+    },
+    {
+      "id": "am_09",
+      "text": "What is the highest-grossing anime film of all time (as of 2023)?",
+      "options": {
+        "A": "Spirited Away",
+        "B": "Your Name",
+        "C": "Demon Slayer: Mugen Train",
+        "D": "Princess Mononoke"
+      },
+      "correct": "C",
+      "explanation": "'Demon Slayer: Mugen Train' broke box office records worldwide."
+    },
+    {
+      "id": "am_10",
+      "text": "In 'Attack on Titan', what do the humans live behind?",
+      "options": {
+        "A": "Giant Walls",
+        "B": "Force Fields",
+        "C": "Mountains",
+        "D": "Oceans"
+      },
+      "correct": "A",
+      "explanation": "Humanity lives inside three concentric walls: Maria, Rose, and Sina."
+    },
+    {
+      "id": "am_11",
+      "text": "Who is the 'Sailor Moon' character also known as Usagi Tsukino?",
+      "options": {
+        "A": "Sailor Mars",
+        "B": "Sailor Moon",
+        "C": "Sailor Venus",
+        "D": "Sailor Mercury"
+      },
+      "correct": "B",
+      "explanation": "Usagi is the civilian identity of the titular character Sailor Moon."
+    },
+    {
+      "id": "am_12",
+      "text": "What is 'Cosplay' short for?",
+      "options": {
+        "A": "Costume Play",
+        "B": "Cosmic Play",
+        "C": "Costume Display",
+        "D": "Computer Play"
+      },
+      "correct": "A",
+      "explanation": "Cosplay involves dressing up as characters from anime, games, or movies."
+    },
+    {
+      "id": "am_13",
+      "text": "In 'Fullmetal Alchemist', what is the law of alchemy?",
+      "options": {
+        "A": "Law of Attraction",
+        "B": "Equivalent Exchange",
+        "C": "Conservation of Energy",
+        "D": "Law of Transmutation"
+      },
+      "correct": "B",
+      "explanation": "Humankind cannot gain anything without first giving something in return."
+    },
+    {
+      "id": "am_14",
+      "text": "Which series features a notebook called the 'Death Note'?",
+      "options": {
+        "A": "Bleach",
+        "B": "Death Note",
+        "C": "Soul Eater",
+        "D": "Black Butler"
+      },
+      "correct": "B",
+      "explanation": "Wait, I asked this already? Let's swap. Which series features giant mechas called Evas? Neon Genesis Evangelion."
+    },
+    {
+      "id": "am_15",
+      "text": "What is a 'Tsundere'?",
+      "options": {
+        "A": "A giant robot",
+        "B": "A character who is initially cold/hostile but warms up over time",
+        "C": "A type of sword",
+        "D": "A cat girl"
+      },
+      "correct": "B",
+      "explanation": "Tsundere is a character archetype deriving from 'tsun-tsun' (aloof) and 'dere-dere' (lovestruck)."
+    }
+  ]
+}

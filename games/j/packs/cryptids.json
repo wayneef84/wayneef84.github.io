@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "cryptids",
+    "title": "Cryptids & Mythology",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Mythology", "Monsters", "Folklore", "Legends"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "cry_01",
+      "text": "What is the nickname of the creature said to inhabit a Scottish lake?",
+      "options": {
+        "A": "Bigfoot",
+        "B": "Nessie",
+        "C": "Champ",
+        "D": "Ogopogo"
+      },
+      "correct": "B",
+      "explanation": "The Loch Ness Monster is affectionately known as Nessie."
+    },
+    {
+      "id": "cry_02",
+      "text": "The Chupacabra is famously known for attacking which animal?",
+      "options": {
+        "A": "Cows",
+        "B": "Goats",
+        "C": "Chickens",
+        "D": "Dogs"
+      },
+      "correct": "B",
+      "explanation": "Chupacabra translates to 'goat-sucker' in Spanish."
+    },
+    {
+      "id": "cry_03",
+      "text": "In Greek mythology, who turned people to stone with her gaze?",
+      "options": {
+        "A": "Scylla",
+        "B": "Medusa",
+        "C": "Circe",
+        "D": "Pandora"
+      },
+      "correct": "B",
+      "explanation": "Medusa was a Gorgon with snakes for hair."
+    },
+    {
+      "id": "cry_04",
+      "text": "Bigfoot is also known by what Native American name?",
+      "options": {
+        "A": "Yeti",
+        "B": "Sasquatch",
+        "C": "Wendigo",
+        "D": "Skunk Ape"
+      },
+      "correct": "B",
+      "explanation": "Sasquatch comes from the Halkomelem word 'sásq'ets'."
+    },
+    {
+      "id": "cry_05",
+      "text": "The Mothman is associated with which West Virginia town?",
+      "options": {
+        "A": "Charleston",
+        "B": "Point Pleasant",
+        "C": "Morgantown",
+        "D": "Wheeling"
+      },
+      "correct": "B",
+      "explanation": "Sightings in Point Pleasant preceded the collapse of the Silver Bridge in 1967."
+    },
+    {
+      "id": "cry_06",
+      "text": "What is a Jackalope?",
+      "options": {
+        "A": "A rabbit with antlers",
+        "B": "A coyote with wings",
+        "C": "A deer with fangs",
+        "D": "A lizard with fur"
+      },
+      "correct": "A",
+      "explanation": "A jackrabbit with antelope horns, popular in North American folklore."
+    },
+    {
+      "id": "cry_07",
+      "text": "In Norse mythology, what is the name of Thor's hammer?",
+      "options": {
+        "A": "Gungnir",
+        "B": "Mjolnir",
+        "C": "Excalibur",
+        "D": "Gram"
+      },
+      "correct": "B",
+      "explanation": "Mjolnir is the mountain-crushing hammer of the Thunder God."
+    },
+    {
+      "id": "cry_08",
+      "text": "The Kraken is a giant sea monster resembling which real animal?",
+      "options": {
+        "A": "Shark",
+        "B": "Whale",
+        "C": "Squid/Octopus",
+        "D": "Crab"
+      },
+      "correct": "C",
+      "explanation": "Legendary cephalopod-like beasts capable of dragging ships underwater."
+    },
+    {
+      "id": "cry_09",
+      "text": "What creature burns itself to ashes and is reborn?",
+      "options": {
+        "A": "Dragon",
+        "B": "Griffin",
+        "C": "Phoenix",
+        "D": "Basilisk"
+      },
+      "correct": "C",
+      "explanation": "The Phoenix symbolizes renewal and immortality."
+    },
+    {
+      "id": "cry_10",
+      "text": "The Jersey Devil is said to inhabit which region?",
+      "options": {
+        "A": "The Everglades",
+        "B": "The Pine Barrens",
+        "C": "The Ozarks",
+        "D": "The Badlands"
+      },
+      "correct": "B",
+      "explanation": "This legendary creature haunts the Pine Barrens of Southern New Jersey."
+    },
+    {
+      "id": "cry_11",
+      "text": "Which creature is half-man, half-bull?",
+      "options": {
+        "A": "Centaur",
+        "B": "Satyr",
+        "C": "Minotaur",
+        "D": "Chimera"
+      },
+      "correct": "C",
+      "explanation": "The Minotaur lived in the Labyrinth of Crete."
+    },
+    {
+      "id": "cry_12",
+      "text": "The Yeti is said to live in which mountain range?",
+      "options": {
+        "A": "The Rockies",
+        "B": "The Andes",
+        "C": "The Himalayas",
+        "D": "The Alps"
+      },
+      "correct": "C",
+      "explanation": "Also known as the Abominable Snowman of the Himalayas."
+    },
+    {
+      "id": "cry_13",
+      "text": "What is the 'Mongolian Death Worm' said to do?",
+      "options": {
+        "A": "Fly",
+        "B": "Spit acid or discharge electricity",
+        "C": "Eat camels whole",
+        "D": "Sing"
+      },
+      "correct": "B",
+      "explanation": "Locals claim it can kill from a distance."
+    },
+    {
+      "id": "cry_14",
+      "text": "A Banshee's scream is an omen of what?",
+      "options": {
+        "A": "Good luck",
+        "B": "Death",
+        "C": "Marriage",
+        "D": "Rain"
+      },
+      "correct": "B",
+      "explanation": "In Irish folklore, the wailing of a Banshee foretells the death of a family member."
+    },
+    {
+      "id": "cry_15",
+      "text": "The Sphinx asked a riddle to whom?",
+      "options": {
+        "A": "Hercules",
+        "B": "Oedipus",
+        "C": "Odysseus",
+        "D": "Achilles"
+      },
+      "correct": "B",
+      "explanation": "Oedipus solved the riddle: 'What walks on four legs in the morning, two in the afternoon, and three in the evening?' (Man)."
+    }
+  ]
+}

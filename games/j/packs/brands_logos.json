@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "brands_logos",
+    "title": "Brands & Logos",
+    "version": "1.0",
+    "difficulty": "Easy",
+    "tags": ["Business", "Logos", "Marketing", "Visual"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "bl_01",
+      "text": "Which company uses a 'Swoosh' as its logo?",
+      "options": {
+        "A": "Adidas",
+        "B": "Nike",
+        "C": "Puma",
+        "D": "Reebok"
+      },
+      "correct": "B",
+      "explanation": "The Nike Swoosh was designed by student Carolyn Davidson in 1971 for $35."
+    },
+    {
+      "id": "bl_02",
+      "text": "The 'Golden Arches' are associated with which fast food chain?",
+      "options": {
+        "A": "Burger King",
+        "B": "Wendy's",
+        "C": "McDonald's",
+        "D": "Taco Bell"
+      },
+      "correct": "C",
+      "explanation": "The Golden Arches have been a symbol of McDonald's since 1953."
+    },
+    {
+      "id": "bl_03",
+      "text": "Which tech company's logo is a bitten apple?",
+      "options": {
+        "A": "Microsoft",
+        "B": "Apple",
+        "C": "Google",
+        "D": "IBM"
+      },
+      "correct": "B",
+      "explanation": "Apple's logo is a silhouette of an apple with a bite taken out of it."
+    },
+    {
+      "id": "bl_04",
+      "text": "What animal appears in the Ferrari logo?",
+      "options": {
+        "A": "Bull",
+        "B": "Horse",
+        "C": "Jaguar",
+        "D": "Lion"
+      },
+      "correct": "B",
+      "explanation": "The 'Prancing Horse' (Cavallino Rampante) is the symbol of Ferrari."
+    },
+    {
+      "id": "bl_05",
+      "text": "Which coffee chain uses a twin-tailed siren in its logo?",
+      "options": {
+        "A": "Dunkin'",
+        "B": "Tim Hortons",
+        "C": "Starbucks",
+        "D": "Costa Coffee"
+      },
+      "correct": "C",
+      "explanation": "The Starbucks logo features a stylized twin-tailed siren (mermaid)."
+    },
+    {
+      "id": "bl_06",
+      "text": "Which brand's slogan is 'Just Do It'?",
+      "options": {
+        "A": "Adidas",
+        "B": "Nike",
+        "C": "Under Armour",
+        "D": "Gatorade"
+      },
+      "correct": "B",
+      "explanation": "Nike introduced the 'Just Do It' campaign in 1988."
+    },
+    {
+      "id": "bl_07",
+      "text": "The Olympic rings consist of how many interlaced rings?",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7"
+      },
+      "correct": "B",
+      "explanation": "The five rings represent the five inhabited continents of the world."
+    },
+    {
+      "id": "bl_08",
+      "text": "Which luxury brand uses an interlocking 'LV' monogram?",
+      "options": {
+        "A": "Gucci",
+        "B": "Chanel",
+        "C": "Louis Vuitton",
+        "D": "Prada"
+      },
+      "correct": "C",
+      "explanation": "The LV monogram is the signature of Louis Vuitton."
+    },
+    {
+      "id": "bl_09",
+      "text": "Which social media platform uses a blue bird logo?",
+      "options": {
+        "A": "Facebook",
+        "B": "Twitter (X)",
+        "C": "Instagram",
+        "D": "Snapchat"
+      },
+      "correct": "B",
+      "explanation": "Twitter famously used a blue bird named Larry before rebranding to 'X'."
+    },
+    {
+      "id": "bl_10",
+      "text": "Which car manufacturer has a logo with four interlocking rings?",
+      "options": {
+        "A": "BMW",
+        "B": "Mercedes-Benz",
+        "C": "Audi",
+        "D": "Volkswagen"
+      },
+      "correct": "C",
+      "explanation": "The four rings represent the merger of four automobile manufacturers into Auto Union (Audi)."
+    },
+    {
+      "id": "bl_11",
+      "text": "Which brand's mascot is 'Tony the Tiger'?",
+      "options": {
+        "A": "Cheerios",
+        "B": "Frosted Flakes",
+        "C": "Froot Loops",
+        "D": "Lucky Charms"
+      },
+      "correct": "B",
+      "explanation": "Tony the Tiger says, 'They're Gr-r-reat!' for Kellogg's Frosted Flakes."
+    },
+    {
+      "id": "bl_12",
+      "text": "Which shipping company is known for its brown trucks and uniforms?",
+      "options": {
+        "A": "FedEx",
+        "B": "DHL",
+        "C": "UPS",
+        "D": "USPS"
+      },
+      "correct": "C",
+      "explanation": "UPS (United Parcel Service) is familiarly known as 'Big Brown'."
+    },
+    {
+      "id": "bl_13",
+      "text": "Which operating system uses a penguin mascot named Tux?",
+      "options": {
+        "A": "Windows",
+        "B": "macOS",
+        "C": "Linux",
+        "D": "Android"
+      },
+      "correct": "C",
+      "explanation": "Tux the Penguin is the official mascot of the Linux kernel."
+    },
+    {
+      "id": "bl_14",
+      "text": "Which energy drink uses the slogan 'Gives You Wings'?",
+      "options": {
+        "A": "Monster",
+        "B": "Rockstar",
+        "C": "Red Bull",
+        "D": "Bang"
+      },
+      "correct": "C",
+      "explanation": "Red Bull's marketing campaign claims it 'Gives You Wings'."
+    },
+    {
+      "id": "bl_15",
+      "text": "Which streaming service uses a red 'N' logo?",
+      "options": {
+        "A": "Hulu",
+        "B": "Netflix",
+        "C": "Disney+",
+        "D": "Prime Video"
+      },
+      "correct": "B",
+      "explanation": "Netflix uses a stylized red 'N' ribbon as its icon."
+    }
+  ]
+}

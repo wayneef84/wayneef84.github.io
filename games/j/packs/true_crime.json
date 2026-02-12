@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "true_crime",
+    "title": "True Crime",
+    "version": "1.0",
+    "difficulty": "Hard",
+    "tags": ["Crime", "History", "Mystery", "Law"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "tc_01",
+      "text": "Who was known as the 'Zodiac Killer'?",
+      "options": {
+        "A": "Ted Bundy",
+        "B": "Arthur Leigh Allen",
+        "C": "Unidentified",
+        "D": "Jeffrey Dahmer"
+      },
+      "correct": "C",
+      "explanation": "Despite many suspects, the Zodiac Killer's identity remains officially unconfirmed."
+    },
+    {
+      "id": "tc_02",
+      "text": "Which infamous gangster was nicknamed 'Scarface'?",
+      "options": {
+        "A": "Lucky Luciano",
+        "B": "John Gotti",
+        "C": "Al Capone",
+        "D": "Bugsy Siegel"
+      },
+      "correct": "C",
+      "explanation": "Al Capone received the nickname 'Scarface' after being slashed in a fight."
+    },
+    {
+      "id": "tc_03",
+      "text": "Who was convicted of the 'Manson Family' murders?",
+      "options": {
+        "A": "Charles Manson",
+        "B": "David Berkowitz",
+        "C": "Richard Ramirez",
+        "D": "Ed Gein"
+      },
+      "correct": "A",
+      "explanation": "Charles Manson was convicted of first-degree murder and conspiracy to commit murder."
+    },
+    {
+      "id": "tc_04",
+      "text": "The 'Black Dahlia' murder case involves which victim?",
+      "options": {
+        "A": "Elizabeth Short",
+        "B": "Sharon Tate",
+        "C": "Nicole Brown Simpson",
+        "D": "JonBenét Ramsey"
+      },
+      "correct": "A",
+      "explanation": "Elizabeth Short was posthumously nicknamed the 'Black Dahlia'."
+    },
+    {
+      "id": "tc_05",
+      "text": "Who committed the 'Whitechapel Murders' in 1888?",
+      "options": {
+        "A": "Jack the Ripper",
+        "B": "H.H. Holmes",
+        "C": "The Boston Strangler",
+        "D": "The Axeman"
+      },
+      "correct": "A",
+      "explanation": "The unidentified serial killer is known as Jack the Ripper."
+    },
+    {
+      "id": "tc_06",
+      "text": "Which notorious bank robbers were ambushed and killed in 1934?",
+      "options": {
+        "A": "Butch Cassidy and the Sundance Kid",
+        "B": "Bonnie and Clyde",
+        "C": "The Kray Twins",
+        "D": "The Barker Gang"
+      },
+      "correct": "B",
+      "explanation": "Bonnie Parker and Clyde Barrow were killed by law enforcement in Louisiana."
+    },
+    {
+      "id": "tc_07",
+      "text": "Who was the 'Unabomber'?",
+      "options": {
+        "A": "Timothy McVeigh",
+        "B": "Terry Nichols",
+        "C": "Ted Kaczynski",
+        "D": "Eric Rudolph"
+      },
+      "correct": "C",
+      "explanation": "Theodore Kaczynski was known as the Unabomber."
+    },
+    {
+      "id": "tc_08",
+      "text": "Which serial killer worked as a clown named 'Pogo'?",
+      "options": {
+        "A": "John Wayne Gacy",
+        "B": "Pennywise",
+        "C": "Dennis Rader",
+        "D": "Gary Ridgway"
+      },
+      "correct": "A",
+      "explanation": "John Wayne Gacy performed as 'Pogo the Clown' at charitable events."
+    },
+    {
+      "id": "tc_09",
+      "text": "Who was O.J. Simpson acquitted of murdering?",
+      "options": {
+        "A": "Ron Goldman and Nicole Brown Simpson",
+        "B": "Gianni Versace",
+        "C": "Tupac Shakur",
+        "D": "Laci Peterson"
+      },
+      "correct": "A",
+      "explanation": "He was acquitted of the murders of his ex-wife Nicole Brown Simpson and her friend Ron Goldman."
+    },
+    {
+      "id": "tc_10",
+      "text": "The Great Train Robbery of 1963 took place in which country?",
+      "options": {
+        "A": "USA",
+        "B": "England",
+        "C": "Australia",
+        "D": "France"
+      },
+      "correct": "B",
+      "explanation": "A gang robbed a Royal Mail train in Buckinghamshire, England."
+    },
+    {
+      "id": "tc_11",
+      "text": "Who kidnapped the Lindbergh baby?",
+      "options": {
+        "A": "Bruno Richard Hauptmann",
+        "B": "John Dillinger",
+        "C": "Baby Face Nelson",
+        "D": "Machine Gun Kelly"
+      },
+      "correct": "A",
+      "explanation": "Hauptmann was convicted and executed for the kidnapping and murder of Charles Lindbergh Jr."
+    },
+    {
+      "id": "tc_12",
+      "text": "Which Ponzi scheme operator was sentenced to 150 years in prison?",
+      "options": {
+        "A": "Charles Ponzi",
+        "B": "Bernie Madoff",
+        "C": "Jordan Belfort",
+        "D": "Elizabeth Holmes"
+      },
+      "correct": "B",
+      "explanation": "Bernie Madoff operated the largest Ponzi scheme in history."
+    },
+    {
+      "id": "tc_13",
+      "text": "Who was the 'Son of Sam'?",
+      "options": {
+        "A": "David Berkowitz",
+        "B": "Edmund Kemper",
+        "C": "Richard Speck",
+        "D": "Albert Fish"
+      },
+      "correct": "A",
+      "explanation": "David Berkowitz terrorized New York City in the 1970s."
+    },
+    {
+      "id": "tc_14",
+      "text": "The theft of the Mona Lisa in 1911 was carried out by whom?",
+      "options": {
+        "A": "Vincenzo Peruggia",
+        "B": "Thomas Crown",
+        "C": "Adam Worth",
+        "D": "Stephane Breitwieser"
+      },
+      "correct": "A",
+      "explanation": "Peruggia, an employee of the Louvre, hid inside the museum to steal the painting."
+    },
+    {
+      "id": "tc_15",
+      "text": "Which unsolved case involves a skyjacker who parachuted from a plane with ransom money?",
+      "options": {
+        "A": "D.B. Cooper",
+        "B": "The Zodiac",
+        "C": "The Phantom",
+        "D": "The Iceman"
+      },
+      "correct": "A",
+      "explanation": "D.B. Cooper hijacked a Boeing 727 in 1971 and was never seen again."
+    }
+  ]
+}

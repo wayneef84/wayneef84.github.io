@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "music_60s",
+    "title": "60s Pop Music",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Music", "60s", "Pop", "Rock", "Motown"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "m60_01",
+      "text": "Which band is known as the 'Fab Four'?",
+      "options": {
+        "A": "The Rolling Stones",
+        "B": "The Beatles",
+        "C": "The Kinks",
+        "D": "The Beach Boys"
+      },
+      "correct": "B",
+      "explanation": "The Beatles (John, Paul, George, and Ringo) are famously known as the Fab Four."
+    },
+    {
+      "id": "m60_02",
+      "text": "Which festival took place in 1969 and became a symbol of the counterculture generation?",
+      "options": {
+        "A": "Monterey Pop Festival",
+        "B": "Altamont",
+        "C": "Woodstock",
+        "D": "Glastonbury"
+      },
+      "correct": "C",
+      "explanation": "Woodstock was a pivotal moment in music history, taking place in upstate New York in August 1969."
+    },
+    {
+      "id": "m60_03",
+      "text": "Who sang the hit song 'Respect' in 1967?",
+      "options": {
+        "A": "Diana Ross",
+        "B": "Aretha Franklin",
+        "C": "Etta James",
+        "D": "Tina Turner"
+      },
+      "correct": "B",
+      "explanation": "Aretha Franklin's version of 'Respect' became an anthem for civil rights and women's rights."
+    },
+    {
+      "id": "m60_04",
+      "text": "Which Motown group launched the career of Diana Ross?",
+      "options": {
+        "A": "The Supremes",
+        "B": "The Ronettes",
+        "C": "The Vandellas",
+        "D": "The Marvelettes"
+      },
+      "correct": "A",
+      "explanation": "Diana Ross was the lead singer of The Supremes, Motown's most commercially successful act."
+    },
+    {
+      "id": "m60_05",
+      "text": "Bob Dylan controversially 'went electric' at which event in 1965?",
+      "options": {
+        "A": "Isle of Wight Festival",
+        "B": "Newport Folk Festival",
+        "C": "Woodstock",
+        "D": "The Ed Sullivan Show"
+      },
+      "correct": "B",
+      "explanation": "Dylan was booed by folk purists when he played an electric guitar set at the Newport Folk Festival."
+    },
+    {
+      "id": "m60_06",
+      "text": "Who released the concept album 'Pet Sounds' in 1966?",
+      "options": {
+        "A": "The Beatles",
+        "B": "The Beach Boys",
+        "C": "The Byrds",
+        "D": "The Doors"
+      },
+      "correct": "B",
+      "explanation": "Brian Wilson and The Beach Boys released 'Pet Sounds', often cited as one of the greatest albums of all time."
+    },
+    {
+      "id": "m60_07",
+      "text": "Which song begins with the lyrics 'Hello darkness, my old friend'?",
+      "options": {
+        "A": "The Sound of Silence",
+        "B": "Paint It Black",
+        "C": "Yesterday",
+        "D": "California Dreamin'"
+      },
+      "correct": "A",
+      "explanation": "'The Sound of Silence' by Simon & Garfunkel became a major hit in 1965."
+    },
+    {
+      "id": "m60_08",
+      "text": "Which artist is known for the song 'Purple Haze'?",
+      "options": {
+        "A": "Eric Clapton",
+        "B": "Jimmy Page",
+        "C": "Jimi Hendrix",
+        "D": "Jeff Beck"
+      },
+      "correct": "C",
+      "explanation": "Jimi Hendrix released 'Purple Haze' in 1967, showcasing his revolutionary guitar style."
+    },
+    {
+      "id": "m60_09",
+      "text": "The 'British Invasion' refers to the popularity of British bands in the US during which decade?",
+      "options": {
+        "A": "1950s",
+        "B": "1960s",
+        "C": "1970s",
+        "D": "1980s"
+      },
+      "correct": "B",
+      "explanation": "The movement began in the mid-1960s, led by The Beatles."
+    },
+    {
+      "id": "m60_10",
+      "text": "Who sang 'I Got You Babe' with Sonny Bono?",
+      "options": {
+        "A": "Madonna",
+        "B": "Cher",
+        "C": "Nancy Sinatra",
+        "D": "Lulu"
+      },
+      "correct": "B",
+      "explanation": "Sonny & Cher's signature song 'I Got You Babe' was a number one hit in 1965."
+    },
+    {
+      "id": "m60_11",
+      "text": "Which band recorded 'Good Vibrations'?",
+      "options": {
+        "A": "The Beatles",
+        "B": "The Beach Boys",
+        "C": "The Monkees",
+        "D": "The Mamas & the Papas"
+      },
+      "correct": "B",
+      "explanation": "The Beach Boys' 'Good Vibrations' is famous for its complex production and use of the theremin-like electro-theremin."
+    },
+    {
+      "id": "m60_12",
+      "text": "Otis Redding is best known for which song, released posthumously?",
+      "options": {
+        "A": "My Girl",
+        "B": "(Sittin' On) The Dock of the Bay",
+        "C": "Stand By Me",
+        "D": "What's Going On"
+      },
+      "correct": "B",
+      "explanation": "Redding recorded it just days before his death in a plane crash in 1967."
+    },
+    {
+      "id": "m60_13",
+      "text": "Which TV show created a made-for-TV band that rivaled the Beatles in sales for a brief period?",
+      "options": {
+        "A": "The Partridge Family",
+        "B": "The Monkees",
+        "C": "The Archies",
+        "D": "The Banana Splits"
+      },
+      "correct": "B",
+      "explanation": "The Monkees were created for the TV show but eventually fought for creative control over their music."
+    },
+    {
+      "id": "m60_14",
+      "text": "Jim Morrison was the lead singer of which band?",
+      "options": {
+        "A": "The Doors",
+        "B": "The Who",
+        "C": "Jefferson Airplane",
+        "D": "Cream"
+      },
+      "correct": "A",
+      "explanation": "Jim Morrison, the 'Lizard King', fronted The Doors until his death in 1971."
+    },
+    {
+      "id": "m60_15",
+      "text": "Who sang 'These Boots Are Made for Walkin''?",
+      "options": {
+        "A": "Dusty Springfield",
+        "B": "Nancy Sinatra",
+        "C": "Petula Clark",
+        "D": "Sandie Shaw"
+      },
+      "correct": "B",
+      "explanation": "Nancy Sinatra had a massive hit with this Lee Hazlewood song in 1966."
+    }
+  ]
+}

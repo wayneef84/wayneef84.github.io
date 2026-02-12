@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "id": "flags_quiz",
+    "title": "Flag Identification",
+    "version": "1.0",
+    "difficulty": "Hard",
+    "tags": ["Geography", "Visual", "Flags", "Hard"],
+    "questionCount": 10
+  },
+  "questions": [
+    {
+      "id": "fl_01",
+      "text": "Which country's flag is this?",
+      "media": "https://flagcdn.com/w640/td.png",
+      "options": {
+        "A": "Romania",
+        "B": "Chad",
+        "C": "Andorra",
+        "D": "Moldova"
+      },
+      "correct": "B",
+      "explanation": "Chad's flag is almost identical to Romania's, but with a slightly darker shade of blue."
+    },
+    {
+      "id": "fl_02",
+      "text": "Identify this flag:",
+      "media": "https://flagcdn.com/w640/np.png",
+      "options": {
+        "A": "Bhutan",
+        "B": "Nepal",
+        "C": "Tibet",
+        "D": "Mongolia"
+      },
+      "correct": "B",
+      "explanation": "Nepal is the only country with a non-rectangular flag."
+    },
+    {
+      "id": "fl_03",
+      "text": "This flag belongs to which island nation?",
+      "media": "https://flagcdn.com/w640/sc.png",
+      "options": {
+        "A": "Mauritius",
+        "B": "Seychelles",
+        "C": "Comoros",
+        "D": "Maldives"
+      },
+      "correct": "B",
+      "explanation": "Seychelles features five oblique bands radiating from the bottom left."
+    },
+    {
+      "id": "fl_04",
+      "text": "Which country has a dragon on its flag?",
+      "media": "https://flagcdn.com/w640/bt.png",
+      "options": {
+        "A": "Wales",
+        "B": "Bhutan",
+        "C": "Sri Lanka",
+        "D": "Vietnam"
+      },
+      "correct": "B",
+      "explanation": "The Thunder Dragon (Druk) appears on the flag of Bhutan. (Wales also has one, but this is a sovereign nation quiz)."
+    },
+    {
+      "id": "fl_05",
+      "text": "Distinguish this flag from similar ones:",
+      "media": "https://flagcdn.com/w640/id.png",
+      "options": {
+        "A": "Poland",
+        "B": "Monaco",
+        "C": "Indonesia",
+        "D": "Singapore"
+      },
+      "correct": "C",
+      "explanation": "Indonesia is Red over White. Poland is White over Red. Monaco is Red over White (but different dimensions)."
+    },
+    {
+      "id": "fl_06",
+      "text": "Which country's flag features an AK-47?",
+      "media": "https://flagcdn.com/w640/mz.png",
+      "options": {
+        "A": "Angola",
+        "B": "Mozambique",
+        "C": "Zimbabwe",
+        "D": "Kenya"
+      },
+      "correct": "B",
+      "explanation": "Mozambique is the only national flag to feature a modern assault rifle."
+    },
+    {
+      "id": "fl_07",
+      "text": "Identify the flag of this Nordic country:",
+      "media": "https://flagcdn.com/w640/is.png",
+      "options": {
+        "A": "Norway",
+        "B": "Iceland",
+        "C": "Finland",
+        "D": "Denmark"
+      },
+      "correct": "B",
+      "explanation": "Iceland's flag is blue with a red cross outlined in white."
+    },
+    {
+      "id": "fl_08",
+      "text": "Which flag has a maple leaf?",
+      "media": "https://flagcdn.com/w640/ca.png",
+      "options": {
+        "A": "USA",
+        "B": "Canada",
+        "C": "UK",
+        "D": "Australia"
+      },
+      "correct": "B",
+      "explanation": "The Maple Leaf flag has been Canada's national flag since 1965."
+    },
+    {
+      "id": "fl_09",
+      "text": "This flag features a cedar tree:",
+      "media": "https://flagcdn.com/w640/lb.png",
+      "options": {
+        "A": "Lebanon",
+        "B": "Israel",
+        "C": "Jordan",
+        "D": "Syria"
+      },
+      "correct": "A",
+      "explanation": "The Lebanon Cedar is the national emblem of Lebanon."
+    },
+    {
+      "id": "fl_10",
+      "text": "Identify this flag with a sun and eagle:",
+      "media": "https://flagcdn.com/w640/kz.png",
+      "options": {
+        "A": "Kyrgyzstan",
+        "B": "Kazakhstan",
+        "C": "Uzbekistan",
+        "D": "Tajikistan"
+      },
+      "correct": "B",
+      "explanation": "Kazakhstan's flag is sky blue with a gold sun and steppe eagle."
+    }
+  ]
+}
