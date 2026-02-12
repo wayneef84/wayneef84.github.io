@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show pack selector on load
     renderPackSelector();
+    bindEvents(); // Bind controls immediately
 
     function renderPackSelector() {
         // Show selector, hide game
@@ -464,7 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setupEngine();
         engine.loadPack(currentPackData);
-        bindEvents();
         engine.startRound();
     }
 
