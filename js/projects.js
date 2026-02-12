@@ -31,7 +31,7 @@ var projects = [
     { name: "Test Portal", path: "projects/internal-tests/index.html", category: "project", icon: "🧪", tags: ["Internal"], description: "Centralized testing hub for F.O.N.G. codebase." },
     { name: "J-DevUtils", path: "projects/dev-utils/index.html", category: "project", icon: "🛠️", tags: ["Dev Tool"], description: "The Developer's Utility Belt: Timestamps, JSON, Base64, and more." },
     { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." },
-    { name: "Survival Manual", path: "projects/survival-doc/index.html", category: "project", icon: "⚠️", tags: ["Docs"], description: "Worst-Case Scenario Survival Handbook style documentation." }
+    { name: "Survival Manual", path: "projects/survival-doc/index.html", category: "project", icon: "⚠️", tags: ["Docs"], description: "Worst-Case Scenario Survival Handbook style documentation." },
     { name: "Encyclopedia", path: "projects/encyclopedia/index.html", category: "project", icon: "📚", tags: ["Reference"], description: "The definitive interactive documentation of the F.O.N.G. realm." }
 ];
 
