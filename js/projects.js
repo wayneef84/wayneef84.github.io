@@ -1,4 +1,4 @@
-const projects = [
+var projects = [
     // Games
     { name: "Card Games", path: "games/cards/index.html", category: "cards", icon: "🃏", tags: ["Shared Engine"], description: "Blackjack, War, and more built on a robust shared engine." },
     { name: "Sudoku", path: "games/sudoku/index.html", category: "puzzle", icon: "🧩", tags: ["Classic"], description: "Classic Sudoku puzzle with multiple difficulty levels." },
@@ -62,10 +62,10 @@ if (document.readyState === 'loading') {
 }
 
 function initTheme() {
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
+    var themeToggle = document.getElementById('themeToggle');
+    var body = document.body;
 
-    let savedTheme = null;
+    var savedTheme = null;
     try {
         savedTheme = localStorage.getItem('fong_theme');
     } catch (e) {
@@ -74,15 +74,17 @@ function initTheme() {
 
     if (savedTheme === 'light') {
         body.classList.add('light-mode');
+        document.documentElement.classList.add('light-mode');
         if (themeToggle) themeToggle.textContent = '🌙';
     } else {
         if (themeToggle) themeToggle.textContent = '☀️';
     }
 
     if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
+        themeToggle.addEventListener('click', function() {
             body.classList.toggle('light-mode');
-            const isLight = body.classList.contains('light-mode');
+            document.documentElement.classList.toggle('light-mode');
+            var isLight = body.classList.contains('light-mode');
             themeToggle.textContent = isLight ? '🌙' : '☀️';
             try {
                 localStorage.setItem('fong_theme', isLight ? 'light' : 'dark');
@@ -94,31 +96,33 @@ function initTheme() {
 }
 
 function initFilters() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var i, btn;
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Prevent default just in case, though they are buttons
+    for (i = 0; i < filterBtns.length; i++) {
+        btn = filterBtns[i];
+        btn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            const filter = btn.dataset.filter;
+            var filter = this.dataset.filter;
 
             // Update active button
-            filterBtns.forEach(b => {
-                b.classList.remove('active');
-                b.setAttribute('aria-pressed', 'false');
-            });
-            btn.classList.add('active');
-            btn.setAttribute('aria-pressed', 'true');
+            var j;
+            for (j = 0; j < filterBtns.length; j++) {
+                filterBtns[j].classList.remove('active');
+                filterBtns[j].setAttribute('aria-pressed', 'false');
+            }
+            this.classList.add('active');
+            this.setAttribute('aria-pressed', 'true');
 
             renderProjects(filter);
         });
-    });
+    }
 }
 
 function renderProjects(filter) {
-    const grid = document.getElementById('grid');
-    const aboutView = document.getElementById('about-view');
+    var grid = document.getElementById('grid');
+    var aboutView = document.getElementById('about-view');
 
     // Handle About View
     if (filter === 'about') {
@@ -142,30 +146,29 @@ function renderProjects(filter) {
 
     grid.innerHTML = '';
 
-    let delay = 0.1;
+    var delay = 0.1;
+    var i, project, card;
 
-    projects.forEach(project => {
+    for (i = 0; i < projects.length; i++) {
+        project = projects[i];
         try {
-            // Filter logic: show if filter is 'all' OR category matches
-            // For 'project' filter, we want to show things with category 'project' (tools)
             if (filter === 'all' || project.category === filter) {
-                const card = document.createElement('a');
+                card = document.createElement('a');
                 card.href = project.path;
                 card.className = 'game-card fade-in';
                 if (project.category === 'project') {
                     card.classList.add('project');
                 }
                 card.dataset.category = project.category;
-                card.style.animationDelay = `${delay}s`;
+                card.style.animationDelay = delay + 's';
 
-                card.innerHTML = `
-                    <div class="card-icon" role="img" aria-label="${project.name}">${project.icon}</div>
-                    <div class="card-content">
-                        <span class="game-tag">${project.tags ? project.tags[0] : ''}</span>
-                        <h3 class="game-title">${project.name}</h3>
-                        <p class="game-desc">${project.description}</p>
-                    </div>
-                `;
+                card.innerHTML =
+                    '<div class="card-icon" role="img" aria-label="' + project.name + '">' + project.icon + '</div>' +
+                    '<div class="card-content">' +
+                        '<span class="game-tag">' + (project.tags ? project.tags[0] : '') + '</span>' +
+                        '<h3 class="game-title">' + project.name + '</h3>' +
+                        '<p class="game-desc">' + project.description + '</p>' +
+                    '</div>';
 
                 grid.appendChild(card);
                 delay += 0.05;
@@ -173,5 +176,5 @@ function renderProjects(filter) {
         } catch (err) {
             console.error("Error rendering project:", project, err);
         }
-    });
+    }
 }
