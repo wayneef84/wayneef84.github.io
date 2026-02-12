@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelSetupBtn: document.getElementById('cancelSetupBtn'),
         limitOptions: document.querySelectorAll('input[name="qLimit"]'),
         percentToggle: document.getElementById('percentToggle'),
+        // Voice Settings
+        voiceToggle: document.getElementById('voiceToggle'),
+        autoReadToggle: document.getElementById('autoReadToggle'),
+        speechRate: document.getElementById('speechRate'),
+        speechPitch: document.getElementById('speechPitch'),
+        rateValue: document.getElementById('rateValue'),
+        pitchValue: document.getElementById('pitchValue'),
         // Multi-Pack Elements
         multiPackSelection: document.getElementById('multiPackSelection'),
         multiPackList: document.getElementById('multiPackList'),
@@ -63,7 +70,29 @@ document.addEventListener('DOMContentLoaded', function() {
     var isCustomGame = false;
     var gameSettings = {
         limit: 10,
-        showPercent: false
+        showPercent: false,
+        voiceMode: false,
+        autoRead: false,
+        speechRate: 1.0,
+        speechPitch: 1.0
+    };
+
+    // Speaker Utility
+    var Speaker = {
+        synth: window.speechSynthesis,
+        speak: function(text) {
+            if (!this.synth) return;
+            this.cancel(); // Stop previous
+            if (!text) return;
+
+            var utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = gameSettings.speechRate;
+            utterance.pitch = gameSettings.speechPitch;
+            this.synth.speak(utterance);
+        },
+        cancel: function() {
+            if (this.synth) this.synth.cancel();
+        }
     };
 
     // Show pack selector on load
@@ -391,6 +420,12 @@ document.addEventListener('DOMContentLoaded', function() {
         gameSettings.limit = limit;
         gameSettings.showPercent = dom.percentToggle.checked;
 
+        // Get Voice Settings
+        if (dom.voiceToggle) gameSettings.voiceMode = dom.voiceToggle.checked;
+        if (dom.autoReadToggle) gameSettings.autoRead = dom.autoReadToggle.checked;
+        if (dom.speechRate) gameSettings.speechRate = parseFloat(dom.speechRate.value);
+        if (dom.speechPitch) gameSettings.speechPitch = parseFloat(dom.speechPitch.value);
+
         dom.setupModal.classList.add('hidden');
         if (dom.packGrid) {
             dom.packGrid.innerHTML = '<div class="loading-state">Loading pack...</div>';
@@ -507,13 +542,45 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        // Settings Sliders Updates (if exists)
+        if (dom.speechRate) {
+            dom.speechRate.addEventListener('input', function() {
+                if (dom.rateValue) dom.rateValue.textContent = this.value + 'x';
+            });
+        }
+        if (dom.speechPitch) {
+            dom.speechPitch.addEventListener('input', function() {
+                if (dom.pitchValue) dom.pitchValue.textContent = this.value;
+            });
+        }
+
         // Answer Clicks
         var keys = Object.keys(dom.answers);
         var k;
         for (k = 0; k < keys.length; k++) {
             (function(key) {
                 dom.answers[key].addEventListener('click', function() {
-                    engine.selectAnswer(key);
+                    // Voice Mode Interaction Logic
+                    if (gameSettings.voiceMode) {
+                        if (engine.pendingSelection === key) {
+                            // Already selected -> Confirm
+                            engine.selectAnswer(key);
+                            Speaker.cancel(); // Stop reading
+                        } else {
+                            // New selection -> Read and set Pending
+                            engine.setPendingSelection(key);
+
+                            // Get text from button
+                            var txt = dom.answers[key].querySelector('.option-text')?.textContent || "Image Option";
+                            Speaker.speak(txt);
+
+                            // UI update (highlight pending)
+                            updatePendingVisuals(key);
+                        }
+                    } else {
+                        // Standard Mode -> Immediate Confirm
+                        engine.selectAnswer(key);
+                    }
                 });
             })(keys[k]);
         }
@@ -581,6 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function quitToPacks(skipUrlUpdate) {
         if (engine && engine.timer) clearInterval(engine.timer);
+        Speaker.cancel(); // Stop any speech
         dom.endScreen.classList.add('hidden');
         dom.packSelector.classList.remove('hidden');
         dom.gameContainer.classList.add('hidden'); // Ensure game is hidden
@@ -614,9 +682,18 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.nextBtn.disabled = true;
         updateNextButtonState();
 
+        // Reset pending visuals
+        var keys = Object.keys(dom.answers);
+        keys.forEach(k => dom.answers[k].classList.remove('pending-selection'));
+
         // Update Text
         dom.qCount.textContent = data.index + '/' + data.total;
         dom.questionText.textContent = data.question.text;
+
+        // Auto Read Question
+        if (gameSettings.autoRead) {
+            Speaker.speak(data.question.text);
+        }
 
         // Update Score/Streak
         dom.scoreValue.textContent = data.score; // Keeping points for running score
@@ -627,7 +704,6 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.progressBar.style.width = progress + '%';
 
         // Render Options
-        var keys = Object.keys(dom.answers);
         var i, key, btn, optionText, textSpan;
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
@@ -678,12 +754,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function updatePendingVisuals(selectedKey) {
+        var keys = Object.keys(dom.answers);
+        keys.forEach(k => {
+            if (k === selectedKey) {
+                dom.answers[k].classList.add('pending-selection');
+            } else {
+                dom.answers[k].classList.remove('pending-selection');
+            }
+        });
+    }
+
     function showFeedback(data) {
+        Speaker.cancel(); // Stop reading
+
         // Disable all buttons
         var keys = Object.keys(dom.answers);
         var i;
         for (i = 0; i < keys.length; i++) {
             dom.answers[keys[i]].disabled = true;
+            dom.answers[keys[i]].classList.remove('pending-selection');
         }
 
         var correctBtn = dom.answers[data.correctAnswer];

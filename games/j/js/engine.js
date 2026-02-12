@@ -17,6 +17,7 @@ class QuizEngine {
 
         this.timer = null;
         this.timeLeft = 0;
+        this.pendingSelection = null; // For Voice Mode (confirm step)
 
         // State Machine: INIT -> PLAYING -> WAITING_FOR_NEXT -> TRANSITIONING -> ENDED
         this.state = 'INIT';
@@ -34,10 +35,47 @@ class QuizEngine {
             return;
         }
 
-        // Shuffle and slice based on settings
-        // Clone array to avoid mutating the original pack data
-        const shuffled = [...jsonPack.questions].sort(() => 0.5 - Math.random());
+        // Deep clone questions to avoid mutating original pack data
+        // We need deep clone because we are modifying options objects in place
+        const clones = JSON.parse(JSON.stringify(jsonPack.questions));
+
+        // Randomize options for each question
+        clones.forEach(q => this.randomizeOptions(q));
+
+        // Shuffle questions order
+        const shuffled = clones.sort(() => 0.5 - Math.random());
         this.questions = shuffled.slice(0, this.settings.totalQuestions);
+    }
+
+    randomizeOptions(question) {
+        if (!question.options) return;
+
+        // original correct answer key (e.g. "A")
+        const correctKey = question.correct;
+        const correctValue = question.options[correctKey];
+
+        // Get all values and shuffle them
+        const keys = Object.keys(question.options);
+        const values = keys.map(k => question.options[k]);
+
+        // Fisher-Yates shuffle values
+        for (let i = values.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [values[i], values[j]] = [values[j], values[i]];
+        }
+
+        // Reassign shuffled values to keys
+        // And find where the correct answer went
+        let newCorrectKey = correctKey;
+
+        keys.forEach((key, index) => {
+            question.options[key] = values[index];
+            if (values[index] === correctValue) {
+                newCorrectKey = key;
+            }
+        });
+
+        question.correct = newCorrectKey;
     }
 
     startRound() {
@@ -56,6 +94,7 @@ class QuizEngine {
         }
 
         this.state = 'PLAYING';
+        this.pendingSelection = null; // Reset pending
         const currentQ = this.questions[this.currentIndex];
         this.timeLeft = this.settings.timerPerQuestion;
 
@@ -88,6 +127,13 @@ class QuizEngine {
 
     timeUp() {
         clearInterval(this.timer);
+
+        // If user had a pending selection (Voice Mode), submit it now
+        if (this.pendingSelection) {
+            this.selectAnswer(this.pendingSelection);
+            return;
+        }
+
         this.recordHistory(this.questions[this.currentIndex], null, false, true); // timeOut = true
         this.streak = 0;
 
@@ -106,6 +152,11 @@ class QuizEngine {
         } else {
             this.state = 'WAITING_FOR_NEXT';
         }
+    }
+
+    setPendingSelection(key) {
+        if (this.state !== 'PLAYING') return;
+        this.pendingSelection = key;
     }
 
     selectAnswer(selectedOption) {
