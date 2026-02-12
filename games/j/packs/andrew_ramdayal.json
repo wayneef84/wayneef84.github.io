@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "id": "andrew_ramdayal",
+    "title": "Andrew Ramdayal's Mindset",
+    "version": "1.0",
+    "difficulty": "Expert",
+    "tags": ["PMP", "Mindset", "Agile"],
+    "questionCount": 20
+  },
+  "questions": [
+    {
+      "id": "ar01",
+      "text": "When a team member makes a mistake that delays the project, what should the Servant Leader do first?",
+      "options": {
+        "A": "Report them to HR",
+        "B": "Remove them from the team",
+        "C": "Meet with them privately to understand the root cause and coach them",
+        "D": "Issue a written warning"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Never fire or punish. Coach and mentor. Understand the root cause."
+    },
+    {
+      "id": "ar02",
+      "text": "A stakeholder demands a change to the scope immediately. What is the Project Manager's first step?",
+      "options": {
+        "A": "Reject the request because the scope is baseline",
+        "B": "Implement the change to keep them happy",
+        "C": "Analyze the impact of the change on constraints",
+        "D": "Ask the sponsor for permission"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Always analyze/assess the impact before acting or saying yes/no."
+    },
+    {
+      "id": "ar03",
+      "text": "The team is arguing about which technology to use. The debate is delaying the sprint. What should the Servant Leader do?",
+      "options": {
+        "A": "Decide for them to save time",
+        "B": "Facilitate a collaborative session to help them reach a consensus",
+        "C": "Ignore it, they are self-organizing",
+        "D": "Escalate to the CTO"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Facilitate collaboration. Don't dictate, but don't ignore impediments."
+    },
+    {
+      "id": "ar04",
+      "text": "You are a PM on a hybrid project. A key deliverable is failing quality tests. What do you do?",
+      "options": {
+        "A": "Fire the QA lead",
+        "B": "Review the Quality Management Plan and inspection results to find the root cause",
+        "C": "Add more time to the schedule",
+        "D": "Tell the team to work harder"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Review the plan, find the root cause. Don't just react."
+    },
+    {
+      "id": "ar05",
+      "text": "In an Agile environment, who prioritizes the Product Backlog?",
+      "options": {
+        "A": "The Scrum Master",
+        "B": "The Project Manager",
+        "C": "The Product Owner",
+        "D": "The Team"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Know the roles. PO owns value and prioritization."
+    },
+    {
+      "id": "ar06",
+      "text": "A vendor is late with a critical delivery. What is the first thing you should do?",
+      "options": {
+        "A": "Sue them",
+        "B": "Cancel the contract",
+        "C": "Meet with the vendor to understand the delay and discuss options",
+        "D": "Update the risk register"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Communication and problem-solving first. Legal action is a last resort."
+    },
+    {
+      "id": "ar07",
+      "text": "Your team is distributed across three time zones and communication is suffering. What is the best solution?",
+      "options": {
+        "A": "Send more emails",
+        "B": "Use a chat tool",
+        "C": "Schedule a daily video conference at a time convenient for everyone",
+        "D": "Fly everyone to one location"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Face-to-face (video) is better than text. Find a common ground."
+    },
+    {
+      "id": "ar08",
+      "text": "A team member comes to you with a personal problem affecting their work. What do you do?",
+      "options": {
+        "A": "Tell them to leave personal issues at home",
+        "B": "Listen with empathy and offer support (Emotional Intelligence)",
+        "C": "Reassign their work immediately",
+        "D": "Report it to the sponsor"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Be a Servant Leader. Use Emotional Intelligence."
+    },
+    {
+      "id": "ar09",
+      "text": "The customer is unhappy with the product increment. What should have been done differently?",
+      "options": {
+        "A": "Better contract negotiation",
+        "B": "More frequent demos and feedback loops",
+        "C": " stricter scope control",
+        "D": "Hiring better developers"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Agile promotes frequent feedback to ensure value delivery."
+    },
+    {
+      "id": "ar10",
+      "text": "You identify a new risk that could derail the project. What is the immediate next step?",
+      "options": {
+        "A": "Stop the project",
+        "B": "Update the Risk Register and analyze the risk",
+        "C": "Tell the sponsor",
+        "D": "Ignore it until it happens"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Document and Analyze first."
+    },
+    {
+      "id": "ar11",
+      "text": "What is the primary goal of the Project Manager?",
+      "options": {
+        "A": "To be the boss",
+        "B": "To deliver business value",
+        "C": "To follow the plan perfectly",
+        "D": "To save money"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Value is King. Plans and costs support value delivery."
+    },
+    {
+      "id": "ar12",
+      "text": "The team feels burnt out from overtime. The sponsor wants to crash the schedule further. What do you do?",
+      "options": {
+        "A": "Force the team to work",
+        "B": "Protect the team and negotiate with the sponsor, explaining the impact on quality and morale",
+        "C": "Quit",
+        "D": "Hire temporary workers without training"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Servant Leader protects the team. Sustainable pace."
+    },
+    {
+      "id": "ar13",
+      "text": "Two senior stakeholders have conflicting requirements. Who resolves this?",
+      "options": {
+        "A": "The Project Manager decides",
+        "B": "The Team decides",
+        "C": "You facilitate a meeting for them to resolve it",
+        "D": "The CEO"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Facilitate resolution. Don't take sides or guess."
+    },
+    {
+      "id": "ar14",
+      "text": "During the Daily Standup, a member starts discussing a complex technical issue. What should the Scrum Master do?",
+      "options": {
+        "A": "Let them finish",
+        "B": "Take it 'offline' (Parking Lot) to keep the meeting under 15 minutes",
+        "C": "Cancel the meeting",
+        "D": "Write it down for the Retrospective"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Keep ceremonies effective. Respect the timebox."
+    },
+    {
+      "id": "ar15",
+      "text": "Which document is a 'living document' that is updated throughout the project?",
+      "options": {
+        "A": "Project Charter",
+        "B": "Lessons Learned Register",
+        "C": "Project Budget (Baseline)",
+        "D": "Contract"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Continuous improvement. Lessons learned are gathered continuously."
+    },
+    {
+      "id": "ar16",
+      "text": "If a question asks 'what do you do first?', you should look for an answer that involves:",
+      "options": {
+        "A": "Taking action immediately",
+        "B": "Reviewing, Analyzing, or Assessing",
+        "C": "Asking for permission",
+        "D": "Escalating"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Review/Assess/Analyze is almost always the first step."
+    },
+    {
+      "id": "ar17",
+      "text": "A team member is not performing well. You have already coached them, but there is no improvement. What is the LAST resort?",
+      "options": {
+        "A": "Formal disciplinary action / removal",
+        "B": "More coaching",
+        "C": "Doing their work for them",
+        "D": "Ignoring it"
+      },
+      "correct": "A",
+      "explanation": "Mindset: Protect the project. If coaching fails repeatedly, removal is a last resort."
+    },
+    {
+      "id": "ar18",
+      "text": "What is the best way to ensure quality in an Agile project?",
+      "options": {
+        "A": "Lots of documentation",
+        "B": "Test-Driven Development (TDD) and Continuous Integration",
+        "C": "A large QA team at the end",
+        "D": "Strict penalties for bugs"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Quality is built-in, not inspected in at the end."
+    },
+    {
+      "id": "ar19",
+      "text": "The sponsor asks for a status report. You should provide:",
+      "options": {
+        "A": "A 50-page document",
+        "B": "Raw data from the system",
+        "C": "Work Performance Information (analyzed data) tailored to their needs",
+        "D": "Nothing, they can check the dashboard"
+      },
+      "correct": "C",
+      "explanation": "Mindset: Communicate effectively. Information, not just data."
+    },
+    {
+      "id": "ar20",
+      "text": "Your project is behind schedule. The team suggests cutting out the 'Testing' phase to catch up. You should:",
+      "options": {
+        "A": "Agree to save time",
+        "B": "Reject the idea; quality is not a tradeoff for schedule",
+        "C": "Ask the sponsor",
+        "D": "Do half the testing"
+      },
+      "correct": "B",
+      "explanation": "Mindset: Never sacrifice quality to meet a deadline. It creates technical debt."
+    }
+  ]
+}

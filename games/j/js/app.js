@@ -169,8 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
             onFeedback: showFeedback,
             onGameEnd: showEndScreen
         });
-
-        engine.loadPack(currentPackData);
     }
 
     function bindEvents() {
@@ -192,6 +190,11 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.lockToggle.addEventListener('change', function(e) {
             engine.settings.lockFastForward = e.target.checked;
             updateNextButtonState();
+
+            // FIX: If we enable auto-forward while waiting, trigger it immediately
+            if (engine.settings.lockFastForward && engine.state === 'WAITING_FOR_NEXT') {
+                engine.triggerFastForward();
+            }
         });
 
         // Next Button

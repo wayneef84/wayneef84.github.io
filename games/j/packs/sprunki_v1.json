@@ -2,10 +2,10 @@
   "meta": {
     "id": "sprunki_001",
     "title": "Sprunki Beats & Lore",
-    "version": "1.0",
+    "version": "1.1",
     "difficulty": "Medium",
     "tags": ["Gaming", "Music", "Horror"],
-    "questionCount": 10
+    "questionCount": 30
   },
   "questions": [
     {
@@ -128,6 +128,246 @@
       },
       "correct": "A",
       "explanation": "The first version was released as a Flash game in 2009."
+    },
+    {
+      "id": "q011",
+      "text": "Which Sprunki character is typically associated with the 'Beats' category and wears headphones?",
+      "options": {
+        "A": "Oren",
+        "B": "Raddy",
+        "C": "Clukr",
+        "D": "Fun Bot"
+      },
+      "correct": "A",
+      "explanation": "Oren is often the first beat character introduced."
+    },
+    {
+      "id": "q012",
+      "text": "In 'Phase 2' of some fan expansions, what beverage is often referenced in the title or theme?",
+      "options": {
+        "A": "Espresso",
+        "B": "Cappuccino",
+        "C": "Latte",
+        "D": "Mocha"
+      },
+      "correct": "B",
+      "explanation": "Phase 2 is often referred to as 'Cappuccino & Friends'."
+    },
+    {
+      "id": "q013",
+      "text": "What is the primary function of the 'Mute' button in the gameplay interface?",
+      "options": {
+        "A": "Removes the character from the stage",
+        "B": "Silences a specific character temporarily",
+        "C": "Stops all audio",
+        "D": "Deletes the save file"
+      },
+      "correct": "B",
+      "explanation": "Mute allows you to silence a track without removing the character."
+    },
+    {
+      "id": "q014",
+      "text": "Which of these characters is considered a 'Vocal' type?",
+      "options": {
+        "A": "Gray",
+        "B": "Wenda",
+        "C": "Sun",
+        "D": "Brud"
+      },
+      "correct": "B",
+      "explanation": "Wenda is a prominent vocal character in the Sprunki lineup."
+    },
+    {
+      "id": "q015",
+      "text": "In the 'Horror' lore, what happens to the sky or background?",
+      "options": {
+        "A": "It turns pitch black or dark red",
+        "B": "It becomes a rainbow",
+        "C": "It shows a cityscape",
+        "D": "It disappears completely"
+      },
+      "correct": "A",
+      "explanation": "The atmosphere shifts to a dark, often red or black void."
+    },
+    {
+      "id": "q016",
+      "text": "What action typically removes a character from the stage?",
+      "options": {
+        "A": "Double clicking them",
+        "B": "Dragging them down/off the character slot",
+        "C": "Pressing the spacebar",
+        "D": "Shaking the device"
+      },
+      "correct": "B",
+      "explanation": "Dragging the icon off the character model or clicking to deactivate is standard."
+    },
+    {
+      "id": "q017",
+      "text": "The 'Midnight' phase (Phase 3) generally features what kind of aesthetic?",
+      "options": {
+        "A": "Bright Day",
+        "B": "Neon Night / Moon",
+        "C": "Underwater",
+        "D": "Desert"
+      },
+      "correct": "B",
+      "explanation": "Phase 3 is often associated with a night/moon theme."
+    },
+    {
+      "id": "q018",
+      "text": "Which character name is a play on the word 'Computer'?",
+      "options": {
+        "A": "Compy",
+        "B": "Fun Bot",
+        "C": "Computer",
+        "D": "Cyber"
+      },
+      "correct": "C",
+      "explanation": "One of the vocal characters is literally named 'Computer' (or V1)."
+    },
+    {
+      "id": "q019",
+      "text": "What does the 'Solo' button do during playback?",
+      "options": {
+        "A": "Plays a guitar solo",
+        "B": "Mutes all other characters except the selected one",
+        "C": "Speeds up the track",
+        "D": "Shows the character's bio"
+      },
+      "correct": "B",
+      "explanation": "Solo isolates a single track for emphasis."
+    },
+    {
+      "id": "q020",
+      "text": "The 'Nightmare' phase (Phase 4) is considered:",
+      "options": {
+        "A": "The easiest mode",
+        "B": "The most intense horror variation",
+        "C": "A hidden puzzle",
+        "D": "A cancelled project"
+      },
+      "correct": "B",
+      "explanation": "Phase 4 usually represents the peak of the horror transformation."
+    },
+    {
+      "id": "q021",
+      "text": "Which category corresponds to the color Purple in standard Incredibox logic?",
+      "options": {
+        "A": "Beats",
+        "B": "Effects",
+        "C": "Melodies",
+        "D": "Vocals"
+      },
+      "correct": "B",
+      "explanation": "Effects are typically color-coded Purple."
+    },
+    {
+      "id": "q022",
+      "text": "Which category corresponds to the color Red in standard Incredibox logic?",
+      "options": {
+        "A": "Beats",
+        "B": "Melodies",
+        "C": "Voices",
+        "D": "Effects"
+      },
+      "correct": "B",
+      "explanation": "Melodies are typically color-coded Red."
+    },
+    {
+      "id": "q023",
+      "text": "Who is 'Durple'?",
+      "options": {
+        "A": "A Beat character",
+        "B": "A Melody character (often associated with Purple/Red)",
+        "C": "The main villain",
+        "D": "A developer"
+      },
+      "correct": "B",
+      "explanation": "Durple is a melody character found in the lineup."
+    },
+    {
+      "id": "q024",
+      "text": "What file format is commonly used for the loop samples in the web version?",
+      "options": {
+        "A": "MP3",
+        "B": "WAV",
+        "C": "MIDI",
+        "D": "FLAC"
+      },
+      "correct": "B",
+      "explanation": "WAV is preferred for seamless looping in Web Audio API."
+    },
+    {
+      "id": "q025",
+      "text": "In the horror version, 'Fun Bot' often appears:",
+      "options": {
+        "A": "Happy and shiny",
+        "B": "Broken, rusted, or menacing",
+        "C": "As a human",
+        "D": "As a cat"
+      },
+      "correct": "B",
+      "explanation": "The robotic characters take on a dilapidated or evil appearance."
+    },
+    {
+      "id": "q026",
+      "text": "The phrase 'Sprunki' is a fan-made derivative of:",
+      "options": {
+        "A": "Spunky",
+        "B": "Sprunk (GTA)",
+        "C": "Incredibox (Sprunki is a specific mod name)",
+        "D": "Funk"
+      },
+      "correct": "C",
+      "explanation": "Sprunki is the specific name given to this modded universe of Incredibox."
+    },
+    {
+      "id": "q027",
+      "text": "Which of these is NOT a valid character ID format in the config?",
+      "options": {
+        "A": "b01",
+        "B": "m03",
+        "C": "v05",
+        "D": "x99 (Standard packs use b/e/m/v prefixes)"
+      },
+      "correct": "D",
+      "explanation": "Standard packs use b (beats), e (effects), m (melodies), v (vocals) prefixes."
+    },
+    {
+      "id": "q028",
+      "text": "To reset the entire stage, players typically press:",
+      "options": {
+        "A": "The Reset / Clear button",
+        "B": "The Refresh browser button",
+        "C": "Escape key",
+        "D": "Power button"
+      },
+      "correct": "A",
+      "explanation": "A dedicated UI button clears all active slots."
+    },
+    {
+      "id": "q29",
+      "text": "Can you mix characters from different phases in the standard game logic?",
+      "options": {
+        "A": "Yes, freely",
+        "B": "No, usually packs are self-contained",
+        "C": "Only on Tuesdays",
+        "D": "Yes, but it crashes"
+      },
+      "correct": "B",
+      "explanation": "Standard logic loads one pack at a time due to asset compatibility."
+    },
+    {
+      "id": "q30",
+      "text": "The 'Black Hat' item is unique because:",
+      "options": {
+        "A": "It plays a sound",
+        "B": "It triggers a mode switch rather than just adding a sound",
+        "C": "It is invisible",
+        "D": "It costs money"
+      },
+      "correct": "B",
+      "explanation": "It functions as a trigger for the global Horror Mode state."
     }
   ]
 }

@@ -612,3 +612,4 @@ input:checked + .slider:before {
         font-size: 1.5rem;
     }
 }
+@import "selector.css";

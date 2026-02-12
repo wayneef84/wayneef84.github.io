@@ -1,0 +1,22 @@
+[
+    {
+        "id": "sprunki_v1",
+        "title": "Sprunki Beats & Lore",
+        "path": "packs/sprunki_v1.json"
+    },
+    {
+        "id": "pmi_pm",
+        "title": "PMI Project Management",
+        "path": "packs/pmi_pm.json"
+    },
+    {
+        "id": "andrew_ramdayal",
+        "title": "Andrew Ramdayal's PMP",
+        "path": "packs/andrew_ramdayal.json"
+    },
+    {
+        "id": "ops_logistics",
+        "title": "Ops, Logistics & Trade",
+        "path": "packs/ops_logistics.json"
+    }
+]
