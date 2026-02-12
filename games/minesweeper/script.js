@@ -38,6 +38,10 @@ let activeCell = null;
 let longPressTriggered = false;
 let isPointerDown = false;
 let lastPointerPos = { x: 0, y: 0 };
+let zoomSize = 40;
+let zoomShadow = '#000000';
+let showZoomWindow = true;
+let holdAction = 'flag'; // 'flag', 'reveal', 'none'
 
 // DOM Elements
 const boardElement = document.getElementById('game-board');
@@ -48,6 +52,10 @@ const difficultySelect = document.getElementById('difficulty-select');
 const themeSelect = document.getElementById('theme-select');
 const customSettings = document.getElementById('custom-settings');
 const holdDelayInput = document.getElementById('hold-delay');
+const zoomSizeInput = document.getElementById('zoom-size');
+const zoomShadowInput = document.getElementById('zoom-shadow');
+const showZoomInput = document.getElementById('show-zoom');
+const holdActionSelect = document.getElementById('hold-action');
 const resetButton = document.getElementById('reset-btn');
 const highScoreElement = document.getElementById('high-score');
 const messageElement = document.getElementById('message');
@@ -105,6 +113,31 @@ function setupEventListeners() {
         holdDelay = val;
         localStorage.setItem('minesweeper_hold_delay', holdDelay);
     });
+
+    zoomSizeInput.addEventListener('change', (e) => {
+        let val = parseInt(e.target.value);
+        if (val < 20) val = 20;
+        if (val > 80) val = 80;
+        zoomSize = val;
+        localStorage.setItem('minesweeper_zoom_size', zoomSize);
+        applyVisualSettings();
+    });
+
+    zoomShadowInput.addEventListener('change', (e) => {
+        zoomShadow = e.target.value;
+        localStorage.setItem('minesweeper_zoom_shadow', zoomShadow);
+        applyVisualSettings();
+    });
+
+    showZoomInput.addEventListener('change', (e) => {
+        showZoomWindow = e.target.checked;
+        localStorage.setItem('minesweeper_show_zoom', showZoomWindow);
+    });
+
+    holdActionSelect.addEventListener('change', (e) => {
+        holdAction = e.target.value;
+        localStorage.setItem('minesweeper_hold_action', holdAction);
+    });
 }
 
 function loadSettings() {
@@ -123,6 +156,40 @@ function loadSettings() {
         holdDelay = parseInt(savedHoldDelay);
         holdDelayInput.value = holdDelay;
     }
+
+    const savedZoomSize = localStorage.getItem('minesweeper_zoom_size');
+    if (savedZoomSize) {
+        zoomSize = parseInt(savedZoomSize);
+        zoomSizeInput.value = zoomSize;
+    }
+
+    const savedZoomShadow = localStorage.getItem('minesweeper_zoom_shadow');
+    if (savedZoomShadow) {
+        zoomShadow = savedZoomShadow;
+        zoomShadowInput.value = zoomShadow;
+    }
+
+    const savedShowZoom = localStorage.getItem('minesweeper_show_zoom');
+    if (savedShowZoom !== null) {
+        showZoomWindow = (savedShowZoom === 'true');
+        showZoomInput.checked = showZoomWindow;
+    }
+
+    const savedHoldAction = localStorage.getItem('minesweeper_hold_action');
+    if (savedHoldAction) {
+        holdAction = savedHoldAction;
+        holdActionSelect.value = holdAction;
+    }
+
+    applyVisualSettings();
+}
+
+function applyVisualSettings() {
+    document.documentElement.style.setProperty('--zoom-cell-size', `${zoomSize}px`);
+    document.documentElement.style.setProperty('--zoom-font-size', `${Math.floor(zoomSize * 0.6)}px`);
+
+    // Hex to RGBA for shadow to add opacity if needed, or just use hex
+    document.documentElement.style.setProperty('--zoom-shadow-color', zoomShadow);
 }
 
 function setTheme(theme) {
@@ -250,6 +317,10 @@ function handleLeftClick(r, c) {
         return;
     }
 
+    triggerReveal(r, c);
+}
+
+function triggerReveal(r, c) {
     const cell = gameState.board[r][c];
     if (cell.isFlagged || cell.isRevealed) return;
 
@@ -536,10 +607,14 @@ function handleHoldTimer() {
     if (!activeCell) return;
     longPressTriggered = true;
 
-    // Trigger Flag
-    handleRightClick(activeCell.r, activeCell.c);
+    if (holdAction === 'flag') {
+        handleRightClick(activeCell.r, activeCell.c);
+    } else if (holdAction === 'reveal') {
+        triggerReveal(activeCell.r, activeCell.c);
+    }
+    // If 'none', do nothing (except set longPressTriggered to prevent click)
 
-    // Refresh zoom to show the new flag state
+    // Refresh zoom to show the new state
     showZoom(activeCell.r, activeCell.c, lastPointerPos.x, lastPointerPos.y);
 
     // Feedback
@@ -547,6 +622,8 @@ function handleHoldTimer() {
 }
 
 function showZoom(r, c, x, y) {
+    if (!showZoomWindow) return;
+
     miniZoomElement.innerHTML = '';
     miniZoomElement.style.display = 'grid';
 

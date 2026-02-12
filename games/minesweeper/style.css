@@ -8,6 +8,10 @@
     --revealed-bg: #c0c0c0;
     --accent-color: #008000;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    --zoom-cell-size: 40px;
+    --zoom-font-size: 24px;
+    --zoom-shadow-color: rgba(0,0,0,0.5);
 }
 
 body {
@@ -310,7 +314,7 @@ body.theme-neon .cell.flagged { text-shadow: 0 0 8px #f00; }
     pointer-events: none;
     background: var(--bg-color);
     border: 3px solid var(--accent-color);
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0 15px var(--zoom-shadow-color);
     padding: 2px;
     border-radius: 4px;
     grid-template-columns: repeat(3, 1fr);
@@ -318,7 +322,7 @@ body.theme-neon .cell.flagged { text-shadow: 0 0 8px #f00; }
 }
 
 #mini-zoom .cell {
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
+    width: var(--zoom-cell-size);
+    height: var(--zoom-cell-size);
+    font-size: var(--zoom-font-size);
 }
