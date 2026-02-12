@@ -41,11 +41,13 @@ body {
     flex-direction: column;
     position: relative;
     padding: 20px;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* Safe area for iPhone X+ */
 }
 
 /* Header */
 .game-header {
     margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .top-row {
@@ -55,14 +57,28 @@ body {
     margin-bottom: 15px;
 }
 
-.home-btn {
+.nav-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.home-btn, .back-btn {
     text-decoration: none;
     font-size: 1.5rem;
     filter: grayscale(1);
     transition: filter 0.3s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.home-btn:hover {
+.home-btn:hover, .back-btn:hover {
     filter: grayscale(0);
 }
 
@@ -116,6 +132,9 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 20px;
+    overflow-y: auto; /* Allow scrolling if content is too tall */
+    -webkit-overflow-scrolling: touch;
+    min-height: 0; /* Critical for flex child scrolling */
 }
 
 .question-card {
@@ -126,6 +145,7 @@ body {
     text-align: center;
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    flex-shrink: 0; /* Prevent squishing */
 }
 
 .question-meta {
@@ -150,6 +170,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
+    flex-shrink: 0; /* Prevent squishing */
 }
 
 .answer-btn {
@@ -167,6 +188,7 @@ body {
     gap: 5px;
     position: relative;
     overflow: hidden;
+    min-height: 80px; /* Ensure touch target size */
 }
 
 .answer-btn:hover:not(:disabled) {
@@ -210,6 +232,8 @@ body {
     align-items: center;
     padding: 10px 0;
     border-top: 1px solid var(--card-border);
+    flex-shrink: 0; /* Ensure footer stays visible */
+    background: var(--bg-color); /* Opaque background in case of scroll */
 }
 
 .control-group {
@@ -601,6 +625,7 @@ input:checked + .slider:before {
 @media (max-height: 700px) {
     .app-container {
         padding: 10px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
     }
     .game-board {
         gap: 10px;
@@ -610,6 +635,10 @@ input:checked + .slider:before {
     }
     .timer-display {
         font-size: 1.5rem;
+    }
+    .answer-btn {
+        padding: 15px 5px;
+        min-height: 60px;
     }
 }
 @import "selector.css";
