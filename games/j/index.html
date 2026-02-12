@@ -85,6 +85,62 @@
                     </div>
                 </div>
 
+                <!-- Time Settings -->
+                <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                    <label class="setup-label">Time Settings</label>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Time Per Question</label>
+                            <span id="timeValue" style="color:var(--accent); font-weight:bold;">15s</span>
+                        </div>
+                        <input type="range" id="timerDuration" min="5" max="120" step="5" value="15" style="width: 100%;">
+                    </div>
+
+                    <div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Max Carry Over</label>
+                            <span id="carryValue" style="color:var(--accent); font-weight:bold;">0s</span>
+                        </div>
+                        <input type="range" id="carryOverMax" min="0" max="30" step="5" value="0" style="width: 100%;">
+                        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px;">
+                            Extra time from quick answers is added to the next question.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice / Accessibility Settings -->
+                <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                    <label class="setup-label">Voice / Accessibility</label>
+
+                    <div class="control-group" style="margin-bottom: 10px;">
+                        <label class="switch">
+                            <input type="checkbox" id="voiceToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-label" style="margin-left: 10px;">Voice Mode (Read & Confirm)</span>
+                    </div>
+
+                    <div class="control-group" style="margin-bottom: 15px;">
+                        <label class="switch">
+                            <input type="checkbox" id="autoReadToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-label" style="margin-left: 10px;">Auto-Read Question</span>
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1;">
+                            <label class="setup-label" style="font-size: 0.7rem;">Speed: <span id="rateValue" style="color:var(--accent)">1.0x</span></label>
+                            <input type="range" id="speechRate" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="setup-label" style="font-size: 0.7rem;">Pitch: <span id="pitchValue" style="color:var(--accent)">1.0</span></label>
+                            <input type="range" id="speechPitch" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="setup-group">
                     <div class="control-group" style="justify-content: center;">
                         <label class="switch">
