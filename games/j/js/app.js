@@ -67,6 +67,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(function(data) {
                     PACK_REGISTRY = data;
                     renderPackSelector(); // Re-render with data
+
+                    // Check URL for pack
+                    const params = new URLSearchParams(window.location.search);
+                    const packPath = params.get('pack');
+                    if (packPath) {
+                        // Validate path against registry
+                        const isValid = PACK_REGISTRY.some(p => p.path === packPath);
+                        if (isValid) {
+                            loadAndStartPack(packPath, true); // true = skip pushState
+                        } else {
+                            console.warn('Invalid pack path in URL:', packPath);
+                            history.replaceState(null, '', window.location.pathname);
+                        }
+                    }
                 })
                 .catch(function(e) {
                     console.error(e);
@@ -125,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             (function(packPath) {
                 card.addEventListener('click', function() {
-                    loadAndStartPack(packPath);
+                    loadAndStartPack(packPath, false); // false = push new state
                 });
             })(pack.path);
 
@@ -133,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function loadAndStartPack(packFile) {
+    function loadAndStartPack(packFile, skipPushState) {
         // Show loading state
         if (dom.packGrid) {
             dom.packGrid.innerHTML = '<div class="loading-state">Loading pack...</div>';
@@ -146,6 +160,13 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(function(data) {
                 currentPackData = data;
+
+                // Update URL without reloading
+                if (!skipPushState) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('pack', packFile);
+                    history.pushState({pack: packFile}, '', url);
+                }
 
                 // Switch to game view
                 if (dom.packSelector) dom.packSelector.classList.add('hidden');
@@ -221,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.changePack) {
             dom.changePack.addEventListener('click', function(e) {
                 e.preventDefault();
-                quitToPacks();
+                quitToPacks(false); // Update URL
             });
         }
 
@@ -229,15 +250,39 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.backToPacksBtn) {
             dom.backToPacksBtn.addEventListener('click', function() {
                 if(confirm("Quit current game and return to pack selection?")) {
-                    quitToPacks();
+                    quitToPacks(false); // Update URL
                 }
             });
         }
+
+        // Browser Back Button
+        window.addEventListener('popstate', function(event) {
+            const params = new URLSearchParams(window.location.search);
+            const packPath = params.get('pack');
+
+            if (packPath) {
+                // If we popped back into a pack state, load it without pushing state
+                loadAndStartPack(packPath, true);
+            } else {
+                // We popped back to root
+                quitToPacks(true); // Skip pushing state
+            }
+        });
     }
 
-    function quitToPacks() {
+    function quitToPacks(skipUrlUpdate) {
         if (engine && engine.timer) clearInterval(engine.timer);
         dom.endScreen.classList.add('hidden');
+        dom.packSelector.classList.remove('hidden');
+        dom.gameContainer.classList.add('hidden'); // Ensure game is hidden
+
+        if (!skipUrlUpdate) {
+            // Remove query param
+            const url = new URL(window.location);
+            url.searchParams.delete('pack');
+            history.pushState(null, '', url);
+        }
+
         renderPackSelector();
     }
 
@@ -280,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function() {
             optionText = data.question.options[key];
 
             btn.disabled = false;
+
+            // Remove previous feedback classes
             btn.className = 'answer-btn';
 
             textSpan = btn.querySelector('.option-text');
@@ -306,13 +353,32 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.answers[keys[i]].disabled = true;
         }
 
-        // Highlight Buttons
         var correctBtn = dom.answers[data.correctAnswer];
-        if (correctBtn) correctBtn.classList.add('correct');
 
-        if (!data.correct && !data.timeOut && data.selected) {
-            var selectedBtn = dom.answers[data.selected];
-            if (selectedBtn) selectedBtn.classList.add('incorrect');
+        if (engine.settings.lockFastForward) {
+            // New "Pop" Animation logic
+            if (correctBtn) correctBtn.classList.add('pop-correct');
+
+            // If incorrect, still show it briefly (maybe?)
+            // The request said: "unless it's clicked somewhere then it just disappears"
+            // The 'pop-correct' animation fades out at the end (100% -> opacity: 0).
+
+            // If user selected WRONG answer, we probably should show it as red briefly?
+            // The prompt only mentioned the correct answer behavior ("The green should pop up...").
+            // I'll keep the incorrect logic for now but focusing on the pop.
+             if (!data.correct && !data.timeOut && data.selected) {
+                var selectedBtn = dom.answers[data.selected];
+                if (selectedBtn) selectedBtn.classList.add('incorrect');
+            }
+
+        } else {
+            // Standard Logic
+            if (correctBtn) correctBtn.classList.add('correct');
+
+            if (!data.correct && !data.timeOut && data.selected) {
+                var selectedBtn = dom.answers[data.selected];
+                if (selectedBtn) selectedBtn.classList.add('incorrect');
+            }
         }
 
         if (!engine.settings.lockFastForward) {

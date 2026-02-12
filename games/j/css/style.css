@@ -201,6 +201,7 @@ body {
     transform: translateY(1px);
 }
 
+/* Normal states (when Lock Fast Forward is OFF) */
 .answer-btn.correct {
     background: rgba(34, 197, 94, 0.2);
     border-color: var(--correct);
@@ -211,6 +212,34 @@ body {
     background: rgba(239, 68, 68, 0.2);
     border-color: var(--incorrect);
     opacity: 0.7;
+}
+
+/* Pop Effect for Fast Forward Mode */
+.answer-btn.pop-correct {
+    animation: popAndFade 0.6s ease-out forwards;
+    z-index: 10;
+}
+
+@keyframes popAndFade {
+    0% {
+        transform: scale(1);
+        background: rgba(34, 197, 94, 0.2);
+        border-color: var(--correct);
+    }
+    30% {
+        transform: scale(1.1);
+        background: rgba(34, 197, 94, 0.4);
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+        border-color: var(--correct);
+    }
+    80% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0; /* Fade out as it disappears */
+    }
 }
 
 .option-label {
