@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
         speechPitch: document.getElementById('speechPitch'),
         rateValue: document.getElementById('rateValue'),
         pitchValue: document.getElementById('pitchValue'),
+        // Time Settings
+        timerDuration: document.getElementById('timerDuration'),
+        carryOverMax: document.getElementById('carryOverMax'),
+        timeValue: document.getElementById('timeValue'),
+        carryValue: document.getElementById('carryValue'),
         // Multi-Pack Elements
         multiPackSelection: document.getElementById('multiPackSelection'),
         multiPackList: document.getElementById('multiPackList'),
@@ -74,7 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
         voiceMode: false,
         autoRead: false,
         speechRate: 1.0,
-        speechPitch: 1.0
+        speechPitch: 1.0,
+        timerDuration: 15,
+        carryOverMax: 0
     };
 
     // Speaker Utility
@@ -426,6 +433,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.speechRate) gameSettings.speechRate = parseFloat(dom.speechRate.value);
         if (dom.speechPitch) gameSettings.speechPitch = parseFloat(dom.speechPitch.value);
 
+        // Get Time Settings
+        if (dom.timerDuration) gameSettings.timerDuration = parseInt(dom.timerDuration.value, 10);
+        if (dom.carryOverMax) gameSettings.carryOverMax = parseInt(dom.carryOverMax.value, 10);
+
         dom.setupModal.classList.add('hidden');
         if (dom.packGrid) {
             dom.packGrid.innerHTML = '<div class="loading-state">Loading pack...</div>';
@@ -515,7 +526,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupEngine() {
         engine = new QuizEngine({
             limit: gameSettings.limit,
-            timer: 15,
+            timer: gameSettings.timerDuration,
+            carryOverMax: gameSettings.carryOverMax,
             onTick: updateTimer,
             onQuestionLoaded: renderQuestion,
             onFeedback: showFeedback,
@@ -551,6 +563,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.speechPitch) {
             dom.speechPitch.addEventListener('input', function() {
                 if (dom.pitchValue) dom.pitchValue.textContent = this.value;
+            });
+        }
+
+        // Time Settings Sliders
+        if (dom.timerDuration) {
+            dom.timerDuration.addEventListener('input', function() {
+                var val = parseInt(this.value, 10);
+                if (dom.timeValue) dom.timeValue.textContent = formatTime(val) + (val < 60 ? 's' : '');
+            });
+        }
+        if (dom.carryOverMax) {
+            dom.carryOverMax.addEventListener('input', function() {
+                var val = parseInt(this.value, 10);
+                if (dom.carryValue) dom.carryValue.textContent = formatTime(val) + (val < 60 ? 's' : '');
             });
         }
 
@@ -666,8 +692,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Render Functions ---
 
+    function formatTime(seconds) {
+        seconds = parseInt(seconds, 10);
+        if (isNaN(seconds)) return "0";
+        if (seconds < 60) return seconds;
+        var m = Math.floor(seconds / 60);
+        var s = seconds % 60;
+        return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
     function updateTimer(seconds) {
-        dom.timerDisplay.textContent = seconds;
+        dom.timerDisplay.textContent = formatTime(seconds);
         if (seconds <= 5) {
             dom.timerDisplay.classList.add('danger');
         } else {

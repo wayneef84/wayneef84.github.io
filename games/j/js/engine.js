@@ -10,6 +10,7 @@ class QuizEngine {
 
         this.settings = {
             timerPerQuestion: config.timer || 15, // seconds, default 15s per question
+            maxCarryOver: config.carryOverMax || 0,
             totalQuestions: config.limit || 10,
             fastForward: false, // User can click 'Next' early
             lockFastForward: false // Auto-advance on select
@@ -17,6 +18,7 @@ class QuizEngine {
 
         this.timer = null;
         this.timeLeft = 0;
+        this.carriedTime = 0;
         this.pendingSelection = null; // For Voice Mode (confirm step)
 
         // State Machine: INIT -> PLAYING -> WAITING_FOR_NEXT -> TRANSITIONING -> ENDED
@@ -83,6 +85,7 @@ class QuizEngine {
         this.score = 0;
         this.streak = 0;
         this.history = [];
+        this.carriedTime = 0;
         this.state = 'PLAYING';
         this.nextQuestion();
     }
@@ -96,7 +99,11 @@ class QuizEngine {
         this.state = 'PLAYING';
         this.pendingSelection = null; // Reset pending
         const currentQ = this.questions[this.currentIndex];
-        this.timeLeft = this.settings.timerPerQuestion;
+
+        // Time Logic: Base + Carried
+        this.timeLeft = this.settings.timerPerQuestion + this.carriedTime;
+        // Reset carried time as it is consumed now
+        this.carriedTime = 0;
 
         this.onQuestionLoaded({
             question: currentQ,
@@ -127,6 +134,7 @@ class QuizEngine {
 
     timeUp() {
         clearInterval(this.timer);
+        this.carriedTime = 0; // Reset carry over on timeout
 
         // If user had a pending selection (Voice Mode), submit it now
         if (this.pendingSelection) {
@@ -178,8 +186,16 @@ class QuizEngine {
             this.score += points;
             this.streak++;
             if (this.streak > this.maxStreak) this.maxStreak = this.streak;
+
+            // Carry Over Logic
+            if (this.timeLeft > 0 && this.settings.maxCarryOver > 0) {
+                this.carriedTime = Math.min(this.timeLeft, this.settings.maxCarryOver);
+            } else {
+                this.carriedTime = 0;
+            }
         } else {
             this.streak = 0;
+            this.carriedTime = 0;
         }
 
         this.onFeedback({

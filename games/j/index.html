@@ -85,6 +85,30 @@
                     </div>
                 </div>
 
+                <!-- Time Settings -->
+                <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                    <label class="setup-label">Time Settings</label>
+
+                    <div style="margin-bottom: 15px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Time Per Question</label>
+                            <span id="timeValue" style="color:var(--accent); font-weight:bold;">15s</span>
+                        </div>
+                        <input type="range" id="timerDuration" min="5" max="120" step="5" value="15" style="width: 100%;">
+                    </div>
+
+                    <div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Max Carry Over</label>
+                            <span id="carryValue" style="color:var(--accent); font-weight:bold;">0s</span>
+                        </div>
+                        <input type="range" id="carryOverMax" min="0" max="30" step="5" value="0" style="width: 100%;">
+                        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px;">
+                            Extra time from quick answers is added to the next question.
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Voice / Accessibility Settings -->
                 <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
                     <label class="setup-label">Voice / Accessibility</label>
