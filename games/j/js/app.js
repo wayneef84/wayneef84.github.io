@@ -1,24 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Pack Registry - all available packs
-    var PACK_REGISTRY = [
-        { file: 'sprunki_v1.json', title: 'Sprunki Beats & Lore', icon: '\uD83C\uDFB5', category: 'Gaming', count: 10 },
-        { file: 'science_v1.json', title: 'General Science', icon: '\uD83E\uDDEA', category: 'Science', count: 80 },
-        { file: 'geography_v1.json', title: 'World Geography', icon: '\uD83C\uDF0D', category: 'Geography', count: 80 },
-        { file: 'history_v1.json', title: 'World History', icon: '\uD83C\uDFDB\uFE0F', category: 'History', count: 80 },
-        { file: 'movies_v1.json', title: 'Movies & Film', icon: '\uD83C\uDFAC', category: 'Entertainment', count: 80 },
-        { file: 'sports_v1.json', title: 'Sports & Athletics', icon: '\u26BD', category: 'Sports', count: 80 },
-        { file: 'technology_v1.json', title: 'Technology & Computing', icon: '\uD83D\uDCBB', category: 'Technology', count: 80 },
-        { file: 'food_v1.json', title: 'Food & Cuisine', icon: '\uD83C\uDF73', category: 'Lifestyle', count: 80 },
-        { file: 'animals_v1.json', title: 'Animals & Nature', icon: '\uD83E\uDD81', category: 'Nature', count: 80 },
-        { file: 'math_v1.json', title: 'Mathematics', icon: '\uD83D\uDCCA', category: 'Science', count: 80 },
-        { file: 'space_v1.json', title: 'Space & Astronomy', icon: '\uD83D\uDE80', category: 'Science', count: 80 },
-        { file: 'mythology_v1.json', title: 'Mythology & Legends', icon: '\u2694\uFE0F', category: 'History', count: 80 },
-        { file: 'music_v1.json', title: 'Music & Artists', icon: '\uD83C\uDFB8', category: 'Entertainment', count: 80 },
-        { file: 'literature_v1.json', title: 'Literature & Books', icon: '\uD83D\uDCDA', category: 'Culture', count: 80 },
-        { file: 'popculture_v1.json', title: 'Pop Culture', icon: '\uD83D\uDCFA', category: 'Entertainment', count: 80 },
-        { file: 'videogames_v1.json', title: 'Video Games', icon: '\uD83C\uDFAE', category: 'Gaming', count: 80 },
-        { file: 'language_v1.json', title: 'Language & Words', icon: '\uD83D\uDCAC', category: 'Culture', count: 80 }
-    ];
+    // Pack Registry - will be loaded from manifest
+    var PACK_REGISTRY = [];
 
     // DOM Elements
     var dom = {
@@ -70,11 +52,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.gameContainer) dom.gameContainer.classList.add('hidden');
         if (dom.endScreen) dom.endScreen.classList.add('hidden');
 
+        // Check if registry is loaded
+        if (PACK_REGISTRY.length === 0) {
+            if (dom.packGrid) {
+                dom.packGrid.innerHTML = '<div class="loading-state">Loading packs...</div>';
+            }
+
+            fetch('packs/manifest.json')
+                .then(function(response) {
+                    if (!response.ok) throw new Error('Failed to load manifest');
+                    return response.json();
+                })
+                .then(function(data) {
+                    PACK_REGISTRY = data;
+                    renderPackSelector(); // Re-render with data
+                })
+                .catch(function(e) {
+                    console.error(e);
+                    if (dom.packGrid) {
+                        dom.packGrid.innerHTML = '<div class="loading-state error">Failed to load packs. <button onclick="location.reload()">Retry</button></div>';
+                    }
+                });
+            return;
+        }
+
         // Calculate totals
         var totalQ = 0;
         var i;
         for (i = 0; i < PACK_REGISTRY.length; i++) {
-            totalQ += PACK_REGISTRY[i].count;
+            totalQ += (PACK_REGISTRY[i].count || 0);
         }
         if (dom.totalQuestions) dom.totalQuestions.textContent = totalQ;
         if (dom.totalPacks) dom.totalPacks.textContent = PACK_REGISTRY.length;
@@ -105,22 +111,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             card = document.createElement('button');
             card.className = 'pack-card';
-            card.setAttribute('data-pack', pack.file);
+            card.setAttribute('data-pack', pack.path);
             card.innerHTML =
-                '<div class="pack-icon">' + pack.icon + '</div>' +
+                '<div class="pack-icon">' + (pack.icon || '\u2753') + '</div>' +
                 '<div class="pack-info">' +
                     '<div class="pack-name">' + pack.title + '</div>' +
                     '<div class="pack-meta">' +
-                        '<span class="pack-category">' + pack.category + '</span>' +
-                        '<span class="pack-count">' + pack.count + ' Q</span>' +
+                        '<span class="pack-category">' + (pack.category || 'General') + '</span>' +
+                        '<span class="pack-count">' + (pack.count || '?') + ' Q</span>' +
                     '</div>' +
                 '</div>';
 
-            (function(packFile) {
+            (function(packPath) {
                 card.addEventListener('click', function() {
-                    loadAndStartPack(packFile);
+                    loadAndStartPack(packPath);
                 });
-            })(pack.file);
+            })(pack.path);
 
             dom.packGrid.appendChild(card);
         }
@@ -132,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.packGrid.innerHTML = '<div class="loading-state">Loading pack...</div>';
         }
 
-        fetch('packs/' + packFile)
+        fetch(packFile)
             .then(function(response) {
                 if (!response.ok) throw new Error('Failed to load pack');
                 return response.json();
