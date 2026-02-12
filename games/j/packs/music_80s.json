@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "music_80s",
+    "title": "80s Pop Music",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Music", "80s", "Pop", "New Wave", "MTV"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "m80_01",
+      "text": "Who is known as the 'King of Pop'?",
+      "options": {
+        "A": "Prince",
+        "B": "Michael Jackson",
+        "C": "George Michael",
+        "D": "Madonna"
+      },
+      "correct": "B",
+      "explanation": "Michael Jackson dominated the 80s with 'Thriller', the best-selling album of all time."
+    },
+    {
+      "id": "m80_02",
+      "text": "Which song was the first video ever played on MTV?",
+      "options": {
+        "A": "Money for Nothing",
+        "B": "Take On Me",
+        "C": "Video Killed the Radio Star",
+        "D": "Billie Jean"
+      },
+      "correct": "C",
+      "explanation": "The Buggles' 'Video Killed the Radio Star' aired at 12:01 AM on August 1, 1981."
+    },
+    {
+      "id": "m80_03",
+      "text": "Madonna famously sang 'Like a _____'.",
+      "options": {
+        "A": "Prayer",
+        "B": "Virgin",
+        "C": "Woman",
+        "D": "Lady"
+      },
+      "correct": "B",
+      "explanation": "'Like a Virgin' was one of her biggest hits and the title of her second album."
+    },
+    {
+      "id": "m80_04",
+      "text": "Which band recorded 'Don't Stop Believin''?",
+      "options": {
+        "A": "Foreigner",
+        "B": "Journey",
+        "C": "Styx",
+        "D": "Boston"
+      },
+      "correct": "B",
+      "explanation": "Journey released this enduring anthem in 1981."
+    },
+    {
+      "id": "m80_05",
+      "text": "Who sang 'Purple Rain'?",
+      "options": {
+        "A": "Prince",
+        "B": "David Bowie",
+        "C": "Jimi Hendrix",
+        "D": "Lionel Richie"
+      },
+      "correct": "A",
+      "explanation": "Prince and the Revolution released 'Purple Rain' as the soundtrack to the film of the same name."
+    },
+    {
+      "id": "m80_06",
+      "text": "Which band had a hit with 'Sweet Child o' Mine'?",
+      "options": {
+        "A": "Bon Jovi",
+        "B": "Guns N' Roses",
+        "C": "Def Leppard",
+        "D": "Mötley Crüe"
+      },
+      "correct": "B",
+      "explanation": "Guns N' Roses released this hit in 1987 on 'Appetite for Destruction'."
+    },
+    {
+      "id": "m80_07",
+      "text": "Who sang 'Girls Just Want to Have Fun'?",
+      "options": {
+        "A": "Cyndi Lauper",
+        "B": "Madonna",
+        "C": "Pat Benatar",
+        "D": "Whitney Houston"
+      },
+      "correct": "A",
+      "explanation": "Cyndi Lauper's 1983 hit became a feminist anthem."
+    },
+    {
+      "id": "m80_08",
+      "text": "Which Norwegian band is famous for the song 'Take On Me'?",
+      "options": {
+        "A": "ABBA",
+        "B": "Roxette",
+        "C": "A-ha",
+        "D": "Ace of Base"
+      },
+      "correct": "C",
+      "explanation": "A-ha's 'Take On Me' is famous for its groundbreaking rotoscoped music video."
+    },
+    {
+      "id": "m80_09",
+      "text": "Who Rick-rolled the world with 'Never Gonna Give You Up'?",
+      "options": {
+        "A": "Rick James",
+        "B": "Rick Springfield",
+        "C": "Rick Astley",
+        "D": "Ricky Martin"
+      },
+      "correct": "C",
+      "explanation": "Rick Astley released this stock-Aitken-Waterman hit in 1987."
+    },
+    {
+      "id": "m80_10",
+      "text": "Which charity supergroup recorded 'Do They Know It's Christmas?'",
+      "options": {
+        "A": "USA for Africa",
+        "B": "Band Aid",
+        "C": "Live Aid",
+        "D": "Farm Aid"
+      },
+      "correct": "B",
+      "explanation": "Bob Geldof organized Band Aid in 1984 to raise money for famine relief in Ethiopia."
+    },
+    {
+      "id": "m80_11",
+      "text": "Whitney Houston released 'I Wanna Dance with Somebody' in which year?",
+      "options": {
+        "A": "1983",
+        "B": "1985",
+        "C": "1987",
+        "D": "1989"
+      },
+      "correct": "C",
+      "explanation": "It was the lead single from her second studio album 'Whitney' (1987)."
+    },
+    {
+      "id": "m80_12",
+      "text": "Who sang 'Livin' on a Prayer'?",
+      "options": {
+        "A": "Bon Jovi",
+        "B": "Van Halen",
+        "C": "Whitesnake",
+        "D": "Aerosmith"
+      },
+      "correct": "A",
+      "explanation": "Bon Jovi's signature song tells the story of Tommy and Gina."
+    },
+    {
+      "id": "m80_13",
+      "text": "Which artist released the album 'Born in the U.S.A.'?",
+      "options": {
+        "A": "John Mellencamp",
+        "B": "Tom Petty",
+        "C": "Bruce Springsteen",
+        "D": "Bob Seger"
+      },
+      "correct": "C",
+      "explanation": "The Boss released this massive album in 1984."
+    },
+    {
+      "id": "m80_14",
+      "text": "What is the best-selling 12-inch single of all time?",
+      "options": {
+        "A": "Thriller",
+        "B": "Blue Monday",
+        "C": "Relax",
+        "D": "Into the Groove"
+      },
+      "correct": "B",
+      "explanation": "New Order's 'Blue Monday' is the best-selling 12-inch single in UK history."
+    },
+    {
+      "id": "m80_15",
+      "text": "Who performed the 'Moonwalk' for the first time during the 'Motown 25' special?",
+      "options": {
+        "A": "James Brown",
+        "B": "Michael Jackson",
+        "C": "Prince",
+        "D": "Bobby Brown"
+      },
+      "correct": "B",
+      "explanation": "Michael Jackson debuted the move while performing 'Billie Jean' in 1983."
+    }
+  ]
+}

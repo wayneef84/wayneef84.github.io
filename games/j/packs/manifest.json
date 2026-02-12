@@ -158,5 +158,53 @@
         "icon": "\ud83d\udcca",
         "category": "Science",
         "count": 80
+    },
+    {
+        "id": "xanadu_v1",
+        "title": "Xanadu (1980)",
+        "path": "packs/xanadu_v1.json",
+        "icon": "\u2728",
+        "category": "Musicals",
+        "count": 15
+    },
+    {
+        "id": "music_60s",
+        "title": "60s Pop Music",
+        "path": "packs/music_60s.json",
+        "icon": "\ud83c\udf70",
+        "category": "Music",
+        "count": 15
+    },
+    {
+        "id": "music_70s",
+        "title": "70s Pop Music",
+        "path": "packs/music_70s.json",
+        "icon": "\ud83d\udd7a",
+        "category": "Music",
+        "count": 15
+    },
+    {
+        "id": "music_80s",
+        "title": "80s Pop Music",
+        "path": "packs/music_80s.json",
+        "icon": "\ud83d\udcfb",
+        "category": "Music",
+        "count": 15
+    },
+    {
+        "id": "music_90s",
+        "title": "90s Pop Music",
+        "path": "packs/music_90s.json",
+        "icon": "\ud83d\udcbd",
+        "category": "Music",
+        "count": 15
+    },
+    {
+        "id": "public_domain",
+        "title": "Public Domain Trivia",
+        "path": "packs/public_domain.json",
+        "icon": "\ud83c\udfdb\ufe0f",
+        "category": "General",
+        "count": 15
     }
 ]

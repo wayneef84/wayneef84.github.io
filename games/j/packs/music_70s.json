@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "music_70s",
+    "title": "70s Pop Music",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Music", "70s", "Disco", "Rock", "Punk"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "m70_01",
+      "text": "Which Swedish pop group won Eurovision in 1974 with 'Waterloo'?",
+      "options": {
+        "A": "Roxette",
+        "B": "Ace of Base",
+        "C": "ABBA",
+        "D": "A-ha"
+      },
+      "correct": "C",
+      "explanation": "ABBA launched their international career after winning Eurovision with 'Waterloo'."
+    },
+    {
+      "id": "m70_02",
+      "text": "Which film's soundtrack is the best-selling disco album of all time?",
+      "options": {
+        "A": "Grease",
+        "B": "Saturday Night Fever",
+        "C": "Thank God It's Friday",
+        "D": "Xanadu"
+      },
+      "correct": "B",
+      "explanation": "The 'Saturday Night Fever' soundtrack, featuring the Bee Gees, epitomized the disco era."
+    },
+    {
+      "id": "m70_03",
+      "text": "Who is known as the 'Piano Man'?",
+      "options": {
+        "A": "Elton John",
+        "B": "Billy Joel",
+        "C": "Stevie Wonder",
+        "D": "Freddie Mercury"
+      },
+      "correct": "B",
+      "explanation": "Billy Joel released 'Piano Man' in 1973, which became his signature song."
+    },
+    {
+      "id": "m70_04",
+      "text": "Which band released 'Bohemian Rhapsody' in 1975?",
+      "options": {
+        "A": "Pink Floyd",
+        "B": "Led Zeppelin",
+        "C": "Queen",
+        "D": "The Who"
+      },
+      "correct": "C",
+      "explanation": "Queen's operatic rock masterpiece was written by Freddie Mercury."
+    },
+    {
+      "id": "m70_05",
+      "text": "Who sang 'I Will Survive', a disco anthem released in 1978?",
+      "options": {
+        "A": "Donna Summer",
+        "B": "Gloria Gaynor",
+        "C": "Diana Ross",
+        "D": "Chaka Khan"
+      },
+      "correct": "B",
+      "explanation": "Gloria Gaynor's hit became a symbol of female empowerment and resilience."
+    },
+    {
+      "id": "m70_06",
+      "text": "The Eagles' biggest hit 'Hotel California' was released in which year?",
+      "options": {
+        "A": "1972",
+        "B": "1974",
+        "C": "1976",
+        "D": "1979"
+      },
+      "correct": "C",
+      "explanation": "The album and single 'Hotel California' were released in late 1976 (single early 1977)."
+    },
+    {
+      "id": "m70_07",
+      "text": "Which punk band released 'God Save the Queen' in 1977?",
+      "options": {
+        "A": "The Clash",
+        "B": "The Ramones",
+        "C": "The Sex Pistols",
+        "D": "The Damned"
+      },
+      "correct": "C",
+      "explanation": "The Sex Pistols released the controversial song during Queen Elizabeth II's Silver Jubilee."
+    },
+    {
+      "id": "m70_08",
+      "text": "Who released the album 'Rumours' in 1977?",
+      "options": {
+        "A": "Fleetwood Mac",
+        "B": "The Eagles",
+        "C": "ABBA",
+        "D": "Chicago"
+      },
+      "correct": "A",
+      "explanation": "'Rumours' is one of the best-selling albums ever, famous for the band's internal relationship dramas."
+    },
+    {
+      "id": "m70_09",
+      "text": "David Bowie introduced which alter ego in 1972?",
+      "options": {
+        "A": "The Thin White Duke",
+        "B": "Ziggy Stardust",
+        "C": "Aladdin Sane",
+        "D": "Major Tom"
+      },
+      "correct": "B",
+      "explanation": "Ziggy Stardust was Bowie's bisexual alien rock superstar persona."
+    },
+    {
+      "id": "m70_10",
+      "text": "Which Bee Gees song is famously used for CPR training due to its tempo?",
+      "options": {
+        "A": "How Deep Is Your Love",
+        "B": "Night Fever",
+        "C": "Stayin' Alive",
+        "D": "Jive Talkin'"
+      },
+      "correct": "C",
+      "explanation": "'Stayin' Alive' has a tempo of roughly 103 beats per minute, ideal for chest compressions."
+    },
+    {
+      "id": "m70_11",
+      "text": "Who sang 'Imagine'?",
+      "options": {
+        "A": "Paul McCartney",
+        "B": "George Harrison",
+        "C": "John Lennon",
+        "D": "Ringo Starr"
+      },
+      "correct": "C",
+      "explanation": "John Lennon's 'Imagine', released in 1971, is his best-selling solo single."
+    },
+    {
+      "id": "m70_12",
+      "text": "Which artist is known as the 'Queen of Disco'?",
+      "options": {
+        "A": "Donna Summer",
+        "B": "Gloria Gaynor",
+        "C": "Bee Gees",
+        "D": "Cher"
+      },
+      "correct": "A",
+      "explanation": "Donna Summer had a string of disco hits including 'I Feel Love' and 'Last Dance'."
+    },
+    {
+      "id": "m70_13",
+      "text": "Led Zeppelin's 'Stairway to Heaven' was released on which album?",
+      "options": {
+        "A": "Led Zeppelin I",
+        "B": "Led Zeppelin II",
+        "C": "Led Zeppelin IV",
+        "D": "Physical Graffiti"
+      },
+      "correct": "C",
+      "explanation": "It appears on their untitled fourth album, commonly known as Led Zeppelin IV."
+    },
+    {
+      "id": "m70_14",
+      "text": "Who recorded the concept album 'The Wall' released in 1979?",
+      "options": {
+        "A": "The Who",
+        "B": "Pink Floyd",
+        "C": "Genesis",
+        "D": "Yes"
+      },
+      "correct": "B",
+      "explanation": "Pink Floyd's rock opera 'The Wall' explores themes of isolation."
+    },
+    {
+      "id": "m70_15",
+      "text": "Elton John's 'Candle in the Wind' was originally written about whom?",
+      "options": {
+        "A": "Princess Diana",
+        "B": "Marilyn Monroe",
+        "C": "Judy Garland",
+        "D": "Janis Joplin"
+      },
+      "correct": "B",
+      "explanation": "The original 1973 version was a tribute to Marilyn Monroe. It was re-released in 1997 for Princess Diana."
+    }
+  ]
+}

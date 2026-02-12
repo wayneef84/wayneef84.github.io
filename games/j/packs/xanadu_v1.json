@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "xanadu_v1",
+    "title": "Xanadu (1980)",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Movies", "Musicals", "80s", "Cult Classics"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "xan01",
+      "text": "Who stars as the muse Kira in the 1980 musical film Xanadu?",
+      "options": {
+        "A": "Kylie Minogue",
+        "B": "Olivia Newton-John",
+        "C": "Madonna",
+        "D": "Barbra Streisand"
+      },
+      "correct": "B",
+      "explanation": "Olivia Newton-John played Kira, a muse who comes down to Earth to inspire an artist."
+    },
+    {
+      "id": "xan02",
+      "text": "Which legendary Hollywood actor played Danny McGuire in his final film role?",
+      "options": {
+        "A": "Fred Astaire",
+        "B": "Frank Sinatra",
+        "C": "Gene Kelly",
+        "D": "Bing Crosby"
+      },
+      "correct": "C",
+      "explanation": "Gene Kelly played Danny McGuire, a former musician who helps build the roller disco."
+    },
+    {
+      "id": "xan03",
+      "text": "Which band collaborated with Olivia Newton-John on the film's soundtrack?",
+      "options": {
+        "A": "ABBA",
+        "B": "Electric Light Orchestra (ELO)",
+        "C": "The Bee Gees",
+        "D": "Fleetwood Mac"
+      },
+      "correct": "B",
+      "explanation": "Jeff Lynne's ELO wrote and performed half of the soundtrack, including the title track."
+    },
+    {
+      "id": "xan04",
+      "text": "The club 'Xanadu' opens as what type of venue?",
+      "options": {
+        "A": "A jazz lounge",
+        "B": "A roller disco",
+        "C": "An opera house",
+        "D": "A movie theater"
+      },
+      "correct": "B",
+      "explanation": "Xanadu becomes a glitzy roller disco, capitalizing on the roller skating craze of the era."
+    },
+    {
+      "id": "xan05",
+      "text": "What is the name of the artist/protagonist Kira falls in love with?",
+      "options": {
+        "A": "Sonny Malone",
+        "B": "Danny Zuko",
+        "C": "Tony Manero",
+        "D": "Billy Elliot"
+      },
+      "correct": "A",
+      "explanation": "Sonny Malone, played by Michael Beck, is the struggling artist who falls for Kira."
+    },
+    {
+      "id": "xan06",
+      "text": "Which song from the soundtrack became a #1 hit worldwide?",
+      "options": {
+        "A": "Magic",
+        "B": "Suddenly",
+        "C": "I'm Alive",
+        "D": "All Over the World"
+      },
+      "correct": "A",
+      "explanation": "'Magic', performed by Olivia Newton-John, was a massive chart-topper."
+    },
+    {
+      "id": "xan07",
+      "text": "In the film, Kira is actually one of the nine muses from which mythology?",
+      "options": {
+        "A": "Roman",
+        "B": "Norse",
+        "C": "Greek",
+        "D": "Egyptian"
+      },
+      "correct": "C",
+      "explanation": "She is Terpsichore, the Greek muse of dance."
+    },
+    {
+      "id": "xan08",
+      "text": "The movie Xanadu is loosely a remake of which 1947 film?",
+      "options": {
+        "A": "Singin' in the Rain",
+        "B": "Down to Earth",
+        "C": "Cover Girl",
+        "D": "The Red Shoes"
+      },
+      "correct": "B",
+      "explanation": "It is a loose remake of 'Down to Earth', which itself was a sequel to 'Here Comes Mr. Jordan'."
+    },
+    {
+      "id": "xan09",
+      "text": "What does Kira usually wear while moving around?",
+      "options": {
+        "A": "Ballet slippers",
+        "B": "High heels",
+        "C": "Roller skates",
+        "D": "Bare feet"
+      },
+      "correct": "C",
+      "explanation": "Kira is famously seen skating throughout much of the movie."
+    },
+    {
+      "id": "xan10",
+      "text": "Which animated sequence appears in the film?",
+      "options": {
+        "A": "Don't Walk Away",
+        "B": "Suspended in Time",
+        "C": "Dancin'",
+        "D": "The Fall"
+      },
+      "correct": "A",
+      "explanation": "The song 'Don't Walk Away' features an animated sequence by Don Bluth."
+    },
+    {
+      "id": "xan11",
+      "text": "Despite being a box office flop, what 'award' was created specifically to honor Xanadu's badness?",
+      "options": {
+        "A": "The Oscars",
+        "B": "The Golden Globes",
+        "C": "The Razzies (Golden Raspberry Awards)",
+        "D": "The Grammys"
+      },
+      "correct": "C",
+      "explanation": "John Wilson created the Golden Raspberry Awards (Razzies) after seeing a double feature of Xanadu and Can't Stop the Music."
+    },
+    {
+      "id": "xan12",
+      "text": "Who directed Xanadu?",
+      "options": {
+        "A": "Steven Spielberg",
+        "B": "Robert Greenwald",
+        "C": "Kenny Ortega",
+        "D": "Baz Luhrmann"
+      },
+      "correct": "B",
+      "explanation": "Robert Greenwald directed the film."
+    },
+    {
+      "id": "xan13",
+      "text": "The song 'Suddenly' is a duet between Olivia Newton-John and whom?",
+      "options": {
+        "A": "Gene Kelly",
+        "B": "Cliff Richard",
+        "C": "Michael Beck",
+        "D": "Barry Gibb"
+      },
+      "correct": "B",
+      "explanation": "It features Cliff Richard on vocals with Olivia."
+    },
+    {
+      "id": "xan14",
+      "text": "What happens to Kira at the end of the film?",
+      "options": {
+        "A": "She stays on Earth as a human",
+        "B": "She returns to Olympus forever",
+        "C": "She becomes a roller derby queen",
+        "D": "She is allowed to return for a 'moment' (lifetime)"
+      },
+      "correct": "D",
+      "explanation": "Zeus allows her to return to Earth to be with Sonny for a moment, which translates to a human lifetime."
+    },
+    {
+      "id": "xan15",
+      "text": "In 2007, Xanadu was adapted into what?",
+      "options": {
+        "A": "A TV series",
+        "B": "A Broadway musical",
+        "C": "A video game",
+        "D": "A comic book"
+      },
+      "correct": "B",
+      "explanation": "It became a surprise hit Broadway musical that poked fun at the original film's plot holes."
+    }
+  ]
+}
