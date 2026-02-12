@@ -1,0 +1,320 @@
+:root {
+    /* Themes: classic, dark, modern */
+    --theme-bg: #2a2a2a;
+    --book-width: 400px;
+    --book-height: 550px;
+    --page-width: 380px; /* Slightly smaller than cover */
+    --page-height: 530px;
+
+    /* Classic Theme (Default) */
+    --cover-color: #5d4037;
+    --cover-texture: url('../assets/leather_texture.png'); /* Placeholder, use gradient */
+    --page-bg: #fdf6e3; /* Parchment */
+    --text-color: #3e2723;
+    --font-serif: 'Georgia', serif;
+    --font-sans: 'Helvetica', sans-serif;
+    --accent-color: #d84315;
+    --binding-color: #3e2723;
+    --spine-width: 40px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--theme-bg);
+    font-family: var(--font-sans);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    perspective: 1500px;
+}
+
+.scene {
+    position: relative;
+    width: calc(var(--book-width) * 2 + var(--spine-width));
+    height: var(--book-height);
+    transform-style: preserve-3d;
+    transition: transform 1s;
+}
+
+.book {
+    position: relative;
+    width: var(--book-width);
+    height: var(--book-height);
+    transform-style: preserve-3d;
+    transform: translateX(50%); /* Start centered (closed) */
+    transition: transform 1s;
+}
+
+/* Open Book State */
+.book.open {
+    transform: translateX(0); /* Move left so spine is center */
+}
+
+/* Pages */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--book-width);
+    height: var(--book-height);
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    background-color: var(--page-bg);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
+    border-radius: 0 5px 5px 0;
+    z-index: 1; /* Managed by JS */
+    cursor: pointer;
+}
+
+.page.flipped {
+    transform: rotateY(-180deg);
+    z-index: 2; /* Bring forward when flipping */
+}
+
+/* Page Sides */
+.page-side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    padding: 40px;
+    box-sizing: border-box;
+    overflow: hidden; /* Or auto if scrolling needed */
+}
+
+.page-side.front {
+    /* Right Page */
+    background: var(--page-bg);
+    z-index: 2;
+}
+
+.page-side.back {
+    /* Left Page */
+    transform: rotateY(180deg);
+    background: var(--page-bg);
+    z-index: 1;
+    border-radius: 5px 0 0 5px; /* Inverted for back side */
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
+}
+
+/* Cover Styles */
+.cover {
+    background-color: var(--cover-color);
+    border-radius: 0 10px 10px 0;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+}
+
+.cover.front .page-side.front {
+    background: linear-gradient(135deg, var(--cover-color), #3e2723);
+    color: gold;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #3e2723;
+}
+
+.cover.back .page-side.back {
+    background: var(--cover-color);
+}
+
+.title {
+    font-family: var(--font-serif);
+    font-size: 3em;
+    text-shadow: 1px 1px 2px black;
+    margin-bottom: 0.5em;
+}
+
+.subtitle {
+    font-family: var(--font-sans);
+    font-size: 1.5em;
+    color: #ffd700;
+    letter-spacing: 2px;
+}
+
+/* Content Layout */
+.content-container {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+}
+
+/* Two Column Layout for Right Page (Content) */
+.two-column {
+    column-count: 2;
+    column-gap: 20px;
+    column-rule: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.9em;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.two-column h3 {
+    column-span: all; /* Title spans both columns */
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+/* Index List for Left Page */
+.index-list {
+    list-style: none;
+    padding: 0;
+}
+
+.index-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.index-list li:hover {
+    color: var(--accent-color);
+    padding-left: 5px;
+}
+
+.index-list li.active {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* Page Number */
+.page-number {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 0.8em;
+    color: rgba(0,0,0,0.5);
+    left: 0;
+}
+
+/* Controls */
+.ui-layer {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 0.9em;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+    :root {
+        --book-width: 90vw;
+        --book-height: 80vh;
+    }
+
+    .scene {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .book {
+        width: 100%;
+        height: 100%;
+        transform: none !important; /* Disable offset */
+    }
+
+    /* In mobile, we don't do spreads easily. Maybe stack pages or just show one at a time.
+       But for now, keep flip animation but center it. */
+
+    .page {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .two-column {
+        column-count: 1; /* Single column on mobile */
+    }
+
+    /* Hide back side content when flipped? No, flip logic handles it.
+       Issue: When flipped, the 'back' side (Left Page) is on the RIGHT of the screen because of rotateY(-180).
+       Wait, rotateY(-180) makes the element face away unless we are looking at its back.
+       The container needs to be centered.
+    */
+    .book.open {
+        transform: translateX(50vw) !important; /* Shift to show spread? No too complex for simple responsive. */
+    }
+}
+
+/* Tabs */
+.nav-tabs {
+    position: absolute;
+    right: -30px; /* Stick out from the book */
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 0;
+}
+
+.tab {
+    background: var(--page-bg);
+    padding: 5px 10px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    font-family: var(--font-sans);
+    font-size: 0.8em;
+    cursor: pointer;
+    width: 40px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.tab:hover {
+    transform: translateX(5px);
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Themes */
+body.theme-dark {
+    --theme-bg: #121212;
+    --cover-color: #212121;
+    --page-bg: #333;
+    --text-color: #e0e0e0;
+    --accent-color: #80cbc4;
+    --binding-color: #000;
+}
+
+body.theme-modern {
+    --theme-bg: #e0f7fa;
+    --cover-color: #00bcd4;
+    --page-bg: #ffffff;
+    --text-color: #37474f;
+    --accent-color: #0097a7;
+    --font-serif: 'Roboto Slab', serif;
+    --font-sans: 'Roboto', sans-serif;
+}

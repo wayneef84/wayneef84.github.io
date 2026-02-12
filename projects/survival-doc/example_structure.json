@@ -1,0 +1,12 @@
+{
+  "id": "deploy-prod",
+  "title": "DEPLOYING TO PRODUCTION",
+  "category": "ADVANCED SURVIVAL",
+  "situation": "You are stranded in a high-traffic environment and need to push code immediately.",
+  "gear": ["Docker", "AWS CLI", "Coffee"],
+  "tips": "Always tag your release before pushing. It leaves a trail for rescue.",
+  "worstCase": {
+    "scenario": "DATABASE MIGRATION FAILS MID-DEPLOY",
+    "immediateAction": "Do not panic. Rollback using the snapshot artifact immediately."
+  }
+}
