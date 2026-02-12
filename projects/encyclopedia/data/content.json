@@ -1,0 +1,216 @@
+{
+  "title": "F.O.N.G. Encyclopedia",
+  "description": "A comprehensive guide to the repository, its projects, and its maintainers.",
+  "entries": [
+    {
+      "term": "16 TB Archive",
+      "definition": "Internal Only. Key strengths: Pending.",
+      "category": "Agent"
+    },
+    {
+      "term": "Animal Stack",
+      "definition": "Stack animals as high as you can without toppling over.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Board Games",
+      "definition": "Play Chess, Checkers, Xiangqi and more.",
+      "category": "Project (board)"
+    },
+    {
+      "term": "Breakout",
+      "definition": "Smash bricks with a ball and paddle. Now with particles!",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "C.o.D.E.",
+      "definition": "Hacking simulator. Crack the numeric code against time.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Card Games",
+      "definition": "Blackjack, War, and more built on a robust shared engine.",
+      "category": "Project (cards)"
+    },
+    {
+      "term": "Claude",
+      "definition": "Senior Developer / Docs. Key strengths: Reasoning, Planning, QA.",
+      "category": "Agent"
+    },
+    {
+      "term": "Cloudflare Workers",
+      "definition": "Cloudflare Workers (optional proxy)",
+      "category": "Technology"
+    },
+    {
+      "term": "Cookbook",
+      "definition": "Family recipes and cooking guide.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "F.O.N.G.",
+      "definition": "The foundational architecture for the family digital archive. Stands for 'Founding & Forging' (Legacy) or 'Fong Family Arcade' (Modern).",
+      "category": "Protocol"
+    },
+    {
+      "term": "Flow Games",
+      "definition": "Connect matching colors with pipes across the board.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Fong Arcade",
+      "definition": "Standard MIT / GPL. Key strengths: Updated.",
+      "category": "Agent"
+    },
+    {
+      "term": "Gemini",
+      "definition": "Creative Director. Key strengths: Content, Assets, Rapid Prototyping.",
+      "category": "Agent"
+    },
+    {
+      "term": "HTML5 Canvas",
+      "definition": "HTML5 Canvas (games)",
+      "category": "Technology"
+    },
+    {
+      "term": "IndexedDB",
+      "definition": "IndexedDB (Shipment Tracker)",
+      "category": "Technology"
+    },
+    {
+      "term": "Input A11y",
+      "definition": "Barcode and QR code scanner with multiple detection modes.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "J-DevUtils",
+      "definition": "The Developer's Utility Belt: Timestamps, JSON, Base64, and more.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "J: Speed Quiz",
+      "definition": "High-velocity quiz engine. Test your reflexes and knowledge.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Jules",
+      "definition": "Lead Architect. Key strengths: Git Ops, Refactoring, Integration.",
+      "category": "Agent"
+    },
+    {
+      "term": "Letter Tracing",
+      "definition": "Learn to write with voice guidance and stroke validation.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "LocalStorage",
+      "definition": "LocalStorage (game preferences)",
+      "category": "Technology"
+    },
+    {
+      "term": "Magic 8 Ball",
+      "definition": "Ask a question and reveal your destiny.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Mahjong",
+      "definition": "Classic Mahjong Solitaire tile matching game.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "MD Reader",
+      "definition": "Markdown reader and documentation viewer.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "Minesweeper+",
+      "definition": "Classic Minesweeper with lives, power-ups, and custom themes.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Poker Hall",
+      "definition": "Texas Hold'em, 5 Card Draw, and more.",
+      "category": "Project (cards)"
+    },
+    {
+      "term": "Pong",
+      "definition": "The original tennis game. 1P vs CPU.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "PuzzLLer",
+      "definition": "Navigate grids and solve logic puzzles.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Regex Builder",
+      "definition": "Build and test regular expressions with a winter theme.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "Shipment Tracker",
+      "definition": "Track packages from DHL, FedEx, UPS and more.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "SKYbreakers",
+      "definition": "Break through the sky in this high-flying arcade game.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "SkyLantern Logistics",
+      "definition": "Amazon Corporate. Key strengths: Active.",
+      "category": "Agent"
+    },
+    {
+      "term": "Slots",
+      "definition": "Feature-rich slot machine with multiple themes and bonus rounds.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Snake",
+      "definition": "The classic game of snake. Eat apples, grow long, don't crash.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Solitaire",
+      "definition": "The classic patience card game. Klondike rules.",
+      "category": "Project (cards)"
+    },
+    {
+      "term": "Space Invaders",
+      "definition": "Defend Earth from the alien invasion.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Sprunki Mixer",
+      "definition": "Mix beats and create music with animated characters.",
+      "category": "Project (arcade)"
+    },
+    {
+      "term": "Sudoku",
+      "definition": "Classic Sudoku puzzle with multiple difficulty levels.",
+      "category": "Project (puzzle)"
+    },
+    {
+      "term": "Test Portal",
+      "definition": "Centralized testing hub for F.O.N.G. codebase.",
+      "category": "Project (project)"
+    },
+    {
+      "term": "The Conjugators",
+      "definition": "The collective name for the three AI agents (Claude, Gemini, Jules) that co-maintain the repository.",
+      "category": "Protocol"
+    },
+    {
+      "term": "Vanilla JavaScript",
+      "definition": "Vanilla JavaScript (ES5 for broad compatibility)",
+      "category": "Technology"
+    },
+    {
+      "term": "Web Archive",
+      "definition": "A curated gallery of lost internet artifacts. Stylized historical interface.",
+      "category": "Project (project)"
+    }
+  ]
+}
