@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chopper - Flash Classics</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="start-screen" class="overlay">
+        <h1>CHOPPER</h1>
+        <p class="controls-hint">Hold Mouse/Touch to Fly Up<br>Release to Fall</p>
+        <a href="#" class="flash-btn" id="start-btn">PLAY</a>
+        <a href="index.html" style="color: #888; margin-top: 20px; text-decoration: none;">Back to Menu</a>
+    </div>
+
+    <div id="gameover-screen" class="overlay hidden">
+        <h1>GAME OVER</h1>
+        <p id="final-score" style="font-size: 24px; color: #fff; margin-bottom: 20px;">Score: 0</p>
+        <a href="#" class="flash-btn" id="restart-btn">TRY AGAIN</a>
+        <a href="index.html" style="color: #888; margin-top: 20px; text-decoration: none;">Back to Menu</a>
+    </div>
+
+    <div id="score-display" class="score-display hidden">Distance: 0</div>
+</div>
+
+<script src="js/common.js"></script>
+<script>
+(function() {
+    var canvas = document.getElementById('gameCanvas');
+    var ctx = canvas.getContext('2d');
+    var startScreen = document.getElementById('start-screen');
+    var gameoverScreen = document.getElementById('gameover-screen');
+    var scoreDisplay = document.getElementById('score-display');
+    var finalScoreText = document.getElementById('final-score');
+    var startBtn = document.getElementById('start-btn');
+    var restartBtn = document.getElementById('restart-btn');
+
+    var state = GameState.MENU;
+    var score = 0;
+    var frameId = 0;
+    var isPressed = false;
+
+    // Game Objects
+    var player = {
+        x: 100,
+        y: 300,
+        width: 30,
+        height: 30,
+        vy: 0,
+        gravity: 0.5,
+        lift: -0.8,
+        maxVy: 8
+    };
+
+    var wallWidth = 20;
+    var walls = [];
+    var speed = 5;
+    var wallGap = 400; // Gap between top and bottom walls
+    var wallTimer = 0;
+
+    // Difficulty scaling
+    var difficultyTimer = 0;
+
+    function resetGame() {
+        player.y = 300;
+        player.vy = 0;
+        score = 0;
+        walls = [];
+        speed = 5;
+        wallGap = 400;
+        difficultyTimer = 0;
+
+        // Init initial walls
+        for (var i = 0; i < canvas.width / wallWidth + 2; i++) {
+            generateWall(i * wallWidth);
+        }
+    }
+
+    function generateWall(xOffset) {
+        // Simple tunnel generation
+        // Just top and bottom bars for now
+        // To make it look like a tunnel, we need better generation.
+        // Let's do a simple "cave" generation.
+
+        var lastWall = walls.length > 0 ? walls[walls.length - 1] : { topHeight: 100, bottomHeight: 100 };
+
+        // Randomly change height slightly
+        var change = Utils.randomInt(-20, 20);
+        var newTop = Math.max(20, Math.min(canvas.height - wallGap - 20, lastWall.topHeight + change));
+        var newBottom = canvas.height - newTop - wallGap;
+
+        // Ensure gap
+        if (newBottom < 20) newBottom = 20;
+
+        walls.push({
+            x: xOffset,
+            width: wallWidth,
+            topHeight: newTop,
+            bottomHeight: newBottom
+        });
+    }
+
+    function update() {
+        if (state !== GameState.PLAYING) return;
+
+        // Player Physics
+        if (isPressed) {
+            player.vy += player.lift;
+        } else {
+            player.vy += player.gravity;
+        }
+
+        // Cap velocity
+        if (player.vy > player.maxVy) player.vy = player.maxVy;
+        if (player.vy < -player.maxVy) player.vy = -player.maxVy;
+
+        player.y += player.vy;
+
+        // Wall movement
+        for (var i = 0; i < walls.length; i++) {
+            walls[i].x -= speed;
+        }
+
+        // Remove off-screen walls and add new ones
+        if (walls[0].x + walls[0].width < 0) {
+            walls.shift();
+            var lastX = walls[walls.length - 1].x;
+            generateWall(lastX + wallWidth);
+            score++;
+            scoreDisplay.textContent = "Distance: " + score;
+        }
+
+        // Difficulty
+        difficultyTimer++;
+        if (difficultyTimer % 500 === 0) {
+            speed += 0.5;
+            if (wallGap > 150) wallGap -= 10;
+        }
+
+        // Collision Check
+        // 1. Boundaries
+        if (player.y < 0 || player.y + player.height > canvas.height) {
+            gameOver();
+            return;
+        }
+
+        // 2. Walls
+        var playerRect = {
+            x: player.x,
+            y: player.y,
+            width: player.width,
+            height: player.height
+        };
+
+        for (var i = 0; i < walls.length; i++) {
+            var w = walls[i];
+            // Optimization: only check walls near player
+            if (w.x > player.x + player.width || w.x + w.width < player.x) continue;
+
+            var topRect = { x: w.x, y: 0, width: w.width, height: w.topHeight };
+            var bottomRect = { x: w.x, y: canvas.height - w.bottomHeight, width: w.width, height: w.bottomHeight };
+
+            if (Utils.checkCollision(playerRect, topRect) || Utils.checkCollision(playerRect, bottomRect)) {
+                gameOver();
+                return;
+            }
+        }
+    }
+
+    function draw() {
+        // Background
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (state === GameState.MENU) return;
+
+        // Draw Walls (Green retro style)
+        ctx.fillStyle = '#00ff00';
+        for (var i = 0; i < walls.length; i++) {
+            var w = walls[i];
+            ctx.fillRect(w.x, 0, w.width, w.topHeight);
+            ctx.fillRect(w.x, canvas.height - w.bottomHeight, w.width, w.bottomHeight);
+        }
+
+        // Draw Player
+        ctx.fillStyle = '#00ff00';
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+
+        // Inner white for contrast
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(player.x + 2, player.y + 2, player.width - 4, player.height - 4);
+
+        // Particle trail (simple)
+        ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+        ctx.fillRect(player.x - 10, player.y + 10, 10, 10);
+    }
+
+    function loop() {
+        update();
+        draw();
+        frameId = requestAnimationFrame(loop);
+    }
+
+    function startGame() {
+        state = GameState.PLAYING;
+        startScreen.classList.add('hidden');
+        gameoverScreen.classList.add('hidden');
+        scoreDisplay.classList.remove('hidden');
+        resetGame();
+    }
+
+    function gameOver() {
+        state = GameState.GAMEOVER;
+        gameoverScreen.classList.remove('hidden');
+        scoreDisplay.classList.add('hidden');
+        finalScoreText.textContent = "Distance: " + score;
+    }
+
+    // Input Handling
+    Utils.addInputListener(document, function(pressed) {
+        isPressed = pressed;
+    });
+
+    // Start Buttons
+    // Need to handle these separately to avoid conflict with game input
+    startBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    startBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    restartBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    restartBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    // Initial render
+    resetGame();
+    loop();
+
+})();
+</script>
+</body>
+</html>
