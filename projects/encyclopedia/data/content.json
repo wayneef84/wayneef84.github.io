@@ -10,27 +10,51 @@
     {
       "term": "Animal Stack",
       "definition": "Stack animals as high as you can without toppling over.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ]
     },
     {
       "term": "Board Games",
       "definition": "Play Chess, Checkers, Xiangqi and more.",
-      "category": "Project (board)"
+      "category": "Project",
+      "tags": [
+        "Strategy"
+      ],
+      "description": "Type: Collection. Created: Legacy. Path: /games/board/"
     },
     {
       "term": "Breakout",
       "definition": "Smash bricks with a ball and paddle. Now with particles!",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ],
+      "description": "Type: Game. Created: Legacy. Path: /games/breakout/"
     },
     {
       "term": "C.o.D.E.",
       "definition": "Hacking simulator. Crack the numeric code against time.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Simulation"
+      ],
+      "description": "Type: Utility. Created: 2026-02-05. Path: /projects/code/"
+    },
+    {
+      "term": "Card Engine",
+      "definition": "Shared logic for Poker, Blackjack, War.",
+      "category": "Project",
+      "description": "Type: Shared. Created: Legacy. Path: /games/cards/"
     },
     {
       "term": "Card Games",
       "definition": "Blackjack, War, and more built on a robust shared engine.",
-      "category": "Project (cards)"
+      "category": "Project",
+      "tags": [
+        "Shared Engine"
+      ]
     },
     {
       "term": "Claude",
@@ -38,14 +62,20 @@
       "category": "Agent"
     },
     {
-      "term": "Cloudflare Workers",
-      "definition": "Cloudflare Workers (optional proxy)",
-      "category": "Technology"
-    },
-    {
       "term": "Cookbook",
       "definition": "Family recipes and cooking guide.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Utility"
+      ]
+    },
+    {
+      "term": "Encyclopedia",
+      "definition": "The definitive interactive documentation of the F.O.N.G. realm.",
+      "category": "Project",
+      "tags": [
+        "Reference"
+      ]
     },
     {
       "term": "F.O.N.G.",
@@ -53,9 +83,17 @@
       "category": "Protocol"
     },
     {
+      "term": "F.O.N.G. Registry",
+      "definition": "Central project registry (v1.0) maintained by Root Claude.",
+      "category": "Protocol"
+    },
+    {
       "term": "Flow Games",
       "definition": "Connect matching colors with pipes across the board.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Puzzle"
+      ]
     },
     {
       "term": "Fong Arcade",
@@ -68,29 +106,35 @@
       "category": "Agent"
     },
     {
-      "term": "HTML5 Canvas",
-      "definition": "HTML5 Canvas (games)",
-      "category": "Technology"
-    },
-    {
-      "term": "IndexedDB",
-      "definition": "IndexedDB (Shipment Tracker)",
-      "category": "Technology"
-    },
-    {
       "term": "Input A11y",
       "definition": "Barcode and QR code scanner with multiple detection modes.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Utility"
+      ]
+    },
+    {
+      "term": "Internal Tests",
+      "definition": "Centralized hub for verification and regression testing.",
+      "category": "Project",
+      "description": "Type: QA. Created: 2026-02-05. Path: /projects/internal-tests/"
     },
     {
       "term": "J-DevUtils",
       "definition": "The Developer's Utility Belt: Timestamps, JSON, Base64, and more.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Dev Tool"
+      ],
+      "description": "Type: Utility. Created: 2026-02-06. Path: /projects/dev-utils/"
     },
     {
       "term": "J: Speed Quiz",
       "definition": "High-velocity quiz engine. Test your reflexes and knowledge.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Trivia"
+      ]
     },
     {
       "term": "Jules",
@@ -100,62 +144,181 @@
     {
       "term": "Letter Tracing",
       "definition": "Learn to write with voice guidance and stroke validation.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Educational"
+      ]
     },
     {
-      "term": "LocalStorage",
-      "definition": "LocalStorage (game preferences)",
+      "term": "Letter Tracing URLs",
+      "definition": "Deep linking for the Tracing game.",
+      "category": "Feature",
+      "description": "Example: `index.html?pack=lowercase&letter=e` loads the lowercase pack and selects 'e'."
+    },
+    {
+      "term": "Lib: Custom",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: MIT (Root)."
+    },
+    {
+      "term": "Lib: highlight.js (v11.9.0)",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: BSD 3-Clause."
+    },
+    {
+      "term": "Lib: html5-qrcode",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: Apache 2.0."
+    },
+    {
+      "term": "Lib: marked (v4.3.0)",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: MIT."
+    },
+    {
+      "term": "Lib: Poker Evaluator",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: MIT."
+    },
+    {
+      "term": "Lib: qrcodejs",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: MIT."
+    },
+    {
+      "term": "Lib: SheetJS",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: Apache 2.0."
+    },
+    {
+      "term": "Lib: tessdata",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: Apache 2.0."
+    },
+    {
+      "term": "Lib: Tesseract.js (v5.1.1)",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: Apache 2.0."
+    },
+    {
+      "term": "Lib: tesseract.js-core (v5.1.0)",
+      "definition": "Third-party library used in the repository.",
+      "category": "Legal",
+      "description": "License: Apache 2.0."
+    },
+    {
+      "term": "Library: games/cards/shared",
+      "definition": "Shared library currently at version v1.0.1.",
       "category": "Technology"
     },
     {
       "term": "Magic 8 Ball",
       "definition": "Ask a question and reveal your destiny.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Casual"
+      ],
+      "description": "Type: Toy. Created: Legacy. Path: /games/xtc_ball/"
     },
     {
       "term": "Mahjong",
       "definition": "Classic Mahjong Solitaire tile matching game.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Classic"
+      ]
+    },
+    {
+      "term": "Markdown Reader",
+      "definition": "In-browser documentation viewer with advanced parsing.",
+      "category": "Project",
+      "description": "Type: Utility. Created: 2026-01-20. Path: /projects/md-reader/"
     },
     {
       "term": "MD Reader",
       "definition": "Markdown reader and documentation viewer.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Utility"
+      ]
     },
     {
       "term": "Minesweeper+",
       "definition": "Classic Minesweeper with lives, power-ups, and custom themes.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Classic"
+      ]
+    },
+    {
+      "term": "MIT License",
+      "definition": "The primary open-source license for the F.O.N.G. repository.",
+      "category": "Legal"
+    },
+    {
+      "term": "NEGEN Engine",
+      "definition": "Modular game engine with hybrid DOM/Canvas rendering.",
+      "category": "Project",
+      "description": "Type: Engine. Created: 2026-01-01. Path: /negen/"
     },
     {
       "term": "Poker Hall",
       "definition": "Texas Hold'em, 5 Card Draw, and more.",
-      "category": "Project (cards)"
+      "category": "Project",
+      "tags": [
+        "New"
+      ]
     },
     {
       "term": "Pong",
       "definition": "The original tennis game. 1P vs CPU.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ],
+      "description": "Type: Game. Created: Legacy. Path: /games/pong/"
     },
     {
       "term": "PuzzLLer",
       "definition": "Navigate grids and solve logic puzzles.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Logic"
+      ]
     },
     {
       "term": "Regex Builder",
       "definition": "Build and test regular expressions with a winter theme.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Dev Tool"
+      ]
     },
     {
       "term": "Shipment Tracker",
       "definition": "Track packages from DHL, FedEx, UPS and more.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Utility"
+      ],
+      "description": "Type: Utility. Created: 2026-01-15. Path: /projects/shipment-tracker/"
     },
     {
       "term": "SKYbreakers",
       "definition": "Break through the sky in this high-flying arcade game.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ]
     },
     {
       "term": "SkyLantern Logistics",
@@ -165,37 +328,61 @@
     {
       "term": "Slots",
       "definition": "Feature-rich slot machine with multiple themes and bonus rounds.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ],
+      "description": "Type: Game. Created: Legacy. Path: /games/slots/"
     },
     {
       "term": "Snake",
       "definition": "The classic game of snake. Eat apples, grow long, don't crash.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Classic"
+      ],
+      "description": "Type: Game. Created: Legacy. Path: /games/snake/"
     },
     {
       "term": "Solitaire",
       "definition": "The classic patience card game. Klondike rules.",
-      "category": "Project (cards)"
+      "category": "Project",
+      "tags": [
+        "Classic"
+      ]
     },
     {
       "term": "Space Invaders",
       "definition": "Defend Earth from the alien invasion.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Arcade"
+      ],
+      "description": "Type: Game. Created: Legacy. Path: /games/space_invaders/"
     },
     {
       "term": "Sprunki Mixer",
       "definition": "Mix beats and create music with animated characters.",
-      "category": "Project (arcade)"
+      "category": "Project",
+      "tags": [
+        "Music"
+      ]
     },
     {
       "term": "Sudoku",
       "definition": "Classic Sudoku puzzle with multiple difficulty levels.",
-      "category": "Project (puzzle)"
+      "category": "Project",
+      "tags": [
+        "Classic"
+      ]
     },
     {
       "term": "Test Portal",
       "definition": "Centralized testing hub for F.O.N.G. codebase.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Internal"
+      ]
     },
     {
       "term": "The Conjugators",
@@ -203,14 +390,35 @@
       "category": "Protocol"
     },
     {
-      "term": "Vanilla JavaScript",
-      "definition": "Vanilla JavaScript (ES5 for broad compatibility)",
-      "category": "Technology"
+      "term": "Tracing",
+      "definition": "Letter and word tracing for early learning.",
+      "category": "Project",
+      "description": "Type: Educational. Created: Legacy. Path: /games/tracing/"
+    },
+    {
+      "term": "Update Policy",
+      "definition": "The repository uses Semantic Versioning with opt-in upgrades for shared libraries.",
+      "category": "Policy"
+    },
+    {
+      "term": "URL Parameters",
+      "definition": "System for deep linking to specific content in F.O.N.G. games (e.g., specific letters or words).",
+      "category": "Technology",
+      "description": "Supports `pack`, `letter`, `word`, `id`, and `game` parameters."
     },
     {
       "term": "Web Archive",
       "definition": "A curated gallery of lost internet artifacts. Stylized historical interface.",
-      "category": "Project (project)"
+      "category": "Project",
+      "tags": [
+        "Gallery"
+      ]
+    },
+    {
+      "term": "Words Game URLs",
+      "definition": "Deep linking for the Words game.",
+      "category": "Feature",
+      "description": "Supports predefined words (`?word=Mom`) and custom ad-hoc words (`?id=custom&word=Test`)."
     }
   ]
 }
