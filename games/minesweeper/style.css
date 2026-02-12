@@ -301,3 +301,24 @@ body.theme-neon .cell.flagged { text-shadow: 0 0 8px #f00; }
     .settings-row { flex-direction: column; width: 100%; align-items: center; }
     select, button { width: 100%; max-width: 250px; }
 }
+
+/* Mini Zoom */
+#mini-zoom {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    background: var(--bg-color);
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    padding: 2px;
+    border-radius: 4px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+}
+
+#mini-zoom .cell {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+}

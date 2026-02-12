@@ -31,6 +31,14 @@ let gameState = {
     currentDifficulty: 'normal'
 };
 
+// Interaction State
+let holdDelay = 500;
+let holdTimer = null;
+let activeCell = null;
+let longPressTriggered = false;
+let isPointerDown = false;
+let lastPointerPos = { x: 0, y: 0 };
+
 // DOM Elements
 const boardElement = document.getElementById('game-board');
 const timerElement = document.getElementById('timer');
@@ -39,9 +47,11 @@ const minesLeftElement = document.getElementById('mines-left');
 const difficultySelect = document.getElementById('difficulty-select');
 const themeSelect = document.getElementById('theme-select');
 const customSettings = document.getElementById('custom-settings');
+const holdDelayInput = document.getElementById('hold-delay');
 const resetButton = document.getElementById('reset-btn');
 const highScoreElement = document.getElementById('high-score');
 const messageElement = document.getElementById('message');
+const miniZoomElement = document.getElementById('mini-zoom');
 
 function init() {
     loadSettings();
@@ -83,6 +93,18 @@ function setupEventListeners() {
 
         startNewGame();
     });
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+
+    holdDelayInput.addEventListener('change', (e) => {
+        let val = parseInt(e.target.value);
+        if (val < 100) val = 100;
+        if (val > 2000) val = 2000;
+        holdDelay = val;
+        localStorage.setItem('minesweeper_hold_delay', holdDelay);
+    });
 }
 
 function loadSettings() {
@@ -94,6 +116,12 @@ function loadSettings() {
     if (DIFFICULTIES[savedDiff]) {
         difficultySelect.value = savedDiff;
         if (savedDiff === 'custom') customSettings.style.display = 'flex';
+    }
+
+    const savedHoldDelay = localStorage.getItem('minesweeper_hold_delay');
+    if (savedHoldDelay) {
+        holdDelay = parseInt(savedHoldDelay);
+        holdDelayInput.value = holdDelay;
     }
 }
 
@@ -182,6 +210,7 @@ function renderBoard() {
                 e.preventDefault();
                 handleRightClick(cell.r, cell.c);
             });
+            cellDiv.addEventListener('pointerdown', (e) => handlePointerDown(e, cell.r, cell.c));
 
             // No initial visual update needed as all are hidden
             boardElement.appendChild(cellDiv);
@@ -215,6 +244,11 @@ function getCellDiv(r, c) {
 
 function handleLeftClick(r, c) {
     if (gameState.gameOver || gameState.gameWon) return;
+
+    if (longPressTriggered) {
+        longPressTriggered = false;
+        return;
+    }
 
     const cell = gameState.board[r][c];
     if (cell.isFlagged || cell.isRevealed) return;
@@ -432,6 +466,130 @@ function checkHighScore() {
         localStorage.setItem(key, gameState.timer);
         highScoreElement.textContent = `Best Time: ${gameState.timer}s (NEW RECORD!)`;
     }
+}
+
+function handlePointerDown(e, r, c) {
+    if (gameState.gameOver || gameState.gameWon) return;
+
+    // Only primary button (left click) or touch
+    if (e.button && e.button !== 0) return;
+
+    isPointerDown = true;
+    longPressTriggered = false;
+    activeCell = { r, c };
+    lastPointerPos = { x: e.clientX, y: e.clientY };
+
+    showZoom(r, c, e.clientX, e.clientY);
+
+    if (holdTimer) clearTimeout(holdTimer);
+    holdTimer = setTimeout(() => {
+        handleHoldTimer();
+    }, holdDelay);
+}
+
+function handlePointerMove(e) {
+    if (!isPointerDown) return;
+
+    lastPointerPos = { x: e.clientX, y: e.clientY };
+
+    // Find element under pointer
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    if (!target) return;
+
+    // Check if target is a cell
+    if (target.classList.contains('cell') && target.dataset.r !== undefined) {
+        const r = parseInt(target.dataset.r);
+        const c = parseInt(target.dataset.c);
+
+        // If moved to a different cell
+        if (activeCell && (activeCell.r !== r || activeCell.c !== c)) {
+            // Cancel old timer
+            if (holdTimer) clearTimeout(holdTimer);
+
+            // Update active cell
+            activeCell = { r, c };
+            longPressTriggered = false; // Reset flag for new cell
+
+            holdTimer = setTimeout(() => {
+                handleHoldTimer();
+            }, holdDelay);
+        }
+
+        showZoom(r, c, e.clientX, e.clientY);
+    } else {
+        // Pointer moved out of cells
+        hideZoom();
+        if (holdTimer) clearTimeout(holdTimer);
+        activeCell = null;
+    }
+}
+
+function handlePointerUp(e) {
+    if (!isPointerDown) return;
+    isPointerDown = false;
+
+    if (holdTimer) clearTimeout(holdTimer);
+    hideZoom();
+}
+
+function handleHoldTimer() {
+    if (!activeCell) return;
+    longPressTriggered = true;
+
+    // Trigger Flag
+    handleRightClick(activeCell.r, activeCell.c);
+
+    // Refresh zoom to show the new flag state
+    showZoom(activeCell.r, activeCell.c, lastPointerPos.x, lastPointerPos.y);
+
+    // Feedback
+    if (navigator.vibrate) navigator.vibrate(50);
+}
+
+function showZoom(r, c, x, y) {
+    miniZoomElement.innerHTML = '';
+    miniZoomElement.style.display = 'grid';
+
+    // 3x3 Grid
+    for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+            const nr = r + dr;
+            const nc = c + dc;
+            const cellDiv = document.createElement('div');
+            cellDiv.className = 'cell'; // Default class
+
+            if (nr >= 0 && nr < gameState.rows && nc >= 0 && nc < gameState.cols) {
+                const boardDiv = getCellDiv(nr, nc);
+
+                // Copy classes
+                if (boardDiv) {
+                    cellDiv.className = boardDiv.className;
+                    cellDiv.textContent = boardDiv.textContent;
+                }
+            } else {
+                cellDiv.style.visibility = 'hidden';
+            }
+            miniZoomElement.appendChild(cellDiv);
+        }
+    }
+
+    // Position
+    // Offset upwards by 100px and centered horizontally
+    let top = y - 140;
+    let left = x - 60; // 3 cells * 40px = 120px width. Center is 60px.
+
+    // Boundary checks
+    if (top < 0) top = y + 40; // Show below if too high
+    if (left < 0) left = 0;
+    if (left + 120 > window.innerWidth) left = window.innerWidth - 120;
+
+    miniZoomElement.style.top = `${top}px`;
+    miniZoomElement.style.left = `${left}px`;
+}
+
+function hideZoom() {
+    miniZoomElement.style.display = 'none';
+    miniZoomElement.innerHTML = '';
 }
 
 window.onload = init;
