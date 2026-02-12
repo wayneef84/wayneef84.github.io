@@ -2,7 +2,7 @@
  * Service Worker for J: Speed Quiz
  */
 
-var CACHE_NAME = 'j-quiz-v5';
+var CACHE_NAME = 'j-quiz-v6';
 var urlsToCache = [
   './index.html',
   './css/style.css',
@@ -40,7 +40,25 @@ var urlsToCache = [
   './packs/public_domain.json',
   // New Niche Packs
   './packs/brands_logos.json',
-  './packs/true_crime.json'
+  './packs/true_crime.json',
+  './packs/agile_scrum.json',
+  './packs/american_muscle.json',
+  './packs/anime_manga.json',
+  './packs/automotive.json',
+  './packs/candy_60s.json',
+  './packs/cartoons_60s.json',
+  './packs/cost_of_living.json',
+  './packs/cryptids.json',
+  './packs/cybersecurity.json',
+  './packs/flags_quiz.json',
+  './packs/human_body.json',
+  './packs/internet_culture.json',
+  './packs/logo_quiz.json',
+  './packs/modern_history.json',
+  './packs/ohio_space.json',
+  './packs/ohio_sports.json',
+  './packs/rust_belt_rock.json',
+  './packs/vietnam_era.json'
 ];
 
 self.addEventListener('install', function(event) {
