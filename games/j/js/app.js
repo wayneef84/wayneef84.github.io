@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
         finalCorrect: document.getElementById('finalCorrect'),
         finalStreak: document.getElementById('finalStreak'),
         restartBtn: document.getElementById('restartBtn'),
-        changePack: document.getElementById('changePack')
+        changePack: document.getElementById('changePack'),
+        backToPacksBtn: document.getElementById('backToPacksBtn') // New button
     };
 
     var engine = null;
@@ -153,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dom.packTitle.textContent = currentPackData.meta.title.toUpperCase();
 
                 setupEngine();
+                engine.loadPack(currentPackData);
                 bindEvents();
                 engine.startRound();
             })
@@ -215,15 +217,28 @@ document.addEventListener('DOMContentLoaded', function() {
             engine.startRound();
         });
 
-        // Change Pack
+        // Change Pack (End Screen)
         if (dom.changePack) {
             dom.changePack.addEventListener('click', function(e) {
                 e.preventDefault();
-                if (engine && engine.timer) clearInterval(engine.timer);
-                dom.endScreen.classList.add('hidden');
-                renderPackSelector();
+                quitToPacks();
             });
         }
+
+        // Back to Packs (In-Game)
+        if (dom.backToPacksBtn) {
+            dom.backToPacksBtn.addEventListener('click', function() {
+                if(confirm("Quit current game and return to pack selection?")) {
+                    quitToPacks();
+                }
+            });
+        }
+    }
+
+    function quitToPacks() {
+        if (engine && engine.timer) clearInterval(engine.timer);
+        dom.endScreen.classList.add('hidden');
+        renderPackSelector();
     }
 
     // --- Render Functions ---

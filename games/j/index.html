@@ -46,7 +46,12 @@
             <!-- Header: Progress & Stats -->
             <header class="game-header">
                 <div class="top-row">
-                    <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
+                    <div class="nav-controls">
+                        <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
+                        <button id="backToPacksBtn" class="back-btn" aria-label="Back to Packs" style="font-size: 1.5rem; color: var(--text-secondary);">
+                            &#x2190;
+                        </button>
+                    </div>
                     <div class="score-display">SCORE: <span id="scoreValue">0</span></div>
                     <div class="streak-display">&#x1F525; <span id="streakValue">0</span></div>
                 </div>
