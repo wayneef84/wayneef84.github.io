@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F.O.N.G. Encyclopedia</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+    <meta name="theme-color" content="#4a3b2a">
+</head>
+<body>
+    <div id="app">
+        <div class="ui-layer">
+            <div class="controls">
+                <button id="theme-toggle" class="btn" aria-label="Toggle Theme">Theme: Classic</button>
+                <a href="../../index.html" class="btn home-link" aria-label="Back to Arcade">Back to Arcade</a>
+            </div>
+        </div>
+
+        <div class="scene">
+            <div class="book" id="book">
+                <!-- Front Cover -->
+                <div class="page cover front" data-page="0">
+                    <div class="cover-texture"></div>
+                    <div class="cover-content">
+                        <div class="spine-binding"></div>
+                        <h1 class="title">F.O.N.G.</h1>
+                        <h2 class="subtitle">Encyclopedia</h2>
+                        <div class="emboss">Vol. I</div>
+                    </div>
+                </div>
+
+                <!-- Intro Page (Left: Blank/Inside Cover, Right: Title/Intro) -->
+                <div class="page text-page" data-page="1">
+                    <div class="page-side front">
+                        <div class="content-container">
+                            <h3>Preface</h3>
+                            <p>Welcome to the definitive archive of the F.O.N.G. project.</p>
+                            <p>Herein lies the knowledge of the games, tools, and protocols that bind this digital realm.</p>
+                            <div class="signature">
+                                <p><i>- The Conjugators</i></p>
+                            </div>
+                        </div>
+                        <div class="page-number">1</div>
+                    </div>
+                    <div class="page-side back">
+                        <!-- Inside Front Cover -->
+                        <div class="inside-cover"></div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Content Pages will be inserted here -->
+
+                <!-- Back Cover -->
+                <div class="page cover back" data-page="999">
+                    <div class="cover-texture"></div>
+                    <div class="cover-content">
+                        <div class="spine-binding"></div>
+                        <div class="emboss-logo">F</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs (rendered outside the book for easier clicking, or attached to pages) -->
+        <div class="nav-tabs" id="nav-tabs">
+            <!-- Tabs injected by JS -->
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW registered', reg))
+                .catch(err => console.error('SW failed', err));
+        }
+    </script>
+</body>
+</html>
