@@ -1,0 +1,264 @@
+:root {
+    --bg-color: #f4f4f9;
+    --text-color: #222;
+    --card-bg: #ffffff;
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --accent-color: #4a90e2;
+    --danger-color: #e74c3c;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    transition: all 0.5s ease;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--card-bg);
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--danger-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Roster Grid */
+#roster {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card-img-container {
+    height: 250px;
+    background-color: #eee;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Fallback Styling */
+.img-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    margin: 0 0 5px 0;
+    font-size: 1.25rem;
+}
+
+.card-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.survival-tip {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border-left: 4px solid var(--accent-color);
+}
+
+.tip-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+/* HORROR MODE STYLES */
+body.horror-mode {
+    --bg-color: #050505;
+    --text-color: #ccc;
+    --card-bg: #111;
+    --card-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
+    --accent-color: #8b0000;
+    --danger-color: #ff0000;
+    --font-family: 'Courier New', Courier, monospace;
+}
+
+body.horror-mode header {
+    border-bottom: 2px solid #330000;
+}
+
+body.horror-mode .card {
+    border: 1px solid #330000;
+}
+
+body.horror-mode .card-title {
+    color: #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+body.horror-mode .card-meta {
+    color: #888;
+}
+
+body.horror-mode .survival-tip {
+    background-color: #220000;
+    color: #ffcccc;
+    border-left-color: #ff0000;
+}
+
+body.horror-mode .img-fallback {
+    /* Glitchy texture for fallback */
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0, 0, 0, 0.1) 10px,
+        rgba(0, 0, 0, 0.1) 20px
+    );
+}
+
+/* Glitch Animation for Titles */
+body.horror-mode h1 {
+    animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); text-shadow: none; }
+    20% { transform: translate(-2px, 2px); text-shadow: 2px 0 #ff0000, -2px 0 #00ff00; }
+    40% { transform: translate(-2px, -2px); text-shadow: 3px 0 #ff00ff, -3px 0 #ffff00; }
+    60% { transform: translate(2px, 2px); text-shadow: 2px 0 #0000ff, -2px 0 #ff0000; }
+    80% { transform: translate(2px, -2px); text-shadow: 1px 0 #00ff00, -1px 0 #0000ff; }
+    100% { transform: translate(0); text-shadow: none; }
+}
+
+body.horror-mode .card:hover {
+    transform: scale(1.02) rotate(1deg);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
