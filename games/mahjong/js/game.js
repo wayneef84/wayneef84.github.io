@@ -25,6 +25,17 @@
 
         // Init Input
         this.canvas.addEventListener('click', this.handleClick);
+        this.canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                e.preventDefault();
+                var touch = e.touches[0];
+                this.handleClick({
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    target: this.canvas
+                });
+            }
+        }, {passive: false});
 
         // Start
         this.newGame();
@@ -220,8 +231,11 @@
 
     Game.prototype.handleClick = function(e) {
         var rect = this.canvas.getBoundingClientRect();
-        var mx = e.clientX - rect.left - this.camera.x;
-        var my = e.clientY - rect.top - this.camera.y;
+        var scaleX = this.canvas.width / rect.width;
+        var scaleY = this.canvas.height / rect.height;
+
+        var mx = (e.clientX - rect.left) * scaleX - this.camera.x;
+        var my = (e.clientY - rect.top) * scaleY - this.camera.y;
 
         // Find top-most tile under cursor
         // Sort Z Descending

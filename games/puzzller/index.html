@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Project PuzzLLer</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,6 +11,22 @@
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="controls">
             <p><strong>Controls:</strong> Arrow Keys / WASD to Move. Enter/Space to Select.</p>
+        </div>
+    </div>
+
+    <!-- Touch Controls Overlay -->
+    <div class="touch-controls">
+        <div class="d-pad">
+            <div class="control-btn" id="btn-up">▲</div>
+            <div class="control-btn" id="btn-left">◀</div>
+            <div class="control-btn" id="btn-down">▼</div>
+            <div class="control-btn" id="btn-right">▶</div>
+        </div>
+        <div class="actions">
+            <div class="control-btn" id="btn-esc">MENU</div>
+            <div class="control-btn" id="btn-r">RST</div>
+            <div class="control-btn" id="btn-c">SKIN</div>
+            <div class="control-btn" id="btn-enter">OK</div>
         </div>
     </div>
 
