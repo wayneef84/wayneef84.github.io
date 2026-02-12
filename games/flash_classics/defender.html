@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Defender - Flash Classics</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Crosshair cursor */
+        canvas {
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="start-screen" class="overlay">
+        <h1>DEFENDER</h1>
+        <p class="controls-hint">Tap/Click enemies to destroy them.<br>Protect the center base.</p>
+        <a href="#" class="flash-btn" id="start-btn">PLAY</a>
+        <a href="index.html" style="color: #888; margin-top: 20px; text-decoration: none;">Back to Menu</a>
+    </div>
+
+    <div id="gameover-screen" class="overlay hidden">
+        <h1>GAME OVER</h1>
+        <p id="final-score" style="font-size: 24px; color: #fff; margin-bottom: 20px;">Score: 0</p>
+        <a href="#" class="flash-btn" id="restart-btn">TRY AGAIN</a>
+        <a href="index.html" style="color: #888; margin-top: 20px; text-decoration: none;">Back to Menu</a>
+    </div>
+
+    <div id="score-display" class="score-display hidden">Kills: 0</div>
+    <div id="health-display" style="position: absolute; top: 10px; right: 10px; font-size: 24px; color: #f00; font-weight: bold; text-shadow: 1px 1px 2px #000;" class="hidden">HP: 100%</div>
+</div>
+
+<script src="js/common.js"></script>
+<script>
+(function() {
+    var canvas = document.getElementById('gameCanvas');
+    var ctx = canvas.getContext('2d');
+    var startScreen = document.getElementById('start-screen');
+    var gameoverScreen = document.getElementById('gameover-screen');
+    var scoreDisplay = document.getElementById('score-display');
+    var healthDisplay = document.getElementById('health-display');
+    var finalScoreText = document.getElementById('final-score');
+    var startBtn = document.getElementById('start-btn');
+    var restartBtn = document.getElementById('restart-btn');
+
+    var state = GameState.MENU;
+    var score = 0;
+    var health = 100;
+    var frameId = 0;
+
+    var enemies = [];
+    var spawnTimer = 0;
+    var spawnRate = 60; // Frames
+
+    var particles = [];
+
+    var base = {
+        x: 350,
+        y: 250,
+        width: 100,
+        height: 100,
+        color: '#00ccff'
+    };
+
+    function resetGame() {
+        score = 0;
+        health = 100;
+        enemies = [];
+        particles = [];
+        spawnTimer = 0;
+        spawnRate = 60;
+        updateUI();
+    }
+
+    function spawnEnemy() {
+        var side = Utils.randomInt(0, 3); // 0: top, 1: right, 2: bottom, 3: left
+        var e = {
+            x: 0,
+            y: 0,
+            size: 20,
+            speed: 2 + (score / 50), // Increase speed with score
+            color: '#ff0000',
+            hp: 1
+        };
+
+        if (side === 0) { // Top
+            e.x = Utils.randomInt(0, canvas.width);
+            e.y = -e.size;
+        } else if (side === 1) { // Right
+            e.x = canvas.width + e.size;
+            e.y = Utils.randomInt(0, canvas.height);
+        } else if (side === 2) { // Bottom
+            e.x = Utils.randomInt(0, canvas.width);
+            e.y = canvas.height + e.size;
+        } else { // Left
+            e.x = -e.size;
+            e.y = Utils.randomInt(0, canvas.height);
+        }
+
+        enemies.push(e);
+    }
+
+    function createExplosion(x, y, color) {
+        for (var i = 0; i < 10; i++) {
+            particles.push({
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 10,
+                vy: (Math.random() - 0.5) * 10,
+                life: 30,
+                color: color
+            });
+        }
+    }
+
+    function update() {
+        if (state !== GameState.PLAYING) return;
+
+        // Spawning
+        spawnTimer++;
+        if (spawnTimer > spawnRate) {
+            spawnEnemy();
+            spawnTimer = 0;
+            if (spawnRate > 20) spawnRate -= 0.5; // Difficulty increase
+        }
+
+        // Move Enemies
+        var centerX = base.x + base.width / 2;
+        var centerY = base.y + base.height / 2;
+
+        for (var i = enemies.length - 1; i >= 0; i--) {
+            var e = enemies[i];
+
+            // Move towards center
+            var dx = centerX - e.x;
+            var dy = centerY - e.y;
+            var dist = Math.sqrt(dx*dx + dy*dy);
+
+            e.x += (dx / dist) * e.speed;
+            e.y += (dy / dist) * e.speed;
+
+            // Check collision with base
+            if (Utils.checkCollision({x: e.x - e.size/2, y: e.y - e.size/2, width: e.size, height: e.size}, base)) {
+                health -= 10;
+                createExplosion(e.x, e.y, '#ffaa00');
+                enemies.splice(i, 1);
+                updateUI();
+
+                if (health <= 0) {
+                    gameOver();
+                }
+            }
+        }
+
+        // Particles
+        for (var i = particles.length - 1; i >= 0; i--) {
+            var p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+            if (p.life <= 0) particles.splice(i, 1);
+        }
+    }
+
+    function draw() {
+        // Background
+        ctx.fillStyle = '#222';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (state === GameState.MENU) return;
+
+        // Draw Base
+        ctx.fillStyle = base.color;
+        ctx.fillRect(base.x, base.y, base.width, base.height);
+
+        // Base details
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(base.x + 10, base.y + 10, base.width - 20, base.height - 20);
+
+        // Draw Enemies
+        for (var i = 0; i < enemies.length; i++) {
+            var e = enemies[i];
+            ctx.fillStyle = e.color;
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.size/2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Stickman body (simple)
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(e.x, e.y); // Center
+            // Just a circle for now for simplicity
+            ctx.stroke();
+        }
+
+        // Draw Particles
+        for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, 4, 4);
+        }
+    }
+
+    function updateUI() {
+        scoreDisplay.textContent = "Kills: " + score;
+        healthDisplay.textContent = "HP: " + Math.max(0, health) + "%";
+    }
+
+    function loop() {
+        update();
+        draw();
+        frameId = requestAnimationFrame(loop);
+    }
+
+    function startGame() {
+        state = GameState.PLAYING;
+        startScreen.classList.add('hidden');
+        gameoverScreen.classList.add('hidden');
+        scoreDisplay.classList.remove('hidden');
+        healthDisplay.classList.remove('hidden');
+        resetGame();
+    }
+
+    function gameOver() {
+        state = GameState.GAMEOVER;
+        gameoverScreen.classList.remove('hidden');
+        scoreDisplay.classList.add('hidden');
+        healthDisplay.classList.add('hidden');
+        finalScoreText.textContent = "Kills: " + score;
+    }
+
+    // Input Handling
+    function handleInput(x, y) {
+        if (state !== GameState.PLAYING) return;
+
+        // Check if clicked enemy
+        // Scale coordinates if canvas is scaled via CSS
+        var rect = canvas.getBoundingClientRect();
+        var scaleX = canvas.width / rect.width;
+        var scaleY = canvas.height / rect.height;
+
+        var clickX = (x - rect.left) * scaleX;
+        var clickY = (y - rect.top) * scaleY;
+
+        for (var i = enemies.length - 1; i >= 0; i--) {
+            var e = enemies[i];
+            var dist = Math.sqrt(Math.pow(clickX - e.x, 2) + Math.pow(clickY - e.y, 2));
+
+            // Hit radius
+            if (dist < e.size * 1.5) {
+                enemies.splice(i, 1);
+                score++;
+                createExplosion(e.x, e.y, '#fff');
+                updateUI();
+                return; // One kill per click
+            }
+        }
+    }
+
+    canvas.addEventListener('mousedown', function(e) {
+        handleInput(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        handleInput(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive: false});
+
+    // Start Buttons
+    startBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    startBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    restartBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    restartBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        startGame();
+    });
+
+    // Initial render
+    resetGame();
+    loop();
+
+})();
+</script>
+</body>
+</html>

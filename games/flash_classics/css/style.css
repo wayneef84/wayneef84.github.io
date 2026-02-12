@@ -1,0 +1,126 @@
+/* Flash Classics Theme */
+
+body {
+    background-color: #222;
+    color: #eee;
+    font-family: 'Verdana', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 800px;
+    height: 600px;
+    background: linear-gradient(to bottom, #444, #333);
+    border: 2px solid #666;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 2px 2px 4px #000;
+    font-weight: bold;
+    letter-spacing: 2px;
+    background: -webkit-linear-gradient(#eee, #ccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.flash-btn {
+    background: linear-gradient(to bottom, #ffcc00, #ff9900);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    color: #000;
+    padding: 15px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px;
+}
+
+.flash-btn:hover {
+    background: linear-gradient(to bottom, #ffdd33, #ffaa00);
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.4);
+}
+
+.flash-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.score-display {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.controls-hint {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ccc;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 820px) {
+    #game-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .flash-btn {
+        padding: 12px 30px;
+        font-size: 20px;
+    }
+}
