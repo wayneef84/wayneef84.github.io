@@ -55,7 +55,26 @@
             <label>Mines: <input type="number" id="custom-mines" value="50" min="1"></label>
             <button id="apply-custom">Apply</button>
         </div>
+
+        <div class="settings-row">
+            <label title="Delay for hold action (ms)">Hold Delay: <input type="number" id="hold-delay" value="500" min="100" max="2000" step="50" style="width: 60px;"></label>
+            <label title="Action to perform on hold">Hold Action:
+                <select id="hold-action">
+                    <option value="flag" selected>Flag</option>
+                    <option value="reveal">Reveal</option>
+                    <option value="none">None</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="settings-row" style="margin-top: 5px; border-top: 1px dashed var(--cell-border-dark); padding-top: 10px;">
+            <label title="Size of zoomed cells (px)">Zoom Size: <input type="number" id="zoom-size" value="40" min="20" max="80" step="5" style="width: 50px;"></label>
+            <label title="Shadow color of zoom box">Shadow: <input type="color" id="zoom-shadow" value="#000000"></label>
+            <label title="Show zoom window on hold"><input type="checkbox" id="show-zoom" checked> Show Zoom</label>
+        </div>
     </div>
+
+    <div id="mini-zoom"></div>
 
     <script src="script.js"></script>
 </body>
