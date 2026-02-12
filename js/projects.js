@@ -62,37 +62,8 @@ if (document.readyState === 'loading') {
 }
 
 function initTheme() {
-    var themeToggle = document.getElementById('themeToggle');
-    var body = document.body;
-
-    var savedTheme = null;
-    try {
-        savedTheme = localStorage.getItem('fong_theme');
-    } catch (e) {
-        // LocalStorage might be disabled
-    }
-
-    if (savedTheme === 'light') {
-        body.classList.add('light-mode');
-        document.documentElement.classList.add('light-mode');
-        if (themeToggle) themeToggle.textContent = '🌙';
-    } else {
-        if (themeToggle) themeToggle.textContent = '☀️';
-    }
-
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            body.classList.toggle('light-mode');
-            document.documentElement.classList.toggle('light-mode');
-            var isLight = body.classList.contains('light-mode');
-            themeToggle.textContent = isLight ? '🌙' : '☀️';
-            try {
-                localStorage.setItem('fong_theme', isLight ? 'light' : 'dark');
-            } catch (e) {
-                // Ignore storage errors
-            }
-        });
-    }
+    // Theme is now managed by the inline theme switcher in index.html
+    // This function is kept as a no-op for backward compatibility
 }
 
 function initFilters() {
