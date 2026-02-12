@@ -1,22 +1,162 @@
 [
     {
-        "id": "sprunki_v1",
+        "id": "technology_001",
+        "title": "Technology & Computing",
+        "path": "packs/technology_v1.json",
+        "icon": "\ud83d\udcbb",
+        "category": "Technology",
+        "count": 80
+    },
+    {
+        "id": "sports_001",
+        "title": "Sports & Athletics",
+        "path": "packs/sports_v1.json",
+        "icon": "\u26bd",
+        "category": "Sports",
+        "count": 80
+    },
+    {
+        "id": "animals_001",
+        "title": "Animals & Nature",
+        "path": "packs/animals_v1.json",
+        "icon": "\ud83e\udd81",
+        "category": "Nature",
+        "count": 80
+    },
+    {
+        "id": "literature_001",
+        "title": "Literature & Books",
+        "path": "packs/literature_v1.json",
+        "icon": "\ud83d\udcda",
+        "category": "Culture",
+        "count": 80
+    },
+    {
+        "id": "geography_001",
+        "title": "World Geography",
+        "path": "packs/geography_v1.json",
+        "icon": "\ud83c\udf0d",
+        "category": "Geography",
+        "count": 80
+    },
+    {
+        "id": "sprunki_001",
         "title": "Sprunki Beats & Lore",
-        "path": "packs/sprunki_v1.json"
+        "path": "packs/sprunki_v1.json",
+        "icon": "\ud83c\udfb5",
+        "category": "Gaming",
+        "count": 30
+    },
+    {
+        "id": "videogames_001",
+        "title": "Video Games",
+        "path": "packs/videogames_v1.json",
+        "icon": "\ud83c\udfae",
+        "category": "Gaming",
+        "count": 80
+    },
+    {
+        "id": "history_001",
+        "title": "World History",
+        "path": "packs/history_v1.json",
+        "icon": "\ud83c\udfdb\ufe0f",
+        "category": "History",
+        "count": 80
+    },
+    {
+        "id": "music_001",
+        "title": "Music & Artists",
+        "path": "packs/music_v1.json",
+        "icon": "\ud83c\udfb8",
+        "category": "Entertainment",
+        "count": 80
+    },
+    {
+        "id": "language_001",
+        "title": "Language & Words",
+        "path": "packs/language_v1.json",
+        "icon": "\ud83d\udcac",
+        "category": "Culture",
+        "count": 80
+    },
+    {
+        "id": "space_001",
+        "title": "Space & Astronomy",
+        "path": "packs/space_v1.json",
+        "icon": "\ud83d\ude80",
+        "category": "Science",
+        "count": 80
     },
     {
         "id": "pmi_pm",
         "title": "PMI Project Management",
-        "path": "packs/pmi_pm.json"
-    },
-    {
-        "id": "andrew_ramdayal",
-        "title": "Andrew Ramdayal's PMP",
-        "path": "packs/andrew_ramdayal.json"
+        "path": "packs/pmi_pm.json",
+        "icon": "\ud83d\udccb",
+        "category": "Professional",
+        "count": 30
     },
     {
         "id": "ops_logistics",
         "title": "Ops, Logistics & Trade",
-        "path": "packs/ops_logistics.json"
+        "path": "packs/ops_logistics.json",
+        "icon": "\ud83d\udea2",
+        "category": "Professional",
+        "count": 25
+    },
+    {
+        "id": "mythology_001",
+        "title": "Mythology & Legends",
+        "path": "packs/mythology_v1.json",
+        "icon": "\u2694\ufe0f",
+        "category": "History",
+        "count": 80
+    },
+    {
+        "id": "food_001",
+        "title": "Food & Cuisine",
+        "path": "packs/food_v1.json",
+        "icon": "\ud83c\udf73",
+        "category": "Lifestyle",
+        "count": 80
+    },
+    {
+        "id": "andrew_ramdayal",
+        "title": "Andrew Ramdayal's Mindset",
+        "path": "packs/andrew_ramdayal.json",
+        "icon": "\ud83c\udf93",
+        "category": "Professional",
+        "count": 20
+    },
+    {
+        "id": "science_001",
+        "title": "General Science",
+        "path": "packs/science_v1.json",
+        "icon": "\ud83e\uddea",
+        "category": "Science",
+        "count": 80
+    },
+    {
+        "id": "popculture_001",
+        "title": "Pop Culture",
+        "path": "packs/popculture_v1.json",
+        "icon": "\ud83d\udcfa",
+        "category": "Entertainment",
+        "count": 80
+    },
+    {
+        "id": "movies_001",
+        "title": "Movies & Film",
+        "path": "packs/movies_v1.json",
+        "icon": "\ud83c\udfac",
+        "category": "Entertainment",
+        "count": 80
+    },
+    {
+        "id": "math_001",
+        "title": "Mathematics",
+        "path": "packs/math_v1.json",
+        "icon": "\ud83d\udcca",
+        "category": "Science",
+        "count": 80
     }
 ]
