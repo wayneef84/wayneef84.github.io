@@ -2,7 +2,7 @@
  * Service Worker for J: Speed Quiz
  */
 
-var CACHE_NAME = 'j-quiz-v4';
+var CACHE_NAME = 'j-quiz-v5';
 var urlsToCache = [
   './index.html',
   './css/style.css',
@@ -32,13 +32,15 @@ var urlsToCache = [
   './packs/popculture_v1.json',
   './packs/movies_v1.json',
   './packs/math_v1.json',
-  // New Packs
   './packs/xanadu_v1.json',
   './packs/music_60s.json',
   './packs/music_70s.json',
   './packs/music_80s.json',
   './packs/music_90s.json',
-  './packs/public_domain.json'
+  './packs/public_domain.json',
+  // New Niche Packs
+  './packs/brands_logos.json',
+  './packs/true_crime.json'
 ];
 
 self.addEventListener('install', function(event) {

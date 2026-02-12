@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "id": "logo_quiz",
+    "title": "Logo Quiz",
+    "version": "1.0",
+    "difficulty": "Easy",
+    "tags": ["Visual", "Brands", "Logos"],
+    "questionCount": 10
+  },
+  "questions": [
+    {
+      "id": "lq_01",
+      "text": "Which browser uses this logo?",
+      "options": {
+        "A": "Chrome",
+        "B": "Firefox",
+        "C": "Edge",
+        "D": "Opera"
+      },
+      "correct": "B",
+      "explanation": "The orange fox wrapping around a globe is Firefox."
+    },
+    {
+      "id": "lq_02",
+      "text": "This mermaid appears on cups from:",
+      "options": {
+        "A": "Costa",
+        "B": "Starbucks",
+        "C": "Tim Hortons",
+        "D": "Dunkin'"
+      },
+      "correct": "B",
+      "explanation": "The Starbucks Siren."
+    },
+    {
+      "id": "lq_03",
+      "text": "Which car brand uses this logo?",
+      "options": {
+        "A": "Honda",
+        "B": "Hyundai",
+        "C": "Toyota",
+        "D": "Mazda"
+      },
+      "correct": "B",
+      "explanation": "Hyundai's 'H' is italicized, representing two people shaking hands."
+    },
+    {
+      "id": "lq_04",
+      "text": "Identify the brand:",
+      "options": {
+        "A": "Pepsi",
+        "B": "Coca-Cola",
+        "C": "Dr Pepper",
+        "D": "Sprite"
+      },
+      "correct": "A",
+      "explanation": "The red, white, and blue globe."
+    },
+    {
+      "id": "lq_05",
+      "text": "Which superhero wears this symbol?",
+      "options": {
+        "A": "Superman",
+        "B": "Batman",
+        "C": "Wonder Woman",
+        "D": "Flash"
+      },
+      "correct": "B",
+      "explanation": "The Bat signal."
+    },
+    {
+      "id": "lq_06",
+      "text": "This bitten fruit represents:",
+      "options": {
+        "A": "Fruit of the Loom",
+        "B": "Apple",
+        "C": "Blackberry",
+        "D": "Orange"
+      },
+      "correct": "B",
+      "explanation": "Apple Inc."
+    },
+    {
+      "id": "lq_07",
+      "text": "Which sports brand is this?",
+      "options": {
+        "A": "Nike",
+        "B": "Adidas",
+        "C": "Puma",
+        "D": "Under Armour"
+      },
+      "correct": "B",
+      "explanation": "The three stripes (or trefoil) are Adidas."
+    },
+    {
+      "id": "lq_08",
+      "text": "This ghost is the logo for:",
+      "options": {
+        "A": "Snapchat",
+        "B": "Pinterest",
+        "C": "Tinder",
+        "D": "WhatsApp"
+      },
+      "correct": "A",
+      "explanation": "Snapchat's Ghostface Chillah."
+    },
+    {
+      "id": "lq_09",
+      "text": "Which gaming console uses this X?",
+      "options": {
+        "A": "PlayStation",
+        "B": "Xbox",
+        "C": "Nintendo",
+        "D": "Sega"
+      },
+      "correct": "B",
+      "explanation": "Microsoft Xbox."
+    },
+    {
+      "id": "lq_10",
+      "text": "This panda represents which organization?",
+      "options": {
+        "A": "PETA",
+        "B": "WWF",
+        "C": "Greenpeace",
+        "D": "UNICEF"
+      },
+      "correct": "B",
+      "explanation": "World Wildlife Fund (WWF)."
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "human_body",
+    "title": "The Human Body",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Science", "Anatomy", "Biology", "Health"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "hb_01",
+      "text": "What is the largest organ in the human body?",
+      "options": {
+        "A": "Liver",
+        "B": "Skin",
+        "C": "Brain",
+        "D": "Heart"
+      },
+      "correct": "B",
+      "explanation": "The skin is the body's largest organ, protecting it from external elements."
+    },
+    {
+      "id": "hb_02",
+      "text": "How many bones are in the adult human body?",
+      "options": {
+        "A": "206",
+        "B": "250",
+        "C": "300",
+        "D": "180"
+      },
+      "correct": "A",
+      "explanation": "Babies are born with more bones (around 270), but they fuse together to form 206 in adulthood."
+    },
+    {
+      "id": "hb_03",
+      "text": "Which blood type is known as the universal donor?",
+      "options": {
+        "A": "A Positive",
+        "B": "O Negative",
+        "C": "AB Positive",
+        "D": "B Negative"
+      },
+      "correct": "B",
+      "explanation": "O Negative blood can be used in transfusions for any blood type."
+    },
+    {
+      "id": "hb_04",
+      "text": "What is the main function of red blood cells?",
+      "options": {
+        "A": "Fight infection",
+        "B": "Carry oxygen",
+        "C": "Clot blood",
+        "D": "Digest food"
+      },
+      "correct": "B",
+      "explanation": "Red blood cells contain hemoglobin which transports oxygen from the lungs to the rest of the body."
+    },
+    {
+      "id": "hb_05",
+      "text": "Which organ produces insulin?",
+      "options": {
+        "A": "Kidney",
+        "B": "Pancreas",
+        "C": "Liver",
+        "D": "Stomach"
+      },
+      "correct": "B",
+      "explanation": "The pancreas produces insulin, which regulates blood sugar levels."
+    },
+    {
+      "id": "hb_06",
+      "text": "What is the smallest bone in the human body?",
+      "options": {
+        "A": "Femur",
+        "B": "Stapes (Stirrup)",
+        "C": "Phalanges",
+        "D": "Tibia"
+      },
+      "correct": "B",
+      "explanation": "The stapes is located in the middle ear and is approximately 3mm x 2.5mm."
+    },
+    {
+      "id": "hb_07",
+      "text": "Which part of the brain controls balance and coordination?",
+      "options": {
+        "A": "Cerebrum",
+        "B": "Cerebellum",
+        "C": "Brainstem",
+        "D": "Thalamus"
+      },
+      "correct": "B",
+      "explanation": "The cerebellum (Latin for 'little brain') plays a key role in motor control."
+    },
+    {
+      "id": "hb_08",
+      "text": "What is the hardest substance in the human body?",
+      "options": {
+        "A": "Bone",
+        "B": "Tooth enamel",
+        "C": "Fingernails",
+        "D": "Cartilage"
+      },
+      "correct": "B",
+      "explanation": "Tooth enamel is the hardest and most highly mineralized substance in your body."
+    },
+    {
+      "id": "hb_09",
+      "text": "How many chambers does the human heart have?",
+      "options": {
+        "A": "Two",
+        "B": "Three",
+        "C": "Four",
+        "D": "Six"
+      },
+      "correct": "C",
+      "explanation": "The heart has four chambers: two atria and two ventricles."
+    },
+    {
+      "id": "hb_10",
+      "text": "Where is the femur located?",
+      "options": {
+        "A": "Arm",
+        "B": "Thigh",
+        "C": "Shin",
+        "D": "Back"
+      },
+      "correct": "B",
+      "explanation": "The femur is the thigh bone and the longest, strongest bone in the body."
+    },
+    {
+      "id": "hb_11",
+      "text": "What does DNA stand for?",
+      "options": {
+        "A": "Deoxyribonucleic Acid",
+        "B": "Deoxyribogenetic Acid",
+        "C": "Dual Nitrogen Acid",
+        "D": "Dynamic Nuclear Acid"
+      },
+      "correct": "A",
+      "explanation": "DNA carries genetic instructions for development and function."
+    },
+    {
+      "id": "hb_12",
+      "text": "Which organ filters blood to produce urine?",
+      "options": {
+        "A": "Liver",
+        "B": "Kidney",
+        "C": "Bladder",
+        "D": "Spleen"
+      },
+      "correct": "B",
+      "explanation": "The kidneys filter waste products from the blood."
+    },
+    {
+      "id": "hb_13",
+      "text": "What is the colored part of the eye called?",
+      "options": {
+        "A": "Pupil",
+        "B": "Iris",
+        "C": "Cornea",
+        "D": "Retina"
+      },
+      "correct": "B",
+      "explanation": "The iris is the colored ring of muscle that controls the size of the pupil."
+    },
+    {
+      "id": "hb_14",
+      "text": "Which vitamin is produced by the body when exposed to sunlight?",
+      "options": {
+        "A": "Vitamin A",
+        "B": "Vitamin C",
+        "C": "Vitamin D",
+        "D": "Vitamin K"
+      },
+      "correct": "C",
+      "explanation": "Vitamin D is synthesized in the skin upon exposure to UVB radiation."
+    },
+    {
+      "id": "hb_15",
+      "text": "What connects muscle to bone?",
+      "options": {
+        "A": "Ligament",
+        "B": "Tendon",
+        "C": "Cartilage",
+        "D": "Joint"
+      },
+      "correct": "B",
+      "explanation": "Tendons connect muscle to bone, while ligaments connect bone to bone."
+    }
+  ]
+}

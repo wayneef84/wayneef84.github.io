@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Pack Registry - will be loaded from manifest
-    var PACK_REGISTRY = [];
+    var MANIFEST = { groups: [], packs: [] };
 
     // DOM Elements
     var dom = {
@@ -10,6 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
         packSearch: document.getElementById('packSearch'),
         totalQuestions: document.getElementById('totalQuestions'),
         totalPacks: document.getElementById('totalPacks'),
+        customGameBtn: document.getElementById('customGameBtn'),
+        // Setup Modal
+        setupModal: document.getElementById('setupModal'),
+        setupTitle: document.getElementById('setupTitle'),
+        startGameBtn: document.getElementById('startGameBtn'),
+        cancelSetupBtn: document.getElementById('cancelSetupBtn'),
+        limitOptions: document.querySelectorAll('input[name="qLimit"]'),
+        percentToggle: document.getElementById('percentToggle'),
+        // Multi-Pack Elements
+        multiPackSelection: document.getElementById('multiPackSelection'),
+        multiPackList: document.getElementById('multiPackList'),
+        packLimitRange: document.getElementById('packLimitRange'),
+        packLimitDisplay: document.getElementById('packLimitDisplay'),
+        // History
+        historyPlaceholder: document.getElementById('historyPlaceholder'),
         // Game Elements
         gameContainer: document.getElementById('gameContainer'),
         packTitle: document.getElementById('packTitle'),
@@ -34,15 +49,22 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackText: document.getElementById('feedbackText'),
         endScreen: document.getElementById('endScreen'),
         finalScore: document.getElementById('finalScore'),
+        scoreLabel: document.getElementById('scoreLabel'),
         finalCorrect: document.getElementById('finalCorrect'),
         finalStreak: document.getElementById('finalStreak'),
         restartBtn: document.getElementById('restartBtn'),
         changePack: document.getElementById('changePack'),
-        backToPacksBtn: document.getElementById('backToPacksBtn') // New button
+        backToPacksBtn: document.getElementById('backToPacksBtn')
     };
 
     var engine = null;
     var currentPackData = null;
+    var currentPackFile = null; // null if custom game
+    var isCustomGame = false;
+    var gameSettings = {
+        limit: 10,
+        showPercent: false
+    };
 
     // Show pack selector on load
     renderPackSelector();
@@ -52,9 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.packSelector) dom.packSelector.classList.remove('hidden');
         if (dom.gameContainer) dom.gameContainer.classList.add('hidden');
         if (dom.endScreen) dom.endScreen.classList.add('hidden');
+        if (dom.setupModal) dom.setupModal.classList.add('hidden');
 
         // Check if registry is loaded
-        if (PACK_REGISTRY.length === 0) {
+        if (MANIFEST.packs.length === 0) {
             if (dom.packGrid) {
                 dom.packGrid.innerHTML = '<div class="loading-state">Loading packs...</div>';
             }
@@ -65,7 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(function(data) {
-                    PACK_REGISTRY = data;
+                    // Normalize data structure if needed
+                    if (Array.isArray(data)) {
+                        MANIFEST.packs = data; // Legacy format
+                    } else {
+                        MANIFEST = data; // New format
+                    }
+
                     renderPackSelector(); // Re-render with data
 
                     // Check URL for pack
@@ -73,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const packPath = params.get('pack');
                     if (packPath) {
                         // Validate path against registry
-                        const isValid = PACK_REGISTRY.some(p => p.path === packPath);
+                        const isValid = MANIFEST.packs.some(p => p.path === packPath);
                         if (isValid) {
-                            loadAndStartPack(packPath, true); // true = skip pushState
+                            openSetupModal(packPath, true);
                         } else {
                             console.warn('Invalid pack path in URL:', packPath);
                             history.replaceState(null, '', window.location.pathname);
@@ -94,104 +123,363 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calculate totals
         var totalQ = 0;
         var i;
-        for (i = 0; i < PACK_REGISTRY.length; i++) {
-            totalQ += (PACK_REGISTRY[i].count || 0);
+        for (i = 0; i < MANIFEST.packs.length; i++) {
+            totalQ += (MANIFEST.packs[i].count || 0);
         }
         if (dom.totalQuestions) dom.totalQuestions.textContent = totalQ;
-        if (dom.totalPacks) dom.totalPacks.textContent = PACK_REGISTRY.length;
+        if (dom.totalPacks) dom.totalPacks.textContent = MANIFEST.packs.length;
 
-        // Render pack cards
-        renderPacks('');
+        // Render groups and packs
+        renderGroups('');
 
         // Search handler
         if (dom.packSearch) {
             dom.packSearch.addEventListener('input', function() {
-                renderPacks(this.value.toLowerCase());
+                renderGroups(this.value.toLowerCase());
             });
         }
     }
 
-    function renderPacks(searchTerm) {
+    function renderGroups(searchTerm) {
         if (!dom.packGrid) return;
         dom.packGrid.innerHTML = '';
 
-        var i, pack, card, match;
-        for (i = 0; i < PACK_REGISTRY.length; i++) {
-            pack = PACK_REGISTRY[i];
-            match = !searchTerm ||
-                pack.title.toLowerCase().indexOf(searchTerm) !== -1 ||
-                pack.category.toLowerCase().indexOf(searchTerm) !== -1;
+        // If legacy manifest (no groups defined), create a default group
+        var groups = MANIFEST.groups || [{id: 'default', title: 'All Packs', icon: '', description: ''}];
+        var packs = MANIFEST.packs;
 
-            if (!match) continue;
+        groups.forEach(function(group) {
+            // Filter packs for this group
+            var groupPacks = packs.filter(function(p) {
+                if (MANIFEST.groups && MANIFEST.groups.length > 0) {
+                    // Normalize legacy/missing groupIds to 'niche' or similar if needed, or strict match
+                    return p.groupId === group.id;
+                }
+                return true;
+            });
 
-            card = document.createElement('button');
-            card.className = 'pack-card';
-            card.setAttribute('data-pack', pack.path);
-            card.innerHTML =
-                '<div class="pack-icon">' + (pack.icon || '\u2753') + '</div>' +
-                '<div class="pack-info">' +
-                    '<div class="pack-name">' + pack.title + '</div>' +
-                    '<div class="pack-meta">' +
-                        '<span class="pack-category">' + (pack.category || 'General') + '</span>' +
-                        '<span class="pack-count">' + (pack.count || '?') + ' Q</span>' +
-                    '</div>' +
-                '</div>';
-
-            (function(packPath) {
-                card.addEventListener('click', function() {
-                    loadAndStartPack(packPath, false); // false = push new state
+            // Apply search filter
+            if (searchTerm) {
+                groupPacks = groupPacks.filter(function(p) {
+                    return p.title.toLowerCase().indexOf(searchTerm) !== -1 ||
+                           (p.category && p.category.toLowerCase().indexOf(searchTerm) !== -1);
                 });
-            })(pack.path);
+            }
 
-            dom.packGrid.appendChild(card);
-        }
+            if (groupPacks.length === 0) return; // Skip empty groups
+
+            // Render Group Header
+            var groupHeader = document.createElement('div');
+            groupHeader.className = 'group-header';
+            groupHeader.innerHTML = `
+                <h2>${group.icon || ''} ${group.title}</h2>
+                <p>${group.description || ''}</p>
+            `;
+            // Add style for full-width header
+            groupHeader.style.gridColumn = "1 / -1";
+            groupHeader.style.marginTop = "20px";
+            groupHeader.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
+            groupHeader.style.paddingBottom = "5px";
+
+            dom.packGrid.appendChild(groupHeader);
+
+            // Render Packs
+            groupPacks.forEach(function(pack) {
+                var card = document.createElement('button');
+                card.className = 'pack-card';
+                card.setAttribute('data-pack', pack.path);
+
+                // Get high score
+                var best = ScoreManager.getHighScore(pack.id);
+                var bestHtml = best > 0 ? `<div class="pack-best">Best: ${best}</div>` : '';
+
+                card.innerHTML =
+                    '<div class="pack-icon">' + (pack.icon || '\u2753') + '</div>' +
+                    '<div class="pack-info">' +
+                        '<div class="pack-name">' + pack.title + '</div>' +
+                        '<div class="pack-meta">' +
+                            '<span class="pack-category">' + (pack.category || 'General') + '</span>' +
+                            '<span class="pack-count">' + (pack.count || '?') + ' Q</span>' +
+                        '</div>' +
+                    '</div>' + bestHtml;
+
+                card.addEventListener('click', function() {
+                    openSetupModal(pack.path);
+                });
+
+                dom.packGrid.appendChild(card);
+            });
+        });
     }
 
-    function loadAndStartPack(packFile, skipPushState) {
-        // Show loading state
+    // --- Score Manager ---
+    var ScoreManager = {
+        saveScore: function(packId, score) {
+            if (!packId || packId === 'custom_mix') return; // Don't save for custom mix (or maybe separate logic)
+            var key = 'j_score_' + packId;
+            var current = this.getHighScore(packId);
+            if (score > current) {
+                localStorage.setItem(key, score);
+            }
+
+            // Save history log
+            var historyKey = 'j_history_' + packId;
+            var history = this.getHistory(packId);
+            history.unshift({date: new Date().toISOString(), score: score});
+            if (history.length > 5) history.pop(); // Keep last 5
+            localStorage.setItem(historyKey, JSON.stringify(history));
+        },
+        getHighScore: function(packId) {
+            var key = 'j_score_' + packId;
+            return parseInt(localStorage.getItem(key) || '0', 10);
+        },
+        getHistory: function(packId) {
+            var key = 'j_history_' + packId;
+            try {
+                return JSON.parse(localStorage.getItem(key) || '[]');
+            } catch(e) { return []; }
+        },
+        resetPackHistory: function(packId) {
+            localStorage.removeItem('j_score_' + packId);
+            localStorage.removeItem('j_history_' + packId);
+        }
+    };
+
+    function openSetupModal(packFile, skipPushState) {
+        currentPackFile = packFile; // If null, it's custom game
+
+        // Reset/Hide UI elements based on mode
+        if (packFile === 'custom') {
+            // CUSTOM GAME MODE
+            isCustomGame = true;
+            dom.setupTitle.textContent = "CUSTOM MIX";
+            dom.multiPackSelection.classList.remove('hidden');
+            if (dom.historyPlaceholder) dom.historyPlaceholder.classList.add('hidden');
+
+            // Populate Multi-Pack List
+            renderMultiPackList();
+
+            // Update URL for custom game? Maybe not needed, or '?pack=custom'
+            if (!skipPushState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('pack'); // Don't track custom state in URL for now (complex to restore)
+                history.pushState(null, '', url);
+            }
+        } else {
+            // SINGLE PACK MODE
+            isCustomGame = false;
+            dom.multiPackSelection.classList.add('hidden');
+            if (dom.historyPlaceholder) dom.historyPlaceholder.classList.remove('hidden');
+
+            // Find pack metadata
+            var packMeta = MANIFEST.packs.find(p => p.path === packFile);
+            if (packMeta) {
+                dom.setupTitle.textContent = packMeta.title.toUpperCase();
+                renderHistory(packMeta);
+            } else {
+                dom.setupTitle.textContent = "GAME SETUP";
+            }
+
+            // Update URL if not skipped
+            if (!skipPushState) {
+                const url = new URL(window.location);
+                url.searchParams.set('pack', packFile);
+                history.pushState({pack: packFile}, '', url);
+            }
+        }
+
+        // Show modal
+        dom.setupModal.classList.remove('hidden');
+    }
+
+    function renderMultiPackList() {
+        dom.multiPackList.innerHTML = '';
+
+        MANIFEST.packs.forEach(function(pack) {
+            var label = document.createElement('label');
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
+            label.style.padding = '5px 0';
+            label.style.cursor = 'pointer';
+
+            label.innerHTML = `
+                <input type="checkbox" name="mixPack" value="${pack.path}" style="margin-right: 10px;">
+                <span style="flex:1;">${pack.title}</span>
+                <span style="font-size:0.8rem; opacity:0.6;">${pack.category}</span>
+            `;
+            dom.multiPackList.appendChild(label);
+        });
+
+        // Update range slider max based on selection
+        updatePackLimitRange();
+
+        // Listen for checkbox changes
+        var checkboxes = dom.multiPackList.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(cb) {
+            cb.addEventListener('change', updatePackLimitRange);
+        });
+    }
+
+    function updatePackLimitRange() {
+        var checked = dom.multiPackList.querySelectorAll('input[type="checkbox"]:checked');
+        var count = checked.length;
+        var range = dom.packLimitRange;
+
+        if (count === 0) {
+            range.max = 1;
+            range.value = 1;
+            range.disabled = true;
+            dom.packLimitDisplay.textContent = "0";
+        } else {
+            range.disabled = false;
+            range.max = count;
+            range.value = count; // Default to all selected
+            dom.packLimitDisplay.textContent = "ALL";
+        }
+
+        range.oninput = function() {
+            if (parseInt(this.value) === parseInt(this.max)) {
+                dom.packLimitDisplay.textContent = "ALL";
+            } else {
+                dom.packLimitDisplay.textContent = this.value;
+            }
+        };
+    }
+
+    function renderHistory(packMeta) {
+        var best = ScoreManager.getHighScore(packMeta.id);
+        var history = ScoreManager.getHistory(packMeta.id);
+
+        var html = `<label class="setup-label">RECORDS</label>
+                    <div class="history-box" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
+                            <span>High Score:</span>
+                            <span style="color:var(--accent); font-weight:bold;">${best}</span>
+                        </div>
+                        ${history.length > 0 ? '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 5px 0;">' : ''}
+                        <div class="history-list" style="font-size: 0.8rem; color: var(--text-secondary);">`;
+
+        history.forEach(function(h) {
+            var d = new Date(h.date).toLocaleDateString();
+            html += `<div style="display:flex; justify-content:space-between;"><span>${d}</span><span>${h.score} pts</span></div>`;
+        });
+
+        html += `</div>
+                 <button id="resetHistoryBtn" style="width:100%; margin-top:10px; background:none; border:1px solid #ef4444; color:#ef4444; padding:5px; border-radius:4px; cursor:pointer; font-size:0.8rem;">RESET HISTORY</button>
+                 </div>`;
+
+        dom.historyPlaceholder.innerHTML = html;
+
+        // Bind Reset
+        document.getElementById('resetHistoryBtn').addEventListener('click', function() {
+            if(confirm("Clear records for this pack?")) {
+                ScoreManager.resetPackHistory(packMeta.id);
+                renderHistory(packMeta); // Re-render in place
+            }
+        });
+    }
+
+    function startGame() {
+        // Get settings common to both modes
+        var limit = 10;
+        var selectedLimit = document.querySelector('input[name="qLimit"]:checked');
+        if (selectedLimit) {
+            limit = parseInt(selectedLimit.value, 10);
+            if (limit === 0) limit = 1000; // "All"
+        }
+        gameSettings.limit = limit;
+        gameSettings.showPercent = dom.percentToggle.checked;
+
+        dom.setupModal.classList.add('hidden');
         if (dom.packGrid) {
             dom.packGrid.innerHTML = '<div class="loading-state">Loading pack...</div>';
         }
 
-        fetch(packFile)
+        if (isCustomGame) {
+            startCustomGame();
+        } else {
+            startSinglePackGame();
+        }
+    }
+
+    function startSinglePackGame() {
+        if (!currentPackFile) return;
+
+        fetch(currentPackFile)
             .then(function(response) {
                 if (!response.ok) throw new Error('Failed to load pack');
                 return response.json();
             })
             .then(function(data) {
                 currentPackData = data;
-
-                // Update URL without reloading
-                if (!skipPushState) {
-                    const url = new URL(window.location);
-                    url.searchParams.set('pack', packFile);
-                    history.pushState({pack: packFile}, '', url);
-                }
-
-                // Switch to game view
-                if (dom.packSelector) dom.packSelector.classList.add('hidden');
-                if (dom.gameContainer) dom.gameContainer.classList.remove('hidden');
-
-                dom.packTitle.textContent = currentPackData.meta.title.toUpperCase();
-
-                setupEngine();
-                engine.loadPack(currentPackData);
-                bindEvents();
-                engine.startRound();
+                initGameUI("single");
             })
-            .catch(function(e) {
-                console.error(e);
-                if (dom.packGrid) {
-                    dom.packGrid.innerHTML = '<div class="loading-state error">Failed to load pack. <button onclick="location.reload()">Retry</button></div>';
-                }
+            .catch(handleLoadError);
+    }
+
+    function startCustomGame() {
+        var checked = Array.from(dom.multiPackList.querySelectorAll('input[type="checkbox"]:checked'));
+        if (checked.length === 0) {
+            alert("Please select at least one pack.");
+            openSetupModal('custom');
+            return;
+        }
+
+        var selectedPaths = checked.map(cb => cb.value);
+        var packLimit = parseInt(dom.packLimitRange.value);
+
+        // If limit < selected count, shuffle and slice
+        if (packLimit < selectedPaths.length) {
+            selectedPaths = selectedPaths.sort(() => 0.5 - Math.random()).slice(0, packLimit);
+        }
+
+        // Fetch all selected packs
+        var promises = selectedPaths.map(path => fetch(path).then(r => r.json()));
+
+        Promise.all(promises).then(function(packs) {
+            // Merge packs
+            var allQuestions = [];
+            packs.forEach(function(p) {
+                if (p.questions) allQuestions = allQuestions.concat(p.questions);
             });
+
+            currentPackData = {
+                meta: {
+                    id: 'custom_mix',
+                    title: 'Custom Mix'
+                },
+                questions: allQuestions
+            };
+
+            initGameUI("custom");
+        }).catch(handleLoadError);
+    }
+
+    function initGameUI(mode) {
+        // Switch to game view
+        if (dom.packSelector) dom.packSelector.classList.add('hidden');
+        if (dom.gameContainer) dom.gameContainer.classList.remove('hidden');
+
+        dom.packTitle.textContent = currentPackData.meta.title.toUpperCase();
+
+        setupEngine();
+        engine.loadPack(currentPackData);
+        bindEvents();
+        engine.startRound();
+    }
+
+    function handleLoadError(e) {
+        console.error(e);
+        if (dom.packGrid) {
+            dom.packGrid.innerHTML = '<div class="loading-state error">Failed to load pack. <button onclick="location.reload()">Retry</button></div>';
+        }
     }
 
     var eventsBound = false;
 
     function setupEngine() {
         engine = new QuizEngine({
-            limit: 10,
+            limit: gameSettings.limit,
             timer: 15,
             onTick: updateTimer,
             onQuestionLoaded: renderQuestion,
@@ -203,6 +491,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function bindEvents() {
         if (eventsBound) return;
         eventsBound = true;
+
+        // Setup Modal Events
+        dom.startGameBtn.addEventListener('click', startGame);
+
+        dom.cancelSetupBtn.addEventListener('click', function() {
+            dom.setupModal.classList.add('hidden');
+            quitToPacks();
+        });
+
+        // Custom Game Button
+        if (dom.customGameBtn) {
+            dom.customGameBtn.addEventListener('click', function() {
+                openSetupModal('custom');
+            });
+        }
 
         // Answer Clicks
         var keys = Object.keys(dom.answers);
@@ -234,6 +537,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Restart
         dom.restartBtn.addEventListener('click', function() {
             dom.endScreen.classList.add('hidden');
+
+            // If custom game, reuse the merged data? Yes.
+            // If we wanted to re-roll random packs, we'd need to store the selection.
+            // For now, re-using merged data is standard behavior.
             engine.loadPack(currentPackData);
             engine.startRound();
         });
@@ -261,10 +568,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const packPath = params.get('pack');
 
             if (packPath) {
-                // If we popped back into a pack state, load it without pushing state
-                loadAndStartPack(packPath, true);
+                // If we popped back into a pack state, show modal
+                // Don't auto-start, just show setup
+                openSetupModal(packPath, true);
             } else {
                 // We popped back to root
+                dom.setupModal.classList.add('hidden');
                 quitToPacks(true); // Skip pushing state
             }
         });
@@ -275,6 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.endScreen.classList.add('hidden');
         dom.packSelector.classList.remove('hidden');
         dom.gameContainer.classList.add('hidden'); // Ensure game is hidden
+        dom.setupModal.classList.add('hidden');
 
         if (!skipUrlUpdate) {
             // Remove query param
@@ -309,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.questionText.textContent = data.question.text;
 
         // Update Score/Streak
-        dom.scoreValue.textContent = data.score;
+        dom.scoreValue.textContent = data.score; // Keeping points for running score
         dom.streakValue.textContent = data.streak;
 
         // Progress Bar
@@ -326,19 +636,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.disabled = false;
 
-            // Remove previous feedback classes
+            // Reset classes
             btn.className = 'answer-btn';
 
-            textSpan = btn.querySelector('.option-text');
+            // Clear previous content
+            btn.innerHTML = '';
+
+            // Create Label (A, B, C, D)
+            var label = document.createElement('span');
+            label.className = 'option-label';
+            label.textContent = key;
+            btn.appendChild(label);
+
             if (optionText) {
-                textSpan.textContent = optionText;
+                // Check for image URL
+                // Simple heuristic: ends with .jpg, .png, .gif, .webp, or contains /flagcdn.com/
+                var isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(optionText) || optionText.indexOf('flagcdn.com') !== -1;
+
+                if (isImage) {
+                    var img = document.createElement('img');
+                    img.src = optionText;
+                    img.className = 'option-image';
+                    img.alt = "Option " + key;
+                    btn.appendChild(img);
+                } else {
+                    var text = document.createElement('span');
+                    text.className = 'option-text';
+                    text.textContent = optionText;
+                    btn.appendChild(text);
+                }
                 btn.style.display = 'flex';
             } else {
                 btn.style.display = 'none';
             }
         }
 
-        // Media
+        // Media (Question Image)
         if (data.question.media) {
             dom.mediaContainer.classList.remove('hidden');
             dom.mediaContainer.innerHTML = '<img src="' + data.question.media + '" alt="Question Image" style="max-width:100%; border-radius: 8px;">';
@@ -356,25 +689,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var correctBtn = dom.answers[data.correctAnswer];
 
         if (engine.settings.lockFastForward) {
-            // New "Pop" Animation logic
             if (correctBtn) correctBtn.classList.add('pop-correct');
-
-            // If incorrect, still show it briefly (maybe?)
-            // The request said: "unless it's clicked somewhere then it just disappears"
-            // The 'pop-correct' animation fades out at the end (100% -> opacity: 0).
-
-            // If user selected WRONG answer, we probably should show it as red briefly?
-            // The prompt only mentioned the correct answer behavior ("The green should pop up...").
-            // I'll keep the incorrect logic for now but focusing on the pop.
              if (!data.correct && !data.timeOut && data.selected) {
                 var selectedBtn = dom.answers[data.selected];
                 if (selectedBtn) selectedBtn.classList.add('incorrect');
             }
-
         } else {
-            // Standard Logic
             if (correctBtn) correctBtn.classList.add('correct');
-
             if (!data.correct && !data.timeOut && data.selected) {
                 var selectedBtn = dom.answers[data.selected];
                 if (selectedBtn) selectedBtn.classList.add('incorrect');
@@ -385,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.nextBtn.disabled = false;
         }
 
-        // Update Stats immediately
+        // Update Stats
         if (data.score !== undefined) dom.scoreValue.textContent = data.score;
         if (data.streak !== undefined) dom.streakValue.textContent = data.streak;
     }
@@ -394,7 +715,19 @@ document.addEventListener('DOMContentLoaded', function() {
         dom.progressBar.style.width = '100%';
         dom.endScreen.classList.remove('hidden');
 
-        dom.finalScore.textContent = data.score;
+        // Save Score (only if single pack)
+        if (!isCustomGame && currentPackData && currentPackData.meta && currentPackData.meta.id) {
+            ScoreManager.saveScore(currentPackData.meta.id, data.score);
+        }
+
+        if (gameSettings.showPercent) {
+            var pct = Math.round((data.score / data.total) * 100);
+            dom.finalScore.textContent = pct + '%';
+            dom.scoreLabel.textContent = 'GRADE';
+        } else {
+            dom.finalScore.textContent = data.score;
+            dom.scoreLabel.textContent = 'PTS';
+        }
 
         var correctCount = 0;
         var h;
