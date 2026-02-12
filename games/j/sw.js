@@ -2,15 +2,36 @@
  * Service Worker for J: Speed Quiz
  */
 
-var CACHE_NAME = 'j-quiz-v1';
+var CACHE_NAME = 'j-quiz-v3';
 var urlsToCache = [
   './index.html',
   './css/style.css',
   './js/engine.js',
   './js/app.js',
+  './manifest.json', // PWA Manifest
+  './packs/manifest.json', // Packs Manifest
+  '../../favicon.svg',
+  // Packs
   './packs/sprunki_v1.json',
-  './manifest.json',
-  '../../favicon.svg'
+  './packs/technology_v1.json',
+  './packs/sports_v1.json',
+  './packs/animals_v1.json',
+  './packs/literature_v1.json',
+  './packs/geography_v1.json',
+  './packs/videogames_v1.json',
+  './packs/history_v1.json',
+  './packs/music_v1.json',
+  './packs/language_v1.json',
+  './packs/space_v1.json',
+  './packs/pmi_pm.json',
+  './packs/ops_logistics.json',
+  './packs/mythology_v1.json',
+  './packs/food_v1.json',
+  './packs/andrew_ramdayal.json',
+  './packs/science_v1.json',
+  './packs/popculture_v1.json',
+  './packs/movies_v1.json',
+  './packs/math_v1.json'
 ];
 
 self.addEventListener('install', function(event) {
