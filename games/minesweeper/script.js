@@ -138,6 +138,13 @@ function setupEventListeners() {
         holdAction = e.target.value;
         localStorage.setItem('minesweeper_hold_action', holdAction);
     });
+
+    window.addEventListener('beforeunload', (e) => {
+        if (!gameState.gameOver && !gameState.gameWon && !gameState.firstClick) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 }
 
 function loadSettings() {
