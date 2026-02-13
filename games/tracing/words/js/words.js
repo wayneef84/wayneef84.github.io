@@ -499,7 +499,7 @@ class WordGame {
     playLetterAudio(char) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(char.toUpperCase());
+            const utter = new SpeechSynthesisUtterance(char);
             utter.rate = this.voiceRate;
             window.speechSynthesis.speak(utter);
         }

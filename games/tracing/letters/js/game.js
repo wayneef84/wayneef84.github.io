@@ -686,8 +686,15 @@ class LetterGame {
                 partB = `${name} is for ${selected[0]}, and ${selected[1]}`;
             } else {
                 // Fallback for simple items
-                var name = item.name || `Letter ${this.currentLetter}`;
-                partB = name;
+                if (item.name) {
+                    partB = item.name;
+                } else if (this.currentPack.id === 'uppercase') {
+                    partB = `Capital ${this.currentLetter}`;
+                } else if (this.currentPack.id === 'lowercase') {
+                    partB = `Lowercase ${this.currentLetter}`;
+                } else {
+                    partB = `Letter ${this.currentLetter}`;
+                }
             }
 
             // COMPONENT C: SUFFIX
