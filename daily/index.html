@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Daily Command Center</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="greeting-header">
+            <h1 class="greeting-text" id="greeting-title">System Initializing...</h1>
+            <div class="system-status" id="system-status">CONNECTING...</div>
+        </header>
+
+        <!-- Briefing Module -->
+        <section class="dashboard-section">
+            <h2 class="section-title">Daily Briefing</h2>
+            <div class="briefing-card">
+                <!-- Weather -->
+                <div class="weather-widget">
+                    <div class="weather-main">
+                        <div class="weather-icon" id="weather-icon">--</div>
+                        <div class="weather-temp" id="weather-temp">--&deg;</div>
+                    </div>
+                    <div class="weather-details">
+                        <div id="weather-condition">Loading...</div>
+                        <div id="weather-summary" style="font-size: 0.8em; opacity: 0.7;">Acquiring satellite feed...</div>
+                    </div>
+                </div>
+
+                <!-- Quote -->
+                <blockquote class="daily-quote" id="daily-quote">
+                    "Loading wisdom..."
+                </blockquote>
+
+                <!-- News -->
+                <ul class="news-list" id="news-list">
+                    <li class="news-item">Loading headlines...</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Game Command Center -->
+        <section class="dashboard-section">
+            <h2 class="section-title">Command Center</h2>
+            <div class="game-status-grid" id="game-grid">
+                <!-- Populated by JS -->
+                <div class="game-card-mini" style="opacity: 0.5;">
+                    <div class="game-info-mini">Loading Modules...</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div id="system-credit" class="footer-credit">Architecture by G. Execution by J.</div>
+            <div style="margin-top:5px;">&copy; 2026 Fong Family Arcade</div>
+        </footer>
+    </div>
+
+    <script src="../js/daily-loader.js"></script>
+</body>
+</html>
