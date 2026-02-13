@@ -36,7 +36,8 @@ var projects = [
     { name: "Web Archive", path: "projects/web-archive/index.html", category: "project", icon: "🏛️", tags: ["Gallery"], description: "A curated gallery of lost internet artifacts. Stylized historical interface." },
     { name: "Sprunki Survival", path: "projects/sprunki-survival/index.html", category: "project", icon: "📓", tags: ["Guide"], description: "Survival handbook for Incredibox Sprunki characters. Warning: Glitchy" },
     { name: "Survival Manual", path: "projects/survival-doc/index.html", category: "project", icon: "⚠️", tags: ["Docs"], description: "Worst-Case Scenario Survival Handbook style documentation." },
-    { name: "Encyclopedia", path: "projects/encyclopedia/index.html", category: "project", icon: "📚", tags: ["Reference"], description: "The definitive interactive documentation of the F.O.N.G. realm." }
+    { name: "Encyclopedia", path: "projects/encyclopedia/index.html", category: "project", icon: "📚", tags: ["Reference"], description: "The definitive interactive documentation of the F.O.N.G. realm." },
+    { name: "Project TI-tanium", path: "projects/project-ti-tanium/index.html", category: "project", icon: "🧮", tags: ["Simulation"], description: "Hybrid TI-83+/86 emulator. Runs in Simulation or Emulation mode." }
 ];
 
 // Initialize function
