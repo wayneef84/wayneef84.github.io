@@ -294,6 +294,16 @@ Actions:
 
 ---
 
+## 🚀 Deployment Strategy
+
+1. **Golden Rule:** All active development occurs on the `develop` branch.
+2. **Preview URL:** The `develop` branch is automatically deployed to `https://[username].github.io/[repo-name]/beta/`.
+3. **Pathing Standard:** "Absolute paths (e.g., `/css/style.css`) are **FORBIDDEN**."
+    * *Reasoning:* Absolute paths resolve to the root domain, which breaks the app when running inside the `/beta` subfolder.
+    * *Requirement:* All links (CSS, JS, Images, Navigation `hrefs`) must be **Relative** (e.g., `css/style.css` or `./css/style.css` or `../images/logo.png`).
+
+---
+
 ## 🚧 CURRENT PRIORITY: Card Engine Bug Fixes
 
 **Status:** Core engine built, needs Terminal Check Gate implementation and Safari fixes.

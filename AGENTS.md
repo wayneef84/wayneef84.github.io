@@ -54,6 +54,14 @@ All development work happens on the `dev` branch. The `main` branch is the **liv
 - If `main` has hotfixes, merge `main` back into `dev` before continuing.
 - Delete feature branches after merging into `dev`.
 
+## 🚀 Deployment Strategy
+
+1. **Golden Rule:** All active development occurs on the `develop` branch.
+2. **Preview URL:** The `develop` branch is automatically deployed to `https://[username].github.io/[repo-name]/beta/`.
+3. **Pathing Standard:** "Absolute paths (e.g., `/css/style.css`) are **FORBIDDEN**."
+    * *Reasoning:* Absolute paths resolve to the root domain, which breaks the app when running inside the `/beta` subfolder.
+    * *Requirement:* All links (CSS, JS, Images, Navigation `hrefs`) must be **Relative** (e.g., `css/style.css` or `./css/style.css` or `../images/logo.png`).
+
 ## 📝 Documentation
 *   **CHANGELOG.md:** Central history. Update purely for releases.
 *   **AI_FEEDBACK.md:** Inter-agent communication log. Update EVERY session.
