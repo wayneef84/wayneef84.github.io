@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "cybersecurity",
+    "title": "Cybersecurity Basics",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Technology", "Security", "Computers", "Hacking"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "cs_01",
+      "text": "What does 'Phishing' refer to?",
+      "options": {
+        "A": "Catching fish online",
+        "B": "A type of malware that slows down your PC",
+        "C": "Fraudulent attempts to obtain sensitive information by disguising as a trustworthy entity",
+        "D": "Testing network cables"
+      },
+      "correct": "C",
+      "explanation": "Phishing involves sending emails or messages that appear to be from legitimate sources to steal data."
+    },
+    {
+      "id": "cs_02",
+      "text": "What is 'Ransomware'?",
+      "options": {
+        "A": "Software that steals your RAM",
+        "B": "Malware that encrypts files and demands payment for the decryption key",
+        "C": "A firewall for servers",
+        "D": "Free antivirus software"
+      },
+      "correct": "B",
+      "explanation": "Ransomware holds a victim's data hostage until a ransom is paid."
+    },
+    {
+      "id": "cs_03",
+      "text": "What does 'DDoS' stand for?",
+      "options": {
+        "A": "Direct Data on Server",
+        "B": "Distributed Denial of Service",
+        "C": "Digital Defense of Systems",
+        "D": "Double Data over Secure"
+      },
+      "correct": "B",
+      "explanation": "A DDoS attack attempts to disrupt normal traffic of a targeted server by overwhelming it with a flood of traffic."
+    },
+    {
+      "id": "cs_04",
+      "text": "Which of these is a strong password practice?",
+      "options": {
+        "A": "Using 'password123'",
+        "B": "Reusing the same password everywhere",
+        "C": "Using a long, complex mix of characters or a passphrase",
+        "D": "Writing it on a sticky note"
+      },
+      "correct": "C",
+      "explanation": "Long, complex unique passwords or passphrases are much harder to crack."
+    },
+    {
+      "id": "cs_05",
+      "text": "What is 'Two-Factor Authentication' (2FA)?",
+      "options": {
+        "A": "Logging in twice",
+        "B": "Using two different browsers",
+        "C": "Requiring two forms of identification to access an account",
+        "D": "Sharing your password with a friend"
+      },
+      "correct": "C",
+      "explanation": "2FA adds a layer of security by requiring something you know (password) and something you have (code/token)."
+    },
+    {
+      "id": "cs_06",
+      "text": "What is a 'White Hat' hacker?",
+      "options": {
+        "A": "A hacker who only works in winter",
+        "B": "An ethical hacker who identifies vulnerabilities to help fix them",
+        "C": "A criminal hacker",
+        "D": "A government spy"
+      },
+      "correct": "B",
+      "explanation": "White Hat hackers use their skills for good, often hired to test security systems."
+    },
+    {
+      "id": "cs_07",
+      "text": "What does 'VPN' stand for?",
+      "options": {
+        "A": "Virtual Private Network",
+        "B": "Very Public Network",
+        "C": "Visual Processing Node",
+        "D": "Verified Personal Number"
+      },
+      "correct": "A",
+      "explanation": "A VPN creates a secure connection to another network over the Internet."
+    },
+    {
+      "id": "cs_08",
+      "text": "What is 'Social Engineering'?",
+      "options": {
+        "A": "Building social media apps",
+        "B": "Manipulating people into divulging confidential information",
+        "C": "Hosting a party",
+        "D": "Coding a dating site"
+      },
+      "correct": "B",
+      "explanation": "Social engineering relies on human error and manipulation rather than technical hacking."
+    },
+    {
+      "id": "cs_09",
+      "text": "Which protocol is the secure version of HTTP?",
+      "options": {
+        "A": "HTML",
+        "B": "FTP",
+        "C": "HTTPS",
+        "D": "SSH"
+      },
+      "correct": "C",
+      "explanation": "HTTPS (Hypertext Transfer Protocol Secure) uses encryption for secure communication."
+    },
+    {
+      "id": "cs_10",
+      "text": "What is a 'Zero-Day' vulnerability?",
+      "options": {
+        "A": "A bug that is 0 days old",
+        "B": "A flaw known to the vendor but with no patch available yet",
+        "C": "A virus that deletes everything in 0 days",
+        "D": "A secure system"
+      },
+      "correct": "B",
+      "explanation": "It refers to the fact that developers have had zero days to fix the flaw since it was discovered/exploited."
+    },
+    {
+      "id": "cs_11",
+      "text": "What is the purpose of a Firewall?",
+      "options": {
+        "A": "To cool down the CPU",
+        "B": "To monitor and control incoming and outgoing network traffic",
+        "C": "To speed up the internet",
+        "D": "To delete cookies"
+      },
+      "correct": "B",
+      "explanation": "Firewalls establish a barrier between a trusted internal network and untrusted external networks."
+    },
+    {
+      "id": "cs_12",
+      "text": "What is 'Malware' short for?",
+      "options": {
+        "A": "Malfunctioning Hardware",
+        "B": "Malevolent Shareware",
+        "C": "Malicious Software",
+        "D": "Malpractice Ware"
+      },
+      "correct": "C",
+      "explanation": "Malware is an umbrella term for any software intentionally designed to cause damage."
+    },
+    {
+      "id": "cs_13",
+      "text": "What is a 'Botnet'?",
+      "options": {
+        "A": "A robot network for cleaning",
+        "B": "A network of private computers infected with malicious software and controlled as a group",
+        "C": "A chat room for bots",
+        "D": "A slow internet connection"
+      },
+      "correct": "B",
+      "explanation": "Botnets are often used to launch DDoS attacks or send spam."
+    },
+    {
+      "id": "cs_14",
+      "text": "Which of these is a form of biometric authentication?",
+      "options": {
+        "A": "Password",
+        "B": "PIN code",
+        "C": "Fingerprint scan",
+        "D": "Security question"
+      },
+      "correct": "C",
+      "explanation": "Biometrics use biological characteristics like fingerprints, face ID, or iris scans."
+    },
+    {
+      "id": "cs_15",
+      "text": "What is 'Encryption'?",
+      "options": {
+        "A": "Deleting data",
+        "B": "Encoding information so only authorized parties can access it",
+        "C": "Compressing files",
+        "D": "Translating languages"
+      },
+      "correct": "B",
+      "explanation": "Encryption converts data into a code to prevent unauthorized access."
+    }
+  ]
+}

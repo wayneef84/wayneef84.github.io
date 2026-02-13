@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "food_001",
+    "title": "Food & Cuisine",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Food", "Cooking", "Cuisine", "Drinks"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What Japanese word refers to thinly sliced raw fish served without rice?",
+      "options": {
+        "A": "Sushi",
+        "B": "Sashimi",
+        "C": "Tempura",
+        "D": "Tataki"
+      },
+      "correct": "B",
+      "explanation": "Sashimi is thinly sliced raw fish or meat served without rice, unlike sushi which includes vinegared rice."
+    },
+    {
+      "id": "q002",
+      "text": "Which spice gives curry its characteristic yellow color?",
+      "options": {
+        "A": "Paprika",
+        "B": "Saffron",
+        "C": "Turmeric",
+        "D": "Cumin"
+      },
+      "correct": "C",
+      "explanation": "Turmeric contains curcumin, which gives curry powder its distinctive bright yellow color."
+    },
+    {
+      "id": "q003",
+      "text": "What is the main ingredient in traditional Italian pesto alla genovese?",
+      "options": {
+        "A": "Parsley",
+        "B": "Cilantro",
+        "C": "Basil",
+        "D": "Oregano"
+      },
+      "correct": "C",
+      "explanation": "Traditional pesto alla genovese is made primarily with fresh basil, pine nuts, garlic, Parmesan cheese, and olive oil."
+    },
+    {
+      "id": "q004",
+      "text": "What cooking technique involves submerging food in hot fat or oil?",
+      "options": {
+        "A": "Sauteing",
+        "B": "Deep frying",
+        "C": "Braising",
+        "D": "Broiling"
+      },
+      "correct": "B",
+      "explanation": "Deep frying involves fully submerging food in hot oil, typically between 325-375°F (160-190°C)."
+    },
+    {
+      "id": "q005",
+      "text": "Which country is the origin of the dish pad thai?",
+      "options": {
+        "A": "Vietnam",
+        "B": "China",
+        "C": "Thailand",
+        "D": "Malaysia"
+      },
+      "correct": "C",
+      "explanation": "Pad thai is a stir-fried rice noodle dish that originated in Thailand and became a national dish in the 1930s-40s."
+    },
+    {
+      "id": "q006",
+      "text": "What does 'al dente' mean when cooking pasta?",
+      "options": {
+        "A": "Fully soft",
+        "B": "Firm to the bite",
+        "C": "Overcooked",
+        "D": "Cold rinsed"
+      },
+      "correct": "B",
+      "explanation": "Al dente is Italian for 'to the tooth' and means pasta is cooked so it is still firm when bitten."
+    },
+    {
+      "id": "q007",
+      "text": "Which vitamin is most abundant in citrus fruits like oranges and lemons?",
+      "options": {
+        "A": "Vitamin A",
+        "B": "Vitamin D",
+        "C": "Vitamin C",
+        "D": "Vitamin K"
+      },
+      "correct": "C",
+      "explanation": "Citrus fruits are famously rich in Vitamin C (ascorbic acid), which supports the immune system."
+    },
+    {
+      "id": "q008",
+      "text": "What is the French culinary term for a mixture of diced carrots, celery, and onions?",
+      "options": {
+        "A": "Roux",
+        "B": "Mirepoix",
+        "C": "Bouquet garni",
+        "D": "Julienne"
+      },
+      "correct": "B",
+      "explanation": "Mirepoix is a flavor base of diced carrots, celery, and onions, typically in a 1:1:2 ratio."
+    },
+    {
+      "id": "q009",
+      "text": "Which bean is traditionally used to make hummus?",
+      "options": {
+        "A": "Black beans",
+        "B": "Kidney beans",
+        "C": "Chickpeas",
+        "D": "Lentils"
+      },
+      "correct": "C",
+      "explanation": "Hummus is made from cooked chickpeas (garbanzo beans) blended with tahini, lemon juice, and garlic."
+    },
+    {
+      "id": "q010",
+      "text": "What type of pastry is used to make a croissant?",
+      "options": {
+        "A": "Choux pastry",
+        "B": "Shortcrust pastry",
+        "C": "Laminated dough",
+        "D": "Filo pastry"
+      },
+      "correct": "C",
+      "explanation": "Croissants are made from laminated dough, which involves repeatedly folding butter into the dough to create flaky layers."
+    },
+    {
+      "id": "q011",
+      "text": "Which country is credited with inventing pizza as we know it today?",
+      "options": {
+        "A": "Greece",
+        "B": "Italy",
+        "C": "France",
+        "D": "Turkey"
+      },
+      "correct": "B",
+      "explanation": "Modern pizza originated in Naples, Italy. The Margherita pizza was famously created there in 1889."
+    },
+    {
+      "id": "q012",
+      "text": "What is the primary grain used in Japanese sake?",
+      "options": {
+        "A": "Barley",
+        "B": "Wheat",
+        "C": "Rice",
+        "D": "Corn"
+      },
+      "correct": "C",
+      "explanation": "Sake is a Japanese alcoholic beverage made by fermenting polished rice."
+    },
+    {
+      "id": "q013",
+      "text": "What is the name of the traditional Indian clay oven used for cooking naan bread?",
+      "options": {
+        "A": "Wok",
+        "B": "Tandoor",
+        "C": "Tagine",
+        "D": "Kamado"
+      },
+      "correct": "B",
+      "explanation": "A tandoor is a cylindrical clay oven used in Indian cooking for baking naan and cooking meats like tandoori chicken."
+    },
+    {
+      "id": "q014",
+      "text": "Which nut is the primary ingredient in marzipan?",
+      "options": {
+        "A": "Cashew",
+        "B": "Walnut",
+        "C": "Pistachio",
+        "D": "Almond"
+      },
+      "correct": "D",
+      "explanation": "Marzipan is a confection made primarily from ground almonds and sugar."
+    },
+    {
+      "id": "q015",
+      "text": "What is the hottest chili pepper on the Scoville scale as of recent records?",
+      "options": {
+        "A": "Ghost Pepper",
+        "B": "Carolina Reaper",
+        "C": "Habanero",
+        "D": "Trinidad Scorpion"
+      },
+      "correct": "B",
+      "explanation": "The Carolina Reaper held the Guinness World Record for hottest chili pepper, averaging over 1.6 million Scoville Heat Units."
+    },
+    {
+      "id": "q016",
+      "text": "What French term describes cooking food slowly in its own fat?",
+      "options": {
+        "A": "Flambe",
+        "B": "Confit",
+        "C": "Braise",
+        "D": "Poach"
+      },
+      "correct": "B",
+      "explanation": "Confit is a French cooking method where food, typically duck, is slowly cooked in its own fat at low temperature."
+    },
+    {
+      "id": "q017",
+      "text": "Which of these is NOT a type of pasta shape?",
+      "options": {
+        "A": "Farfalle",
+        "B": "Rigatoni",
+        "C": "Bruschetta",
+        "D": "Orecchiette"
+      },
+      "correct": "C",
+      "explanation": "Bruschetta is grilled bread topped with tomatoes and other ingredients, not a pasta shape."
+    },
+    {
+      "id": "q018",
+      "text": "What is the main flavoring agent in root beer?",
+      "options": {
+        "A": "Vanilla",
+        "B": "Licorice",
+        "C": "Sassafras",
+        "D": "Cinnamon"
+      },
+      "correct": "C",
+      "explanation": "Root beer was traditionally flavored with sassafras root bark, though modern versions often use artificial sassafras flavoring."
+    },
+    {
+      "id": "q019",
+      "text": "Which cuisine features the dish 'bibimbap'?",
+      "options": {
+        "A": "Japanese",
+        "B": "Chinese",
+        "C": "Korean",
+        "D": "Vietnamese"
+      },
+      "correct": "C",
+      "explanation": "Bibimbap is a Korean rice dish topped with vegetables, meat, egg, and gochujang (chili paste)."
+    },
+    {
+      "id": "q020",
+      "text": "What type of milk is traditionally used to make Indian paneer cheese?",
+      "options": {
+        "A": "Goat milk",
+        "B": "Buffalo milk",
+        "C": "Cow milk",
+        "D": "Both B and C"
+      },
+      "correct": "D",
+      "explanation": "Paneer is traditionally made from cow or buffalo milk, curdled with lemon juice or vinegar."
+    },
+    {
+      "id": "q021",
+      "text": "What is the process of slowly adding hot liquid to eggs to raise their temperature without scrambling them?",
+      "options": {
+        "A": "Blanching",
+        "B": "Tempering",
+        "C": "Reducing",
+        "D": "Deglazing"
+      },
+      "correct": "B",
+      "explanation": "Tempering involves gradually adding hot liquid to eggs to slowly raise their temperature, preventing curdling."
+    },
+    {
+      "id": "q022",
+      "text": "Which spirit is the base of a classic margarita cocktail?",
+      "options": {
+        "A": "Rum",
+        "B": "Vodka",
+        "C": "Tequila",
+        "D": "Gin"
+      },
+      "correct": "C",
+      "explanation": "A classic margarita is made with tequila, lime juice, and orange liqueur (such as Cointreau or triple sec)."
+    },
+    {
+      "id": "q023",
+      "text": "What is the name of the Ethiopian flatbread made from teff flour?",
+      "options": {
+        "A": "Naan",
+        "B": "Injera",
+        "C": "Pita",
+        "D": "Tortilla"
+      },
+      "correct": "B",
+      "explanation": "Injera is a spongy, sourdough flatbread made from teff flour, used as both plate and utensil in Ethiopian cuisine."
+    },
+    {
+      "id": "q024",
+      "text": "Which mineral is bananas most famously rich in?",
+      "options": {
+        "A": "Iron",
+        "B": "Calcium",
+        "C": "Potassium",
+        "D": "Zinc"
+      },
+      "correct": "C",
+      "explanation": "Bananas are well known for their high potassium content, which supports heart and muscle function."
+    },
+    {
+      "id": "q025",
+      "text": "What does the cooking term 'julienne' refer to?",
+      "options": {
+        "A": "Dicing into cubes",
+        "B": "Cutting into thin matchstick strips",
+        "C": "Slicing into rings",
+        "D": "Mincing finely"
+      },
+      "correct": "B",
+      "explanation": "Julienne is a knife cut where food is sliced into thin, uniform matchstick-shaped strips."
+    },
+    {
+      "id": "q026",
+      "text": "Which country is the largest producer of coffee in the world?",
+      "options": {
+        "A": "Colombia",
+        "B": "Vietnam",
+        "C": "Ethiopia",
+        "D": "Brazil"
+      },
+      "correct": "D",
+      "explanation": "Brazil is the world's largest coffee producer, responsible for roughly one-third of global production."
+    },
+    {
+      "id": "q027",
+      "text": "What type of fish is traditionally used in a classic British fish and chips?",
+      "options": {
+        "A": "Salmon",
+        "B": "Cod",
+        "C": "Tuna",
+        "D": "Trout"
+      },
+      "correct": "B",
+      "explanation": "Cod is the traditional fish used in British fish and chips, though haddock is also very common."
+    },
+    {
+      "id": "q028",
+      "text": "What is the name of the thick, fermented cream used extensively in Russian and Eastern European cuisine?",
+      "options": {
+        "A": "Creme fraiche",
+        "B": "Sour cream",
+        "C": "Smetana",
+        "D": "Clotted cream"
+      },
+      "correct": "C",
+      "explanation": "Smetana is a type of sour cream with a high fat content, widely used in Russian and Eastern European cooking."
+    },
+    {
+      "id": "q029",
+      "text": "Which herb is the key ingredient in a traditional mojito?",
+      "options": {
+        "A": "Basil",
+        "B": "Cilantro",
+        "C": "Mint",
+        "D": "Rosemary"
+      },
+      "correct": "C",
+      "explanation": "A mojito is a Cuban cocktail made with white rum, sugar, lime juice, soda water, and fresh mint."
+    },
+    {
+      "id": "q030",
+      "text": "What is the French mother sauce made from a white roux and milk?",
+      "options": {
+        "A": "Hollandaise",
+        "B": "Bechamel",
+        "C": "Veloute",
+        "D": "Espagnole"
+      },
+      "correct": "B",
+      "explanation": "Bechamel is one of the five French mother sauces, made by whisking milk into a white roux of butter and flour."
+    },
+    {
+      "id": "q031",
+      "text": "Which spice is derived from the dried stigmas of a crocus flower and is the most expensive spice by weight?",
+      "options": {
+        "A": "Vanilla",
+        "B": "Cardamom",
+        "C": "Saffron",
+        "D": "Turmeric"
+      },
+      "correct": "C",
+      "explanation": "Saffron comes from the stigmas of Crocus sativus and is the most expensive spice because each flower produces only three stigmas."
+    },
+    {
+      "id": "q032",
+      "text": "What Mexican dish consists of a corn tortilla rolled around a filling and covered with sauce?",
+      "options": {
+        "A": "Burrito",
+        "B": "Enchilada",
+        "C": "Quesadilla",
+        "D": "Tostada"
+      },
+      "correct": "B",
+      "explanation": "An enchilada is a corn tortilla rolled around a filling and covered with a savory sauce, often chili-based."
+    },
+    {
+      "id": "q033",
+      "text": "What is tempeh made from?",
+      "options": {
+        "A": "Wheat gluten",
+        "B": "Fermented soybeans",
+        "C": "Rice flour",
+        "D": "Coconut milk"
+      },
+      "correct": "B",
+      "explanation": "Tempeh is an Indonesian food made from fermented soybeans bound into a firm cake by a mold culture."
+    },
+    {
+      "id": "q034",
+      "text": "In which country did the croissant originate?",
+      "options": {
+        "A": "France",
+        "B": "Austria",
+        "C": "Belgium",
+        "D": "Switzerland"
+      },
+      "correct": "B",
+      "explanation": "The croissant evolved from the Austrian kipferl. It was later adapted in France into the buttery, laminated pastry we know today."
+    },
+    {
+      "id": "q035",
+      "text": "What is the culinary term for cooking food briefly in boiling water, then plunging it into ice water?",
+      "options": {
+        "A": "Poaching",
+        "B": "Blanching",
+        "C": "Steaming",
+        "D": "Simmering"
+      },
+      "correct": "B",
+      "explanation": "Blanching involves briefly boiling food then shocking it in ice water to stop cooking, often used to preserve color and texture."
+    },
+    {
+      "id": "q036",
+      "text": "Which cheese is traditionally used on a classic Greek salad?",
+      "options": {
+        "A": "Halloumi",
+        "B": "Mozzarella",
+        "C": "Feta",
+        "D": "Gouda"
+      },
+      "correct": "C",
+      "explanation": "A traditional Greek salad (horiatiki) uses feta cheese along with tomatoes, cucumbers, olives, and onions."
+    },
+    {
+      "id": "q037",
+      "text": "What does the Maillard reaction produce when cooking?",
+      "options": {
+        "A": "Caramelization of sugar",
+        "B": "Browning and complex flavors from amino acids and sugars",
+        "C": "Fermentation of starches",
+        "D": "Emulsification of fats"
+      },
+      "correct": "B",
+      "explanation": "The Maillard reaction is a chemical reaction between amino acids and reducing sugars that produces browning and complex flavors."
+    },
+    {
+      "id": "q038",
+      "text": "Which country is the birthplace of the baklava dessert?",
+      "options": {
+        "A": "Greece",
+        "B": "Turkey",
+        "C": "Disputed (Ottoman Empire region)",
+        "D": "Iran"
+      },
+      "correct": "C",
+      "explanation": "The exact origin of baklava is disputed, with Turkey, Greece, and other former Ottoman Empire regions all claiming it."
+    },
+    {
+      "id": "q039",
+      "text": "What is the primary ingredient in the Japanese soup stock called dashi?",
+      "options": {
+        "A": "Chicken bones",
+        "B": "Kombu (kelp) and bonito flakes",
+        "C": "Miso paste",
+        "D": "Shiitake mushrooms"
+      },
+      "correct": "B",
+      "explanation": "Traditional dashi is made from kombu (dried kelp) and katsuobushi (dried bonito flakes), forming the base of many Japanese dishes."
+    },
+    {
+      "id": "q040",
+      "text": "What is the name of the Italian dessert made with ladyfingers, mascarpone, and espresso?",
+      "options": {
+        "A": "Panna cotta",
+        "B": "Cannoli",
+        "C": "Tiramisu",
+        "D": "Zabaglione"
+      },
+      "correct": "C",
+      "explanation": "Tiramisu, meaning 'pick me up' in Italian, is made by layering espresso-soaked ladyfingers with mascarpone cream."
+    },
+    {
+      "id": "q041",
+      "text": "Which type of rice is essential for making risotto?",
+      "options": {
+        "A": "Basmati",
+        "B": "Jasmine",
+        "C": "Arborio",
+        "D": "Long grain"
+      },
+      "correct": "C",
+      "explanation": "Arborio rice is a short-grain Italian rice with high starch content that creates risotto's characteristic creamy texture."
+    },
+    {
+      "id": "q042",
+      "text": "What is the name of the fermented Korean side dish made from salted and seasoned vegetables?",
+      "options": {
+        "A": "Miso",
+        "B": "Kimchi",
+        "C": "Natto",
+        "D": "Tempeh"
+      },
+      "correct": "B",
+      "explanation": "Kimchi is a traditional Korean fermented side dish, most commonly made with napa cabbage and Korean chili flakes (gochugaru)."
+    },
+    {
+      "id": "q043",
+      "text": "What type of flour has the highest protein content, making it ideal for bread?",
+      "options": {
+        "A": "Cake flour",
+        "B": "All-purpose flour",
+        "C": "Bread flour",
+        "D": "Pastry flour"
+      },
+      "correct": "C",
+      "explanation": "Bread flour has 12-14% protein content, which develops more gluten and gives bread its chewy structure."
+    },
+    {
+      "id": "q044",
+      "text": "Which region of France is famous for its mustard production?",
+      "options": {
+        "A": "Provence",
+        "B": "Bordeaux",
+        "C": "Dijon",
+        "D": "Normandy"
+      },
+      "correct": "C",
+      "explanation": "Dijon, in the Burgundy region, has been famous for mustard production since the 13th century."
+    },
+    {
+      "id": "q045",
+      "text": "What is ghee?",
+      "options": {
+        "A": "Fermented milk",
+        "B": "Clarified butter",
+        "C": "Coconut oil",
+        "D": "Rendered animal fat"
+      },
+      "correct": "B",
+      "explanation": "Ghee is clarified butter commonly used in South Asian cooking, made by simmering butter until the milk solids separate and are removed."
+    },
+    {
+      "id": "q046",
+      "text": "Which fruit is used to make the liqueur Chambord?",
+      "options": {
+        "A": "Strawberry",
+        "B": "Black raspberry",
+        "C": "Blackberry",
+        "D": "Cherry"
+      },
+      "correct": "B",
+      "explanation": "Chambord is a French liqueur made with black raspberries, honey, vanilla, and cognac."
+    },
+    {
+      "id": "q047",
+      "text": "What is the traditional cooking vessel used in Moroccan cuisine to make slow-cooked stews?",
+      "options": {
+        "A": "Dutch oven",
+        "B": "Tagine",
+        "C": "Wok",
+        "D": "Cazuela"
+      },
+      "correct": "B",
+      "explanation": "A tagine is a conical clay cooking pot used in Moroccan cuisine; the dish cooked in it shares the same name."
+    },
+    {
+      "id": "q048",
+      "text": "Which vitamin is produced by the body when skin is exposed to sunlight?",
+      "options": {
+        "A": "Vitamin A",
+        "B": "Vitamin B12",
+        "C": "Vitamin C",
+        "D": "Vitamin D"
+      },
+      "correct": "D",
+      "explanation": "Vitamin D is synthesized in the skin when exposed to UVB sunlight and is also found in fatty fish and fortified foods."
+    },
+    {
+      "id": "q049",
+      "text": "What is the culinary term for removing the shell from shellfish or husks from grain?",
+      "options": {
+        "A": "Shelling",
+        "B": "Shucking",
+        "C": "Paring",
+        "D": "Hulling"
+      },
+      "correct": "B",
+      "explanation": "Shucking refers to removing the outer shell or husk, most commonly associated with oysters and corn."
+    },
+    {
+      "id": "q050",
+      "text": "Which country is the origin of the dish ceviche?",
+      "options": {
+        "A": "Mexico",
+        "B": "Peru",
+        "C": "Spain",
+        "D": "Japan"
+      },
+      "correct": "B",
+      "explanation": "Ceviche originated in Peru, where raw fish is cured in citrus juice and seasoned with chili peppers and onions."
+    },
+    {
+      "id": "q051",
+      "text": "What is the main ingredient in the Middle Eastern dip baba ganoush?",
+      "options": {
+        "A": "Chickpeas",
+        "B": "Eggplant",
+        "C": "Avocado",
+        "D": "Roasted peppers"
+      },
+      "correct": "B",
+      "explanation": "Baba ganoush is made from roasted or smoked eggplant mixed with tahini, lemon juice, and garlic."
+    },
+    {
+      "id": "q052",
+      "text": "What does 'sous vide' literally translate to in English?",
+      "options": {
+        "A": "Slow cook",
+        "B": "Under vacuum",
+        "C": "Water bath",
+        "D": "Low heat"
+      },
+      "correct": "B",
+      "explanation": "Sous vide is French for 'under vacuum' and involves cooking vacuum-sealed food in a precisely controlled water bath."
+    },
+    {
+      "id": "q053",
+      "text": "Which country consumes the most tea per capita?",
+      "options": {
+        "A": "China",
+        "B": "India",
+        "C": "Turkey",
+        "D": "United Kingdom"
+      },
+      "correct": "C",
+      "explanation": "Turkey consistently ranks as the highest per-capita tea consumer in the world, with residents drinking multiple cups daily."
+    },
+    {
+      "id": "q054",
+      "text": "What is the primary leavening agent in sourdough bread?",
+      "options": {
+        "A": "Commercial yeast",
+        "B": "Baking soda",
+        "C": "Wild yeast and lactobacilli bacteria",
+        "D": "Baking powder"
+      },
+      "correct": "C",
+      "explanation": "Sourdough uses a natural starter containing wild yeast and lactobacilli bacteria for fermentation and leavening."
+    },
+    {
+      "id": "q055",
+      "text": "Which of these is a type of Japanese knife designed for cutting vegetables?",
+      "options": {
+        "A": "Nakiri",
+        "B": "Santoku",
+        "C": "Yanagiba",
+        "D": "Deba"
+      },
+      "correct": "A",
+      "explanation": "The nakiri is a Japanese vegetable knife with a flat blade profile, designed specifically for chopping vegetables."
+    },
+    {
+      "id": "q056",
+      "text": "What grain is used to make traditional Scottish porridge?",
+      "options": {
+        "A": "Wheat",
+        "B": "Barley",
+        "C": "Oats",
+        "D": "Rye"
+      },
+      "correct": "C",
+      "explanation": "Traditional Scottish porridge is made with oats cooked in water or milk, often with just a pinch of salt."
+    },
+    {
+      "id": "q057",
+      "text": "What is the name of the Spanish rice dish cooked in a wide, shallow pan?",
+      "options": {
+        "A": "Risotto",
+        "B": "Paella",
+        "C": "Arroz con pollo",
+        "D": "Jambalaya"
+      },
+      "correct": "B",
+      "explanation": "Paella is a Spanish rice dish from Valencia, cooked in a wide shallow pan called a paellera."
+    },
+    {
+      "id": "q058",
+      "text": "Which of the following is NOT one of the five basic tastes?",
+      "options": {
+        "A": "Umami",
+        "B": "Spicy",
+        "C": "Bitter",
+        "D": "Sour"
+      },
+      "correct": "B",
+      "explanation": "The five basic tastes are sweet, sour, salty, bitter, and umami. Spicy is a pain sensation, not a taste."
+    },
+    {
+      "id": "q059",
+      "text": "What is the traditional thickening agent in a classic New Orleans gumbo?",
+      "options": {
+        "A": "Cornstarch",
+        "B": "Roux and okra or file powder",
+        "C": "Flour slurry",
+        "D": "Arrowroot"
+      },
+      "correct": "B",
+      "explanation": "Gumbo is traditionally thickened with a dark roux, and often includes okra or file powder (ground sassafras leaves)."
+    },
+    {
+      "id": "q060",
+      "text": "Which country produces the most olive oil in the world?",
+      "options": {
+        "A": "Italy",
+        "B": "Greece",
+        "C": "Spain",
+        "D": "Turkey"
+      },
+      "correct": "C",
+      "explanation": "Spain is the world's largest producer of olive oil, accounting for roughly half of global production."
+    },
+    {
+      "id": "q061",
+      "text": "What is the name of the traditional Vietnamese soup with rice noodles and broth?",
+      "options": {
+        "A": "Ramen",
+        "B": "Tom yum",
+        "C": "Pho",
+        "D": "Laksa"
+      },
+      "correct": "C",
+      "explanation": "Pho is a Vietnamese soup consisting of broth, rice noodles, herbs, and usually beef or chicken."
+    },
+    {
+      "id": "q062",
+      "text": "What is the primary ingredient in the Japanese condiment wasabi?",
+      "options": {
+        "A": "Horseradish root",
+        "B": "Wasabia japonica rhizome",
+        "C": "Green chili paste",
+        "D": "Mustard seed"
+      },
+      "correct": "B",
+      "explanation": "True wasabi is made from the grated rhizome of the Wasabia japonica plant, though most served outside Japan is horseradish-based."
+    },
+    {
+      "id": "q063",
+      "text": "How many Michelin stars is the maximum a restaurant can receive?",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "3",
+        "D": "2"
+      },
+      "correct": "C",
+      "explanation": "The Michelin Guide awards a maximum of three stars, with three stars meaning 'exceptional cuisine worth a special journey.'"
+    },
+    {
+      "id": "q064",
+      "text": "Which spice is made from the dried outer covering (aril) of the nutmeg seed?",
+      "options": {
+        "A": "Allspice",
+        "B": "Clove",
+        "C": "Mace",
+        "D": "Star anise"
+      },
+      "correct": "C",
+      "explanation": "Mace is the lacy red covering (aril) of the nutmeg seed, with a slightly more delicate flavor than nutmeg itself."
+    },
+    {
+      "id": "q065",
+      "text": "What is the name of the Italian cured meat made from pork cheek?",
+      "options": {
+        "A": "Prosciutto",
+        "B": "Pancetta",
+        "C": "Guanciale",
+        "D": "Bresaola"
+      },
+      "correct": "C",
+      "explanation": "Guanciale is Italian cured pork cheek (or jowl), essential in authentic carbonara and amatriciana pasta sauces."
+    },
+    {
+      "id": "q066",
+      "text": "Which type of tea undergoes the most oxidation during processing?",
+      "options": {
+        "A": "Green tea",
+        "B": "White tea",
+        "C": "Oolong tea",
+        "D": "Black tea"
+      },
+      "correct": "D",
+      "explanation": "Black tea is fully oxidized, giving it a darker color and stronger flavor compared to less-oxidized green and white teas."
+    },
+    {
+      "id": "q067",
+      "text": "What traditional Peruvian dish consists of potatoes topped with a spicy, creamy cheese sauce?",
+      "options": {
+        "A": "Causa",
+        "B": "Papa a la huancaina",
+        "C": "Lomo saltado",
+        "D": "Aji de gallina"
+      },
+      "correct": "B",
+      "explanation": "Papa a la huancaina is a Peruvian appetizer of boiled potatoes covered in a creamy sauce made with aji amarillo peppers and cheese."
+    },
+    {
+      "id": "q068",
+      "text": "What is the main difference between jam and jelly?",
+      "options": {
+        "A": "Sugar content",
+        "B": "Jam uses whole fruit; jelly uses only fruit juice",
+        "C": "Cooking temperature",
+        "D": "Type of pectin used"
+      },
+      "correct": "B",
+      "explanation": "Jam is made from crushed or chopped fruit, while jelly is made from strained fruit juice, resulting in a smoother, clearer product."
+    },
+    {
+      "id": "q069",
+      "text": "Which country is the largest consumer of instant noodles per capita?",
+      "options": {
+        "A": "Japan",
+        "B": "China",
+        "C": "South Korea",
+        "D": "Indonesia"
+      },
+      "correct": "C",
+      "explanation": "South Korea consistently leads in instant noodle consumption per capita, with residents consuming over 70 servings per person annually."
+    },
+    {
+      "id": "q070",
+      "text": "What cooking method involves cooking food on a rack over boiling water?",
+      "options": {
+        "A": "Poaching",
+        "B": "Braising",
+        "C": "Steaming",
+        "D": "Simmering"
+      },
+      "correct": "C",
+      "explanation": "Steaming cooks food using the hot vapor from boiling water, preserving nutrients and requiring no added fat."
+    },
+    {
+      "id": "q071",
+      "text": "What is the name of the traditional Georgian cheese-filled bread shaped like a boat with an egg on top?",
+      "options": {
+        "A": "Pide",
+        "B": "Khachapuri",
+        "C": "Lavash",
+        "D": "Focaccia"
+      },
+      "correct": "B",
+      "explanation": "Khachapuri, specifically the Adjarian style, is a boat-shaped bread filled with cheese, butter, and a raw egg cracked on top."
+    },
+    {
+      "id": "q072",
+      "text": "Which acid is responsible for the sour taste in vinegar?",
+      "options": {
+        "A": "Citric acid",
+        "B": "Lactic acid",
+        "C": "Acetic acid",
+        "D": "Tartaric acid"
+      },
+      "correct": "C",
+      "explanation": "Acetic acid is the main component that gives vinegar its sour taste and pungent smell."
+    },
+    {
+      "id": "q073",
+      "text": "What is the name of the Chinese cooking technique of quickly stir-frying over very high heat?",
+      "options": {
+        "A": "Bao",
+        "B": "Chao",
+        "C": "Wok hei",
+        "D": "Hong shao"
+      },
+      "correct": "C",
+      "explanation": "Wok hei (breath of the wok) refers to the flavor and char achieved by stir-frying over extremely high heat in a seasoned wok."
+    },
+    {
+      "id": "q074",
+      "text": "Which nut is used to make tahini paste?",
+      "options": {
+        "A": "Peanuts",
+        "B": "Cashews",
+        "C": "Almonds",
+        "D": "Sesame seeds"
+      },
+      "correct": "D",
+      "explanation": "Tahini is made from ground, hulled sesame seeds. Though sesame is technically a seed, not a nut, it forms the base of tahini."
+    },
+    {
+      "id": "q075",
+      "text": "What is the name of the traditional Japanese fermented soybean paste used in soup?",
+      "options": {
+        "A": "Tofu",
+        "B": "Natto",
+        "C": "Miso",
+        "D": "Shoyu"
+      },
+      "correct": "C",
+      "explanation": "Miso is a fermented soybean paste that forms the base of miso soup and is widely used as a seasoning in Japanese cuisine."
+    },
+    {
+      "id": "q076",
+      "text": "What type of sugar is naturally found in milk?",
+      "options": {
+        "A": "Sucrose",
+        "B": "Fructose",
+        "C": "Lactose",
+        "D": "Maltose"
+      },
+      "correct": "C",
+      "explanation": "Lactose is the natural sugar found in milk, composed of glucose and galactose molecules."
+    },
+    {
+      "id": "q077",
+      "text": "Which Italian city is the birthplace of balsamic vinegar?",
+      "options": {
+        "A": "Florence",
+        "B": "Naples",
+        "C": "Modena",
+        "D": "Rome"
+      },
+      "correct": "C",
+      "explanation": "Traditional balsamic vinegar (Aceto Balsamico Tradizionale) comes from Modena and Reggio Emilia in Italy."
+    },
+    {
+      "id": "q078",
+      "text": "What is the culinary term for the liquid released by meat or vegetables during cooking?",
+      "options": {
+        "A": "Stock",
+        "B": "Fond",
+        "C": "Jus",
+        "D": "Broth"
+      },
+      "correct": "C",
+      "explanation": "Jus is the natural juice or liquid released from meat during cooking, often used as the base for sauces."
+    },
+    {
+      "id": "q079",
+      "text": "Which country is the origin of the flatbread known as roti?",
+      "options": {
+        "A": "Pakistan",
+        "B": "India",
+        "C": "Bangladesh",
+        "D": "All of the above (Indian subcontinent)"
+      },
+      "correct": "D",
+      "explanation": "Roti is a staple unleavened flatbread originating from the Indian subcontinent, common across India, Pakistan, and Bangladesh."
+    },
+    {
+      "id": "q080",
+      "text": "What is the process called when chocolate is carefully melted and cooled to specific temperatures for a glossy finish?",
+      "options": {
+        "A": "Blooming",
+        "B": "Annealing",
+        "C": "Tempering",
+        "D": "Enrobing"
+      },
+      "correct": "C",
+      "explanation": "Tempering chocolate involves heating and cooling it to precise temperatures to form stable cocoa butter crystals, resulting in a smooth, glossy finish with a satisfying snap."
+    }
+  ]
+}

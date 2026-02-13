@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "math_001",
+    "title": "Mathematics",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Math", "Numbers", "Logic", "Geometry"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is 15 x 17?",
+      "options": {
+        "A": "245",
+        "B": "255",
+        "C": "265",
+        "D": "235"
+      },
+      "correct": "B",
+      "explanation": "15 x 17 = 255. You can compute this as 15 x 10 + 15 x 7 = 150 + 105 = 255."
+    },
+    {
+      "id": "q002",
+      "text": "What is the square root of 144?",
+      "options": {
+        "A": "11",
+        "B": "13",
+        "C": "12",
+        "D": "14"
+      },
+      "correct": "C",
+      "explanation": "12 x 12 = 144, so the square root of 144 is 12."
+    },
+    {
+      "id": "q003",
+      "text": "What is the value of pi rounded to two decimal places?",
+      "options": {
+        "A": "3.16",
+        "B": "3.14",
+        "C": "3.12",
+        "D": "3.18"
+      },
+      "correct": "B",
+      "explanation": "Pi is approximately 3.14159..., which rounds to 3.14."
+    },
+    {
+      "id": "q004",
+      "text": "How many sides does a hexagon have?",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "8",
+        "D": "6"
+      },
+      "correct": "D",
+      "explanation": "A hexagon has 6 sides. The prefix 'hex' means six."
+    },
+    {
+      "id": "q005",
+      "text": "What is 2 raised to the power of 10?",
+      "options": {
+        "A": "512",
+        "B": "1024",
+        "C": "2048",
+        "D": "256"
+      },
+      "correct": "B",
+      "explanation": "2^10 = 1024. This is a fundamental value in computing."
+    },
+    {
+      "id": "q006",
+      "text": "Who is known as the 'Father of Geometry'?",
+      "options": {
+        "A": "Archimedes",
+        "B": "Pythagoras",
+        "C": "Euclid",
+        "D": "Aristotle"
+      },
+      "correct": "C",
+      "explanation": "Euclid is known as the Father of Geometry for his influential work 'Elements'."
+    },
+    {
+      "id": "q007",
+      "text": "What is the sum of angles in a triangle?",
+      "options": {
+        "A": "90 degrees",
+        "B": "270 degrees",
+        "C": "360 degrees",
+        "D": "180 degrees"
+      },
+      "correct": "D",
+      "explanation": "The interior angles of any triangle always add up to 180 degrees."
+    },
+    {
+      "id": "q008",
+      "text": "What is the next prime number after 7?",
+      "options": {
+        "A": "9",
+        "B": "11",
+        "C": "13",
+        "D": "10"
+      },
+      "correct": "B",
+      "explanation": "11 is the next prime after 7. 8, 9, and 10 are all composite numbers."
+    },
+    {
+      "id": "q009",
+      "text": "If a coin is flipped twice, what is the probability of getting two heads?",
+      "options": {
+        "A": "1/2",
+        "B": "1/3",
+        "C": "1/4",
+        "D": "1/8"
+      },
+      "correct": "C",
+      "explanation": "Each flip has a 1/2 chance of heads. P(HH) = 1/2 x 1/2 = 1/4."
+    },
+    {
+      "id": "q010",
+      "text": "What is the mathematical constant 'e' approximately equal to?",
+      "options": {
+        "A": "2.718",
+        "B": "1.618",
+        "C": "3.142",
+        "D": "2.236"
+      },
+      "correct": "A",
+      "explanation": "Euler's number e is approximately 2.71828... It is the base of natural logarithms."
+    },
+    {
+      "id": "q011",
+      "text": "Solve for x: 3x + 7 = 22",
+      "options": {
+        "A": "3",
+        "B": "7",
+        "C": "5",
+        "D": "4"
+      },
+      "correct": "C",
+      "explanation": "3x + 7 = 22 => 3x = 15 => x = 5."
+    },
+    {
+      "id": "q012",
+      "text": "What is the area of a circle with radius 5?",
+      "options": {
+        "A": "10pi",
+        "B": "20pi",
+        "C": "15pi",
+        "D": "25pi"
+      },
+      "correct": "D",
+      "explanation": "Area = pi x r^2 = pi x 25 = 25pi."
+    },
+    {
+      "id": "q013",
+      "text": "What is the smallest perfect number?",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "8",
+        "D": "10"
+      },
+      "correct": "B",
+      "explanation": "6 is the smallest perfect number. Its proper divisors (1, 2, 3) sum to 6."
+    },
+    {
+      "id": "q014",
+      "text": "In a standard deck of 52 playing cards, what is the probability of drawing an Ace?",
+      "options": {
+        "A": "1/52",
+        "B": "1/4",
+        "C": "1/13",
+        "D": "1/26"
+      },
+      "correct": "C",
+      "explanation": "There are 4 Aces in a 52-card deck. 4/52 = 1/13."
+    },
+    {
+      "id": "q015",
+      "text": "What is the Fibonacci sequence's 7th term, starting with 1, 1?",
+      "options": {
+        "A": "8",
+        "B": "13",
+        "C": "21",
+        "D": "34"
+      },
+      "correct": "B",
+      "explanation": "The sequence is 1, 1, 2, 3, 5, 8, 13. The 7th term is 13."
+    },
+    {
+      "id": "q016",
+      "text": "What is the name of a polygon with 10 sides?",
+      "options": {
+        "A": "Nonagon",
+        "B": "Decagon",
+        "C": "Dodecagon",
+        "D": "Hendecagon"
+      },
+      "correct": "B",
+      "explanation": "A decagon has 10 sides. The prefix 'deca' means ten."
+    },
+    {
+      "id": "q017",
+      "text": "What is 7! (7 factorial)?",
+      "options": {
+        "A": "720",
+        "B": "5040",
+        "C": "40320",
+        "D": "2520"
+      },
+      "correct": "B",
+      "explanation": "7! = 7 x 6 x 5 x 4 x 3 x 2 x 1 = 5040."
+    },
+    {
+      "id": "q018",
+      "text": "Which mathematician proved there are infinitely many prime numbers?",
+      "options": {
+        "A": "Gauss",
+        "B": "Euler",
+        "C": "Euclid",
+        "D": "Fermat"
+      },
+      "correct": "C",
+      "explanation": "Euclid's proof of the infinitude of primes is one of the most famous in mathematics."
+    },
+    {
+      "id": "q019",
+      "text": "What is the mean of the numbers 4, 8, 15, 16, 23, 42?",
+      "options": {
+        "A": "16",
+        "B": "18",
+        "C": "20",
+        "D": "15"
+      },
+      "correct": "B",
+      "explanation": "Mean = (4 + 8 + 15 + 16 + 23 + 42) / 6 = 108 / 6 = 18."
+    },
+    {
+      "id": "q020",
+      "text": "What is the Golden Ratio approximately equal to?",
+      "options": {
+        "A": "1.414",
+        "B": "2.718",
+        "C": "1.618",
+        "D": "1.732"
+      },
+      "correct": "C",
+      "explanation": "The Golden Ratio (phi) is approximately 1.618033... It appears throughout nature and art."
+    },
+    {
+      "id": "q021",
+      "text": "What is the hypotenuse of a right triangle with legs 3 and 4?",
+      "options": {
+        "A": "6",
+        "B": "7",
+        "C": "5",
+        "D": "8"
+      },
+      "correct": "C",
+      "explanation": "By the Pythagorean theorem: 3^2 + 4^2 = 9 + 16 = 25 = 5^2. The hypotenuse is 5."
+    },
+    {
+      "id": "q022",
+      "text": "What is the binary representation of the decimal number 13?",
+      "options": {
+        "A": "1011",
+        "B": "1101",
+        "C": "1110",
+        "D": "1010"
+      },
+      "correct": "B",
+      "explanation": "13 in binary is 1101 (8 + 4 + 0 + 1 = 13)."
+    },
+    {
+      "id": "q023",
+      "text": "How many degrees are in each interior angle of a regular hexagon?",
+      "options": {
+        "A": "108",
+        "B": "135",
+        "C": "120",
+        "D": "150"
+      },
+      "correct": "C",
+      "explanation": "Interior angle = (n-2) x 180 / n = (4 x 180) / 6 = 720 / 6 = 120 degrees."
+    },
+    {
+      "id": "q024",
+      "text": "What is the derivative of x^3?",
+      "options": {
+        "A": "x^2",
+        "B": "3x",
+        "C": "3x^2",
+        "D": "x^4/4"
+      },
+      "correct": "C",
+      "explanation": "Using the power rule, d/dx(x^3) = 3x^2."
+    },
+    {
+      "id": "q025",
+      "text": "What is the sum of the first 10 positive integers?",
+      "options": {
+        "A": "45",
+        "B": "50",
+        "C": "55",
+        "D": "60"
+      },
+      "correct": "C",
+      "explanation": "Using the formula n(n+1)/2 = 10 x 11 / 2 = 55."
+    },
+    {
+      "id": "q026",
+      "text": "Which number system uses base 16?",
+      "options": {
+        "A": "Binary",
+        "B": "Octal",
+        "C": "Decimal",
+        "D": "Hexadecimal"
+      },
+      "correct": "D",
+      "explanation": "Hexadecimal uses base 16 with digits 0-9 and letters A-F."
+    },
+    {
+      "id": "q027",
+      "text": "What is the least common multiple (LCM) of 12 and 18?",
+      "options": {
+        "A": "24",
+        "B": "36",
+        "C": "48",
+        "D": "72"
+      },
+      "correct": "B",
+      "explanation": "12 = 2^2 x 3, 18 = 2 x 3^2. LCM = 2^2 x 3^2 = 36."
+    },
+    {
+      "id": "q028",
+      "text": "Who developed the coordinate system that bears his name?",
+      "options": {
+        "A": "Isaac Newton",
+        "B": "Blaise Pascal",
+        "C": "Rene Descartes",
+        "D": "Gottfried Leibniz"
+      },
+      "correct": "C",
+      "explanation": "Rene Descartes developed the Cartesian coordinate system."
+    },
+    {
+      "id": "q029",
+      "text": "What is the median of the set {3, 7, 9, 15, 21}?",
+      "options": {
+        "A": "7",
+        "B": "11",
+        "C": "9",
+        "D": "15"
+      },
+      "correct": "C",
+      "explanation": "The median is the middle value of an ordered set. In {3, 7, 9, 15, 21}, the median is 9."
+    },
+    {
+      "id": "q030",
+      "text": "How many faces does a dodecahedron have?",
+      "options": {
+        "A": "8",
+        "B": "10",
+        "C": "12",
+        "D": "20"
+      },
+      "correct": "C",
+      "explanation": "A dodecahedron has 12 pentagonal faces. It is one of the five Platonic solids."
+    },
+    {
+      "id": "q031",
+      "text": "What is the GCD (greatest common divisor) of 48 and 36?",
+      "options": {
+        "A": "6",
+        "B": "8",
+        "C": "12",
+        "D": "18"
+      },
+      "correct": "C",
+      "explanation": "48 = 2^4 x 3, 36 = 2^2 x 3^2. GCD = 2^2 x 3 = 12."
+    },
+    {
+      "id": "q032",
+      "text": "What is i^2, where i is the imaginary unit?",
+      "options": {
+        "A": "1",
+        "B": "-1",
+        "C": "i",
+        "D": "-i"
+      },
+      "correct": "B",
+      "explanation": "By definition, the imaginary unit i satisfies i^2 = -1."
+    },
+    {
+      "id": "q033",
+      "text": "What is the volume of a cube with side length 4?",
+      "options": {
+        "A": "16",
+        "B": "48",
+        "C": "64",
+        "D": "32"
+      },
+      "correct": "C",
+      "explanation": "Volume of a cube = s^3 = 4^3 = 64."
+    },
+    {
+      "id": "q034",
+      "text": "If you roll two standard dice, how many possible outcomes are there?",
+      "options": {
+        "A": "12",
+        "B": "24",
+        "C": "36",
+        "D": "48"
+      },
+      "correct": "C",
+      "explanation": "Each die has 6 faces. Total outcomes = 6 x 6 = 36."
+    },
+    {
+      "id": "q035",
+      "text": "What is the value of log base 10 of 1000?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "10"
+      },
+      "correct": "B",
+      "explanation": "log10(1000) = 3, because 10^3 = 1000."
+    },
+    {
+      "id": "q036",
+      "text": "Which ancient civilization first used the concept of zero as a number?",
+      "options": {
+        "A": "Greek",
+        "B": "Egyptian",
+        "C": "Indian",
+        "D": "Chinese"
+      },
+      "correct": "C",
+      "explanation": "Indian mathematicians, including Brahmagupta in the 7th century, were the first to treat zero as a number with defined arithmetic rules."
+    },
+    {
+      "id": "q037",
+      "text": "What type of number is the square root of 2?",
+      "options": {
+        "A": "Rational",
+        "B": "Integer",
+        "C": "Irrational",
+        "D": "Imaginary"
+      },
+      "correct": "C",
+      "explanation": "The square root of 2 is irrational. It cannot be expressed as a ratio of two integers."
+    },
+    {
+      "id": "q038",
+      "text": "What is 25% of 360?",
+      "options": {
+        "A": "80",
+        "B": "85",
+        "C": "90",
+        "D": "95"
+      },
+      "correct": "C",
+      "explanation": "25% of 360 = 0.25 x 360 = 90."
+    },
+    {
+      "id": "q039",
+      "text": "In how many ways can you arrange 4 distinct books on a shelf?",
+      "options": {
+        "A": "12",
+        "B": "16",
+        "C": "20",
+        "D": "24"
+      },
+      "correct": "D",
+      "explanation": "The number of arrangements is 4! = 4 x 3 x 2 x 1 = 24."
+    },
+    {
+      "id": "q040",
+      "text": "What is the name for a triangle with all sides of equal length?",
+      "options": {
+        "A": "Isosceles",
+        "B": "Scalene",
+        "C": "Equilateral",
+        "D": "Right"
+      },
+      "correct": "C",
+      "explanation": "An equilateral triangle has all three sides of equal length and all angles equal to 60 degrees."
+    },
+    {
+      "id": "q041",
+      "text": "What is the standard deviation a measure of?",
+      "options": {
+        "A": "Central tendency",
+        "B": "Spread or dispersion",
+        "C": "Skewness",
+        "D": "Correlation"
+      },
+      "correct": "B",
+      "explanation": "Standard deviation measures the spread or dispersion of data values around the mean."
+    },
+    {
+      "id": "q042",
+      "text": "Which mathematician is credited with inventing calculus independently alongside Newton?",
+      "options": {
+        "A": "Euler",
+        "B": "Gauss",
+        "C": "Leibniz",
+        "D": "Bernoulli"
+      },
+      "correct": "C",
+      "explanation": "Gottfried Wilhelm Leibniz independently developed calculus around the same time as Isaac Newton."
+    },
+    {
+      "id": "q043",
+      "text": "What is the sum of the interior angles of a quadrilateral?",
+      "options": {
+        "A": "180 degrees",
+        "B": "270 degrees",
+        "C": "360 degrees",
+        "D": "540 degrees"
+      },
+      "correct": "C",
+      "explanation": "The sum of interior angles of a quadrilateral is (4-2) x 180 = 360 degrees."
+    },
+    {
+      "id": "q044",
+      "text": "What is the result of 0! (zero factorial)?",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "Undefined",
+        "D": "-1"
+      },
+      "correct": "B",
+      "explanation": "By convention (and for combinatorial consistency), 0! = 1."
+    },
+    {
+      "id": "q045",
+      "text": "How many edges does a cube have?",
+      "options": {
+        "A": "6",
+        "B": "8",
+        "C": "10",
+        "D": "12"
+      },
+      "correct": "D",
+      "explanation": "A cube has 12 edges, 8 vertices, and 6 faces."
+    },
+    {
+      "id": "q046",
+      "text": "What is the Pythagorean theorem?",
+      "options": {
+        "A": "a + b = c",
+        "B": "a^2 + b^2 = c^2",
+        "C": "a^2 - b^2 = c^2",
+        "D": "2a + 2b = c"
+      },
+      "correct": "B",
+      "explanation": "The Pythagorean theorem states that in a right triangle, a^2 + b^2 = c^2 where c is the hypotenuse."
+    },
+    {
+      "id": "q047",
+      "text": "What is the probability of rolling a 6 on a standard die?",
+      "options": {
+        "A": "1/3",
+        "B": "1/4",
+        "C": "1/6",
+        "D": "1/12"
+      },
+      "correct": "C",
+      "explanation": "A standard die has 6 equally likely faces, so P(6) = 1/6."
+    },
+    {
+      "id": "q048",
+      "text": "What is the circumference of a circle with diameter 10?",
+      "options": {
+        "A": "10pi",
+        "B": "20pi",
+        "C": "5pi",
+        "D": "25pi"
+      },
+      "correct": "A",
+      "explanation": "Circumference = pi x diameter = pi x 10 = 10pi."
+    },
+    {
+      "id": "q049",
+      "text": "What famous problem did Andrew Wiles prove in 1995?",
+      "options": {
+        "A": "Goldbach's Conjecture",
+        "B": "The Riemann Hypothesis",
+        "C": "Fermat's Last Theorem",
+        "D": "The Collatz Conjecture"
+      },
+      "correct": "C",
+      "explanation": "Andrew Wiles proved Fermat's Last Theorem, which had been unproven for over 350 years."
+    },
+    {
+      "id": "q050",
+      "text": "How many diagonals does a pentagon have?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "correct": "C",
+      "explanation": "Number of diagonals = n(n-3)/2 = 5(2)/2 = 5."
+    },
+    {
+      "id": "q051",
+      "text": "What is the value of the expression 3^0?",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "3",
+        "D": "Undefined"
+      },
+      "correct": "B",
+      "explanation": "Any non-zero number raised to the power of 0 equals 1."
+    },
+    {
+      "id": "q052",
+      "text": "What is the mode of the set {2, 3, 3, 5, 7, 7, 7, 9}?",
+      "options": {
+        "A": "3",
+        "B": "5",
+        "C": "7",
+        "D": "9"
+      },
+      "correct": "C",
+      "explanation": "The mode is the most frequently occurring value. 7 appears three times."
+    },
+    {
+      "id": "q053",
+      "text": "Which of these numbers is NOT a prime number?",
+      "options": {
+        "A": "31",
+        "B": "37",
+        "C": "39",
+        "D": "41"
+      },
+      "correct": "C",
+      "explanation": "39 = 3 x 13, so it is not prime. The others (31, 37, 41) are all prime."
+    },
+    {
+      "id": "q054",
+      "text": "What is the integral of 2x dx?",
+      "options": {
+        "A": "x + C",
+        "B": "2x + C",
+        "C": "x^2 + C",
+        "D": "2x^2 + C"
+      },
+      "correct": "C",
+      "explanation": "The integral of 2x dx = 2(x^2/2) + C = x^2 + C."
+    },
+    {
+      "id": "q055",
+      "text": "What is the name for a number that can only be divided by 1 and itself?",
+      "options": {
+        "A": "Composite number",
+        "B": "Perfect number",
+        "C": "Prime number",
+        "D": "Abundant number"
+      },
+      "correct": "C",
+      "explanation": "A prime number has exactly two distinct positive divisors: 1 and itself."
+    },
+    {
+      "id": "q056",
+      "text": "What is the surface area of a sphere with radius 3?",
+      "options": {
+        "A": "18pi",
+        "B": "27pi",
+        "C": "36pi",
+        "D": "12pi"
+      },
+      "correct": "C",
+      "explanation": "Surface area of a sphere = 4pi x r^2 = 4pi x 9 = 36pi."
+    },
+    {
+      "id": "q057",
+      "text": "In a normal distribution, approximately what percentage of data falls within one standard deviation of the mean?",
+      "options": {
+        "A": "50%",
+        "B": "68%",
+        "C": "95%",
+        "D": "99.7%"
+      },
+      "correct": "B",
+      "explanation": "The 68-95-99.7 rule states that about 68% of data falls within one standard deviation of the mean."
+    },
+    {
+      "id": "q058",
+      "text": "What is the Roman numeral for 500?",
+      "options": {
+        "A": "C",
+        "B": "L",
+        "C": "D",
+        "D": "M"
+      },
+      "correct": "C",
+      "explanation": "D represents 500 in Roman numerals. C=100, L=50, M=1000."
+    },
+    {
+      "id": "q059",
+      "text": "If f(x) = 2x + 3, what is f(5)?",
+      "options": {
+        "A": "10",
+        "B": "11",
+        "C": "13",
+        "D": "15"
+      },
+      "correct": "C",
+      "explanation": "f(5) = 2(5) + 3 = 10 + 3 = 13."
+    },
+    {
+      "id": "q060",
+      "text": "What shape has 4 equal sides but angles that are not necessarily 90 degrees?",
+      "options": {
+        "A": "Rectangle",
+        "B": "Rhombus",
+        "C": "Trapezoid",
+        "D": "Parallelogram"
+      },
+      "correct": "B",
+      "explanation": "A rhombus has four equal sides but its angles are not necessarily right angles."
+    },
+    {
+      "id": "q061",
+      "text": "What is Euler's identity?",
+      "options": {
+        "A": "e^(i*pi) + 1 = 0",
+        "B": "e^(pi) + i = 0",
+        "C": "e + pi + i = 0",
+        "D": "e^(i) + pi = 1"
+      },
+      "correct": "A",
+      "explanation": "Euler's identity e^(i*pi) + 1 = 0 is often called the most beautiful equation in mathematics."
+    },
+    {
+      "id": "q062",
+      "text": "How many combinations are there when choosing 2 items from 5?",
+      "options": {
+        "A": "5",
+        "B": "10",
+        "C": "15",
+        "D": "20"
+      },
+      "correct": "B",
+      "explanation": "C(5,2) = 5! / (2! x 3!) = 120 / (2 x 6) = 10."
+    },
+    {
+      "id": "q063",
+      "text": "What is the slope of a line perpendicular to one with slope 2?",
+      "options": {
+        "A": "-2",
+        "B": "2",
+        "C": "-1/2",
+        "D": "1/2"
+      },
+      "correct": "C",
+      "explanation": "Perpendicular lines have slopes that are negative reciprocals. The negative reciprocal of 2 is -1/2."
+    },
+    {
+      "id": "q064",
+      "text": "What number does the prefix 'giga' represent?",
+      "options": {
+        "A": "One million",
+        "B": "One billion",
+        "C": "One trillion",
+        "D": "One thousand"
+      },
+      "correct": "B",
+      "explanation": "Giga represents 10^9, which is one billion."
+    },
+    {
+      "id": "q065",
+      "text": "What is the only even prime number?",
+      "options": {
+        "A": "0",
+        "B": "2",
+        "C": "4",
+        "D": "6"
+      },
+      "correct": "B",
+      "explanation": "2 is the only even prime number. All other even numbers are divisible by 2."
+    },
+    {
+      "id": "q066",
+      "text": "Who introduced the symbol for infinity?",
+      "options": {
+        "A": "Euler",
+        "B": "John Wallis",
+        "C": "Gauss",
+        "D": "Cantor"
+      },
+      "correct": "B",
+      "explanation": "John Wallis introduced the infinity symbol in 1655."
+    },
+    {
+      "id": "q067",
+      "text": "What is the value of sin(90 degrees)?",
+      "options": {
+        "A": "0",
+        "B": "0.5",
+        "C": "1",
+        "D": "-1"
+      },
+      "correct": "C",
+      "explanation": "sin(90 degrees) = 1. This is a fundamental trigonometric value."
+    },
+    {
+      "id": "q068",
+      "text": "How many vertices does a tetrahedron have?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "correct": "B",
+      "explanation": "A tetrahedron has 4 vertices, 6 edges, and 4 triangular faces."
+    },
+    {
+      "id": "q069",
+      "text": "What is 3/8 expressed as a decimal?",
+      "options": {
+        "A": "0.35",
+        "B": "0.375",
+        "C": "0.38",
+        "D": "0.325"
+      },
+      "correct": "B",
+      "explanation": "3 divided by 8 = 0.375."
+    },
+    {
+      "id": "q070",
+      "text": "Which mathematician is famous for the 'Last Theorem' that took 358 years to prove?",
+      "options": {
+        "A": "Euler",
+        "B": "Gauss",
+        "C": "Fermat",
+        "D": "Riemann"
+      },
+      "correct": "C",
+      "explanation": "Pierre de Fermat wrote his famous Last Theorem in the margin of a book around 1637. It was proven by Andrew Wiles in 1995."
+    },
+    {
+      "id": "q071",
+      "text": "What is the range of the data set {5, 12, 3, 8, 20, 1}?",
+      "options": {
+        "A": "17",
+        "B": "19",
+        "C": "15",
+        "D": "20"
+      },
+      "correct": "B",
+      "explanation": "Range = maximum - minimum = 20 - 1 = 19."
+    },
+    {
+      "id": "q072",
+      "text": "In modular arithmetic, what is 17 mod 5?",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4"
+      },
+      "correct": "B",
+      "explanation": "17 divided by 5 = 3 remainder 2. So 17 mod 5 = 2."
+    },
+    {
+      "id": "q073",
+      "text": "What is the perimeter of a rectangle with length 8 and width 5?",
+      "options": {
+        "A": "13",
+        "B": "26",
+        "C": "40",
+        "D": "30"
+      },
+      "correct": "B",
+      "explanation": "Perimeter = 2(length + width) = 2(8 + 5) = 2(13) = 26."
+    },
+    {
+      "id": "q074",
+      "text": "What is the mathematical term for a statement that is accepted as true without proof?",
+      "options": {
+        "A": "Theorem",
+        "B": "Lemma",
+        "C": "Axiom",
+        "D": "Corollary"
+      },
+      "correct": "C",
+      "explanation": "An axiom (or postulate) is a statement accepted as true without proof, serving as a starting point for further reasoning."
+    },
+    {
+      "id": "q075",
+      "text": "What is the sum of all angles in a regular pentagon?",
+      "options": {
+        "A": "360 degrees",
+        "B": "450 degrees",
+        "C": "540 degrees",
+        "D": "720 degrees"
+      },
+      "correct": "C",
+      "explanation": "Sum of interior angles = (n-2) x 180 = (5-2) x 180 = 540 degrees."
+    },
+    {
+      "id": "q076",
+      "text": "If a bag contains 3 red, 4 blue, and 5 green marbles, what is the probability of drawing a blue marble?",
+      "options": {
+        "A": "1/4",
+        "B": "1/3",
+        "C": "4/12",
+        "D": "Both B and C"
+      },
+      "correct": "D",
+      "explanation": "P(blue) = 4/12 = 1/3. Both B and C are correct as they represent the same value."
+    },
+    {
+      "id": "q077",
+      "text": "What is the name of the longest side of a right triangle?",
+      "options": {
+        "A": "Adjacent",
+        "B": "Opposite",
+        "C": "Hypotenuse",
+        "D": "Median"
+      },
+      "correct": "C",
+      "explanation": "The hypotenuse is the longest side of a right triangle, opposite the right angle."
+    },
+    {
+      "id": "q078",
+      "text": "Which branch of mathematics deals with the study of shapes and their properties?",
+      "options": {
+        "A": "Algebra",
+        "B": "Calculus",
+        "C": "Geometry",
+        "D": "Number Theory"
+      },
+      "correct": "C",
+      "explanation": "Geometry is the branch of mathematics concerned with the properties of shapes, sizes, and positions of figures."
+    },
+    {
+      "id": "q079",
+      "text": "What is the value of the expression |-7|?",
+      "options": {
+        "A": "-7",
+        "B": "7",
+        "C": "0",
+        "D": "1/7"
+      },
+      "correct": "B",
+      "explanation": "The absolute value of -7 is 7. Absolute value gives the distance from zero."
+    },
+    {
+      "id": "q080",
+      "text": "How many prime numbers are there between 1 and 20?",
+      "options": {
+        "A": "6",
+        "B": "7",
+        "C": "8",
+        "D": "9"
+      },
+      "correct": "C",
+      "explanation": "The primes between 1 and 20 are: 2, 3, 5, 7, 11, 13, 17, 19. That is 8 primes."
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "automotive",
+    "title": "Automotive & Racing",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Cars", "Racing", "F1", "Mechanics"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "auto_01",
+      "text": "What does BMW stand for?",
+      "options": {
+        "A": "British Motor Works",
+        "B": "Bayerische Motoren Werke",
+        "C": "Berlin Motor Wagon",
+        "D": "Bavarian Machine Works"
+      },
+      "correct": "B",
+      "explanation": "Bavarian Motor Works in English."
+    },
+    {
+      "id": "auto_02",
+      "text": "Which race is known as 'The Greatest Spectacle in Racing'?",
+      "options": {
+        "A": "Daytona 500",
+        "B": "Monaco Grand Prix",
+        "C": "Indianapolis 500",
+        "D": "24 Hours of Le Mans"
+      },
+      "correct": "C",
+      "explanation": "Held annually at the Indianapolis Motor Speedway."
+    },
+    {
+      "id": "auto_03",
+      "text": "What is the function of a spark plug?",
+      "options": {
+        "A": "To cool the engine",
+        "B": "To ignite the air-fuel mixture",
+        "C": "To filter oil",
+        "D": "To change gears"
+      },
+      "correct": "B",
+      "explanation": "It delivers electric current to the combustion chamber to ignite the fuel."
+    },
+    {
+      "id": "auto_04",
+      "text": "Which company produces the 911 sports car?",
+      "options": {
+        "A": "Ferrari",
+        "B": "Porsche",
+        "C": "Lamborghini",
+        "D": "Aston Martin"
+      },
+      "correct": "B",
+      "explanation": "The Porsche 911 is an icon of German engineering."
+    },
+    {
+      "id": "auto_05",
+      "text": "What does 'RPM' stand for?",
+      "options": {
+        "A": "Rotations Per Minute",
+        "B": "Revolutions Per Minute",
+        "C": "Runs Per Mile",
+        "D": "Races Per Month"
+      },
+      "correct": "B",
+      "explanation": "It measures the frequency of rotation, specifically of the engine's crankshaft."
+    },
+    {
+      "id": "auto_06",
+      "text": "Who holds the record for most Formula 1 World Championships (tied at 7)?",
+      "options": {
+        "A": "Ayrton Senna",
+        "B": "Sebastian Vettel",
+        "C": "Lewis Hamilton and Michael Schumacher",
+        "D": "Max Verstappen"
+      },
+      "correct": "C",
+      "explanation": "Hamilton and Schumacher both have 7 titles."
+    },
+    {
+      "id": "auto_07",
+      "text": "Which car part charges the battery while the engine is running?",
+      "options": {
+        "A": "Starter",
+        "B": "Alternator",
+        "C": "Radiator",
+        "D": "Distributor"
+      },
+      "correct": "B",
+      "explanation": "The alternator converts mechanical energy into electrical energy."
+    },
+    {
+      "id": "auto_08",
+      "text": "The Ford Model T was famously available in 'any color so long as it is _____'.",
+      "options": {
+        "A": "Black",
+        "B": "Red",
+        "C": "Blue",
+        "D": "White"
+      },
+      "correct": "A",
+      "explanation": "Henry Ford streamlined production by using only black japan enamel, which dried quickly."
+    },
+    {
+      "id": "auto_09",
+      "text": "What country is home to Volvo?",
+      "options": {
+        "A": "Germany",
+        "B": "Sweden",
+        "C": "Switzerland",
+        "D": "Norway"
+      },
+      "correct": "B",
+      "explanation": "Volvo was founded in Gothenburg, Sweden."
+    },
+    {
+      "id": "auto_10",
+      "text": "Which movie features a DeLorean time machine?",
+      "options": {
+        "A": "Ghostbusters",
+        "B": "Back to the Future",
+        "C": "Ferris Bueller's Day Off",
+        "D": "Blade Runner"
+      },
+      "correct": "B",
+      "explanation": "Great Scott! The DeLorean DMC-12 became a pop culture icon."
+    },
+    {
+      "id": "auto_11",
+      "text": "What type of engine configuration has cylinders arranged in a V shape?",
+      "options": {
+        "A": "Inline",
+        "B": "Boxer",
+        "C": "V-engine",
+        "D": "Rotary"
+      },
+      "correct": "C",
+      "explanation": "Examples include V6, V8, and V12 engines."
+    },
+    {
+      "id": "auto_12",
+      "text": "Which luxury brand features a 'Spirit of Ecstasy' hood ornament?",
+      "options": {
+        "A": "Bentley",
+        "B": "Rolls-Royce",
+        "C": "Jaguar",
+        "D": "Mercedes-Benz"
+      },
+      "correct": "B",
+      "explanation": "The flying lady figure adorns the radiator of Rolls-Royce cars."
+    },
+    {
+      "id": "auto_13",
+      "text": "The 24 Hours of Le Mans is an endurance race held in:",
+      "options": {
+        "A": "Italy",
+        "B": "Belgium",
+        "C": "France",
+        "D": "Spain"
+      },
+      "correct": "C",
+      "explanation": "It is held near the town of Le Mans, France."
+    },
+    {
+      "id": "auto_14",
+      "text": "What does ABS stand for in car safety?",
+      "options": {
+        "A": "Automatic Brake System",
+        "B": "Anti-lock Braking System",
+        "C": "Auto Body Safety",
+        "D": "Advanced Braking Sensor"
+      },
+      "correct": "B",
+      "explanation": "ABS prevents wheels from locking up during braking."
+    },
+    {
+      "id": "auto_15",
+      "text": "Which Japanese manufacturer produces the Civic and Accord?",
+      "options": {
+        "A": "Toyota",
+        "B": "Nissan",
+        "C": "Honda",
+        "D": "Mazda"
+      },
+      "correct": "C",
+      "explanation": "Honda is the maker of these popular models."
+    }
+  ]
+}

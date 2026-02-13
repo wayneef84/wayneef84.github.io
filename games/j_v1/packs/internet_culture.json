@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "internet_culture",
+    "title": "Internet Culture",
+    "version": "1.0",
+    "difficulty": "Easy",
+    "tags": ["Internet", "Memes", "History", "Web"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "ic_01",
+      "text": "What song is used to 'Rickroll' people?",
+      "options": {
+        "A": "Together Forever",
+        "B": "Never Gonna Give You Up",
+        "C": "Take On Me",
+        "D": "Sandstorm"
+      },
+      "correct": "B",
+      "explanation": "Rick Astley's 1987 hit became the ultimate bait-and-switch meme."
+    },
+    {
+      "id": "ic_02",
+      "text": "Which cat became famous for looking perpetually grumpy?",
+      "options": {
+        "A": "Nyan Cat",
+        "B": "Grumpy Cat",
+        "C": "Keyboard Cat",
+        "D": "Lil Bub"
+      },
+      "correct": "B",
+      "explanation": "Tardar Sauce, known as Grumpy Cat, became an internet sensation in 2012."
+    },
+    {
+      "id": "ic_03",
+      "text": "What was the first video ever uploaded to YouTube?",
+      "options": {
+        "A": "Charlie Bit My Finger",
+        "B": "Me at the zoo",
+        "C": "Evolution of Dance",
+        "D": "Gangnam Style"
+      },
+      "correct": "B",
+      "explanation": "Co-founder Jawed Karim uploaded 'Me at the zoo' on April 23, 2005."
+    },
+    {
+      "id": "ic_04",
+      "text": "Which social media platform was limited to 6-second looping videos?",
+      "options": {
+        "A": "TikTok",
+        "B": "Vine",
+        "C": "Snapchat",
+        "D": "Instagram"
+      },
+      "correct": "B",
+      "explanation": "Vine, launched in 2013 and shut down in 2017, popularized short-form video loops."
+    },
+    {
+      "id": "ic_05",
+      "text": "Who was everyone's first friend on MySpace?",
+      "options": {
+        "A": "Mark",
+        "B": "Tom",
+        "C": "Jack",
+        "D": "Bill"
+      },
+      "correct": "B",
+      "explanation": "Tom Anderson, co-founder of MySpace, was automatically added as the first friend."
+    },
+    {
+      "id": "ic_06",
+      "text": "What does 'LOL' stand for?",
+      "options": {
+        "A": "Lots of Love",
+        "B": "Laughing Out Loud",
+        "C": "Lord of Lords",
+        "D": "League of Legends"
+      },
+      "correct": "B",
+      "explanation": "LOL is one of the oldest and most common internet acronyms."
+    },
+    {
+      "id": "ic_07",
+      "text": "Which dress color debate broke the internet in 2015?",
+      "options": {
+        "A": "Red and Green",
+        "B": "Black and Blue vs. White and Gold",
+        "C": "Pink and Grey",
+        "D": "Orange and Purple"
+      },
+      "correct": "B",
+      "explanation": "The Dress was a viral photo that viewers disagreed on perceiving."
+    },
+    {
+      "id": "ic_08",
+      "text": "What is a 'GIF'?",
+      "options": {
+        "A": "Graphics Interchange Format",
+        "B": "Global Internet File",
+        "C": "Graphical Interface Format",
+        "D": "General Image File"
+      },
+      "correct": "A",
+      "explanation": "GIF is a bitmap image format that supports animations."
+    },
+    {
+      "id": "ic_09",
+      "text": "Which viral video featured a baby biting his brother's finger?",
+      "options": {
+        "A": "David After Dentist",
+        "B": "Charlie Bit My Finger",
+        "C": "Sneezing Baby Panda",
+        "D": "Talking Twin Babies"
+      },
+      "correct": "B",
+      "explanation": "'Charlie Bit My Finger' was at one point the most-viewed video on YouTube."
+    },
+    {
+      "id": "ic_10",
+      "text": "What is the name of the frog meme associated with 'feels bad man'?",
+      "options": {
+        "A": "Kermit",
+        "B": "Pepe",
+        "C": "Dat Boi",
+        "D": "Hypnotoad"
+      },
+      "correct": "B",
+      "explanation": "Pepe the Frog originated from a comic by Matt Furie."
+    },
+    {
+      "id": "ic_11",
+      "text": "Which platform is known for its 140 (now 280) character limit?",
+      "options": {
+        "A": "Facebook",
+        "B": "Twitter",
+        "C": "Tumblr",
+        "D": "Reddit"
+      },
+      "correct": "B",
+      "explanation": "Twitter (now X) is a microblogging platform."
+    },
+    {
+      "id": "ic_12",
+      "text": "What is 'Creepypasta'?",
+      "options": {
+        "A": "Scary spaghetti",
+        "B": "Horror-related legends copied and pasted around the internet",
+        "C": "A type of virus",
+        "D": "A hacker group"
+      },
+      "correct": "B",
+      "explanation": "Slender Man is a famous example of a Creepypasta."
+    },
+    {
+      "id": "ic_13",
+      "text": "Which browser was once dominant before Chrome and Firefox?",
+      "options": {
+        "A": "Netscape Navigator",
+        "B": "Internet Explorer",
+        "C": "Mosaic",
+        "D": "Safari"
+      },
+      "correct": "B",
+      "explanation": "Internet Explorer had a usage share of over 95% in the early 2000s."
+    },
+    {
+      "id": "ic_14",
+      "text": "What does 'TL;DR' mean?",
+      "options": {
+        "A": "Too Long; Didn't Read",
+        "B": "Too Late; Don't Reply",
+        "C": "Today Learned; Done Reading",
+        "D": "The Last Doctor"
+      },
+      "correct": "A",
+      "explanation": "Used to summarize a lengthy post."
+    },
+    {
+      "id": "ic_15",
+      "text": "Who is the founder of Facebook?",
+      "options": {
+        "A": "Jeff Bezos",
+        "B": "Mark Zuckerberg",
+        "C": "Elon Musk",
+        "D": "Bill Gates"
+      },
+      "correct": "B",
+      "explanation": "Mark Zuckerberg launched Facebook from his Harvard dorm room in 2004."
+    }
+  ]
+}

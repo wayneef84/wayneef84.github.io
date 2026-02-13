@@ -1,0 +1,572 @@
+{
+  "meta": {
+    "id": "literature_001",
+    "title": "Literature & Books",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Literature", "Books", "Authors", "Poetry"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who wrote 'Pride and Prejudice'?",
+      "options": { "A": "Charlotte Bronte", "B": "Jane Austen", "C": "Mary Shelley", "D": "George Eliot" },
+      "correct": "B",
+      "explanation": "Jane Austen published Pride and Prejudice in 1813."
+    },
+    {
+      "id": "q002",
+      "text": "In which Shakespeare play does the character Puck appear?",
+      "options": { "A": "The Tempest", "B": "Twelfth Night", "C": "A Midsummer Night's Dream", "D": "As You Like It" },
+      "correct": "C",
+      "explanation": "Puck, also called Robin Goodfellow, is a mischievous fairy in A Midsummer Night's Dream."
+    },
+    {
+      "id": "q003",
+      "text": "What is the first book in the Harry Potter series?",
+      "options": { "A": "The Chamber of Secrets", "B": "The Goblet of Fire", "C": "The Prisoner of Azkaban", "D": "The Philosopher's Stone" },
+      "correct": "D",
+      "explanation": "Harry Potter and the Philosopher's Stone was published in 1997."
+    },
+    {
+      "id": "q004",
+      "text": "Who wrote 'One Hundred Years of Solitude'?",
+      "options": { "A": "Pablo Neruda", "B": "Isabel Allende", "C": "Gabriel Garcia Marquez", "D": "Jorge Luis Borges" },
+      "correct": "C",
+      "explanation": "Gabriel Garcia Marquez published this landmark of magical realism in 1967."
+    },
+    {
+      "id": "q005",
+      "text": "Which novel begins with the line 'Call me Ishmael'?",
+      "options": { "A": "The Old Man and the Sea", "B": "Moby-Dick", "C": "Treasure Island", "D": "Robinson Crusoe" },
+      "correct": "B",
+      "explanation": "Moby-Dick by Herman Melville opens with this famous line."
+    },
+    {
+      "id": "q006",
+      "text": "Who is the author of 'The Great Gatsby'?",
+      "options": { "A": "Ernest Hemingway", "B": "John Steinbeck", "C": "F. Scott Fitzgerald", "D": "William Faulkner" },
+      "correct": "C",
+      "explanation": "F. Scott Fitzgerald published The Great Gatsby in 1925."
+    },
+    {
+      "id": "q007",
+      "text": "What literary genre is associated with authors like H.P. Lovecraft?",
+      "options": { "A": "Romance", "B": "Cosmic Horror", "C": "Western", "D": "Satire" },
+      "correct": "B",
+      "explanation": "H.P. Lovecraft is the father of cosmic horror, featuring incomprehensible entities and existential dread."
+    },
+    {
+      "id": "q008",
+      "text": "Which Shakespeare play features the characters Rosencrantz and Guildenstern?",
+      "options": { "A": "Hamlet", "B": "Macbeth", "C": "Othello", "D": "King Lear" },
+      "correct": "A",
+      "explanation": "Rosencrantz and Guildenstern are courtiers and childhood friends of Hamlet."
+    },
+    {
+      "id": "q009",
+      "text": "Who wrote 'The Catcher in the Rye'?",
+      "options": { "A": "Jack Kerouac", "B": "Kurt Vonnegut", "C": "J.D. Salinger", "D": "Ray Bradbury" },
+      "correct": "C",
+      "explanation": "J.D. Salinger published The Catcher in the Rye in 1951."
+    },
+    {
+      "id": "q010",
+      "text": "In 'Lord of the Flies', what does the conch shell symbolize?",
+      "options": { "A": "Violence", "B": "Order and civilization", "C": "Nature", "D": "Fear" },
+      "correct": "B",
+      "explanation": "The conch shell represents democratic order and the right to speak in William Golding's novel."
+    },
+    {
+      "id": "q011",
+      "text": "Who won the Nobel Prize in Literature in 1954?",
+      "options": { "A": "William Faulkner", "B": "Albert Camus", "C": "Ernest Hemingway", "D": "John Steinbeck" },
+      "correct": "C",
+      "explanation": "Ernest Hemingway won the 1954 Nobel Prize in Literature."
+    },
+    {
+      "id": "q012",
+      "text": "What is the name of the fictional land in C.S. Lewis's fantasy series?",
+      "options": { "A": "Middle-earth", "B": "Narnia", "C": "Hogwarts", "D": "Oz" },
+      "correct": "B",
+      "explanation": "The Chronicles of Narnia is set in the magical land of Narnia."
+    },
+    {
+      "id": "q013",
+      "text": "Who wrote the epic poem 'Paradise Lost'?",
+      "options": { "A": "Geoffrey Chaucer", "B": "John Milton", "C": "Edmund Spenser", "D": "William Blake" },
+      "correct": "B",
+      "explanation": "John Milton published Paradise Lost in 1667."
+    },
+    {
+      "id": "q014",
+      "text": "Which author created the detective Sherlock Holmes?",
+      "options": { "A": "Agatha Christie", "B": "Wilkie Collins", "C": "Arthur Conan Doyle", "D": "Edgar Allan Poe" },
+      "correct": "C",
+      "explanation": "Arthur Conan Doyle first introduced Sherlock Holmes in A Study in Scarlet in 1887."
+    },
+    {
+      "id": "q015",
+      "text": "What is the longest novel ever published in English by word count?",
+      "options": { "A": "War and Peace", "B": "Les Miserables", "C": "Clarissa", "D": "Artamene" },
+      "correct": "C",
+      "explanation": "Samuel Richardson's Clarissa (1748) is approximately 984,000 words, making it one of the longest novels in English."
+    },
+    {
+      "id": "q016",
+      "text": "Who wrote 'Beloved'?",
+      "options": { "A": "Alice Walker", "B": "Toni Morrison", "C": "Maya Angelou", "D": "Zora Neale Hurston" },
+      "correct": "B",
+      "explanation": "Toni Morrison published Beloved in 1987 and won the Pulitzer Prize for it."
+    },
+    {
+      "id": "q017",
+      "text": "In which century was 'The Canterbury Tales' written?",
+      "options": { "A": "12th century", "B": "13th century", "C": "14th century", "D": "15th century" },
+      "correct": "C",
+      "explanation": "Geoffrey Chaucer wrote The Canterbury Tales in the late 14th century, around 1387-1400."
+    },
+    {
+      "id": "q018",
+      "text": "What is the name of Captain Ahab's ship in 'Moby-Dick'?",
+      "options": { "A": "The Endurance", "B": "The Pequod", "C": "The Hispaniola", "D": "The Nautilus" },
+      "correct": "B",
+      "explanation": "Captain Ahab commands the whaling ship Pequod in Melville's novel."
+    },
+    {
+      "id": "q019",
+      "text": "Who wrote 'The Handmaid's Tale'?",
+      "options": { "A": "Ursula K. Le Guin", "B": "Octavia Butler", "C": "Margaret Atwood", "D": "Doris Lessing" },
+      "correct": "C",
+      "explanation": "Margaret Atwood published The Handmaid's Tale in 1985."
+    },
+    {
+      "id": "q020",
+      "text": "Which of these is NOT one of Shakespeare's tragedies?",
+      "options": { "A": "King Lear", "B": "Macbeth", "C": "Much Ado About Nothing", "D": "Othello" },
+      "correct": "C",
+      "explanation": "Much Ado About Nothing is a comedy. The others are all tragedies."
+    },
+    {
+      "id": "q021",
+      "text": "Who wrote 'The Odyssey'?",
+      "options": { "A": "Virgil", "B": "Sophocles", "C": "Homer", "D": "Aristotle" },
+      "correct": "C",
+      "explanation": "The Odyssey is attributed to the ancient Greek poet Homer."
+    },
+    {
+      "id": "q022",
+      "text": "What is the pen name of Samuel Clemens?",
+      "options": { "A": "O. Henry", "B": "Mark Twain", "C": "Lewis Carroll", "D": "George Orwell" },
+      "correct": "B",
+      "explanation": "Samuel Langhorne Clemens wrote under the pen name Mark Twain."
+    },
+    {
+      "id": "q023",
+      "text": "In 'To Kill a Mockingbird', what is the name of Scout's father?",
+      "options": { "A": "Boo Radley", "B": "Tom Robinson", "C": "Atticus Finch", "D": "Jem Finch" },
+      "correct": "C",
+      "explanation": "Atticus Finch is the lawyer father of Scout and Jem in Harper Lee's novel."
+    },
+    {
+      "id": "q024",
+      "text": "Who wrote 'Crime and Punishment'?",
+      "options": { "A": "Leo Tolstoy", "B": "Fyodor Dostoevsky", "C": "Anton Chekhov", "D": "Ivan Turgenev" },
+      "correct": "B",
+      "explanation": "Fyodor Dostoevsky published Crime and Punishment in 1866."
+    },
+    {
+      "id": "q025",
+      "text": "What is the name of the pig who leads the rebellion in 'Animal Farm'?",
+      "options": { "A": "Snowball", "B": "Squealer", "C": "Old Major", "D": "Napoleon" },
+      "correct": "C",
+      "explanation": "Old Major inspires the animals to rebel. Napoleon and Snowball later lead, but Old Major starts the rebellion."
+    },
+    {
+      "id": "q026",
+      "text": "Which poet wrote 'The Road Not Taken'?",
+      "options": { "A": "Walt Whitman", "B": "Robert Frost", "C": "Emily Dickinson", "D": "T.S. Eliot" },
+      "correct": "B",
+      "explanation": "Robert Frost published The Road Not Taken in 1916."
+    },
+    {
+      "id": "q027",
+      "text": "Who is the author of 'Brave New World'?",
+      "options": { "A": "George Orwell", "B": "Ray Bradbury", "C": "Aldous Huxley", "D": "H.G. Wells" },
+      "correct": "C",
+      "explanation": "Aldous Huxley published Brave New World in 1932."
+    },
+    {
+      "id": "q028",
+      "text": "What was the first published novel, often considered as such in English literature?",
+      "options": { "A": "Gulliver's Travels", "B": "Robinson Crusoe", "C": "Pamela", "D": "Tom Jones" },
+      "correct": "B",
+      "explanation": "Daniel Defoe's Robinson Crusoe (1719) is widely considered one of the first English novels."
+    },
+    {
+      "id": "q029",
+      "text": "Who wrote 'The Divine Comedy'?",
+      "options": { "A": "Petrarch", "B": "Boccaccio", "C": "Dante Alighieri", "D": "Virgil" },
+      "correct": "C",
+      "explanation": "Dante Alighieri wrote The Divine Comedy in the early 14th century."
+    },
+    {
+      "id": "q030",
+      "text": "What is the setting of Emily Bronte's 'Wuthering Heights'?",
+      "options": { "A": "London", "B": "The Yorkshire moors", "C": "Bath", "D": "The Scottish Highlands" },
+      "correct": "B",
+      "explanation": "Wuthering Heights is set on the Yorkshire moors in northern England."
+    },
+    {
+      "id": "q031",
+      "text": "Which children's book features a character named Thing One and Thing Two?",
+      "options": { "A": "Green Eggs and Ham", "B": "The Cat in the Hat", "C": "Where the Wild Things Are", "D": "Curious George" },
+      "correct": "B",
+      "explanation": "Thing One and Thing Two appear in Dr. Seuss's The Cat in the Hat."
+    },
+    {
+      "id": "q032",
+      "text": "Who wrote 'Don Quixote'?",
+      "options": { "A": "Miguel de Cervantes", "B": "Federico Garcia Lorca", "C": "Gabriel Garcia Marquez", "D": "Jorge Luis Borges" },
+      "correct": "A",
+      "explanation": "Miguel de Cervantes published Don Quixote in two parts in 1605 and 1615."
+    },
+    {
+      "id": "q033",
+      "text": "What literary device is used in the phrase 'the wind whispered'?",
+      "options": { "A": "Metaphor", "B": "Simile", "C": "Personification", "D": "Alliteration" },
+      "correct": "C",
+      "explanation": "Personification gives human qualities to non-human things. Wind cannot literally whisper."
+    },
+    {
+      "id": "q034",
+      "text": "Who wrote 'Frankenstein'?",
+      "options": { "A": "Bram Stoker", "B": "Mary Shelley", "C": "Edgar Allan Poe", "D": "Ann Radcliffe" },
+      "correct": "B",
+      "explanation": "Mary Shelley published Frankenstein in 1818 when she was just 20 years old."
+    },
+    {
+      "id": "q035",
+      "text": "What is the subtitle of 'Frankenstein'?",
+      "options": { "A": "The Last Man", "B": "The Modern Prometheus", "C": "A Gothic Tale", "D": "The New Adam" },
+      "correct": "B",
+      "explanation": "The full title is Frankenstein; or, The Modern Prometheus."
+    },
+    {
+      "id": "q036",
+      "text": "Which author wrote both 'The Jungle Book' and 'Kim'?",
+      "options": { "A": "Robert Louis Stevenson", "B": "H. Rider Haggard", "C": "Rudyard Kipling", "D": "Joseph Conrad" },
+      "correct": "C",
+      "explanation": "Rudyard Kipling wrote The Jungle Book (1894) and Kim (1901)."
+    },
+    {
+      "id": "q037",
+      "text": "In Greek mythology, what is the Iliad primarily about?",
+      "options": { "A": "The founding of Rome", "B": "The Trojan War", "C": "The voyage of Jason", "D": "The labors of Hercules" },
+      "correct": "B",
+      "explanation": "Homer's Iliad focuses on events during the Trojan War, specifically the wrath of Achilles."
+    },
+    {
+      "id": "q038",
+      "text": "Who wrote 'The Bell Jar'?",
+      "options": { "A": "Virginia Woolf", "B": "Sylvia Plath", "C": "Anne Sexton", "D": "Dorothy Parker" },
+      "correct": "B",
+      "explanation": "Sylvia Plath published The Bell Jar in 1963 under the pseudonym Victoria Lucas."
+    },
+    {
+      "id": "q039",
+      "text": "What type of poem is a fourteen-line poem with a specific rhyme scheme?",
+      "options": { "A": "Haiku", "B": "Limerick", "C": "Sonnet", "D": "Elegy" },
+      "correct": "C",
+      "explanation": "A sonnet is a 14-line poem, typically in iambic pentameter with a set rhyme scheme."
+    },
+    {
+      "id": "q040",
+      "text": "Who is the author of 'Slaughterhouse-Five'?",
+      "options": { "A": "Joseph Heller", "B": "Kurt Vonnegut", "C": "Philip Roth", "D": "Norman Mailer" },
+      "correct": "B",
+      "explanation": "Kurt Vonnegut published Slaughterhouse-Five in 1969, based partly on his WWII experiences."
+    },
+    {
+      "id": "q041",
+      "text": "Which Nobel Prize-winning author wrote 'The Old Man and the Sea'?",
+      "options": { "A": "John Steinbeck", "B": "William Faulkner", "C": "Ernest Hemingway", "D": "Saul Bellow" },
+      "correct": "C",
+      "explanation": "Ernest Hemingway published The Old Man and the Sea in 1952."
+    },
+    {
+      "id": "q042",
+      "text": "What is the name of the land where Bilbo Baggins lives?",
+      "options": { "A": "Mordor", "B": "The Shire", "C": "Rivendell", "D": "Rohan" },
+      "correct": "B",
+      "explanation": "Bilbo Baggins lives in Bag End in the Shire in J.R.R. Tolkien's Middle-earth."
+    },
+    {
+      "id": "q043",
+      "text": "Who wrote 'Invisible Man' (1952)?",
+      "options": { "A": "James Baldwin", "B": "Ralph Ellison", "C": "Richard Wright", "D": "Langston Hughes" },
+      "correct": "B",
+      "explanation": "Ralph Ellison published Invisible Man in 1952, winning the National Book Award."
+    },
+    {
+      "id": "q044",
+      "text": "How many plays did Shakespeare write?",
+      "options": { "A": "27", "B": "37", "C": "42", "D": "50" },
+      "correct": "B",
+      "explanation": "Shakespeare is generally credited with 37 plays, though some scholars debate the exact number."
+    },
+    {
+      "id": "q045",
+      "text": "Who wrote 'The Picture of Dorian Gray'?",
+      "options": { "A": "Oscar Wilde", "B": "Charles Dickens", "C": "Thomas Hardy", "D": "Henry James" },
+      "correct": "A",
+      "explanation": "Oscar Wilde published The Picture of Dorian Gray in 1890."
+    },
+    {
+      "id": "q046",
+      "text": "Which Russian novel features the characters Anna and Count Vronsky?",
+      "options": { "A": "War and Peace", "B": "Anna Karenina", "C": "Doctor Zhivago", "D": "Eugene Onegin" },
+      "correct": "B",
+      "explanation": "Anna Karenina by Leo Tolstoy centers on Anna's affair with Count Vronsky."
+    },
+    {
+      "id": "q047",
+      "text": "Who wrote 'The Color Purple'?",
+      "options": { "A": "Toni Morrison", "B": "Maya Angelou", "C": "Alice Walker", "D": "Zora Neale Hurston" },
+      "correct": "C",
+      "explanation": "Alice Walker published The Color Purple in 1982 and won the Pulitzer Prize."
+    },
+    {
+      "id": "q048",
+      "text": "What is a bildungsroman?",
+      "options": { "A": "A historical novel", "B": "A coming-of-age story", "C": "A travel narrative", "D": "A ghost story" },
+      "correct": "B",
+      "explanation": "A bildungsroman is a novel that follows the protagonist's growth from youth to adulthood."
+    },
+    {
+      "id": "q049",
+      "text": "Who wrote 'Things Fall Apart'?",
+      "options": { "A": "Wole Soyinka", "B": "Chinua Achebe", "C": "Ngugi wa Thiong'o", "D": "Ben Okri" },
+      "correct": "B",
+      "explanation": "Chinua Achebe published Things Fall Apart in 1958, a landmark of African literature."
+    },
+    {
+      "id": "q050",
+      "text": "Which poet wrote 'I Wandered Lonely as a Cloud'?",
+      "options": { "A": "John Keats", "B": "Lord Byron", "C": "William Wordsworth", "D": "Percy Bysshe Shelley" },
+      "correct": "C",
+      "explanation": "William Wordsworth wrote this poem, also known as Daffodils, in 1804."
+    },
+    {
+      "id": "q051",
+      "text": "What is the name of Jay Gatsby's love interest in 'The Great Gatsby'?",
+      "options": { "A": "Jordan Baker", "B": "Myrtle Wilson", "C": "Daisy Buchanan", "D": "Catherine Wilson" },
+      "correct": "C",
+      "explanation": "Jay Gatsby is in love with Daisy Buchanan throughout the novel."
+    },
+    {
+      "id": "q052",
+      "text": "Who wrote 'A Tale of Two Cities'?",
+      "options": { "A": "William Thackeray", "B": "Charles Dickens", "C": "Thomas Hardy", "D": "Anthony Trollope" },
+      "correct": "B",
+      "explanation": "Charles Dickens published A Tale of Two Cities in 1859, set during the French Revolution."
+    },
+    {
+      "id": "q053",
+      "text": "Which literary movement is associated with writers like Jack Kerouac and Allen Ginsberg?",
+      "options": { "A": "Transcendentalism", "B": "Beat Generation", "C": "Harlem Renaissance", "D": "Modernism" },
+      "correct": "B",
+      "explanation": "Kerouac and Ginsberg were central figures of the Beat Generation in the 1950s."
+    },
+    {
+      "id": "q054",
+      "text": "Who wrote the children's book 'Charlotte's Web'?",
+      "options": { "A": "Roald Dahl", "B": "E.B. White", "C": "Maurice Sendak", "D": "Shel Silverstein" },
+      "correct": "B",
+      "explanation": "E.B. White published Charlotte's Web in 1952."
+    },
+    {
+      "id": "q055",
+      "text": "What is the name of the monster in the Anglo-Saxon epic poem 'Beowulf'?",
+      "options": { "A": "Fenrir", "B": "Grendel", "C": "Jormungandr", "D": "Smaug" },
+      "correct": "B",
+      "explanation": "Grendel is the first monster that Beowulf fights in the epic poem."
+    },
+    {
+      "id": "q056",
+      "text": "Who wrote 'Mrs Dalloway'?",
+      "options": { "A": "Virginia Woolf", "B": "Katherine Mansfield", "C": "Edith Wharton", "D": "George Eliot" },
+      "correct": "A",
+      "explanation": "Virginia Woolf published Mrs Dalloway in 1925, using a stream-of-consciousness style."
+    },
+    {
+      "id": "q057",
+      "text": "Which Shakespeare play is set in Verona and features two feuding families?",
+      "options": { "A": "Much Ado About Nothing", "B": "Romeo and Juliet", "C": "The Taming of the Shrew", "D": "The Two Gentlemen of Verona" },
+      "correct": "B",
+      "explanation": "Romeo and Juliet is set in Verona and features the Montagues and Capulets."
+    },
+    {
+      "id": "q058",
+      "text": "Who wrote 'Catch-22'?",
+      "options": { "A": "Kurt Vonnegut", "B": "Norman Mailer", "C": "Joseph Heller", "D": "Tim O'Brien" },
+      "correct": "C",
+      "explanation": "Joseph Heller published Catch-22 in 1961, set during World War II."
+    },
+    {
+      "id": "q059",
+      "text": "What is the real name of George Orwell?",
+      "options": { "A": "Eric Arthur Blair", "B": "Charles Lutwidge Dodgson", "C": "David John Moore Cornwell", "D": "Hector Hugh Munro" },
+      "correct": "A",
+      "explanation": "George Orwell was born Eric Arthur Blair in 1903."
+    },
+    {
+      "id": "q060",
+      "text": "Which novel by Kazuo Ishiguro features a butler named Stevens?",
+      "options": { "A": "Never Let Me Go", "B": "The Remains of the Day", "C": "An Artist of the Floating World", "D": "The Buried Giant" },
+      "correct": "B",
+      "explanation": "The Remains of the Day (1989) follows the butler Stevens and won the Booker Prize."
+    },
+    {
+      "id": "q061",
+      "text": "Who wrote 'The Raven'?",
+      "options": { "A": "Walt Whitman", "B": "Henry Wadsworth Longfellow", "C": "Edgar Allan Poe", "D": "Ralph Waldo Emerson" },
+      "correct": "C",
+      "explanation": "Edgar Allan Poe published The Raven in 1845."
+    },
+    {
+      "id": "q062",
+      "text": "What was the first book printed using movable type in Europe?",
+      "options": { "A": "The Canterbury Tales", "B": "The Gutenberg Bible", "C": "The Decameron", "D": "Aesop's Fables" },
+      "correct": "B",
+      "explanation": "The Gutenberg Bible, printed by Johannes Gutenberg around 1455, was the first major book printed with movable type in Europe."
+    },
+    {
+      "id": "q063",
+      "text": "Who wrote 'Wuthering Heights'?",
+      "options": { "A": "Charlotte Bronte", "B": "Anne Bronte", "C": "Emily Bronte", "D": "Jane Austen" },
+      "correct": "C",
+      "explanation": "Emily Bronte published Wuthering Heights in 1847, her only novel."
+    },
+    {
+      "id": "q064",
+      "text": "Which dystopian novel features a society divided into factions based on virtues?",
+      "options": { "A": "The Hunger Games", "B": "Divergent", "C": "The Maze Runner", "D": "The Giver" },
+      "correct": "B",
+      "explanation": "Veronica Roth's Divergent features factions: Abnegation, Dauntless, Erudite, Amity, and Candor."
+    },
+    {
+      "id": "q065",
+      "text": "Who wrote 'The Stranger' (L'Etranger)?",
+      "options": { "A": "Jean-Paul Sartre", "B": "Albert Camus", "C": "Simone de Beauvoir", "D": "Andre Gide" },
+      "correct": "B",
+      "explanation": "Albert Camus published The Stranger in 1942, a key existentialist novel."
+    },
+    {
+      "id": "q066",
+      "text": "What children's book features a very hungry caterpillar?",
+      "options": { "A": "Goodnight Moon", "B": "The Very Hungry Caterpillar", "C": "Brown Bear, Brown Bear", "D": "If You Give a Mouse a Cookie" },
+      "correct": "B",
+      "explanation": "Eric Carle published The Very Hungry Caterpillar in 1969."
+    },
+    {
+      "id": "q067",
+      "text": "Which author created the fictional county of Yoknapatawpha?",
+      "options": { "A": "Flannery O'Connor", "B": "William Faulkner", "C": "Carson McCullers", "D": "Eudora Welty" },
+      "correct": "B",
+      "explanation": "William Faulkner set many of his novels in the fictional Yoknapatawpha County, Mississippi."
+    },
+    {
+      "id": "q068",
+      "text": "Who wrote 'The Tale of Peter Rabbit'?",
+      "options": { "A": "A.A. Milne", "B": "Kenneth Grahame", "C": "Beatrix Potter", "D": "Lewis Carroll" },
+      "correct": "C",
+      "explanation": "Beatrix Potter published The Tale of Peter Rabbit in 1902."
+    },
+    {
+      "id": "q069",
+      "text": "Which American poet wrote 'Leaves of Grass'?",
+      "options": { "A": "Emily Dickinson", "B": "Walt Whitman", "C": "Robert Frost", "D": "Langston Hughes" },
+      "correct": "B",
+      "explanation": "Walt Whitman first published Leaves of Grass in 1855 and revised it throughout his life."
+    },
+    {
+      "id": "q070",
+      "text": "What genre is 'Dune' by Frank Herbert?",
+      "options": { "A": "Fantasy", "B": "Cyberpunk", "C": "Science Fiction", "D": "Horror" },
+      "correct": "C",
+      "explanation": "Dune (1965) is a landmark science fiction novel set on the desert planet Arrakis."
+    },
+    {
+      "id": "q071",
+      "text": "Who wrote 'Jane Eyre'?",
+      "options": { "A": "Emily Bronte", "B": "Charlotte Bronte", "C": "Anne Bronte", "D": "Elizabeth Gaskell" },
+      "correct": "B",
+      "explanation": "Charlotte Bronte published Jane Eyre in 1847 under the pen name Currer Bell."
+    },
+    {
+      "id": "q072",
+      "text": "Which poet wrote 'Do Not Go Gentle into That Good Night'?",
+      "options": { "A": "W.B. Yeats", "B": "Dylan Thomas", "C": "T.S. Eliot", "D": "Seamus Heaney" },
+      "correct": "B",
+      "explanation": "Dylan Thomas wrote this villanelle, first published in 1951."
+    },
+    {
+      "id": "q073",
+      "text": "What is the name of the Bronte sisters' fictional world they created as children?",
+      "options": { "A": "Gondal", "B": "Narnia", "C": "Angria", "D": "Both Gondal and Angria" },
+      "correct": "D",
+      "explanation": "Charlotte and Branwell created Angria, while Emily and Anne created Gondal."
+    },
+    {
+      "id": "q074",
+      "text": "Who is the author of 'The Metamorphosis'?",
+      "options": { "A": "Thomas Mann", "B": "Franz Kafka", "C": "Hermann Hesse", "D": "Robert Musil" },
+      "correct": "B",
+      "explanation": "Franz Kafka published The Metamorphosis in 1915, about Gregor Samsa turning into an insect."
+    },
+    {
+      "id": "q075",
+      "text": "Which novel features the character of Hester Prynne?",
+      "options": { "A": "The Scarlet Letter", "B": "Little Women", "C": "The House of Mirth", "D": "The Age of Innocence" },
+      "correct": "A",
+      "explanation": "Hester Prynne is the protagonist of Nathaniel Hawthorne's The Scarlet Letter (1850)."
+    },
+    {
+      "id": "q076",
+      "text": "Who was the first African American to win the Nobel Prize in Literature?",
+      "options": { "A": "Maya Angelou", "B": "Alice Walker", "C": "Toni Morrison", "D": "James Baldwin" },
+      "correct": "C",
+      "explanation": "Toni Morrison won the Nobel Prize in Literature in 1993."
+    },
+    {
+      "id": "q077",
+      "text": "What is the title of Roald Dahl's book about a boy who visits a chocolate factory?",
+      "options": { "A": "James and the Giant Peach", "B": "Charlie and the Chocolate Factory", "C": "Matilda", "D": "The BFG" },
+      "correct": "B",
+      "explanation": "Roald Dahl published Charlie and the Chocolate Factory in 1964."
+    },
+    {
+      "id": "q078",
+      "text": "Which ancient Greek wrote the tragedies 'Oedipus Rex' and 'Antigone'?",
+      "options": { "A": "Euripides", "B": "Aeschylus", "C": "Sophocles", "D": "Aristophanes" },
+      "correct": "C",
+      "explanation": "Sophocles wrote both Oedipus Rex and Antigone in the 5th century BCE."
+    },
+    {
+      "id": "q079",
+      "text": "Who wrote 'One Flew Over the Cuckoo's Nest'?",
+      "options": { "A": "Ken Kesey", "B": "Hunter S. Thompson", "C": "Tom Wolfe", "D": "Jack Kerouac" },
+      "correct": "A",
+      "explanation": "Ken Kesey published One Flew Over the Cuckoo's Nest in 1962."
+    },
+    {
+      "id": "q080",
+      "text": "What literary term describes a story within a story?",
+      "options": { "A": "Allegory", "B": "Frame narrative", "C": "Epistolary", "D": "Stream of consciousness" },
+      "correct": "B",
+      "explanation": "A frame narrative is a story that contains another story within it, like The Canterbury Tales."
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "ohio_sports",
+    "title": "The Big Red Machine & Ohio Sports",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Sports", "Ohio", "Baseball", "Football", "70s"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "os_01",
+      "text": "Which Cincinnati Reds manager was known as 'Captain Hook' for changing pitchers?",
+      "options": {
+        "A": "Sparky Anderson",
+        "B": "Pete Rose",
+        "C": "Dave Bristol",
+        "D": "John McNamara"
+      },
+      "correct": "A",
+      "explanation": "Sparky Anderson managed the Big Red Machine to World Series titles in 1975 and 1976."
+    },
+    {
+      "id": "os_02",
+      "text": "Who was the 'Hit King' of the Cincinnati Reds?",
+      "options": {
+        "A": "Joe Morgan",
+        "B": "Tony Perez",
+        "C": "Pete Rose",
+        "D": "Johnny Bench"
+      },
+      "correct": "C",
+      "explanation": "Pete Rose is the all-time MLB leader in hits (4,256)."
+    },
+    {
+      "id": "os_03",
+      "text": "Which Ohio State football coach famously punched a Clemson player in 1978?",
+      "options": {
+        "A": "Earle Bruce",
+        "B": "Woody Hayes",
+        "C": "John Cooper",
+        "D": "Jim Tressel"
+      },
+      "correct": "B",
+      "explanation": "The legendary Woody Hayes was fired after punching Charlie Bauman in the 1978 Gator Bowl."
+    },
+    {
+      "id": "os_04",
+      "text": "The 'Miracle of Richfield' refers to which team's 1975-76 season?",
+      "options": {
+        "A": "Cleveland Browns",
+        "B": "Cleveland Indians",
+        "C": "Cleveland Cavaliers",
+        "D": "Cincinnati Bengals"
+      },
+      "correct": "C",
+      "explanation": "The Cavs, led by Bill Fitch, had an unforgettable season at the Richfield Coliseum."
+    },
+    {
+      "id": "os_05",
+      "text": "Who is the only player to win the Heisman Trophy twice?",
+      "options": {
+        "A": "Eddie George",
+        "B": "Archie Griffin",
+        "C": "Troy Smith",
+        "D": "Howard Cassady"
+      },
+      "correct": "B",
+      "explanation": "Archie Griffin of Ohio State won the Heisman in 1974 and 1975."
+    },
+    {
+      "id": "os_06",
+      "text": "Which Cleveland Browns running back is considered one of the greatest of all time?",
+      "options": {
+        "A": "Jim Brown",
+        "B": "Leroy Kelly",
+        "C": "Bernie Kosar",
+        "D": "Otto Graham"
+      },
+      "correct": "A",
+      "explanation": "Jim Brown played for the Browns from 1957-1965 and led the league in rushing 8 times."
+    },
+    {
+      "id": "os_07",
+      "text": "Which catcher was the heart of the Big Red Machine?",
+      "options": {
+        "A": "Carlton Fisk",
+        "B": "Gary Carter",
+        "C": "Johnny Bench",
+        "D": "Thurman Munson"
+      },
+      "correct": "C",
+      "explanation": "Johnny Bench is widely regarded as the greatest catcher in baseball history."
+    },
+    {
+      "id": "os_08",
+      "text": "Before 2022, the Cleveland Guardians were known as the:",
+      "options": {
+        "A": "Spiders",
+        "B": "Indians",
+        "C": "Barons",
+        "D": "Steamers"
+      },
+      "correct": "B",
+      "explanation": "The team was named the Cleveland Indians from 1915 to 2021."
+    },
+    {
+      "id": "os_09",
+      "text": "Which Cincinnati Bengals quarterback led the team to Super Bowl XVI?",
+      "options": {
+        "A": "Boomer Esiason",
+        "B": "Ken Anderson",
+        "C": "Carson Palmer",
+        "D": "Andy Dalton"
+      },
+      "correct": "B",
+      "explanation": "Ken Anderson was the league MVP in 1981 and led the Bengals to their first Super Bowl."
+    },
+    {
+      "id": "os_10",
+      "text": "What is the nickname of Ohio State University's stadium?",
+      "options": {
+        "A": "The Big House",
+        "B": "The Swamp",
+        "C": "The Shoe",
+        "D": "Death Valley"
+      },
+      "correct": "C",
+      "explanation": "Ohio Stadium is affectionately known as 'The Horseshoe' or 'The Shoe' due to its shape."
+    },
+    {
+      "id": "os_11",
+      "text": "Who founded the Cleveland Browns and the Cincinnati Bengals?",
+      "options": {
+        "A": "Art Modell",
+        "B": "Paul Brown",
+        "C": "Mike Brown",
+        "D": "Al Davis"
+      },
+      "correct": "B",
+      "explanation": "Paul Brown was a coaching innovator who founded both Ohio NFL franchises."
+    },
+    {
+      "id": "os_12",
+      "text": "Which 'Big Red Machine' player was known as 'Little Joe'?",
+      "options": {
+        "A": "Joe Morgan",
+        "B": "George Foster",
+        "C": "Ken Griffey Sr.",
+        "D": "Dave Concepcion"
+      },
+      "correct": "A",
+      "explanation": "Hall of Fame second baseman Joe Morgan was the engine of the team."
+    },
+    {
+      "id": "os_13",
+      "text": "The 'Kardiac Kids' were the 1980 version of which team?",
+      "options": {
+        "A": "Cincinnati Reds",
+        "B": "Cleveland Browns",
+        "C": "Ohio State Buckeyes",
+        "D": "Toledo Mud Hens"
+      },
+      "correct": "B",
+      "explanation": "The 1980 Browns were famous for their heart-stopping, last-minute victories."
+    },
+    {
+      "id": "os_14",
+      "text": "LeBron James was drafted by the Cavaliers in which year?",
+      "options": {
+        "A": "2001",
+        "B": "2003",
+        "C": "2005",
+        "D": "1999"
+      },
+      "correct": "B",
+      "explanation": "The 'Kid from Akron' was the #1 overall pick in the 2003 NBA Draft."
+    },
+    {
+      "id": "os_15",
+      "text": "Which golf legend is from Columbus, Ohio, and nicknamed 'The Golden Bear'?",
+      "options": {
+        "A": "Arnold Palmer",
+        "B": "Tiger Woods",
+        "C": "Jack Nicklaus",
+        "D": "Tom Watson"
+      },
+      "correct": "C",
+      "explanation": "Jack Nicklaus, with 18 major championships, hails from Upper Arlington, Ohio."
+    }
+  ]
+}

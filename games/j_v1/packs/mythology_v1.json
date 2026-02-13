@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "mythology_001",
+    "title": "Mythology & Legends",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Mythology", "Greek", "Norse", "Legends"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "In Greek mythology, who is the king of the gods?",
+      "options": {
+        "A": "Poseidon",
+        "B": "Zeus",
+        "C": "Hades",
+        "D": "Apollo"
+      },
+      "correct": "B",
+      "explanation": "Zeus is the king of the Olympian gods, ruling from Mount Olympus."
+    },
+    {
+      "id": "q002",
+      "text": "What is the name of Thor's hammer in Norse mythology?",
+      "options": {
+        "A": "Gungnir",
+        "B": "Gram",
+        "C": "Mjolnir",
+        "D": "Tyrfing"
+      },
+      "correct": "C",
+      "explanation": "Mjolnir is Thor's legendary hammer, forged by the dwarves Sindri and Brokkr."
+    },
+    {
+      "id": "q003",
+      "text": "Which Egyptian god has the head of a jackal?",
+      "options": {
+        "A": "Horus",
+        "B": "Thoth",
+        "C": "Osiris",
+        "D": "Anubis"
+      },
+      "correct": "D",
+      "explanation": "Anubis, the god of mummification and the afterlife, is depicted with a jackal head."
+    },
+    {
+      "id": "q004",
+      "text": "In Roman mythology, who is the equivalent of the Greek goddess Aphrodite?",
+      "options": {
+        "A": "Juno",
+        "B": "Venus",
+        "C": "Diana",
+        "D": "Minerva"
+      },
+      "correct": "B",
+      "explanation": "Venus is the Roman goddess of love and beauty, equivalent to the Greek Aphrodite."
+    },
+    {
+      "id": "q005",
+      "text": "What creature in Greek mythology has the body of a lion, wings of an eagle, and the head of a human?",
+      "options": {
+        "A": "Chimera",
+        "B": "Manticore",
+        "C": "Griffin",
+        "D": "Sphinx"
+      },
+      "correct": "D",
+      "explanation": "The Sphinx has a human head and a lion's body, and in Greek myth posed riddles to travelers near Thebes."
+    },
+    {
+      "id": "q006",
+      "text": "Who is the Norse god of mischief and trickery?",
+      "options": {
+        "A": "Loki",
+        "B": "Freyr",
+        "C": "Tyr",
+        "D": "Baldur"
+      },
+      "correct": "A",
+      "explanation": "Loki is the trickster god in Norse mythology, known for shapeshifting and causing chaos among the gods."
+    },
+    {
+      "id": "q007",
+      "text": "In Hindu mythology, who is the preserver god in the Trimurti?",
+      "options": {
+        "A": "Brahma",
+        "B": "Shiva",
+        "C": "Vishnu",
+        "D": "Indra"
+      },
+      "correct": "C",
+      "explanation": "Vishnu is the preserver in the Hindu Trimurti, alongside Brahma the creator and Shiva the destroyer."
+    },
+    {
+      "id": "q008",
+      "text": "What is the name of the Greek hero who slew Medusa?",
+      "options": {
+        "A": "Theseus",
+        "B": "Heracles",
+        "C": "Perseus",
+        "D": "Odysseus"
+      },
+      "correct": "C",
+      "explanation": "Perseus beheaded the Gorgon Medusa using a mirrored shield to avoid her petrifying gaze."
+    },
+    {
+      "id": "q009",
+      "text": "In Japanese mythology, what is the sun goddess called?",
+      "options": {
+        "A": "Tsukuyomi",
+        "B": "Amaterasu",
+        "C": "Izanami",
+        "D": "Susanoo"
+      },
+      "correct": "B",
+      "explanation": "Amaterasu is the sun goddess and one of the principal deities in Japanese Shinto mythology."
+    },
+    {
+      "id": "q010",
+      "text": "Which mythical creature is reborn from its own ashes?",
+      "options": {
+        "A": "Dragon",
+        "B": "Unicorn",
+        "C": "Phoenix",
+        "D": "Basilisk"
+      },
+      "correct": "C",
+      "explanation": "The Phoenix is a mythical bird that cyclically regenerates by bursting into flames and rising from its ashes."
+    },
+    {
+      "id": "q011",
+      "text": "Who wrote the epic poem 'The Iliad'?",
+      "options": {
+        "A": "Virgil",
+        "B": "Sophocles",
+        "C": "Homer",
+        "D": "Ovid"
+      },
+      "correct": "C",
+      "explanation": "Homer is the ancient Greek poet traditionally credited with composing The Iliad and The Odyssey."
+    },
+    {
+      "id": "q012",
+      "text": "In Norse mythology, what is the name of the great world tree?",
+      "options": {
+        "A": "Yggdrasil",
+        "B": "Bifrost",
+        "C": "Valhalla",
+        "D": "Midgard"
+      },
+      "correct": "A",
+      "explanation": "Yggdrasil is the immense ash tree that connects the nine worlds in Norse cosmology."
+    },
+    {
+      "id": "q013",
+      "text": "Which Greek god is associated with the forge and metalworking?",
+      "options": {
+        "A": "Ares",
+        "B": "Hermes",
+        "C": "Hephaestus",
+        "D": "Dionysus"
+      },
+      "correct": "C",
+      "explanation": "Hephaestus is the Greek god of fire, metalworking, and the forge, who crafted weapons for the gods."
+    },
+    {
+      "id": "q014",
+      "text": "What is the Egyptian Book of the Dead primarily about?",
+      "options": {
+        "A": "Egyptian history",
+        "B": "Spells to guide the deceased through the afterlife",
+        "C": "Laws of the pharaohs",
+        "D": "Agricultural techniques"
+      },
+      "correct": "B",
+      "explanation": "The Book of the Dead is a collection of funerary texts with spells to help the deceased navigate the underworld."
+    },
+    {
+      "id": "q015",
+      "text": "In Celtic mythology, what is the Otherworld commonly called?",
+      "options": {
+        "A": "Valhalla",
+        "B": "Elysium",
+        "C": "Tir na nOg",
+        "D": "Niflheim"
+      },
+      "correct": "C",
+      "explanation": "Tir na nOg, meaning 'Land of the Young,' is the Celtic Otherworld of eternal youth and beauty."
+    },
+    {
+      "id": "q016",
+      "text": "Who is the Hindu god with an elephant head?",
+      "options": {
+        "A": "Hanuman",
+        "B": "Ganesha",
+        "C": "Kartikeya",
+        "D": "Krishna"
+      },
+      "correct": "B",
+      "explanation": "Ganesha is the elephant-headed god of beginnings, wisdom, and the remover of obstacles."
+    },
+    {
+      "id": "q017",
+      "text": "In Greek mythology, who flew too close to the sun with wax wings?",
+      "options": {
+        "A": "Daedalus",
+        "B": "Phaethon",
+        "C": "Icarus",
+        "D": "Bellerophon"
+      },
+      "correct": "C",
+      "explanation": "Icarus ignored his father Daedalus's warning and flew too close to the sun, melting his wax wings."
+    },
+    {
+      "id": "q018",
+      "text": "What is the name of Odin's eight-legged horse in Norse mythology?",
+      "options": {
+        "A": "Sleipnir",
+        "B": "Svadilfari",
+        "C": "Gullinbursti",
+        "D": "Tanngrisnir"
+      },
+      "correct": "A",
+      "explanation": "Sleipnir is Odin's eight-legged steed, described as the best of all horses in Norse mythology."
+    },
+    {
+      "id": "q019",
+      "text": "Which Roman god is equivalent to the Greek god Ares?",
+      "options": {
+        "A": "Jupiter",
+        "B": "Neptune",
+        "C": "Mars",
+        "D": "Mercury"
+      },
+      "correct": "C",
+      "explanation": "Mars is the Roman god of war, equivalent to the Greek god Ares."
+    },
+    {
+      "id": "q020",
+      "text": "In the Japanese creation myth, who are the divine couple that created the islands of Japan?",
+      "options": {
+        "A": "Amaterasu and Tsukuyomi",
+        "B": "Izanagi and Izanami",
+        "C": "Susanoo and Kushinadahime",
+        "D": "Raijin and Fujin"
+      },
+      "correct": "B",
+      "explanation": "Izanagi and Izanami are the primordial divine couple who created the Japanese archipelago."
+    },
+    {
+      "id": "q021",
+      "text": "What did Prometheus steal from the gods to give to humanity?",
+      "options": {
+        "A": "Ambrosia",
+        "B": "Knowledge",
+        "C": "Fire",
+        "D": "Immortality"
+      },
+      "correct": "C",
+      "explanation": "Prometheus stole fire from the gods and gave it to humanity, for which Zeus punished him severely."
+    },
+    {
+      "id": "q022",
+      "text": "In Egyptian mythology, who is the god of the sun?",
+      "options": {
+        "A": "Set",
+        "B": "Ra",
+        "C": "Ptah",
+        "D": "Sobek"
+      },
+      "correct": "B",
+      "explanation": "Ra is the Egyptian sun god who travels across the sky in his solar barque each day."
+    },
+    {
+      "id": "q023",
+      "text": "How many labors did Heracles have to complete?",
+      "options": {
+        "A": "7",
+        "B": "10",
+        "C": "12",
+        "D": "15"
+      },
+      "correct": "C",
+      "explanation": "Heracles was tasked with completing 12 labors as penance, assigned by King Eurystheus."
+    },
+    {
+      "id": "q024",
+      "text": "In Norse mythology, what event marks the end of the world?",
+      "options": {
+        "A": "Ragnarok",
+        "B": "Gotterdammerung",
+        "C": "Fimbulwinter",
+        "D": "The Wild Hunt"
+      },
+      "correct": "A",
+      "explanation": "Ragnarok is the prophesied series of events including a great battle that results in the death of major gods and the submersion of the world."
+    },
+    {
+      "id": "q025",
+      "text": "Which mythical creature has the head and wings of an eagle and the body of a lion?",
+      "options": {
+        "A": "Hippogriff",
+        "B": "Sphinx",
+        "C": "Griffin",
+        "D": "Chimera"
+      },
+      "correct": "C",
+      "explanation": "A Griffin (or Gryphon) combines the eagle's head, wings, and talons with the body of a lion."
+    },
+    {
+      "id": "q026",
+      "text": "Who is the Greek goddess of wisdom and warfare strategy?",
+      "options": {
+        "A": "Artemis",
+        "B": "Hera",
+        "C": "Athena",
+        "D": "Demeter"
+      },
+      "correct": "C",
+      "explanation": "Athena is the goddess of wisdom, strategic warfare, and crafts, born from the head of Zeus."
+    },
+    {
+      "id": "q027",
+      "text": "In Hindu mythology, what is the name of the monkey god who aided Rama?",
+      "options": {
+        "A": "Ganesha",
+        "B": "Hanuman",
+        "C": "Garuda",
+        "D": "Nandi"
+      },
+      "correct": "B",
+      "explanation": "Hanuman is the monkey god known for his devotion to Lord Rama and his role in the Ramayana."
+    },
+    {
+      "id": "q028",
+      "text": "What is the Minotaur trapped inside in Greek mythology?",
+      "options": {
+        "A": "A cave",
+        "B": "A tower",
+        "C": "A labyrinth",
+        "D": "A dungeon"
+      },
+      "correct": "C",
+      "explanation": "The Minotaur was confined in the Labyrinth beneath Crete, designed by the architect Daedalus."
+    },
+    {
+      "id": "q029",
+      "text": "Which Norse god sacrificed his hand to bind the wolf Fenrir?",
+      "options": {
+        "A": "Thor",
+        "B": "Odin",
+        "C": "Tyr",
+        "D": "Heimdall"
+      },
+      "correct": "C",
+      "explanation": "Tyr placed his hand in Fenrir's mouth as a pledge of good faith while the wolf was bound, losing it when Fenrir realized the trick."
+    },
+    {
+      "id": "q030",
+      "text": "In Egyptian mythology, which goddess is often depicted with a throne on her head?",
+      "options": {
+        "A": "Hathor",
+        "B": "Isis",
+        "C": "Bastet",
+        "D": "Sekhmet"
+      },
+      "correct": "B",
+      "explanation": "Isis, the goddess of magic and motherhood, is frequently depicted with a throne hieroglyph on her head."
+    },
+    {
+      "id": "q031",
+      "text": "What is the name of the ferryman who carries souls across the River Styx?",
+      "options": {
+        "A": "Cerberus",
+        "B": "Thanatos",
+        "C": "Charon",
+        "D": "Hermes"
+      },
+      "correct": "C",
+      "explanation": "Charon is the ferryman of the dead, transporting souls across the rivers of the underworld."
+    },
+    {
+      "id": "q032",
+      "text": "In Japanese mythology, what creature is a shapeshifting fox?",
+      "options": {
+        "A": "Tengu",
+        "B": "Kappa",
+        "C": "Kitsune",
+        "D": "Tanuki"
+      },
+      "correct": "C",
+      "explanation": "Kitsune are intelligent foxes in Japanese folklore that gain additional tails and shapeshifting abilities as they age."
+    },
+    {
+      "id": "q033",
+      "text": "Who killed the Nemean Lion as his first labor?",
+      "options": {
+        "A": "Perseus",
+        "B": "Theseus",
+        "C": "Achilles",
+        "D": "Heracles"
+      },
+      "correct": "D",
+      "explanation": "Heracles strangled the Nemean Lion with his bare hands as the first of his twelve labors."
+    },
+    {
+      "id": "q034",
+      "text": "In Norse mythology, who guards the rainbow bridge Bifrost?",
+      "options": {
+        "A": "Freya",
+        "B": "Heimdall",
+        "C": "Bragi",
+        "D": "Vidar"
+      },
+      "correct": "B",
+      "explanation": "Heimdall is the watchman of the gods who guards Bifrost, the rainbow bridge connecting Asgard to Midgard."
+    },
+    {
+      "id": "q035",
+      "text": "What was Achilles' only vulnerable spot?",
+      "options": {
+        "A": "His left arm",
+        "B": "His heel",
+        "C": "His back",
+        "D": "His neck"
+      },
+      "correct": "B",
+      "explanation": "Achilles' mother Thetis dipped him in the River Styx, holding him by his heel, which remained vulnerable."
+    },
+    {
+      "id": "q036",
+      "text": "Which Hindu epic tells the story of Prince Rama's quest to rescue his wife Sita?",
+      "options": {
+        "A": "Mahabharata",
+        "B": "Bhagavad Gita",
+        "C": "Ramayana",
+        "D": "Vedas"
+      },
+      "correct": "C",
+      "explanation": "The Ramayana is the ancient Sanskrit epic narrating Rama's journey to rescue Sita from the demon king Ravana."
+    },
+    {
+      "id": "q037",
+      "text": "In Greek mythology, what did Pandora release when she opened her box?",
+      "options": {
+        "A": "Monsters",
+        "B": "Knowledge",
+        "C": "Evils and misfortunes",
+        "D": "The seasons"
+      },
+      "correct": "C",
+      "explanation": "Pandora's box (originally a jar) released all the evils and misfortunes into the world, leaving only Hope inside."
+    },
+    {
+      "id": "q038",
+      "text": "Which Celtic hero is known for his 'warp spasm' battle frenzy?",
+      "options": {
+        "A": "Finn McCool",
+        "B": "Cu Chulainn",
+        "C": "Lugh",
+        "D": "Cormac Mac Airt"
+      },
+      "correct": "B",
+      "explanation": "Cu Chulainn, the Hound of Ulster, was famous for his riastrad (warp spasm), a terrifying battle transformation."
+    },
+    {
+      "id": "q039",
+      "text": "What three-headed dog guards the entrance to the Greek underworld?",
+      "options": {
+        "A": "Orthrus",
+        "B": "Ladon",
+        "C": "Cerberus",
+        "D": "Typhon"
+      },
+      "correct": "C",
+      "explanation": "Cerberus is the three-headed hound that guards the gates of the underworld, preventing the dead from leaving."
+    },
+    {
+      "id": "q040",
+      "text": "In Norse mythology, what do fallen warriors in Valhalla do each day?",
+      "options": {
+        "A": "Feast endlessly",
+        "B": "Fight and are resurrected to feast at night",
+        "C": "Guard the gates of Asgard",
+        "D": "Train with the Valkyries"
+      },
+      "correct": "B",
+      "explanation": "The Einherjar fight each day and are healed each evening to feast in the great hall of Valhalla."
+    },
+    {
+      "id": "q041",
+      "text": "Which Egyptian god was murdered by his brother Set and later became lord of the underworld?",
+      "options": {
+        "A": "Horus",
+        "B": "Ra",
+        "C": "Osiris",
+        "D": "Thoth"
+      },
+      "correct": "C",
+      "explanation": "Osiris was killed by his brother Set and resurrected by Isis, after which he became ruler of the underworld."
+    },
+    {
+      "id": "q042",
+      "text": "What is the name of the legendary sword King Arthur pulled from a stone?",
+      "options": {
+        "A": "Excalibur",
+        "B": "Clarent",
+        "C": "Durandal",
+        "D": "Joyeuse"
+      },
+      "correct": "A",
+      "explanation": "Excalibur is the legendary sword associated with King Arthur. In some versions it is the sword in the stone; in others it is given by the Lady of the Lake."
+    },
+    {
+      "id": "q043",
+      "text": "In Greek mythology, who turned everything he touched into gold?",
+      "options": {
+        "A": "Croesus",
+        "B": "King Midas",
+        "C": "Jason",
+        "D": "Tantalus"
+      },
+      "correct": "B",
+      "explanation": "King Midas was granted the golden touch by Dionysus, which turned everything he touched into gold."
+    },
+    {
+      "id": "q044",
+      "text": "What is the name of the Japanese storm god and brother of Amaterasu?",
+      "options": {
+        "A": "Fujin",
+        "B": "Raijin",
+        "C": "Susanoo",
+        "D": "Tsukuyomi"
+      },
+      "correct": "C",
+      "explanation": "Susanoo is the storm god in Japanese mythology and the brother of Amaterasu and Tsukuyomi."
+    },
+    {
+      "id": "q045",
+      "text": "In the Mahabharata, what divine discourse does Krishna give to Arjuna on the battlefield?",
+      "options": {
+        "A": "The Upanishads",
+        "B": "The Bhagavad Gita",
+        "C": "The Rigveda",
+        "D": "The Puranas"
+      },
+      "correct": "B",
+      "explanation": "The Bhagavad Gita is the sacred dialogue between Krishna and Arjuna set within the Mahabharata."
+    },
+    {
+      "id": "q046",
+      "text": "Which Greek Titan holds up the sky?",
+      "options": {
+        "A": "Prometheus",
+        "B": "Kronos",
+        "C": "Atlas",
+        "D": "Hyperion"
+      },
+      "correct": "C",
+      "explanation": "Atlas was condemned by Zeus to hold up the celestial heavens for eternity as punishment after the Titanomachy."
+    },
+    {
+      "id": "q047",
+      "text": "In Norse mythology, what is the name of the great serpent that encircles the world?",
+      "options": {
+        "A": "Nidhogg",
+        "B": "Jormungandr",
+        "C": "Fafnir",
+        "D": "Apep"
+      },
+      "correct": "B",
+      "explanation": "Jormungandr, also called the Midgard Serpent, is so large it encircles the entire world and grasps its own tail."
+    },
+    {
+      "id": "q048",
+      "text": "Who is the Roman goddess of the hunt, equivalent to the Greek Artemis?",
+      "options": {
+        "A": "Ceres",
+        "B": "Vesta",
+        "C": "Diana",
+        "D": "Flora"
+      },
+      "correct": "C",
+      "explanation": "Diana is the Roman goddess of the hunt, the moon, and nature, equivalent to the Greek goddess Artemis."
+    },
+    {
+      "id": "q049",
+      "text": "What creature did Bellerophon ride to defeat the Chimera?",
+      "options": {
+        "A": "Arion",
+        "B": "A chariot of the sun",
+        "C": "Pegasus",
+        "D": "A golden ram"
+      },
+      "correct": "C",
+      "explanation": "Bellerophon tamed and rode the winged horse Pegasus to defeat the fire-breathing Chimera."
+    },
+    {
+      "id": "q050",
+      "text": "In Egyptian mythology, what must the heart of the deceased be weighed against in the Hall of Ma'at?",
+      "options": {
+        "A": "A golden scale",
+        "B": "A feather",
+        "C": "An ankh",
+        "D": "A scarab"
+      },
+      "correct": "B",
+      "explanation": "The heart of the deceased is weighed against the feather of Ma'at (truth). If heavier, the heart is devoured by Ammit."
+    },
+    {
+      "id": "q051",
+      "text": "What is the name of the Celtic cauldron that could restore dead warriors to life?",
+      "options": {
+        "A": "The Holy Grail",
+        "B": "The Cauldron of Dagda",
+        "C": "The Cauldron of Rebirth",
+        "D": "Bran's Cauldron"
+      },
+      "correct": "C",
+      "explanation": "The Cauldron of Rebirth (Pair Dadeni) from the Mabinogion could bring dead soldiers back to life."
+    },
+    {
+      "id": "q052",
+      "text": "Which Greek hero sailed with the Argonauts to find the Golden Fleece?",
+      "options": {
+        "A": "Odysseus",
+        "B": "Theseus",
+        "C": "Jason",
+        "D": "Heracles"
+      },
+      "correct": "C",
+      "explanation": "Jason led the Argonauts on their voyage aboard the Argo to retrieve the Golden Fleece from Colchis."
+    },
+    {
+      "id": "q053",
+      "text": "In Hindu mythology, what is the vehicle (vahana) of Lord Vishnu?",
+      "options": {
+        "A": "Nandi the bull",
+        "B": "A mouse",
+        "C": "Garuda the eagle",
+        "D": "A swan"
+      },
+      "correct": "C",
+      "explanation": "Garuda, the divine eagle, serves as the mount of Lord Vishnu."
+    },
+    {
+      "id": "q054",
+      "text": "What is the name of Odysseus's wife, who waited faithfully for his return?",
+      "options": {
+        "A": "Helen",
+        "B": "Circe",
+        "C": "Calypso",
+        "D": "Penelope"
+      },
+      "correct": "D",
+      "explanation": "Penelope waited twenty years for Odysseus, fending off suitors by weaving and unraveling a shroud each night."
+    },
+    {
+      "id": "q055",
+      "text": "In Norse mythology, who are the female figures that choose which warriors die in battle and go to Valhalla?",
+      "options": {
+        "A": "Norns",
+        "B": "Disir",
+        "C": "Valkyries",
+        "D": "Shieldmaidens"
+      },
+      "correct": "C",
+      "explanation": "The Valkyries are Odin's choosers of the slain, selecting worthy warriors to join the Einherjar in Valhalla."
+    },
+    {
+      "id": "q056",
+      "text": "Which mythological hero is famous for his journey home described in 'The Odyssey'?",
+      "options": {
+        "A": "Achilles",
+        "B": "Aeneas",
+        "C": "Odysseus",
+        "D": "Ajax"
+      },
+      "correct": "C",
+      "explanation": "The Odyssey tells the story of Odysseus's ten-year journey home to Ithaca after the Trojan War."
+    },
+    {
+      "id": "q057",
+      "text": "In Japanese folklore, what is a Tanuki known for?",
+      "options": {
+        "A": "Breathing fire",
+        "B": "Shapeshifting and trickery",
+        "C": "Guarding temples",
+        "D": "Controlling the seas"
+      },
+      "correct": "B",
+      "explanation": "Tanuki are raccoon dogs in Japanese folklore known for their shapeshifting abilities and mischievous nature."
+    },
+    {
+      "id": "q058",
+      "text": "What was the punishment of Sisyphus in the Greek underworld?",
+      "options": {
+        "A": "Being chained to a rock while an eagle ate his liver",
+        "B": "Standing in water that receded when he tried to drink",
+        "C": "Rolling a boulder up a hill only for it to roll back down forever",
+        "D": "Being turned into a spider"
+      },
+      "correct": "C",
+      "explanation": "Sisyphus was condemned to roll a boulder up a hill for eternity, only for it to roll back down each time."
+    },
+    {
+      "id": "q059",
+      "text": "Which Hindu deity is known as the Destroyer and performs the cosmic dance of Tandava?",
+      "options": {
+        "A": "Vishnu",
+        "B": "Brahma",
+        "C": "Shiva",
+        "D": "Indra"
+      },
+      "correct": "C",
+      "explanation": "Shiva is the destroyer in the Trimurti and performs the Tandava, the cosmic dance of creation and destruction."
+    },
+    {
+      "id": "q060",
+      "text": "In Greek mythology, who was the first woman, created by the gods as a punishment for humanity?",
+      "options": {
+        "A": "Persephone",
+        "B": "Pandora",
+        "C": "Psyche",
+        "D": "Andromeda"
+      },
+      "correct": "B",
+      "explanation": "Pandora was the first woman, crafted by Hephaestus on Zeus's orders as retribution for Prometheus stealing fire."
+    },
+    {
+      "id": "q061",
+      "text": "What is the name of the Norse realm of the dead, ruled by Hel?",
+      "options": {
+        "A": "Niflheim",
+        "B": "Helheim",
+        "C": "Svartalfheim",
+        "D": "Muspelheim"
+      },
+      "correct": "B",
+      "explanation": "Helheim is the realm of the dead in Norse mythology, presided over by the goddess Hel, daughter of Loki."
+    },
+    {
+      "id": "q062",
+      "text": "Which Egyptian goddess takes the form of a cat?",
+      "options": {
+        "A": "Isis",
+        "B": "Hathor",
+        "C": "Bastet",
+        "D": "Nut"
+      },
+      "correct": "C",
+      "explanation": "Bastet is the Egyptian goddess of home, fertility, and cats, often depicted as a cat or a woman with a cat's head."
+    },
+    {
+      "id": "q063",
+      "text": "In the legend of Robin Hood, where does his band of outlaws live?",
+      "options": {
+        "A": "The Black Forest",
+        "B": "Sherwood Forest",
+        "C": "The Forest of Dean",
+        "D": "Brocéliande"
+      },
+      "correct": "B",
+      "explanation": "Robin Hood and his Merry Men make their home in Sherwood Forest in Nottinghamshire."
+    },
+    {
+      "id": "q064",
+      "text": "Who is the Greek god of the sea?",
+      "options": {
+        "A": "Apollo",
+        "B": "Hermes",
+        "C": "Ares",
+        "D": "Poseidon"
+      },
+      "correct": "D",
+      "explanation": "Poseidon is the Greek god of the sea, earthquakes, and horses, and brother of Zeus and Hades."
+    },
+    {
+      "id": "q065",
+      "text": "In Chinese mythology, what creature is the dragon traditionally associated with?",
+      "options": {
+        "A": "Destruction and chaos",
+        "B": "Water, power, and good fortune",
+        "C": "Death and the underworld",
+        "D": "Fire and anger"
+      },
+      "correct": "B",
+      "explanation": "In Chinese mythology, dragons are benevolent symbols of power, strength, and good fortune, closely associated with water and rain."
+    },
+    {
+      "id": "q066",
+      "text": "What is the Chimera in Greek mythology?",
+      "options": {
+        "A": "A serpent with nine heads",
+        "B": "A creature with a lion's head, goat's body, and serpent's tail",
+        "C": "A half-man, half-horse",
+        "D": "A giant with one eye"
+      },
+      "correct": "B",
+      "explanation": "The Chimera is a fire-breathing hybrid with the head of a lion, body of a goat, and tail of a serpent."
+    },
+    {
+      "id": "q067",
+      "text": "In Norse mythology, what did Odin sacrifice to gain wisdom from the Well of Mimir?",
+      "options": {
+        "A": "His hand",
+        "B": "His eye",
+        "C": "His son",
+        "D": "His spear"
+      },
+      "correct": "B",
+      "explanation": "Odin sacrificed one of his eyes to drink from the Well of Mimir and gain cosmic wisdom."
+    },
+    {
+      "id": "q068",
+      "text": "Which Greek hero is known for his cleverness and the strategy of the Trojan Horse?",
+      "options": {
+        "A": "Ajax",
+        "B": "Diomedes",
+        "C": "Odysseus",
+        "D": "Patroclus"
+      },
+      "correct": "C",
+      "explanation": "Odysseus devised the strategy of the Trojan Horse, which led to the fall of Troy."
+    },
+    {
+      "id": "q069",
+      "text": "In Hindu mythology, what are the avatars of Vishnu?",
+      "options": {
+        "A": "His weapons",
+        "B": "His earthly incarnations",
+        "C": "His priests",
+        "D": "His sacred texts"
+      },
+      "correct": "B",
+      "explanation": "Avatars are Vishnu's earthly incarnations, including Rama, Krishna, and others, who descend to restore cosmic order."
+    },
+    {
+      "id": "q070",
+      "text": "What is the name of the legendary city that sank beneath the ocean?",
+      "options": {
+        "A": "El Dorado",
+        "B": "Avalon",
+        "C": "Atlantis",
+        "D": "Shangri-La"
+      },
+      "correct": "C",
+      "explanation": "Atlantis is the legendary island civilization described by Plato that supposedly sank into the sea."
+    },
+    {
+      "id": "q071",
+      "text": "In Egyptian mythology, which god has the head of an ibis bird?",
+      "options": {
+        "A": "Horus",
+        "B": "Thoth",
+        "C": "Khnum",
+        "D": "Sobek"
+      },
+      "correct": "B",
+      "explanation": "Thoth, the god of writing, wisdom, and magic, is depicted with the head of an ibis."
+    },
+    {
+      "id": "q072",
+      "text": "Who is the leader of the Wild Hunt in various European mythologies?",
+      "options": {
+        "A": "Zeus",
+        "B": "Odin",
+        "C": "Cernunnos",
+        "D": "Herne"
+      },
+      "correct": "B",
+      "explanation": "Odin (or Wodan) is most commonly identified as the leader of the Wild Hunt in Norse and Germanic traditions."
+    },
+    {
+      "id": "q073",
+      "text": "In Greek mythology, what type of creature is a centaur?",
+      "options": {
+        "A": "Half-man, half-bull",
+        "B": "Half-man, half-horse",
+        "C": "Half-man, half-goat",
+        "D": "Half-man, half-eagle"
+      },
+      "correct": "B",
+      "explanation": "A centaur has the upper body of a human and the lower body of a horse."
+    },
+    {
+      "id": "q074",
+      "text": "What is the name of the sword wielded by the Norse hero Sigurd to slay the dragon Fafnir?",
+      "options": {
+        "A": "Excalibur",
+        "B": "Gram",
+        "C": "Hrunting",
+        "D": "Naegling"
+      },
+      "correct": "B",
+      "explanation": "Gram is the legendary sword reforged from its broken pieces that Sigurd used to kill the dragon Fafnir."
+    },
+    {
+      "id": "q075",
+      "text": "In Japanese mythology, what is a Tengu?",
+      "options": {
+        "A": "A water spirit",
+        "B": "A mountain spirit with a long nose or bird-like features",
+        "C": "A sea dragon",
+        "D": "A ghostly fire"
+      },
+      "correct": "B",
+      "explanation": "Tengu are supernatural mountain spirits often depicted with long noses or bird-like features, associated with martial arts."
+    },
+    {
+      "id": "q076",
+      "text": "Who is the mother of the Greek god Apollo?",
+      "options": {
+        "A": "Hera",
+        "B": "Demeter",
+        "C": "Leto",
+        "D": "Metis"
+      },
+      "correct": "C",
+      "explanation": "Leto is the Titaness mother of the twins Apollo and Artemis, fathered by Zeus."
+    },
+    {
+      "id": "q077",
+      "text": "In Celtic mythology, who are the Tuatha De Danann?",
+      "options": {
+        "A": "A race of giants",
+        "B": "A supernatural race of gods and heroes",
+        "C": "The first humans",
+        "D": "A group of druids"
+      },
+      "correct": "B",
+      "explanation": "The Tuatha De Danann are the supernatural race of Irish mythology, often regarded as gods or fairy folk."
+    },
+    {
+      "id": "q078",
+      "text": "What did the Greek hero Theseus use to find his way out of the Labyrinth?",
+      "options": {
+        "A": "A magic compass",
+        "B": "A ball of thread",
+        "C": "A torch",
+        "D": "Bread crumbs"
+      },
+      "correct": "B",
+      "explanation": "Ariadne gave Theseus a ball of thread (clew) to unwind as he entered so he could retrace his steps after slaying the Minotaur."
+    },
+    {
+      "id": "q079",
+      "text": "In Norse mythology, what are the Norns responsible for?",
+      "options": {
+        "A": "Guarding the dead",
+        "B": "Weaving the fates of gods and men",
+        "C": "Controlling the weather",
+        "D": "Forging weapons"
+      },
+      "correct": "B",
+      "explanation": "The Norns (Urd, Verdandi, and Skuld) are the three beings who control destiny by weaving the threads of fate at the base of Yggdrasil."
+    },
+    {
+      "id": "q080",
+      "text": "Which Roman poet wrote 'The Aeneid', telling the story of the Trojan hero Aeneas?",
+      "options": {
+        "A": "Ovid",
+        "B": "Horace",
+        "C": "Virgil",
+        "D": "Cicero"
+      },
+      "correct": "C",
+      "explanation": "Virgil (Publius Vergilius Maro) wrote The Aeneid, an epic poem about Aeneas's journey from Troy to Italy."
+    }
+  ]
+}
