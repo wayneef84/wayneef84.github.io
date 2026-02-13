@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "sports_001",
+    "title": "Sports & Athletics",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Sports", "Olympics", "Football", "Basketball"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which country has won the most FIFA World Cup titles?",
+      "options": {
+        "A": "Germany",
+        "B": "Brazil",
+        "C": "Italy",
+        "D": "Argentina"
+      },
+      "correct": "B",
+      "explanation": "Brazil has won the FIFA World Cup a record 5 times (1958, 1962, 1970, 1994, 2002)."
+    },
+    {
+      "id": "q002",
+      "text": "How many players are on a standard basketball team on the court at one time?",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "5",
+        "D": "7"
+      },
+      "correct": "C",
+      "explanation": "Each basketball team has 5 players on the court at a time."
+    },
+    {
+      "id": "q003",
+      "text": "In which year were the first modern Olympic Games held?",
+      "options": {
+        "A": "1896",
+        "B": "1900",
+        "C": "1888",
+        "D": "1904"
+      },
+      "correct": "A",
+      "explanation": "The first modern Olympic Games were held in Athens, Greece in 1896."
+    },
+    {
+      "id": "q004",
+      "text": "What is the maximum score possible in a single frame of bowling?",
+      "options": {
+        "A": "20",
+        "B": "25",
+        "C": "30",
+        "D": "10"
+      },
+      "correct": "C",
+      "explanation": "In the 10th frame, a bowler can score up to 30 points by rolling three consecutive strikes."
+    },
+    {
+      "id": "q005",
+      "text": "Which tennis player has won the most Grand Slam men's singles titles?",
+      "options": {
+        "A": "Roger Federer",
+        "B": "Rafael Nadal",
+        "C": "Novak Djokovic",
+        "D": "Pete Sampras"
+      },
+      "correct": "C",
+      "explanation": "Novak Djokovic holds the record for the most men's Grand Slam singles titles with 24."
+    },
+    {
+      "id": "q006",
+      "text": "What sport is played at Wimbledon?",
+      "options": {
+        "A": "Cricket",
+        "B": "Golf",
+        "C": "Tennis",
+        "D": "Polo"
+      },
+      "correct": "C",
+      "explanation": "Wimbledon is the oldest and most prestigious tennis tournament in the world."
+    },
+    {
+      "id": "q007",
+      "text": "How many rings are on the Olympic flag?",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "3",
+        "D": "5"
+      },
+      "correct": "D",
+      "explanation": "The Olympic flag has 5 interlocking rings representing the five continents."
+    },
+    {
+      "id": "q008",
+      "text": "Which NBA player is known as 'His Airness'?",
+      "options": {
+        "A": "LeBron James",
+        "B": "Kobe Bryant",
+        "C": "Michael Jordan",
+        "D": "Magic Johnson"
+      },
+      "correct": "C",
+      "explanation": "Michael Jordan earned the nickname 'His Airness' for his incredible leaping ability."
+    },
+    {
+      "id": "q009",
+      "text": "In baseball, how many strikes make an out?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "correct": "B",
+      "explanation": "Three strikes result in a strikeout in baseball."
+    },
+    {
+      "id": "q010",
+      "text": "Which country hosted the 2016 Summer Olympics?",
+      "options": {
+        "A": "China",
+        "B": "Brazil",
+        "C": "United Kingdom",
+        "D": "Japan"
+      },
+      "correct": "B",
+      "explanation": "The 2016 Summer Olympics were held in Rio de Janeiro, Brazil."
+    },
+    {
+      "id": "q011",
+      "text": "What is the standard distance of a marathon?",
+      "options": {
+        "A": "24.2 miles",
+        "B": "26.2 miles",
+        "C": "28.2 miles",
+        "D": "25.0 miles"
+      },
+      "correct": "B",
+      "explanation": "A marathon is 26.2 miles (42.195 kilometers)."
+    },
+    {
+      "id": "q012",
+      "text": "Which NFL team has won the most Super Bowls?",
+      "options": {
+        "A": "Dallas Cowboys",
+        "B": "San Francisco 49ers",
+        "C": "New England Patriots",
+        "D": "Pittsburgh Steelers"
+      },
+      "correct": "C",
+      "explanation": "The New England Patriots and Pittsburgh Steelers are tied with 6 Super Bowl wins each, but the Patriots have the most recent dynasty run."
+    },
+    {
+      "id": "q013",
+      "text": "In golf, what term describes one stroke under par on a hole?",
+      "options": {
+        "A": "Eagle",
+        "B": "Bogey",
+        "C": "Birdie",
+        "D": "Albatross"
+      },
+      "correct": "C",
+      "explanation": "A birdie is a score of one stroke under par on a single hole."
+    },
+    {
+      "id": "q014",
+      "text": "Which swimmer has won the most Olympic gold medals?",
+      "options": {
+        "A": "Mark Spitz",
+        "B": "Ian Thorpe",
+        "C": "Ryan Lochte",
+        "D": "Michael Phelps"
+      },
+      "correct": "D",
+      "explanation": "Michael Phelps won 23 Olympic gold medals, the most by any athlete in Olympic history."
+    },
+    {
+      "id": "q015",
+      "text": "How many periods are in a standard NHL hockey game?",
+      "options": {
+        "A": "2",
+        "B": "4",
+        "C": "3",
+        "D": "5"
+      },
+      "correct": "C",
+      "explanation": "A standard NHL hockey game consists of 3 periods of 20 minutes each."
+    },
+    {
+      "id": "q016",
+      "text": "Which soccer player is known as 'The GOAT' and has won multiple Ballon d'Or awards?",
+      "options": {
+        "A": "Cristiano Ronaldo",
+        "B": "Lionel Messi",
+        "C": "Neymar",
+        "D": "Zinedine Zidane"
+      },
+      "correct": "B",
+      "explanation": "Lionel Messi has won a record 8 Ballon d'Or awards and is widely considered the greatest of all time."
+    },
+    {
+      "id": "q017",
+      "text": "In which sport would you perform a 'slam dunk'?",
+      "options": {
+        "A": "Volleyball",
+        "B": "Tennis",
+        "C": "Basketball",
+        "D": "Badminton"
+      },
+      "correct": "C",
+      "explanation": "A slam dunk is a basketball move where a player jumps and forces the ball through the hoop."
+    },
+    {
+      "id": "q018",
+      "text": "What is the highest possible break in a single frame of snooker?",
+      "options": {
+        "A": "147",
+        "B": "155",
+        "C": "140",
+        "D": "170"
+      },
+      "correct": "A",
+      "explanation": "The maximum break in snooker is 147, achieved by potting all reds with blacks followed by all colors."
+    },
+    {
+      "id": "q019",
+      "text": "Which athlete set the world record for the 100m sprint at 9.58 seconds?",
+      "options": {
+        "A": "Carl Lewis",
+        "B": "Tyson Gay",
+        "C": "Usain Bolt",
+        "D": "Justin Gatlin"
+      },
+      "correct": "C",
+      "explanation": "Usain Bolt set the 100m world record of 9.58 seconds at the 2009 World Championships in Berlin."
+    },
+    {
+      "id": "q020",
+      "text": "How many holes are in a standard round of golf?",
+      "options": {
+        "A": "9",
+        "B": "16",
+        "C": "18",
+        "D": "21"
+      },
+      "correct": "C",
+      "explanation": "A standard round of golf consists of 18 holes."
+    },
+    {
+      "id": "q021",
+      "text": "Which city hosted the first Olympic Games to feature both Summer and Winter events?",
+      "options": {
+        "A": "Paris",
+        "B": "London",
+        "C": "Athens",
+        "D": "Stockholm"
+      },
+      "correct": "A",
+      "explanation": "The 1900 Paris Olympics included some winter sports like figure skating, though separate Winter Games did not begin until 1924."
+    },
+    {
+      "id": "q022",
+      "text": "In which year did the 'Miracle on Ice' occur at the Winter Olympics?",
+      "options": {
+        "A": "1984",
+        "B": "1976",
+        "C": "1980",
+        "D": "1988"
+      },
+      "correct": "C",
+      "explanation": "The Miracle on Ice took place at the 1980 Winter Olympics in Lake Placid when the US hockey team defeated the Soviet Union."
+    },
+    {
+      "id": "q023",
+      "text": "Which baseball player holds the all-time home run record in MLB?",
+      "options": {
+        "A": "Babe Ruth",
+        "B": "Hank Aaron",
+        "C": "Barry Bonds",
+        "D": "Willie Mays"
+      },
+      "correct": "C",
+      "explanation": "Barry Bonds holds the all-time MLB home run record with 762 career home runs."
+    },
+    {
+      "id": "q024",
+      "text": "What is the term for a score of zero in tennis?",
+      "options": {
+        "A": "Nil",
+        "B": "Zero",
+        "C": "Love",
+        "D": "Blank"
+      },
+      "correct": "C",
+      "explanation": "In tennis, a score of zero is called 'love'."
+    },
+    {
+      "id": "q025",
+      "text": "Which country is traditionally dominant in Olympic gymnastics?",
+      "options": {
+        "A": "China",
+        "B": "Romania",
+        "C": "Soviet Union/Russia",
+        "D": "United States"
+      },
+      "correct": "C",
+      "explanation": "The Soviet Union/Russia has historically been the most dominant force in Olympic gymnastics with the most total medals."
+    },
+    {
+      "id": "q026",
+      "text": "How many points is a touchdown worth in American football?",
+      "options": {
+        "A": "5",
+        "B": "7",
+        "C": "3",
+        "D": "6"
+      },
+      "correct": "D",
+      "explanation": "A touchdown is worth 6 points in American football, with the option for a 1-point extra kick or 2-point conversion."
+    },
+    {
+      "id": "q027",
+      "text": "Which Grand Slam tennis tournament is played on clay?",
+      "options": {
+        "A": "Wimbledon",
+        "B": "US Open",
+        "C": "Australian Open",
+        "D": "French Open"
+      },
+      "correct": "D",
+      "explanation": "The French Open (Roland Garros) is played on clay courts."
+    },
+    {
+      "id": "q028",
+      "text": "In soccer, what does FIFA stand for?",
+      "options": {
+        "A": "Federation of International Football Associations",
+        "B": "First International Football Authority",
+        "C": "Federation Internationale de Football Association",
+        "D": "Federal Institution of Football Activities"
+      },
+      "correct": "C",
+      "explanation": "FIFA stands for Federation Internationale de Football Association, founded in 1904."
+    },
+    {
+      "id": "q029",
+      "text": "Which NBA team has won the most championships?",
+      "options": {
+        "A": "Chicago Bulls",
+        "B": "Los Angeles Lakers",
+        "C": "Boston Celtics",
+        "D": "Golden State Warriors"
+      },
+      "correct": "C",
+      "explanation": "The Boston Celtics have won the most NBA championships with 18 titles."
+    },
+    {
+      "id": "q030",
+      "text": "What is the diameter of a basketball hoop in inches?",
+      "options": {
+        "A": "16 inches",
+        "B": "18 inches",
+        "C": "20 inches",
+        "D": "22 inches"
+      },
+      "correct": "B",
+      "explanation": "A standard basketball hoop has an inside diameter of 18 inches."
+    },
+    {
+      "id": "q031",
+      "text": "Which golfer has won the most major championships?",
+      "options": {
+        "A": "Tiger Woods",
+        "B": "Arnold Palmer",
+        "C": "Jack Nicklaus",
+        "D": "Gary Player"
+      },
+      "correct": "C",
+      "explanation": "Jack Nicklaus holds the record with 18 major championship victories."
+    },
+    {
+      "id": "q032",
+      "text": "What sport uses a shuttlecock?",
+      "options": {
+        "A": "Tennis",
+        "B": "Badminton",
+        "C": "Squash",
+        "D": "Table Tennis"
+      },
+      "correct": "B",
+      "explanation": "Badminton is played with a shuttlecock (also called a birdie)."
+    },
+    {
+      "id": "q033",
+      "text": "Which country won the first-ever FIFA World Cup in 1930?",
+      "options": {
+        "A": "Brazil",
+        "B": "Argentina",
+        "C": "Uruguay",
+        "D": "Italy"
+      },
+      "correct": "C",
+      "explanation": "Uruguay won the first FIFA World Cup in 1930, which was also hosted in Uruguay."
+    },
+    {
+      "id": "q034",
+      "text": "In boxing, how many rounds are in a standard professional championship bout?",
+      "options": {
+        "A": "10",
+        "B": "15",
+        "C": "8",
+        "D": "12"
+      },
+      "correct": "D",
+      "explanation": "Modern professional championship boxing matches are scheduled for 12 rounds."
+    },
+    {
+      "id": "q035",
+      "text": "Which Formula 1 driver holds the record for most World Championships?",
+      "options": {
+        "A": "Michael Schumacher",
+        "B": "Lewis Hamilton",
+        "C": "Ayrton Senna",
+        "D": "Max Verstappen"
+      },
+      "correct": "B",
+      "explanation": "Lewis Hamilton and Michael Schumacher share the record with 7 World Championships each, though Hamilton achieved it more recently."
+    },
+    {
+      "id": "q036",
+      "text": "In cricket, how many players are on each team?",
+      "options": {
+        "A": "9",
+        "B": "10",
+        "C": "11",
+        "D": "12"
+      },
+      "correct": "C",
+      "explanation": "Each cricket team has 11 players on the field."
+    },
+    {
+      "id": "q037",
+      "text": "Which city hosted the 2020 Summer Olympics (held in 2021)?",
+      "options": {
+        "A": "Beijing",
+        "B": "Paris",
+        "C": "Tokyo",
+        "D": "Seoul"
+      },
+      "correct": "C",
+      "explanation": "The 2020 Summer Olympics were held in Tokyo, Japan, delayed to 2021 due to the COVID-19 pandemic."
+    },
+    {
+      "id": "q038",
+      "text": "What is the only Grand Slam tennis tournament played on grass?",
+      "options": {
+        "A": "Australian Open",
+        "B": "French Open",
+        "C": "US Open",
+        "D": "Wimbledon"
+      },
+      "correct": "D",
+      "explanation": "Wimbledon is the only Grand Slam tournament played on grass courts."
+    },
+    {
+      "id": "q039",
+      "text": "In the NBA, how far is the three-point line from the basket at its farthest point?",
+      "options": {
+        "A": "22 feet",
+        "B": "23 feet 9 inches",
+        "C": "25 feet",
+        "D": "21 feet 6 inches"
+      },
+      "correct": "B",
+      "explanation": "The NBA three-point line is 23 feet 9 inches from the basket at the arc's farthest point."
+    },
+    {
+      "id": "q040",
+      "text": "Which baseball player was known as 'The Sultan of Swat'?",
+      "options": {
+        "A": "Ty Cobb",
+        "B": "Babe Ruth",
+        "C": "Lou Gehrig",
+        "D": "Joe DiMaggio"
+      },
+      "correct": "B",
+      "explanation": "Babe Ruth was nicknamed 'The Sultan of Swat' for his legendary home run hitting."
+    },
+    {
+      "id": "q041",
+      "text": "What color card in soccer indicates a player is sent off the field?",
+      "options": {
+        "A": "Yellow",
+        "B": "Blue",
+        "C": "Red",
+        "D": "Green"
+      },
+      "correct": "C",
+      "explanation": "A red card means the player is ejected from the game and cannot be replaced."
+    },
+    {
+      "id": "q042",
+      "text": "Which country has won the most Olympic gold medals in history?",
+      "options": {
+        "A": "Soviet Union",
+        "B": "China",
+        "C": "United States",
+        "D": "Great Britain"
+      },
+      "correct": "C",
+      "explanation": "The United States has won the most Olympic gold medals of any country in history."
+    },
+    {
+      "id": "q043",
+      "text": "In American football, how long is the playing field in yards?",
+      "options": {
+        "A": "80 yards",
+        "B": "120 yards",
+        "C": "100 yards",
+        "D": "110 yards"
+      },
+      "correct": "C",
+      "explanation": "The playing field is 100 yards long, with two 10-yard end zones making the total field 120 yards."
+    },
+    {
+      "id": "q044",
+      "text": "Which sport is Tiger Woods associated with?",
+      "options": {
+        "A": "Tennis",
+        "B": "Golf",
+        "C": "Boxing",
+        "D": "Swimming"
+      },
+      "correct": "B",
+      "explanation": "Tiger Woods is one of the greatest professional golfers of all time."
+    },
+    {
+      "id": "q045",
+      "text": "How many sets does a player need to win to take a men's singles match at Wimbledon?",
+      "options": {
+        "A": "2",
+        "B": "4",
+        "C": "3",
+        "D": "5"
+      },
+      "correct": "C",
+      "explanation": "Men's singles at Wimbledon is best of 5 sets, so a player needs to win 3 sets."
+    },
+    {
+      "id": "q046",
+      "text": "Which track and field event involves throwing a heavy metal ball?",
+      "options": {
+        "A": "Discus",
+        "B": "Javelin",
+        "C": "Shot Put",
+        "D": "Hammer Throw"
+      },
+      "correct": "C",
+      "explanation": "Shot put involves throwing (putting) a heavy spherical metal ball as far as possible."
+    },
+    {
+      "id": "q047",
+      "text": "Which team won the first-ever Super Bowl in 1967?",
+      "options": {
+        "A": "Dallas Cowboys",
+        "B": "Green Bay Packers",
+        "C": "New York Jets",
+        "D": "Miami Dolphins"
+      },
+      "correct": "B",
+      "explanation": "The Green Bay Packers won the first Super Bowl (Super Bowl I) on January 15, 1967."
+    },
+    {
+      "id": "q048",
+      "text": "In volleyball, how many times can a team touch the ball before it must cross the net?",
+      "options": {
+        "A": "2",
+        "B": "4",
+        "C": "3",
+        "D": "5"
+      },
+      "correct": "C",
+      "explanation": "A volleyball team is allowed a maximum of 3 touches before the ball must cross the net."
+    },
+    {
+      "id": "q049",
+      "text": "What is the name of the trophy awarded to the NHL champion?",
+      "options": {
+        "A": "Lombardi Trophy",
+        "B": "Commissioner's Trophy",
+        "C": "Stanley Cup",
+        "D": "Larry O'Brien Trophy"
+      },
+      "correct": "C",
+      "explanation": "The Stanley Cup is awarded to the NHL playoff champion each year."
+    },
+    {
+      "id": "q050",
+      "text": "Which Olympic sport involves performing routines on a balance beam?",
+      "options": {
+        "A": "Figure Skating",
+        "B": "Diving",
+        "C": "Gymnastics",
+        "D": "Synchronized Swimming"
+      },
+      "correct": "C",
+      "explanation": "The balance beam is an apparatus in artistic gymnastics."
+    },
+    {
+      "id": "q051",
+      "text": "In baseball, how many bases are there on the diamond?",
+      "options": {
+        "A": "3",
+        "B": "5",
+        "C": "4",
+        "D": "6"
+      },
+      "correct": "C",
+      "explanation": "A baseball diamond has 4 bases: first base, second base, third base, and home plate."
+    },
+    {
+      "id": "q052",
+      "text": "Which legendary basketball player wore the number 23 for the Chicago Bulls?",
+      "options": {
+        "A": "Scottie Pippen",
+        "B": "Dennis Rodman",
+        "C": "Kobe Bryant",
+        "D": "Michael Jordan"
+      },
+      "correct": "D",
+      "explanation": "Michael Jordan famously wore number 23 for the Chicago Bulls."
+    },
+    {
+      "id": "q053",
+      "text": "What is the regulation weight of a men's shot put in kilograms?",
+      "options": {
+        "A": "5.44 kg",
+        "B": "6.00 kg",
+        "C": "7.26 kg",
+        "D": "8.00 kg"
+      },
+      "correct": "C",
+      "explanation": "The men's shot put weighs 7.26 kilograms (16 pounds)."
+    },
+    {
+      "id": "q054",
+      "text": "Which soccer club has won the most UEFA Champions League titles?",
+      "options": {
+        "A": "FC Barcelona",
+        "B": "AC Milan",
+        "C": "Real Madrid",
+        "D": "Liverpool"
+      },
+      "correct": "C",
+      "explanation": "Real Madrid holds the record with 15 UEFA Champions League titles."
+    },
+    {
+      "id": "q055",
+      "text": "In which Olympic event do athletes compete in swimming, cycling, and running?",
+      "options": {
+        "A": "Decathlon",
+        "B": "Pentathlon",
+        "C": "Triathlon",
+        "D": "Heptathlon"
+      },
+      "correct": "C",
+      "explanation": "The triathlon consists of swimming, cycling, and running."
+    },
+    {
+      "id": "q056",
+      "text": "Who was the first African American to play in Major League Baseball?",
+      "options": {
+        "A": "Willie Mays",
+        "B": "Satchel Paige",
+        "C": "Jackie Robinson",
+        "D": "Hank Aaron"
+      },
+      "correct": "C",
+      "explanation": "Jackie Robinson broke the color barrier when he debuted for the Brooklyn Dodgers on April 15, 1947."
+    },
+    {
+      "id": "q057",
+      "text": "What is the scoring system in tennis after deuce?",
+      "options": {
+        "A": "First to score wins",
+        "B": "Advantage, then game point",
+        "C": "Tiebreak",
+        "D": "Sudden death"
+      },
+      "correct": "B",
+      "explanation": "After deuce (40-40), a player must win by two points: first advantage, then the game."
+    },
+    {
+      "id": "q058",
+      "text": "Which country invented the sport of rugby?",
+      "options": {
+        "A": "Australia",
+        "B": "South Africa",
+        "C": "New Zealand",
+        "D": "England"
+      },
+      "correct": "D",
+      "explanation": "Rugby originated at Rugby School in Warwickshire, England, in the 19th century."
+    },
+    {
+      "id": "q059",
+      "text": "How many players are on a standard soccer team on the field?",
+      "options": {
+        "A": "9",
+        "B": "10",
+        "C": "11",
+        "D": "12"
+      },
+      "correct": "C",
+      "explanation": "Each soccer team fields 11 players including the goalkeeper."
+    },
+    {
+      "id": "q060",
+      "text": "Which athlete won 9 Olympic gold medals in track and field?",
+      "options": {
+        "A": "Jesse Owens",
+        "B": "Usain Bolt",
+        "C": "Carl Lewis",
+        "D": "Paavo Nurmi"
+      },
+      "correct": "C",
+      "explanation": "Carl Lewis won 9 Olympic gold medals in sprints and long jump across 4 Olympic Games."
+    },
+    {
+      "id": "q061",
+      "text": "What is the term for three consecutive strikes in bowling?",
+      "options": {
+        "A": "Turkey",
+        "B": "Hat Trick",
+        "C": "Triple Crown",
+        "D": "Trifecta"
+      },
+      "correct": "A",
+      "explanation": "Three consecutive strikes in bowling is called a 'turkey'."
+    },
+    {
+      "id": "q062",
+      "text": "Which heavyweight boxer retired undefeated with a 49-0 record?",
+      "options": {
+        "A": "Muhammad Ali",
+        "B": "Mike Tyson",
+        "C": "Rocky Marciano",
+        "D": "Joe Louis"
+      },
+      "correct": "C",
+      "explanation": "Rocky Marciano retired as the only undefeated heavyweight champion in boxing history with a 49-0 record."
+    },
+    {
+      "id": "q063",
+      "text": "In which sport is the 'Ryder Cup' contested?",
+      "options": {
+        "A": "Tennis",
+        "B": "Sailing",
+        "C": "Golf",
+        "D": "Cricket"
+      },
+      "correct": "C",
+      "explanation": "The Ryder Cup is a biennial golf competition between teams from Europe and the United States."
+    },
+    {
+      "id": "q064",
+      "text": "Which NBA player holds the record for most career points scored?",
+      "options": {
+        "A": "Kareem Abdul-Jabbar",
+        "B": "Michael Jordan",
+        "C": "LeBron James",
+        "D": "Karl Malone"
+      },
+      "correct": "C",
+      "explanation": "LeBron James surpassed Kareem Abdul-Jabbar in 2023 to become the NBA's all-time leading scorer."
+    },
+    {
+      "id": "q065",
+      "text": "What is the width of a soccer goal in feet?",
+      "options": {
+        "A": "20 feet",
+        "B": "24 feet",
+        "C": "18 feet",
+        "D": "28 feet"
+      },
+      "correct": "B",
+      "explanation": "A regulation soccer goal is 24 feet (8 yards) wide and 8 feet high."
+    },
+    {
+      "id": "q066",
+      "text": "In the decathlon, how many events does an athlete compete in?",
+      "options": {
+        "A": "8",
+        "B": "12",
+        "C": "10",
+        "D": "7"
+      },
+      "correct": "C",
+      "explanation": "The decathlon consists of 10 track and field events over two days."
+    },
+    {
+      "id": "q067",
+      "text": "Which NHL player holds the all-time record for most career goals?",
+      "options": {
+        "A": "Gordie Howe",
+        "B": "Wayne Gretzky",
+        "C": "Mario Lemieux",
+        "D": "Alex Ovechkin"
+      },
+      "correct": "B",
+      "explanation": "Wayne Gretzky holds the NHL record with 894 career goals."
+    },
+    {
+      "id": "q068",
+      "text": "Which country has the most Wimbledon men's singles titles historically?",
+      "options": {
+        "A": "United States",
+        "B": "Spain",
+        "C": "Switzerland",
+        "D": "Great Britain/Australia"
+      },
+      "correct": "D",
+      "explanation": "Australia and Great Britain have produced the most Wimbledon men's singles champions historically."
+    },
+    {
+      "id": "q069",
+      "text": "What does 'NBA' stand for?",
+      "options": {
+        "A": "National Ball Association",
+        "B": "National Basketball Association",
+        "C": "North American Basketball Alliance",
+        "D": "National Basketball Authority"
+      },
+      "correct": "B",
+      "explanation": "NBA stands for the National Basketball Association, founded in 1946."
+    },
+    {
+      "id": "q070",
+      "text": "In which year did Serena Williams win her first Grand Slam title?",
+      "options": {
+        "A": "1997",
+        "B": "2001",
+        "C": "1999",
+        "D": "2003"
+      },
+      "correct": "C",
+      "explanation": "Serena Williams won her first Grand Slam title at the 1999 US Open."
+    },
+    {
+      "id": "q071",
+      "text": "How many innings are in a standard professional baseball game?",
+      "options": {
+        "A": "7",
+        "B": "8",
+        "C": "10",
+        "D": "9"
+      },
+      "correct": "D",
+      "explanation": "A standard Major League Baseball game consists of 9 innings."
+    },
+    {
+      "id": "q072",
+      "text": "Which country won the 2022 FIFA World Cup?",
+      "options": {
+        "A": "France",
+        "B": "Brazil",
+        "C": "Argentina",
+        "D": "Croatia"
+      },
+      "correct": "C",
+      "explanation": "Argentina won the 2022 FIFA World Cup in Qatar, defeating France in the final."
+    },
+    {
+      "id": "q073",
+      "text": "What is the height of a standard basketball hoop from the floor?",
+      "options": {
+        "A": "9 feet",
+        "B": "11 feet",
+        "C": "10 feet",
+        "D": "12 feet"
+      },
+      "correct": "C",
+      "explanation": "A regulation basketball hoop is 10 feet (3.05 meters) from the floor."
+    },
+    {
+      "id": "q074",
+      "text": "Which gymnast won 4 gold medals at the 2016 Rio Olympics?",
+      "options": {
+        "A": "Gabby Douglas",
+        "B": "Aly Raisman",
+        "C": "Simone Biles",
+        "D": "Nastia Liukin"
+      },
+      "correct": "C",
+      "explanation": "Simone Biles won 4 gold medals and 1 bronze at the 2016 Rio Olympics."
+    },
+    {
+      "id": "q075",
+      "text": "In golf, what is the term for two strokes under par on a single hole?",
+      "options": {
+        "A": "Birdie",
+        "B": "Eagle",
+        "C": "Albatross",
+        "D": "Bogey"
+      },
+      "correct": "B",
+      "explanation": "An eagle is a score of two strokes under par on a hole."
+    },
+    {
+      "id": "q076",
+      "text": "Which quarterback has won the most Super Bowls?",
+      "options": {
+        "A": "Joe Montana",
+        "B": "Peyton Manning",
+        "C": "Tom Brady",
+        "D": "Terry Bradshaw"
+      },
+      "correct": "C",
+      "explanation": "Tom Brady won a record 7 Super Bowls during his career."
+    },
+    {
+      "id": "q077",
+      "text": "What is the oldest tennis Grand Slam tournament?",
+      "options": {
+        "A": "US Open",
+        "B": "French Open",
+        "C": "Australian Open",
+        "D": "Wimbledon"
+      },
+      "correct": "D",
+      "explanation": "Wimbledon is the oldest Grand Slam tournament, first held in 1877."
+    },
+    {
+      "id": "q078",
+      "text": "Which country has won the most Rugby World Cup titles?",
+      "options": {
+        "A": "New Zealand",
+        "B": "South Africa",
+        "C": "Australia",
+        "D": "England"
+      },
+      "correct": "B",
+      "explanation": "South Africa has won the Rugby World Cup 4 times (1995, 2007, 2019, 2023)."
+    },
+    {
+      "id": "q079",
+      "text": "In Olympic swimming, what is the longest individual race?",
+      "options": {
+        "A": "800m freestyle",
+        "B": "1500m freestyle",
+        "C": "400m individual medley",
+        "D": "1000m freestyle"
+      },
+      "correct": "B",
+      "explanation": "The 1500m freestyle is the longest individual swimming event at the Olympics."
+    },
+    {
+      "id": "q080",
+      "text": "Which MLB team has won the most World Series titles?",
+      "options": {
+        "A": "St. Louis Cardinals",
+        "B": "Boston Red Sox",
+        "C": "New York Yankees",
+        "D": "Los Angeles Dodgers"
+      },
+      "correct": "C",
+      "explanation": "The New York Yankees have won the most World Series titles with 27 championships."
+    }
+  ]
+}

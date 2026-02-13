@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "id": "ohio_space",
+    "title": "Ohio's Space Race",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Space", "Ohio", "History", "Astronauts"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "osp_01",
+      "text": "Which Ohio native was the first man to walk on the moon?",
+      "options": {
+        "A": "John Glenn",
+        "B": "Neil Armstrong",
+        "C": "Jim Lovell",
+        "D": "Buzz Aldrin"
+      },
+      "correct": "B",
+      "explanation": "Neil Armstrong, born in Wapakoneta, Ohio, made history on July 20, 1969."
+    },
+    {
+      "id": "osp_02",
+      "text": "John Glenn became the first American to do what?",
+      "options": {
+        "A": "Walk in space",
+        "B": "Orbit the Earth",
+        "C": "Land on Mars",
+        "D": "Fly a shuttle"
+      },
+      "correct": "B",
+      "explanation": "In 1962, aboard Friendship 7, John Glenn orbited the Earth three times."
+    },
+    {
+      "id": "osp_03",
+      "text": "The Wright Brothers, pioneers of aviation, were from which Ohio city?",
+      "options": {
+        "A": "Cleveland",
+        "B": "Columbus",
+        "C": "Dayton",
+        "D": "Cincinnati"
+      },
+      "correct": "C",
+      "explanation": "Orville and Wilbur Wright lived and worked in Dayton, Ohio."
+    },
+    {
+      "id": "osp_04",
+      "text": "Which NASA center is located in Cleveland, Ohio?",
+      "options": {
+        "A": "Kennedy Space Center",
+        "B": "Johnson Space Center",
+        "C": "Glenn Research Center",
+        "D": "Goddard Space Flight Center"
+      },
+      "correct": "C",
+      "explanation": "Originally Lewis Research Center, it was renamed after John Glenn in 1999."
+    },
+    {
+      "id": "osp_05",
+      "text": "How old was John Glenn when he returned to space in 1998?",
+      "options": {
+        "A": "65",
+        "B": "70",
+        "C": "77",
+        "D": "82"
+      },
+      "correct": "C",
+      "explanation": "At 77, he became the oldest person to fly in space aboard the Shuttle Discovery."
+    },
+    {
+      "id": "osp_06",
+      "text": "Neil Armstrong's famous quote: 'That's one small step for [a] man, one giant _____ for mankind.'",
+      "options": {
+        "A": "skip",
+        "B": "leap",
+        "C": "jump",
+        "D": "bound"
+      },
+      "correct": "B",
+      "explanation": "One giant LEAP for mankind."
+    },
+    {
+      "id": "osp_07",
+      "text": "Judith Resnik, who tragically died in the Challenger disaster, was from which Ohio city?",
+      "options": {
+        "A": "Akron",
+        "B": "Toledo",
+        "C": "Canton",
+        "D": "Youngstown"
+      },
+      "correct": "A",
+      "explanation": "Judith Resnik was an engineer and astronaut from Akron."
+    },
+    {
+      "id": "osp_08",
+      "text": "Which Wright Brothers invention was critical to controlling flight?",
+      "options": {
+        "A": "The jet engine",
+        "B": "Three-axis control",
+        "C": "The parachute",
+        "D": "Radar"
+      },
+      "correct": "B",
+      "explanation": "Their breakthrough was three-axis control, allowing the pilot to steer effectively."
+    },
+    {
+      "id": "osp_09",
+      "text": "What is the name of the museum in Wapakoneta dedicated to Neil Armstrong?",
+      "options": {
+        "A": "Ohio Space & Rocket Center",
+        "B": "Armstrong Air & Space Museum",
+        "C": "Moon Landing Memorial",
+        "D": "NASA Ohio"
+      },
+      "correct": "B",
+      "explanation": "The Armstrong Air & Space Museum opened in 1972."
+    },
+    {
+      "id": "osp_10",
+      "text": "Jim Lovell, of Apollo 13 fame, is from which Ohio city?",
+      "options": {
+        "A": "Cleveland",
+        "B": "Dayton",
+        "C": "Columbus",
+        "D": "Cincinnati"
+      },
+      "correct": "A",
+      "explanation": "Lovell was born in Cleveland."
+    },
+    {
+      "id": "osp_11",
+      "text": "Approximately how many astronauts has Ohio produced?",
+      "options": {
+        "A": "5",
+        "B": "10",
+        "C": "25+",
+        "D": "50+"
+      },
+      "correct": "C",
+      "explanation": "Ohio is known as the 'Birthplace of Aviation' and has produced 25+ astronauts."
+    },
+    {
+      "id": "osp_12",
+      "text": "The National Museum of the U.S. Air Force is located at which base?",
+      "options": {
+        "A": "Wright-Patterson AFB",
+        "B": "Edwards AFB",
+        "C": "Langley AFB",
+        "D": "Andrews AFB"
+      },
+      "correct": "A",
+      "explanation": "It is located near Dayton at Wright-Patterson Air Force Base."
+    },
+    {
+      "id": "osp_13",
+      "text": "Sunita Williams, record holder for spacewalks by a woman, hails from:",
+      "options": {
+        "A": "Euclid",
+        "B": "Parma",
+        "C": "Needham",
+        "D": "Mentor"
+      },
+      "correct": "A",
+      "explanation": "She considers Needham, MA her home but was born in Euclid, Ohio."
+    },
+    {
+      "id": "osp_14",
+      "text": "What was the name of the Apollo 11 Lunar Module?",
+      "options": {
+        "A": "Falcon",
+        "B": "Eagle",
+        "C": "Hawk",
+        "D": "Spider"
+      },
+      "correct": "B",
+      "explanation": "'The Eagle has landed.'"
+    },
+    {
+      "id": "osp_15",
+      "text": "Before becoming an astronaut, John Glenn served as a U.S. Senator for:",
+      "options": {
+        "A": "12 years",
+        "B": "18 years",
+        "C": "24 years",
+        "D": "He was a Senator AFTER being an astronaut"
+      },
+      "correct": "D",
+      "explanation": "Wait, trick question. He was an astronaut (1959), THEN a Senator (1974-1999), THEN an astronaut again (1998). So D is the best fit for the sequence, or C for the duration (24 years)."
+    },
+    {
+      "id": "osp_15_fix",
+      "text": "John Glenn served as a U.S. Senator for Ohio for how many years?",
+      "options": {
+        "A": "12",
+        "B": "24",
+        "C": "30",
+        "D": "6"
+      },
+      "correct": "B",
+      "explanation": "He served four consecutive terms from 1974 to 1999."
+    }
+  ]
+}

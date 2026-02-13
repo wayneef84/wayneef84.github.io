@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "agile_scrum",
+    "title": "Agile & Scrum",
+    "version": "1.0",
+    "difficulty": "Hard",
+    "tags": ["Business", "Agile", "Scrum", "Management"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "as_01",
+      "text": "What are the three pillars of Scrum?",
+      "options": {
+        "A": "Planning, Executing, Monitoring",
+        "B": "Transparency, Inspection, Adaptation",
+        "C": "Speed, Quality, Cost",
+        "D": "Roles, Events, Artifacts"
+      },
+      "correct": "B",
+      "explanation": "Transparency, Inspection, and Adaptation are the empirical pillars supporting Scrum theory."
+    },
+    {
+      "id": "as_02",
+      "text": "Who is responsible for maximizing the value of the product?",
+      "options": {
+        "A": "Scrum Master",
+        "B": "Development Team",
+        "C": "Product Owner",
+        "D": "Stakeholders"
+      },
+      "correct": "C",
+      "explanation": "The Product Owner is accountable for maximizing the value of the product resulting from the work of the Scrum Team."
+    },
+    {
+      "id": "as_03",
+      "text": "What is the maximum duration of a Sprint?",
+      "options": {
+        "A": "Two weeks",
+        "B": "One month",
+        "C": "Three months",
+        "D": "Six months"
+      },
+      "correct": "B",
+      "explanation": "Sprints are fixed length events of one month or less to create consistency."
+    },
+    {
+      "id": "as_04",
+      "text": "Which meeting is held at the end of a Sprint to inspect the Increment?",
+      "options": {
+        "A": "Sprint Retrospective",
+        "B": "Daily Scrum",
+        "C": "Sprint Review",
+        "D": "Backlog Refinement"
+      },
+      "correct": "C",
+      "explanation": "The Sprint Review is held to inspect the outcome of the Sprint and determine future adaptations."
+    },
+    {
+      "id": "as_05",
+      "text": "Who facilitates the Scrum events?",
+      "options": {
+        "A": "Product Owner",
+        "B": "Project Manager",
+        "C": "Scrum Master",
+        "D": "Team Lead"
+      },
+      "correct": "C",
+      "explanation": "The Scrum Master is responsible for ensuring that all Scrum events take place and are positive, productive, and kept within the timebox."
+    },
+    {
+      "id": "as_06",
+      "text": "What does the 'Definition of Done' ensure?",
+      "options": {
+        "A": "The project is finished",
+        "B": "Transparency and quality of the Increment",
+        "C": "The developers are paid",
+        "D": "The deadline is met"
+      },
+      "correct": "B",
+      "explanation": "It creates a shared understanding of what work was completed and ensures the Increment meets the quality measures."
+    },
+    {
+      "id": "as_07",
+      "text": "Which artifact contains the ordered list of everything that is known to be needed in the product?",
+      "options": {
+        "A": "Sprint Backlog",
+        "B": "Product Backlog",
+        "C": "Increment",
+        "D": "Burndown Chart"
+      },
+      "correct": "B",
+      "explanation": "The Product Backlog is an emergent, ordered list of what is needed to improve the product."
+    },
+    {
+      "id": "as_08",
+      "text": "The Daily Scrum is time-boxed to:",
+      "options": {
+        "A": "5 minutes",
+        "B": "15 minutes",
+        "C": "30 minutes",
+        "D": "1 hour"
+      },
+      "correct": "B",
+      "explanation": "The Daily Scrum is a 15-minute event for the Developers."
+    },
+    {
+      "id": "as_09",
+      "text": "In Scrum, there are no:",
+      "options": {
+        "A": "Deadlines",
+        "B": "Budgets",
+        "C": "Sub-teams or hierarchies within the Developers",
+        "D": "Customers"
+      },
+      "correct": "C",
+      "explanation": "Scrum recognizes no titles for Developers, and no sub-teams like 'testing' or 'architecture'."
+    },
+    {
+      "id": "as_10",
+      "text": "Who has the authority to cancel a Sprint?",
+      "options": {
+        "A": "The Scrum Master",
+        "B": "The Product Owner",
+        "C": "The Developers",
+        "D": "The CEO"
+      },
+      "correct": "B",
+      "explanation": "Only the Product Owner has the authority to cancel the Sprint."
+    },
+    {
+      "id": "as_11",
+      "text": "What is 'Velocity' in Agile?",
+      "options": {
+        "A": "The speed of the server",
+        "B": "A measure of the amount of work a Team can tackle during a single Sprint",
+        "C": "How fast the Product Owner speaks",
+        "D": "The deadline date"
+      },
+      "correct": "B",
+      "explanation": "Velocity is a metric used to forecast how much work can be completed in future Sprints."
+    },
+    {
+      "id": "as_12",
+      "text": "Which of the following is NOT a Scrum Artifact?",
+      "options": {
+        "A": "Product Backlog",
+        "B": "Sprint Backlog",
+        "C": "Increment",
+        "D": "User Story"
+      },
+      "correct": "D",
+      "explanation": "User Stories are a common practice but not an official Scrum Artifact defined in the Scrum Guide."
+    },
+    {
+      "id": "as_13",
+      "text": "The Sprint Retrospective focuses on:",
+      "options": {
+        "A": "The Product",
+        "B": "The Process and People",
+        "C": "The Budget",
+        "D": "The Customers"
+      },
+      "correct": "B",
+      "explanation": "The Retrospective is for the Scrum Team to inspect itself and create a plan for improvements to be enacted during the next Sprint."
+    },
+    {
+      "id": "as_14",
+      "text": "Kanban differs from Scrum primarily by:",
+      "options": {
+        "A": "Having longer meetings",
+        "B": "Focusing on continuous flow rather than fixed-length iterations",
+        "C": "Requiring a Project Manager",
+        "D": "Using physical boards only"
+      },
+      "correct": "B",
+      "explanation": "Kanban emphasizes continuous flow and limiting work in progress (WIP), whereas Scrum uses fixed-length Sprints."
+    },
+    {
+      "id": "as_15",
+      "text": "What does the 'Burn-down Chart' track?",
+      "options": {
+        "A": "Budget spent",
+        "B": "Remaining work vs. time",
+        "C": "Employee burnout",
+        "D": "Server uptime"
+      },
+      "correct": "B",
+      "explanation": "A burn-down chart is a graphical representation of work left to do versus time."
+    }
+  ]
+}

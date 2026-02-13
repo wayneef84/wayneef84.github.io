@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelSetupBtn: document.getElementById('cancelSetupBtn'),
         limitOptions: document.querySelectorAll('input[name="qLimit"]'),
         percentToggle: document.getElementById('percentToggle'),
-        revampToggle: document.getElementById('revampToggle'), // NEW
         // Voice Settings
         voiceToggle: document.getElementById('voiceToggle'),
         autoReadToggle: document.getElementById('autoReadToggle'),
@@ -57,11 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
         timerDisplay: document.getElementById('timerDisplay'),
         lockToggle: document.getElementById('lockToggle'),
         nextBtn: document.getElementById('nextBtn'),
-        feedbackBackdrop: document.getElementById('feedbackBackdrop'),
         feedbackArea: document.getElementById('feedbackArea'),
         feedbackTitle: document.getElementById('feedbackTitle'),
         feedbackText: document.getElementById('feedbackText'),
-        feedbackNextBtn: document.getElementById('feedbackNextBtn'),
         endScreen: document.getElementById('endScreen'),
         finalScore: document.getElementById('finalScore'),
         scoreLabel: document.getElementById('scoreLabel'),
@@ -69,11 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         finalStreak: document.getElementById('finalStreak'),
         restartBtn: document.getElementById('restartBtn'),
         changePack: document.getElementById('changePack'),
-        backToPacksBtn: document.getElementById('backToPacksBtn'),
-        // Revamp Elements
-        powerupBar: document.getElementById('powerupBar'),
-        buffsContainer: document.getElementById('buffsContainer'),
-        powerupBtns: document.querySelectorAll('.powerup-btn')
+        backToPacksBtn: document.getElementById('backToPacksBtn')
     };
 
     var engine = null;
@@ -88,8 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         speechRate: 1.0,
         speechPitch: 1.0,
         timerDuration: 15,
-        carryOverMax: 0,
-        revampMode: false // NEW
+        carryOverMax: 0
     };
 
     // Speaker Utility
@@ -133,17 +125,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(function(data) {
+                    // Normalize data structure if needed
                     if (Array.isArray(data)) {
                         MANIFEST.packs = data; // Legacy format
                     } else {
                         MANIFEST = data; // New format
                     }
 
-                    renderPackSelector();
+                    renderPackSelector(); // Re-render with data
 
+                    // Check URL for pack
                     const params = new URLSearchParams(window.location.search);
                     const packPath = params.get('pack');
                     if (packPath) {
+                        // Validate path against registry
                         const isValid = MANIFEST.packs.some(p => p.path === packPath);
                         if (isValid) {
                             openSetupModal(packPath, true);
@@ -162,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Calculate totals
         var totalQ = 0;
         var i;
         for (i = 0; i < MANIFEST.packs.length; i++) {
@@ -170,8 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dom.totalQuestions) dom.totalQuestions.textContent = totalQ;
         if (dom.totalPacks) dom.totalPacks.textContent = MANIFEST.packs.length;
 
+        // Render groups and packs
         renderGroups('');
 
+        // Search handler
         if (dom.packSearch) {
             dom.packSearch.addEventListener('input', function() {
                 renderGroups(this.value.toLowerCase());
@@ -183,17 +181,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!dom.packGrid) return;
         dom.packGrid.innerHTML = '';
 
+        // If legacy manifest (no groups defined), create a default group
         var groups = MANIFEST.groups || [{id: 'default', title: 'All Packs', icon: '', description: ''}];
         var packs = MANIFEST.packs;
 
         groups.forEach(function(group) {
+            // Filter packs for this group
             var groupPacks = packs.filter(function(p) {
                 if (MANIFEST.groups && MANIFEST.groups.length > 0) {
+                    // Normalize legacy/missing groupIds to 'niche' or similar if needed, or strict match
                     return p.groupId === group.id;
                 }
                 return true;
             });
 
+            // Apply search filter
             if (searchTerm) {
                 groupPacks = groupPacks.filter(function(p) {
                     return p.title.toLowerCase().indexOf(searchTerm) !== -1 ||
@@ -201,14 +203,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            if (groupPacks.length === 0) return;
+            if (groupPacks.length === 0) return; // Skip empty groups
 
+            // Render Group Header
             var groupHeader = document.createElement('div');
             groupHeader.className = 'group-header';
             groupHeader.innerHTML = `
                 <h2>${group.icon || ''} ${group.title}</h2>
                 <p>${group.description || ''}</p>
             `;
+            // Add style for full-width header
             groupHeader.style.gridColumn = "1 / -1";
             groupHeader.style.marginTop = "20px";
             groupHeader.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
@@ -216,11 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             dom.packGrid.appendChild(groupHeader);
 
+            // Render Packs
             groupPacks.forEach(function(pack) {
                 var card = document.createElement('button');
                 card.className = 'pack-card';
                 card.setAttribute('data-pack', pack.path);
 
+                // Get high score
                 var best = ScoreManager.getHighScore(pack.id);
                 var bestHtml = best > 0 ? `<div class="pack-best">Best: ${best}</div>` : '';
 
@@ -243,18 +249,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- Score Manager ---
     var ScoreManager = {
         saveScore: function(packId, score) {
-            if (!packId || packId === 'custom_mix') return;
+            if (!packId || packId === 'custom_mix') return; // Don't save for custom mix (or maybe separate logic)
             var key = 'j_score_' + packId;
             var current = this.getHighScore(packId);
             if (score > current) {
                 localStorage.setItem(key, score);
             }
+
+            // Save history log
             var historyKey = 'j_history_' + packId;
             var history = this.getHistory(packId);
             history.unshift({date: new Date().toISOString(), score: score});
-            if (history.length > 5) history.pop();
+            if (history.length > 5) history.pop(); // Keep last 5
             localStorage.setItem(historyKey, JSON.stringify(history));
         },
         getHighScore: function(packId) {
@@ -274,23 +283,32 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function openSetupModal(packFile, skipPushState) {
-        currentPackFile = packFile;
+        currentPackFile = packFile; // If null, it's custom game
 
+        // Reset/Hide UI elements based on mode
         if (packFile === 'custom') {
+            // CUSTOM GAME MODE
             isCustomGame = true;
             dom.setupTitle.textContent = "CUSTOM MIX";
             dom.multiPackSelection.classList.remove('hidden');
             if (dom.historyPlaceholder) dom.historyPlaceholder.classList.add('hidden');
+
+            // Populate Multi-Pack List
             renderMultiPackList();
+
+            // Update URL for custom game? Maybe not needed, or '?pack=custom'
             if (!skipPushState) {
                 const url = new URL(window.location);
-                url.searchParams.delete('pack');
+                url.searchParams.delete('pack'); // Don't track custom state in URL for now (complex to restore)
                 history.pushState(null, '', url);
             }
         } else {
+            // SINGLE PACK MODE
             isCustomGame = false;
             dom.multiPackSelection.classList.add('hidden');
             if (dom.historyPlaceholder) dom.historyPlaceholder.classList.remove('hidden');
+
+            // Find pack metadata
             var packMeta = MANIFEST.packs.find(p => p.path === packFile);
             if (packMeta) {
                 dom.setupTitle.textContent = packMeta.title.toUpperCase();
@@ -298,25 +316,32 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 dom.setupTitle.textContent = "GAME SETUP";
             }
+
+            // Update URL if not skipped
             if (!skipPushState) {
                 const url = new URL(window.location);
                 url.searchParams.set('pack', packFile);
                 history.pushState({pack: packFile}, '', url);
             }
         }
+
+        // Show modal
         dom.setupModal.classList.remove('hidden');
     }
 
     function renderMultiPackList() {
         dom.multiPackList.innerHTML = '';
+
         MANIFEST.packs.forEach(function(pack) {
             var label = document.createElement('label');
             label.style.display = 'flex';
             label.style.alignItems = 'center';
             label.style.padding = '5px 0';
             label.style.cursor = 'pointer';
+
             var group = MANIFEST.groups.find(g => g.id === pack.groupId);
             var groupName = group ? group.title : (pack.category || 'General');
+
             label.innerHTML = `
                 <input type="checkbox" name="mixPack" value="${pack.path}" style="margin-right: 10px;">
                 <span style="flex:1;">${pack.title}</span>
@@ -324,7 +349,11 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             dom.multiPackList.appendChild(label);
         });
+
+        // Update range slider max based on selection
         updatePackLimitRange();
+
+        // Listen for checkbox changes
         var checkboxes = dom.multiPackList.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(function(cb) {
             cb.addEventListener('change', updatePackLimitRange);
@@ -335,6 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var checked = dom.multiPackList.querySelectorAll('input[type="checkbox"]:checked');
         var count = checked.length;
         var range = dom.packLimitRange;
+
         if (count === 0) {
             range.max = 1;
             range.value = 1;
@@ -343,9 +373,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             range.disabled = false;
             range.max = count;
-            range.value = count;
+            range.value = count; // Default to all selected
             dom.packLimitDisplay.textContent = "ALL";
         }
+
         range.oninput = function() {
             if (parseInt(this.value) === parseInt(this.max)) {
                 dom.packLimitDisplay.textContent = "ALL";
@@ -358,6 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderHistory(packMeta) {
         var best = ScoreManager.getHighScore(packMeta.id);
         var history = ScoreManager.getHistory(packMeta.id);
+
         var html = `<label class="setup-label">RECORDS</label>
                     <div class="history-box" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
                         <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
@@ -366,37 +398,45 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         ${history.length > 0 ? '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 5px 0;">' : ''}
                         <div class="history-list" style="font-size: 0.8rem; color: var(--text-secondary);">`;
+
         history.forEach(function(h) {
             var d = new Date(h.date).toLocaleDateString();
             html += `<div style="display:flex; justify-content:space-between;"><span>${d}</span><span>${h.score} pts</span></div>`;
         });
+
         html += `</div>
                  <button id="resetHistoryBtn" style="width:100%; margin-top:10px; background:none; border:1px solid #ef4444; color:#ef4444; padding:5px; border-radius:4px; cursor:pointer; font-size:0.8rem;">RESET HISTORY</button>
                  </div>`;
+
         dom.historyPlaceholder.innerHTML = html;
+
+        // Bind Reset
         document.getElementById('resetHistoryBtn').addEventListener('click', function() {
             if(confirm("Clear records for this pack?")) {
                 ScoreManager.resetPackHistory(packMeta.id);
-                renderHistory(packMeta);
+                renderHistory(packMeta); // Re-render in place
             }
         });
     }
 
     function startGame() {
+        // Get settings common to both modes
         var limit = 10;
         var selectedLimit = document.querySelector('input[name="qLimit"]:checked');
         if (selectedLimit) {
             limit = parseInt(selectedLimit.value, 10);
-            if (limit === 0) limit = 1000;
+            if (limit === 0) limit = 1000; // "All"
         }
         gameSettings.limit = limit;
         gameSettings.showPercent = dom.percentToggle.checked;
-        gameSettings.revampMode = dom.revampToggle.checked; // NEW
 
+        // Get Voice Settings
         if (dom.voiceToggle) gameSettings.voiceMode = dom.voiceToggle.checked;
         if (dom.autoReadToggle) gameSettings.autoRead = dom.autoReadToggle.checked;
         if (dom.speechRate) gameSettings.speechRate = parseFloat(dom.speechRate.value);
         if (dom.speechPitch) gameSettings.speechPitch = parseFloat(dom.speechPitch.value);
+
+        // Get Time Settings
         if (dom.timerDuration) gameSettings.timerDuration = parseInt(dom.timerDuration.value, 10);
         if (dom.carryOverMax) gameSettings.carryOverMax = parseInt(dom.carryOverMax.value, 10);
 
@@ -414,6 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function startSinglePackGame() {
         if (!currentPackFile) return;
+
         fetch(currentPackFile)
             .then(function(response) {
                 if (!response.ok) throw new Error('Failed to load pack');
@@ -433,17 +474,25 @@ document.addEventListener('DOMContentLoaded', function() {
             openSetupModal('custom');
             return;
         }
+
         var selectedPaths = checked.map(cb => cb.value);
         var packLimit = parseInt(dom.packLimitRange.value);
+
+        // If limit < selected count, shuffle and slice
         if (packLimit < selectedPaths.length) {
             selectedPaths = selectedPaths.sort(() => 0.5 - Math.random()).slice(0, packLimit);
         }
+
+        // Fetch all selected packs
         var promises = selectedPaths.map(path => fetch(path).then(r => r.json()));
+
         Promise.all(promises).then(function(packs) {
+            // Merge packs
             var allQuestions = [];
             packs.forEach(function(p) {
                 if (p.questions) allQuestions = allQuestions.concat(p.questions);
             });
+
             currentPackData = {
                 meta: {
                     id: 'custom_mix',
@@ -451,14 +500,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 questions: allQuestions
             };
+
             initGameUI("custom");
         }).catch(handleLoadError);
     }
 
     function initGameUI(mode) {
+        // Switch to game view
         if (dom.packSelector) dom.packSelector.classList.add('hidden');
         if (dom.gameContainer) dom.gameContainer.classList.remove('hidden');
+
         dom.packTitle.textContent = currentPackData.meta.title.toUpperCase();
+
         setupEngine();
         engine.loadPack(currentPackData);
         engine.startRound();
@@ -478,12 +531,10 @@ document.addEventListener('DOMContentLoaded', function() {
             limit: gameSettings.limit,
             timer: gameSettings.timerDuration,
             carryOverMax: gameSettings.carryOverMax,
-            revampMode: gameSettings.revampMode, // NEW
             onTick: updateTimer,
             onQuestionLoaded: renderQuestion,
             onFeedback: showFeedback,
-            onGameEnd: showEndScreen,
-            onLootDrop: showLootDrop // NEW
+            onGameEnd: showEndScreen
         });
     }
 
@@ -491,16 +542,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (eventsBound) return;
         eventsBound = true;
 
+        // Setup Modal Events
         dom.startGameBtn.addEventListener('click', startGame);
+
         dom.cancelSetupBtn.addEventListener('click', function() {
             dom.setupModal.classList.add('hidden');
             quitToPacks();
         });
+
+        // Custom Game Button
         if (dom.customGameBtn) {
             dom.customGameBtn.addEventListener('click', function() {
                 openSetupModal('custom');
             });
         }
+
+        // Settings Sliders Updates (if exists)
         if (dom.speechRate) {
             dom.speechRate.addEventListener('input', function() {
                 if (dom.rateValue) dom.rateValue.textContent = this.value + 'x';
@@ -511,6 +568,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (dom.pitchValue) dom.pitchValue.textContent = this.value;
             });
         }
+
+        // Time Settings Sliders
         if (dom.timerDuration) {
             dom.timerDuration.addEventListener('input', function() {
                 var val = parseInt(this.value, 10);
@@ -524,129 +583,117 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        // Answer Clicks
         var keys = Object.keys(dom.answers);
         var k;
         for (k = 0; k < keys.length; k++) {
             (function(key) {
                 dom.answers[key].addEventListener('click', function() {
+                    // Voice Mode Interaction Logic
                     if (gameSettings.voiceMode) {
                         if (engine.pendingSelection === key) {
+                            // Already selected -> Confirm
                             engine.selectAnswer(key);
-                            Speaker.cancel();
+                            Speaker.cancel(); // Stop reading
                         } else {
+                            // New selection -> Read and set Pending
                             engine.setPendingSelection(key);
+
+                            // Get text from button
                             var txt = dom.answers[key].querySelector('.option-text')?.textContent || "Image Option";
                             Speaker.speak(txt);
+
+                            // UI update (highlight pending)
                             updatePendingVisuals(key);
                         }
                     } else {
+                        // Standard Mode -> Immediate Confirm
                         engine.selectAnswer(key);
                     }
                 });
             })(keys[k]);
         }
 
+        // Lock Toggle
         dom.lockToggle.addEventListener('change', function(e) {
             engine.settings.lockFastForward = e.target.checked;
             updateNextButtonState();
+
+            // FIX: If we enable auto-forward while waiting, trigger it immediately
             if (engine.settings.lockFastForward && engine.state === 'WAITING_FOR_NEXT') {
                 engine.triggerFastForward();
             }
         });
 
+        // Next Button
         dom.nextBtn.addEventListener('click', function() {
             engine.triggerFastForward();
         });
 
-        // Feedback Next Button (Inside Menu)
-        if (dom.feedbackNextBtn) {
-            dom.feedbackNextBtn.addEventListener('click', function() {
-                engine.triggerFastForward();
-            });
-        }
-
-        // Backdrop Click (Escapeable)
-        if (dom.feedbackBackdrop) {
-            dom.feedbackBackdrop.addEventListener('click', function(e) {
-                // If clicked on backdrop itself (not children)
-                if (e.target === dom.feedbackBackdrop) {
-                     // Check if only "Next" is available (simple mode)
-                     // For now, always hide. If we add more options, check logic here.
-                     dom.feedbackBackdrop.classList.add('hidden');
-                }
-            });
-        }
-
+        // Restart
         dom.restartBtn.addEventListener('click', function() {
             dom.endScreen.classList.add('hidden');
+
+            // If custom game, reuse the merged data? Yes.
+            // If we wanted to re-roll random packs, we'd need to store the selection.
+            // For now, re-using merged data is standard behavior.
             engine.loadPack(currentPackData);
             engine.startRound();
         });
 
+        // Change Pack (End Screen)
         if (dom.changePack) {
             dom.changePack.addEventListener('click', function(e) {
                 e.preventDefault();
-                quitToPacks(false);
+                quitToPacks(false); // Update URL
             });
         }
 
+        // Back to Packs (In-Game)
         if (dom.backToPacksBtn) {
             dom.backToPacksBtn.addEventListener('click', function() {
                 if(confirm("Quit current game and return to pack selection?")) {
-                    quitToPacks(false);
+                    quitToPacks(false); // Update URL
                 }
             });
         }
 
+        // Browser Back Button
         window.addEventListener('popstate', function(event) {
             const params = new URLSearchParams(window.location.search);
             const packPath = params.get('pack');
+
             if (packPath) {
+                // If we popped back into a pack state, show modal
+                // Don't auto-start, just show setup
                 openSetupModal(packPath, true);
             } else {
+                // We popped back to root
                 dom.setupModal.classList.add('hidden');
-                quitToPacks(true);
+                quitToPacks(true); // Skip pushing state
             }
-        });
-
-        // POWERUP BINDINGS (NEW)
-        dom.powerupBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const type = this.dataset.type;
-                const result = engine.activatePowerUp(type);
-                if (result && result.success) {
-                    // Update visuals for specific powerups
-                    if (type === 'fiftyFifty') {
-                        result.remove.forEach(k => {
-                            const b = dom.answers[k];
-                            b.disabled = true;
-                            b.style.opacity = '0.3';
-                        });
-                    } else if (type === 'askAudience') {
-                        showAudienceOverlay(result.distribution);
-                    } else if (type === 'redo') {
-                        this.classList.add('active'); // Highlight Redo as active
-                    }
-                    updatePowerUpUI(engine.powerups);
-                }
-            });
         });
     }
 
     function quitToPacks(skipUrlUpdate) {
         if (engine && engine.timer) clearInterval(engine.timer);
-        Speaker.cancel();
+        Speaker.cancel(); // Stop any speech
         dom.endScreen.classList.add('hidden');
         dom.packSelector.classList.remove('hidden');
-        dom.gameContainer.classList.add('hidden');
+        dom.gameContainer.classList.add('hidden'); // Ensure game is hidden
         dom.setupModal.classList.add('hidden');
+
         if (!skipUrlUpdate) {
+            // Remove query param
             const url = new URL(window.location);
             url.searchParams.delete('pack');
             history.pushState(null, '', url);
         }
+
         renderPackSelector();
     }
+
+    // --- Render Functions ---
 
     function formatTime(seconds) {
         seconds = parseInt(seconds, 10);
@@ -667,65 +714,59 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderQuestion(data) {
-        if (dom.feedbackBackdrop) dom.feedbackBackdrop.classList.add('hidden');
-        dom.feedbackArea.classList.add('hidden'); // Legacy check
+        // Reset UI
+        dom.feedbackArea.classList.add('hidden');
         dom.mediaContainer.classList.add('hidden');
         dom.nextBtn.disabled = true;
         updateNextButtonState();
 
+        // Reset pending visuals
         var keys = Object.keys(dom.answers);
-        keys.forEach(k => {
-            dom.answers[k].classList.remove('pending-selection');
-            dom.answers[k].style.opacity = '1';
-            // Remove overlays
-            const overlay = dom.answers[k].querySelector('.audience-overlay');
-            if (overlay) overlay.remove();
-        });
+        keys.forEach(k => dom.answers[k].classList.remove('pending-selection'));
 
-        // Reset Redo active state visually
-        dom.powerupBtns.forEach(b => b.classList.remove('active'));
-
+        // Update Text
         dom.qCount.textContent = data.index + '/' + data.total;
         dom.questionText.textContent = data.question.text;
 
+        // Auto Read Question
         if (gameSettings.autoRead) {
             Speaker.speak(data.question.text);
         }
 
-        dom.scoreValue.textContent = data.score;
+        // Update Score/Streak
+        dom.scoreValue.textContent = data.score; // Keeping points for running score
         dom.streakValue.textContent = data.streak;
 
+        // Progress Bar
         var progress = ((data.index - 1) / data.total) * 100;
         dom.progressBar.style.width = progress + '%';
 
-        // Revamp UI Updates
-        if (gameSettings.revampMode) {
-            dom.powerupBar.classList.remove('hidden');
-            dom.buffsContainer.classList.remove('hidden');
-            updatePowerUpUI(data.powerups);
-            updateBuffsUI(data.buffs);
-        } else {
-            dom.powerupBar.classList.add('hidden');
-            dom.buffsContainer.classList.add('hidden');
-        }
-
         // Render Options
-        var i, key, btn, optionText;
+        var i, key, btn, optionText, textSpan;
         for (i = 0; i < keys.length; i++) {
             key = keys[i];
             btn = dom.answers[key];
             optionText = data.question.options[key];
+
             btn.disabled = false;
+
+            // Reset classes
             btn.className = 'answer-btn';
+
+            // Clear previous content
             btn.innerHTML = '';
 
+            // Create Label (A, B, C, D)
             var label = document.createElement('span');
             label.className = 'option-label';
             label.textContent = key;
             btn.appendChild(label);
 
             if (optionText) {
+                // Check for image URL
+                // Simple heuristic: ends with .jpg, .png, .gif, .webp, or contains /flagcdn.com/
                 var isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(optionText) || optionText.indexOf('flagcdn.com') !== -1;
+
                 if (isImage) {
                     var img = document.createElement('img');
                     img.src = optionText;
@@ -744,32 +785,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Media (Image or Audio)
-        dom.mediaContainer.innerHTML = '';
+        // Media (Question Image)
         if (data.question.media) {
             dom.mediaContainer.classList.remove('hidden');
-            const media = data.question.media;
-            // Check if audio
-            if (media.endsWith('.mp3') || media.endsWith('.wav') || media.endsWith('.ogg')) {
-                dom.mediaContainer.innerHTML = `
-                    <div class="audio-wrapper">
-                        <audio controls autoplay>
-                            <source src="${media}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>`;
-            } else {
-                dom.mediaContainer.innerHTML = '<img src="' + media + '" alt="Question Media" style="max-width:100%; border-radius: 8px;">';
-            }
-        } else if (data.question.audio) { // Explicit audio field
-             dom.mediaContainer.classList.remove('hidden');
-             dom.mediaContainer.innerHTML = `
-                    <div class="audio-wrapper">
-                        <audio controls autoplay>
-                            <source src="${data.question.audio}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>`;
+            dom.mediaContainer.innerHTML = '<img src="' + data.question.media + '" alt="Question Image" style="max-width:100%; border-radius: 8px;">';
         }
     }
 
@@ -785,22 +804,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showFeedback(data) {
-        Speaker.cancel();
+        Speaker.cancel(); // Stop reading
 
-        // Handle Redo Feedback
-        if (data.isRedo) {
-            // Don't show full overlay, just indicate wrong selection
-            var btn = dom.answers[data.selected];
-            if (btn) {
-                btn.classList.add('incorrect');
-                btn.disabled = true;
-                btn.style.opacity = '0.5';
-            }
-            // Remove Redo active status from button
-            dom.powerupBtns.forEach(b => b.classList.remove('active'));
-            return;
-        }
-
+        // Disable all buttons
         var keys = Object.keys(dom.answers);
         var i;
         for (i = 0; i < keys.length; i++) {
@@ -817,8 +823,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedBtn) selectedBtn.classList.add('incorrect');
             }
         } else {
-            if (dom.feedbackBackdrop) dom.feedbackBackdrop.classList.remove('hidden');
-            dom.feedbackArea.classList.remove('hidden'); // Ensure content is visible within backdrop
+            // Show feedback overlay
+            dom.feedbackArea.classList.remove('hidden');
 
             if (data.correct) {
                 dom.feedbackTitle.textContent = "CORRECT!";
@@ -845,6 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.nextBtn.disabled = false;
         }
 
+        // Update Stats
         if (data.score !== undefined) dom.scoreValue.textContent = data.score;
         if (data.streak !== undefined) dom.streakValue.textContent = data.streak;
     }
@@ -852,9 +859,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function showEndScreen(data) {
         dom.progressBar.style.width = '100%';
         dom.endScreen.classList.remove('hidden');
+
+        // Save Score (only if single pack)
         if (!isCustomGame && currentPackData && currentPackData.meta && currentPackData.meta.id) {
             ScoreManager.saveScore(currentPackData.meta.id, data.score);
         }
+
         if (gameSettings.showPercent) {
             var pct = Math.round((data.score / data.total) * 100);
             dom.finalScore.textContent = pct + '%';
@@ -863,6 +873,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dom.finalScore.textContent = data.score;
             dom.scoreLabel.textContent = 'PTS';
         }
+
         var correctCount = 0;
         var h;
         for (h = 0; h < data.history.length; h++) {
@@ -878,54 +889,5 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             dom.nextBtn.style.display = 'block';
         }
-    }
-
-    // REVAMP FUNCTIONS (NEW)
-    function updatePowerUpUI(powerups) {
-        if (!powerups) return;
-        dom.powerupBtns.forEach(btn => {
-            const type = btn.dataset.type;
-            const count = powerups[type] || 0;
-            const countSpan = btn.querySelector('.count');
-            if (countSpan) countSpan.textContent = count;
-            btn.disabled = count <= 0;
-        });
-    }
-
-    function updateBuffsUI(buffs) {
-        if (!buffs) return;
-        dom.buffsContainer.innerHTML = '';
-        if (buffs.extraTime > 0) {
-            const el = document.createElement('div');
-            el.className = 'buff-tag';
-            el.innerHTML = `<span>⏳</span> +10s (${buffs.extraTime})`;
-            dom.buffsContainer.appendChild(el);
-        }
-    }
-
-    function showLootDrop(data) {
-        const toast = document.createElement('div');
-        toast.className = 'loot-toast';
-        toast.textContent = data.message;
-        document.body.appendChild(toast);
-
-        // Remove after animation
-        setTimeout(() => toast.remove(), 2000);
-
-        updatePowerUpUI(data.powerups);
-        updateBuffsUI(data.buffs);
-    }
-
-    function showAudienceOverlay(distribution) {
-        Object.keys(distribution).forEach(key => {
-            const btn = dom.answers[key];
-            if (btn) {
-                const pct = distribution[key];
-                const overlay = document.createElement('div');
-                overlay.className = 'audience-overlay';
-                overlay.textContent = pct + '%';
-                btn.appendChild(overlay);
-            }
-        });
     }
 });

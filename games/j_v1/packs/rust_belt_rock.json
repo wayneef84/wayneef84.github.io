@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "rust_belt_rock",
+    "title": "Rust Belt Rock & Radio",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Music", "Ohio", "Rock", "70s", "Radio"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "rbr_01",
+      "text": "Which 'Big 8' radio station from Windsor, Ontario dominated the airwaves in Detroit and Ohio?",
+      "options": {
+        "A": "WLS",
+        "B": "CKLW",
+        "C": "WCFL",
+        "D": "WMMS"
+      },
+      "correct": "B",
+      "explanation": "CKLW ('The Big 8') was a legendary 50,000-watt station heard clearly across the region."
+    },
+    {
+      "id": "rbr_02",
+      "text": "Joe Walsh gained fame with which Cleveland-based band before joining the Eagles?",
+      "options": {
+        "A": "The James Gang",
+        "B": "The Raspberries",
+        "C": "Glass Harp",
+        "D": "Wild Cherry"
+      },
+      "correct": "A",
+      "explanation": "The James Gang, formed in Cleveland in 1966, featured Joe Walsh on guitar/vocals."
+    },
+    {
+      "id": "rbr_03",
+      "text": "Which Akron band is famous for 'Whip It' and their flower pot hats?",
+      "options": {
+        "A": "Pere Ubu",
+        "B": "The Waitresses",
+        "C": "DEVO",
+        "D": "Tin Huey"
+      },
+      "correct": "C",
+      "explanation": "DEVO formed at Kent State University and became New Wave icons."
+    },
+    {
+      "id": "rbr_04",
+      "text": "The Isley Brothers, famous for 'Shout' and 'Twist and Shout', hail from:",
+      "options": {
+        "A": "Detroit",
+        "B": "Cincinnati",
+        "C": "Cleveland",
+        "D": "Toledo"
+      },
+      "correct": "B",
+      "explanation": "The family group started in Cincinnati in the 1950s."
+    },
+    {
+      "id": "rbr_05",
+      "text": "Chrissie Hynde, leader of The Pretenders, is from which Ohio city?",
+      "options": {
+        "A": "Columbus",
+        "B": "Dayton",
+        "C": "Akron",
+        "D": "Canton"
+      },
+      "correct": "C",
+      "explanation": "She famously sang about it in 'My City Was Gone'."
+    },
+    {
+      "id": "rbr_06",
+      "text": "Which Cleveland radio station was known as 'The Buzzard'?",
+      "options": {
+        "A": "WMMS",
+        "B": "WNCX",
+        "C": "WGCL",
+        "D": "WIXY"
+      },
+      "correct": "A",
+      "explanation": "100.7 WMMS was one of the most influential rock stations in the country."
+    },
+    {
+      "id": "rbr_07",
+      "text": "The O'Jays ('Love Train') were a key part of the 'Sound of _____'.",
+      "options": {
+        "A": "Motown",
+        "B": "Philadelphia (Philly Soul)",
+        "C": "Chicago",
+        "D": "Memphis"
+      },
+      "correct": "B",
+      "explanation": "Though from Canton, Ohio, they defined the Sound of Philadelphia."
+    },
+    {
+      "id": "rbr_08",
+      "text": "Who sang 'Play That Funky Music'?",
+      "options": {
+        "A": "KC and the Sunshine Band",
+        "B": "Wild Cherry",
+        "C": "Ohio Players",
+        "D": "Heatwave"
+      },
+      "correct": "B",
+      "explanation": "Wild Cherry was a funk rock band from Steubenville, Ohio."
+    },
+    {
+      "id": "rbr_09",
+      "text": "The Ohio Players had a #1 hit in 1975 with:",
+      "options": {
+        "A": "Fire",
+        "B": "Brick House",
+        "C": "Jungle Boogie",
+        "D": "Shining Star"
+      },
+      "correct": "A",
+      "explanation": "'Fire' and 'Love Rollercoaster' were massive hits for the Dayton funk band."
+    },
+    {
+      "id": "rbr_10",
+      "text": "Dean Martin was born in:",
+      "options": {
+        "A": "Steubenville",
+        "B": "Youngstown",
+        "C": "Warren",
+        "D": "Bellaire"
+      },
+      "correct": "A",
+      "explanation": "The King of Cool was born Dino Crocetti in Steubenville."
+    },
+    {
+      "id": "rbr_11",
+      "text": "Which concert venue near Cleveland was legendary for its rock shows in the 70s and 80s?",
+      "options": {
+        "A": "The Agora",
+        "B": "Richfield Coliseum",
+        "C": "Blossom Music Center",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "All were major venues, but Richfield Coliseum (opened 1974) hosted the biggest acts."
+    },
+    {
+      "id": "rbr_12",
+      "text": "Screamin' Jay Hawkins ('I Put a Spell on You') was from:",
+      "options": {
+        "A": "Cleveland",
+        "B": "Detroit",
+        "C": "Chicago",
+        "D": "New Orleans"
+      },
+      "correct": "A",
+      "explanation": "He was born and raised in Cleveland."
+    },
+    {
+      "id": "rbr_13",
+      "text": "Nine Inch Nails frontman Trent Reznor started his career in:",
+      "options": {
+        "A": "Cleveland",
+        "B": "Seattle",
+        "C": "New York",
+        "D": "Los Angeles"
+      },
+      "correct": "A",
+      "explanation": "Reznor worked at a studio in Cleveland while recording 'Pretty Hate Machine'."
+    },
+    {
+      "id": "rbr_14",
+      "text": "Which DJ is credited with coining the term 'Rock and Roll' in Cleveland?",
+      "options": {
+        "A": "Wolfman Jack",
+        "B": "Alan Freed",
+        "C": "Casey Kasem",
+        "D": "Dick Clark"
+      },
+      "correct": "B",
+      "explanation": "Alan Freed popularized the term on his Moondog House radio show in the early 50s."
+    },
+    {
+      "id": "rbr_15",
+      "text": "Bootsy Collins, legendary funk bassist, is associated with which city?",
+      "options": {
+        "A": "Dayton",
+        "B": "Cincinnati",
+        "C": "Columbus",
+        "D": "Akron"
+      },
+      "correct": "B",
+      "explanation": "Bootsy Collins rose to prominence in Cincinnati's vibrant funk scene."
+    }
+  ]
+}

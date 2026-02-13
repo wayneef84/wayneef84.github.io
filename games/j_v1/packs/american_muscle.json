@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "american_muscle",
+    "title": "American Muscle: 1964-1974",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Automotive", "Cars", "60s", "70s", "Nostalgia"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "amc_01",
+      "text": "Which car, introduced in 1964, created the 'Pony Car' class?",
+      "options": {
+        "A": "Chevrolet Camaro",
+        "B": "Ford Mustang",
+        "C": "Plymouth Barracuda",
+        "D": "Pontiac Firebird"
+      },
+      "correct": "B",
+      "explanation": "The Ford Mustang debuted at the NY World's Fair in April 1964."
+    },
+    {
+      "id": "amc_02",
+      "text": "What does 'GTO' stand for?",
+      "options": {
+        "A": "Grand Touring Option",
+        "B": "Gran Turismo Omologato",
+        "C": "General Transportation Overland",
+        "D": "Gas Tires Oil"
+      },
+      "correct": "B",
+      "explanation": "Pontiac borrowed the term from Ferrari, meaning 'Grand Touring Homologated'."
+    },
+    {
+      "id": "amc_03",
+      "text": "Which engine is famously associated with Mopar muscle cars?",
+      "options": {
+        "A": "The Boss 302",
+        "B": "The Hemi",
+        "C": "The Rocket 88",
+        "D": "The Flathead"
+      },
+      "correct": "B",
+      "explanation": "The 426 Hemi 'Elephant' engine is legendary."
+    },
+    {
+      "id": "amc_04",
+      "text": "The Chevrolet Camaro was introduced in which year to rival the Mustang?",
+      "options": {
+        "A": "1965",
+        "B": "1967",
+        "C": "1969",
+        "D": "1970"
+      },
+      "correct": "B",
+      "explanation": "The 1967 Camaro was Chevy's answer to the Mustang."
+    },
+    {
+      "id": "amc_05",
+      "text": "What was the high-performance package for the Oldsmobile Cutlass?",
+      "options": {
+        "A": "SS",
+        "B": "R/T",
+        "C": "4-4-2",
+        "D": "GSX"
+      },
+      "correct": "C",
+      "explanation": "4-4-2 originally stood for 4-barrel carburetor, 4-speed transmission, and dual exhaust."
+    },
+    {
+      "id": "amc_06",
+      "text": "Which car featured a 'shaker' hood scoop?",
+      "options": {
+        "A": "Plymouth 'Cuda",
+        "B": "Ford Torino",
+        "C": "Pontiac Trans Am",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Shaker hoods (attached to the engine, shaking with it) were popular options on many muscle cars."
+    },
+    {
+      "id": "amc_07",
+      "text": "The Dodge Charger 'General Lee' from Dukes of Hazzard was what year?",
+      "options": {
+        "A": "1968",
+        "B": "1969",
+        "C": "1970",
+        "D": "1971"
+      },
+      "correct": "B",
+      "explanation": "It was a 1969 Dodge Charger."
+    },
+    {
+      "id": "amc_08",
+      "text": "Which car had a cartoon bird on its side and a 'Beep Beep' horn?",
+      "options": {
+        "A": "Ford Thunderbird",
+        "B": "Plymouth Road Runner",
+        "C": "Pontiac Firebird",
+        "D": "AMC Eagle"
+      },
+      "correct": "B",
+      "explanation": "Plymouth paid Warner Bros $50,000 to use the Road Runner name and likeness."
+    },
+    {
+      "id": "amc_09",
+      "text": "The Shelby Cobra featured a lightweight British body with an engine from:",
+      "options": {
+        "A": "Chevrolet",
+        "B": "Ford",
+        "C": "Dodge",
+        "D": "Chrysler"
+      },
+      "correct": "B",
+      "explanation": "Carroll Shelby put Ford V8s into AC Ace bodies."
+    },
+    {
+      "id": "amc_10",
+      "text": "What killed the muscle car era around 1973-1974?",
+      "options": {
+        "A": "Rust",
+        "B": "The Oil Crisis and Insurance costs",
+        "C": "Lack of interest",
+        "D": "Electric cars"
+      },
+      "correct": "B",
+      "explanation": "Rising gas prices, stricter emissions, and soaring insurance premiums ended the golden age."
+    },
+    {
+      "id": "amc_11",
+      "text": "Which manufacturer produced the AMX and Javelin?",
+      "options": {
+        "A": "AMC (American Motors)",
+        "B": "Ford",
+        "C": "GM",
+        "D": "Chrysler"
+      },
+      "correct": "A",
+      "explanation": "AMC was the underdog fourth major automaker."
+    },
+    {
+      "id": "amc_12",
+      "text": "The 'Judge' was a high-performance version of which car?",
+      "options": {
+        "A": "Pontiac GTO",
+        "B": "Buick GS",
+        "C": "Chevy Chevelle",
+        "D": "Dodge Super Bee"
+      },
+      "correct": "A",
+      "explanation": "\"Here Come de Judge\" - The GTO Judge debuted in 1969."
+    },
+    {
+      "id": "amc_13",
+      "text": "The Ford Mustang Boss 429 was built to homologate its engine for:",
+      "options": {
+        "A": "Drag Racing",
+        "B": "NASCAR",
+        "C": "Trans-Am",
+        "D": "Formula 1"
+      },
+      "correct": "B",
+      "explanation": "Ford needed to produce enough street cars with the Boss 429 engine to race it in NASCAR."
+    },
+    {
+      "id": "amc_14",
+      "text": "Which Chevy engine code represented the ultimate big block performance?",
+      "options": {
+        "A": "L88",
+        "B": "LT1",
+        "C": "LS6",
+        "D": "ZL1"
+      },
+      "correct": "C",
+      "explanation": "The LS6 454 in the 1970 Chevelle SS is legendary. (Though ZL1 was an exotic all-aluminum race engine, LS6 was the street king)."
+    },
+    {
+      "id": "amc_15",
+      "text": "Steve McQueen drove a Highland Green 1968 Mustang GT in which movie?",
+      "options": {
+        "A": "Le Mans",
+        "B": "Bullitt",
+        "C": "The Great Escape",
+        "D": "Vanishing Point"
+      },
+      "correct": "B",
+      "explanation": "The chase scene in 'Bullitt' is arguably the most famous in cinema history."
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "cartoons_60s",
+    "title": "Saturday Morning Cartoons (60s)",
+    "version": "1.0",
+    "difficulty": "Easy",
+    "tags": ["TV", "Cartoons", "60s", "Nostalgia"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "cart_01",
+      "text": "What was the first prime-time animated series?",
+      "options": {
+        "A": "The Jetsons",
+        "B": "The Flintstones",
+        "C": "Scooby-Doo",
+        "D": "Yogi Bear"
+      },
+      "correct": "B",
+      "explanation": "The Flintstones premiered in 1960 on ABC."
+    },
+    {
+      "id": "cart_02",
+      "text": "Who is Yogi Bear's constant companion?",
+      "options": {
+        "A": "Ranger Smith",
+        "B": "Boo-Boo",
+        "C": "Snagglepuss",
+        "D": "Huckleberry Hound"
+      },
+      "correct": "B",
+      "explanation": "Boo-Boo Bear is Yogi's smaller, voice-of-reason sidekick."
+    },
+    {
+      "id": "cart_03",
+      "text": "Which show featured a boy adventurer, his dad, and 'Race' Bannon?",
+      "options": {
+        "A": "Space Ghost",
+        "B": "Jonny Quest",
+        "C": "Speed Racer",
+        "D": "Herculoids"
+      },
+      "correct": "B",
+      "explanation": "Jonny Quest was known for its realistic art style and action-adventure tone."
+    },
+    {
+      "id": "cart_04",
+      "text": "What is the name of The Jetsons' dog?",
+      "options": {
+        "A": "Scooby",
+        "B": "Astro",
+        "C": "Dino",
+        "D": "Spike"
+      },
+      "correct": "B",
+      "explanation": "Rastro! I mean, Astro."
+    },
+    {
+      "id": "cart_05",
+      "text": "Which character constantly tried to catch the Road Runner?",
+      "options": {
+        "A": "Sylvester",
+        "B": "Wile E. Coyote",
+        "C": "Yosemite Sam",
+        "D": "Elmer Fudd"
+      },
+      "correct": "B",
+      "explanation": "Super Genius Wile E. Coyote used many ACME products in his failed attempts."
+    },
+    {
+      "id": "cart_06",
+      "text": "Top Cat was the leader of a gang of cats living where?",
+      "options": {
+        "A": "A mansion",
+        "B": "A New York City alley",
+        "C": "A junkyard",
+        "D": "A pet shop"
+      },
+      "correct": "B",
+      "explanation": "Top Cat (T.C.) lived in a trash can in Hoagy's Alley."
+    },
+    {
+      "id": "cart_07",
+      "text": "Who said 'Heavens to Murgatroyd!'?",
+      "options": {
+        "A": "Huckleberry Hound",
+        "B": "Quick Draw McGraw",
+        "C": "Snagglepuss",
+        "D": "Magilla Gorilla"
+      },
+      "correct": "C",
+      "explanation": "The pink mountain lion Snagglepuss used this catchphrase (and 'Exit, stage left')."
+    },
+    {
+      "id": "cart_08",
+      "text": "Underdog's alter ego was:",
+      "options": {
+        "A": "Shoeshine Boy",
+        "B": "Newspaper Boy",
+        "C": "Delivery Dog",
+        "D": "Super Pup"
+      },
+      "correct": "A",
+      "explanation": "The humble Shoeshine Boy would transform into Underdog."
+    },
+    {
+      "id": "cart_09",
+      "text": "Which show featured a superhero ghost?",
+      "options": {
+        "A": "Casper",
+        "B": "Space Ghost",
+        "C": "Ghostbusters",
+        "D": "Danny Phantom"
+      },
+      "correct": "B",
+      "explanation": "Space Ghost fought villains in outer space."
+    },
+    {
+      "id": "cart_10",
+      "text": "Bullwinkle J. Moose's best friend was:",
+      "options": {
+        "A": "Boris Badenov",
+        "B": "Rocky the Flying Squirrel",
+        "C": "Mr. Peabody",
+        "D": "Dudley Do-Right"
+      },
+      "correct": "B",
+      "explanation": "Rocky and Bullwinkle were the stars of the show."
+    },
+    {
+      "id": "cart_11",
+      "text": "George of the Jungle famously:",
+      "options": {
+        "A": "Talked to animals",
+        "B": "Watch out for that tree!",
+        "C": "Fought tigers",
+        "D": "Saved Jane"
+      },
+      "correct": "B",
+      "explanation": "The theme song warns: 'Watch out for that tree!'"
+    },
+    {
+      "id": "cart_12",
+      "text": "The Banana Splits were:",
+      "options": {
+        "A": "A cartoon band",
+        "B": "Live-action costumed characters",
+        "C": "Puppets",
+        "D": "Real monkeys"
+      },
+      "correct": "B",
+      "explanation": "Fleegle, Bingo, Drooper, and Snorky were live-action performers in suits."
+    },
+    {
+      "id": "cart_13",
+      "text": "Speed Racer's car was the:",
+      "options": {
+        "A": "Batmobile",
+        "B": "Mach 5",
+        "C": "General Lee",
+        "D": "Herbie"
+      },
+      "correct": "B",
+      "explanation": "The Mach 5 had special buttons for jacks, saws, and underwater mode."
+    },
+    {
+      "id": "cart_14",
+      "text": "Scooby-Doo premiered in which year?",
+      "options": {
+        "A": "1965",
+        "B": "1969",
+        "C": "1972",
+        "D": "1960"
+      },
+      "correct": "B",
+      "explanation": "'Scooby-Doo, Where Are You!' premiered in September 1969."
+    },
+    {
+      "id": "cart_15",
+      "text": "Which superhero cartoon had the theme song: 'Does whatever a spider can'?",
+      "options": {
+        "A": "Batman",
+        "B": "Superman",
+        "C": "Spider-Man",
+        "D": "Aquaman"
+      },
+      "correct": "C",
+      "explanation": "The 1967 Spider-Man cartoon theme is iconic."
+    }
+  ]
+}

@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "history_001",
+    "title": "World History",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["History", "World Events", "Ancient", "Modern"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which ancient civilization built the Great Pyramid of Giza?",
+      "options": {
+        "A": "Mesopotamians",
+        "B": "Egyptians",
+        "C": "Greeks",
+        "D": "Persians"
+      },
+      "correct": "B",
+      "explanation": "The Great Pyramid of Giza was built by the ancient Egyptians around 2560 BCE as a tomb for Pharaoh Khufu."
+    },
+    {
+      "id": "q002",
+      "text": "In what year did World War I begin?",
+      "options": {
+        "A": "1912",
+        "B": "1914",
+        "C": "1916",
+        "D": "1918"
+      },
+      "correct": "B",
+      "explanation": "World War I began in 1914, triggered by the assassination of Archduke Franz Ferdinand of Austria-Hungary."
+    },
+    {
+      "id": "q003",
+      "text": "Who was the first Emperor of Rome?",
+      "options": {
+        "A": "Julius Caesar",
+        "B": "Nero",
+        "C": "Augustus",
+        "D": "Caligula"
+      },
+      "correct": "C",
+      "explanation": "Augustus (born Octavian) became the first Roman Emperor in 27 BCE after defeating Mark Antony and Cleopatra."
+    },
+    {
+      "id": "q004",
+      "text": "The Magna Carta was signed in which year?",
+      "options": {
+        "A": "1066",
+        "B": "1215",
+        "C": "1348",
+        "D": "1453"
+      },
+      "correct": "B",
+      "explanation": "The Magna Carta was sealed by King John of England in 1215, establishing that everyone, including the king, was subject to the law."
+    },
+    {
+      "id": "q005",
+      "text": "Which explorer is credited with the first circumnavigation of the globe?",
+      "options": {
+        "A": "Christopher Columbus",
+        "B": "Vasco da Gama",
+        "C": "Ferdinand Magellan",
+        "D": "Francis Drake"
+      },
+      "correct": "C",
+      "explanation": "Ferdinand Magellan led the first expedition to circumnavigate the globe in 1519-1522, though he died in the Philippines and his crew completed the voyage."
+    },
+    {
+      "id": "q006",
+      "text": "The French Revolution began in what year?",
+      "options": {
+        "A": "1776",
+        "B": "1789",
+        "C": "1804",
+        "D": "1815"
+      },
+      "correct": "B",
+      "explanation": "The French Revolution began in 1789 with the storming of the Bastille on July 14th."
+    },
+    {
+      "id": "q007",
+      "text": "Which ancient city was buried by the eruption of Mount Vesuvius in 79 AD?",
+      "options": {
+        "A": "Rome",
+        "B": "Athens",
+        "C": "Pompeii",
+        "D": "Carthage"
+      },
+      "correct": "C",
+      "explanation": "Pompeii was buried under volcanic ash when Mount Vesuvius erupted in 79 AD, preserving the city remarkably well."
+    },
+    {
+      "id": "q008",
+      "text": "Who was the leader of the Soviet Union during World War II?",
+      "options": {
+        "A": "Vladimir Lenin",
+        "B": "Leon Trotsky",
+        "C": "Joseph Stalin",
+        "D": "Nikita Khrushchev"
+      },
+      "correct": "C",
+      "explanation": "Joseph Stalin led the Soviet Union from the mid-1920s until his death in 1953, including throughout World War II."
+    },
+    {
+      "id": "q009",
+      "text": "The ancient Greek city-state known for its military prowess was:",
+      "options": {
+        "A": "Athens",
+        "B": "Corinth",
+        "C": "Thebes",
+        "D": "Sparta"
+      },
+      "correct": "D",
+      "explanation": "Sparta was renowned for its military culture, rigorous training system, and powerful army in ancient Greece."
+    },
+    {
+      "id": "q010",
+      "text": "Which dynasty built the Great Wall of China as we largely know it today?",
+      "options": {
+        "A": "Han Dynasty",
+        "B": "Tang Dynasty",
+        "C": "Ming Dynasty",
+        "D": "Qin Dynasty"
+      },
+      "correct": "C",
+      "explanation": "While the Qin Dynasty began the wall, the Ming Dynasty (1368-1644) built most of the Great Wall that survives today."
+    },
+    {
+      "id": "q011",
+      "text": "The Industrial Revolution originated in which country?",
+      "options": {
+        "A": "France",
+        "B": "Germany",
+        "C": "United States",
+        "D": "Great Britain"
+      },
+      "correct": "D",
+      "explanation": "The Industrial Revolution began in Great Britain in the late 18th century, driven by innovations in textile manufacturing and steam power."
+    },
+    {
+      "id": "q012",
+      "text": "Who painted the ceiling of the Sistine Chapel?",
+      "options": {
+        "A": "Leonardo da Vinci",
+        "B": "Raphael",
+        "C": "Michelangelo",
+        "D": "Donatello"
+      },
+      "correct": "C",
+      "explanation": "Michelangelo painted the Sistine Chapel ceiling between 1508 and 1512, commissioned by Pope Julius II."
+    },
+    {
+      "id": "q013",
+      "text": "The Bolshevik Revolution took place in which country?",
+      "options": {
+        "A": "Germany",
+        "B": "Russia",
+        "C": "China",
+        "D": "France"
+      },
+      "correct": "B",
+      "explanation": "The Bolshevik Revolution of October 1917 took place in Russia, led by Vladimir Lenin, overthrowing the Provisional Government."
+    },
+    {
+      "id": "q014",
+      "text": "Which empire was ruled by Suleiman the Magnificent?",
+      "options": {
+        "A": "Mughal Empire",
+        "B": "Byzantine Empire",
+        "C": "Ottoman Empire",
+        "D": "Persian Empire"
+      },
+      "correct": "C",
+      "explanation": "Suleiman the Magnificent ruled the Ottoman Empire from 1520 to 1566, presiding over its golden age."
+    },
+    {
+      "id": "q015",
+      "text": "The Berlin Wall fell in which year?",
+      "options": {
+        "A": "1987",
+        "B": "1989",
+        "C": "1991",
+        "D": "1993"
+      },
+      "correct": "B",
+      "explanation": "The Berlin Wall fell on November 9, 1989, symbolizing the end of the Cold War division of Europe."
+    },
+    {
+      "id": "q016",
+      "text": "Who was the Carthaginian general who crossed the Alps with elephants?",
+      "options": {
+        "A": "Scipio Africanus",
+        "B": "Hannibal Barca",
+        "C": "Hamilcar Barca",
+        "D": "Hasdrubal"
+      },
+      "correct": "B",
+      "explanation": "Hannibal Barca famously crossed the Alps with war elephants in 218 BCE during the Second Punic War against Rome."
+    },
+    {
+      "id": "q017",
+      "text": "The Rosetta Stone helped scholars decipher which writing system?",
+      "options": {
+        "A": "Cuneiform",
+        "B": "Linear B",
+        "C": "Egyptian hieroglyphics",
+        "D": "Sanskrit"
+      },
+      "correct": "C",
+      "explanation": "The Rosetta Stone, discovered in 1799, contained the same text in hieroglyphics, Demotic, and Greek, enabling Jean-Francois Champollion to decipher hieroglyphics."
+    },
+    {
+      "id": "q018",
+      "text": "Which treaty ended World War I?",
+      "options": {
+        "A": "Treaty of Paris",
+        "B": "Treaty of Versailles",
+        "C": "Treaty of Vienna",
+        "D": "Treaty of Westphalia"
+      },
+      "correct": "B",
+      "explanation": "The Treaty of Versailles was signed on June 28, 1919, officially ending World War I and imposing harsh terms on Germany."
+    },
+    {
+      "id": "q019",
+      "text": "The Aztec Empire was located in present-day:",
+      "options": {
+        "A": "Peru",
+        "B": "Colombia",
+        "C": "Mexico",
+        "D": "Guatemala"
+      },
+      "correct": "C",
+      "explanation": "The Aztec Empire was centered in the Valley of Mexico, with its capital Tenochtitlan located where Mexico City stands today."
+    },
+    {
+      "id": "q020",
+      "text": "Who invented the printing press around 1440?",
+      "options": {
+        "A": "Johannes Gutenberg",
+        "B": "William Caxton",
+        "C": "Aldus Manutius",
+        "D": "Bi Sheng"
+      },
+      "correct": "A",
+      "explanation": "Johannes Gutenberg invented the movable-type printing press around 1440 in Mainz, Germany, revolutionizing the spread of information."
+    },
+    {
+      "id": "q021",
+      "text": "The Hundred Years' War was fought between which two countries?",
+      "options": {
+        "A": "Spain and Portugal",
+        "B": "England and France",
+        "C": "England and Scotland",
+        "D": "France and Germany"
+      },
+      "correct": "B",
+      "explanation": "The Hundred Years' War (1337-1453) was a series of conflicts between England and France over succession to the French throne."
+    },
+    {
+      "id": "q022",
+      "text": "Which civilization developed the concept of zero as a number?",
+      "options": {
+        "A": "Greek",
+        "B": "Egyptian",
+        "C": "Indian",
+        "D": "Chinese"
+      },
+      "correct": "C",
+      "explanation": "Ancient Indian mathematicians, notably Brahmagupta in the 7th century, developed the concept of zero as a number with mathematical properties."
+    },
+    {
+      "id": "q023",
+      "text": "The Meiji Restoration transformed which country in 1868?",
+      "options": {
+        "A": "China",
+        "B": "Korea",
+        "C": "Japan",
+        "D": "Thailand"
+      },
+      "correct": "C",
+      "explanation": "The Meiji Restoration of 1868 restored imperial rule to Japan and began a period of rapid modernization and industrialization."
+    },
+    {
+      "id": "q024",
+      "text": "Who led the Mongol Empire at its founding?",
+      "options": {
+        "A": "Kublai Khan",
+        "B": "Tamerlane",
+        "C": "Genghis Khan",
+        "D": "Ogedei Khan"
+      },
+      "correct": "C",
+      "explanation": "Genghis Khan (Temujin) united the Mongol tribes and founded the Mongol Empire in 1206, which became the largest contiguous land empire in history."
+    },
+    {
+      "id": "q025",
+      "text": "The D-Day invasion of Normandy occurred on:",
+      "options": {
+        "A": "June 6, 1944",
+        "B": "May 8, 1945",
+        "C": "December 7, 1941",
+        "D": "August 6, 1945"
+      },
+      "correct": "A",
+      "explanation": "D-Day, June 6, 1944, was the Allied invasion of Normandy, France, the largest seaborne invasion in history."
+    },
+    {
+      "id": "q026",
+      "text": "The Incan Empire was located primarily in which mountain range?",
+      "options": {
+        "A": "Rocky Mountains",
+        "B": "Himalayas",
+        "C": "Andes",
+        "D": "Alps"
+      },
+      "correct": "C",
+      "explanation": "The Incan Empire stretched along the Andes Mountains in South America, with its capital at Cusco in present-day Peru."
+    },
+    {
+      "id": "q027",
+      "text": "Which event is considered the start of the Protestant Reformation?",
+      "options": {
+        "A": "The Council of Trent",
+        "B": "Henry VIII's break with Rome",
+        "C": "Martin Luther's 95 Theses",
+        "D": "The founding of the Jesuit order"
+      },
+      "correct": "C",
+      "explanation": "Martin Luther's posting of his 95 Theses in 1517, criticizing the sale of indulgences, is considered the start of the Protestant Reformation."
+    },
+    {
+      "id": "q028",
+      "text": "The ancient civilization of Mesopotamia was located between which two rivers?",
+      "options": {
+        "A": "Nile and Congo",
+        "B": "Ganges and Indus",
+        "C": "Tigris and Euphrates",
+        "D": "Yellow and Yangtze"
+      },
+      "correct": "C",
+      "explanation": "Mesopotamia, meaning 'land between the rivers,' was situated between the Tigris and Euphrates rivers in modern-day Iraq."
+    },
+    {
+      "id": "q029",
+      "text": "Who was the first President of the United States?",
+      "options": {
+        "A": "Thomas Jefferson",
+        "B": "Benjamin Franklin",
+        "C": "John Adams",
+        "D": "George Washington"
+      },
+      "correct": "D",
+      "explanation": "George Washington served as the first President of the United States from 1789 to 1797."
+    },
+    {
+      "id": "q030",
+      "text": "The Bubonic Plague, or Black Death, devastated Europe in the:",
+      "options": {
+        "A": "11th century",
+        "B": "14th century",
+        "C": "16th century",
+        "D": "18th century"
+      },
+      "correct": "B",
+      "explanation": "The Black Death swept through Europe from 1347 to 1353, killing an estimated one-third of the European population."
+    },
+    {
+      "id": "q031",
+      "text": "Which ancient wonder was located in the city of Babylon?",
+      "options": {
+        "A": "Colossus of Rhodes",
+        "B": "Lighthouse of Alexandria",
+        "C": "Hanging Gardens",
+        "D": "Temple of Artemis"
+      },
+      "correct": "C",
+      "explanation": "The Hanging Gardens of Babylon were one of the Seven Wonders of the Ancient World, though their exact existence remains debated by historians."
+    },
+    {
+      "id": "q032",
+      "text": "The Cuban Missile Crisis occurred in which year?",
+      "options": {
+        "A": "1958",
+        "B": "1960",
+        "C": "1962",
+        "D": "1964"
+      },
+      "correct": "C",
+      "explanation": "The Cuban Missile Crisis of October 1962 was a 13-day confrontation between the US and Soviet Union over nuclear missiles in Cuba."
+    },
+    {
+      "id": "q033",
+      "text": "Who unified the kingdoms of Upper and Lower Egypt around 3100 BCE?",
+      "options": {
+        "A": "Ramesses II",
+        "B": "Tutankhamun",
+        "C": "Narmer (Menes)",
+        "D": "Cleopatra"
+      },
+      "correct": "C",
+      "explanation": "Narmer (also known as Menes) is traditionally credited with unifying Upper and Lower Egypt around 3100 BCE, founding the First Dynasty."
+    },
+    {
+      "id": "q034",
+      "text": "The Silk Road connected which two regions?",
+      "options": {
+        "A": "Africa and South America",
+        "B": "China and the Mediterranean",
+        "C": "India and Australia",
+        "D": "Japan and Arabia"
+      },
+      "correct": "B",
+      "explanation": "The Silk Road was a network of trade routes connecting China and East Asia to the Mediterranean world, active for over 1,500 years."
+    },
+    {
+      "id": "q035",
+      "text": "Which battle in 1805 established British naval supremacy?",
+      "options": {
+        "A": "Battle of Waterloo",
+        "B": "Battle of Trafalgar",
+        "C": "Battle of the Nile",
+        "D": "Battle of Jutland"
+      },
+      "correct": "B",
+      "explanation": "The Battle of Trafalgar in 1805, where Admiral Nelson defeated the combined French and Spanish fleets, secured British naval dominance for a century."
+    },
+    {
+      "id": "q036",
+      "text": "The Maurya Empire was an ancient power in which region?",
+      "options": {
+        "A": "Southeast Asia",
+        "B": "Indian subcontinent",
+        "C": "Central Asia",
+        "D": "Middle East"
+      },
+      "correct": "B",
+      "explanation": "The Maurya Empire (322-185 BCE) was one of the largest empires of the ancient Indian subcontinent, founded by Chandragupta Maurya."
+    },
+    {
+      "id": "q037",
+      "text": "Who was the famous queen of the Ptolemaic Kingdom of Egypt?",
+      "options": {
+        "A": "Nefertiti",
+        "B": "Hatshepsut",
+        "C": "Cleopatra VII",
+        "D": "Zenobia"
+      },
+      "correct": "C",
+      "explanation": "Cleopatra VII was the last active ruler of the Ptolemaic Kingdom of Egypt, known for her alliances with Julius Caesar and Mark Antony."
+    },
+    {
+      "id": "q038",
+      "text": "The Thirty Years' War (1618-1648) was primarily fought in:",
+      "options": {
+        "A": "France",
+        "B": "England",
+        "C": "Central Europe (Holy Roman Empire)",
+        "D": "Scandinavia"
+      },
+      "correct": "C",
+      "explanation": "The Thirty Years' War was fought mainly in the territories of the Holy Roman Empire (modern Germany) and was one of the most destructive European conflicts."
+    },
+    {
+      "id": "q039",
+      "text": "Which philosopher was sentenced to death by drinking hemlock in 399 BCE?",
+      "options": {
+        "A": "Plato",
+        "B": "Aristotle",
+        "C": "Socrates",
+        "D": "Diogenes"
+      },
+      "correct": "C",
+      "explanation": "Socrates was sentenced to death by an Athenian jury in 399 BCE on charges of impiety and corrupting the youth, and drank hemlock to carry out the sentence."
+    },
+    {
+      "id": "q040",
+      "text": "The atomic bombs were dropped on Hiroshima and which other Japanese city?",
+      "options": {
+        "A": "Tokyo",
+        "B": "Osaka",
+        "C": "Nagasaki",
+        "D": "Kyoto"
+      },
+      "correct": "C",
+      "explanation": "The United States dropped atomic bombs on Hiroshima (August 6, 1945) and Nagasaki (August 9, 1945), leading to Japan's surrender."
+    },
+    {
+      "id": "q041",
+      "text": "The Renaissance began in which country?",
+      "options": {
+        "A": "France",
+        "B": "England",
+        "C": "Spain",
+        "D": "Italy"
+      },
+      "correct": "D",
+      "explanation": "The Renaissance began in Italy in the 14th century, particularly in Florence, before spreading across Europe over the following centuries."
+    },
+    {
+      "id": "q042",
+      "text": "Who was the leader of the Haitian Revolution?",
+      "options": {
+        "A": "Simon Bolivar",
+        "B": "Toussaint Louverture",
+        "C": "Jose Marti",
+        "D": "Che Guevara"
+      },
+      "correct": "B",
+      "explanation": "Toussaint Louverture led the Haitian Revolution beginning in 1791, the most successful slave revolt in history, leading to Haitian independence in 1804."
+    },
+    {
+      "id": "q043",
+      "text": "The Byzantine Empire was the eastern continuation of which empire?",
+      "options": {
+        "A": "Persian Empire",
+        "B": "Greek Empire",
+        "C": "Roman Empire",
+        "D": "Macedonian Empire"
+      },
+      "correct": "C",
+      "explanation": "The Byzantine Empire was the eastern half of the Roman Empire that survived and thrived for nearly a thousand years after the fall of Rome in 476 AD."
+    },
+    {
+      "id": "q044",
+      "text": "The Opium Wars were fought between China and which country?",
+      "options": {
+        "A": "France",
+        "B": "Japan",
+        "C": "Great Britain",
+        "D": "Portugal"
+      },
+      "correct": "C",
+      "explanation": "The Opium Wars (1839-1842 and 1856-1860) were fought between China and Great Britain over trade imbalances and the opium trade."
+    },
+    {
+      "id": "q045",
+      "text": "Who was the Macedonian king who built one of the largest empires of the ancient world?",
+      "options": {
+        "A": "Philip II",
+        "B": "Alexander the Great",
+        "C": "Perseus",
+        "D": "Pyrrhus"
+      },
+      "correct": "B",
+      "explanation": "Alexander the Great (356-323 BCE) conquered an empire stretching from Greece to northwestern India by the age of 30."
+    },
+    {
+      "id": "q046",
+      "text": "The Code of Hammurabi is one of the oldest known written legal codes from which civilization?",
+      "options": {
+        "A": "Egypt",
+        "B": "Babylon",
+        "C": "Greece",
+        "D": "China"
+      },
+      "correct": "B",
+      "explanation": "The Code of Hammurabi was created around 1754 BCE by King Hammurabi of Babylon, one of the earliest and most complete written legal codes."
+    },
+    {
+      "id": "q047",
+      "text": "Which event triggered the United States' entry into World War II?",
+      "options": {
+        "A": "Sinking of the Lusitania",
+        "B": "Invasion of Poland",
+        "C": "Attack on Pearl Harbor",
+        "D": "Fall of France"
+      },
+      "correct": "C",
+      "explanation": "The Japanese attack on Pearl Harbor on December 7, 1941, prompted the United States to declare war and enter World War II."
+    },
+    {
+      "id": "q048",
+      "text": "The Zulu Kingdom was a powerful state in which part of Africa?",
+      "options": {
+        "A": "West Africa",
+        "B": "East Africa",
+        "C": "Southern Africa",
+        "D": "North Africa"
+      },
+      "correct": "C",
+      "explanation": "The Zulu Kingdom rose to prominence in Southern Africa in the early 19th century under King Shaka Zulu, in present-day South Africa."
+    },
+    {
+      "id": "q049",
+      "text": "Which invention by Eli Whitney greatly impacted the cotton industry in 1793?",
+      "options": {
+        "A": "Spinning jenny",
+        "B": "Cotton gin",
+        "C": "Power loom",
+        "D": "Sewing machine"
+      },
+      "correct": "B",
+      "explanation": "Eli Whitney's cotton gin, patented in 1794, mechanized the separation of cotton fibers from seeds, dramatically increasing cotton production."
+    },
+    {
+      "id": "q050",
+      "text": "The Congress of Vienna in 1815 aimed to:",
+      "options": {
+        "A": "Establish the United Nations",
+        "B": "Restore European balance of power after Napoleon",
+        "C": "Divide Africa among European powers",
+        "D": "End the Thirty Years' War"
+      },
+      "correct": "B",
+      "explanation": "The Congress of Vienna (1814-1815) redrew the map of Europe to restore stability and balance of power after the Napoleonic Wars."
+    },
+    {
+      "id": "q051",
+      "text": "Which ancient civilization is credited with inventing cuneiform writing?",
+      "options": {
+        "A": "Egyptians",
+        "B": "Sumerians",
+        "C": "Phoenicians",
+        "D": "Hittites"
+      },
+      "correct": "B",
+      "explanation": "The Sumerians of Mesopotamia developed cuneiform writing around 3400 BCE, one of the earliest known writing systems."
+    },
+    {
+      "id": "q052",
+      "text": "The Rwandan Genocide occurred in which year?",
+      "options": {
+        "A": "1990",
+        "B": "1992",
+        "C": "1994",
+        "D": "1996"
+      },
+      "correct": "C",
+      "explanation": "The Rwandan Genocide occurred in 1994, when Hutu extremists killed an estimated 800,000 Tutsi and moderate Hutu in approximately 100 days."
+    },
+    {
+      "id": "q053",
+      "text": "Who was the first woman to fly solo across the Atlantic Ocean?",
+      "options": {
+        "A": "Bessie Coleman",
+        "B": "Amelia Earhart",
+        "C": "Harriet Quimby",
+        "D": "Jacqueline Cochran"
+      },
+      "correct": "B",
+      "explanation": "Amelia Earhart completed the first solo transatlantic flight by a woman on May 20-21, 1932, flying from Newfoundland to Northern Ireland."
+    },
+    {
+      "id": "q054",
+      "text": "The Partition of India in 1947 created which two countries?",
+      "options": {
+        "A": "India and Sri Lanka",
+        "B": "India and Bangladesh",
+        "C": "India and Pakistan",
+        "D": "India and Myanmar"
+      },
+      "correct": "C",
+      "explanation": "The Partition of 1947 divided British India into two independent nations: India and Pakistan (which later split into Pakistan and Bangladesh in 1971)."
+    },
+    {
+      "id": "q055",
+      "text": "The Peloponnesian War was fought between Athens and:",
+      "options": {
+        "A": "Persia",
+        "B": "Thebes",
+        "C": "Sparta",
+        "D": "Macedonia"
+      },
+      "correct": "C",
+      "explanation": "The Peloponnesian War (431-404 BCE) was fought between the Athenian-led Delian League and the Spartan-led Peloponnesian League."
+    },
+    {
+      "id": "q056",
+      "text": "Which Chinese dynasty is known for building the Terracotta Army?",
+      "options": {
+        "A": "Han Dynasty",
+        "B": "Qin Dynasty",
+        "C": "Song Dynasty",
+        "D": "Zhou Dynasty"
+      },
+      "correct": "B",
+      "explanation": "The Terracotta Army was built for Qin Shi Huang, the first emperor of the Qin Dynasty, around 210 BCE to protect him in the afterlife."
+    },
+    {
+      "id": "q057",
+      "text": "Nelson Mandela was imprisoned for how many years?",
+      "options": {
+        "A": "15 years",
+        "B": "20 years",
+        "C": "27 years",
+        "D": "30 years"
+      },
+      "correct": "C",
+      "explanation": "Nelson Mandela was imprisoned for 27 years (1964-1990) before being released and eventually becoming South Africa's first Black president in 1994."
+    },
+    {
+      "id": "q058",
+      "text": "The Spanish Armada was defeated in which year?",
+      "options": {
+        "A": "1492",
+        "B": "1588",
+        "C": "1607",
+        "D": "1620"
+      },
+      "correct": "B",
+      "explanation": "The Spanish Armada was defeated by the English fleet in 1588, marking a turning point in European naval power."
+    },
+    {
+      "id": "q059",
+      "text": "Which civilization created the famous Machu Picchu citadel?",
+      "options": {
+        "A": "Maya",
+        "B": "Aztec",
+        "C": "Inca",
+        "D": "Olmec"
+      },
+      "correct": "C",
+      "explanation": "Machu Picchu was built by the Inca civilization in the 15th century, likely as an estate for the Inca emperor Pachacuti."
+    },
+    {
+      "id": "q060",
+      "text": "The Suez Canal was completed in which year?",
+      "options": {
+        "A": "1849",
+        "B": "1859",
+        "C": "1869",
+        "D": "1879"
+      },
+      "correct": "C",
+      "explanation": "The Suez Canal was completed in 1869, connecting the Mediterranean Sea to the Red Sea and dramatically shortening shipping routes between Europe and Asia."
+    },
+    {
+      "id": "q061",
+      "text": "Who was the Viking explorer believed to have reached North America around 1000 AD?",
+      "options": {
+        "A": "Erik the Red",
+        "B": "Leif Erikson",
+        "C": "Harald Hardrada",
+        "D": "Ragnar Lodbrok"
+      },
+      "correct": "B",
+      "explanation": "Leif Erikson is believed to have reached North America (Vinland) around 1000 AD, nearly 500 years before Columbus."
+    },
+    {
+      "id": "q062",
+      "text": "The Tokugawa Shogunate ruled Japan for approximately how long?",
+      "options": {
+        "A": "100 years",
+        "B": "150 years",
+        "C": "200 years",
+        "D": "250 years"
+      },
+      "correct": "D",
+      "explanation": "The Tokugawa Shogunate ruled Japan for approximately 250 years (1603-1868), a period of relative peace and isolation known as the Edo period."
+    },
+    {
+      "id": "q063",
+      "text": "The Emancipation Proclamation was issued by which US President?",
+      "options": {
+        "A": "Ulysses S. Grant",
+        "B": "Andrew Johnson",
+        "C": "Abraham Lincoln",
+        "D": "James Buchanan"
+      },
+      "correct": "C",
+      "explanation": "President Abraham Lincoln issued the Emancipation Proclamation on January 1, 1863, declaring slaves in Confederate states to be free."
+    },
+    {
+      "id": "q064",
+      "text": "The ancient Library of Alexandria was located in which present-day country?",
+      "options": {
+        "A": "Greece",
+        "B": "Turkey",
+        "C": "Egypt",
+        "D": "Iraq"
+      },
+      "correct": "C",
+      "explanation": "The Library of Alexandria was one of the largest libraries of the ancient world, located in Alexandria, Egypt, founded in the 3rd century BCE."
+    },
+    {
+      "id": "q065",
+      "text": "The Battle of Hastings in 1066 was fought in which country?",
+      "options": {
+        "A": "France",
+        "B": "England",
+        "C": "Scotland",
+        "D": "Ireland"
+      },
+      "correct": "B",
+      "explanation": "The Battle of Hastings was fought on October 14, 1066, in England, where William the Conqueror defeated King Harold II to take the English throne."
+    },
+    {
+      "id": "q066",
+      "text": "Which empire was known as the 'Land of the Rising Sun'?",
+      "options": {
+        "A": "China",
+        "B": "Korea",
+        "C": "Japan",
+        "D": "Thailand"
+      },
+      "correct": "C",
+      "explanation": "Japan is known as the Land of the Rising Sun, a name derived from its position east of mainland Asia where the sun appears to rise."
+    },
+    {
+      "id": "q067",
+      "text": "The Scramble for Africa primarily took place during which period?",
+      "options": {
+        "A": "1780-1800",
+        "B": "1830-1860",
+        "C": "1881-1914",
+        "D": "1920-1945"
+      },
+      "correct": "C",
+      "explanation": "The Scramble for Africa (1881-1914) was the period of rapid colonization of Africa by European powers, formalized at the Berlin Conference of 1884-1885."
+    },
+    {
+      "id": "q068",
+      "text": "Who discovered penicillin in 1928?",
+      "options": {
+        "A": "Louis Pasteur",
+        "B": "Alexander Fleming",
+        "C": "Joseph Lister",
+        "D": "Robert Koch"
+      },
+      "correct": "B",
+      "explanation": "Alexander Fleming discovered penicillin in 1928 when he noticed mold killing bacteria in a petri dish, leading to the age of antibiotics."
+    },
+    {
+      "id": "q069",
+      "text": "The Khmer Empire built which famous temple complex?",
+      "options": {
+        "A": "Borobudur",
+        "B": "Angkor Wat",
+        "C": "Bagan",
+        "D": "Prambanan"
+      },
+      "correct": "B",
+      "explanation": "Angkor Wat was built by the Khmer Empire in the early 12th century in present-day Cambodia, originally as a Hindu temple for Vishnu."
+    },
+    {
+      "id": "q070",
+      "text": "The assassination of Archduke Franz Ferdinand occurred in which city?",
+      "options": {
+        "A": "Vienna",
+        "B": "Belgrade",
+        "C": "Sarajevo",
+        "D": "Budapest"
+      },
+      "correct": "C",
+      "explanation": "Archduke Franz Ferdinand was assassinated in Sarajevo, Bosnia, on June 28, 1914, by Gavrilo Princip, triggering World War I."
+    },
+    {
+      "id": "q071",
+      "text": "The Tang Dynasty is considered a golden age of which civilization?",
+      "options": {
+        "A": "Japanese",
+        "B": "Korean",
+        "C": "Chinese",
+        "D": "Vietnamese"
+      },
+      "correct": "C",
+      "explanation": "The Tang Dynasty (618-907 CE) is widely regarded as a golden age of Chinese civilization, known for its advances in art, literature, and trade."
+    },
+    {
+      "id": "q072",
+      "text": "The Panama Canal was completed in which year?",
+      "options": {
+        "A": "1904",
+        "B": "1910",
+        "C": "1914",
+        "D": "1920"
+      },
+      "correct": "C",
+      "explanation": "The Panama Canal was completed in 1914, connecting the Atlantic and Pacific Oceans and revolutionizing global shipping routes."
+    },
+    {
+      "id": "q073",
+      "text": "Who was the first Emperor of a unified China?",
+      "options": {
+        "A": "Liu Bang",
+        "B": "Qin Shi Huang",
+        "C": "Wu Zetian",
+        "D": "Sun Yat-sen"
+      },
+      "correct": "B",
+      "explanation": "Qin Shi Huang unified China in 221 BCE, becoming its first emperor and establishing the Qin Dynasty."
+    },
+    {
+      "id": "q074",
+      "text": "The Enlightenment was an intellectual movement primarily of which century?",
+      "options": {
+        "A": "15th century",
+        "B": "16th century",
+        "C": "17th century",
+        "D": "18th century"
+      },
+      "correct": "D",
+      "explanation": "The Enlightenment was primarily an 18th-century intellectual movement emphasizing reason, science, and individual rights, influencing revolutions worldwide."
+    },
+    {
+      "id": "q075",
+      "text": "The Battle of Stalingrad is considered a turning point of which war?",
+      "options": {
+        "A": "World War I",
+        "B": "World War II",
+        "C": "Korean War",
+        "D": "Russian Civil War"
+      },
+      "correct": "B",
+      "explanation": "The Battle of Stalingrad (1942-1943) was a major turning point of World War II, where Soviet forces defeated the German 6th Army."
+    },
+    {
+      "id": "q076",
+      "text": "Which ancient civilization is known for creating the first known alphabet?",
+      "options": {
+        "A": "Egyptians",
+        "B": "Phoenicians",
+        "C": "Greeks",
+        "D": "Sumerians"
+      },
+      "correct": "B",
+      "explanation": "The Phoenicians developed one of the first widely-used alphabets around 1050 BCE, which influenced the Greek and Latin alphabets."
+    },
+    {
+      "id": "q077",
+      "text": "The fall of Constantinople in 1453 marked the end of which empire?",
+      "options": {
+        "A": "Ottoman Empire",
+        "B": "Roman Empire",
+        "C": "Byzantine Empire",
+        "D": "Seljuk Empire"
+      },
+      "correct": "C",
+      "explanation": "The fall of Constantinople to the Ottoman Turks in 1453 marked the end of the Byzantine Empire, which had lasted over a thousand years."
+    },
+    {
+      "id": "q078",
+      "text": "Who led India's nonviolent independence movement against British rule?",
+      "options": {
+        "A": "Jawaharlal Nehru",
+        "B": "Subhas Chandra Bose",
+        "C": "Mahatma Gandhi",
+        "D": "B.R. Ambedkar"
+      },
+      "correct": "C",
+      "explanation": "Mahatma Gandhi led India's nonviolent independence movement through civil disobedience and peaceful protest, achieving independence in 1947."
+    },
+    {
+      "id": "q079",
+      "text": "The Treaty of Tordesillas in 1494 divided the New World between which two countries?",
+      "options": {
+        "A": "England and France",
+        "B": "Spain and Portugal",
+        "C": "Spain and England",
+        "D": "France and Portugal"
+      },
+      "correct": "B",
+      "explanation": "The Treaty of Tordesillas divided newly discovered lands outside Europe between Spain and Portugal along a meridian in the Atlantic Ocean."
+    },
+    {
+      "id": "q080",
+      "text": "The Transatlantic slave trade primarily operated between which centuries?",
+      "options": {
+        "A": "12th to 15th centuries",
+        "B": "14th to 17th centuries",
+        "C": "16th to 19th centuries",
+        "D": "17th to 20th centuries"
+      },
+      "correct": "C",
+      "explanation": "The Transatlantic slave trade operated primarily from the 16th to 19th centuries, forcibly transporting millions of Africans to the Americas."
+    }
+  ]
+}

@@ -1,0 +1,372 @@
+{
+  "meta": {
+    "id": "pmi_pm",
+    "title": "PMI Project Management",
+    "version": "1.0",
+    "difficulty": "Hard",
+    "tags": ["Business", "Management", "PMP"],
+    "questionCount": 30
+  },
+  "questions": [
+    {
+      "id": "pm01",
+      "text": "Which document formally authorizes the existence of a project and provides the project manager with the authority to apply organizational resources?",
+      "options": {
+        "A": "Project Scope Statement",
+        "B": "Business Case",
+        "C": "Project Charter",
+        "D": "Work Breakdown Structure"
+      },
+      "correct": "C",
+      "explanation": "The Project Charter is the document issued by the project initiator or sponsor that formally authorizes the existence of a project."
+    },
+    {
+      "id": "pm02",
+      "text": "In which Process Group is the Project Charter developed?",
+      "options": {
+        "A": "Planning",
+        "B": "Initiating",
+        "C": "Executing",
+        "D": "Monitoring & Controlling"
+      },
+      "correct": "B",
+      "explanation": "Developing the Project Charter is the first process in the Initiating Process Group."
+    },
+    {
+      "id": "pm03",
+      "text": "What does WBS stand for in project management?",
+      "options": {
+        "A": "Work Breakdown Structure",
+        "B": "Work Balance Sheet",
+        "C": "Work Business System",
+        "D": "Weekly Breakdown Schedule"
+      },
+      "correct": "A",
+      "explanation": "A WBS is a hierarchical decomposition of the total scope of work to be carried out by the project team."
+    },
+    {
+      "id": "pm04",
+      "text": "Which of the following is an input to the 'Define Scope' process?",
+      "options": {
+        "A": "Project Charter",
+        "B": "WBS Dictionary",
+        "C": "Validated Deliverables",
+        "D": "Quality Metrics"
+      },
+      "correct": "A",
+      "explanation": "The Project Charter provides the high-level project description and product characteristics needed to define scope."
+    },
+    {
+      "id": "pm05",
+      "text": "A CPI (Cost Performance Index) of 0.85 indicates that the project is:",
+      "options": {
+        "A": "Under budget",
+        "B": "Over budget",
+        "C": "On budget",
+        "D": "Ahead of schedule"
+      },
+      "correct": "B",
+      "explanation": "A CPI of less than 1.0 indicates a cost overrun (over budget). 0.85 means you are getting 85 cents of value for every dollar spent."
+    },
+    {
+      "id": "pm06",
+      "text": "Which diagram is also known as a Fishbone diagram?",
+      "options": {
+        "A": "Pareto Chart",
+        "B": "Scatter Diagram",
+        "C": "Ishikawa Diagram",
+        "D": "Control Chart"
+      },
+      "correct": "C",
+      "explanation": "The Cause-and-Effect diagram, created by Kaoru Ishikawa, is often called a Fishbone diagram."
+    },
+    {
+      "id": "pm07",
+      "text": "What is the critical path in a project schedule?",
+      "options": {
+        "A": "The shortest path through the network diagram",
+        "B": "The longest path through the network diagram, determining the shortest possible project duration",
+        "C": "The path with the most resources",
+        "D": "The path with the highest risk"
+      },
+      "correct": "B",
+      "explanation": "The critical path is the sequence of activities that represents the longest path through a project, which determines the shortest possible duration."
+    },
+    {
+      "id": "pm08",
+      "text": "Which process involves auditing the quality requirements and the results from quality control measurements?",
+      "options": {
+        "A": "Plan Quality Management",
+        "B": "Manage Quality",
+        "C": "Control Quality",
+        "D": "Validate Scope"
+      },
+      "correct": "B",
+      "explanation": "Manage Quality (formerly Perform Quality Assurance) is the process of translating the quality management plan into executable quality activities."
+    },
+    {
+      "id": "pm09",
+      "text": "A RACI chart is an example of a:",
+      "options": {
+        "A": "Scope Baseline",
+        "B": "Responsibility Assignment Matrix",
+        "C": "Risk Register",
+        "D": "Quality Checklist"
+      },
+      "correct": "B",
+      "explanation": "RACI stands for Responsible, Accountable, Consulted, and Informed. It is a type of RAM."
+    },
+    {
+      "id": "pm10",
+      "text": "In project communications, what percentage of time is a project manager estimated to spend communicating?",
+      "options": {
+        "A": "10%",
+        "B": "50%",
+        "C": "90%",
+        "D": "100%"
+      },
+      "correct": "C",
+      "explanation": "It is widely accepted in PMI standards that a Project Manager spends approximately 90% of their time communicating."
+    },
+    {
+      "id": "pm11",
+      "text": "Which risk response strategy involves shifting the impact of a threat to a third party?",
+      "options": {
+        "A": "Avoid",
+        "B": "Mitigate",
+        "C": "Transfer",
+        "D": "Accept"
+      },
+      "correct": "C",
+      "explanation": "Transfer involves shifting the impact of a threat to a third party, together with ownership of the response (e.g., insurance)."
+    },
+    {
+      "id": "pm12",
+      "text": "Which type of contract places the most risk on the seller (contractor)?",
+      "options": {
+        "A": "Cost Plus Fixed Fee (CPFF)",
+        "B": "Time and Materials (T&M)",
+        "C": "Firm Fixed Price (FFP)",
+        "D": "Cost Plus Incentive Fee (CPIF)"
+      },
+      "correct": "C",
+      "explanation": "In a Firm Fixed Price contract, the seller is obligated to complete the work for a fixed amount, regardless of their costs."
+    },
+    {
+      "id": "pm13",
+      "text": "The process of identifying the people, groups, or organizations that could impact or be impacted by the project is:",
+      "options": {
+        "A": "Identify Stakeholders",
+        "B": "Plan Stakeholder Engagement",
+        "C": "Manage Stakeholder Engagement",
+        "D": "Monitor Stakeholder Engagement"
+      },
+      "correct": "A",
+      "explanation": "Identify Stakeholders is the process of identifying project stakeholders regularly and analyzing their interest and influence."
+    },
+    {
+      "id": "pm14",
+      "text": "Earned Value (EV) minus Actual Cost (AC) calculates which variance?",
+      "options": {
+        "A": "Schedule Variance (SV)",
+        "B": "Cost Variance (CV)",
+        "C": "Variance at Completion (VAC)",
+        "D": "To-Complete Performance Index (TCPI)"
+      },
+      "correct": "B",
+      "explanation": "CV = EV - AC. It measures cost performance."
+    },
+    {
+      "id": "pm15",
+      "text": "The approved version of a scope statement, WBS, and its associated WBS dictionary is called the:",
+      "options": {
+        "A": "Project Scope",
+        "B": "Product Scope",
+        "C": "Scope Baseline",
+        "D": "Scope Management Plan"
+      },
+      "correct": "C",
+      "explanation": "The Scope Baseline is the approved version of the scope statement, WBS, and WBS dictionary."
+    },
+    {
+      "id": "pm16",
+      "text": "Which conflict resolution technique involves retreating from an actual or potential conflict situation?",
+      "options": {
+        "A": "Collaborate/Problem Solve",
+        "B": "Force/Direct",
+        "C": "Withdraw/Avoid",
+        "D": "Smooth/Accommodate"
+      },
+      "correct": "C",
+      "explanation": "Withdraw/Avoid means retreating from a conflict or postponing the issue."
+    },
+    {
+      "id": "pm17",
+      "text": "A Project Management Office (PMO) that provides templates, best practices, and training is typically classified as:",
+      "options": {
+        "A": "Supportive",
+        "B": "Controlling",
+        "C": "Directive",
+        "D": "Passive"
+      },
+      "correct": "A",
+      "explanation": "A Supportive PMO provides a consultative role to projects by supplying templates, best practices, and training."
+    },
+    {
+      "id": "pm18",
+      "text": "What is the primary output of the 'Close Project or Phase' process?",
+      "options": {
+        "A": "Final Report",
+        "B": "Project Charter",
+        "C": "Accepted Deliverables",
+        "D": "Change Requests"
+      },
+      "correct": "A",
+      "explanation": "The Final Report (and transition of the final product) is a key output of Closing."
+    },
+    {
+      "id": "pm19",
+      "text": "Fast Tracking is a schedule compression technique that involves:",
+      "options": {
+        "A": "Adding resources to critical path activities",
+        "B": "Performing activities in parallel that were originally planned in sequence",
+        "C": "Reducing the scope",
+        "D": "Improving quality"
+      },
+      "correct": "B",
+      "explanation": "Fast Tracking compresses the schedule by overlapping activities that would normally be done sequentially."
+    },
+    {
+      "id": "pm20",
+      "text": "Crashing is a schedule compression technique that involves:",
+      "options": {
+        "A": "Performing activities in parallel",
+        "B": "Adding resources to critical path activities to shorten duration for the least incremental cost",
+        "C": "Removing scope",
+        "D": "Skipping quality checks"
+      },
+      "correct": "B",
+      "explanation": "Crashing shortens the schedule duration for the least incremental cost by adding resources."
+    },
+    {
+      "id": "pm21",
+      "text": "Which of the following is NOT part of the Iron Triangle (Triple Constraint)?",
+      "options": {
+        "A": "Scope",
+        "B": "Time (Schedule)",
+        "C": "Cost",
+        "D": "Risk"
+      },
+      "correct": "D",
+      "explanation": "The traditional Iron Triangle consists of Scope, Time, and Cost (with Quality often in the center)."
+    },
+    {
+      "id": "pm22",
+      "text": "Stakeholders with High Power and High Interest should be managed by:",
+      "options": {
+        "A": "Keeping satisfied",
+        "B": "Monitoring",
+        "C": "Managing closely",
+        "D": "Keeping informed"
+      },
+      "correct": "C",
+      "explanation": "High Power/High Interest stakeholders are key players and should be Managed Closely."
+    },
+    {
+      "id": "pm23",
+      "text": "In a matrix organization, who typically controls the budget?",
+      "options": {
+        "A": "Project Manager only",
+        "B": "Functional Manager only",
+        "C": "Shared or mixed control",
+        "D": "The Customer"
+      },
+      "correct": "C",
+      "explanation": "In a matrix organization (Weak, Balanced, Strong), budget control is often shared or mixed depending on the strength."
+    },
+    {
+      "id": "pm24",
+      "text": "What is the key difference between a Risk and an Issue?",
+      "options": {
+        "A": "A risk is negative, an issue is positive",
+        "B": "A risk is uncertain (future), an issue is certain (happening now)",
+        "C": "A risk is high cost, an issue is low cost",
+        "D": "They are the same"
+      },
+      "correct": "B",
+      "explanation": "A risk is an uncertain event that *may* occur; an issue is an event that *has* occurred."
+    },
+    {
+      "id": "pm25",
+      "text": "Which forecasting method uses the assumption that future performance will be the same as past performance?",
+      "options": {
+        "A": "EAC = BAC / CPI",
+        "B": "EAC = AC + BAC - EV",
+        "C": "EAC = AC + Bottom-up ETC",
+        "D": "EAC = AC + (BAC - EV) / (CPI * SPI)"
+      },
+      "correct": "A",
+      "explanation": "EAC = BAC / CPI assumes that the project's future cost performance will be the same as the past CPI."
+    },
+    {
+      "id": "pm26",
+      "text": "A precise description of a project deliverable is found in the:",
+      "options": {
+        "A": "WBS",
+        "B": "WBS Dictionary",
+        "C": "Project Charter",
+        "D": "Business Case"
+      },
+      "correct": "B",
+      "explanation": "The WBS Dictionary provides detailed information about each element in the WBS, including deliverable descriptions."
+    },
+    {
+      "id": "pm27",
+      "text": "Which process group contains the 'Perform Integrated Change Control' process?",
+      "options": {
+        "A": "Planning",
+        "B": "Executing",
+        "C": "Monitoring & Controlling",
+        "D": "Closing"
+      },
+      "correct": "C",
+      "explanation": "Perform Integrated Change Control is a Monitoring & Controlling process."
+    },
+    {
+      "id": "pm28",
+      "text": "Herzberg's Theory of Motivation distinguishes between:",
+      "options": {
+        "A": "Theory X and Theory Y",
+        "B": "Hygiene Factors and Motivating Agents",
+        "C": "Needs for Achievement, Power, and Affiliation",
+        "D": "Expectancy and Valence"
+      },
+      "correct": "B",
+      "explanation": "Herzberg's Two-Factor Theory distinguishes between Hygiene Factors (dissatisfiers) and Motivators (satisfiers)."
+    },
+    {
+      "id": "pm29",
+      "text": "The Tuckman Ladder stages of team development are:",
+      "options": {
+        "A": "Forming, Storming, Norming, Performing, Adjourning",
+        "B": "Planning, Doing, Checking, Acting",
+        "C": "Initiating, Planning, Executing, Closing",
+        "D": "Directing, Coaching, Supporting, Delegating"
+      },
+      "correct": "A",
+      "explanation": "Bruce Tuckman defined the stages as Forming, Storming, Norming, Performing, and Adjourning."
+    },
+    {
+      "id": "pm30",
+      "text": "Which term describes the authorized budget assigned to scheduled work?",
+      "options": {
+        "A": "Planned Value (PV)",
+        "B": "Earned Value (EV)",
+        "C": "Actual Cost (AC)",
+        "D": "Budget at Completion (BAC)"
+      },
+      "correct": "A",
+      "explanation": "Planned Value (PV) is the authorized budget assigned to scheduled work."
+    }
+  ]
+}

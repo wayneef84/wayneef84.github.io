@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "geography_001",
+    "title": "World Geography",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Geography", "Countries", "Capitals", "Landmarks"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is the capital of France?",
+      "options": {
+        "A": "Lyon",
+        "B": "Paris",
+        "C": "Marseille",
+        "D": "Bordeaux"
+      },
+      "correct": "B",
+      "explanation": "Paris is the capital and most populous city of France."
+    },
+    {
+      "id": "q002",
+      "text": "Which is the longest river in the world?",
+      "options": {
+        "A": "Amazon",
+        "B": "Mississippi",
+        "C": "Nile",
+        "D": "Yangtze"
+      },
+      "correct": "C",
+      "explanation": "The Nile River in Africa is approximately 6,650 km long, making it the longest river in the world."
+    },
+    {
+      "id": "q003",
+      "text": "Which continent is the largest by land area?",
+      "options": {
+        "A": "Africa",
+        "B": "North America",
+        "C": "Europe",
+        "D": "Asia"
+      },
+      "correct": "D",
+      "explanation": "Asia is the largest continent, covering about 44.58 million square kilometers."
+    },
+    {
+      "id": "q004",
+      "text": "What is the smallest country in the world by area?",
+      "options": {
+        "A": "Monaco",
+        "B": "Vatican City",
+        "C": "San Marino",
+        "D": "Liechtenstein"
+      },
+      "correct": "B",
+      "explanation": "Vatican City is the smallest country in the world at approximately 0.44 square kilometers."
+    },
+    {
+      "id": "q005",
+      "text": "Which ocean is the largest?",
+      "options": {
+        "A": "Atlantic Ocean",
+        "B": "Indian Ocean",
+        "C": "Arctic Ocean",
+        "D": "Pacific Ocean"
+      },
+      "correct": "D",
+      "explanation": "The Pacific Ocean is the largest and deepest ocean, covering more than 165 million square kilometers."
+    },
+    {
+      "id": "q006",
+      "text": "What is the capital of Japan?",
+      "options": {
+        "A": "Osaka",
+        "B": "Kyoto",
+        "C": "Tokyo",
+        "D": "Yokohama"
+      },
+      "correct": "C",
+      "explanation": "Tokyo is the capital of Japan and one of the most populous metropolitan areas in the world."
+    },
+    {
+      "id": "q007",
+      "text": "Mount Everest is located on the border of which two countries?",
+      "options": {
+        "A": "India and China",
+        "B": "Nepal and China",
+        "C": "Nepal and India",
+        "D": "Bhutan and China"
+      },
+      "correct": "B",
+      "explanation": "Mount Everest sits on the border between Nepal and China (Tibet Autonomous Region)."
+    },
+    {
+      "id": "q008",
+      "text": "Which country has the most natural lakes?",
+      "options": {
+        "A": "United States",
+        "B": "Russia",
+        "C": "Canada",
+        "D": "Finland"
+      },
+      "correct": "C",
+      "explanation": "Canada has more lakes than the rest of the world combined, with an estimated 2 million lakes."
+    },
+    {
+      "id": "q009",
+      "text": "What is the driest continent on Earth?",
+      "options": {
+        "A": "Africa",
+        "B": "Australia",
+        "C": "Antarctica",
+        "D": "Asia"
+      },
+      "correct": "C",
+      "explanation": "Antarctica is the driest continent, receiving very little precipitation, mostly as snow."
+    },
+    {
+      "id": "q010",
+      "text": "The Great Barrier Reef is located off the coast of which country?",
+      "options": {
+        "A": "Indonesia",
+        "B": "Philippines",
+        "C": "Australia",
+        "D": "New Zealand"
+      },
+      "correct": "C",
+      "explanation": "The Great Barrier Reef is off the northeast coast of Australia in the Coral Sea."
+    },
+    {
+      "id": "q011",
+      "text": "What is the capital of Brazil?",
+      "options": {
+        "A": "Rio de Janeiro",
+        "B": "Sao Paulo",
+        "C": "Brasilia",
+        "D": "Salvador"
+      },
+      "correct": "C",
+      "explanation": "Brasilia has been the capital of Brazil since 1960, replacing Rio de Janeiro."
+    },
+    {
+      "id": "q012",
+      "text": "Which African country was formerly known as Abyssinia?",
+      "options": {
+        "A": "Somalia",
+        "B": "Eritrea",
+        "C": "Ethiopia",
+        "D": "Sudan"
+      },
+      "correct": "C",
+      "explanation": "Ethiopia was historically known as Abyssinia, one of the oldest nations in Africa."
+    },
+    {
+      "id": "q013",
+      "text": "Which strait separates Europe from Africa?",
+      "options": {
+        "A": "Strait of Hormuz",
+        "B": "Strait of Malacca",
+        "C": "Strait of Gibraltar",
+        "D": "Bosporus Strait"
+      },
+      "correct": "C",
+      "explanation": "The Strait of Gibraltar separates Spain (Europe) from Morocco (Africa) at only 14 km wide."
+    },
+    {
+      "id": "q014",
+      "text": "What is the largest desert in the world?",
+      "options": {
+        "A": "Sahara Desert",
+        "B": "Arabian Desert",
+        "C": "Gobi Desert",
+        "D": "Antarctic Desert"
+      },
+      "correct": "D",
+      "explanation": "The Antarctic Desert is the largest desert at about 14 million sq km. The Sahara is the largest hot desert."
+    },
+    {
+      "id": "q015",
+      "text": "Which country is known as the Land of the Rising Sun?",
+      "options": {
+        "A": "China",
+        "B": "South Korea",
+        "C": "Japan",
+        "D": "Thailand"
+      },
+      "correct": "C",
+      "explanation": "Japan is known as the Land of the Rising Sun. The name Japan (Nihon) literally means 'origin of the sun.'"
+    },
+    {
+      "id": "q016",
+      "text": "What is the capital of Australia?",
+      "options": {
+        "A": "Sydney",
+        "B": "Melbourne",
+        "C": "Canberra",
+        "D": "Brisbane"
+      },
+      "correct": "C",
+      "explanation": "Canberra is the capital of Australia, chosen as a compromise between rivals Sydney and Melbourne."
+    },
+    {
+      "id": "q017",
+      "text": "Which river flows through the Grand Canyon?",
+      "options": {
+        "A": "Missouri River",
+        "B": "Rio Grande",
+        "C": "Colorado River",
+        "D": "Columbia River"
+      },
+      "correct": "C",
+      "explanation": "The Colorado River carved the Grand Canyon over millions of years."
+    },
+    {
+      "id": "q018",
+      "text": "In which country would you find Machu Picchu?",
+      "options": {
+        "A": "Bolivia",
+        "B": "Ecuador",
+        "C": "Colombia",
+        "D": "Peru"
+      },
+      "correct": "D",
+      "explanation": "Machu Picchu is a 15th-century Inca citadel located in the Andes Mountains of Peru."
+    },
+    {
+      "id": "q019",
+      "text": "What is the largest island in the world?",
+      "options": {
+        "A": "Borneo",
+        "B": "Madagascar",
+        "C": "Greenland",
+        "D": "New Guinea"
+      },
+      "correct": "C",
+      "explanation": "Greenland is the world's largest island at about 2.166 million square kilometers."
+    },
+    {
+      "id": "q020",
+      "text": "Which sea is the lowest point on Earth's surface?",
+      "options": {
+        "A": "Caspian Sea",
+        "B": "Dead Sea",
+        "C": "Red Sea",
+        "D": "Black Sea"
+      },
+      "correct": "B",
+      "explanation": "The Dead Sea shore is about 430 meters below sea level, the lowest land elevation on Earth."
+    },
+    {
+      "id": "q021",
+      "text": "What is the capital of Canada?",
+      "options": {
+        "A": "Toronto",
+        "B": "Vancouver",
+        "C": "Montreal",
+        "D": "Ottawa"
+      },
+      "correct": "D",
+      "explanation": "Ottawa, located in Ontario, has been the capital of Canada since 1857."
+    },
+    {
+      "id": "q022",
+      "text": "Which mountain range separates Europe from Asia?",
+      "options": {
+        "A": "Alps",
+        "B": "Himalayas",
+        "C": "Ural Mountains",
+        "D": "Caucasus Mountains"
+      },
+      "correct": "C",
+      "explanation": "The Ural Mountains form the traditional boundary between Europe and Asia, running through Russia."
+    },
+    {
+      "id": "q023",
+      "text": "What is the most populous country in Africa?",
+      "options": {
+        "A": "South Africa",
+        "B": "Egypt",
+        "C": "Nigeria",
+        "D": "Ethiopia"
+      },
+      "correct": "C",
+      "explanation": "Nigeria is the most populous country in Africa with over 220 million people."
+    },
+    {
+      "id": "q024",
+      "text": "Which country contains the most time zones?",
+      "options": {
+        "A": "Russia",
+        "B": "United States",
+        "C": "France",
+        "D": "China"
+      },
+      "correct": "C",
+      "explanation": "France has 12 time zones due to its overseas territories, more than any other country."
+    },
+    {
+      "id": "q025",
+      "text": "What is the deepest point in the ocean?",
+      "options": {
+        "A": "Tonga Trench",
+        "B": "Mariana Trench",
+        "C": "Puerto Rico Trench",
+        "D": "Java Trench"
+      },
+      "correct": "B",
+      "explanation": "The Challenger Deep in the Mariana Trench is about 10,935 meters deep, the deepest known point."
+    },
+    {
+      "id": "q026",
+      "text": "Which European country is shaped like a boot?",
+      "options": {
+        "A": "Spain",
+        "B": "Greece",
+        "C": "Italy",
+        "D": "Portugal"
+      },
+      "correct": "C",
+      "explanation": "Italy's distinctive boot shape is one of the most recognizable country outlines in the world."
+    },
+    {
+      "id": "q027",
+      "text": "What is the capital of Egypt?",
+      "options": {
+        "A": "Alexandria",
+        "B": "Luxor",
+        "C": "Cairo",
+        "D": "Giza"
+      },
+      "correct": "C",
+      "explanation": "Cairo is the capital of Egypt and the largest city in the Arab world."
+    },
+    {
+      "id": "q028",
+      "text": "The Amazon Rainforest is primarily located in which country?",
+      "options": {
+        "A": "Colombia",
+        "B": "Venezuela",
+        "C": "Peru",
+        "D": "Brazil"
+      },
+      "correct": "D",
+      "explanation": "About 60% of the Amazon Rainforest is within Brazil's borders."
+    },
+    {
+      "id": "q029",
+      "text": "Which landlocked country is the largest in the world?",
+      "options": {
+        "A": "Mongolia",
+        "B": "Kazakhstan",
+        "C": "Chad",
+        "D": "Bolivia"
+      },
+      "correct": "B",
+      "explanation": "Kazakhstan is the largest landlocked country at about 2.725 million square kilometers."
+    },
+    {
+      "id": "q030",
+      "text": "What is the tallest mountain in Africa?",
+      "options": {
+        "A": "Mount Kenya",
+        "B": "Mount Kilimanjaro",
+        "C": "Mount Stanley",
+        "D": "Mount Meru"
+      },
+      "correct": "B",
+      "explanation": "Mount Kilimanjaro in Tanzania stands at 5,895 meters, the highest peak in Africa."
+    },
+    {
+      "id": "q031",
+      "text": "Which country is both in Europe and Asia?",
+      "options": {
+        "A": "Georgia",
+        "B": "Armenia",
+        "C": "Turkey",
+        "D": "Cyprus"
+      },
+      "correct": "C",
+      "explanation": "Turkey spans both continents, with a small portion in southeastern Europe (Thrace) and the rest in Asia (Anatolia)."
+    },
+    {
+      "id": "q032",
+      "text": "What is the capital of South Korea?",
+      "options": {
+        "A": "Busan",
+        "B": "Incheon",
+        "C": "Seoul",
+        "D": "Daegu"
+      },
+      "correct": "C",
+      "explanation": "Seoul is the capital and largest city of South Korea."
+    },
+    {
+      "id": "q033",
+      "text": "Which lake is the largest freshwater lake by surface area?",
+      "options": {
+        "A": "Lake Victoria",
+        "B": "Lake Superior",
+        "C": "Lake Baikal",
+        "D": "Lake Huron"
+      },
+      "correct": "B",
+      "explanation": "Lake Superior has the largest surface area of any freshwater lake at about 82,100 square kilometers."
+    },
+    {
+      "id": "q034",
+      "text": "In which country is the Serengeti National Park?",
+      "options": {
+        "A": "Kenya",
+        "B": "South Africa",
+        "C": "Tanzania",
+        "D": "Uganda"
+      },
+      "correct": "C",
+      "explanation": "The Serengeti National Park is in northern Tanzania, famous for the annual wildebeest migration."
+    },
+    {
+      "id": "q035",
+      "text": "What is the capital of New Zealand?",
+      "options": {
+        "A": "Auckland",
+        "B": "Christchurch",
+        "C": "Queenstown",
+        "D": "Wellington"
+      },
+      "correct": "D",
+      "explanation": "Wellington is the capital of New Zealand, located at the southern tip of the North Island."
+    },
+    {
+      "id": "q036",
+      "text": "Which river is the longest in Europe?",
+      "options": {
+        "A": "Danube",
+        "B": "Rhine",
+        "C": "Volga",
+        "D": "Thames"
+      },
+      "correct": "C",
+      "explanation": "The Volga River in Russia is the longest river in Europe at about 3,530 kilometers."
+    },
+    {
+      "id": "q037",
+      "text": "What is the only continent with no active volcanoes?",
+      "options": {
+        "A": "Europe",
+        "B": "Australia",
+        "C": "Africa",
+        "D": "South America"
+      },
+      "correct": "B",
+      "explanation": "The Australian mainland has no active volcanoes, making it the only continent without them."
+    },
+    {
+      "id": "q038",
+      "text": "Which country has the longest coastline in the world?",
+      "options": {
+        "A": "Indonesia",
+        "B": "Australia",
+        "C": "Canada",
+        "D": "Russia"
+      },
+      "correct": "C",
+      "explanation": "Canada has the longest coastline in the world at approximately 243,042 kilometers."
+    },
+    {
+      "id": "q039",
+      "text": "The Taj Mahal is located in which Indian city?",
+      "options": {
+        "A": "New Delhi",
+        "B": "Jaipur",
+        "C": "Agra",
+        "D": "Mumbai"
+      },
+      "correct": "C",
+      "explanation": "The Taj Mahal is in Agra, Uttar Pradesh, built by Mughal emperor Shah Jahan."
+    },
+    {
+      "id": "q040",
+      "text": "What is the capital of Turkey?",
+      "options": {
+        "A": "Istanbul",
+        "B": "Ankara",
+        "C": "Izmir",
+        "D": "Antalya"
+      },
+      "correct": "B",
+      "explanation": "Ankara is the capital of Turkey. Istanbul is the largest city but not the capital."
+    },
+    {
+      "id": "q041",
+      "text": "Which is the smallest ocean?",
+      "options": {
+        "A": "Indian Ocean",
+        "B": "Southern Ocean",
+        "C": "Arctic Ocean",
+        "D": "Atlantic Ocean"
+      },
+      "correct": "C",
+      "explanation": "The Arctic Ocean is the smallest and shallowest of the five major oceans."
+    },
+    {
+      "id": "q042",
+      "text": "In which country is the ancient city of Petra?",
+      "options": {
+        "A": "Egypt",
+        "B": "Jordan",
+        "C": "Iraq",
+        "D": "Lebanon"
+      },
+      "correct": "B",
+      "explanation": "Petra is a famous archaeological site in southern Jordan, carved into rose-red cliffs."
+    },
+    {
+      "id": "q043",
+      "text": "What is the largest country in South America by area?",
+      "options": {
+        "A": "Argentina",
+        "B": "Colombia",
+        "C": "Peru",
+        "D": "Brazil"
+      },
+      "correct": "D",
+      "explanation": "Brazil is the largest country in South America and the fifth largest in the world."
+    },
+    {
+      "id": "q044",
+      "text": "Which waterfall is the tallest in the world?",
+      "options": {
+        "A": "Niagara Falls",
+        "B": "Victoria Falls",
+        "C": "Angel Falls",
+        "D": "Iguazu Falls"
+      },
+      "correct": "C",
+      "explanation": "Angel Falls in Venezuela is the tallest uninterrupted waterfall at 979 meters."
+    },
+    {
+      "id": "q045",
+      "text": "What is the capital of Thailand?",
+      "options": {
+        "A": "Chiang Mai",
+        "B": "Phuket",
+        "C": "Bangkok",
+        "D": "Pattaya"
+      },
+      "correct": "C",
+      "explanation": "Bangkok is the capital and most populous city of Thailand."
+    },
+    {
+      "id": "q046",
+      "text": "Which African country has the pyramids of Giza?",
+      "options": {
+        "A": "Sudan",
+        "B": "Libya",
+        "C": "Egypt",
+        "D": "Morocco"
+      },
+      "correct": "C",
+      "explanation": "The Great Pyramids of Giza are located on the outskirts of Cairo, Egypt."
+    },
+    {
+      "id": "q047",
+      "text": "What is the longest mountain range in the world?",
+      "options": {
+        "A": "Himalayas",
+        "B": "Rocky Mountains",
+        "C": "Andes",
+        "D": "Alps"
+      },
+      "correct": "C",
+      "explanation": "The Andes in South America stretch about 7,000 km, making them the longest continental mountain range."
+    },
+    {
+      "id": "q048",
+      "text": "Which country is home to the Great Wall?",
+      "options": {
+        "A": "Japan",
+        "B": "Mongolia",
+        "C": "China",
+        "D": "South Korea"
+      },
+      "correct": "C",
+      "explanation": "The Great Wall of China stretches over 21,000 km across northern China."
+    },
+    {
+      "id": "q049",
+      "text": "What is the capital of Argentina?",
+      "options": {
+        "A": "Cordoba",
+        "B": "Rosario",
+        "C": "Mendoza",
+        "D": "Buenos Aires"
+      },
+      "correct": "D",
+      "explanation": "Buenos Aires is the capital and largest city of Argentina."
+    },
+    {
+      "id": "q050",
+      "text": "Which island nation is located in the Indian Ocean east of Africa?",
+      "options": {
+        "A": "Maldives",
+        "B": "Sri Lanka",
+        "C": "Madagascar",
+        "D": "Seychelles"
+      },
+      "correct": "C",
+      "explanation": "Madagascar is the fourth-largest island in the world, located off the southeast coast of Africa."
+    },
+    {
+      "id": "q051",
+      "text": "What is the deepest lake in the world?",
+      "options": {
+        "A": "Lake Tanganyika",
+        "B": "Lake Superior",
+        "C": "Caspian Sea",
+        "D": "Lake Baikal"
+      },
+      "correct": "D",
+      "explanation": "Lake Baikal in Siberia, Russia is the deepest lake at about 1,642 meters deep."
+    },
+    {
+      "id": "q052",
+      "text": "Which country is the Sahara Desert primarily located in?",
+      "options": {
+        "A": "Algeria",
+        "B": "Libya",
+        "C": "The Sahara spans multiple countries",
+        "D": "Egypt"
+      },
+      "correct": "C",
+      "explanation": "The Sahara spans 11 countries including Algeria, Libya, Egypt, Morocco, and others. Algeria has the largest portion."
+    },
+    {
+      "id": "q053",
+      "text": "What is the capital of Germany?",
+      "options": {
+        "A": "Munich",
+        "B": "Hamburg",
+        "C": "Frankfurt",
+        "D": "Berlin"
+      },
+      "correct": "D",
+      "explanation": "Berlin is the capital and largest city of Germany."
+    },
+    {
+      "id": "q054",
+      "text": "Which country has the most islands in the world?",
+      "options": {
+        "A": "Indonesia",
+        "B": "Philippines",
+        "C": "Sweden",
+        "D": "Canada"
+      },
+      "correct": "C",
+      "explanation": "Sweden has approximately 267,570 islands, the most of any country in the world."
+    },
+    {
+      "id": "q055",
+      "text": "On which continent is the Atacama Desert?",
+      "options": {
+        "A": "Africa",
+        "B": "Asia",
+        "C": "South America",
+        "D": "Australia"
+      },
+      "correct": "C",
+      "explanation": "The Atacama Desert is in northern Chile, South America, and is one of the driest places on Earth."
+    },
+    {
+      "id": "q056",
+      "text": "What is the capital of India?",
+      "options": {
+        "A": "Mumbai",
+        "B": "Kolkata",
+        "C": "New Delhi",
+        "D": "Bangalore"
+      },
+      "correct": "C",
+      "explanation": "New Delhi is the capital of India, part of the larger Delhi metropolitan area."
+    },
+    {
+      "id": "q057",
+      "text": "Which river runs through London?",
+      "options": {
+        "A": "Seine",
+        "B": "Danube",
+        "C": "Thames",
+        "D": "Rhine"
+      },
+      "correct": "C",
+      "explanation": "The River Thames flows through London and is the longest river entirely in England."
+    },
+    {
+      "id": "q058",
+      "text": "Which country is the Colosseum located in?",
+      "options": {
+        "A": "Greece",
+        "B": "Turkey",
+        "C": "Italy",
+        "D": "Spain"
+      },
+      "correct": "C",
+      "explanation": "The Colosseum is in Rome, Italy, built in 70-80 AD as an amphitheatre."
+    },
+    {
+      "id": "q059",
+      "text": "What is the largest country in the world by area?",
+      "options": {
+        "A": "China",
+        "B": "Canada",
+        "C": "United States",
+        "D": "Russia"
+      },
+      "correct": "D",
+      "explanation": "Russia is the largest country at about 17.1 million square kilometers."
+    },
+    {
+      "id": "q060",
+      "text": "Which canal connects the Atlantic and Pacific Oceans?",
+      "options": {
+        "A": "Suez Canal",
+        "B": "Panama Canal",
+        "C": "Erie Canal",
+        "D": "Kiel Canal"
+      },
+      "correct": "B",
+      "explanation": "The Panama Canal connects the Atlantic and Pacific Oceans through Central America."
+    },
+    {
+      "id": "q061",
+      "text": "What is the capital of Nigeria?",
+      "options": {
+        "A": "Lagos",
+        "B": "Abuja",
+        "C": "Kano",
+        "D": "Port Harcourt"
+      },
+      "correct": "B",
+      "explanation": "Abuja has been the capital of Nigeria since 1991, replacing Lagos."
+    },
+    {
+      "id": "q062",
+      "text": "Which mountain is the tallest in North America?",
+      "options": {
+        "A": "Mount Logan",
+        "B": "Mount Whitney",
+        "C": "Denali",
+        "D": "Mount Rainier"
+      },
+      "correct": "C",
+      "explanation": "Denali (formerly Mount McKinley) in Alaska stands at 6,190 meters, the highest peak in North America."
+    },
+    {
+      "id": "q063",
+      "text": "Which city is located on two continents?",
+      "options": {
+        "A": "Cairo",
+        "B": "Moscow",
+        "C": "Istanbul",
+        "D": "Athens"
+      },
+      "correct": "C",
+      "explanation": "Istanbul straddles Europe and Asia, divided by the Bosporus Strait."
+    },
+    {
+      "id": "q064",
+      "text": "What is the capital of Kenya?",
+      "options": {
+        "A": "Mombasa",
+        "B": "Nairobi",
+        "C": "Kisumu",
+        "D": "Nakuru"
+      },
+      "correct": "B",
+      "explanation": "Nairobi is the capital and largest city of Kenya."
+    },
+    {
+      "id": "q065",
+      "text": "Which river flows through Paris?",
+      "options": {
+        "A": "Loire",
+        "B": "Rhone",
+        "C": "Seine",
+        "D": "Garonne"
+      },
+      "correct": "C",
+      "explanation": "The Seine River flows through the center of Paris."
+    },
+    {
+      "id": "q066",
+      "text": "In which country is Mount Fuji?",
+      "options": {
+        "A": "South Korea",
+        "B": "China",
+        "C": "Japan",
+        "D": "Taiwan"
+      },
+      "correct": "C",
+      "explanation": "Mount Fuji is the tallest mountain in Japan at 3,776 meters, located on Honshu island."
+    },
+    {
+      "id": "q067",
+      "text": "What is the capital of Morocco?",
+      "options": {
+        "A": "Casablanca",
+        "B": "Marrakech",
+        "C": "Fez",
+        "D": "Rabat"
+      },
+      "correct": "D",
+      "explanation": "Rabat is the capital of Morocco. Casablanca is the largest city."
+    },
+    {
+      "id": "q068",
+      "text": "Which is the largest lake in Africa?",
+      "options": {
+        "A": "Lake Tanganyika",
+        "B": "Lake Malawi",
+        "C": "Lake Victoria",
+        "D": "Lake Chad"
+      },
+      "correct": "C",
+      "explanation": "Lake Victoria is the largest lake in Africa and the second-largest freshwater lake by surface area globally."
+    },
+    {
+      "id": "q069",
+      "text": "In which South American country would you find the Galapagos Islands?",
+      "options": {
+        "A": "Colombia",
+        "B": "Peru",
+        "C": "Chile",
+        "D": "Ecuador"
+      },
+      "correct": "D",
+      "explanation": "The Galapagos Islands are a province of Ecuador, located about 1,000 km off its coast."
+    },
+    {
+      "id": "q070",
+      "text": "What is the capital of Vietnam?",
+      "options": {
+        "A": "Ho Chi Minh City",
+        "B": "Hanoi",
+        "C": "Da Nang",
+        "D": "Hue"
+      },
+      "correct": "B",
+      "explanation": "Hanoi is the capital of Vietnam. Ho Chi Minh City (formerly Saigon) is the largest city."
+    },
+    {
+      "id": "q071",
+      "text": "The Danube River flows into which body of water?",
+      "options": {
+        "A": "Mediterranean Sea",
+        "B": "Adriatic Sea",
+        "C": "Black Sea",
+        "D": "Caspian Sea"
+      },
+      "correct": "C",
+      "explanation": "The Danube River empties into the Black Sea through the Danube Delta in Romania and Ukraine."
+    },
+    {
+      "id": "q072",
+      "text": "Which country is home to Angkor Wat?",
+      "options": {
+        "A": "Thailand",
+        "B": "Vietnam",
+        "C": "Cambodia",
+        "D": "Laos"
+      },
+      "correct": "C",
+      "explanation": "Angkor Wat is a massive temple complex in Siem Reap, Cambodia, built in the 12th century."
+    },
+    {
+      "id": "q073",
+      "text": "What is the capital of Poland?",
+      "options": {
+        "A": "Krakow",
+        "B": "Gdansk",
+        "C": "Wroclaw",
+        "D": "Warsaw"
+      },
+      "correct": "D",
+      "explanation": "Warsaw is the capital and largest city of Poland."
+    },
+    {
+      "id": "q074",
+      "text": "Which peninsula contains Spain and Portugal?",
+      "options": {
+        "A": "Balkan Peninsula",
+        "B": "Iberian Peninsula",
+        "C": "Scandinavian Peninsula",
+        "D": "Italian Peninsula"
+      },
+      "correct": "B",
+      "explanation": "The Iberian Peninsula in southwestern Europe contains Spain, Portugal, Andorra, and Gibraltar."
+    },
+    {
+      "id": "q075",
+      "text": "What is the highest waterfall in Africa?",
+      "options": {
+        "A": "Victoria Falls",
+        "B": "Tugela Falls",
+        "C": "Kalambo Falls",
+        "D": "Blue Nile Falls"
+      },
+      "correct": "B",
+      "explanation": "Tugela Falls in South Africa is the tallest waterfall in Africa at 948 meters."
+    },
+    {
+      "id": "q076",
+      "text": "Which country has the most volcanoes?",
+      "options": {
+        "A": "Japan",
+        "B": "Indonesia",
+        "C": "Iceland",
+        "D": "Philippines"
+      },
+      "correct": "B",
+      "explanation": "Indonesia has about 130 active volcanoes, the most of any country, due to its position on the Ring of Fire."
+    },
+    {
+      "id": "q077",
+      "text": "What is the capital of Peru?",
+      "options": {
+        "A": "Cusco",
+        "B": "Arequipa",
+        "C": "Lima",
+        "D": "Trujillo"
+      },
+      "correct": "C",
+      "explanation": "Lima is the capital and largest city of Peru, located on the Pacific coast."
+    },
+    {
+      "id": "q078",
+      "text": "Which body of water is the saltiest in the world?",
+      "options": {
+        "A": "Dead Sea",
+        "B": "Great Salt Lake",
+        "C": "Don Juan Pond",
+        "D": "Red Sea"
+      },
+      "correct": "C",
+      "explanation": "Don Juan Pond in Antarctica has a salinity of over 40%, making it the saltiest body of water on Earth."
+    },
+    {
+      "id": "q079",
+      "text": "Which African country is entirely surrounded by South Africa?",
+      "options": {
+        "A": "Swaziland",
+        "B": "Lesotho",
+        "C": "Malawi",
+        "D": "Botswana"
+      },
+      "correct": "B",
+      "explanation": "Lesotho is an enclave entirely surrounded by South Africa. Eswatini (Swaziland) also borders Mozambique."
+    },
+    {
+      "id": "q080",
+      "text": "What is the capital of the Philippines?",
+      "options": {
+        "A": "Cebu",
+        "B": "Davao",
+        "C": "Quezon City",
+        "D": "Manila"
+      },
+      "correct": "D",
+      "explanation": "Manila is the capital of the Philippines. Quezon City is the most populous city in Metro Manila."
+    }
+  ]
+}

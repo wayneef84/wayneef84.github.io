@@ -1,0 +1,572 @@
+{
+  "meta": {
+    "id": "language_001",
+    "title": "Language & Words",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Language", "Vocabulary", "Etymology", "Grammar"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is the most spoken language in the world by total number of speakers (native + non-native)?",
+      "options": { "A": "Mandarin Chinese", "B": "English", "C": "Spanish", "D": "Hindi" },
+      "correct": "B",
+      "explanation": "English has the most total speakers worldwide (over 1.4 billion) when combining native and non-native speakers."
+    },
+    {
+      "id": "q002",
+      "text": "What is the most spoken language in the world by number of NATIVE speakers?",
+      "options": { "A": "English", "B": "Spanish", "C": "Mandarin Chinese", "D": "Hindi" },
+      "correct": "C",
+      "explanation": "Mandarin Chinese has the most native speakers, with over 900 million people speaking it as their first language."
+    },
+    {
+      "id": "q003",
+      "text": "The English word 'salary' comes from the Latin word 'salarium,' which is related to what substance?",
+      "options": { "A": "Gold", "B": "Bread", "C": "Salt", "D": "Water" },
+      "correct": "C",
+      "explanation": "Salarium relates to 'sal' (salt). Roman soldiers were sometimes paid in salt or given an allowance to buy it."
+    },
+    {
+      "id": "q004",
+      "text": "Which alphabet has the most letters?",
+      "options": { "A": "Greek", "B": "Arabic", "C": "Khmer (Cambodian)", "D": "Russian (Cyrillic)" },
+      "correct": "C",
+      "explanation": "The Khmer alphabet has 74 letters, making it the largest alphabet in the world according to the Guinness Book of World Records."
+    },
+    {
+      "id": "q005",
+      "text": "What does the SAT-level word 'ubiquitous' mean?",
+      "options": { "A": "Extremely rare", "B": "Found everywhere", "C": "Difficult to understand", "D": "Beautifully written" },
+      "correct": "B",
+      "explanation": "Ubiquitous means present, appearing, or found everywhere. It comes from the Latin 'ubique' meaning 'everywhere.'"
+    },
+    {
+      "id": "q006",
+      "text": "What is the longest word in the English language that uses no repeated letters?",
+      "options": { "A": "Uncopyrightable", "B": "Subdermatoglyphic", "C": "Ambidextrously", "D": "Misconjugatedly" },
+      "correct": "B",
+      "explanation": "Subdermatoglyphic (17 letters) is the longest common English word with no repeating letters. It refers to the patterns beneath the skin on fingertips."
+    },
+    {
+      "id": "q007",
+      "text": "The French phrase 'c'est la vie' translates to what in English?",
+      "options": { "A": "Such is life", "B": "Life is beautiful", "C": "Long live life", "D": "Life goes on" },
+      "correct": "A",
+      "explanation": "C'est la vie literally translates to 'that's life' or 'such is life,' expressing acceptance of how things are."
+    },
+    {
+      "id": "q008",
+      "text": "Which of these languages is NOT part of the Romance language family?",
+      "options": { "A": "Portuguese", "B": "Romanian", "C": "Dutch", "D": "Italian" },
+      "correct": "C",
+      "explanation": "Dutch is a Germanic language. Romance languages (Portuguese, Romanian, Italian, Spanish, French) all descended from Latin."
+    },
+    {
+      "id": "q009",
+      "text": "What does the idiom 'to burn the midnight oil' mean?",
+      "options": { "A": "To waste resources", "B": "To stay up late working", "C": "To start a fire", "D": "To cook a late dinner" },
+      "correct": "B",
+      "explanation": "This idiom means to work late into the night, originating from the days when oil lamps were used for light."
+    },
+    {
+      "id": "q010",
+      "text": "Which writing system reads from right to left?",
+      "options": { "A": "Korean (Hangul)", "B": "Greek", "C": "Arabic", "D": "Thai" },
+      "correct": "C",
+      "explanation": "Arabic is written and read from right to left. Hebrew and Urdu also follow this direction."
+    },
+    {
+      "id": "q011",
+      "text": "The word 'tsunami' comes from which language?",
+      "options": { "A": "Hawaiian", "B": "Japanese", "C": "Malay", "D": "Tagalog" },
+      "correct": "B",
+      "explanation": "Tsunami comes from Japanese: 'tsu' (harbor) + 'nami' (wave), literally meaning 'harbor wave.'"
+    },
+    {
+      "id": "q012",
+      "text": "What is a 'palindrome'?",
+      "options": { "A": "A word borrowed from another language", "B": "A word that reads the same forwards and backwards", "C": "A word with two opposite meanings", "D": "A word that sounds like what it describes" },
+      "correct": "B",
+      "explanation": "A palindrome reads the same forwards and backwards, like 'racecar,' 'level,' or 'madam.'"
+    },
+    {
+      "id": "q013",
+      "text": "How many official languages does the United Nations have?",
+      "options": { "A": "4", "B": "5", "C": "6", "D": "8" },
+      "correct": "C",
+      "explanation": "The UN has 6 official languages: Arabic, Chinese, English, French, Russian, and Spanish."
+    },
+    {
+      "id": "q014",
+      "text": "What does the SAT-level word 'ephemeral' mean?",
+      "options": { "A": "Lasting forever", "B": "Extremely heavy", "C": "Lasting a very short time", "D": "Spiritually uplifting" },
+      "correct": "C",
+      "explanation": "Ephemeral means lasting for a very short time. It comes from the Greek 'ephemeros' meaning 'lasting only a day.'"
+    },
+    {
+      "id": "q015",
+      "text": "Which language has the concept of 'click consonants' as a fundamental part of its phonology?",
+      "options": { "A": "Finnish", "B": "Xhosa", "C": "Vietnamese", "D": "Turkish" },
+      "correct": "B",
+      "explanation": "Xhosa, a Bantu language spoken in South Africa, extensively uses click consonants as regular speech sounds."
+    },
+    {
+      "id": "q016",
+      "text": "The German word 'Schadenfreude' describes what feeling?",
+      "options": { "A": "Homesickness", "B": "Joy at others' misfortune", "C": "Fear of the future", "D": "Love at first sight" },
+      "correct": "B",
+      "explanation": "Schadenfreude combines 'Schaden' (damage) and 'Freude' (joy) — pleasure derived from another person's misfortune."
+    },
+    {
+      "id": "q017",
+      "text": "Which of these is an example of an 'onomatopoeia'?",
+      "options": { "A": "Brilliant", "B": "Buzz", "C": "Beautiful", "D": "Benevolent" },
+      "correct": "B",
+      "explanation": "Onomatopoeia is a word that imitates the sound it describes. 'Buzz' sounds like the noise a bee makes."
+    },
+    {
+      "id": "q018",
+      "text": "Korean writing (Hangul) was invented by which historical figure?",
+      "options": { "A": "Confucius", "B": "King Sejong the Great", "C": "Admiral Yi Sun-sin", "D": "Emperor Gojong" },
+      "correct": "B",
+      "explanation": "King Sejong the Great of the Joseon Dynasty created Hangul in 1443 to promote literacy among common people."
+    },
+    {
+      "id": "q019",
+      "text": "What does the Latin phrase 'carpe diem' mean?",
+      "options": { "A": "Beware of the dog", "B": "In the year of our Lord", "C": "Seize the day", "D": "Rest in peace" },
+      "correct": "C",
+      "explanation": "Carpe diem means 'seize the day.' It was coined by the Roman poet Horace, urging people to make the most of the present."
+    },
+    {
+      "id": "q020",
+      "text": "What is the study of the origin and history of words called?",
+      "options": { "A": "Philology", "B": "Morphology", "C": "Etymology", "D": "Semantics" },
+      "correct": "C",
+      "explanation": "Etymology is the study of word origins and how their meanings have changed over time."
+    },
+    {
+      "id": "q021",
+      "text": "Which country has the most official languages?",
+      "options": { "A": "India", "B": "South Africa", "C": "Zimbabwe", "D": "Bolivia" },
+      "correct": "C",
+      "explanation": "Zimbabwe has 16 official languages, including Shona, Ndebele, English, and 13 others recognized in its 2013 constitution."
+    },
+    {
+      "id": "q022",
+      "text": "What does the SAT-level word 'pragmatic' mean?",
+      "options": { "A": "Overly dramatic", "B": "Dealing with things practically", "C": "Related to ancient traditions", "D": "Extremely pessimistic" },
+      "correct": "B",
+      "explanation": "Pragmatic means dealing with things sensibly and realistically, focused on practical results rather than theory."
+    },
+    {
+      "id": "q023",
+      "text": "The word 'robot' was first used in which language?",
+      "options": { "A": "German", "B": "Russian", "C": "Czech", "D": "English" },
+      "correct": "C",
+      "explanation": "The word 'robot' was introduced by Czech writer Karel Capek in his 1920 play R.U.R., from the Czech 'robota' meaning forced labor."
+    },
+    {
+      "id": "q024",
+      "text": "What type of writing system does Japanese use that combines multiple scripts?",
+      "options": { "A": "Only kanji", "B": "Hiragana, katakana, and kanji", "C": "Only hiragana and katakana", "D": "Kanji and romaji only" },
+      "correct": "B",
+      "explanation": "Japanese uses three writing systems together: hiragana (native words), katakana (foreign words), and kanji (Chinese characters)."
+    },
+    {
+      "id": "q025",
+      "text": "The idiom 'it's raining cats and dogs' means what?",
+      "options": { "A": "Animals are falling from the sky", "B": "A pet store is having a sale", "C": "It's raining very heavily", "D": "There's chaos outside" },
+      "correct": "C",
+      "explanation": "This English idiom simply means it is raining very heavily or there is a downpour."
+    },
+    {
+      "id": "q026",
+      "text": "Which of these languages is a 'tonal language' where pitch changes the meaning of a word?",
+      "options": { "A": "German", "B": "Mandarin Chinese", "C": "English", "D": "Russian" },
+      "correct": "B",
+      "explanation": "Mandarin Chinese uses four tones (plus a neutral tone). The syllable 'ma' can mean mother, hemp, horse, or scold depending on tone."
+    },
+    {
+      "id": "q027",
+      "text": "What is the origin of the word 'quarantine'?",
+      "options": { "A": "Latin for 'four rooms'", "B": "Italian for 'forty days'", "C": "Greek for 'isolation'", "D": "French for 'clean house'" },
+      "correct": "B",
+      "explanation": "Quarantine comes from the Italian 'quarantina' meaning 'forty days,' the period ships had to wait before passengers could go ashore during plague outbreaks."
+    },
+    {
+      "id": "q028",
+      "text": "American Sign Language (ASL) is most closely related to which other sign language?",
+      "options": { "A": "British Sign Language", "B": "French Sign Language", "C": "German Sign Language", "D": "Spanish Sign Language" },
+      "correct": "B",
+      "explanation": "ASL descended from French Sign Language (LSF), brought to America by Laurent Clerc in the early 1800s. ASL and BSL are actually quite different."
+    },
+    {
+      "id": "q029",
+      "text": "What does the SAT-level word 'cacophony' mean?",
+      "options": { "A": "A beautiful melody", "B": "A harsh mixture of sounds", "C": "A secret language", "D": "An ancient musical instrument" },
+      "correct": "B",
+      "explanation": "Cacophony means a harsh, discordant mixture of sounds. It comes from Greek 'kakos' (bad) + 'phone' (sound)."
+    },
+    {
+      "id": "q030",
+      "text": "What is the only letter that does not appear in any U.S. state name?",
+      "options": { "A": "X", "B": "Z", "C": "Q", "D": "J" },
+      "correct": "C",
+      "explanation": "The letter Q does not appear in the name of any of the 50 U.S. states."
+    },
+    {
+      "id": "q031",
+      "text": "The Spanish phrase 'mi casa es su casa' translates to what?",
+      "options": { "A": "My house is beautiful", "B": "My house is your house", "C": "My house is for sale", "D": "My house is full" },
+      "correct": "B",
+      "explanation": "Mi casa es su casa literally means 'my house is your house,' expressing hospitality and welcome."
+    },
+    {
+      "id": "q032",
+      "text": "What is a 'portmanteau' in linguistics?",
+      "options": { "A": "A word with no vowels", "B": "A blend of two words into one", "C": "A word from a dead language", "D": "A grammatically incorrect phrase" },
+      "correct": "B",
+      "explanation": "A portmanteau blends two words together, like 'brunch' (breakfast + lunch) or 'smog' (smoke + fog)."
+    },
+    {
+      "id": "q033",
+      "text": "Which ancient writing system used wedge-shaped marks pressed into clay tablets?",
+      "options": { "A": "Hieroglyphics", "B": "Cuneiform", "C": "Linear A", "D": "Oracle bone script" },
+      "correct": "B",
+      "explanation": "Cuneiform, developed in ancient Sumer (modern Iraq), used a reed stylus to press wedge-shaped marks into wet clay tablets."
+    },
+    {
+      "id": "q034",
+      "text": "What does the SAT-level word 'sycophant' mean?",
+      "options": { "A": "A person who flatters to gain advantage", "B": "A brilliant scientist", "C": "A type of elephant", "D": "A person who predicts the future" },
+      "correct": "A",
+      "explanation": "A sycophant is a person who acts obsequiously toward someone important to gain an advantage; a flatterer or toady."
+    },
+    {
+      "id": "q035",
+      "text": "The word 'alphabet' comes from the first two letters of which writing system?",
+      "options": { "A": "Latin (A, B)", "B": "Greek (Alpha, Beta)", "C": "Hebrew (Aleph, Beth)", "D": "Phoenician (Alep, Bet)" },
+      "correct": "B",
+      "explanation": "The word 'alphabet' derives from the Greek letters Alpha and Beta, the first two letters of the Greek alphabet."
+    },
+    {
+      "id": "q036",
+      "text": "In which language does the word 'wiki' (as in Wikipedia) originate?",
+      "options": { "A": "Japanese", "B": "Hawaiian", "C": "Swahili", "D": "Samoan" },
+      "correct": "B",
+      "explanation": "Wiki comes from the Hawaiian word 'wiki' meaning 'quick.' Wikipedia founder Ward Cunningham named the first wiki software after it."
+    },
+    {
+      "id": "q037",
+      "text": "What is the most commonly used letter in the English language?",
+      "options": { "A": "T", "B": "A", "C": "E", "D": "S" },
+      "correct": "C",
+      "explanation": "The letter E is the most frequently used letter in English, appearing in about 11% of all words."
+    },
+    {
+      "id": "q038",
+      "text": "The Japanese concept 'wabi-sabi' relates to what?",
+      "options": { "A": "Martial arts discipline", "B": "Beauty in imperfection", "C": "Respect for elders", "D": "Seasonal cooking" },
+      "correct": "B",
+      "explanation": "Wabi-sabi is a Japanese aesthetic concept centered on finding beauty in imperfection and accepting the transience of things."
+    },
+    {
+      "id": "q039",
+      "text": "What does the idiom 'break a leg' mean in theater?",
+      "options": { "A": "Be careful on stage", "B": "Good luck", "C": "Dance harder", "D": "The show is cancelled" },
+      "correct": "B",
+      "explanation": "In theater, 'break a leg' is a way of wishing someone good luck, since saying 'good luck' directly is considered bad luck."
+    },
+    {
+      "id": "q040",
+      "text": "Esperanto, the most widely spoken constructed language, was created by a speaker of which language?",
+      "options": { "A": "French", "B": "German", "C": "Polish", "D": "Russian" },
+      "correct": "C",
+      "explanation": "L.L. Zamenhof, who created Esperanto in 1887, was a Polish ophthalmologist who grew up in Bialystok, Poland (then part of the Russian Empire)."
+    },
+    {
+      "id": "q041",
+      "text": "What does the SAT-level word 'ambiguous' mean?",
+      "options": { "A": "Extremely ambitious", "B": "Open to more than one interpretation", "C": "Impossible to achieve", "D": "Walking without direction" },
+      "correct": "B",
+      "explanation": "Ambiguous means open to more than one interpretation or having a double meaning; unclear or inexact."
+    },
+    {
+      "id": "q042",
+      "text": "Which of these is an 'agglutinative' language, where words are formed by stringing together morphemes?",
+      "options": { "A": "French", "B": "Turkish", "C": "English", "D": "Arabic" },
+      "correct": "B",
+      "explanation": "Turkish is agglutinative, building complex words by adding suffixes. For example, 'evlerinizden' means 'from your houses' built from ev+ler+iniz+den."
+    },
+    {
+      "id": "q043",
+      "text": "The English word 'ketchup' likely originates from which language?",
+      "options": { "A": "French", "B": "Spanish", "C": "Hokkien Chinese", "D": "Portuguese" },
+      "correct": "C",
+      "explanation": "Ketchup likely derives from the Hokkien Chinese word 'ke-tsiap,' a fermented fish sauce, which was adapted through Malay and then English."
+    },
+    {
+      "id": "q044",
+      "text": "What is the term for a word that has the opposite meaning of another word?",
+      "options": { "A": "Synonym", "B": "Homonym", "C": "Antonym", "D": "Acronym" },
+      "correct": "C",
+      "explanation": "An antonym is a word with the opposite meaning of another word, such as 'hot' and 'cold' or 'big' and 'small.'"
+    },
+    {
+      "id": "q045",
+      "text": "Which language family does Finnish belong to?",
+      "options": { "A": "Indo-European", "B": "Uralic", "C": "Altaic", "D": "Sino-Tibetan" },
+      "correct": "B",
+      "explanation": "Finnish belongs to the Uralic language family, along with Hungarian and Estonian. It is not related to its Scandinavian neighbors."
+    },
+    {
+      "id": "q046",
+      "text": "The Rosetta Stone helped scholars decipher which writing system?",
+      "options": { "A": "Cuneiform", "B": "Egyptian hieroglyphics", "C": "Linear B", "D": "Mayan glyphs" },
+      "correct": "B",
+      "explanation": "The Rosetta Stone, with its text in hieroglyphics, Demotic, and Greek, enabled Jean-Francois Champollion to decipher Egyptian hieroglyphics in 1822."
+    },
+    {
+      "id": "q047",
+      "text": "What does the SAT-level word 'loquacious' mean?",
+      "options": { "A": "Extremely quiet", "B": "Very talkative", "C": "Physically strong", "D": "Luxuriously decorated" },
+      "correct": "B",
+      "explanation": "Loquacious means very talkative, from the Latin 'loqui' meaning 'to speak.'"
+    },
+    {
+      "id": "q048",
+      "text": "What is the shortest complete sentence in English?",
+      "options": { "A": "I am.", "B": "Go.", "C": "Do.", "D": "I do." },
+      "correct": "B",
+      "explanation": "Go. is the shortest grammatically complete sentence in English, containing a subject (implied 'you') and a verb."
+    },
+    {
+      "id": "q049",
+      "text": "The Italian phrase 'dolce far niente' means what?",
+      "options": { "A": "Sweet dreams", "B": "The sweetness of doing nothing", "C": "A sweet ending", "D": "Sweet and strong" },
+      "correct": "B",
+      "explanation": "Dolce far niente translates to 'the sweetness of doing nothing,' describing the pleasure of idleness and relaxation."
+    },
+    {
+      "id": "q050",
+      "text": "How many characters does a literate Chinese adult typically know?",
+      "options": { "A": "500-1,000", "B": "1,000-2,000", "C": "3,000-4,000", "D": "6,000-8,000" },
+      "correct": "D",
+      "explanation": "A literate Chinese adult typically knows 6,000 to 8,000 characters, though only about 3,000-4,000 are needed for everyday reading."
+    },
+    {
+      "id": "q051",
+      "text": "What is the term for a word that sounds like another but has a different meaning and spelling?",
+      "options": { "A": "Homograph", "B": "Homophone", "C": "Synonym", "D": "Palindrome" },
+      "correct": "B",
+      "explanation": "A homophone is a word that sounds the same as another but has a different meaning and often different spelling, like 'there,' 'their,' and 'they're.'"
+    },
+    {
+      "id": "q052",
+      "text": "The word 'avocado' comes from the Nahuatl (Aztec) word 'ahuacatl,' which originally meant what?",
+      "options": { "A": "Green fruit", "B": "Testicle", "C": "Tree butter", "D": "Rough skin" },
+      "correct": "B",
+      "explanation": "The Nahuatl word 'ahuacatl' meant 'testicle,' likely referring to the shape of the fruit. Spanish colonizers adapted the word to 'avocado.'"
+    },
+    {
+      "id": "q053",
+      "text": "Which of these is a 'dead language' that is no longer spoken as a native tongue but is still studied?",
+      "options": { "A": "Basque", "B": "Welsh", "C": "Latin", "D": "Icelandic" },
+      "correct": "C",
+      "explanation": "Latin is a dead language with no native speakers, though it remains widely studied and used in science, law, and the Catholic Church."
+    },
+    {
+      "id": "q054",
+      "text": "What does the SAT-level word 'juxtapose' mean?",
+      "options": { "A": "To destroy completely", "B": "To place side by side for comparison", "C": "To move quickly", "D": "To hide from view" },
+      "correct": "B",
+      "explanation": "Juxtapose means to place close together or side by side, especially for comparison or contrast."
+    },
+    {
+      "id": "q055",
+      "text": "The Hawaiian language has how many letters in its alphabet?",
+      "options": { "A": "12", "B": "13", "C": "18", "D": "22" },
+      "correct": "B",
+      "explanation": "The Hawaiian alphabet has 13 letters: 5 vowels (a, e, i, o, u) and 8 consonants (h, k, l, m, n, p, w, and the okina or glottal stop)."
+    },
+    {
+      "id": "q056",
+      "text": "What is the term for a new word that enters a language?",
+      "options": { "A": "Archaism", "B": "Neologism", "C": "Euphemism", "D": "Colloquialism" },
+      "correct": "B",
+      "explanation": "A neologism is a newly coined word or expression. Examples include 'selfie,' 'blog,' and 'emoji.'"
+    },
+    {
+      "id": "q057",
+      "text": "The word 'emoji' comes from which language?",
+      "options": { "A": "English (emotion + icon)", "B": "Japanese (picture + character)", "C": "Korean", "D": "Chinese" },
+      "correct": "B",
+      "explanation": "Emoji comes from Japanese: 'e' (picture) + 'moji' (character). Its resemblance to 'emotion' in English is a coincidence."
+    },
+    {
+      "id": "q058",
+      "text": "What does the German word 'Wanderlust' mean?",
+      "options": { "A": "A desire for revenge", "B": "A strong desire to travel", "C": "A love of nature", "D": "A sense of wonder" },
+      "correct": "B",
+      "explanation": "Wanderlust combines 'wandern' (to hike/wander) and 'Lust' (desire), meaning a strong longing or impulse to travel."
+    },
+    {
+      "id": "q059",
+      "text": "Which punctuation mark is called an 'interrobang'?",
+      "options": { "A": "...", "B": ";", "C": "?!", "D": "--" },
+      "correct": "C",
+      "explanation": "The interrobang combines a question mark and exclamation point (?! or the single character). It was invented in 1962 by Martin K. Speckter."
+    },
+    {
+      "id": "q060",
+      "text": "Braille is a writing system that represents letters using what?",
+      "options": { "A": "Sound patterns", "B": "Raised dots", "C": "Color codes", "D": "Vibration sequences" },
+      "correct": "B",
+      "explanation": "Braille uses patterns of raised dots arranged in cells of up to six dots, allowing visually impaired people to read by touch."
+    },
+    {
+      "id": "q061",
+      "text": "What does the SAT-level word 'equivocate' mean?",
+      "options": { "A": "To speak equally to everyone", "B": "To use ambiguous language to mislead", "C": "To calculate precisely", "D": "To treat fairly" },
+      "correct": "B",
+      "explanation": "To equivocate means to use vague or ambiguous language to avoid committing to a position or to deceive."
+    },
+    {
+      "id": "q062",
+      "text": "The English word 'kindergarten' was borrowed from which language?",
+      "options": { "A": "Dutch", "B": "Swedish", "C": "German", "D": "Danish" },
+      "correct": "C",
+      "explanation": "Kindergarten is German for 'children's garden.' It was coined by Friedrich Frobel in 1840 for his early childhood education program."
+    },
+    {
+      "id": "q063",
+      "text": "What is an 'oxymoron'?",
+      "options": { "A": "A figure of speech combining contradictory terms", "B": "A person who is foolish", "C": "A word with multiple meanings", "D": "A phrase that rhymes" },
+      "correct": "A",
+      "explanation": "An oxymoron combines contradictory words for effect, like 'jumbo shrimp,' 'deafening silence,' or 'bittersweet.'"
+    },
+    {
+      "id": "q064",
+      "text": "Which of these scripts is written vertically from top to bottom?",
+      "options": { "A": "Traditional Mongolian", "B": "Greek", "C": "Cyrillic", "D": "Tamil" },
+      "correct": "A",
+      "explanation": "Traditional Mongolian script is written vertically, running from top to bottom in columns that go from left to right."
+    },
+    {
+      "id": "q065",
+      "text": "The phrase 'hakuna matata' from The Lion King comes from which language?",
+      "options": { "A": "Yoruba", "B": "Zulu", "C": "Swahili", "D": "Amharic" },
+      "correct": "C",
+      "explanation": "Hakuna matata is a Swahili phrase meaning 'no worries' or 'no problems.' Swahili is widely spoken in East Africa."
+    },
+    {
+      "id": "q066",
+      "text": "What does the SAT-level word 'benevolent' mean?",
+      "options": { "A": "Well-intentioned and kindly", "B": "Extremely wealthy", "C": "Warlike and aggressive", "D": "Quietly observant" },
+      "correct": "A",
+      "explanation": "Benevolent means well-meaning and kindly, from the Latin 'bene' (well) + 'volent' (wishing)."
+    },
+    {
+      "id": "q067",
+      "text": "What is a 'lingua franca'?",
+      "options": { "A": "The French language", "B": "A language used for communication between groups with different native tongues", "C": "An extinct language", "D": "A secret code language" },
+      "correct": "B",
+      "explanation": "A lingua franca is a bridge language used between speakers of different native languages. English serves as the global lingua franca today."
+    },
+    {
+      "id": "q068",
+      "text": "The English word 'chocolate' traces back to which indigenous American language?",
+      "options": { "A": "Quechua", "B": "Nahuatl", "C": "Guarani", "D": "Mapudungun" },
+      "correct": "B",
+      "explanation": "Chocolate comes from the Nahuatl (Aztec) word 'xocolatl,' likely meaning 'bitter water,' via Spanish."
+    },
+    {
+      "id": "q069",
+      "text": "Which of these sentences uses the Oxford comma?",
+      "options": { "A": "I like cats, dogs and birds.", "B": "I like cats, dogs, and birds.", "C": "I like cats and dogs and birds.", "D": "I like: cats, dogs, birds." },
+      "correct": "B",
+      "explanation": "The Oxford (or serial) comma is the comma placed before the conjunction in a list of three or more items: 'cats, dogs, and birds.'"
+    },
+    {
+      "id": "q070",
+      "text": "What is the most translated book in the world?",
+      "options": { "A": "The Quran", "B": "Don Quixote", "C": "The Bible", "D": "Harry Potter" },
+      "correct": "C",
+      "explanation": "The Bible is the most translated book in the world, with full translations into over 700 languages and partial translations into thousands more."
+    },
+    {
+      "id": "q071",
+      "text": "What does the SAT-level word 'didactic' mean?",
+      "options": { "A": "Having two meanings", "B": "Intended to teach or instruct", "C": "Prone to argument", "D": "Relating to medicine" },
+      "correct": "B",
+      "explanation": "Didactic means intended to teach, particularly in having moral instruction as an ulterior motive. From Greek 'didaktikos' (apt at teaching)."
+    },
+    {
+      "id": "q072",
+      "text": "The idiom 'the ball is in your court' means what?",
+      "options": { "A": "You are about to lose", "B": "It's your turn to take action", "C": "The game is over", "D": "You need to practice more" },
+      "correct": "B",
+      "explanation": "This idiom, borrowed from tennis, means it's now your responsibility or turn to take action or make a decision."
+    },
+    {
+      "id": "q073",
+      "text": "Which of these languages is an 'isolate,' meaning it has no known relatives?",
+      "options": { "A": "Basque", "B": "Catalan", "C": "Welsh", "D": "Albanian" },
+      "correct": "A",
+      "explanation": "Basque, spoken in the Basque Country spanning Spain and France, is a language isolate with no proven genetic relationship to any other language."
+    },
+    {
+      "id": "q074",
+      "text": "What is the word for a letter or symbol that represents a whole word or phrase?",
+      "options": { "A": "Phoneme", "B": "Grapheme", "C": "Logogram", "D": "Morpheme" },
+      "correct": "C",
+      "explanation": "A logogram (or logograph) is a character representing a word or phrase, such as Chinese characters, '&' for 'and,' or '$' for 'dollar.'"
+    },
+    {
+      "id": "q075",
+      "text": "The Portuguese word 'saudade' describes what untranslatable feeling?",
+      "options": { "A": "Extreme happiness", "B": "A deep emotional longing for something absent", "C": "Anger at injustice", "D": "The thrill of danger" },
+      "correct": "B",
+      "explanation": "Saudade describes a deep, melancholic longing for something or someone that is absent, often considered untranslatable into English."
+    },
+    {
+      "id": "q076",
+      "text": "What does the SAT-level word 'verbose' mean?",
+      "options": { "A": "Using more words than needed", "B": "Extremely honest", "C": "Related to verbs", "D": "Spoken with authority" },
+      "correct": "A",
+      "explanation": "Verbose means using or expressed in more words than are needed; wordy. From Latin 'verbosus' (full of words)."
+    },
+    {
+      "id": "q077",
+      "text": "Which of these ancient scripts remains undeciphered?",
+      "options": { "A": "Egyptian hieroglyphics", "B": "Linear A", "C": "Sumerian cuneiform", "D": "Linear B" },
+      "correct": "B",
+      "explanation": "Linear A, used by the Minoan civilization on Crete, remains undeciphered. Linear B (Mycenaean Greek) was deciphered by Michael Ventris in 1952."
+    },
+    {
+      "id": "q078",
+      "text": "The English word 'shampoo' comes from which language?",
+      "options": { "A": "Arabic", "B": "Hindi/Urdu", "C": "Persian", "D": "Turkish" },
+      "correct": "B",
+      "explanation": "Shampoo comes from the Hindi/Urdu word 'champo,' an imperative form meaning 'to press or massage,' related to head massage."
+    },
+    {
+      "id": "q079",
+      "text": "What is a 'cognate' in linguistics?",
+      "options": { "A": "A word that sounds like its meaning", "B": "A word in different languages that shares a common origin", "C": "A word with no plural form", "D": "A word invented by a single person" },
+      "correct": "B",
+      "explanation": "Cognates are words in different languages that have a common etymological origin, like English 'night,' German 'Nacht,' and Latin 'nox.'"
+    },
+    {
+      "id": "q080",
+      "text": "What does the SAT-level word 'quintessential' mean?",
+      "options": { "A": "Relating to the number five", "B": "Representing the most perfect example of something", "C": "Extremely rare and valuable", "D": "Questioning everything" },
+      "correct": "B",
+      "explanation": "Quintessential means representing the most perfect or typical example of a quality or class. It originally referred to the 'fifth essence' in ancient philosophy."
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "cost_of_living",
+    "title": "What Did It Cost? (1955 vs 1975)",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["History", "Economy", "Nostalgia", "Trivia"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "col_01",
+      "text": "What was the average price of a gallon of gas in 1955?",
+      "options": {
+        "A": "15 cents",
+        "B": "23 cents",
+        "C": "35 cents",
+        "D": "50 cents"
+      },
+      "correct": "B",
+      "explanation": "Gas was cheap! Around 23 cents per gallon (approx $2.50 adjusted)."
+    },
+    {
+      "id": "col_02",
+      "text": "By 1975, the average price of gas had risen to:",
+      "options": {
+        "A": "35 cents",
+        "B": "57 cents",
+        "C": "85 cents",
+        "D": "$1.00"
+      },
+      "correct": "B",
+      "explanation": "After the 1973 oil crisis, prices jumped to around 57 cents."
+    },
+    {
+      "id": "col_03",
+      "text": "How much was a first-class stamp in 1955?",
+      "options": {
+        "A": "2 cents",
+        "B": "3 cents",
+        "C": "5 cents",
+        "D": "10 cents"
+      },
+      "correct": "B",
+      "explanation": "It cost just 3 cents to mail a letter."
+    },
+    {
+      "id": "col_04",
+      "text": "What was the average cost of a new house in 1955?",
+      "options": {
+        "A": "$7,500",
+        "B": "$10,950",
+        "C": "$15,000",
+        "D": "$22,000"
+      },
+      "correct": "B",
+      "explanation": "The average new home cost about $10,950 (approx $120k today)."
+    },
+    {
+      "id": "col_05",
+      "text": "In 1975, the average new house price had climbed to:",
+      "options": {
+        "A": "$25,000",
+        "B": "$39,300",
+        "C": "$55,000",
+        "D": "$70,000"
+      },
+      "correct": "B",
+      "explanation": "Inflation pushed the average price to nearly $40,000."
+    },
+    {
+      "id": "col_06",
+      "text": "How much was a movie ticket in 1955?",
+      "options": {
+        "A": "25 cents",
+        "B": "45 cents",
+        "C": "75 cents",
+        "D": "$1.00"
+      },
+      "correct": "B",
+      "explanation": "Going to the pictures cost less than 50 cents."
+    },
+    {
+      "id": "col_07",
+      "text": "What was the Federal Minimum Wage in 1955?",
+      "options": {
+        "A": "40 cents",
+        "B": "75 cents",
+        "C": "$1.00",
+        "D": "$1.25"
+      },
+      "correct": "B",
+      "explanation": "It was raised to $1.00 in 1956, but in 1955 it was $0.75."
+    },
+    {
+      "id": "col_08",
+      "text": "How much was a gallon of milk in 1955?",
+      "options": {
+        "A": "45 cents",
+        "B": "65 cents",
+        "C": "97 cents",
+        "D": "$1.15"
+      },
+      "correct": "C",
+      "explanation": "Milk was slightly under a dollar, around 97 cents."
+    },
+    {
+      "id": "col_09",
+      "text": "What was the base price of a 1965 Ford Mustang?",
+      "options": {
+        "A": "$1,995",
+        "B": "$2,368",
+        "C": "$3,500",
+        "D": "$4,200"
+      },
+      "correct": "B",
+      "explanation": "The Mustang was marketed as an affordable sporty car, starting at $2,368."
+    },
+    {
+      "id": "col_10",
+      "text": "In 1975, a new Ford Granada cost approximately:",
+      "options": {
+        "A": "$2,500",
+        "B": "$3,700",
+        "C": "$5,200",
+        "D": "$7,000"
+      },
+      "correct": "B",
+      "explanation": "Mid-70s inflation meant cars were getting pricier, around $3,700-$4,000 base."
+    },
+    {
+      "id": "col_11",
+      "text": "How much was a McDonald's hamburger in 1955?",
+      "options": {
+        "A": "5 cents",
+        "B": "10 cents",
+        "C": "15 cents",
+        "D": "25 cents"
+      },
+      "correct": "C",
+      "explanation": "Ray Kroc's first McDonald's sold burgers for 15 cents."
+    },
+    {
+      "id": "col_12",
+      "text": "What was the average annual income in 1955?",
+      "options": {
+        "A": "$2,500",
+        "B": "$4,130",
+        "C": "$6,200",
+        "D": "$8,000"
+      },
+      "correct": "B",
+      "explanation": "Families earned just over $4,000 a year on average."
+    },
+    {
+      "id": "col_13",
+      "text": "A loaf of bread in the 1950s cost about:",
+      "options": {
+        "A": "10 cents",
+        "B": "18 cents",
+        "C": "30 cents",
+        "D": "50 cents"
+      },
+      "correct": "B",
+      "explanation": "Daily staples were very cheap, around 18 cents."
+    },
+    {
+      "id": "col_14",
+      "text": "How much did a color TV cost in the mid-1960s?",
+      "options": {
+        "A": "$100",
+        "B": "$250",
+        "C": "$400",
+        "D": "$800"
+      },
+      "correct": "C",
+      "explanation": "Color TVs were luxury items, costing around $400-$500 (equivalent to $4000+ today)."
+    },
+    {
+      "id": "col_15",
+      "text": "The Dow Jones Industrial Average hit what milestone in 1972?",
+      "options": {
+        "A": "500",
+        "B": "1,000",
+        "C": "2,000",
+        "D": "5,000"
+      },
+      "correct": "B",
+      "explanation": "The Dow closed above 1,000 for the first time in November 1972."
+    }
+  ]
+}

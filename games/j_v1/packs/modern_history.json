@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "modern_history",
+    "title": "Modern History",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["History", "20th Century", "Wars", "Politics"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "mh_01",
+      "text": "The Cold War was primarily between which two superpowers?",
+      "options": {
+        "A": "USA and China",
+        "B": "USA and USSR",
+        "C": "UK and Germany",
+        "D": "USSR and China"
+      },
+      "correct": "B",
+      "explanation": "The Cold War was a period of geopolitical tension between the United States and the Soviet Union."
+    },
+    {
+      "id": "mh_02",
+      "text": "In which year did man first walk on the moon?",
+      "options": {
+        "A": "1965",
+        "B": "1969",
+        "C": "1971",
+        "D": "1959"
+      },
+      "correct": "B",
+      "explanation": "Apollo 11 landed on the moon on July 20, 1969."
+    },
+    {
+      "id": "mh_03",
+      "text": "Who was the British Prime Minister during most of World War II?",
+      "options": {
+        "A": "Neville Chamberlain",
+        "B": "Winston Churchill",
+        "C": "Clement Attlee",
+        "D": "Tony Blair"
+      },
+      "correct": "B",
+      "explanation": "Churchill led Britain to victory in the Second World War."
+    },
+    {
+      "id": "mh_04",
+      "text": "The Chernobyl nuclear disaster occurred in which year?",
+      "options": {
+        "A": "1979",
+        "B": "1986",
+        "C": "1991",
+        "D": "1984"
+      },
+      "correct": "B",
+      "explanation": "The catastrophe occurred on April 26, 1986, in the Ukrainian SSR."
+    },
+    {
+      "id": "mh_05",
+      "text": "Which wall divided Berlin from 1961 to 1989?",
+      "options": {
+        "A": "The Iron Curtain",
+        "B": "The Berlin Wall",
+        "C": "The Great Wall",
+        "D": "The Western Wall"
+      },
+      "correct": "B",
+      "explanation": "The Berlin Wall physically and ideologically divided Berlin."
+    },
+    {
+      "id": "mh_06",
+      "text": "Who was the first female Prime Minister of the United Kingdom?",
+      "options": {
+        "A": "Theresa May",
+        "B": "Margaret Thatcher",
+        "C": "Queen Elizabeth II",
+        "D": "Indira Gandhi"
+      },
+      "correct": "B",
+      "explanation": "Margaret Thatcher served from 1979 to 1990 and was known as the 'Iron Lady'."
+    },
+    {
+      "id": "mh_07",
+      "text": "The attack on the World Trade Center occurred on:",
+      "options": {
+        "A": "September 11, 2001",
+        "B": "December 7, 1941",
+        "C": "November 22, 1963",
+        "D": "April 19, 1995"
+      },
+      "correct": "A",
+      "explanation": "The 9/11 attacks were a series of airline hijackings by al-Qaeda."
+    },
+    {
+      "id": "mh_08",
+      "text": "Which treaty created the European Union in 1993?",
+      "options": {
+        "A": "Treaty of Rome",
+        "B": "Maastricht Treaty",
+        "C": "Treaty of Paris",
+        "D": "Treaty of Lisbon"
+      },
+      "correct": "B",
+      "explanation": "The Maastricht Treaty established the European Union."
+    },
+    {
+      "id": "mh_09",
+      "text": "Who was the leader of the Civil Rights Movement in the US known for his 'I Have a Dream' speech?",
+      "options": {
+        "A": "Malcolm X",
+        "B": "Martin Luther King Jr.",
+        "C": "Rosa Parks",
+        "D": "John Lewis"
+      },
+      "correct": "B",
+      "explanation": "MLK Jr. delivered the iconic speech during the March on Washington in 1963."
+    },
+    {
+      "id": "mh_10",
+      "text": "The internet (ARPANET) sent its first message in which decade?",
+      "options": {
+        "A": "1950s",
+        "B": "1960s",
+        "C": "1970s",
+        "D": "1980s"
+      },
+      "correct": "B",
+      "explanation": "The first message 'LO' (intended to be LOGIN) was sent on October 29, 1969."
+    },
+    {
+      "id": "mh_11",
+      "text": "Which virus caused a global pandemic starting in 1918?",
+      "options": {
+        "A": "Spanish Flu",
+        "B": "Black Death",
+        "C": "Swine Flu",
+        "D": "Smallpox"
+      },
+      "correct": "A",
+      "explanation": "The 1918 influenza pandemic infected 500 million people worldwide."
+    },
+    {
+      "id": "mh_12",
+      "text": "Nelson Mandela became the first black president of South Africa in:",
+      "options": {
+        "A": "1990",
+        "B": "1994",
+        "C": "1999",
+        "D": "1985"
+      },
+      "correct": "B",
+      "explanation": "Mandela was elected in the first fully representative democratic election."
+    },
+    {
+      "id": "mh_13",
+      "text": "The Euro currency was introduced in physical form in:",
+      "options": {
+        "A": "1999",
+        "B": "2000",
+        "C": "2002",
+        "D": "1995"
+      },
+      "correct": "C",
+      "explanation": "Euro banknotes and coins entered circulation on January 1, 2002."
+    },
+    {
+      "id": "mh_14",
+      "text": "Who was the US President during the Cuban Missile Crisis?",
+      "options": {
+        "A": "Dwight D. Eisenhower",
+        "B": "John F. Kennedy",
+        "C": "Lyndon B. Johnson",
+        "D": "Richard Nixon"
+      },
+      "correct": "B",
+      "explanation": "JFK navigated the crisis in October 1962."
+    },
+    {
+      "id": "mh_15",
+      "text": "The Titanic sank in:",
+      "options": {
+        "A": "1910",
+        "B": "1912",
+        "C": "1915",
+        "D": "1920"
+      },
+      "correct": "B",
+      "explanation": "The RMS Titanic hit an iceberg and sank on April 15, 1912."
+    }
+  ]
+}
