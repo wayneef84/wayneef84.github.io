@@ -1,0 +1,15 @@
+:root {
+    --bg-color: #e0e0e0;
+    --case-color: #333333;
+    --screen-bg: #9ea792;
+    --screen-pixel: #000000;
+    --key-dark: #1a1a1a;
+    --key-light: #d9d9d9;
+    --key-blue: #6699cc;
+    --key-yellow: #ffcc00;
+    --key-alpha: #99cc99;
+    --text-on-dark: #ffffff;
+    --text-on-light: #000000;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --highlight-color: rgba(255, 255, 255, 0.2);
+}
