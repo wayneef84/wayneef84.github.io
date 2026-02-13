@@ -499,7 +499,7 @@ class WordGame {
     playLetterAudio(char) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(char.toUpperCase());
+            const utter = new SpeechSynthesisUtterance(char);
             utter.rate = this.voiceRate;
             window.speechSynthesis.speak(utter);
         }
@@ -747,7 +747,7 @@ class WordGame {
     toPixels(pt) {
         var w = this.canvas.width;
         var h = this.canvas.height;
-        var aspectRatio = 0.8;
+        var aspectRatio = 100 / 145; // Match logical coordinate system (100 width, 145 height range)
         var padding = 20;
         var availW = w - (padding * 2);
 

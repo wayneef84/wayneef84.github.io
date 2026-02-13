@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "date": "2026-02-13",
+    "generated_at": "2026-02-13T04:00:00Z",
+    "version": "1.0"
+  },
+  "context": {
+    "location": "San Jose, CA",
+    "weather": {
+      "condition": "Cloudy",
+      "temp_high": 68,
+      "temp_low": 52,
+      "code_forecast": "Perfect for debugging."
+    }
+  },
+  "digest": {
+    "quote": "Refactoring is like cleaning the garage. You don't know why you kept that, but you're afraid to throw it away.",
+    "news": [
+      { "category": "AI/Tech", "headline": "Gemini 2.0 Flash is faster than thought.", "url": "#" },
+      { "category": "Gaming", "headline": "Baldur's Gate 3 Patch 9 notes released.", "url": "#" },
+      { "category": "Local", "headline": "SJ Sharks win in overtime.", "url": "#" }
+    ]
+  },
+  "games": {
+    "sudoku_seed": "20260213",
+    "puzzller_seed": "20260213",
+    "daily_challenge_id": "G-772"
+  }
+}

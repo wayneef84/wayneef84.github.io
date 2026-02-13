@@ -72,7 +72,11 @@ button {
     font-weight: bold;
     background-color: #3498db;
     color: white;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:active {
+    transform: translateY(1px);
 }
 
 button:hover {
@@ -82,10 +86,12 @@ button:hover {
 button#reset-btn {
     background-color: #e74c3c;
 }
+button#reset-btn:hover { background-color: #c0392b; }
 
-button#reset-btn:hover {
-    background-color: #c0392b;
+button#check-btn {
+    background-color: #27ae60;
 }
+button#check-btn:hover { background-color: #219150; }
 
 .sudoku-board {
     display: grid;
@@ -103,40 +109,83 @@ button#reset-btn:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-size: clamp(1rem, 4vw, 1.8rem);
     cursor: pointer;
     user-select: none;
     position: relative;
+    color: #2c3e50;
 }
 
-/* Thicker borders for subgrids */
-.cell.b-right {
-    border-right: 2px solid #333;
-}
-.cell.b-bottom {
-    border-bottom: 2px solid #333;
+/* Notes Grid */
+.cell .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
 }
 
+.cell .note-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.35em;
+    color: #7f8c8d;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Borders */
+.cell.b-right { border-right: 2px solid #333; }
+.cell.b-bottom { border-bottom: 2px solid #333; }
+
+/* States */
 .cell.fixed {
     background-color: #f0f0f0;
     font-weight: bold;
     color: #2c3e50;
 }
 
-.cell.selected {
-    background-color: #bbdefb;
+.cell.player-input {
+    color: #2980b9;
 }
 
-/* Highlight numbers that match selected number */
+.cell.selected {
+    background-color: #bbdefb; /* Blue selection */
+}
+
+.cell.related {
+    background-color: #e8f6f3; /* Crosshair subtle highlight */
+}
+
+/* If related AND fixed, maybe blend? */
+.cell.fixed.related {
+    background-color: #e0e6e6;
+}
+
+/* If selected AND fixed */
+.cell.fixed.selected {
+    background-color: #b0bec5;
+}
+
 .cell.highlight-match {
-    background-color: #e3f2fd;
+    background-color: #d6eaf8; /* Lighter blue for matching numbers */
+}
+
+.cell.selected.highlight-match {
+    background-color: #aed6f1; /* Darker match if selected */
 }
 
 .cell.error {
     color: #e74c3c;
-    background-color: #fadbd8;
+    background-color: #fadbd8 !important;
 }
 
+/* Bottom Controls */
 .controls-bottom {
     display: flex;
     flex-direction: column;
@@ -145,38 +194,91 @@ button#reset-btn:hover {
     width: 100%;
 }
 
+.tools {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.tool-btn {
+    flex: 1;
+    padding: 12px;
+    background: #ecf0f1;
+    color: #34495e;
+    font-size: 0.9rem;
+    border: 1px solid #bdc3c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.tool-btn:hover { background: #dfe6e9; }
+
+.tool-btn#undo-btn { }
+.tool-btn#note-btn.active {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+}
+
+.tool-btn#erase-btn { color: #c0392b; }
+
 .numpad {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 5px;
     width: 100%;
 }
 
 .num-btn {
-    aspect-ratio: 1.5;
+    aspect-ratio: 1;
     font-size: 1.2rem;
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
-.num-btn:hover {
-    background: #e9ecef;
+.num-btn:hover { background: #e9ecef; }
+
+.num-btn.selected-number {
+    background-color: #3498db;
+    color: white;
+    border-color: #2980b9;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
 }
 
 .actions {
     display: flex;
     gap: 10px;
+    width: 100%;
+    justify-content: center;
 }
 
 .status-message {
     min-height: 24px;
     font-weight: bold;
     color: #27ae60;
+    text-align: center;
 }
 
-@media (max-width: 400px) {
-    .game-container {
-        padding: 10px;
+@media (max-width: 500px) {
+    .game-container { padding: 10px; }
+
+    .numpad {
+        /* 2 rows for easier touch targets */
+        grid-template-columns: repeat(5, 1fr);
+    }
+    /* Make the 9th item (last) span full width or center?
+       With repeat(5), 9 items fill 2 rows (5 + 4).
+       The last 4 will leave a gap. */
+
+    .cell {
+        font-size: clamp(1rem, 4vw, 1.5rem);
     }
 }

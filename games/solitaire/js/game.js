@@ -26,6 +26,13 @@ window.onload = function() {
     window.addEventListener('resize', resizeBoard);
     resizeBoard();
 
+    window.addEventListener('beforeunload', function(e) {
+        if (engine && engine.state !== GameState.IDLE && engine.state !== GameState.GAME_OVER) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
     // Start Game
     startNewGame();
 };
