@@ -37,6 +37,13 @@
             }
         }, {passive: false});
 
+        window.addEventListener('beforeunload', (e) => {
+            if (this.board.history.length > 0 && !this.board.isWin()) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
         // Start
         this.newGame();
         this.loop();

@@ -52,6 +52,13 @@ class Sudoku {
                 this.handleNavigation(key);
             }
         });
+
+        window.addEventListener('beforeunload', (e) => {
+            if (!this.isGameOver && JSON.stringify(this.playerBoard) !== JSON.stringify(this.initialBoard)) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     }
 
     newGame() {
