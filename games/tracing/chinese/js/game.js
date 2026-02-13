@@ -469,6 +469,7 @@
 
         // Touch character during animation to speak and start practice
         elements.characterTarget.addEventListener('click', handleCharacterTouch);
+        elements.characterTarget.addEventListener('touchstart', handleCharacterTouch);
 
         // Pinyin/Jyutping click for dialect
         elements.pinyinDisplay.addEventListener('click', function() {
@@ -958,6 +959,7 @@
                     if (state.settings.audioEnabled && state.currentChar) {
                         speakCharacter(state.currentChar);
                     }
+                    startPractice();
                     return;
                 }
 
@@ -987,16 +989,21 @@
                     if (state.settings.audioEnabled && state.currentChar) {
                         speakCharacter(state.currentChar);
                     }
+                    startPractice();
                 }
             });
         }
     }
 
-    function handleCharacterTouch() {
+    function handleCharacterTouch(e) {
         if (!state.writer || !state.currentChar) return;
 
         // If already in quiz mode, let the quiz handle the touch
         if (state.isQuizMode) return;
+
+        if (e && e.type === 'touchstart') {
+            e.preventDefault();
+        }
 
         if (state.isAnimating) {
             // Stop animation and speak
