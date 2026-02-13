@@ -747,7 +747,7 @@ class WordGame {
     toPixels(pt) {
         var w = this.canvas.width;
         var h = this.canvas.height;
-        var aspectRatio = 0.8;
+        var aspectRatio = 100 / 145; // Match logical coordinate system (100 width, 145 height range)
         var padding = 20;
         var availW = w - (padding * 2);
 
