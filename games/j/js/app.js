@@ -57,9 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
         timerDisplay: document.getElementById('timerDisplay'),
         lockToggle: document.getElementById('lockToggle'),
         nextBtn: document.getElementById('nextBtn'),
+        feedbackBackdrop: document.getElementById('feedbackBackdrop'),
         feedbackArea: document.getElementById('feedbackArea'),
         feedbackTitle: document.getElementById('feedbackTitle'),
         feedbackText: document.getElementById('feedbackText'),
+        feedbackNextBtn: document.getElementById('feedbackNextBtn'),
         endScreen: document.getElementById('endScreen'),
         finalScore: document.getElementById('finalScore'),
         scoreLabel: document.getElementById('scoreLabel'),
@@ -556,6 +558,25 @@ document.addEventListener('DOMContentLoaded', function() {
             engine.triggerFastForward();
         });
 
+        // Feedback Next Button (Inside Menu)
+        if (dom.feedbackNextBtn) {
+            dom.feedbackNextBtn.addEventListener('click', function() {
+                engine.triggerFastForward();
+            });
+        }
+
+        // Backdrop Click (Escapeable)
+        if (dom.feedbackBackdrop) {
+            dom.feedbackBackdrop.addEventListener('click', function(e) {
+                // If clicked on backdrop itself (not children)
+                if (e.target === dom.feedbackBackdrop) {
+                     // Check if only "Next" is available (simple mode)
+                     // For now, always hide. If we add more options, check logic here.
+                     dom.feedbackBackdrop.classList.add('hidden');
+                }
+            });
+        }
+
         dom.restartBtn.addEventListener('click', function() {
             dom.endScreen.classList.add('hidden');
             engine.loadPack(currentPackData);
@@ -646,7 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderQuestion(data) {
-        dom.feedbackArea.classList.add('hidden');
+        if (dom.feedbackBackdrop) dom.feedbackBackdrop.classList.add('hidden');
+        dom.feedbackArea.classList.add('hidden'); // Legacy check
         dom.mediaContainer.classList.add('hidden');
         dom.nextBtn.disabled = true;
         updateNextButtonState();
@@ -795,7 +817,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedBtn) selectedBtn.classList.add('incorrect');
             }
         } else {
-            dom.feedbackArea.classList.remove('hidden');
+            if (dom.feedbackBackdrop) dom.feedbackBackdrop.classList.remove('hidden');
+            dom.feedbackArea.classList.remove('hidden'); // Ensure content is visible within backdrop
+
             if (data.correct) {
                 dom.feedbackTitle.textContent = "CORRECT!";
                 dom.feedbackTitle.style.color = "var(--correct)";
