@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "vietnam_era",
+    "title": "The Vietnam Era (News & History)",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["History", "60s", "70s", "News", "Politics"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "vn_01",
+      "text": "Who was the 'Most Trusted Man in America'?",
+      "options": {
+        "A": "Dan Rather",
+        "B": "Walter Cronkite",
+        "C": "David Brinkley",
+        "D": "Tom Brokaw"
+      },
+      "correct": "B",
+      "explanation": "CBS anchor Walter Cronkite's opinion on the war was seen as shifting public sentiment."
+    },
+    {
+      "id": "vn_02",
+      "text": "What was the Selective Service System lottery better known as?",
+      "options": {
+        "A": "The Raffle",
+        "B": "The Draft Lottery",
+        "C": "The Selection",
+        "D": "The Draw"
+      },
+      "correct": "B",
+      "explanation": "The Draft Lottery determined the order of call to military service based on birth dates."
+    },
+    {
+      "id": "vn_03",
+      "text": "The Kent State shootings occurred in which year?",
+      "options": {
+        "A": "1968",
+        "B": "1969",
+        "C": "1970",
+        "D": "1972"
+      },
+      "correct": "C",
+      "explanation": "May 4, 1970. Four students were killed by the Ohio National Guard."
+    },
+    {
+      "id": "vn_04",
+      "text": "Which major offensive in 1968 turned US public opinion against the war?",
+      "options": {
+        "A": "The Tet Offensive",
+        "B": "The Easter Offensive",
+        "C": "Operation Rolling Thunder",
+        "D": "Battle of Hue"
+      },
+      "correct": "A",
+      "explanation": "Though a military failure for the North, the scale of the attacks shocked the American public."
+    },
+    {
+      "id": "vn_05",
+      "text": "Who famously said, 'I am not a crook'?",
+      "options": {
+        "A": "Lyndon B. Johnson",
+        "B": "Richard Nixon",
+        "C": "Spiro Agnew",
+        "D": "Gerald Ford"
+      },
+      "correct": "B",
+      "explanation": "Richard Nixon said this during the Watergate scandal investigations."
+    },
+    {
+      "id": "vn_06",
+      "text": "The Woodstock music festival took place in:",
+      "options": {
+        "A": "California",
+        "B": "New York",
+        "C": "Woodstock, VT",
+        "D": "Ohio"
+      },
+      "correct": "B",
+      "explanation": "It took place on Max Yasgur's dairy farm in Bethel, New York."
+    },
+    {
+      "id": "vn_07",
+      "text": "Which year was considered the most turbulent, with the assassinations of MLK and RFK?",
+      "options": {
+        "A": "1965",
+        "B": "1967",
+        "C": "1968",
+        "D": "1969"
+      },
+      "correct": "C",
+      "explanation": "1968 saw massive social unrest, assassinations, and riots."
+    },
+    {
+      "id": "vn_08",
+      "text": "The 'Fall of Saigon' happened in:",
+      "options": {
+        "A": "1973",
+        "B": "1974",
+        "C": "1975",
+        "D": "1976"
+      },
+      "correct": "C",
+      "explanation": "April 30, 1975 marked the end of the Vietnam War."
+    },
+    {
+      "id": "vn_09",
+      "text": "What was the name of the chemical defoliant used by the US military?",
+      "options": {
+        "A": "Agent Blue",
+        "B": "Agent Orange",
+        "C": "Napalm",
+        "D": "Roundup"
+      },
+      "correct": "B",
+      "explanation": "Agent Orange was used to clear jungle cover."
+    },
+    {
+      "id": "vn_10",
+      "text": "Who refused to be drafted, saying 'I ain't got no quarrel with them Viet Cong'?",
+      "options": {
+        "A": "Joe Frazier",
+        "B": "Muhammad Ali",
+        "C": "Jim Brown",
+        "D": "Kareem Abdul-Jabbar"
+      },
+      "correct": "B",
+      "explanation": "Muhammad Ali was stripped of his heavyweight title for refusing induction."
+    },
+    {
+      "id": "vn_11",
+      "text": "The 26th Amendment lowered the voting age to:",
+      "options": {
+        "A": "16",
+        "B": "18",
+        "C": "20",
+        "D": "21"
+      },
+      "correct": "B",
+      "explanation": "Ratified in 1971, the argument was 'Old enough to fight, old enough to vote'."
+    },
+    {
+      "id": "vn_12",
+      "text": "What does POW/MIA stand for?",
+      "options": {
+        "A": "Prisoner of War / Missing in Action",
+        "B": "Person of War / Military in Action",
+        "C": "Prisoner of War / Men in Army",
+        "D": "Peace or War / Missing in Action"
+      },
+      "correct": "A",
+      "explanation": "The POW/MIA flag became a symbol of the war's lingering cost."
+    },
+    {
+      "id": "vn_13",
+      "text": "Daniel Ellsberg leaked which classified documents in 1971?",
+      "options": {
+        "A": "The Nixon Tapes",
+        "B": "The Pentagon Papers",
+        "C": "The Warren Report",
+        "D": "The Watergate Files"
+      },
+      "correct": "B",
+      "explanation": "The Pentagon Papers revealed the government had secretly enlarged the scope of the war."
+    },
+    {
+      "id": "vn_14",
+      "text": "Which TV show brought the war into living rooms with its dark humor about a MASH unit?",
+      "options": {
+        "A": "Hogan's Heroes",
+        "B": "M*A*S*H",
+        "C": "Combat!",
+        "D": "China Beach"
+      },
+      "correct": "B",
+      "explanation": "Although set in Korea, M*A*S*H was widely seen as commentary on Vietnam."
+    },
+    {
+      "id": "vn_15",
+      "text": "Neil Armstrong walked on the moon in:",
+      "options": {
+        "A": "1967",
+        "B": "1968",
+        "C": "1969",
+        "D": "1970"
+      },
+      "correct": "C",
+      "explanation": "July 20, 1969. 'The Eagle has landed.'"
+    }
+  ]
+}

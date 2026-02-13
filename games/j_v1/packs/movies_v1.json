@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "movies_001",
+    "title": "Movies & Film",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Movies", "Film", "Directors", "Actors"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Which film won the Academy Award for Best Picture in 1994?",
+      "options": {
+        "A": "Pulp Fiction",
+        "B": "Forrest Gump",
+        "C": "The Shawshank Redemption",
+        "D": "Four Weddings and a Funeral"
+      },
+      "correct": "B",
+      "explanation": "Forrest Gump won Best Picture at the 67th Academy Awards in 1995 for the 1994 film year."
+    },
+    {
+      "id": "q002",
+      "text": "Who directed the 1975 film 'Jaws'?",
+      "options": {
+        "A": "George Lucas",
+        "B": "Francis Ford Coppola",
+        "C": "Steven Spielberg",
+        "D": "Martin Scorsese"
+      },
+      "correct": "C",
+      "explanation": "Steven Spielberg directed Jaws, which became the first summer blockbuster."
+    },
+    {
+      "id": "q003",
+      "text": "In 'The Wizard of Oz' (1939), what color are Dorothy's slippers?",
+      "options": {
+        "A": "Silver",
+        "B": "Gold",
+        "C": "Blue",
+        "D": "Ruby red"
+      },
+      "correct": "D",
+      "explanation": "Dorothy's iconic ruby red slippers were changed from silver (in the book) to take advantage of Technicolor."
+    },
+    {
+      "id": "q004",
+      "text": "Which actor played Tony Montana in 'Scarface' (1983)?",
+      "options": {
+        "A": "Robert De Niro",
+        "B": "Al Pacino",
+        "C": "Joe Pesci",
+        "D": "Andy Garcia"
+      },
+      "correct": "B",
+      "explanation": "Al Pacino starred as Cuban drug lord Tony Montana in Brian De Palma's Scarface."
+    },
+    {
+      "id": "q005",
+      "text": "What was the first feature-length animated film produced by Pixar?",
+      "options": {
+        "A": "A Bug's Life",
+        "B": "Finding Nemo",
+        "C": "Monsters, Inc.",
+        "D": "Toy Story"
+      },
+      "correct": "D",
+      "explanation": "Toy Story (1995) was Pixar's first feature film and the first entirely computer-animated feature."
+    },
+    {
+      "id": "q006",
+      "text": "Who directed 'Schindler's List' (1993)?",
+      "options": {
+        "A": "Roman Polanski",
+        "B": "Steven Spielberg",
+        "C": "Ridley Scott",
+        "D": "Oliver Stone"
+      },
+      "correct": "B",
+      "explanation": "Steven Spielberg directed Schindler's List, winning Best Director and Best Picture."
+    },
+    {
+      "id": "q007",
+      "text": "Which 1997 film became the first to gross over $1 billion worldwide?",
+      "options": {
+        "A": "Jurassic Park",
+        "B": "Star Wars: A New Hope (re-release)",
+        "C": "Titanic",
+        "D": "The Lost World"
+      },
+      "correct": "C",
+      "explanation": "James Cameron's Titanic was the first film to cross the $1 billion mark at the global box office."
+    },
+    {
+      "id": "q008",
+      "text": "What is the name of the fictional continent in 'Black Panther'?",
+      "options": {
+        "A": "Zamunda",
+        "B": "Wakanda",
+        "C": "Genosha",
+        "D": "Latveria"
+      },
+      "correct": "B",
+      "explanation": "Wakanda is the fictional African nation in Black Panther, known for its vibranium reserves."
+    },
+    {
+      "id": "q009",
+      "text": "Who played the Joker in 'The Dark Knight' (2008)?",
+      "options": {
+        "A": "Jack Nicholson",
+        "B": "Jared Leto",
+        "C": "Joaquin Phoenix",
+        "D": "Heath Ledger"
+      },
+      "correct": "D",
+      "explanation": "Heath Ledger won a posthumous Academy Award for Best Supporting Actor for his portrayal of the Joker."
+    },
+    {
+      "id": "q010",
+      "text": "Which film features the quote 'Here's looking at you, kid'?",
+      "options": {
+        "A": "Gone with the Wind",
+        "B": "Casablanca",
+        "C": "The Maltese Falcon",
+        "D": "Citizen Kane"
+      },
+      "correct": "B",
+      "explanation": "Humphrey Bogart's character Rick Blaine says this iconic line in Casablanca (1942)."
+    },
+    {
+      "id": "q011",
+      "text": "How many films are in Peter Jackson's 'The Lord of the Rings' trilogy?",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "correct": "B",
+      "explanation": "The trilogy consists of The Fellowship of the Ring, The Two Towers, and The Return of the King."
+    },
+    {
+      "id": "q012",
+      "text": "Which actress won the Academy Award for Best Actress for 'La La Land'?",
+      "options": {
+        "A": "Natalie Portman",
+        "B": "Meryl Streep",
+        "C": "Emma Stone",
+        "D": "Amy Adams"
+      },
+      "correct": "C",
+      "explanation": "Emma Stone won Best Actress at the 89th Academy Awards for her role as Mia in La La Land."
+    },
+    {
+      "id": "q013",
+      "text": "What year was the original 'Star Wars' (Episode IV) released?",
+      "options": {
+        "A": "1975",
+        "B": "1977",
+        "C": "1979",
+        "D": "1980"
+      },
+      "correct": "B",
+      "explanation": "Star Wars: A New Hope was released on May 25, 1977, and became a cultural phenomenon."
+    },
+    {
+      "id": "q014",
+      "text": "Who directed 'Pulp Fiction' (1994)?",
+      "options": {
+        "A": "Martin Scorsese",
+        "B": "David Fincher",
+        "C": "Quentin Tarantino",
+        "D": "The Coen Brothers"
+      },
+      "correct": "C",
+      "explanation": "Quentin Tarantino wrote and directed Pulp Fiction, winning the Palme d'Or at Cannes."
+    },
+    {
+      "id": "q015",
+      "text": "In 'The Silence of the Lambs', what is Hannibal Lecter's profession?",
+      "options": {
+        "A": "Surgeon",
+        "B": "Psychiatrist",
+        "C": "Professor",
+        "D": "Lawyer"
+      },
+      "correct": "B",
+      "explanation": "Dr. Hannibal Lecter is a brilliant forensic psychiatrist and cannibalistic serial killer."
+    },
+    {
+      "id": "q016",
+      "text": "Which film won the first Academy Award for Best Picture in 1929?",
+      "options": {
+        "A": "The Jazz Singer",
+        "B": "Sunrise",
+        "C": "Wings",
+        "D": "The Broadway Melody"
+      },
+      "correct": "C",
+      "explanation": "Wings (1927) won Outstanding Picture at the 1st Academy Awards ceremony in 1929."
+    },
+    {
+      "id": "q017",
+      "text": "What is the highest-grossing film of all time (unadjusted for inflation)?",
+      "options": {
+        "A": "Avengers: Endgame",
+        "B": "Avatar",
+        "C": "Titanic",
+        "D": "Star Wars: The Force Awakens"
+      },
+      "correct": "B",
+      "explanation": "Avatar (2009) holds the record with over $2.9 billion worldwide, reclaiming the top spot after re-releases."
+    },
+    {
+      "id": "q018",
+      "text": "Who played Vito Corleone in 'The Godfather' (1972)?",
+      "options": {
+        "A": "Al Pacino",
+        "B": "Robert De Niro",
+        "C": "Marlon Brando",
+        "D": "James Caan"
+      },
+      "correct": "C",
+      "explanation": "Marlon Brando won the Best Actor Oscar for his role as Don Vito Corleone, though he declined the award."
+    },
+    {
+      "id": "q019",
+      "text": "Which Disney animated film features the song 'Let It Go'?",
+      "options": {
+        "A": "Tangled",
+        "B": "Moana",
+        "C": "Frozen",
+        "D": "Brave"
+      },
+      "correct": "C",
+      "explanation": "Frozen (2013) features the Oscar-winning song 'Let It Go' performed by Idina Menzel."
+    },
+    {
+      "id": "q020",
+      "text": "Which director is known for the films 'Inception', 'Interstellar', and 'The Dark Knight'?",
+      "options": {
+        "A": "Denis Villeneuve",
+        "B": "Christopher Nolan",
+        "C": "David Fincher",
+        "D": "Ridley Scott"
+      },
+      "correct": "B",
+      "explanation": "Christopher Nolan directed all three of these critically acclaimed blockbusters."
+    },
+    {
+      "id": "q021",
+      "text": "What fictional material is Captain America's shield made of?",
+      "options": {
+        "A": "Adamantium",
+        "B": "Vibranium",
+        "C": "Uru",
+        "D": "Carbonadium"
+      },
+      "correct": "B",
+      "explanation": "In the MCU, Captain America's shield is made of vibranium from Wakanda."
+    },
+    {
+      "id": "q022",
+      "text": "Who directed '2001: A Space Odyssey' (1968)?",
+      "options": {
+        "A": "Ridley Scott",
+        "B": "George Lucas",
+        "C": "Stanley Kubrick",
+        "D": "Andrei Tarkovsky"
+      },
+      "correct": "C",
+      "explanation": "Stanley Kubrick directed and co-wrote 2001: A Space Odyssey with Arthur C. Clarke."
+    },
+    {
+      "id": "q023",
+      "text": "Which actress has won the most Academy Awards for acting?",
+      "options": {
+        "A": "Meryl Streep",
+        "B": "Katharine Hepburn",
+        "C": "Cate Blanchett",
+        "D": "Frances McDormand"
+      },
+      "correct": "B",
+      "explanation": "Katharine Hepburn won four Best Actress Oscars, more than any other actor or actress in history."
+    },
+    {
+      "id": "q024",
+      "text": "In which film does Tom Hanks play a stranded FedEx employee?",
+      "options": {
+        "A": "The Terminal",
+        "B": "Cast Away",
+        "C": "Sully",
+        "D": "Captain Phillips"
+      },
+      "correct": "B",
+      "explanation": "Cast Away (2000) stars Tom Hanks as Chuck Noland, a FedEx employee stranded on a deserted island."
+    },
+    {
+      "id": "q025",
+      "text": "What is the name of the AI computer in '2001: A Space Odyssey'?",
+      "options": {
+        "A": "WOPR",
+        "B": "Skynet",
+        "C": "HAL 9000",
+        "D": "GERTY"
+      },
+      "correct": "C",
+      "explanation": "HAL 9000 is the sentient computer that controls the Discovery One spacecraft."
+    },
+    {
+      "id": "q026",
+      "text": "Which 1994 film is set primarily inside a prison called Shawshank?",
+      "options": {
+        "A": "The Green Mile",
+        "B": "The Shawshank Redemption",
+        "C": "Escape from Alcatraz",
+        "D": "Cool Hand Luke"
+      },
+      "correct": "B",
+      "explanation": "The Shawshank Redemption, based on a Stephen King novella, stars Tim Robbins and Morgan Freeman."
+    },
+    {
+      "id": "q027",
+      "text": "Who played Jack Dawson in 'Titanic' (1997)?",
+      "options": {
+        "A": "Brad Pitt",
+        "B": "Matt Damon",
+        "C": "Leonardo DiCaprio",
+        "D": "Johnny Depp"
+      },
+      "correct": "C",
+      "explanation": "Leonardo DiCaprio starred alongside Kate Winslet in James Cameron's Titanic."
+    },
+    {
+      "id": "q028",
+      "text": "Which Pixar film is set in the world of emotions inside a girl's mind?",
+      "options": {
+        "A": "Soul",
+        "B": "Inside Out",
+        "C": "Coco",
+        "D": "Up"
+      },
+      "correct": "B",
+      "explanation": "Inside Out (2015) takes place inside the mind of Riley, featuring Joy, Sadness, Anger, Fear, and Disgust."
+    },
+    {
+      "id": "q029",
+      "text": "What is Quentin Tarantino's first feature film?",
+      "options": {
+        "A": "Pulp Fiction",
+        "B": "Kill Bill: Volume 1",
+        "C": "Reservoir Dogs",
+        "D": "True Romance"
+      },
+      "correct": "C",
+      "explanation": "Reservoir Dogs (1992) was Tarantino's directorial debut and premiered at the Sundance Film Festival."
+    },
+    {
+      "id": "q030",
+      "text": "Which film series features a character named Ethan Hunt?",
+      "options": {
+        "A": "James Bond",
+        "B": "The Bourne Series",
+        "C": "Mission: Impossible",
+        "D": "Jack Ryan"
+      },
+      "correct": "C",
+      "explanation": "Tom Cruise plays IMF agent Ethan Hunt in the Mission: Impossible franchise."
+    },
+    {
+      "id": "q031",
+      "text": "Who directed 'The Shining' (1980)?",
+      "options": {
+        "A": "Wes Craven",
+        "B": "John Carpenter",
+        "C": "Stanley Kubrick",
+        "D": "Tobe Hooper"
+      },
+      "correct": "C",
+      "explanation": "Stanley Kubrick directed The Shining, starring Jack Nicholson, based on Stephen King's novel."
+    },
+    {
+      "id": "q032",
+      "text": "Which film features the line 'I see dead people'?",
+      "options": {
+        "A": "The Others",
+        "B": "The Sixth Sense",
+        "C": "Ghost",
+        "D": "Poltergeist"
+      },
+      "correct": "B",
+      "explanation": "Haley Joel Osment delivers this iconic line in M. Night Shyamalan's The Sixth Sense (1999)."
+    },
+    {
+      "id": "q033",
+      "text": "What is the name of Indiana Jones's signature weapon?",
+      "options": {
+        "A": "A machete",
+        "B": "A bullwhip",
+        "C": "A lasso",
+        "D": "A boomerang"
+      },
+      "correct": "B",
+      "explanation": "Indiana Jones is famous for using a bullwhip, along with his fedora hat."
+    },
+    {
+      "id": "q034",
+      "text": "Which film won Best Picture at the 2020 Academy Awards, making history as the first non-English language winner?",
+      "options": {
+        "A": "Roma",
+        "B": "Parasite",
+        "C": "Minari",
+        "D": "Drive My Car"
+      },
+      "correct": "B",
+      "explanation": "Bong Joon-ho's Parasite (South Korea) won Best Picture at the 92nd Academy Awards in 2020."
+    },
+    {
+      "id": "q035",
+      "text": "Who played Wolverine in the X-Men film series?",
+      "options": {
+        "A": "Chris Hemsworth",
+        "B": "Hugh Jackman",
+        "C": "Russell Crowe",
+        "D": "Liam Neeson"
+      },
+      "correct": "B",
+      "explanation": "Hugh Jackman played Wolverine/Logan across multiple X-Men films from 2000 to 2017."
+    },
+    {
+      "id": "q036",
+      "text": "In the 'Matrix' trilogy, what color pill does Neo take?",
+      "options": {
+        "A": "Blue",
+        "B": "Green",
+        "C": "Red",
+        "D": "White"
+      },
+      "correct": "C",
+      "explanation": "Neo chooses the red pill offered by Morpheus to learn the truth about the Matrix."
+    },
+    {
+      "id": "q037",
+      "text": "Which Alfred Hitchcock film features the iconic shower scene?",
+      "options": {
+        "A": "Vertigo",
+        "B": "Rear Window",
+        "C": "The Birds",
+        "D": "Psycho"
+      },
+      "correct": "D",
+      "explanation": "Psycho (1960) features the famous shower scene with Janet Leigh at the Bates Motel."
+    },
+    {
+      "id": "q038",
+      "text": "What was the first film in the Marvel Cinematic Universe?",
+      "options": {
+        "A": "The Avengers",
+        "B": "Captain America: The First Avenger",
+        "C": "Iron Man",
+        "D": "The Incredible Hulk"
+      },
+      "correct": "C",
+      "explanation": "Iron Man (2008), starring Robert Downey Jr., launched the MCU."
+    },
+    {
+      "id": "q039",
+      "text": "Who directed 'Jurassic Park' (1993)?",
+      "options": {
+        "A": "James Cameron",
+        "B": "Steven Spielberg",
+        "C": "Ridley Scott",
+        "D": "Ron Howard"
+      },
+      "correct": "B",
+      "explanation": "Steven Spielberg directed Jurassic Park, based on Michael Crichton's novel."
+    },
+    {
+      "id": "q040",
+      "text": "Which actor plays John Wick in the action film series?",
+      "options": {
+        "A": "Liam Neeson",
+        "B": "Jason Statham",
+        "C": "Keanu Reeves",
+        "D": "Denzel Washington"
+      },
+      "correct": "C",
+      "explanation": "Keanu Reeves stars as the legendary hitman John Wick in the franchise that began in 2014."
+    },
+    {
+      "id": "q041",
+      "text": "Which 1939 film features the line 'Frankly, my dear, I don't give a damn'?",
+      "options": {
+        "A": "Casablanca",
+        "B": "Gone with the Wind",
+        "C": "The Wizard of Oz",
+        "D": "Wuthering Heights"
+      },
+      "correct": "B",
+      "explanation": "Clark Gable as Rhett Butler delivers this famous line in Gone with the Wind."
+    },
+    {
+      "id": "q042",
+      "text": "What is the name of the fictional hotel in 'The Shining'?",
+      "options": {
+        "A": "The Bates Motel",
+        "B": "The Overlook Hotel",
+        "C": "The Cecil Hotel",
+        "D": "The Stanley Hotel"
+      },
+      "correct": "B",
+      "explanation": "The Overlook Hotel is the haunted Colorado hotel where Jack Torrance and his family stay."
+    },
+    {
+      "id": "q043",
+      "text": "Which animated film studio created 'Spirited Away'?",
+      "options": {
+        "A": "Toei Animation",
+        "B": "Studio Ghibli",
+        "C": "Madhouse",
+        "D": "Sunrise"
+      },
+      "correct": "B",
+      "explanation": "Studio Ghibli, founded by Hayao Miyazaki and Isao Takahata, produced Spirited Away (2001)."
+    },
+    {
+      "id": "q044",
+      "text": "Who directed 'Get Out' (2017)?",
+      "options": {
+        "A": "Spike Lee",
+        "B": "Jordan Peele",
+        "C": "Ari Aster",
+        "D": "Barry Jenkins"
+      },
+      "correct": "B",
+      "explanation": "Jordan Peele directed Get Out, winning the Academy Award for Best Original Screenplay."
+    },
+    {
+      "id": "q045",
+      "text": "In 'The Godfather', what is the name of the Corleone family's youngest son?",
+      "options": {
+        "A": "Sonny",
+        "B": "Fredo",
+        "C": "Michael",
+        "D": "Tom"
+      },
+      "correct": "C",
+      "explanation": "Michael Corleone, played by Al Pacino, is the youngest son who reluctantly takes over the family business."
+    },
+    {
+      "id": "q046",
+      "text": "Which film popularized the phrase 'May the Force be with you'?",
+      "options": {
+        "A": "Star Trek: The Motion Picture",
+        "B": "Star Wars: A New Hope",
+        "C": "Close Encounters of the Third Kind",
+        "D": "E.T. the Extra-Terrestrial"
+      },
+      "correct": "B",
+      "explanation": "The phrase became iconic from the original Star Wars film (1977)."
+    },
+    {
+      "id": "q047",
+      "text": "Who played the title character in 'Edward Scissorhands' (1990)?",
+      "options": {
+        "A": "Tim Roth",
+        "B": "Johnny Depp",
+        "C": "Robert Downey Jr.",
+        "D": "Crispin Glover"
+      },
+      "correct": "B",
+      "explanation": "Johnny Depp starred as Edward in Tim Burton's gothic fantasy film."
+    },
+    {
+      "id": "q048",
+      "text": "What type of animal is Simba in 'The Lion King'?",
+      "options": {
+        "A": "Tiger",
+        "B": "Cheetah",
+        "C": "Lion",
+        "D": "Leopard"
+      },
+      "correct": "C",
+      "explanation": "Simba is a lion and the main character in Disney's The Lion King (1994)."
+    },
+    {
+      "id": "q049",
+      "text": "Which director made 'Goodfellas' (1990) and 'The Departed' (2006)?",
+      "options": {
+        "A": "Francis Ford Coppola",
+        "B": "Brian De Palma",
+        "C": "Martin Scorsese",
+        "D": "Michael Mann"
+      },
+      "correct": "C",
+      "explanation": "Martin Scorsese directed both crime films. He won his first Best Director Oscar for The Departed."
+    },
+    {
+      "id": "q050",
+      "text": "What is the name of the hobbit played by Elijah Wood in 'The Lord of the Rings'?",
+      "options": {
+        "A": "Samwise Gamgee",
+        "B": "Bilbo Baggins",
+        "C": "Frodo Baggins",
+        "D": "Pippin Took"
+      },
+      "correct": "C",
+      "explanation": "Elijah Wood plays Frodo Baggins, the ring-bearer tasked with destroying the One Ring."
+    },
+    {
+      "id": "q051",
+      "text": "Which 2019 film directed by Bong Joon-ho follows a poor family infiltrating a wealthy household?",
+      "options": {
+        "A": "Shoplifters",
+        "B": "Parasite",
+        "C": "Snowpiercer",
+        "D": "Burning"
+      },
+      "correct": "B",
+      "explanation": "Parasite follows the Kim family as they scheme their way into employment with the wealthy Park family."
+    },
+    {
+      "id": "q052",
+      "text": "Who composed the music for most of Steven Spielberg's films, including 'Jaws' and 'E.T.'?",
+      "options": {
+        "A": "Hans Zimmer",
+        "B": "Danny Elfman",
+        "C": "John Williams",
+        "D": "Howard Shore"
+      },
+      "correct": "C",
+      "explanation": "John Williams has composed scores for nearly all of Spielberg's films over their decades-long collaboration."
+    },
+    {
+      "id": "q053",
+      "text": "In which city is 'Blade Runner' (1982) set?",
+      "options": {
+        "A": "New York",
+        "B": "Tokyo",
+        "C": "Los Angeles",
+        "D": "London"
+      },
+      "correct": "C",
+      "explanation": "Blade Runner is set in a dystopian Los Angeles in November 2019."
+    },
+    {
+      "id": "q054",
+      "text": "Which actress starred as Clarice Starling in 'The Silence of the Lambs' (1991)?",
+      "options": {
+        "A": "Sigourney Weaver",
+        "B": "Jodie Foster",
+        "C": "Julianne Moore",
+        "D": "Holly Hunter"
+      },
+      "correct": "B",
+      "explanation": "Jodie Foster won the Best Actress Oscar for her portrayal of FBI trainee Clarice Starling."
+    },
+    {
+      "id": "q055",
+      "text": "What is the subtitle of the second 'Godfather' film?",
+      "options": {
+        "A": "The Sicilian",
+        "B": "Part II",
+        "C": "The Empire",
+        "D": "The Last Don"
+      },
+      "correct": "B",
+      "explanation": "The Godfather Part II (1974) is one of the rare sequels to also win Best Picture."
+    },
+    {
+      "id": "q056",
+      "text": "Which actor has portrayed James Bond the most times in official films?",
+      "options": {
+        "A": "Sean Connery",
+        "B": "Roger Moore",
+        "C": "Daniel Craig",
+        "D": "Pierce Brosnan"
+      },
+      "correct": "B",
+      "explanation": "Roger Moore appeared as Bond in seven official films from 1973 to 1985."
+    },
+    {
+      "id": "q057",
+      "text": "What genre is 'The Exorcist' (1973)?",
+      "options": {
+        "A": "Thriller",
+        "B": "Science Fiction",
+        "C": "Horror",
+        "D": "Mystery"
+      },
+      "correct": "C",
+      "explanation": "The Exorcist is a landmark horror film about demonic possession, directed by William Friedkin."
+    },
+    {
+      "id": "q058",
+      "text": "Which Wes Anderson film features a hotel concierge named Gustave H.?",
+      "options": {
+        "A": "The Royal Tenenbaums",
+        "B": "Moonrise Kingdom",
+        "C": "The Grand Budapest Hotel",
+        "D": "The French Dispatch"
+      },
+      "correct": "C",
+      "explanation": "Ralph Fiennes plays M. Gustave H. in The Grand Budapest Hotel (2014)."
+    },
+    {
+      "id": "q059",
+      "text": "Who played the lead role in 'Gladiator' (2000)?",
+      "options": {
+        "A": "Gerard Butler",
+        "B": "Russell Crowe",
+        "C": "Brad Pitt",
+        "D": "Orlando Bloom"
+      },
+      "correct": "B",
+      "explanation": "Russell Crowe won the Best Actor Oscar for playing Maximus in Ridley Scott's Gladiator."
+    },
+    {
+      "id": "q060",
+      "text": "Which film is known for the twist that the main character was dead all along?",
+      "options": {
+        "A": "Fight Club",
+        "B": "Memento",
+        "C": "The Sixth Sense",
+        "D": "Shutter Island"
+      },
+      "correct": "C",
+      "explanation": "The Sixth Sense reveals that Bruce Willis's character, Dr. Malcolm Crowe, has been dead throughout the film."
+    },
+    {
+      "id": "q061",
+      "text": "In what decade was the Academy Awards ceremony first held?",
+      "options": {
+        "A": "1910s",
+        "B": "1920s",
+        "C": "1930s",
+        "D": "1940s"
+      },
+      "correct": "B",
+      "explanation": "The first Academy Awards ceremony was held on May 16, 1929, at the Hollywood Roosevelt Hotel."
+    },
+    {
+      "id": "q062",
+      "text": "Which Coen Brothers film features a character named Anton Chigurh?",
+      "options": {
+        "A": "Fargo",
+        "B": "No Country for Old Men",
+        "C": "The Big Lebowski",
+        "D": "True Grit"
+      },
+      "correct": "B",
+      "explanation": "Javier Bardem plays the menacing Anton Chigurh in No Country for Old Men (2007), winning Best Supporting Actor."
+    },
+    {
+      "id": "q063",
+      "text": "Which actress played Furiosa in 'Mad Max: Fury Road' (2015)?",
+      "options": {
+        "A": "Gal Gadot",
+        "B": "Charlize Theron",
+        "C": "Scarlett Johansson",
+        "D": "Emily Blunt"
+      },
+      "correct": "B",
+      "explanation": "Charlize Theron played Imperator Furiosa in George Miller's critically acclaimed Mad Max: Fury Road."
+    },
+    {
+      "id": "q064",
+      "text": "What is the name of the kingdom in Disney's 'Frozen'?",
+      "options": {
+        "A": "Corona",
+        "B": "Arendelle",
+        "C": "Agrabah",
+        "D": "Motunui"
+      },
+      "correct": "B",
+      "explanation": "Arendelle is the Scandinavian-inspired kingdom where Elsa and Anna live."
+    },
+    {
+      "id": "q065",
+      "text": "Who directed 'Apocalypse Now' (1979)?",
+      "options": {
+        "A": "Oliver Stone",
+        "B": "Stanley Kubrick",
+        "C": "Francis Ford Coppola",
+        "D": "Michael Cimino"
+      },
+      "correct": "C",
+      "explanation": "Francis Ford Coppola directed Apocalypse Now, loosely based on Joseph Conrad's Heart of Darkness."
+    },
+    {
+      "id": "q066",
+      "text": "Which film features a character saying 'You talking to me?'",
+      "options": {
+        "A": "Scarface",
+        "B": "Taxi Driver",
+        "C": "Raging Bull",
+        "D": "Goodfellas"
+      },
+      "correct": "B",
+      "explanation": "Robert De Niro improvised this famous mirror scene in Martin Scorsese's Taxi Driver (1976)."
+    },
+    {
+      "id": "q067",
+      "text": "What is the name of the planet where the Na'vi live in 'Avatar'?",
+      "options": {
+        "A": "Endor",
+        "B": "Pandora",
+        "C": "Naboo",
+        "D": "Arrakis"
+      },
+      "correct": "B",
+      "explanation": "Pandora is the lush, alien moon in James Cameron's Avatar (2009)."
+    },
+    {
+      "id": "q068",
+      "text": "Which 1999 film stars Keanu Reeves as a hacker who discovers reality is a simulation?",
+      "options": {
+        "A": "Dark City",
+        "B": "eXistenZ",
+        "C": "The Matrix",
+        "D": "The Thirteenth Floor"
+      },
+      "correct": "C",
+      "explanation": "The Matrix, directed by the Wachowskis, stars Reeves as Neo, who discovers the truth about the Matrix."
+    },
+    {
+      "id": "q069",
+      "text": "Who won the Best Director Oscar for 'Birdman' (2014)?",
+      "options": {
+        "A": "Richard Linklater",
+        "B": "Wes Anderson",
+        "C": "Alejandro Gonzalez Inarritu",
+        "D": "Damien Chazelle"
+      },
+      "correct": "C",
+      "explanation": "Alejandro Gonzalez Inarritu won Best Director and Best Picture for Birdman, filmed to appear as one continuous shot."
+    },
+    {
+      "id": "q070",
+      "text": "In which film does Morgan Freeman play a prison inmate named Red?",
+      "options": {
+        "A": "Se7en",
+        "B": "The Shawshank Redemption",
+        "C": "Million Dollar Baby",
+        "D": "Unforgiven"
+      },
+      "correct": "B",
+      "explanation": "Morgan Freeman plays Ellis Boyd 'Red' Redding in The Shawshank Redemption (1994)."
+    },
+    {
+      "id": "q071",
+      "text": "Which film franchise includes 'The Chamber of Secrets' and 'The Prisoner of Azkaban'?",
+      "options": {
+        "A": "The Lord of the Rings",
+        "B": "Narnia",
+        "C": "Harry Potter",
+        "D": "Percy Jackson"
+      },
+      "correct": "C",
+      "explanation": "These are the second and third films in the Harry Potter series based on J.K. Rowling's books."
+    },
+    {
+      "id": "q072",
+      "text": "Who directed 'Do the Right Thing' (1989)?",
+      "options": {
+        "A": "John Singleton",
+        "B": "Spike Lee",
+        "C": "Barry Jenkins",
+        "D": "Ryan Coogler"
+      },
+      "correct": "B",
+      "explanation": "Spike Lee wrote, directed, and starred in Do the Right Thing, set in a Brooklyn neighborhood."
+    },
+    {
+      "id": "q073",
+      "text": "What is Rosebud in 'Citizen Kane' (1941)?",
+      "options": {
+        "A": "A horse",
+        "B": "A painting",
+        "C": "A sled",
+        "D": "A boat"
+      },
+      "correct": "C",
+      "explanation": "Rosebud is revealed to be the name of Charles Foster Kane's childhood sled."
+    },
+    {
+      "id": "q074",
+      "text": "Which film won Leonardo DiCaprio his first Academy Award for Best Actor?",
+      "options": {
+        "A": "The Wolf of Wall Street",
+        "B": "The Revenant",
+        "C": "Inception",
+        "D": "Django Unchained"
+      },
+      "correct": "B",
+      "explanation": "DiCaprio won his first Best Actor Oscar for The Revenant (2015), directed by Alejandro Gonzalez Inarritu."
+    },
+    {
+      "id": "q075",
+      "text": "Which Hayao Miyazaki film features a young girl working in a bathhouse for spirits?",
+      "options": {
+        "A": "My Neighbor Totoro",
+        "B": "Princess Mononoke",
+        "C": "Spirited Away",
+        "D": "Howl's Moving Castle"
+      },
+      "correct": "C",
+      "explanation": "Spirited Away (2001) follows Chihiro as she works in Yubaba's bathhouse. It won the Best Animated Feature Oscar."
+    },
+    {
+      "id": "q076",
+      "text": "In 'Back to the Future', what type of car is the time machine?",
+      "options": {
+        "A": "Chevrolet Camaro",
+        "B": "Pontiac Firebird",
+        "C": "DeLorean DMC-12",
+        "D": "Ford Mustang"
+      },
+      "correct": "C",
+      "explanation": "Doc Brown's time machine is built from a DeLorean DMC-12, requiring 1.21 gigawatts of power."
+    },
+    {
+      "id": "q077",
+      "text": "Which film features the quote 'After all, tomorrow is another day'?",
+      "options": {
+        "A": "Casablanca",
+        "B": "Gone with the Wind",
+        "C": "Rebecca",
+        "D": "An Affair to Remember"
+      },
+      "correct": "B",
+      "explanation": "Scarlett O'Hara (Vivien Leigh) delivers this final line in Gone with the Wind (1939)."
+    },
+    {
+      "id": "q078",
+      "text": "Who directed 'Everything Everywhere All at Once' (2022)?",
+      "options": {
+        "A": "Taika Waititi",
+        "B": "Daniel Kwan and Daniel Scheinert",
+        "C": "Bong Joon-ho",
+        "D": "Denis Villeneuve"
+      },
+      "correct": "B",
+      "explanation": "The Daniels (Daniel Kwan and Daniel Scheinert) directed the film, which won seven Oscars including Best Picture."
+    },
+    {
+      "id": "q079",
+      "text": "What is the highest-grossing R-rated film of all time?",
+      "options": {
+        "A": "Deadpool",
+        "B": "The Matrix",
+        "C": "Joker",
+        "D": "Deadpool & Wolverine"
+      },
+      "correct": "D",
+      "explanation": "Deadpool & Wolverine (2024) became the highest-grossing R-rated film, surpassing Joker's record."
+    },
+    {
+      "id": "q080",
+      "text": "Which director is famous for appearing in cameos in his own films, including 'Psycho' and 'Rear Window'?",
+      "options": {
+        "A": "Billy Wilder",
+        "B": "Orson Welles",
+        "C": "Alfred Hitchcock",
+        "D": "Cecil B. DeMille"
+      },
+      "correct": "C",
+      "explanation": "Alfred Hitchcock made brief cameo appearances in 40 of his 52 surviving major films."
+    }
+  ]
+}

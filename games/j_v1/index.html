@@ -64,14 +64,6 @@
                 </div>
 
                 <div class="setup-group">
-                    <div class="control-group" style="justify-content: center; margin-bottom: 20px; background: rgba(255, 215, 0, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--accent);">
-                        <label class="switch">
-                            <input type="checkbox" id="revampToggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label" style="color: var(--accent); margin-left: 10px; font-weight: bold;">REVAMP MODE (Power-ups)</span>
-                    </div>
-
                     <label class="setup-label">Question Count</label>
                     <div class="radio-group" id="limitOptions">
                         <label class="radio-btn">
@@ -195,9 +187,6 @@
 
             <!-- Main Game Area -->
             <main class="game-board">
-                <!-- Buffs Indicator -->
-                <div id="buffsContainer" class="buffs-container hidden"></div>
-
                 <!-- Question Card -->
                 <div class="question-card">
                     <div class="question-meta">
@@ -206,28 +195,8 @@
                     </div>
                     <h2 id="questionText" class="question-text">Loading question...</h2>
                     <div id="mediaContainer" class="media-container hidden">
-                        <!-- Image, Video, or Audio will be injected here -->
+                        <!-- Image or Video will be injected here -->
                     </div>
-                </div>
-
-                <!-- Power-ups Bar -->
-                <div id="powerupBar" class="powerup-bar hidden">
-                    <button class="powerup-btn" data-type="fiftyFifty" title="50/50">
-                        <span class="icon">½</span>
-                        <span class="count">1</span>
-                    </button>
-                    <button class="powerup-btn" data-type="askAudience" title="Ask Audience">
-                        <span class="icon">👥</span>
-                        <span class="count">1</span>
-                    </button>
-                    <button class="powerup-btn" data-type="skip" title="Skip Question">
-                        <span class="icon">⏭️</span>
-                        <span class="count">1</span>
-                    </button>
-                    <button class="powerup-btn" data-type="redo" title="Second Chance">
-                        <span class="icon">🔄</span>
-                        <span class="count">1</span>
-                    </button>
                 </div>
 
                 <!-- Answer Grid -->

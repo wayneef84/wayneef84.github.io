@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "music_90s",
+    "title": "90s Pop Music",
+    "version": "1.0",
+    "difficulty": "Medium",
+    "tags": ["Music", "90s", "Grunge", "Pop", "Boy Bands"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "m90_01",
+      "text": "Which Nirvana song popularized grunge with its release in 1991?",
+      "options": {
+        "A": "Come As You Are",
+        "B": "Smells Like Teen Spirit",
+        "C": "Lithium",
+        "D": "In Bloom"
+      },
+      "correct": "B",
+      "explanation": "Kurt Cobain's anthem changed the musical landscape, shifting focus from hair metal to grunge."
+    },
+    {
+      "id": "m90_02",
+      "text": "Who sang 'I Will Always Love You' for 'The Bodyguard' soundtrack?",
+      "options": {
+        "A": "Celine Dion",
+        "B": "Mariah Carey",
+        "C": "Whitney Houston",
+        "D": "Toni Braxton"
+      },
+      "correct": "C",
+      "explanation": "Whitney Houston's cover of the Dolly Parton song spent 14 weeks at number one."
+    },
+    {
+      "id": "m90_03",
+      "text": "Which girl group popularized 'Girl Power'?",
+      "options": {
+        "A": "TLC",
+        "B": "Destiny's Child",
+        "C": "Spice Girls",
+        "D": "All Saints"
+      },
+      "correct": "C",
+      "explanation": "The Spice Girls (Scary, Sporty, Baby, Ginger, and Posh) took over the world in 1996."
+    },
+    {
+      "id": "m90_04",
+      "text": "Britney Spears debuted with which hit single in 1998?",
+      "options": {
+        "A": "Oops!... I Did It Again",
+        "B": "(You Drive Me) Crazy",
+        "C": "...Baby One More Time",
+        "D": "Toxic"
+      },
+      "correct": "C",
+      "explanation": "Her debut single shot to number one in every country it charted."
+    },
+    {
+      "id": "m90_05",
+      "text": "Who sang 'U Can't Touch This'?",
+      "options": {
+        "A": "Vanilla Ice",
+        "B": "MC Hammer",
+        "C": "Will Smith",
+        "D": "Sir Mix-a-Lot"
+      },
+      "correct": "B",
+      "explanation": "MC Hammer's hit sampled Rick James' 'Super Freak'."
+    },
+    {
+      "id": "m90_06",
+      "text": "Which boy band had hits like 'I Want It That Way'?",
+      "options": {
+        "A": "NSYNC",
+        "B": "Backstreet Boys",
+        "C": "98 Degrees",
+        "D": "Westlife"
+      },
+      "correct": "B",
+      "explanation": "The Backstreet Boys released 'I Want It That Way' in 1999."
+    },
+    {
+      "id": "m90_07",
+      "text": "Alanis Morissette's 1995 album is titled 'Jagged Little _____'.",
+      "options": {
+        "A": "Pill",
+        "B": "Heart",
+        "C": "Rock",
+        "D": "Love"
+      },
+      "correct": "A",
+      "explanation": "'Jagged Little Pill' is one of the best-selling albums of all time."
+    },
+    {
+      "id": "m90_08",
+      "text": "Who had a hit with 'Macarena'?",
+      "options": {
+        "A": "Ricky Martin",
+        "B": "Los del Río",
+        "C": "Lou Bega",
+        "D": "Enrique Iglesias"
+      },
+      "correct": "B",
+      "explanation": "Los del Río started a global dance craze in the mid-90s."
+    },
+    {
+      "id": "m90_09",
+      "text": "Which Oasis song contains the lyrics 'So Sally can wait'?",
+      "options": {
+        "A": "Wonderwall",
+        "B": "Champagne Supernova",
+        "C": "Don't Look Back in Anger",
+        "D": "Live Forever"
+      },
+      "correct": "C",
+      "explanation": "This britpop anthem was sung by Noel Gallagher."
+    },
+    {
+      "id": "m90_10",
+      "text": "Who sang 'My Heart Will Go On'?",
+      "options": {
+        "A": "Shania Twain",
+        "B": "Celine Dion",
+        "C": "Mariah Carey",
+        "D": "Faith Hill"
+      },
+      "correct": "B",
+      "explanation": "Celine Dion recorded the theme for the movie 'Titanic'."
+    },
+    {
+      "id": "m90_11",
+      "text": "Which rapper died in 1996?",
+      "options": {
+        "A": "The Notorious B.I.G.",
+        "B": "Tupac Shakur",
+        "C": "Eazy-E",
+        "D": "Big Pun"
+      },
+      "correct": "B",
+      "explanation": "Tupac was killed in a drive-by shooting in Las Vegas."
+    },
+    {
+      "id": "m90_12",
+      "text": "Radiohead released 'Creep' in which year?",
+      "options": {
+        "A": "1990",
+        "B": "1992",
+        "C": "1995",
+        "D": "1997"
+      },
+      "correct": "B",
+      "explanation": "It was their debut single, released in 1992."
+    },
+    {
+      "id": "m90_13",
+      "text": "Who is the lead singer of No Doubt?",
+      "options": {
+        "A": "Gwen Stefani",
+        "B": "Fergie",
+        "C": "Pink",
+        "D": "Avril Lavigne"
+      },
+      "correct": "A",
+      "explanation": "Gwen Stefani fronted the ska-punk band No Doubt before going solo."
+    },
+    {
+      "id": "m90_14",
+      "text": "The song 'Wannabe' tells you what?",
+      "options": {
+        "A": "How to dance",
+        "B": "What I really, really want",
+        "C": "Where the party is",
+        "D": "Why love is blind"
+      },
+      "correct": "B",
+      "explanation": "'I'll tell you what I want, what I really, really want!'"
+    },
+    {
+      "id": "m90_15",
+      "text": "Which Ricky Martin song kicked off the 'Latin Explosion' in 1999?",
+      "options": {
+        "A": "She Bangs",
+        "B": "Livin' la Vida Loca",
+        "C": "Maria",
+        "D": "Shake Your Bon-Bon"
+      },
+      "correct": "B",
+      "explanation": "Livin' la Vida Loca was a massive crossover hit."
+    }
+  ]
+}

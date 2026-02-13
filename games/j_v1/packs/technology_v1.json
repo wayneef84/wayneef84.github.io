@@ -1,0 +1,972 @@
+{
+  "meta": {
+    "id": "technology_001",
+    "title": "Technology & Computing",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Technology", "Computing", "Internet", "Programming"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What does HTML stand for?",
+      "options": {
+        "A": "Hyper Text Markup Language",
+        "B": "High Tech Modern Language",
+        "C": "Hyper Transfer Markup Language",
+        "D": "Home Tool Markup Language"
+      },
+      "correct": "A",
+      "explanation": "HTML stands for Hyper Text Markup Language, the standard language for creating web pages."
+    },
+    {
+      "id": "q002",
+      "text": "Who is considered the father of the World Wide Web?",
+      "options": {
+        "A": "Vint Cerf",
+        "B": "Tim Berners-Lee",
+        "C": "Bill Gates",
+        "D": "Steve Jobs"
+      },
+      "correct": "B",
+      "explanation": "Tim Berners-Lee invented the World Wide Web in 1989 while working at CERN."
+    },
+    {
+      "id": "q003",
+      "text": "Which programming language was created by Guido van Rossum in 1991?",
+      "options": {
+        "A": "Ruby",
+        "B": "Java",
+        "C": "Python",
+        "D": "Perl"
+      },
+      "correct": "C",
+      "explanation": "Python was created by Guido van Rossum and first released in 1991."
+    },
+    {
+      "id": "q004",
+      "text": "What year was the first iPhone released?",
+      "options": {
+        "A": "2005",
+        "B": "2006",
+        "C": "2007",
+        "D": "2008"
+      },
+      "correct": "C",
+      "explanation": "The first iPhone was released by Apple on June 29, 2007."
+    },
+    {
+      "id": "q005",
+      "text": "What does CPU stand for?",
+      "options": {
+        "A": "Central Processing Unit",
+        "B": "Computer Personal Unit",
+        "C": "Central Program Utility",
+        "D": "Core Processing Unit"
+      },
+      "correct": "A",
+      "explanation": "CPU stands for Central Processing Unit, the primary component that executes instructions in a computer."
+    },
+    {
+      "id": "q006",
+      "text": "Which company developed the Java programming language?",
+      "options": {
+        "A": "Microsoft",
+        "B": "IBM",
+        "C": "Sun Microsystems",
+        "D": "Apple"
+      },
+      "correct": "C",
+      "explanation": "Java was developed by James Gosling at Sun Microsystems and released in 1995."
+    },
+    {
+      "id": "q007",
+      "text": "What was the first commercially successful web browser?",
+      "options": {
+        "A": "Internet Explorer",
+        "B": "Mosaic",
+        "C": "Netscape Navigator",
+        "D": "Firefox"
+      },
+      "correct": "C",
+      "explanation": "Netscape Navigator, released in 1994, was the first commercially successful web browser."
+    },
+    {
+      "id": "q008",
+      "text": "What does RAM stand for?",
+      "options": {
+        "A": "Read Access Memory",
+        "B": "Random Access Memory",
+        "C": "Rapid Application Memory",
+        "D": "Run Access Mode"
+      },
+      "correct": "B",
+      "explanation": "RAM stands for Random Access Memory, a type of volatile computer memory."
+    },
+    {
+      "id": "q009",
+      "text": "Who co-founded Apple Computer with Steve Jobs?",
+      "options": {
+        "A": "Bill Gates",
+        "B": "Steve Wozniak",
+        "C": "Tim Cook",
+        "D": "John Sculley"
+      },
+      "correct": "B",
+      "explanation": "Steve Wozniak co-founded Apple Computer with Steve Jobs and Ronald Wayne in 1976."
+    },
+    {
+      "id": "q010",
+      "text": "What does the acronym SQL stand for?",
+      "options": {
+        "A": "Simple Query Language",
+        "B": "Structured Question Language",
+        "C": "Structured Query Language",
+        "D": "Standard Query Logic"
+      },
+      "correct": "C",
+      "explanation": "SQL stands for Structured Query Language, used for managing relational databases."
+    },
+    {
+      "id": "q011",
+      "text": "In what year was Facebook (now Meta) founded?",
+      "options": {
+        "A": "2002",
+        "B": "2004",
+        "C": "2006",
+        "D": "2008"
+      },
+      "correct": "B",
+      "explanation": "Facebook was founded by Mark Zuckerberg and others on February 4, 2004."
+    },
+    {
+      "id": "q012",
+      "text": "What is the name of the Linux kernel creator?",
+      "options": {
+        "A": "Richard Stallman",
+        "B": "Dennis Ritchie",
+        "C": "Linus Torvalds",
+        "D": "Ken Thompson"
+      },
+      "correct": "C",
+      "explanation": "Linus Torvalds created the Linux kernel in 1991 while a student at the University of Helsinki."
+    },
+    {
+      "id": "q013",
+      "text": "Which company manufactures the GPU line called GeForce?",
+      "options": {
+        "A": "AMD",
+        "B": "Intel",
+        "C": "NVIDIA",
+        "D": "Qualcomm"
+      },
+      "correct": "C",
+      "explanation": "NVIDIA manufactures the GeForce line of graphics processing units."
+    },
+    {
+      "id": "q014",
+      "text": "What does HTTP stand for?",
+      "options": {
+        "A": "Hyper Text Transfer Protocol",
+        "B": "High Tech Transfer Process",
+        "C": "Hyper Terminal Transfer Protocol",
+        "D": "Home Text Transfer Program"
+      },
+      "correct": "A",
+      "explanation": "HTTP stands for Hyper Text Transfer Protocol, the foundation of data communication on the web."
+    },
+    {
+      "id": "q015",
+      "text": "Who is known as the father of computer science?",
+      "options": {
+        "A": "Charles Babbage",
+        "B": "Alan Turing",
+        "C": "John von Neumann",
+        "D": "Ada Lovelace"
+      },
+      "correct": "B",
+      "explanation": "Alan Turing is widely considered the father of computer science and artificial intelligence."
+    },
+    {
+      "id": "q016",
+      "text": "What was the first search engine on the internet?",
+      "options": {
+        "A": "Google",
+        "B": "Yahoo",
+        "C": "Archie",
+        "D": "AltaVista"
+      },
+      "correct": "C",
+      "explanation": "Archie, created in 1990 by Alan Emtage, is considered the first internet search engine."
+    },
+    {
+      "id": "q017",
+      "text": "Which programming language is primarily used for iOS app development?",
+      "options": {
+        "A": "Kotlin",
+        "B": "Swift",
+        "C": "Dart",
+        "D": "Go"
+      },
+      "correct": "B",
+      "explanation": "Swift is Apple's programming language introduced in 2014 for iOS and macOS development."
+    },
+    {
+      "id": "q018",
+      "text": "What does VPN stand for?",
+      "options": {
+        "A": "Virtual Private Network",
+        "B": "Verified Public Network",
+        "C": "Virtual Protocol Node",
+        "D": "Visual Private Network"
+      },
+      "correct": "A",
+      "explanation": "VPN stands for Virtual Private Network, which encrypts internet connections for privacy."
+    },
+    {
+      "id": "q019",
+      "text": "What year was Google founded?",
+      "options": {
+        "A": "1996",
+        "B": "1998",
+        "C": "2000",
+        "D": "2002"
+      },
+      "correct": "B",
+      "explanation": "Google was founded by Larry Page and Sergey Brin on September 4, 1998."
+    },
+    {
+      "id": "q020",
+      "text": "Which of these is NOT an operating system?",
+      "options": {
+        "A": "Ubuntu",
+        "B": "macOS",
+        "C": "Oracle",
+        "D": "Windows"
+      },
+      "correct": "C",
+      "explanation": "Oracle is a database and cloud computing company, not an operating system."
+    },
+    {
+      "id": "q021",
+      "text": "What does the 'C' in CSS stand for?",
+      "options": {
+        "A": "Computer",
+        "B": "Cascading",
+        "C": "Creative",
+        "D": "Code"
+      },
+      "correct": "B",
+      "explanation": "CSS stands for Cascading Style Sheets, used to style HTML documents."
+    },
+    {
+      "id": "q022",
+      "text": "Who developed the C programming language?",
+      "options": {
+        "A": "Bjarne Stroustrup",
+        "B": "James Gosling",
+        "C": "Dennis Ritchie",
+        "D": "Ken Thompson"
+      },
+      "correct": "C",
+      "explanation": "Dennis Ritchie developed the C programming language at Bell Labs between 1969 and 1973."
+    },
+    {
+      "id": "q023",
+      "text": "What is the maximum number of characters in a standard tweet (as of X/Twitter's original format)?",
+      "options": {
+        "A": "120",
+        "B": "140",
+        "C": "160",
+        "D": "280"
+      },
+      "correct": "B",
+      "explanation": "Twitter originally had a 140-character limit per tweet, later expanded to 280 in 2017."
+    },
+    {
+      "id": "q024",
+      "text": "What technology does Bluetooth use to transmit data?",
+      "options": {
+        "A": "Infrared light",
+        "B": "Radio waves",
+        "C": "Microwaves",
+        "D": "Ultrasound"
+      },
+      "correct": "B",
+      "explanation": "Bluetooth uses short-range radio waves in the 2.4 GHz ISM band to transmit data."
+    },
+    {
+      "id": "q025",
+      "text": "What does GPU stand for?",
+      "options": {
+        "A": "General Processing Unit",
+        "B": "Graphics Processing Unit",
+        "C": "Global Performance Unit",
+        "D": "Graphics Program Utility"
+      },
+      "correct": "B",
+      "explanation": "GPU stands for Graphics Processing Unit, a specialized processor for rendering graphics."
+    },
+    {
+      "id": "q026",
+      "text": "Which company created the Android operating system?",
+      "options": {
+        "A": "Google",
+        "B": "Samsung",
+        "C": "Android Inc.",
+        "D": "Microsoft"
+      },
+      "correct": "C",
+      "explanation": "Android was originally created by Android Inc., founded by Andy Rubin. Google later acquired the company in 2005."
+    },
+    {
+      "id": "q027",
+      "text": "What is the name of the protocol used to send email?",
+      "options": {
+        "A": "FTP",
+        "B": "SMTP",
+        "C": "HTTP",
+        "D": "TCP"
+      },
+      "correct": "B",
+      "explanation": "SMTP (Simple Mail Transfer Protocol) is the standard protocol for sending email."
+    },
+    {
+      "id": "q028",
+      "text": "In binary, what is the decimal number 10?",
+      "options": {
+        "A": "1000",
+        "B": "1010",
+        "C": "1100",
+        "D": "1001"
+      },
+      "correct": "B",
+      "explanation": "The decimal number 10 is 1010 in binary (8+0+2+0)."
+    },
+    {
+      "id": "q029",
+      "text": "What does IoT stand for?",
+      "options": {
+        "A": "Internet of Things",
+        "B": "Integration of Technology",
+        "C": "Internal Operating Technology",
+        "D": "Interconnected Online Tools"
+      },
+      "correct": "A",
+      "explanation": "IoT stands for Internet of Things, referring to physical devices connected to the internet."
+    },
+    {
+      "id": "q030",
+      "text": "Which programming language was the first to be used on the web for client-side scripting?",
+      "options": {
+        "A": "Python",
+        "B": "Java",
+        "C": "JavaScript",
+        "D": "PHP"
+      },
+      "correct": "C",
+      "explanation": "JavaScript, created by Brendan Eich at Netscape in 1995, was the first client-side scripting language for the web."
+    },
+    {
+      "id": "q031",
+      "text": "What was IBM's first personal computer called?",
+      "options": {
+        "A": "IBM PC",
+        "B": "IBM Thinkpad",
+        "C": "IBM Mainframe",
+        "D": "IBM Aptiva"
+      },
+      "correct": "A",
+      "explanation": "The IBM PC (Model 5150), released in 1981, was IBM's first personal computer."
+    },
+    {
+      "id": "q032",
+      "text": "What type of attack floods a server with traffic to make it unavailable?",
+      "options": {
+        "A": "Phishing",
+        "B": "Man-in-the-middle",
+        "C": "DDoS",
+        "D": "SQL Injection"
+      },
+      "correct": "C",
+      "explanation": "A DDoS (Distributed Denial of Service) attack floods a server with traffic to overwhelm it."
+    },
+    {
+      "id": "q033",
+      "text": "What does SSD stand for in computing?",
+      "options": {
+        "A": "Solid State Drive",
+        "B": "Super Speed Disk",
+        "C": "System Storage Device",
+        "D": "Serial Signal Drive"
+      },
+      "correct": "A",
+      "explanation": "SSD stands for Solid State Drive, a storage device that uses flash memory instead of spinning disks."
+    },
+    {
+      "id": "q034",
+      "text": "Who founded Amazon?",
+      "options": {
+        "A": "Elon Musk",
+        "B": "Jeff Bezos",
+        "C": "Larry Ellison",
+        "D": "Peter Thiel"
+      },
+      "correct": "B",
+      "explanation": "Jeff Bezos founded Amazon in 1994, initially as an online bookstore."
+    },
+    {
+      "id": "q035",
+      "text": "What programming paradigm treats computation as the evaluation of mathematical functions?",
+      "options": {
+        "A": "Object-Oriented Programming",
+        "B": "Procedural Programming",
+        "C": "Functional Programming",
+        "D": "Event-Driven Programming"
+      },
+      "correct": "C",
+      "explanation": "Functional programming treats computation as evaluation of mathematical functions and avoids mutable state."
+    },
+    {
+      "id": "q036",
+      "text": "What does the term 'open source' mean?",
+      "options": {
+        "A": "Software that is free of charge",
+        "B": "Software whose source code is publicly available",
+        "C": "Software made by volunteers only",
+        "D": "Software with no copyright"
+      },
+      "correct": "B",
+      "explanation": "Open source refers to software whose source code is publicly available for anyone to view, modify, and distribute."
+    },
+    {
+      "id": "q037",
+      "text": "Which company acquired GitHub in 2018?",
+      "options": {
+        "A": "Google",
+        "B": "Amazon",
+        "C": "Microsoft",
+        "D": "Facebook"
+      },
+      "correct": "C",
+      "explanation": "Microsoft acquired GitHub in 2018 for approximately $7.5 billion."
+    },
+    {
+      "id": "q038",
+      "text": "What is phishing?",
+      "options": {
+        "A": "A method to speed up internet connections",
+        "B": "A fraudulent attempt to obtain sensitive information by disguising as a trustworthy entity",
+        "C": "A programming technique for data retrieval",
+        "D": "A type of firewall technology"
+      },
+      "correct": "B",
+      "explanation": "Phishing is a cyberattack where attackers impersonate legitimate entities to steal sensitive data."
+    },
+    {
+      "id": "q039",
+      "text": "What was the name of the first programmable general-purpose electronic computer?",
+      "options": {
+        "A": "UNIVAC",
+        "B": "ENIAC",
+        "C": "Colossus",
+        "D": "Z3"
+      },
+      "correct": "B",
+      "explanation": "ENIAC (Electronic Numerical Integrator and Computer), completed in 1945, was the first programmable general-purpose electronic computer."
+    },
+    {
+      "id": "q040",
+      "text": "What does API stand for?",
+      "options": {
+        "A": "Application Programming Interface",
+        "B": "Automated Process Integration",
+        "C": "Application Protocol Interface",
+        "D": "Advanced Programming Instruction"
+      },
+      "correct": "A",
+      "explanation": "API stands for Application Programming Interface, a set of rules for software components to communicate."
+    },
+    {
+      "id": "q041",
+      "text": "Which language is known as the backbone of the Unix operating system?",
+      "options": {
+        "A": "Fortran",
+        "B": "C",
+        "C": "Pascal",
+        "D": "COBOL"
+      },
+      "correct": "B",
+      "explanation": "The C programming language was developed alongside Unix, and Unix was largely rewritten in C in 1973."
+    },
+    {
+      "id": "q042",
+      "text": "What is the smallest unit of data in a computer?",
+      "options": {
+        "A": "Byte",
+        "B": "Bit",
+        "C": "Nibble",
+        "D": "Word"
+      },
+      "correct": "B",
+      "explanation": "A bit (binary digit) is the smallest unit of data, representing a single 0 or 1."
+    },
+    {
+      "id": "q043",
+      "text": "Which social media platform was launched first?",
+      "options": {
+        "A": "Twitter",
+        "B": "Facebook",
+        "C": "LinkedIn",
+        "D": "Instagram"
+      },
+      "correct": "C",
+      "explanation": "LinkedIn launched in May 2003, before Facebook (2004), Twitter (2006), and Instagram (2010)."
+    },
+    {
+      "id": "q044",
+      "text": "What does DNS stand for?",
+      "options": {
+        "A": "Digital Network Service",
+        "B": "Domain Name System",
+        "C": "Data Network Standard",
+        "D": "Dynamic Name Server"
+      },
+      "correct": "B",
+      "explanation": "DNS stands for Domain Name System, which translates domain names into IP addresses."
+    },
+    {
+      "id": "q045",
+      "text": "Who is credited with writing the first computer program?",
+      "options": {
+        "A": "Grace Hopper",
+        "B": "Alan Turing",
+        "C": "Ada Lovelace",
+        "D": "Charles Babbage"
+      },
+      "correct": "C",
+      "explanation": "Ada Lovelace is credited with writing the first algorithm intended for a machine, for Babbage's Analytical Engine in 1843."
+    },
+    {
+      "id": "q046",
+      "text": "What type of malware encrypts files and demands payment for their release?",
+      "options": {
+        "A": "Trojan",
+        "B": "Worm",
+        "C": "Ransomware",
+        "D": "Spyware"
+      },
+      "correct": "C",
+      "explanation": "Ransomware encrypts a victim's files and demands payment (ransom) for the decryption key."
+    },
+    {
+      "id": "q047",
+      "text": "What does the acronym LAN stand for?",
+      "options": {
+        "A": "Large Area Network",
+        "B": "Local Access Node",
+        "C": "Local Area Network",
+        "D": "Linked Array Network"
+      },
+      "correct": "C",
+      "explanation": "LAN stands for Local Area Network, a network covering a small geographic area like a building."
+    },
+    {
+      "id": "q048",
+      "text": "Which programming language is commonly used for data science and machine learning?",
+      "options": {
+        "A": "PHP",
+        "B": "Ruby",
+        "C": "Python",
+        "D": "Objective-C"
+      },
+      "correct": "C",
+      "explanation": "Python is the most popular language for data science and machine learning, with libraries like NumPy, Pandas, and TensorFlow."
+    },
+    {
+      "id": "q049",
+      "text": "What year was Wikipedia launched?",
+      "options": {
+        "A": "1999",
+        "B": "2001",
+        "C": "2003",
+        "D": "2005"
+      },
+      "correct": "B",
+      "explanation": "Wikipedia was launched on January 15, 2001 by Jimmy Wales and Larry Sanger."
+    },
+    {
+      "id": "q050",
+      "text": "What is the name of Google's AI system that defeated a world champion Go player?",
+      "options": {
+        "A": "Watson",
+        "B": "Deep Blue",
+        "C": "AlphaGo",
+        "D": "GPT"
+      },
+      "correct": "C",
+      "explanation": "AlphaGo, developed by DeepMind (a Google subsidiary), defeated Go champion Lee Sedol in 2016."
+    },
+    {
+      "id": "q051",
+      "text": "How many bytes are in a kilobyte (in the binary convention)?",
+      "options": {
+        "A": "1000",
+        "B": "1024",
+        "C": "512",
+        "D": "2048"
+      },
+      "correct": "B",
+      "explanation": "In the binary convention (kibibyte), a kilobyte is 1024 bytes (2 to the power of 10)."
+    },
+    {
+      "id": "q052",
+      "text": "Which company developed the first commercially available hard disk drive?",
+      "options": {
+        "A": "Seagate",
+        "B": "Western Digital",
+        "C": "IBM",
+        "D": "Toshiba"
+      },
+      "correct": "C",
+      "explanation": "IBM introduced the first commercial hard disk drive, the IBM 350 RAMAC, in 1956."
+    },
+    {
+      "id": "q053",
+      "text": "What does CSS Grid Layout provide that Flexbox does not?",
+      "options": {
+        "A": "Responsive design",
+        "B": "Two-dimensional layout control",
+        "C": "Centering elements",
+        "D": "Animation support"
+      },
+      "correct": "B",
+      "explanation": "CSS Grid provides two-dimensional layout (rows and columns simultaneously), while Flexbox is one-dimensional."
+    },
+    {
+      "id": "q054",
+      "text": "What was the first video ever uploaded to YouTube?",
+      "options": {
+        "A": "Charlie Bit My Finger",
+        "B": "Me at the zoo",
+        "C": "Evolution of Dance",
+        "D": "Lazy Sunday"
+      },
+      "correct": "B",
+      "explanation": "The first YouTube video, 'Me at the zoo,' was uploaded by co-founder Jawed Karim on April 23, 2005."
+    },
+    {
+      "id": "q055",
+      "text": "What programming concept allows a function to call itself?",
+      "options": {
+        "A": "Iteration",
+        "B": "Polymorphism",
+        "C": "Recursion",
+        "D": "Encapsulation"
+      },
+      "correct": "C",
+      "explanation": "Recursion is when a function calls itself to solve a problem by breaking it into smaller subproblems."
+    },
+    {
+      "id": "q056",
+      "text": "Which tech company's motto was formerly 'Don't be evil'?",
+      "options": {
+        "A": "Apple",
+        "B": "Microsoft",
+        "C": "Google",
+        "D": "Amazon"
+      },
+      "correct": "C",
+      "explanation": "Google's original corporate code of conduct included the motto 'Don't be evil.'"
+    },
+    {
+      "id": "q057",
+      "text": "What is the most widely used version control system?",
+      "options": {
+        "A": "SVN",
+        "B": "Mercurial",
+        "C": "Git",
+        "D": "CVS"
+      },
+      "correct": "C",
+      "explanation": "Git, created by Linus Torvalds in 2005, is the most widely used version control system in software development."
+    },
+    {
+      "id": "q058",
+      "text": "What does BIOS stand for?",
+      "options": {
+        "A": "Basic Input Output System",
+        "B": "Binary Integrated Operating System",
+        "C": "Built-In Operating Software",
+        "D": "Base Internal Operation System"
+      },
+      "correct": "A",
+      "explanation": "BIOS stands for Basic Input Output System, firmware used to initialize hardware during booting."
+    },
+    {
+      "id": "q059",
+      "text": "Which encryption standard is considered most secure for Wi-Fi networks?",
+      "options": {
+        "A": "WEP",
+        "B": "WPA",
+        "C": "WPA2",
+        "D": "WPA3"
+      },
+      "correct": "D",
+      "explanation": "WPA3 is the latest and most secure Wi-Fi encryption standard, introduced in 2018."
+    },
+    {
+      "id": "q060",
+      "text": "What does the term 'bug' in software originate from?",
+      "options": {
+        "A": "A coding error found by Alan Turing",
+        "B": "A moth found in a Harvard Mark II computer",
+        "C": "An error in the first ENIAC program",
+        "D": "A term coined by Bill Gates"
+      },
+      "correct": "B",
+      "explanation": "In 1947, Grace Hopper's team found an actual moth in the Harvard Mark II relay, popularizing the term 'bug.'"
+    },
+    {
+      "id": "q061",
+      "text": "Which company created the Rust programming language?",
+      "options": {
+        "A": "Google",
+        "B": "Microsoft",
+        "C": "Mozilla",
+        "D": "Apple"
+      },
+      "correct": "C",
+      "explanation": "Rust was originally developed by Graydon Hoare at Mozilla Research, first appearing in 2010."
+    },
+    {
+      "id": "q062",
+      "text": "What is Moore's Law?",
+      "options": {
+        "A": "Internet speed doubles every year",
+        "B": "The number of transistors on a chip doubles roughly every two years",
+        "C": "Computer prices halve every five years",
+        "D": "Battery life doubles every three years"
+      },
+      "correct": "B",
+      "explanation": "Moore's Law, observed by Intel co-founder Gordon Moore, predicts transistor density on chips doubles approximately every two years."
+    },
+    {
+      "id": "q063",
+      "text": "What was the first popular peer-to-peer file sharing service?",
+      "options": {
+        "A": "LimeWire",
+        "B": "Napster",
+        "C": "BitTorrent",
+        "D": "Kazaa"
+      },
+      "correct": "B",
+      "explanation": "Napster, launched in 1999, was the first widely popular peer-to-peer file sharing service."
+    },
+    {
+      "id": "q064",
+      "text": "What is a 'container' in software development?",
+      "options": {
+        "A": "A physical server rack",
+        "B": "A lightweight, portable unit that packages code and dependencies together",
+        "C": "A database storage format",
+        "D": "A type of programming variable"
+      },
+      "correct": "B",
+      "explanation": "A container is a lightweight package of code and its dependencies that can run consistently across environments. Docker popularized this concept."
+    },
+    {
+      "id": "q065",
+      "text": "What does USB stand for?",
+      "options": {
+        "A": "Universal Serial Bus",
+        "B": "Unified System Bridge",
+        "C": "Universal System Buffer",
+        "D": "United Serial Bridge"
+      },
+      "correct": "A",
+      "explanation": "USB stands for Universal Serial Bus, a standard connector for data transfer and power delivery."
+    },
+    {
+      "id": "q066",
+      "text": "Which AI research lab created ChatGPT?",
+      "options": {
+        "A": "DeepMind",
+        "B": "OpenAI",
+        "C": "Anthropic",
+        "D": "Meta AI"
+      },
+      "correct": "B",
+      "explanation": "ChatGPT was created by OpenAI and launched in November 2022."
+    },
+    {
+      "id": "q067",
+      "text": "What is the primary function of a firewall?",
+      "options": {
+        "A": "Speed up internet connections",
+        "B": "Monitor and filter network traffic based on security rules",
+        "C": "Encrypt files on a hard drive",
+        "D": "Manage email accounts"
+      },
+      "correct": "B",
+      "explanation": "A firewall monitors and controls incoming and outgoing network traffic based on predetermined security rules."
+    },
+    {
+      "id": "q068",
+      "text": "Which company originally developed the TypeScript programming language?",
+      "options": {
+        "A": "Google",
+        "B": "Facebook",
+        "C": "Microsoft",
+        "D": "Oracle"
+      },
+      "correct": "C",
+      "explanation": "TypeScript was developed by Microsoft, led by Anders Hejlsberg, and first released in 2012."
+    },
+    {
+      "id": "q069",
+      "text": "What is the primary difference between HTTP and HTTPS?",
+      "options": {
+        "A": "HTTPS is faster",
+        "B": "HTTPS uses encryption via TLS/SSL",
+        "C": "HTTP is newer",
+        "D": "HTTPS only works on mobile"
+      },
+      "correct": "B",
+      "explanation": "HTTPS adds a layer of encryption using TLS/SSL to secure data transmitted between browser and server."
+    },
+    {
+      "id": "q070",
+      "text": "What was the original name of Windows when it was first announced?",
+      "options": {
+        "A": "Interface Manager",
+        "B": "Visual DOS",
+        "C": "Microsoft View",
+        "D": "Desktop Manager"
+      },
+      "correct": "A",
+      "explanation": "Windows was originally named 'Interface Manager' before being renamed to Windows before its 1985 release."
+    },
+    {
+      "id": "q071",
+      "text": "What data structure uses FIFO (First In, First Out) ordering?",
+      "options": {
+        "A": "Stack",
+        "B": "Queue",
+        "C": "Tree",
+        "D": "Hash Map"
+      },
+      "correct": "B",
+      "explanation": "A queue follows FIFO ordering, where the first element added is the first one removed."
+    },
+    {
+      "id": "q072",
+      "text": "Which company developed the Kotlin programming language?",
+      "options": {
+        "A": "Google",
+        "B": "JetBrains",
+        "C": "Oracle",
+        "D": "Red Hat"
+      },
+      "correct": "B",
+      "explanation": "Kotlin was developed by JetBrains and first released in 2011. Google later adopted it as a preferred language for Android."
+    },
+    {
+      "id": "q073",
+      "text": "What was the first social media platform to reach one billion users?",
+      "options": {
+        "A": "YouTube",
+        "B": "Twitter",
+        "C": "Facebook",
+        "D": "WhatsApp"
+      },
+      "correct": "C",
+      "explanation": "Facebook reached one billion monthly active users in October 2012, the first social media platform to do so."
+    },
+    {
+      "id": "q074",
+      "text": "What does NFC stand for in mobile technology?",
+      "options": {
+        "A": "Near Field Communication",
+        "B": "Network File Control",
+        "C": "New Format Connection",
+        "D": "National Frequency Channel"
+      },
+      "correct": "A",
+      "explanation": "NFC stands for Near Field Communication, a short-range wireless technology used for contactless payments and data sharing."
+    },
+    {
+      "id": "q075",
+      "text": "Which IBM computer defeated chess world champion Garry Kasparov in 1997?",
+      "options": {
+        "A": "Watson",
+        "B": "AlphaGo",
+        "C": "Deep Blue",
+        "D": "HAL 9000"
+      },
+      "correct": "C",
+      "explanation": "IBM's Deep Blue defeated Garry Kasparov in a six-game match in May 1997."
+    },
+    {
+      "id": "q076",
+      "text": "What is a 'stack overflow' in programming?",
+      "options": {
+        "A": "A popular Q&A website for developers",
+        "B": "When a program's call stack exceeds its allocated memory",
+        "C": "A type of sorting algorithm",
+        "D": "When a database reaches capacity"
+      },
+      "correct": "B",
+      "explanation": "A stack overflow occurs when a program's call stack exceeds its memory limit, often caused by infinite recursion."
+    },
+    {
+      "id": "q077",
+      "text": "What does the 'P' in TCP/IP stand for?",
+      "options": {
+        "A": "Processing",
+        "B": "Protocol",
+        "C": "Program",
+        "D": "Port"
+      },
+      "correct": "B",
+      "explanation": "TCP/IP stands for Transmission Control Protocol / Internet Protocol."
+    },
+    {
+      "id": "q078",
+      "text": "Which company manufactured the first commercially available transistor radio?",
+      "options": {
+        "A": "Sony",
+        "B": "Texas Instruments",
+        "C": "Regency Electronics",
+        "D": "Philips"
+      },
+      "correct": "C",
+      "explanation": "The Regency TR-1, made by Regency Electronics using Texas Instruments transistors, was the first commercial transistor radio in 1954."
+    },
+    {
+      "id": "q079",
+      "text": "What is two-factor authentication (2FA)?",
+      "options": {
+        "A": "Using two different passwords",
+        "B": "A security method requiring two distinct forms of identification",
+        "C": "Logging in from two devices simultaneously",
+        "D": "Encrypting data twice"
+      },
+      "correct": "B",
+      "explanation": "Two-factor authentication requires two different types of verification (e.g., password plus a code sent to your phone)."
+    },
+    {
+      "id": "q080",
+      "text": "What programming language was originally called 'Oak'?",
+      "options": {
+        "A": "Python",
+        "B": "JavaScript",
+        "C": "Java",
+        "D": "Ruby"
+      },
+      "correct": "C",
+      "explanation": "Java was originally named Oak by James Gosling, after an oak tree outside his office. It was renamed to Java in 1995."
+    }
+  ]
+}

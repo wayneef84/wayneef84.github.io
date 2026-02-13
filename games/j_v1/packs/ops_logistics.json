@@ -1,0 +1,312 @@
+{
+  "meta": {
+    "id": "ops_logistics",
+    "title": "Ops, Logistics & Trade",
+    "version": "1.0",
+    "difficulty": "Hard",
+    "tags": ["Logistics", "Trade", "Supply Chain"],
+    "questionCount": 25
+  },
+  "questions": [
+    {
+      "id": "op01",
+      "text": "Which Incoterm places the maximum obligation on the seller?",
+      "options": {
+        "A": "EXW (Ex Works)",
+        "B": "FOB (Free on Board)",
+        "C": "DDP (Delivered Duty Paid)",
+        "D": "CIF (Cost, Insurance and Freight)"
+      },
+      "correct": "C",
+      "explanation": "DDP requires the seller to handle all costs and risks, including import duties and taxes, up to the buyer's premises."
+    },
+    {
+      "id": "op02",
+      "text": "Which Incoterm places the minimum obligation on the seller?",
+      "options": {
+        "A": "EXW (Ex Works)",
+        "B": "FCA (Free Carrier)",
+        "C": "CPT (Carriage Paid To)",
+        "D": "DAP (Delivered at Place)"
+      },
+      "correct": "A",
+      "explanation": "EXW means the seller simply makes the goods available at their own premises. The buyer handles everything else."
+    },
+    {
+      "id": "op03",
+      "text": "What is the primary function of a Bill of Lading (B/L)?",
+      "options": {
+        "A": "It is an invoice for the goods",
+        "B": "It acts as a receipt for cargo, a contract of carriage, and a document of title",
+        "C": "It certifies the origin of the goods",
+        "D": "It is a packing list"
+      },
+      "correct": "B",
+      "explanation": "The B/L is a crucial document serving these three functions in international shipping."
+    },
+    {
+      "id": "op04",
+      "text": "Who is responsible for paying import duties and taxes under the DDP term?",
+      "options": {
+        "A": "The Buyer",
+        "B": "The Seller",
+        "C": "The Freight Forwarder",
+        "D": "The Carrier"
+      },
+      "correct": "B",
+      "explanation": "Under DDP (Delivered Duty Paid), the seller bears all risks and costs, including import clearance."
+    },
+    {
+      "id": "op05",
+      "text": "In a Letter of Credit (L/C) transaction, who guarantees payment to the seller?",
+      "options": {
+        "A": "The Buyer",
+        "B": "The Seller's Bank",
+        "C": "The Buyer's Bank (Issuing Bank)",
+        "D": "The Carrier"
+      },
+      "correct": "C",
+      "explanation": "The Issuing Bank undertakes to pay the beneficiary (seller) provided compliant documents are presented."
+    },
+    {
+      "id": "op06",
+      "text": "What is a 'Commercial Invoice' primarily used for?",
+      "options": {
+        "A": "Tracking the shipment location",
+        "B": "Customs valuation and duty assessment",
+        "C": "Insurance claims",
+        "D": "Marketing"
+      },
+      "correct": "B",
+      "explanation": "Customs authorities use the Commercial Invoice to determine the value of goods for duties and taxes."
+    },
+    {
+      "id": "op07",
+      "text": "Which document certifies the country where the goods were manufactured?",
+      "options": {
+        "A": "Bill of Lading",
+        "B": "Packing List",
+        "C": "Certificate of Origin",
+        "D": "Insurance Certificate"
+      },
+      "correct": "C",
+      "explanation": "The Certificate of Origin is used to determine tariff rates and trade agreement eligibility."
+    },
+    {
+      "id": "op08",
+      "text": "Under the Incoterm FOB (Free on Board), when does risk transfer from seller to buyer?",
+      "options": {
+        "A": "When goods leave the factory",
+        "B": "When goods are delivered to the buyer's warehouse",
+        "C": "When goods are loaded on board the vessel at the port of shipment",
+        "D": "When goods arrive at the destination port"
+      },
+      "correct": "C",
+      "explanation": "Risk transfers when the goods are placed on board the vessel nominated by the buyer at the named port of shipment."
+    },
+    {
+      "id": "op09",
+      "text": "What does 'HS Code' stand for?",
+      "options": {
+        "A": "High Speed Code",
+        "B": "Harmonized System Code",
+        "C": "Health and Safety Code",
+        "D": "Home Security Code"
+      },
+      "correct": "B",
+      "explanation": "The Harmonized System is a standardized numerical method of classifying traded products."
+    },
+    {
+      "id": "op10",
+      "text": "A 'Third-Party Logistics Provider' (3PL) typically handles:",
+      "options": {
+        "A": "Manufacturing only",
+        "B": "Sales only",
+        "C": "Outsourced logistics services (warehousing, transportation)",
+        "D": "IT support"
+      },
+      "correct": "C",
+      "explanation": "3PLs provide outsourced logistics services for part or all of a company's supply chain management functions."
+    },
+    {
+      "id": "op11",
+      "text": "Which mode of transport is generally the slowest but most cost-effective for large volumes?",
+      "options": {
+        "A": "Air Freight",
+        "B": "Ocean Freight",
+        "C": "Trucking",
+        "D": "Rail"
+      },
+      "correct": "B",
+      "explanation": "Ocean freight is significantly cheaper per unit for bulk/heavy goods but has the longest transit time."
+    },
+    {
+      "id": "op12",
+      "text": "What is 'Demurrage'?",
+      "options": {
+        "A": "A discount for early payment",
+        "B": "A charge for detaining a container at the terminal beyond the free time",
+        "C": "A type of insurance",
+        "D": "A customs fee"
+      },
+      "correct": "B",
+      "explanation": "Demurrage is charged when a container is left at the port/terminal longer than the allowed free days."
+    },
+    {
+      "id": "op13",
+      "text": "What is 'Detention' in shipping?",
+      "options": {
+        "A": "When a ship is delayed at sea",
+        "B": "A charge for keeping a container outside the port/terminal beyond the free time",
+        "C": "Arresting a smuggler",
+        "D": "Holding goods for inspection"
+      },
+      "correct": "B",
+      "explanation": "Detention applies to the time the container is in the customer's possession outside the port."
+    },
+    {
+      "id": "op14",
+      "text": "Which organization manages the Incoterms rules?",
+      "options": {
+        "A": "United Nations",
+        "B": "World Trade Organization (WTO)",
+        "C": "International Chamber of Commerce (ICC)",
+        "D": "International Maritime Organization (IMO)"
+      },
+      "correct": "C",
+      "explanation": "The ICC publishes and maintains the Incoterms rules."
+    },
+    {
+      "id": "op15",
+      "text": "For air freight, 'Chargeable Weight' is calculated based on:",
+      "options": {
+        "A": "Actual weight only",
+        "B": "Volume weight only",
+        "C": "The higher of Actual Weight or Volumetric Weight",
+        "D": "The value of the goods"
+      },
+      "correct": "C",
+      "explanation": "Carriers charge based on whichever is greater: the gross weight or the volumetric weight (checks density)."
+    },
+    {
+      "id": "op16",
+      "text": "What is a 'Packing List' used for?",
+      "options": {
+        "A": "To list the price of each item",
+        "B": "To detail the contents, weight, and dimensions of each package",
+        "C": "To prove ownership",
+        "D": "To calculate taxes"
+      },
+      "correct": "B",
+      "explanation": "It helps customs and the receiver verify that the physical cargo matches the documentation."
+    },
+    {
+      "id": "op17",
+      "text": "Under CIP (Carriage and Insurance Paid To), the seller must provide insurance cover at what level?",
+      "options": {
+        "A": "Minimum cover (Clause C)",
+        "B": "Maximum cover (Clause A - All Risks)",
+        "C": "No insurance required",
+        "D": "Whatever they want"
+      },
+      "correct": "B",
+      "explanation": "In Incoterms 2020, CIP requires the seller to obtain insurance complying with Institute Cargo Clauses (A) - All Risks."
+    },
+    {
+      "id": "op18",
+      "text": "The 'Importer of Record' (IOR) is responsible for:",
+      "options": {
+        "A": "Driving the truck",
+        "B": "Loading the container",
+        "C": "Ensuring imported goods comply with local laws and paying duties",
+        "D": "Manufacturing the goods"
+      },
+      "correct": "C",
+      "explanation": "The IOR is the entity officially responsible for the import process and compliance."
+    },
+    {
+      "id": "op19",
+      "text": "Which document is required for hazardous materials (HazMat) shipping?",
+      "options": {
+        "A": "MSDS / SDS (Safety Data Sheet)",
+        "B": "Certificate of Origin",
+        "C": "Commercial Invoice",
+        "D": "Packing List"
+      },
+      "correct": "A",
+      "explanation": "An SDS provides information on the properties of hazardous chemicals and how to handle them safely."
+    },
+    {
+      "id": "op20",
+      "text": "What is 'Cross-Docking'?",
+      "options": {
+        "A": "Storing goods for a long time",
+        "B": "Unloading materials from an incoming truck and loading them directly onto outbound trucks with little to no storage in between",
+        "C": "Shipping across the ocean",
+        "D": "Returning damaged goods"
+      },
+      "correct": "B",
+      "explanation": "Cross-docking minimizes warehousing costs by moving goods quickly from receiving to shipping."
+    },
+    {
+      "id": "op21",
+      "text": "Which term describes logistics that handles returns, repairs, and recycling?",
+      "options": {
+        "A": "Forward Logistics",
+        "B": "Reverse Logistics",
+        "C": "Inbound Logistics",
+        "D": "Outbound Logistics"
+      },
+      "correct": "B",
+      "explanation": "Reverse Logistics deals with the flow of goods from the customer back to the seller/manufacturer."
+    },
+    {
+      "id": "op22",
+      "text": "A 'Bonded Warehouse' is a facility where:",
+      "options": {
+        "A": "Goods are manufactured",
+        "B": "Imported goods can be stored without paying duties until they are removed",
+        "C": "Only hazardous materials are stored",
+        "D": "Goods are sold to the public"
+      },
+      "correct": "B",
+      "explanation": "Bonded warehouses allow deferral of duty payment until goods enter the local market."
+    },
+    {
+      "id": "op23",
+      "text": "What does 'TEU' stand for in container shipping?",
+      "options": {
+        "A": "Total Estimated Units",
+        "B": "Twenty-Foot Equivalent Unit",
+        "C": "Tonnes per European Unit",
+        "D": "Tax Exempt Unit"
+      },
+      "correct": "B",
+      "explanation": "TEU is the standard unit for describing a ship's cargo carrying capacity (based on a 20ft container)."
+    },
+    {
+      "id": "op24",
+      "text": "What is a 'Letter of Indemnity' (LOI) often used for?",
+      "options": {
+        "A": "To request a refund",
+        "B": "To secure the release of cargo without an original Bill of Lading",
+        "C": "To complain about service",
+        "D": "To order more goods"
+      },
+      "correct": "B",
+      "explanation": "An LOI indemnifies the carrier against claims if they release cargo without the original B/L."
+    },
+    {
+      "id": "op25",
+      "text": "The 'Last Mile' in logistics refers to:",
+      "options": {
+        "A": "The first step of manufacturing",
+        "B": "The ocean voyage",
+        "C": "The final step of the delivery process from a distribution center to the end user",
+        "D": "The return journey"
+      },
+      "correct": "C",
+      "explanation": "Last Mile delivery is often the most expensive and complex part of the supply chain."
+    }
+  ]
+}

@@ -1,0 +1,572 @@
+{
+  "meta": {
+    "id": "videogames_001",
+    "title": "Video Games",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Video Games", "Gaming", "Consoles", "Esports"],
+    "questionCount": 80
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What year was the original Super Mario Bros. released for the NES in Japan?",
+      "options": { "A": "1983", "B": "1985", "C": "1987", "D": "1989" },
+      "correct": "B",
+      "explanation": "Super Mario Bros. was released on September 13, 1985 in Japan for the Famicom (NES)."
+    },
+    {
+      "id": "q002",
+      "text": "Which company developed the original Sonic the Hedgehog game?",
+      "options": { "A": "Nintendo", "B": "Capcom", "C": "Sega", "D": "Konami" },
+      "correct": "C",
+      "explanation": "Sonic the Hedgehog was developed by Sonic Team at Sega and released in 1991 for the Sega Genesis."
+    },
+    {
+      "id": "q003",
+      "text": "In The Legend of Zelda series, what is the name of Link's signature sword?",
+      "options": { "A": "Excalibur", "B": "Master Sword", "C": "Blade of Evil's Bane", "D": "Hylian Blade" },
+      "correct": "B",
+      "explanation": "The Master Sword, also known as the Blade of Evil's Bane, is Link's iconic weapon throughout the Zelda series."
+    },
+    {
+      "id": "q004",
+      "text": "What was the first commercially successful arcade video game?",
+      "options": { "A": "Space Invaders", "B": "Pac-Man", "C": "Pong", "D": "Asteroids" },
+      "correct": "C",
+      "explanation": "Pong, released by Atari in 1972, is widely considered the first commercially successful arcade video game."
+    },
+    {
+      "id": "q005",
+      "text": "Which game studio created Minecraft?",
+      "options": { "A": "Valve", "B": "Mojang", "C": "Epic Games", "D": "Blizzard" },
+      "correct": "B",
+      "explanation": "Minecraft was created by Markus 'Notch' Persson and developed by Mojang Studios, later acquired by Microsoft in 2014."
+    },
+    {
+      "id": "q006",
+      "text": "What is the best-selling video game console of all time as of 2024?",
+      "options": { "A": "Nintendo Wii", "B": "PlayStation 4", "C": "PlayStation 2", "D": "Nintendo DS" },
+      "correct": "C",
+      "explanation": "The PlayStation 2, with over 155 million units sold, remains the best-selling home console of all time."
+    },
+    {
+      "id": "q007",
+      "text": "In Fortnite, what is the name of the in-game currency used to purchase items?",
+      "options": { "A": "Robux", "B": "V-Bucks", "C": "Gold Bars", "D": "Credits" },
+      "correct": "B",
+      "explanation": "V-Bucks (Vindertech Bucks) are the premium currency in Fortnite used to buy cosmetic items and the Battle Pass."
+    },
+    {
+      "id": "q008",
+      "text": "Which classic arcade game features a yellow character eating dots in a maze?",
+      "options": { "A": "Galaga", "B": "Donkey Kong", "C": "Pac-Man", "D": "Frogger" },
+      "correct": "C",
+      "explanation": "Pac-Man, created by Namco and released in 1980, features the iconic yellow character navigating a maze of dots."
+    },
+    {
+      "id": "q009",
+      "text": "What is the name of Mario's brother in the Super Mario series?",
+      "options": { "A": "Wario", "B": "Toad", "C": "Luigi", "D": "Waluigi" },
+      "correct": "C",
+      "explanation": "Luigi is Mario's younger, taller twin brother and has been a staple character since the original Mario Bros. in 1983."
+    },
+    {
+      "id": "q010",
+      "text": "Which company developed Fortnite?",
+      "options": { "A": "Riot Games", "B": "Valve", "C": "Epic Games", "D": "Activision" },
+      "correct": "C",
+      "explanation": "Fortnite was developed by Epic Games and released in 2017, with its Battle Royale mode becoming a global phenomenon."
+    },
+    {
+      "id": "q011",
+      "text": "What material in Minecraft is needed to create a Nether Portal?",
+      "options": { "A": "Diamond", "B": "Obsidian", "C": "Netherite", "D": "Bedrock" },
+      "correct": "B",
+      "explanation": "A Nether Portal requires at least 10 blocks of Obsidian arranged in a rectangular frame and lit with flint and steel."
+    },
+    {
+      "id": "q012",
+      "text": "Which Nintendo console introduced motion controls as its primary input method?",
+      "options": { "A": "GameCube", "B": "Nintendo DS", "C": "Nintendo Wii", "D": "Nintendo 64" },
+      "correct": "C",
+      "explanation": "The Nintendo Wii, released in 2006, featured the Wii Remote with motion-sensing technology as its primary controller."
+    },
+    {
+      "id": "q013",
+      "text": "In which year was the original PlayStation released in Japan?",
+      "options": { "A": "1992", "B": "1994", "C": "1996", "D": "1998" },
+      "correct": "B",
+      "explanation": "The original PlayStation was released in Japan on December 3, 1994 by Sony Computer Entertainment."
+    },
+    {
+      "id": "q014",
+      "text": "What is the name of the main antagonist in the Legend of Zelda series?",
+      "options": { "A": "Bowser", "B": "Sephiroth", "C": "Ganondorf", "D": "Ridley" },
+      "correct": "C",
+      "explanation": "Ganondorf, also known as Ganon, is the primary recurring villain in The Legend of Zelda series."
+    },
+    {
+      "id": "q015",
+      "text": "Which game is known for the phrase 'The cake is a lie'?",
+      "options": { "A": "Half-Life 2", "B": "Portal", "C": "BioShock", "D": "Team Fortress 2" },
+      "correct": "B",
+      "explanation": "The phrase 'The cake is a lie' became a famous meme originating from Valve's Portal, released in 2007."
+    },
+    {
+      "id": "q016",
+      "text": "What is the rarest ore in standard Minecraft Survival mode?",
+      "options": { "A": "Diamond", "B": "Emerald", "C": "Ancient Debris", "D": "Lapis Lazuli" },
+      "correct": "C",
+      "explanation": "Ancient Debris, found in the Nether, is the rarest ore in Minecraft and is used to craft Netherite equipment."
+    },
+    {
+      "id": "q017",
+      "text": "Which esports game features champions like Jinx, Yasuo, and Ahri?",
+      "options": { "A": "Dota 2", "B": "League of Legends", "C": "Overwatch", "D": "Smite" },
+      "correct": "B",
+      "explanation": "Jinx, Yasuo, and Ahri are all playable champions in League of Legends, developed by Riot Games."
+    },
+    {
+      "id": "q018",
+      "text": "What was the name of the first Xbox console?",
+      "options": { "A": "Xbox 360", "B": "Xbox One", "C": "Xbox", "D": "Xbox Series X" },
+      "correct": "C",
+      "explanation": "The original Xbox was released by Microsoft in November 2001, marking Microsoft's entry into the console market."
+    },
+    {
+      "id": "q019",
+      "text": "Which indie game features a small knight exploring the underground kingdom of Hallownest?",
+      "options": { "A": "Celeste", "B": "Hollow Knight", "C": "Dead Cells", "D": "Shovel Knight" },
+      "correct": "B",
+      "explanation": "Hollow Knight, developed by Team Cherry, is set in the underground kingdom of Hallownest and was released in 2017."
+    },
+    {
+      "id": "q020",
+      "text": "What is the name of the princess Mario typically rescues?",
+      "options": { "A": "Princess Daisy", "B": "Princess Rosalina", "C": "Princess Zelda", "D": "Princess Peach" },
+      "correct": "D",
+      "explanation": "Princess Peach (originally called Princess Toadstool in Western releases) is the ruler of the Mushroom Kingdom."
+    },
+    {
+      "id": "q021",
+      "text": "Which game developer is known for the Dark Souls series?",
+      "options": { "A": "Capcom", "B": "FromSoftware", "C": "Square Enix", "D": "Konami" },
+      "correct": "B",
+      "explanation": "FromSoftware, led by director Hidetaka Miyazaki, developed the Dark Souls series and popularized the 'Soulslike' genre."
+    },
+    {
+      "id": "q022",
+      "text": "In which game do players fight to be the last one standing on an ever-shrinking island?",
+      "options": { "A": "Call of Duty: Warzone", "B": "Fortnite Battle Royale", "C": "Apex Legends", "D": "All of the above" },
+      "correct": "D",
+      "explanation": "All three games are battle royale titles where players compete on shrinking maps to be the last player or team standing."
+    },
+    {
+      "id": "q023",
+      "text": "What year did the Nintendo Entertainment System (NES) launch in North America?",
+      "options": { "A": "1983", "B": "1985", "C": "1987", "D": "1989" },
+      "correct": "B",
+      "explanation": "The NES launched in North America in October 1985, helping to revive the video game industry after the 1983 crash."
+    },
+    {
+      "id": "q024",
+      "text": "Which game features the fictional city of Los Santos?",
+      "options": { "A": "Saints Row", "B": "Sleeping Dogs", "C": "Grand Theft Auto V", "D": "Watch Dogs" },
+      "correct": "C",
+      "explanation": "Los Santos is the primary setting of Grand Theft Auto V, inspired by the real city of Los Angeles."
+    },
+    {
+      "id": "q025",
+      "text": "What is the highest-grossing video game franchise of all time?",
+      "options": { "A": "Super Mario", "B": "Pokemon", "C": "Call of Duty", "D": "Grand Theft Auto" },
+      "correct": "B",
+      "explanation": "The Pokemon franchise, including games, merchandise, cards, and media, is the highest-grossing entertainment franchise ever."
+    },
+    {
+      "id": "q026",
+      "text": "Which classic game requires players to arrange falling blocks called Tetrominoes?",
+      "options": { "A": "Dr. Mario", "B": "Columns", "C": "Tetris", "D": "Puyo Puyo" },
+      "correct": "C",
+      "explanation": "Tetris was created by Soviet software engineer Alexey Pajitnov in 1985 and features seven different Tetromino shapes."
+    },
+    {
+      "id": "q027",
+      "text": "In Minecraft, what creature explodes when it gets close to the player?",
+      "options": { "A": "Zombie", "B": "Skeleton", "C": "Creeper", "D": "Enderman" },
+      "correct": "C",
+      "explanation": "The Creeper is an iconic Minecraft mob that silently approaches players and explodes, destroying blocks in the area."
+    },
+    {
+      "id": "q028",
+      "text": "Which company created the Game Boy?",
+      "options": { "A": "Sega", "B": "Sony", "C": "Nintendo", "D": "Atari" },
+      "correct": "C",
+      "explanation": "Nintendo released the Game Boy in 1989. Designed by Gunpei Yokoi, it became one of the most successful handhelds ever."
+    },
+    {
+      "id": "q029",
+      "text": "What is the name of the protagonist in the Halo series?",
+      "options": { "A": "Marcus Fenix", "B": "Commander Shepard", "C": "Master Chief", "D": "Doomguy" },
+      "correct": "C",
+      "explanation": "Master Chief, also known as John-117, is the supersoldier protagonist of the Halo franchise developed by Bungie and later 343 Industries."
+    },
+    {
+      "id": "q030",
+      "text": "Which indie game features a mountain-climbing platformer with themes of anxiety and self-doubt?",
+      "options": { "A": "Cuphead", "B": "Celeste", "C": "Hades", "D": "Undertale" },
+      "correct": "B",
+      "explanation": "Celeste, developed by Maddy Makes Games, follows Madeline as she climbs Celeste Mountain while dealing with mental health themes."
+    },
+    {
+      "id": "q031",
+      "text": "What does 'NPC' stand for in gaming terminology?",
+      "options": { "A": "New Player Character", "B": "Non-Playable Content", "C": "Non-Player Character", "D": "Narrative Plot Character" },
+      "correct": "C",
+      "explanation": "NPC stands for Non-Player Character, referring to any character in a game not controlled by a human player."
+    },
+    {
+      "id": "q032",
+      "text": "Which game studio developed The Witcher 3: Wild Hunt?",
+      "options": { "A": "BioWare", "B": "Bethesda", "C": "CD Projekt Red", "D": "Obsidian" },
+      "correct": "C",
+      "explanation": "CD Projekt Red, a Polish game studio, developed The Witcher 3: Wild Hunt, released in 2015 to critical acclaim."
+    },
+    {
+      "id": "q033",
+      "text": "What is the name of the battle royale mode in Call of Duty?",
+      "options": { "A": "Blackout", "B": "Warzone", "C": "Firestorm", "D": "Ground War" },
+      "correct": "B",
+      "explanation": "Call of Duty: Warzone is the free-to-play battle royale mode, first released in March 2020."
+    },
+    {
+      "id": "q034",
+      "text": "Which console launched with the game Halo: Combat Evolved?",
+      "options": { "A": "Xbox 360", "B": "PlayStation 2", "C": "Xbox", "D": "Dreamcast" },
+      "correct": "C",
+      "explanation": "Halo: Combat Evolved was a launch title for the original Xbox in November 2001 and was critical to the console's success."
+    },
+    {
+      "id": "q035",
+      "text": "In Super Smash Bros., which character is known as the 'King of Dreamland'?",
+      "options": { "A": "Kirby", "B": "King Dedede", "C": "Meta Knight", "D": "Jigglypuff" },
+      "correct": "B",
+      "explanation": "King Dedede is the self-proclaimed King of Dream Land in the Kirby series and a fighter in Super Smash Bros."
+    },
+    {
+      "id": "q036",
+      "text": "Which game popularized the 'loot box' controversy in 2017?",
+      "options": { "A": "Overwatch", "B": "Star Wars Battlefront II", "C": "FIFA 18", "D": "Counter-Strike: GO" },
+      "correct": "B",
+      "explanation": "Star Wars Battlefront II's pay-to-win loot box system sparked massive backlash in 2017 and led to industry-wide scrutiny."
+    },
+    {
+      "id": "q037",
+      "text": "What is the final boss in standard Minecraft Survival mode?",
+      "options": { "A": "The Wither", "B": "The Ender Dragon", "C": "The Elder Guardian", "D": "The Warden" },
+      "correct": "B",
+      "explanation": "The Ender Dragon is the main boss of Minecraft, found in The End dimension, and defeating it rolls the game's credits."
+    },
+    {
+      "id": "q038",
+      "text": "Which Pokemon was the mascot of the Pokemon franchise?",
+      "options": { "A": "Charizard", "B": "Eevee", "C": "Pikachu", "D": "Mewtwo" },
+      "correct": "C",
+      "explanation": "Pikachu has been the official mascot of the Pokemon franchise since the anime series began in 1997."
+    },
+    {
+      "id": "q039",
+      "text": "What is the name of Valve's digital game distribution platform?",
+      "options": { "A": "Origin", "B": "Steam", "C": "Epic Games Store", "D": "GOG" },
+      "correct": "B",
+      "explanation": "Steam, launched by Valve in 2003, is the largest digital distribution platform for PC gaming."
+    },
+    {
+      "id": "q040",
+      "text": "Which game introduced the concept of a 'Battle Pass' that became an industry standard?",
+      "options": { "A": "Fortnite", "B": "Dota 2", "C": "PUBG", "D": "Apex Legends" },
+      "correct": "B",
+      "explanation": "Dota 2 introduced the 'Compendium' (later called Battle Pass) in 2013 for The International tournament, predating Fortnite's version."
+    },
+    {
+      "id": "q041",
+      "text": "What was the Sega Genesis known as in Japan?",
+      "options": { "A": "Sega Saturn", "B": "Mega Drive", "C": "Sega Master System", "D": "Sega Mark III" },
+      "correct": "B",
+      "explanation": "The Sega Genesis was called the Mega Drive in Japan and most regions outside North America."
+    },
+    {
+      "id": "q042",
+      "text": "Which game features agents like Jett, Sage, and Phoenix?",
+      "options": { "A": "Overwatch", "B": "Apex Legends", "C": "Valorant", "D": "Rainbow Six Siege" },
+      "correct": "C",
+      "explanation": "Valorant, developed by Riot Games and released in 2020, features agents with unique abilities in a tactical shooter format."
+    },
+    {
+      "id": "q043",
+      "text": "Who is the creator of the Metal Gear Solid series?",
+      "options": { "A": "Shigeru Miyamoto", "B": "Hideo Kojima", "C": "Yu Suzuki", "D": "Shinji Mikami" },
+      "correct": "B",
+      "explanation": "Hideo Kojima created the Metal Gear series and directed the Metal Gear Solid games at Konami before founding Kojima Productions."
+    },
+    {
+      "id": "q044",
+      "text": "What year did the Nintendo Switch launch?",
+      "options": { "A": "2015", "B": "2016", "C": "2017", "D": "2018" },
+      "correct": "C",
+      "explanation": "The Nintendo Switch was released worldwide on March 3, 2017, featuring both handheld and docked TV modes."
+    },
+    {
+      "id": "q045",
+      "text": "In Among Us, what are the impostors trying to do?",
+      "options": { "A": "Complete tasks", "B": "Repair the ship", "C": "Eliminate crewmates", "D": "Find the traitor" },
+      "correct": "C",
+      "explanation": "In Among Us, impostors secretly sabotage and eliminate crewmates while trying to avoid being identified and ejected."
+    },
+    {
+      "id": "q046",
+      "text": "Which game studio is known for creating The Elder Scrolls and Fallout series?",
+      "options": { "A": "BioWare", "B": "Obsidian Entertainment", "C": "Bethesda Game Studios", "D": "Insomniac Games" },
+      "correct": "C",
+      "explanation": "Bethesda Game Studios developed The Elder Scrolls series (including Skyrim) and Fallout 3, 4, and 76."
+    },
+    {
+      "id": "q047",
+      "text": "What is the name of the green-clad protagonist in The Legend of Zelda?",
+      "options": { "A": "Zelda", "B": "Link", "C": "Ganon", "D": "Epona" },
+      "correct": "B",
+      "explanation": "Link is the protagonist of The Legend of Zelda series, often mistakenly called Zelda by those unfamiliar with the games."
+    },
+    {
+      "id": "q048",
+      "text": "Which esports tournament has the largest prize pool funded by the community?",
+      "options": { "A": "League of Legends Worlds", "B": "The Fortnite World Cup", "C": "The International (Dota 2)", "D": "CS:GO Major" },
+      "correct": "C",
+      "explanation": "The International, Dota 2's premier tournament, has featured record-breaking community-funded prize pools exceeding $40 million."
+    },
+    {
+      "id": "q049",
+      "text": "What was the first game in the Final Fantasy series originally designed to be?",
+      "options": { "A": "A racing game", "B": "The creator's final game", "C": "A sequel to Dragon Quest", "D": "An arcade title" },
+      "correct": "B",
+      "explanation": "Final Fantasy was named because creator Hironobu Sakaguchi considered it his last game before leaving the industry; its success saved Square."
+    },
+    {
+      "id": "q050",
+      "text": "Which handheld console introduced dual screens, with one being a touchscreen?",
+      "options": { "A": "Game Boy Advance SP", "B": "PlayStation Vita", "C": "Nintendo DS", "D": "Sega Game Gear" },
+      "correct": "C",
+      "explanation": "The Nintendo DS (Dual Screen), released in 2004, featured two screens with the bottom one being a touchscreen."
+    },
+    {
+      "id": "q051",
+      "text": "In Street Fighter II, what is the name of the fireball attack performed by Ryu?",
+      "options": { "A": "Shoryuken", "B": "Hadouken", "C": "Tatsumaki", "D": "Kamehameha" },
+      "correct": "B",
+      "explanation": "The Hadouken (wave motion fist) is Ryu's iconic fireball projectile attack in the Street Fighter series."
+    },
+    {
+      "id": "q052",
+      "text": "Which company acquired Activision Blizzard in 2023?",
+      "options": { "A": "Sony", "B": "Tencent", "C": "Microsoft", "D": "Amazon" },
+      "correct": "C",
+      "explanation": "Microsoft completed its acquisition of Activision Blizzard in October 2023 for approximately $69 billion."
+    },
+    {
+      "id": "q053",
+      "text": "What is the name of the blocky building game created by the Roblox Corporation?",
+      "options": { "A": "Minecraft", "B": "Roblox", "C": "Terraria", "D": "LittleBigPlanet" },
+      "correct": "B",
+      "explanation": "Roblox is a platform where users can create and play games made by other users, launched in 2006 by Roblox Corporation."
+    },
+    {
+      "id": "q054",
+      "text": "Which game is credited with starting the modern battle royale genre?",
+      "options": { "A": "Fortnite", "B": "H1Z1", "C": "PlayerUnknown's Battlegrounds (PUBG)", "D": "Minecraft Hunger Games" },
+      "correct": "C",
+      "explanation": "While earlier games had similar concepts, PUBG (2017) by Brendan 'PlayerUnknown' Greene is credited with popularizing the standalone battle royale genre."
+    },
+    {
+      "id": "q055",
+      "text": "What is the name of the protagonist in the God of War series?",
+      "options": { "A": "Ares", "B": "Perseus", "C": "Kratos", "D": "Hercules" },
+      "correct": "C",
+      "explanation": "Kratos is the Spartan warrior protagonist of the God of War series, created by Santa Monica Studio."
+    },
+    {
+      "id": "q056",
+      "text": "Which 1993 game is considered the grandfather of first-person shooters?",
+      "options": { "A": "Quake", "B": "Doom", "C": "Wolfenstein 3D", "D": "Half-Life" },
+      "correct": "B",
+      "explanation": "While Wolfenstein 3D came first, Doom (1993) by id Software is widely credited with popularizing and defining the FPS genre."
+    },
+    {
+      "id": "q057",
+      "text": "In Minecraft, what do you need to tame a wolf?",
+      "options": { "A": "Raw beef", "B": "Bone", "C": "Fish", "D": "Wheat" },
+      "correct": "B",
+      "explanation": "Players can tame wolves in Minecraft by feeding them bones, which have a chance to turn the wolf into a pet dog."
+    },
+    {
+      "id": "q058",
+      "text": "Which indie game lets you befriend monsters instead of fighting them?",
+      "options": { "A": "Hollow Knight", "B": "Undertale", "C": "Shovel Knight", "D": "Stardew Valley" },
+      "correct": "B",
+      "explanation": "Undertale, created by Toby Fox in 2015, allows players to complete the entire game without killing any enemies through its mercy system."
+    },
+    {
+      "id": "q059",
+      "text": "What gaming peripheral did Nintendo release for the Wii that tracked body motion?",
+      "options": { "A": "Wii Balance Board", "B": "Wii Zapper", "C": "Wii MotionPlus", "D": "Wii Speak" },
+      "correct": "A",
+      "explanation": "The Wii Balance Board, released with Wii Fit in 2007, tracked the player's balance and body weight for fitness games."
+    },
+    {
+      "id": "q060",
+      "text": "Which game features the phrase 'War. War never changes.'?",
+      "options": { "A": "Call of Duty", "B": "Metal Gear Solid", "C": "Fallout", "D": "Battlefield" },
+      "correct": "C",
+      "explanation": "The phrase 'War. War never changes.' is the iconic opening narration of the Fallout series, first used in Fallout (1997)."
+    },
+    {
+      "id": "q061",
+      "text": "What is the name of the competitive Pokemon battle format used in official tournaments?",
+      "options": { "A": "Singles", "B": "VGC (Video Game Championships)", "C": "Ranked Mode", "D": "Battle Stadium" },
+      "correct": "B",
+      "explanation": "VGC (Video Game Championships) is the official competitive Pokemon format, using double battles with specific rulesets."
+    },
+    {
+      "id": "q062",
+      "text": "Which game studio developed Stardew Valley?",
+      "options": { "A": "Re-Logic", "B": "Supergiant Games", "C": "ConcernedApe (Eric Barone)", "D": "Team Cherry" },
+      "correct": "C",
+      "explanation": "Stardew Valley was entirely developed by one person, Eric Barone (ConcernedApe), over four years, released in 2016."
+    },
+    {
+      "id": "q063",
+      "text": "What was the first home console to use a CD-ROM instead of cartridges?",
+      "options": { "A": "Sega Saturn", "B": "PlayStation", "C": "TurboGrafx-CD", "D": "3DO" },
+      "correct": "C",
+      "explanation": "The TurboGrafx-CD (PC Engine CD-ROM), released in 1988, was the first home console to use CD-ROM as its primary media."
+    },
+    {
+      "id": "q064",
+      "text": "In the game Counter-Strike, what side plants the bomb?",
+      "options": { "A": "Counter-Terrorists", "B": "Terrorists", "C": "Both sides", "D": "Spectators" },
+      "correct": "B",
+      "explanation": "In Counter-Strike, the Terrorist side is tasked with planting the bomb at designated sites, while Counter-Terrorists must defuse it."
+    },
+    {
+      "id": "q065",
+      "text": "Which Nintendo character is a bounty hunter in a power suit?",
+      "options": { "A": "Samus Aran", "B": "Captain Falcon", "C": "Fox McCloud", "D": "Mega Man" },
+      "correct": "A",
+      "explanation": "Samus Aran is the protagonist of the Metroid series, a bounty hunter wearing an iconic Power Suit created by the Chozo."
+    },
+    {
+      "id": "q066",
+      "text": "What does 'FPS' stand for in gaming?",
+      "options": { "A": "Fast-Paced Simulation", "B": "First-Person Shooter / Frames Per Second", "C": "Final Player Standing", "D": "Free Play System" },
+      "correct": "B",
+      "explanation": "FPS has two common meanings in gaming: First-Person Shooter (a genre) and Frames Per Second (a performance metric)."
+    },
+    {
+      "id": "q067",
+      "text": "Which game was the launch title that helped sell millions of Nintendo 64 consoles?",
+      "options": { "A": "GoldenEye 007", "B": "Super Mario 64", "C": "The Legend of Zelda: Ocarina of Time", "D": "Star Fox 64" },
+      "correct": "B",
+      "explanation": "Super Mario 64, released alongside the Nintendo 64 in 1996, was a revolutionary 3D platformer and a system-selling launch title."
+    },
+    {
+      "id": "q068",
+      "text": "What color is Sonic the Hedgehog?",
+      "options": { "A": "Red", "B": "Green", "C": "Blue", "D": "Yellow" },
+      "correct": "C",
+      "explanation": "Sonic the Hedgehog is blue, chosen by Sega to match their company's cobalt blue logo color."
+    },
+    {
+      "id": "q069",
+      "text": "Which game is known for 'Creepers', 'Endermen', and 'Redstone'?",
+      "options": { "A": "Terraria", "B": "Roblox", "C": "Minecraft", "D": "Fortnite" },
+      "correct": "C",
+      "explanation": "Creepers, Endermen, and Redstone are all iconic elements of Minecraft, each being unique to the game."
+    },
+    {
+      "id": "q070",
+      "text": "Which company developed Overwatch?",
+      "options": { "A": "Valve", "B": "Riot Games", "C": "Blizzard Entertainment", "D": "Respawn Entertainment" },
+      "correct": "C",
+      "explanation": "Overwatch was developed by Blizzard Entertainment and released in 2016 as a team-based hero shooter."
+    },
+    {
+      "id": "q071",
+      "text": "What was the infamous 'Red Ring of Death' associated with?",
+      "options": { "A": "PlayStation 3", "B": "Xbox 360", "C": "Nintendo Wii", "D": "Sega Dreamcast" },
+      "correct": "B",
+      "explanation": "The Red Ring of Death was a hardware failure indicated by three red lights on the Xbox 360, affecting millions of units."
+    },
+    {
+      "id": "q072",
+      "text": "Which game features a blocky world where players can build and survive on floating islands called 'Skyblock'?",
+      "options": { "A": "Roblox", "B": "Terraria", "C": "Minecraft", "D": "Trove" },
+      "correct": "C",
+      "explanation": "Skyblock is one of the most popular Minecraft survival maps, where players start on a small floating island with limited resources."
+    },
+    {
+      "id": "q073",
+      "text": "Who is considered the 'Father of Video Games'?",
+      "options": { "A": "Shigeru Miyamoto", "B": "Nolan Bushnell", "C": "Ralph Baer", "D": "Hideo Kojima" },
+      "correct": "C",
+      "explanation": "Ralph Baer is widely regarded as the 'Father of Video Games' for creating the Magnavox Odyssey, the first home console, in 1972."
+    },
+    {
+      "id": "q074",
+      "text": "Which game's protagonist is known for saying 'It's-a me!'?",
+      "options": { "A": "Sonic the Hedgehog", "B": "Crash Bandicoot", "C": "Super Mario", "D": "Mega Man" },
+      "correct": "C",
+      "explanation": "Mario's catchphrase 'It's-a me, Mario!' voiced by Charles Martinet, became one of gaming's most recognizable lines."
+    },
+    {
+      "id": "q075",
+      "text": "What does the acronym 'RPG' stand for in gaming?",
+      "options": { "A": "Rapid Play Game", "B": "Role-Playing Game", "C": "Random Player Generator", "D": "Real-time Power Grid" },
+      "correct": "B",
+      "explanation": "RPG stands for Role-Playing Game, a genre where players assume the roles of characters in a fictional setting."
+    },
+    {
+      "id": "q076",
+      "text": "Which indie game features procedurally generated levels and permadeath in a dungeon-crawling roguelike?",
+      "options": { "A": "Hades", "B": "Spelunky", "C": "Enter the Gungeon", "D": "All of the above" },
+      "correct": "D",
+      "explanation": "Hades, Spelunky, and Enter the Gungeon are all roguelike/roguelite games featuring procedural generation and permadeath."
+    },
+    {
+      "id": "q077",
+      "text": "What was the code name for the Nintendo Wii during development?",
+      "options": { "A": "Project Cafe", "B": "Revolution", "C": "Dolphin", "D": "Ultra 64" },
+      "correct": "B",
+      "explanation": "The Nintendo Wii was developed under the code name 'Revolution' before being officially named Wii in 2006."
+    },
+    {
+      "id": "q078",
+      "text": "Which game studio is known for developing Animal Crossing?",
+      "options": { "A": "Game Freak", "B": "HAL Laboratory", "C": "Nintendo EPD", "D": "Intelligent Systems" },
+      "correct": "C",
+      "explanation": "Animal Crossing is developed by Nintendo's Entertainment Planning & Development division (Nintendo EPD)."
+    },
+    {
+      "id": "q079",
+      "text": "In esports, what does 'GG' typically mean?",
+      "options": { "A": "Get Good", "B": "Good Game", "C": "Go Go", "D": "Great Goal" },
+      "correct": "B",
+      "explanation": "GG stands for 'Good Game' and is a common sportsmanship phrase used at the end of competitive matches in esports."
+    },
+    {
+      "id": "q080",
+      "text": "Which 2020 game became a massive hit during the COVID-19 pandemic, featuring island life simulation?",
+      "options": { "A": "The Last of Us Part II", "B": "Fall Guys", "C": "Animal Crossing: New Horizons", "D": "Ghost of Tsushima" },
+      "correct": "C",
+      "explanation": "Animal Crossing: New Horizons launched on the Nintendo Switch in March 2020 and became a cultural phenomenon during pandemic lockdowns."
+    }
+  ]
+}

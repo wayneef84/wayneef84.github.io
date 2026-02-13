@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "id": "public_domain",
+    "title": "Public Domain Trivia",
+    "version": "1.0",
+    "difficulty": "Easy",
+    "tags": ["General Knowledge", "History", "Literature", "PD"],
+    "questionCount": 15
+  },
+  "questions": [
+    {
+      "id": "pd_01",
+      "text": "Who wrote 'Romeo and Juliet'?",
+      "options": {
+        "A": "Charles Dickens",
+        "B": "William Shakespeare",
+        "C": "Jane Austen",
+        "D": "Mark Twain"
+      },
+      "correct": "B",
+      "explanation": "Shakespeare's works are in the public domain."
+    },
+    {
+      "id": "pd_02",
+      "text": "What is the chemical symbol for gold?",
+      "options": {
+        "A": "Au",
+        "B": "Ag",
+        "C": "Fe",
+        "D": "Pb"
+      },
+      "correct": "A",
+      "explanation": "Au comes from the Latin word 'aurum'."
+    },
+    {
+      "id": "pd_03",
+      "text": "In which year did the Titanic sink?",
+      "options": {
+        "A": "1905",
+        "B": "1912",
+        "C": "1915",
+        "D": "1920"
+      },
+      "correct": "B",
+      "explanation": "The RMS Titanic sank in the North Atlantic Ocean on April 15, 1912."
+    },
+    {
+      "id": "pd_04",
+      "text": "Who painted the Mona Lisa?",
+      "options": {
+        "A": "Michelangelo",
+        "B": "Vincent van Gogh",
+        "C": "Leonardo da Vinci",
+        "D": "Pablo Picasso"
+      },
+      "correct": "C",
+      "explanation": "Leonardo da Vinci painted the masterpiece in the early 16th century."
+    },
+    {
+      "id": "pd_05",
+      "text": "Which planet is known as the Red Planet?",
+      "options": {
+        "A": "Venus",
+        "B": "Jupiter",
+        "C": "Mars",
+        "D": "Saturn"
+      },
+      "correct": "C",
+      "explanation": "Mars appears red due to iron oxide prevalent on its surface."
+    },
+    {
+      "id": "pd_06",
+      "text": "What is the capital of France?",
+      "options": {
+        "A": "London",
+        "B": "Berlin",
+        "C": "Paris",
+        "D": "Rome"
+      },
+      "correct": "C",
+      "explanation": "Paris is the capital and most populous city of France."
+    },
+    {
+      "id": "pd_07",
+      "text": "Who was the first President of the United States?",
+      "options": {
+        "A": "Thomas Jefferson",
+        "B": "Abraham Lincoln",
+        "C": "George Washington",
+        "D": "John Adams"
+      },
+      "correct": "C",
+      "explanation": "George Washington served as the first president from 1789 to 1797."
+    },
+    {
+      "id": "pd_08",
+      "text": "What is the largest ocean on Earth?",
+      "options": {
+        "A": "Atlantic Ocean",
+        "B": "Indian Ocean",
+        "C": "Pacific Ocean",
+        "D": "Arctic Ocean"
+      },
+      "correct": "C",
+      "explanation": "The Pacific Ocean covers about 46% of Earth's water surface."
+    },
+    {
+      "id": "pd_09",
+      "text": "In Greek mythology, who is the king of the gods?",
+      "options": {
+        "A": "Poseidon",
+        "B": "Hades",
+        "C": "Zeus",
+        "D": "Apollo"
+      },
+      "correct": "C",
+      "explanation": "Zeus rules Mount Olympus as the king of the gods."
+    },
+    {
+      "id": "pd_10",
+      "text": "Who discovered gravity when an apple fell on his head?",
+      "options": {
+        "A": "Albert Einstein",
+        "B": "Isaac Newton",
+        "C": "Galileo Galilei",
+        "D": "Nikola Tesla"
+      },
+      "correct": "B",
+      "explanation": "Sir Isaac Newton formulated the laws of motion and universal gravitation."
+    },
+    {
+      "id": "pd_11",
+      "text": "Which element has the atomic number 1?",
+      "options": {
+        "A": "Helium",
+        "B": "Carbon",
+        "C": "Hydrogen",
+        "D": "Oxygen"
+      },
+      "correct": "C",
+      "explanation": "Hydrogen is the lightest and most abundant chemical element."
+    },
+    {
+      "id": "pd_12",
+      "text": "What is the hardest natural substance on Earth?",
+      "options": {
+        "A": "Gold",
+        "B": "Iron",
+        "C": "Diamond",
+        "D": "Quartz"
+      },
+      "correct": "C",
+      "explanation": "Diamond is a solid form of the element carbon."
+    },
+    {
+      "id": "pd_13",
+      "text": "Who wrote 'The Raven'?",
+      "options": {
+        "A": "Walt Whitman",
+        "B": "Emily Dickinson",
+        "C": "Edgar Allan Poe",
+        "D": "Robert Frost"
+      },
+      "correct": "C",
+      "explanation": "Edgar Allan Poe published the poem in 1845."
+    },
+    {
+      "id": "pd_14",
+      "text": "What is the speed of light approx?",
+      "options": {
+        "A": "300,000 km/s",
+        "B": "150,000 km/s",
+        "C": "1,000 km/s",
+        "D": "3,000 km/s"
+      },
+      "correct": "A",
+      "explanation": "Light travels at approximately 299,792 kilometers per second in a vacuum."
+    },
+    {
+      "id": "pd_15",
+      "text": "Which war was fought between the North and South regions of the US?",
+      "options": {
+        "A": "Revolutionary War",
+        "B": "Civil War",
+        "C": "World War I",
+        "D": "Vietnam War"
+      },
+      "correct": "B",
+      "explanation": "The American Civil War was fought from 1861 to 1865."
+    }
+  ]
+}
