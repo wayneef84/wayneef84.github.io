@@ -421,6 +421,9 @@ input:checked + .slider:before {
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
     max-width: 90%;
     width: 400px;
+    max-height: 90vh; /* Ensure modal fits on screen */
+    overflow-y: auto; /* Enable scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
 }
 
 .setup-content {
@@ -1005,4 +1008,18 @@ input[type=range]::-moz-range-thumb:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 20px;
+    }
+
+    .setup-content {
+        padding: 20px;
+    }
+
+    .pack-card {
+        padding: 10px;
+    }
 }
