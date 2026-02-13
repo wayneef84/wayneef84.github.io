@@ -18,6 +18,7 @@ export default class InputManager {
             _framePressed: false, // Internal latch
             _frameReleased: false
         };
+        this.activeTouchId = null;
 
         // Gamepad State
         this.gamepads = [];
@@ -218,10 +219,18 @@ export default class InputManager {
     handleKeyDown(e) { this.keys[e.code] = true; }
     handleKeyUp(e) { this.keys[e.code] = false; }
 
-    updatePointerPos(e, canvas) {
+    updatePointerPos(e, canvas, touch = null) {
         const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        let clientX, clientY;
+
+        if (touch) {
+            clientX = touch.clientX;
+            clientY = touch.clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
         // Scale for canvas resolution vs css size
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
@@ -240,16 +249,50 @@ export default class InputManager {
         this.pointer._frameReleased = true; // Latch
     }
     handleMouseMove(e) { this.updatePointerPos(e, e.target); }
+
     handleTouchStart(e) {
         e.preventDefault();
-        this.pointer.isDown = true;
-        this.pointer._framePressed = true;
-        this.updatePointerPos(e, e.target);
+        // Track the newest touch
+        if (e.changedTouches.length > 0) {
+            const touch = e.changedTouches[e.changedTouches.length - 1];
+            this.activeTouchId = touch.identifier;
+            this.pointer.isDown = true;
+            this.pointer._framePressed = true;
+            this.updatePointerPos(e, e.target, touch);
+        }
     }
+
     handleTouchEnd(e) {
         e.preventDefault();
-        this.pointer.isDown = false;
-        this.pointer._frameReleased = true;
+        let activeEnded = false;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            if (e.changedTouches[i].identifier === this.activeTouchId) {
+                activeEnded = true;
+                break;
+            }
+        }
+
+        if (activeEnded) {
+            if (e.touches.length > 0) {
+                // Switch to last remaining touch
+                const newTouch = e.touches[e.touches.length - 1];
+                this.activeTouchId = newTouch.identifier;
+                this.updatePointerPos(e, e.target, newTouch);
+            } else {
+                this.pointer.isDown = false;
+                this.pointer._frameReleased = true;
+                this.activeTouchId = null;
+            }
+        }
     }
-    handleTouchMove(e) { e.preventDefault(); this.updatePointerPos(e, e.target); }
+
+    handleTouchMove(e) {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            if (e.changedTouches[i].identifier === this.activeTouchId) {
+                this.updatePointerPos(e, e.target, e.changedTouches[i]);
+                break;
+            }
+        }
+    }
 }
