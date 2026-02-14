@@ -118,6 +118,6 @@ canvas {
 
 /* Specific positioning for Actions */
 #btn-esc { grid-column: 1; grid-row: 1; font-size: 14px; } /* Menu */
-#btn-r { grid-column: 2; grid-row: 1; font-size: 14px; } /* Restart */
+#btn-home { grid-column: 2; grid-row: 1; font-size: 14px; } /* Home */
 #btn-c { grid-column: 1; grid-row: 2; font-size: 14px; } /* Skin */
 #btn-enter { grid-column: 2; grid-row: 2; background: rgba(0, 191, 255, 0.3); border-color: rgba(0, 191, 255, 0.6); } /* Select */

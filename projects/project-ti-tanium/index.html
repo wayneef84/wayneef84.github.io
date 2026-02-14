@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Project TI-tanium</title>
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="calculator-body">
+        <div id="screen-container">
+            <canvas id="screen" width="96" height="64"></canvas>
+        </div>
+
+        <div id="keypad">
+            <!-- Function Row -->
+            <button class="key function" data-key="Y=">Y=</button>
+            <button class="key function" data-key="WINDOW">WINDOW</button>
+            <button class="key function" data-key="ZOOM">ZOOM</button>
+            <button class="key function" data-key="TRACE">TRACE</button>
+            <button class="key function" data-key="GRAPH">GRAPH</button>
+
+            <!-- Row 2 -->
+            <button class="key secondary" data-key="2ND">2ND</button>
+            <button class="key" data-key="MODE">MODE</button>
+            <button class="key" data-key="DEL">DEL</button>
+            <button class="key nav" data-key="LEFT">◀</button>
+            <button class="key nav" data-key="UP">▲</button>
+
+            <!-- Row 3 -->
+            <button class="key alpha" data-key="ALPHA">ALPHA</button>
+            <button class="key" data-key="XTON">X,T,θ,n</button>
+            <button class="key" data-key="STAT">STAT</button>
+            <button class="key nav" data-key="DOWN">▼</button>
+            <button class="key nav" data-key="RIGHT">▶</button>
+
+            <!-- Row 4 -->
+            <button class="key" data-key="MATH">MATH</button>
+            <button class="key" data-key="MATRX">MATRX</button>
+            <button class="key" data-key="PRGM">PRGM</button>
+            <button class="key" data-key="VARS">VARS</button>
+            <button class="key" data-key="CLEAR">CLEAR</button>
+
+            <!-- Row 5 -->
+            <button class="key" data-key="INV">x⁻¹</button>
+            <button class="key" data-key="SIN">SIN</button>
+            <button class="key" data-key="COS">COS</button>
+            <button class="key" data-key="TAN">TAN</button>
+            <button class="key" data-key="POWER">^</button>
+
+            <!-- Row 6 -->
+            <button class="key" data-key="SQUARE">x²</button>
+            <button class="key" data-key="COMMA">,</button>
+            <button class="key" data-key="LPAREN">(</button>
+            <button class="key" data-key="RPAREN">)</button>
+            <button class="key" data-key="DIV">÷</button>
+
+            <!-- Row 7 -->
+            <button class="key" data-key="LOG">LOG</button>
+            <button class="key num" data-key="7">7</button>
+            <button class="key num" data-key="8">8</button>
+            <button class="key num" data-key="9">9</button>
+            <button class="key" data-key="MUL">×</button>
+
+            <!-- Row 8 -->
+            <button class="key" data-key="LN">LN</button>
+            <button class="key num" data-key="4">4</button>
+            <button class="key num" data-key="5">5</button>
+            <button class="key num" data-key="6">6</button>
+            <button class="key" data-key="SUB">-</button>
+
+            <!-- Row 9 -->
+            <button class="key" data-key="STO">STO></button>
+            <button class="key num" data-key="1">1</button>
+            <button class="key num" data-key="2">2</button>
+            <button class="key num" data-key="3">3</button>
+            <button class="key" data-key="ADD">+</button>
+
+            <!-- Row 10 -->
+            <button class="key" data-key="ON">ON</button>
+            <button class="key num" data-key="0">0</button>
+            <button class="key num" data-key="DOT">.</button>
+            <button class="key" data-key="NEG">(-)</button>
+            <button class="key enter" data-key="ENTER">ENTER</button>
+        </div>
+    </div>
+
+    <script src="js/ui_manager.js"></script>
+    <script src="js/emu_adapter.js"></script>
+    <script src="js/sim_engine.js"></script>
+    <script src="js/boot.js"></script>
+</body>
+</html>

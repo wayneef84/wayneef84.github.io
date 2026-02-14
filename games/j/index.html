@@ -251,10 +251,16 @@
                 </div>
 
                 <!-- Feedback / Explanation -->
-                <div id="feedbackArea" class="feedback-overlay hidden">
-                    <div class="feedback-content">
-                        <h3 id="feedbackTitle">CORRECT!</h3>
-                        <p id="feedbackText">Explanation goes here.</p>
+                <div id="feedbackBackdrop" class="feedback-backdrop hidden">
+                    <div id="feedbackArea" class="feedback-overlay">
+                        <div class="feedback-content">
+                            <h3 id="feedbackTitle">CORRECT!</h3>
+                            <p id="feedbackText">Explanation goes here.</p>
+                        </div>
+                        <div class="feedback-actions">
+                            <button id="feedbackNextBtn" class="primary-btn" style="width:100%; margin-top:15px;">Next Question ⏭️</button>
+                            <!-- Additional options like Previous Question can be added here -->
+                        </div>
                     </div>
                 </div>
             </main>

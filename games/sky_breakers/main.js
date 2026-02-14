@@ -17,6 +17,7 @@ engine.registerSystem('audio', new AudioManager());
 engine.registerSystem('renderer', new CanvasRenderer(canvas, window.innerWidth, window.innerHeight));
 
 const scene = new SkyScene(engine);
+scene.init();
 engine.loadScene(scene);
 
 // Start
