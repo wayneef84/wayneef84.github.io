@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         packLimitRange: document.getElementById('packLimitRange'),
         packLimitDisplay: document.getElementById('packLimitDisplay'),
         // History
-        historyPlaceholder: document.getElementById('historyPlaceholder'),
+        historyPlaceholder: document.getElementById('historyTop'),
         // Game Elements
         gameContainer: document.getElementById('gameContainer'),
         packTitle: document.getElementById('packTitle'),
@@ -356,30 +356,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderHistory(packMeta) {
+        if (!dom.historyPlaceholder) return;
+
         var best = ScoreManager.getHighScore(packMeta.id);
         var history = ScoreManager.getHistory(packMeta.id);
-        var html = `<label class="setup-label">RECORDS</label>
-                    <div class="history-box" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-                            <span>High Score:</span>
-                            <span style="color:var(--accent); font-weight:bold;">${best}</span>
-                        </div>
-                        ${history.length > 0 ? '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 5px 0;">' : ''}
-                        <div class="history-list" style="font-size: 0.8rem; color: var(--text-secondary);">`;
-        history.forEach(function(h) {
+
+        if (history.length === 0) {
+            dom.historyPlaceholder.innerHTML = '';
+            return;
+        }
+
+        // Show last 3 records
+        var recent = history.slice(-3).reverse();
+        var html = '<label class="setup-label">Recent Records</label>';
+
+        recent.forEach(function(h) {
             var d = new Date(h.date).toLocaleDateString();
-            html += `<div style="display:flex; justify-content:space-between;"><span>${d}</span><span>${h.score} pts</span></div>`;
+            html += '<div class="history-item">' +
+                    '<span class="score">' + h.score + ' pts</span>' +
+                    '<span class="date">' + d + '</span>' +
+                    '</div>';
         });
-        html += `</div>
-                 <button id="resetHistoryBtn" style="width:100%; margin-top:10px; background:none; border:1px solid #ef4444; color:#ef4444; padding:5px; border-radius:4px; cursor:pointer; font-size:0.8rem;">RESET HISTORY</button>
-                 </div>`;
+
         dom.historyPlaceholder.innerHTML = html;
-        document.getElementById('resetHistoryBtn').addEventListener('click', function() {
-            if(confirm("Clear records for this pack?")) {
-                ScoreManager.resetPackHistory(packMeta.id);
-                renderHistory(packMeta);
-            }
-        });
     }
 
     function startGame() {
