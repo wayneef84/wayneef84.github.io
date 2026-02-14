@@ -663,6 +663,264 @@
         }
 
         /* ============================================
+           PLAY COUNTER & MAIN MENU
+           ============================================ */
+
+        .play-counter {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            min-width: 28px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .main-menu-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .main-menu-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .menu-select {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .menu-select:hover,
+        .menu-select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .menu-btn {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .menu-btn.danger {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .menu-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        .hidden-games-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden-games-list:empty::after {
+            content: 'No hidden games';
+            display: block;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        .hidden-game-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid var(--card-border);
+            transition: background 0.2s;
+        }
+
+        .hidden-game-item:last-child {
+            border-bottom: none;
+        }
+
+        .hidden-game-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .hidden-game-item .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .hidden-game-item .name {
+            flex: 1;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .unhide-btn {
+            background: var(--accent);
+            border: none;
+            color: var(--bg-primary);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .unhide-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+
+        /* ============================================
            RESPONSIVE
            ============================================ */
 
@@ -704,6 +962,15 @@
             .game-card::after { display: none; }
             nav { gap: 6px; }
             .filter-btn { padding: 7px 14px; font-size: 0.82rem; }
+            .main-menu-btn {
+                width: 50px;
+                height: 50px;
+                bottom: 16px;
+                right: 16px;
+            }
+            .modal-content {
+                padding: 20px;
+            }
         }
 
         @media (min-width: 641px) and (max-width: 1024px) {
@@ -1058,9 +1325,54 @@
         <p class="footer-meta">v2.0 &mdash; 2026-02-11</p>
     </footer>
 
+    <!-- Main Menu Button -->
+    <button id="mainMenuBtn" class="main-menu-btn" title="Main Menu" aria-label="Open main menu">
+        &#9881;
+    </button>
+
+    <!-- Main Menu Modal -->
+    <div id="mainMenu" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button id="closeMainMenuBtn" class="close-btn" aria-label="Close menu">&times;</button>
+            </div>
+
+            <div class="menu-section">
+                <label class="menu-label">Sort Games By</label>
+                <select id="sortBy" class="menu-select">
+                    <option value="playcount">Play Count</option>
+                    <option value="name">Name</option>
+                    <option value="created">Date Added</option>
+                    <option value="category">Category</option>
+                </select>
+            </div>
+
+            <div class="menu-section">
+                <label class="menu-label">Sort Direction</label>
+                <select id="sortDirection" class="menu-select">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                </select>
+            </div>
+
+            <div class="menu-section">
+                <label class="menu-label">Play Counters</label>
+                <button id="resetPlayCounts" class="menu-btn danger">Reset All Play Counts</button>
+            </div>
+
+            <div class="menu-section">
+                <label class="menu-label">Hidden Games</label>
+                <div id="hiddenGamesList" class="hidden-games-list"></div>
+                <button id="unhideAllGames" class="menu-btn" style="margin-top: 8px;">Unhide All Games</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/projects.js" onerror="handleProjectsError()"></script>
     <script src="js/about_data.js"></script>
     <script src="js/about_logic.js"></script>
+    <script src="js/play-counter.js"></script>
 
     <script>
     // ==========================================

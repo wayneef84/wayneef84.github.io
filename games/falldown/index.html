@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fall Down</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏬</text></svg>">
+    <meta name="theme-color" content="#000000">
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Touch Controls Overlay (Invisible but clickable areas) -->
+        <div id="touch-controls">
+            <div id="touch-left" class="touch-zone"></div>
+            <div id="touch-right" class="touch-zone"></div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="main-menu" class="overlay">
+            <h1 class="title">FALL DOWN</h1>
+            <button id="btn-start" class="menu-btn">Play</button>
+            <button id="btn-settings" class="menu-btn">Settings</button>
+            <button id="btn-scores" class="menu-btn">High Scores</button>
+            <div class="footer">v1.0</div>
+        </div>
+
+        <!-- Settings Menu -->
+        <div id="settings-menu" class="overlay hidden">
+            <h2>Settings</h2>
+
+            <div class="setting-group">
+                <label>Theme</label>
+                <div class="toggle-group" id="theme-select">
+                    <button data-value="classic" class="toggle-btn active">Classic</button>
+                    <button data-value="modern" class="toggle-btn">Modern</button>
+                    <button data-value="neon" class="toggle-btn">Neon</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>Difficulty</label>
+                <div class="toggle-group" id="difficulty-select">
+                    <button data-value="easy" class="toggle-btn">Easy</button>
+                    <button data-value="normal" class="toggle-btn active">Normal</button>
+                    <button data-value="hard" class="toggle-btn">Hard</button>
+                </div>
+            </div>
+
+            <button id="btn-settings-back" class="menu-btn secondary">Back</button>
+        </div>
+
+        <!-- High Scores Menu -->
+        <div id="high-scores-menu" class="overlay hidden">
+            <h2>High Scores</h2>
+            <div id="scores-list">
+                <!-- Scores injected here -->
+                <div class="loading">Loading...</div>
+            </div>
+            <div class="score-actions">
+                <button id="btn-export" class="action-btn">Export JSON</button>
+            </div>
+            <button id="btn-scores-back" class="menu-btn secondary">Back</button>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="game-over-overlay" class="overlay hidden">
+            <h2>GAME OVER</h2>
+            <div class="final-score">Score: <span id="final-score-val">0</span></div>
+
+            <div id="new-high-score" class="hidden">
+                <p>New High Score!</p>
+                <input type="text" id="player-name" placeholder="Enter Name" maxlength="10">
+                <button id="btn-save-score" class="menu-btn small">Save</button>
+            </div>
+
+            <button id="btn-retry" class="menu-btn">Retry</button>
+            <button id="btn-menu" class="menu-btn secondary">Menu</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud" class="hidden">
+            <div class="score-display">Score: <span id="score-val">0</span></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>

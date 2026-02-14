@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         packLimitRange: document.getElementById('packLimitRange'),
         packLimitDisplay: document.getElementById('packLimitDisplay'),
         // History
-        historyPlaceholder: document.getElementById('historyPlaceholder'),
+        historyPlaceholder: document.getElementById('historyTop'),
         // Game Elements
         gameContainer: document.getElementById('gameContainer'),
         packTitle: document.getElementById('packTitle'),
@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
         restartBtn: document.getElementById('restartBtn'),
         changePack: document.getElementById('changePack'),
         backToPacksBtn: document.getElementById('backToPacksBtn'),
+        // Change Log Elements
+        changeLogBtn: document.getElementById('changeLogBtn'),
+        changeLogModal: document.getElementById('changeLogModal'),
+        closeChangeLogBtn: document.getElementById('closeChangeLogBtn'),
+        changeLogList: document.getElementById('changeLogList'),
+        mainMenu: document.getElementById('mainMenu'),
         // Revamp Elements
         powerupBar: document.getElementById('powerupBar'),
         buffsContainer: document.getElementById('buffsContainer'),
@@ -356,29 +362,76 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderHistory(packMeta) {
+        if (!dom.historyPlaceholder) return;
+
         var best = ScoreManager.getHighScore(packMeta.id);
         var history = ScoreManager.getHistory(packMeta.id);
-        var html = `<label class="setup-label">RECORDS</label>
-                    <div class="history-box" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-                            <span>High Score:</span>
-                            <span style="color:var(--accent); font-weight:bold;">${best}</span>
-                        </div>
-                        ${history.length > 0 ? '<hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 5px 0;">' : ''}
-                        <div class="history-list" style="font-size: 0.8rem; color: var(--text-secondary);">`;
-        history.forEach(function(h) {
+
+        if (history.length === 0) {
+            dom.historyPlaceholder.innerHTML = '';
+            return;
+        }
+
+        // Show last 3 records
+        var recent = history.slice(-3).reverse();
+        var html = '<label class="setup-label">Recent Records</label>';
+
+        recent.forEach(function(h) {
             var d = new Date(h.date).toLocaleDateString();
-            html += `<div style="display:flex; justify-content:space-between;"><span>${d}</span><span>${h.score} pts</span></div>`;
+            html += '<div class="history-item">' +
+                    '<span class="score">' + h.score + ' pts</span>' +
+                    '<span class="date">' + d + '</span>' +
+                    '</div>';
         });
-        html += `</div>
-                 <button id="resetHistoryBtn" style="width:100%; margin-top:10px; background:none; border:1px solid #ef4444; color:#ef4444; padding:5px; border-radius:4px; cursor:pointer; font-size:0.8rem;">RESET HISTORY</button>
-                 </div>`;
-        dom.historyPlaceholder.innerHTML = html;
-        document.getElementById('resetHistoryBtn').addEventListener('click', function() {
-            if(confirm("Clear records for this pack?")) {
-                ScoreManager.resetPackHistory(packMeta.id);
-                renderHistory(packMeta);
-            }
+
+        if (dom.historyPlaceholder) {
+            dom.historyPlaceholder.innerHTML = html;
+        }
+    }
+
+    function openChangeLog() {
+        if (dom.mainMenu) dom.mainMenu.classList.add('hidden');
+        if (dom.changeLogModal) dom.changeLogModal.classList.remove('hidden');
+        renderChangeLog();
+    }
+
+    function closeChangeLog() {
+        if (dom.changeLogModal) dom.changeLogModal.classList.add('hidden');
+    }
+
+    function renderChangeLog() {
+        if (!dom.changeLogList) return;
+        dom.changeLogList.innerHTML = '';
+
+        // Take last 10 packs as "new"
+        var packs = MANIFEST.packs.slice().reverse().slice(0, 10);
+
+        packs.forEach(function(pack) {
+            var item = document.createElement('div');
+            item.style.marginBottom = '15px';
+            item.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+            item.style.paddingBottom = '10px';
+
+            var group = MANIFEST.groups.find(g => g.id === pack.groupId);
+            var groupName = group ? group.title : (pack.category || 'General');
+
+            item.innerHTML = `
+                <div style="font-weight: bold; color: var(--accent); margin-bottom: 5px;">${pack.title}</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">${groupName} &middot; ${pack.count || '?'} Q</div>
+            `;
+
+            var btn = document.createElement('button');
+            btn.className = 'primary-btn';
+            btn.style.fontSize = '0.8rem';
+            btn.style.padding = '5px 15px';
+            btn.textContent = 'PLAY NOW';
+            btn.addEventListener('click', function() {
+                closeChangeLog();
+                openSetupModal(pack.path);
+            });
+
+            item.appendChild(btn);
+            dom.changeLogList.appendChild(item);
         });
     }
 
@@ -575,6 +628,13 @@ document.addEventListener('DOMContentLoaded', function() {
                      dom.feedbackBackdrop.classList.add('hidden');
                 }
             });
+        }
+
+        if (dom.changeLogBtn) {
+            dom.changeLogBtn.addEventListener('click', openChangeLog);
+        }
+        if (dom.closeChangeLogBtn) {
+            dom.closeChangeLogBtn.addEventListener('click', closeChangeLog);
         }
 
         dom.restartBtn.addEventListener('click', function() {

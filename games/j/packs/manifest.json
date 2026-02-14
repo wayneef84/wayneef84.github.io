@@ -395,6 +395,14 @@
             "path": "packs/american_muscle.json",
             "icon": "🚘",
             "count": 15
+        },
+        {
+            "id": "snake_trivia",
+            "groupId": "niche",
+            "title": "Snake Trivia",
+            "path": "packs/snake_trivia.json",
+            "icon": "🐍",
+            "count": 15
         }
     ]
 }

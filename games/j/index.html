@@ -17,6 +17,17 @@
         <!-- ==============================
              PACK SELECTOR SCREEN
              ============================== -->
+        <!-- Category Sidebar -->
+        <div id="categorySidebar" class="category-sidebar collapsed">
+            <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle Categories">&#x2630;</button>
+            <div class="sidebar-content">
+                <h3>Categories</h3>
+                <div id="categoryList" class="category-list">
+                    <!-- Categories injected by JS -->
+                </div>
+            </div>
+        </div>
+
         <div id="packSelector" class="pack-selector">
             <div class="selector-header">
                 <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
@@ -27,18 +38,63 @@
                         <span id="totalQuestions">0</span> questions
                     </p>
                 </div>
-                <!-- Custom Game Button -->
-                <button id="customGameBtn" class="home-btn" style="font-size: 1.2rem; filter: none; color: var(--accent); border: 1px solid var(--accent); padding: 5px 10px; border-radius: 8px;">
-                    MIX
+                <!-- Menu Button -->
+                <button id="menuBtn" class="home-btn" style="font-size: 1.2rem; filter: none; color: var(--accent); border: 1px solid var(--accent); padding: 5px 10px; border-radius: 8px;">
+                    &#x2699;
                 </button>
             </div>
 
-            <div class="search-container">
-                <input type="search" id="packSearch" class="pack-search" placeholder="Search packs..." autocomplete="off">
+            <div class="selector-controls">
+                <div class="search-container">
+                    <input type="search" id="packSearch" class="pack-search" placeholder="Search packs..." autocomplete="off">
+                </div>
+                <button id="customGameBtn" class="custom-game-btn">
+                    <span class="icon">&#x1F500;</span> MIX MODE
+                </button>
             </div>
 
             <div class="pack-grid" id="packGrid">
                 <!-- Pack cards rendered by app.js -->
+            </div>
+        </div>
+
+        <!-- ==============================
+             MAIN MENU MODAL
+             ============================== -->
+        <div id="mainMenu" class="modal-overlay hidden">
+            <div class="modal-content menu-content">
+                <h2>SETTINGS & DATA</h2>
+
+                <div class="menu-section">
+                    <h3 class="menu-section-title">Updates</h3>
+                    <button id="changeLogBtn" class="menu-btn">
+                        <span class="icon">&#x1F4DC;</span> Change Log
+                    </button>
+                </div>
+
+                <div class="menu-section">
+                    <h3 class="menu-section-title">Data Management</h3>
+                    <button id="resetRecordsBtn" class="menu-btn danger-btn">
+                        <span class="icon">&#x1F5D1;</span> Reset All Records
+                    </button>
+                    <button id="exportDataBtn" class="menu-btn">
+                        <span class="icon">&#x1F4E5;</span> Export Data
+                    </button>
+                    <button id="importDataBtn" class="menu-btn">
+                        <span class="icon">&#x1F4E4;</span> Import Data
+                    </button>
+                </div>
+
+                <div class="menu-section">
+                    <h3 class="menu-section-title">Category Order</h3>
+                    <div id="categoryOrderList" class="category-order-list">
+                        <!-- Categories for reordering injected here -->
+                    </div>
+                </div>
+
+                <div class="menu-actions">
+                    <button id="closeMenuBtn" class="secondary-btn">CLOSE</button>
+                </div>
             </div>
         </div>
 
@@ -49,120 +105,124 @@
             <div class="modal-content setup-content">
                 <h2 id="setupTitle">GAME SETUP</h2>
 
-                <!-- Multi-Pack Selection Area (Hidden by default) -->
-                <div id="multiPackSelection" class="setup-group hidden">
-                    <label class="setup-label">Select Packs</label>
-                    <div id="multiPackList" class="multi-pack-list" style="max-height: 150px; overflow-y: auto; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                        <!-- Checkboxes injected here -->
+                <!-- History/Records at Top -->
+                <div id="historyTop" class="history-top"></div>
+
+                <!-- Scrollable Settings Container -->
+                <div class="setup-scrollable">
+                    <!-- Multi-Pack Selection Area (Hidden by default) -->
+                    <div id="multiPackSelection" class="setup-group hidden">
+                        <label class="setup-label">Select Packs</label>
+                        <div id="multiPackList" class="multi-pack-list" style="max-height: 150px; overflow-y: auto; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                            <!-- Checkboxes injected here -->
+                        </div>
+
+                        <label class="setup-label">Pack Limit (Randomly select X packs)</label>
+                        <div class="range-container">
+                            <input type="range" id="packLimitRange" min="1" max="10" value="10" style="width: 100%;">
+                            <div style="text-align: center; margin-top: 5px;">Use <span id="packLimitDisplay" style="color: var(--accent); font-weight: bold;">ALL</span> selected</div>
+                        </div>
                     </div>
 
-                    <label class="setup-label">Pack Limit (Randomly select X packs)</label>
-                    <div class="range-container">
-                        <input type="range" id="packLimitRange" min="1" max="10" value="10" style="width: 100%;">
-                        <div style="text-align: center; margin-top: 5px;">Use <span id="packLimitDisplay" style="color: var(--accent); font-weight: bold;">ALL</span> selected</div>
+                    <div class="setup-group">
+                        <div class="control-group" style="justify-content: center; margin-bottom: 20px; background: rgba(255, 215, 0, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--accent);">
+                            <label class="switch">
+                                <input type="checkbox" id="revampToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label" style="color: var(--accent); margin-left: 10px; font-weight: bold;">REVAMP MODE (Power-ups)</span>
+                        </div>
+
+                        <label class="setup-label">Question Count</label>
+                        <div class="radio-group" id="limitOptions">
+                            <label class="radio-btn">
+                                <input type="radio" name="qLimit" value="10" checked>
+                                <span>10</span>
+                            </label>
+                            <label class="radio-btn">
+                                <input type="radio" name="qLimit" value="20">
+                                <span>20</span>
+                            </label>
+                            <label class="radio-btn">
+                                <input type="radio" name="qLimit" value="50">
+                                <span>50</span>
+                            </label>
+                            <label class="radio-btn">
+                                <input type="radio" name="qLimit" value="0">
+                                <span>ALL</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Time Settings -->
+                    <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                        <label class="setup-label">Time Settings</label>
+
+                        <div style="margin-bottom: 15px;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Time Per Question</label>
+                                <span id="timeValue" style="color:var(--accent); font-weight:bold;">15s</span>
+                            </div>
+                            <input type="range" id="timerDuration" min="5" max="120" step="5" value="15" style="width: 100%;">
+                        </div>
+
+                        <div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Max Carry Over</label>
+                                <span id="carryValue" style="color:var(--accent); font-weight:bold;">0s</span>
+                            </div>
+                            <input type="range" id="carryOverMax" min="0" max="30" step="5" value="0" style="width: 100%;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px;">
+                                Extra time from quick answers is added to the next question.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice / Accessibility Settings -->
+                    <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                        <label class="setup-label">Voice / Accessibility</label>
+
+                        <div class="control-group" style="margin-bottom: 10px;">
+                            <label class="switch">
+                                <input type="checkbox" id="voiceToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label" style="margin-left: 10px;">Voice Mode (Read & Confirm)</span>
+                        </div>
+
+                        <div class="control-group" style="margin-bottom: 15px;">
+                            <label class="switch">
+                                <input type="checkbox" id="autoReadToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label" style="margin-left: 10px;">Auto-Read Question</span>
+                        </div>
+
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label class="setup-label" style="font-size: 0.7rem;">Speed: <span id="rateValue" style="color:var(--accent)">1.0x</span></label>
+                                <input type="range" id="speechRate" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label class="setup-label" style="font-size: 0.7rem;">Pitch: <span id="pitchValue" style="color:var(--accent)">1.0</span></label>
+                                <input type="range" id="speechPitch" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setup-group">
+                        <div class="control-group" style="justify-content: center;">
+                            <label class="switch">
+                                <input type="checkbox" id="percentToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label">SHOW PERCENTAGE</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="setup-group">
-                    <div class="control-group" style="justify-content: center; margin-bottom: 20px; background: rgba(255, 215, 0, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--accent);">
-                        <label class="switch">
-                            <input type="checkbox" id="revampToggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label" style="color: var(--accent); margin-left: 10px; font-weight: bold;">REVAMP MODE (Power-ups)</span>
-                    </div>
-
-                    <label class="setup-label">Question Count</label>
-                    <div class="radio-group" id="limitOptions">
-                        <label class="radio-btn">
-                            <input type="radio" name="qLimit" value="10" checked>
-                            <span>10</span>
-                        </label>
-                        <label class="radio-btn">
-                            <input type="radio" name="qLimit" value="20">
-                            <span>20</span>
-                        </label>
-                        <label class="radio-btn">
-                            <input type="radio" name="qLimit" value="50">
-                            <span>50</span>
-                        </label>
-                        <label class="radio-btn">
-                            <input type="radio" name="qLimit" value="0">
-                            <span>ALL</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Time Settings -->
-                <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-                    <label class="setup-label">Time Settings</label>
-
-                    <div style="margin-bottom: 15px;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Time Per Question</label>
-                            <span id="timeValue" style="color:var(--accent); font-weight:bold;">15s</span>
-                        </div>
-                        <input type="range" id="timerDuration" min="5" max="120" step="5" value="15" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <label class="setup-label" style="font-size: 0.8rem; margin-bottom: 5px;">Max Carry Over</label>
-                            <span id="carryValue" style="color:var(--accent); font-weight:bold;">0s</span>
-                        </div>
-                        <input type="range" id="carryOverMax" min="0" max="30" step="5" value="0" style="width: 100%;">
-                        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 5px;">
-                            Extra time from quick answers is added to the next question.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Voice / Accessibility Settings -->
-                <div class="setup-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-                    <label class="setup-label">Voice / Accessibility</label>
-
-                    <div class="control-group" style="margin-bottom: 10px;">
-                        <label class="switch">
-                            <input type="checkbox" id="voiceToggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label" style="margin-left: 10px;">Voice Mode (Read & Confirm)</span>
-                    </div>
-
-                    <div class="control-group" style="margin-bottom: 15px;">
-                        <label class="switch">
-                            <input type="checkbox" id="autoReadToggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label" style="margin-left: 10px;">Auto-Read Question</span>
-                    </div>
-
-                    <div style="display: flex; gap: 15px;">
-                        <div style="flex: 1;">
-                            <label class="setup-label" style="font-size: 0.7rem;">Speed: <span id="rateValue" style="color:var(--accent)">1.0x</span></label>
-                            <input type="range" id="speechRate" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
-                        </div>
-                        <div style="flex: 1;">
-                            <label class="setup-label" style="font-size: 0.7rem;">Pitch: <span id="pitchValue" style="color:var(--accent)">1.0</span></label>
-                            <input type="range" id="speechPitch" min="0.5" max="2.0" step="0.1" value="1.0" style="width: 100%;">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="setup-group">
-                    <div class="control-group" style="justify-content: center;">
-                        <label class="switch">
-                            <input type="checkbox" id="percentToggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label">SHOW PERCENTAGE</span>
-                    </div>
-                </div>
-
-                <!-- History Section (Injected dynamically) -->
-                <div id="historyPlaceholder"></div>
-
-                <div class="action-buttons">
+                <!-- Fixed Action Buttons -->
+                <div class="setup-actions-fixed">
                     <button id="startGameBtn" class="primary-btn">START GAME</button>
                     <button id="cancelSetupBtn" class="secondary-btn">CANCEL</button>
                 </div>
@@ -180,6 +240,9 @@
                         <a href="../../index.html" class="home-btn" aria-label="Home">&#x1F3E0;</a>
                         <button id="backToPacksBtn" class="back-btn" aria-label="Back to Packs" style="font-size: 1.5rem; color: var(--text-secondary);">
                             &#x2190;
+                        </button>
+                        <button id="muteBtn" class="mute-btn" aria-label="Mute Audio" title="Mute Audio/Voice">
+                            &#x1F50A;
                         </button>
                     </div>
                     <div class="score-display">SCORE: <span id="scoreValue">0</span></div>
@@ -306,10 +369,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- ==============================
+             CHANGE LOG MODAL
+             ============================== -->
+        <div id="changeLogModal" class="modal-overlay hidden">
+            <div class="modal-content menu-content">
+                <h2>CHANGE LOG</h2>
+                <div id="changeLogList" class="setup-scrollable" style="text-align: left; padding: 10px;">
+                    <!-- Change log items will be injected here -->
+                </div>
+                <div class="menu-actions">
+                    <button id="closeChangeLogBtn" class="secondary-btn">CLOSE</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/engine.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/features.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
