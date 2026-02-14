@@ -3,6 +3,7 @@ class AudioEngine {
         this.audio = null;
         this.isPlaying = false;
         this.currentTrackUrl = null;
+        this.volume = 1.0;
     }
 
     /**
@@ -42,6 +43,7 @@ class AudioEngine {
 
         this.currentTrackUrl = url;
         this.audio = new Audio(url);
+        this.audio.volume = this.volume;
         this.isPlaying = true;
 
         this.audio.addEventListener('ended', () => {
@@ -90,6 +92,17 @@ class AudioEngine {
         if (this.audio && !this.isPlaying && this.currentTrackUrl) {
             this.audio.play().catch(e => console.error("Resume failed:", e));
             this.isPlaying = true;
+        }
+    }
+
+    /**
+     * Set volume (0.0 to 1.0)
+     * @param {number} value
+     */
+    setVolume(value) {
+        this.volume = Math.max(0, Math.min(1, value));
+        if (this.audio) {
+            this.audio.volume = this.volume;
         }
     }
 
