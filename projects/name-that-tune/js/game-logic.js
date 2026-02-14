@@ -1,91 +1,58 @@
 // Game Logic Module
-// Handles string comparison and scoring
+// Handles achievements, high scores, and option generation
 
 const GameLogic = {
+    achievements: [
+        { id: 'first_win', name: 'Rookie', description: 'Complete your first game.', icon: '🎵' },
+        { id: 'perfect_game', name: 'Maestro', description: 'Get all questions correct in a game.', icon: '🎼' },
+        { id: 'speed_demon', name: 'Speed Demon', description: 'Answer correctly within 5 seconds.', icon: '⚡' },
+        { id: 'high_score_1000', name: 'Chart Topper', description: 'Score over 1000 points.', icon: '🏆' },
+        { id: 'genre_master', name: 'Genre Master', description: 'Play 5 different genres.', icon: '🎧' }
+    ],
+
     /**
-     * Calculate Levenshtein distance between two strings
-     * @param {string} a
-     * @param {string} b
-     * @returns {number} Distance
+     * Generate multiple choice options
+     * @param {Object} correctTrack The correct track object
+     * @param {Array} allTracks Pool of available tracks
+     * @param {number} count Number of options (default 4)
+     * @returns {Array} Array of track objects (shuffled)
      */
-    calculateLevenshteinDistance: function(a, b) {
-        const matrix = [];
+    generateOptions: function(correctTrack, allTracks, count = 4) {
+        // Filter out the correct track from the pool
+        const wrongTracks = allTracks.filter(t => t.trackId !== correctTrack.trackId);
 
-        // Increment along the first column of each row
-        for (let i = 0; i <= b.length; i++) {
-            matrix[i] = [i];
-        }
+        // Shuffle wrong tracks and take (count - 1)
+        const shuffledWrong = this.shuffleArray(wrongTracks).slice(0, count - 1);
 
-        // Increment each column in the first row
-        for (let j = 0; j <= a.length; j++) {
-            matrix[0][j] = j;
-        }
+        // Combine with correct track
+        const options = [...shuffledWrong, correctTrack];
 
-        // Fill in the rest of the matrix
-        for (let i = 1; i <= b.length; i++) {
-            for (let j = 1; j <= a.length; j++) {
-                if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                    matrix[i][j] = matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] = Math.min(
-                        matrix[i - 1][j - 1] + 1, // substitution
-                        Math.min(
-                            matrix[i][j - 1] + 1, // insertion
-                            matrix[i - 1][j] + 1 // deletion
-                        )
-                    );
-                }
-            }
-        }
-
-        return matrix[b.length][a.length];
+        // Shuffle final options
+        return this.shuffleArray(options);
     },
 
     /**
-     * Normalize string for comparison (lowercase, remove punctuation)
-     * @param {string} str
-     * @returns {string}
+     * Check if an achievement is unlocked
+     * @param {string} achievementId
+     * @param {Object} stats Current game stats (score, time, correctCount, totalPlayed)
+     * @returns {boolean} True if unlocked
      */
-    normalizeString: function(str) {
-        return str
-            .toLowerCase()
-            .replace(/[^\w\s]|_/g, "") // Remove punctuation
-            .replace(/\s+/g, " ") // Collapse whitespace
-            .trim();
-    },
-
-    /**
-     * Check if the guess matches the target
-     * @param {string} guess User's guess
-     * @param {string} target Actual answer (Song Title or Artist)
-     * @returns {boolean} True if match is close enough
-     */
-    checkGuess: function(guess, target) {
-        if (!guess || !target) return false;
-
-        const normalizedGuess = this.normalizeString(guess);
-        const normalizedTarget = this.normalizeString(target);
-
-        // Direct match check
-        if (normalizedGuess === normalizedTarget) return true;
-
-        // Also check if the guess is contained within the target (e.g. "Bohemian" for "Bohemian Rhapsody")
-        // But only if the guess is substantial enough (e.g. > 3 chars)
-        if (normalizedGuess.length > 3 && normalizedTarget.includes(normalizedGuess)) {
-             // Calculate ratio of length to ensure it's not too short
-             if (normalizedGuess.length / normalizedTarget.length > 0.5) {
-                 return true;
-             }
+    checkAchievement: function(achievementId, stats) {
+        switch (achievementId) {
+            case 'first_win':
+                return stats.totalPlayed >= 1;
+            case 'perfect_game':
+                return stats.correctCount === stats.totalQuestions && stats.totalQuestions >= 5;
+            case 'speed_demon':
+                return stats.lastAnswerTime <= 5;
+            case 'high_score_1000':
+                return stats.score >= 1000;
+            case 'genre_master':
+                // Requires tracking distinct genres played
+                return stats.distinctGenres >= 5;
+            default:
+                return false;
         }
-
-        const distance = this.calculateLevenshteinDistance(normalizedGuess, normalizedTarget);
-        const maxLength = Math.max(normalizedGuess.length, normalizedTarget.length);
-
-        // Calculate similarity ratio (0 to 1)
-        const similarity = 1 - (distance / maxLength);
-
-        // Threshold for "close enough"
-        return similarity >= 0.8;
     },
 
     /**
@@ -99,17 +66,64 @@ const GameLogic = {
         const baseScore = 100;
 
         // Time bonus: more points for faster answers
-        // e.g. 30s left = 300 points bonus, 1s left = 10 points bonus
         const timeBonus = Math.floor(timeLeft * 10);
 
         return baseScore + timeBonus;
+    },
+
+    /**
+     * Shuffle array helper
+     */
+    shuffleArray: function(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    },
+
+    /**
+     * Save high score to localStorage
+     * @param {number} score
+     */
+    saveHighScore: function(score) {
+        const currentHigh = parseInt(localStorage.getItem('ntt_high_score') || '0');
+        if (score > currentHigh) {
+            localStorage.setItem('ntt_high_score', score);
+            return true; // New high score!
+        }
+        return false;
+    },
+
+    /**
+     * Get high score
+     */
+    getHighScore: function() {
+        return parseInt(localStorage.getItem('ntt_high_score') || '0');
+    },
+
+    /**
+     * Save achievement
+     */
+    saveAchievement: function(id) {
+        let unlocked = JSON.parse(localStorage.getItem('ntt_achievements') || '[]');
+        if (!unlocked.includes(id)) {
+            unlocked.push(id);
+            localStorage.setItem('ntt_achievements', JSON.stringify(unlocked));
+            return true; // Newly unlocked
+        }
+        return false;
+    },
+
+    /**
+     * Get unlocked achievements
+     */
+    getUnlockedAchievements: function() {
+        return JSON.parse(localStorage.getItem('ntt_achievements') || '[]');
     }
 };
 
-// Export for usage if using modules, but for vanilla script tag inclusion:
+// Export
 if (typeof window !== 'undefined') {
     window.GameLogic = GameLogic;
-}
-if (typeof module !== 'undefined') {
-    module.exports = GameLogic;
 }
