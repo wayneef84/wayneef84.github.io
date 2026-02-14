@@ -17,6 +17,7 @@ var projects = [
     { name: "SKYbreakers", path: "games/sky_breakers/index.html", category: "arcade", icon: "🚀", tags: ["Arcade"], description: "Break through the sky in this high-flying arcade game." },
     { name: "Minesweeper+", path: "games/minesweeper/index.html", category: "puzzle", icon: "💣", tags: ["Classic"], description: "Classic Minesweeper with lives, power-ups, and custom themes." },
     { name: "Mahjong", path: "games/mahjong/index.html", category: "puzzle", icon: "🀄", tags: ["Classic"], description: "Classic Mahjong Solitaire tile matching game." },
+    { name: "Fall Down", path: "games/falldown/index.html", category: "arcade", icon: "⏬", tags: ["Action"], description: "Avoid the obstacles and fall as far as you can." },
     { name: "J: Speed Quiz", path: "games/j/index.html", category: "arcade", icon: "⚡", tags: ["Trivia"], description: "High-velocity quiz engine. Test your reflexes and knowledge." },
     { name: "J: Speed Quiz (Legacy)", path: "games/j_v1/index.html", category: "arcade", icon: "⚡", tags: ["Legacy"], description: "Legacy version of the speed quiz engine." },
     { name: "Flash Classics", path: "games/flash_classics/index.html", category: "retro", icon: "🕹️", tags: ["Retro"], description: "Collection of classic Flash-style games: Chopper, Defender, Runner." },
