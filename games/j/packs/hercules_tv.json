@@ -1,0 +1,492 @@
+{
+  "meta": {
+    "id": "hercules_tv_001",
+    "title": "Hercules: The Legendary Journeys",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["TV", "Hercules", "90s", "Fantasy", "Action"],
+    "questionCount": 40
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who played Hercules in 'Hercules: The Legendary Journeys'?",
+      "options": {
+        "A": "Kevin Sorbo",
+        "B": "Michael Hurst",
+        "C": "Bruce Campbell",
+        "D": "Dean O'Gorman"
+      },
+      "correct": "A",
+      "explanation": "Kevin Sorbo starred as Hercules throughout the series run from 1995-1999."
+    },
+    {
+      "id": "q002",
+      "text": "What was the name of Hercules' sidekick?",
+      "options": {
+        "A": "Autolycus",
+        "B": "Iolaus",
+        "C": "Salmoneus",
+        "D": "Jason"
+      },
+      "correct": "B",
+      "explanation": "Iolaus, played by Michael Hurst, was Hercules' loyal best friend and traveling companion."
+    },
+    {
+      "id": "q003",
+      "text": "Who was Hercules' main divine antagonist?",
+      "options": {
+        "A": "Zeus",
+        "B": "Ares",
+        "C": "Hera",
+        "D": "Hades"
+      },
+      "correct": "C",
+      "explanation": "Hera, Zeus's jealous wife, constantly tried to make Hercules' life difficult throughout the series."
+    },
+    {
+      "id": "q004",
+      "text": "What year did 'Hercules: The Legendary Journeys' first premiere?",
+      "options": {
+        "A": "1993",
+        "B": "1994",
+        "C": "1995",
+        "D": "1996"
+      },
+      "correct": "C",
+      "explanation": "The series premiered on January 29, 1995, following several TV movies in 1994."
+    },
+    {
+      "id": "q005",
+      "text": "Who played Ares, the God of War?",
+      "options": {
+        "A": "Bruce Campbell",
+        "B": "Kevin Smith",
+        "C": "Kevin Sorbo",
+        "D": "Michael Hurst"
+      },
+      "correct": "B",
+      "explanation": "Kevin Smith (not the director) played Ares throughout the series and on Xena."
+    },
+    {
+      "id": "q006",
+      "text": "What was the name of the 'King of Thieves' character?",
+      "options": {
+        "A": "Salmoneus",
+        "B": "Autolycus",
+        "C": "Iphicles",
+        "D": "Jason"
+      },
+      "correct": "B",
+      "explanation": "Autolycus, the self-proclaimed 'King of Thieves,' was played by Bruce Campbell."
+    },
+    {
+      "id": "q007",
+      "text": "Who was Hercules' mortal half-brother?",
+      "options": {
+        "A": "Jason",
+        "B": "Iolaus",
+        "C": "Iphicles",
+        "D": "Autolycus"
+      },
+      "correct": "C",
+      "explanation": "Iphicles was Hercules' mortal half-brother, sharing the same mother Alcmene."
+    },
+    {
+      "id": "q008",
+      "text": "What spin-off series was launched from Hercules?",
+      "options": {
+        "A": "The Adventures of Sinbad",
+        "B": "Xena: Warrior Princess",
+        "C": "Young Hercules",
+        "D": "Both B and C"
+      },
+      "correct": "D",
+      "explanation": "Both 'Xena: Warrior Princess' and 'Young Hercules' were spin-offs of Hercules."
+    },
+    {
+      "id": "q009",
+      "text": "Where was 'Hercules: The Legendary Journeys' primarily filmed?",
+      "options": {
+        "A": "Greece",
+        "B": "Australia",
+        "C": "New Zealand",
+        "D": "Canada"
+      },
+      "correct": "C",
+      "explanation": "The series was filmed in New Zealand, which also served as the location for Xena and Young Hercules."
+    },
+    {
+      "id": "q010",
+      "text": "Who was Hercules' father?",
+      "options": {
+        "A": "Ares",
+        "B": "Apollo",
+        "C": "Zeus",
+        "D": "Poseidon"
+      },
+      "correct": "C",
+      "explanation": "Hercules was the son of Zeus, king of the gods, and the mortal woman Alcmene."
+    },
+    {
+      "id": "q011",
+      "text": "What was the name of Hercules' deceased wife?",
+      "options": {
+        "A": "Serena",
+        "B": "Deianeira",
+        "C": "Xena",
+        "D": "Alcmene"
+      },
+      "correct": "B",
+      "explanation": "Deianeira was Hercules' first wife who, along with their children, was killed by Hera."
+    },
+    {
+      "id": "q012",
+      "text": "Who played the character Salmoneus?",
+      "options": {
+        "A": "Ted Raimi",
+        "B": "Robert Trebor",
+        "C": "Bruce Campbell",
+        "D": "Michael Hurst"
+      },
+      "correct": "B",
+      "explanation": "Robert Trebor played Salmoneus, the scheming but well-meaning merchant and entrepreneur."
+    },
+    {
+      "id": "q013",
+      "text": "What goddess did Hercules fall in love with and marry?",
+      "options": {
+        "A": "Aphrodite",
+        "B": "Artemis",
+        "C": "Serena",
+        "D": "Athena"
+      },
+      "correct": "C",
+      "explanation": "Serena, the Golden Hind and later a mortal, was Hercules' second wife. She was tragically killed by Strife."
+    },
+    {
+      "id": "q014",
+      "text": "How many seasons did the series run?",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7"
+      },
+      "correct": "C",
+      "explanation": "Hercules: The Legendary Journeys ran for six seasons from 1995 to 1999."
+    },
+    {
+      "id": "q015",
+      "text": "Who was the god of the Underworld in the series?",
+      "options": {
+        "A": "Charon",
+        "B": "Thanatos",
+        "C": "Hades",
+        "D": "Celesta"
+      },
+      "correct": "C",
+      "explanation": "Hades, played by Erik Thomson, ruled the Underworld and was surprisingly one of the more reasonable gods."
+    },
+    {
+      "id": "q016",
+      "text": "What was unique about the show's tone compared to traditional mythology?",
+      "options": {
+        "A": "It was very serious",
+        "B": "It mixed action with humor",
+        "C": "It was a documentary",
+        "D": "It was animated"
+      },
+      "correct": "B",
+      "explanation": "The series was known for its mix of action, adventure, and lighthearted humor, often breaking the fourth wall."
+    },
+    {
+      "id": "q017",
+      "text": "Who played young Hercules in the TV movie and spin-off series?",
+      "options": {
+        "A": "Chris Hemsworth",
+        "B": "Ryan Gosling",
+        "C": "Ryan Reynolds",
+        "D": "Ian Bohen"
+      },
+      "correct": "B",
+      "explanation": "Ryan Gosling played the teenage Hercules in the TV movie 'Young Hercules' and the subsequent series."
+    },
+    {
+      "id": "q018",
+      "text": "What was Iolaus's relationship status compared to Hercules?",
+      "options": {
+        "A": "He was married",
+        "B": "He was a bachelor and ladies' man",
+        "C": "He was a widower",
+        "D": "He was a priest"
+      },
+      "correct": "B",
+      "explanation": "Iolaus was portrayed as a charming bachelor who often fell for various women they encountered."
+    },
+    {
+      "id": "q019",
+      "text": "Which character was known for saying 'I'm not a god, I'm a demi-god'?",
+      "options": {
+        "A": "Ares",
+        "B": "Iolaus",
+        "C": "Hercules",
+        "D": "Zeus"
+      },
+      "correct": "C",
+      "explanation": "Hercules often had to remind people he was only half-god, emphasizing his humanity."
+    },
+    {
+      "id": "q020",
+      "text": "Who was the Goddess of Love in the series?",
+      "options": {
+        "A": "Hera",
+        "B": "Artemis",
+        "C": "Athena",
+        "D": "Aphrodite"
+      },
+      "correct": "D",
+      "explanation": "Aphrodite, played by Alexandra Tydings, was the bubbly and often helpful Goddess of Love."
+    },
+    {
+      "id": "q021",
+      "text": "What was the name of Discord, Ares' sister?",
+      "options": {
+        "A": "Eris",
+        "B": "Strife",
+        "C": "Discord",
+        "D": "Callisto"
+      },
+      "correct": "C",
+      "explanation": "Discord, goddess of chaos, was Ares' sister and frequent antagonist, played by Meighan Desmond."
+    },
+    {
+      "id": "q022",
+      "text": "What happened to Iolaus in later seasons?",
+      "options": {
+        "A": "He retired",
+        "B": "He died and was resurrected",
+        "C": "He became a god",
+        "D": "He got married and left"
+      },
+      "correct": "B",
+      "explanation": "Iolaus was killed by the Enforcer but later resurrected, and even spent time as a different character in parallel universe storylines."
+    },
+    {
+      "id": "q023",
+      "text": "Who was Strife in the series?",
+      "options": {
+        "A": "God of War",
+        "B": "Ares' nephew and henchman",
+        "C": "King of Thieves",
+        "D": "Hercules' enemy"
+      },
+      "correct": "B",
+      "explanation": "Strife, played by Joel Tobeck, was Ares' nephew and the god of mischief and chaos."
+    },
+    {
+      "id": "q024",
+      "text": "What was the show's production company?",
+      "options": {
+        "A": "Universal Studios",
+        "B": "Renaissance Pictures",
+        "C": "Warner Bros",
+        "D": "Paramount"
+      },
+      "correct": "B",
+      "explanation": "Renaissance Pictures, founded by Sam Raimi and Rob Tapert, produced the series."
+    },
+    {
+      "id": "q025",
+      "text": "Who was the main character in the crossover episodes with Xena?",
+      "options": {
+        "A": "Gabrielle",
+        "B": "Xena",
+        "C": "Callisto",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Xena, Gabrielle, and Callisto all appeared in crossover episodes between the two series."
+    },
+    {
+      "id": "q026",
+      "text": "What was Hercules' main weapon of choice?",
+      "options": {
+        "A": "A sword",
+        "B": "His fists",
+        "C": "A bow and arrow",
+        "D": "A spear"
+      },
+      "correct": "B",
+      "explanation": "Hercules relied primarily on his superhuman strength and hand-to-hand combat, rarely using weapons."
+    },
+    {
+      "id": "q027",
+      "text": "Who created the series?",
+      "options": {
+        "A": "Sam Raimi",
+        "B": "Christian Williams",
+        "C": "Rob Tapert",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Sam Raimi, Robert Tapert, and Christian Williams created Hercules: The Legendary Journeys."
+    },
+    {
+      "id": "q028",
+      "text": "What was notable about the series' special effects?",
+      "options": {
+        "A": "All CGI",
+        "B": "Mix of practical effects and early CGI",
+        "C": "No special effects",
+        "D": "Stop-motion animation"
+      },
+      "correct": "B",
+      "explanation": "The series used a combination of practical effects, wire work, and early computer-generated imagery."
+    },
+    {
+      "id": "q029",
+      "text": "Which god was portrayed as the most reasonable and helpful?",
+      "options": {
+        "A": "Zeus",
+        "B": "Ares",
+        "C": "Hades",
+        "D": "Apollo"
+      },
+      "correct": "C",
+      "explanation": "Hades was often portrayed as one of the more reasonable gods, in contrast to his mythological reputation."
+    },
+    {
+      "id": "q030",
+      "text": "What was Hercules' greatest source of strength?",
+      "options": {
+        "A": "His divine heritage",
+        "B": "His compassion for mortals",
+        "C": "His weapons",
+        "D": "His anger"
+      },
+      "correct": "B",
+      "explanation": "The series emphasized that Hercules' true strength came from his humanity and compassion, not just his powers."
+    },
+    {
+      "id": "q031",
+      "text": "How did the series typically portray the Greek gods?",
+      "options": {
+        "A": "As perfect beings",
+        "B": "As flawed and often petty",
+        "C": "As evil",
+        "D": "As non-existent"
+      },
+      "correct": "B",
+      "explanation": "The gods were portrayed as powerful but deeply flawed, often petty and jealous, causing problems for mortals."
+    },
+    {
+      "id": "q032",
+      "text": "What was the name of Hercules' mother?",
+      "options": {
+        "A": "Hera",
+        "B": "Alcmene",
+        "C": "Deianeira",
+        "D": "Serena"
+      },
+      "correct": "B",
+      "explanation": "Alcmene was Hercules' mortal mother, who had an affair with Zeus."
+    },
+    {
+      "id": "q033",
+      "text": "Which character often appeared in comedic episodes?",
+      "options": {
+        "A": "Autolycus",
+        "B": "Salmoneus",
+        "C": "Aphrodite",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Autolycus, Salmoneus, and Aphrodite were all featured in lighter, more comedic episodes."
+    },
+    {
+      "id": "q034",
+      "text": "What happened in the series finale?",
+      "options": {
+        "A": "Hercules became a full god",
+        "B": "Hercules died",
+        "C": "Hercules continued his journeys",
+        "D": "Hercules married"
+      },
+      "correct": "C",
+      "explanation": "The series ended with Hercules continuing his journeys to help people, staying true to his mission."
+    },
+    {
+      "id": "q035",
+      "text": "Which famous director had a hand in creating the series?",
+      "options": {
+        "A": "Steven Spielberg",
+        "B": "James Cameron",
+        "C": "Sam Raimi",
+        "D": "Peter Jackson"
+      },
+      "correct": "C",
+      "explanation": "Sam Raimi, known for the Evil Dead series and Spider-Man films, was one of the creators and executive producers."
+    },
+    {
+      "id": "q036",
+      "text": "What was Iolaus's fighting style compared to Hercules?",
+      "options": {
+        "A": "More agile and quick",
+        "B": "Pure strength",
+        "C": "Magic-based",
+        "D": "Archery"
+      },
+      "correct": "A",
+      "explanation": "Iolaus relied on speed, agility, and skill rather than raw strength, complementing Hercules' power."
+    },
+    {
+      "id": "q037",
+      "text": "What network aired Hercules in syndication?",
+      "options": {
+        "A": "NBC",
+        "B": "Various local stations",
+        "C": "USA Network",
+        "D": "Sci-Fi Channel"
+      },
+      "correct": "B",
+      "explanation": "Hercules was distributed in first-run syndication to various local TV stations, not on a single network."
+    },
+    {
+      "id": "q038",
+      "text": "How did the show handle historical accuracy?",
+      "options": {
+        "A": "Very seriously",
+        "B": "Loosely, with creative freedom",
+        "C": "Documentary style",
+        "D": "Completely accurate"
+      },
+      "correct": "B",
+      "explanation": "The show took significant creative liberties with Greek mythology and history, prioritizing entertainment."
+    },
+    {
+      "id": "q039",
+      "text": "What was a recurring theme in the series?",
+      "options": {
+        "A": "Technology",
+        "B": "The conflict between gods and mortals",
+        "C": "Space exploration",
+        "D": "Medieval knights"
+      },
+      "correct": "B",
+      "explanation": "The series frequently explored the relationship and conflicts between the immortal gods and mortal humans."
+    },
+    {
+      "id": "q040",
+      "text": "What made Hercules different from other Greek heroes?",
+      "options": {
+        "A": "His strength",
+        "B": "His compassion and desire to help people",
+        "C": "His divine heritage",
+        "D": "His fighting skills"
+      },
+      "correct": "B",
+      "explanation": "Hercules was defined by his selfless compassion and dedication to helping ordinary people, not just his strength."
+    }
+  ]
+}

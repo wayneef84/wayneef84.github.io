@@ -1,0 +1,612 @@
+{
+  "meta": {
+    "id": "classic_movies_001",
+    "title": "Classic Movies",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Movies", "Classic", "Old Hollywood", "Cinema", "Golden Age"],
+    "questionCount": 50
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who played Rick Blaine in 'Casablanca' (1942)?",
+      "options": {
+        "A": "Cary Grant",
+        "B": "Humphrey Bogart",
+        "C": "James Stewart",
+        "D": "Clark Gable"
+      },
+      "correct": "B",
+      "explanation": "Humphrey Bogart played the iconic role of Rick Blaine, owner of Rick's Café Américain."
+    },
+    {
+      "id": "q002",
+      "text": "What film features the line 'Here's looking at you, kid'?",
+      "options": {
+        "A": "Gone with the Wind",
+        "B": "The Maltese Falcon",
+        "C": "Casablanca",
+        "D": "The Big Sleep"
+      },
+      "correct": "C",
+      "explanation": "This famous line was spoken by Humphrey Bogart to Ingrid Bergman in Casablanca."
+    },
+    {
+      "id": "q003",
+      "text": "Who directed 'Citizen Kane' (1941)?",
+      "options": {
+        "A": "Alfred Hitchcock",
+        "B": "Orson Welles",
+        "C": "Frank Capra",
+        "D": "John Ford"
+      },
+      "correct": "B",
+      "explanation": "Orson Welles directed, co-wrote, produced, and starred in Citizen Kane at age 25."
+    },
+    {
+      "id": "q004",
+      "text": "What was the dying word in 'Citizen Kane'?",
+      "options": {
+        "A": "Mother",
+        "B": "Susan",
+        "C": "Rosebud",
+        "D": "Xanadu"
+      },
+      "correct": "C",
+      "explanation": "'Rosebud' was Kane's dying word, revealed at the end to be his childhood sled."
+    },
+    {
+      "id": "q005",
+      "text": "Who played Scarlett O'Hara in 'Gone with the Wind' (1939)?",
+      "options": {
+        "A": "Vivien Leigh",
+        "B": "Bette Davis",
+        "C": "Katharine Hepburn",
+        "D": "Olivia de Havilland"
+      },
+      "correct": "A",
+      "explanation": "British actress Vivien Leigh won an Oscar for her portrayal of Scarlett O'Hara."
+    },
+    {
+      "id": "q006",
+      "text": "What was the first full-length animated Disney film?",
+      "options": {
+        "A": "Pinocchio",
+        "B": "Fantasia",
+        "C": "Snow White and the Seven Dwarfs",
+        "D": "Bambi"
+      },
+      "correct": "C",
+      "explanation": "Snow White and the Seven Dwarfs (1937) was Disney's first full-length animated feature."
+    },
+    {
+      "id": "q007",
+      "text": "Who directed 'Psycho' (1960)?",
+      "options": {
+        "A": "Billy Wilder",
+        "B": "Alfred Hitchcock",
+        "C": "Otto Preminger",
+        "D": "Fritz Lang"
+      },
+      "correct": "B",
+      "explanation": "Alfred Hitchcock directed this groundbreaking thriller that revolutionized horror cinema."
+    },
+    {
+      "id": "q008",
+      "text": "What was the name of the motel in 'Psycho'?",
+      "options": {
+        "A": "Overlook Motel",
+        "B": "Bates Motel",
+        "C": "Lincoln Motel",
+        "D": "Desert Motel"
+      },
+      "correct": "B",
+      "explanation": "The Bates Motel, run by Norman Bates, was the setting for the film's murders."
+    },
+    {
+      "id": "q009",
+      "text": "Who played Dorothy in 'The Wizard of Oz' (1939)?",
+      "options": {
+        "A": "Shirley Temple",
+        "B": "Judy Garland",
+        "C": "Deanna Durbin",
+        "D": "Margaret O'Brien"
+      },
+      "correct": "B",
+      "explanation": "Judy Garland was 16 when she played Dorothy Gale in this timeless classic."
+    },
+    {
+      "id": "q010",
+      "text": "What color were Dorothy's slippers in the book version of 'The Wizard of Oz'?",
+      "options": {
+        "A": "Ruby red",
+        "B": "Silver",
+        "C": "Gold",
+        "D": "Blue"
+      },
+      "correct": "B",
+      "explanation": "In L. Frank Baum's book, the slippers were silver. They were changed to ruby red for the film to showcase Technicolor."
+    },
+    {
+      "id": "q011",
+      "text": "Who starred in 'It's a Wonderful Life' (1946)?",
+      "options": {
+        "A": "Cary Grant",
+        "B": "James Stewart",
+        "C": "Gary Cooper",
+        "D": "Henry Fonda"
+      },
+      "correct": "B",
+      "explanation": "James Stewart played George Bailey in Frank Capra's beloved Christmas classic."
+    },
+    {
+      "id": "q012",
+      "text": "What was the name of Charles Foster Kane's estate?",
+      "options": {
+        "A": "Tara",
+        "B": "Manderley",
+        "C": "Xanadu",
+        "D": "Shangri-La"
+      },
+      "correct": "C",
+      "explanation": "Xanadu was Kane's vast, unfinished palatial estate in Citizen Kane."
+    },
+    {
+      "id": "q013",
+      "text": "Who directed 'The Maltese Falcon' (1941)?",
+      "options": {
+        "A": "Howard Hawks",
+        "B": "John Huston",
+        "C": "Billy Wilder",
+        "D": "Orson Welles"
+      },
+      "correct": "B",
+      "explanation": "The Maltese Falcon was John Huston's directorial debut and helped establish film noir."
+    },
+    {
+      "id": "q014",
+      "text": "What movie ends with 'Louis, I think this is the beginning of a beautiful friendship'?",
+      "options": {
+        "A": "The African Queen",
+        "B": "Casablanca",
+        "C": "To Have and Have Not",
+        "D": "The Big Sleep"
+      },
+      "correct": "B",
+      "explanation": "This famous last line from Casablanca was actually added after principal photography was complete."
+    },
+    {
+      "id": "q015",
+      "text": "Who played the Wicked Witch of the West?",
+      "options": {
+        "A": "Margaret Hamilton",
+        "B": "Billie Burke",
+        "C": "Clara Blandick",
+        "D": "Gale Sondergaard"
+      },
+      "correct": "A",
+      "explanation": "Margaret Hamilton's terrifying portrayal made her one of cinema's most memorable villains."
+    },
+    {
+      "id": "q016",
+      "text": "What was the first film to win the Academy Award for Best Picture?",
+      "options": {
+        "A": "Wings",
+        "B": "The Broadway Melody",
+        "C": "All Quiet on the Western Front",
+        "D": "Grand Hotel"
+      },
+      "correct": "A",
+      "explanation": "Wings (1927) won the first-ever Academy Award for Best Picture at the 1st Academy Awards in 1929."
+    },
+    {
+      "id": "q017",
+      "text": "Who starred opposite Katharine Hepburn in 'The African Queen' (1951)?",
+      "options": {
+        "A": "Cary Grant",
+        "B": "Spencer Tracy",
+        "C": "Humphrey Bogart",
+        "D": "James Stewart"
+      },
+      "correct": "C",
+      "explanation": "Humphrey Bogart won his only Oscar for his role as Charlie Allnut in The African Queen."
+    },
+    {
+      "id": "q018",
+      "text": "What was the first feature-length film with synchronized dialogue?",
+      "options": {
+        "A": "The Broadway Melody",
+        "B": "The Jazz Singer",
+        "C": "Singing Fool",
+        "D": "Show Boat"
+      },
+      "correct": "B",
+      "explanation": "The Jazz Singer (1927) revolutionized cinema as the first feature-length 'talkie' with synchronized dialogue sequences."
+    },
+    {
+      "id": "q019",
+      "text": "Who played Rhett Butler in 'Gone with the Wind'?",
+      "options": {
+        "A": "Errol Flynn",
+        "B": "Gary Cooper",
+        "C": "Clark Gable",
+        "D": "Cary Grant"
+      },
+      "correct": "C",
+      "explanation": "Clark Gable's portrayal of Rhett Butler became one of his most iconic roles."
+    },
+    {
+      "id": "q020",
+      "text": "What famous line does Gable say at the end of 'Gone with the Wind'?",
+      "options": {
+        "A": "Tomorrow is another day",
+        "B": "Frankly my dear, I don't give a damn",
+        "C": "After all, tomorrow is another day",
+        "D": "I'll be back"
+      },
+      "correct": "B",
+      "explanation": "This line caused controversy as 'damn' was considered profane, but producer David O. Selznick paid a fine to keep it."
+    },
+    {
+      "id": "q021",
+      "text": "Who directed 'Singin' in the Rain' (1952)?",
+      "options": {
+        "A": "Vincente Minnelli",
+        "B": "Stanley Donen and Gene Kelly",
+        "C": "George Cukor",
+        "D": "Busby Berkeley"
+      },
+      "correct": "B",
+      "explanation": "Gene Kelly and Stanley Donen co-directed this beloved musical about Hollywood's transition to talkies."
+    },
+    {
+      "id": "q022",
+      "text": "What silent film star struggled with the transition to talkies?",
+      "options": {
+        "A": "Charlie Chaplin",
+        "B": "Buster Keaton",
+        "C": "John Gilbert",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Many silent stars struggled with sound, though each for different reasons - some due to voice, others due to changing styles."
+    },
+    {
+      "id": "q023",
+      "text": "Who played the Tramp in silent films?",
+      "options": {
+        "A": "Buster Keaton",
+        "B": "Charlie Chaplin",
+        "C": "Harold Lloyd",
+        "D": "Fatty Arbuckle"
+      },
+      "correct": "B",
+      "explanation": "Charlie Chaplin created and played the iconic Little Tramp character in numerous silent films."
+    },
+    {
+      "id": "q024",
+      "text": "What was the first film shot in three-strip Technicolor?",
+      "options": {
+        "A": "The Wizard of Oz",
+        "B": "Gone with the Wind",
+        "C": "Becky Sharp",
+        "D": "Snow White and the Seven Dwarfs"
+      },
+      "correct": "C",
+      "explanation": "Becky Sharp (1935) was the first feature film to use the full three-strip Technicolor process."
+    },
+    {
+      "id": "q025",
+      "text": "Who directed 'Rebecca' (1940)?",
+      "options": {
+        "A": "William Wyler",
+        "B": "Alfred Hitchcock",
+        "C": "George Cukor",
+        "D": "Ernst Lubitsch"
+      },
+      "correct": "B",
+      "explanation": "Rebecca was Alfred Hitchcock's first American film and won Best Picture."
+    },
+    {
+      "id": "q026",
+      "text": "What classic film features the line 'I coulda been a contender'?",
+      "options": {
+        "A": "Rebel Without a Cause",
+        "B": "On the Waterfront",
+        "C": "A Streetcar Named Desire",
+        "D": "East of Eden"
+      },
+      "correct": "B",
+      "explanation": "Marlon Brando delivers this famous line in On the Waterfront (1954)."
+    },
+    {
+      "id": "q027",
+      "text": "Who starred in 'Some Like It Hot' (1959)?",
+      "options": {
+        "A": "Marilyn Monroe, Tony Curtis, Jack Lemmon",
+        "B": "Doris Day, Rock Hudson, Tony Randall",
+        "C": "Grace Kelly, Cary Grant, James Stewart",
+        "D": "Audrey Hepburn, William Holden, Humphrey Bogart"
+      },
+      "correct": "A",
+      "explanation": "Billy Wilder's comedy featured Monroe, Curtis, and Lemmon in a hilarious Prohibition-era story."
+    },
+    {
+      "id": "q028",
+      "text": "What was Orson Welles' first film?",
+      "options": {
+        "A": "The Magnificent Ambersons",
+        "B": "Touch of Evil",
+        "C": "Citizen Kane",
+        "D": "The Lady from Shanghai"
+      },
+      "correct": "C",
+      "explanation": "Citizen Kane (1941) was Welles' feature film debut, which he made at age 25."
+    },
+    {
+      "id": "q029",
+      "text": "Who played opposite Audrey Hepburn in 'Roman Holiday' (1953)?",
+      "options": {
+        "A": "Cary Grant",
+        "B": "Gregory Peck",
+        "C": "William Holden",
+        "D": "Gary Cooper"
+      },
+      "correct": "B",
+      "explanation": "Gregory Peck starred as the reporter who falls for Princess Ann (Hepburn) in this romantic comedy."
+    },
+    {
+      "id": "q030",
+      "text": "What 1950 film featured Gloria Swanson as a faded silent film star?",
+      "options": {
+        "A": "All About Eve",
+        "B": "Sunset Boulevard",
+        "C": "A Star Is Born",
+        "D": "The Bad and the Beautiful"
+      },
+      "correct": "B",
+      "explanation": "Sunset Boulevard featured Swanson as Norma Desmond, a role that paralleled her own career."
+    },
+    {
+      "id": "q031",
+      "text": "Who directed '12 Angry Men' (1957)?",
+      "options": {
+        "A": "William Wyler",
+        "B": "Sidney Lumet",
+        "C": "Elia Kazan",
+        "D": "John Huston"
+      },
+      "correct": "B",
+      "explanation": "12 Angry Men was Sidney Lumet's feature film directorial debut."
+    },
+    {
+      "id": "q032",
+      "text": "What film noir featured a femme fatale named Phyllis Dietrichson?",
+      "options": {
+        "A": "The Postman Always Rings Twice",
+        "B": "Double Indemnity",
+        "C": "The Maltese Falcon",
+        "D": "Laura"
+      },
+      "correct": "B",
+      "explanation": "Barbara Stanwyck played the deadly Phyllis Dietrichson in Billy Wilder's Double Indemnity (1944)."
+    },
+    {
+      "id": "q033",
+      "text": "Who won an Oscar for 'The Philadelphia Story' (1940)?",
+      "options": {
+        "A": "Katharine Hepburn",
+        "B": "Cary Grant",
+        "C": "James Stewart",
+        "D": "Ruth Hussey"
+      },
+      "correct": "C",
+      "explanation": "James Stewart won Best Actor for The Philadelphia Story, though Katharine Hepburn was also nominated."
+    },
+    {
+      "id": "q034",
+      "text": "What was the last silent film to win Best Picture?",
+      "options": {
+        "A": "Wings",
+        "B": "The Broadway Melody",
+        "C": "Sunrise",
+        "D": "The Artist"
+      },
+      "correct": "A",
+      "explanation": "Wings (1927) was both the first and last silent film to win Best Picture until The Artist in 2011."
+    },
+    {
+      "id": "q035",
+      "text": "Who starred in 'North by Northwest' (1959)?",
+      "options": {
+        "A": "James Stewart",
+        "B": "Cary Grant",
+        "C": "Gregory Peck",
+        "D": "William Holden"
+      },
+      "correct": "B",
+      "explanation": "Cary Grant starred in this Hitchcock thriller featuring the famous crop duster scene."
+    },
+    {
+      "id": "q036",
+      "text": "What was the first James Bond film?",
+      "options": {
+        "A": "Goldfinger",
+        "B": "From Russia with Love",
+        "C": "Dr. No",
+        "D": "Thunderball"
+      },
+      "correct": "C",
+      "explanation": "Dr. No (1962) introduced Sean Connery as James Bond and launched the legendary franchise."
+    },
+    {
+      "id": "q037",
+      "text": "Who directed 'The Searchers' (1956)?",
+      "options": {
+        "A": "John Ford",
+        "B": "Howard Hawks",
+        "C": "Anthony Mann",
+        "D": "Fred Zinnemann"
+      },
+      "correct": "A",
+      "explanation": "John Ford directed this Western starring John Wayne, now considered one of the greatest films ever made."
+    },
+    {
+      "id": "q038",
+      "text": "What musical featured the song 'Edelweiss'?",
+      "options": {
+        "A": "My Fair Lady",
+        "B": "The King and I",
+        "C": "The Sound of Music",
+        "D": "Oklahoma!"
+      },
+      "correct": "C",
+      "explanation": "The Sound of Music (1965) featured this touching song sung by Captain von Trapp."
+    },
+    {
+      "id": "q039",
+      "text": "Who played Maria in 'West Side Story' (1961)?",
+      "options": {
+        "A": "Audrey Hepburn",
+        "B": "Natalie Wood",
+        "C": "Rita Moreno",
+        "D": "Debbie Reynolds"
+      },
+      "correct": "B",
+      "explanation": "Natalie Wood played Maria, though her singing was dubbed by Marni Nixon."
+    },
+    {
+      "id": "q040",
+      "text": "What 1939 film was the first to be shown on television?",
+      "options": {
+        "A": "Gone with the Wind",
+        "B": "The Wizard of Oz",
+        "C": "The Adventures of Robin Hood",
+        "D": "Wuthering Heights"
+      },
+      "correct": "B",
+      "explanation": "The Wizard of Oz was first broadcast on television in 1956, becoming an annual tradition."
+    },
+    {
+      "id": "q041",
+      "text": "Who directed 'Lawrence of Arabia' (1962)?",
+      "options": {
+        "A": "John Huston",
+        "B": "David Lean",
+        "C": "William Wyler",
+        "D": "Fred Zinnemann"
+      },
+      "correct": "B",
+      "explanation": "David Lean directed this epic biographical film starring Peter O'Toole."
+    },
+    {
+      "id": "q042",
+      "text": "What film features the shower scene with screeching violins?",
+      "options": {
+        "A": "The Birds",
+        "B": "Psycho",
+        "C": "Vertigo",
+        "D": "Rear Window"
+      },
+      "correct": "B",
+      "explanation": "Bernard Herrmann's screeching violin score for the Psycho shower scene is one of cinema's most famous moments."
+    },
+    {
+      "id": "q043",
+      "text": "Who was the first actress to win an Oscar for Best Actress?",
+      "options": {
+        "A": "Mary Pickford",
+        "B": "Janet Gaynor",
+        "C": "Norma Shearer",
+        "D": "Marie Dressler"
+      },
+      "correct": "B",
+      "explanation": "Janet Gaynor won the first Best Actress Oscar at the 1st Academy Awards for three films."
+    },
+    {
+      "id": "q044",
+      "text": "What classic horror film featured Boris Karloff as the monster?",
+      "options": {
+        "A": "Dracula",
+        "B": "The Mummy",
+        "C": "Frankenstein",
+        "D": "The Wolf Man"
+      },
+      "correct": "C",
+      "explanation": "Boris Karloff's portrayal of Frankenstein's monster in 1931 became iconic."
+    },
+    {
+      "id": "q045",
+      "text": "Who starred in 'To Kill a Mockingbird' (1962)?",
+      "options": {
+        "A": "James Stewart",
+        "B": "Gregory Peck",
+        "C": "Henry Fonda",
+        "D": "Spencer Tracy"
+      },
+      "correct": "B",
+      "explanation": "Gregory Peck won an Oscar for his portrayal of Atticus Finch."
+    },
+    {
+      "id": "q046",
+      "text": "What was the name of the spaceship in '2001: A Space Odyssey'?",
+      "options": {
+        "A": "Enterprise",
+        "B": "Nostromo",
+        "C": "Discovery One",
+        "D": "Serenity"
+      },
+      "correct": "C",
+      "explanation": "Discovery One was the spacecraft in Stanley Kubrick's 2001: A Space Odyssey (1968)."
+    },
+    {
+      "id": "q047",
+      "text": "Who directed 'The Third Man' (1949)?",
+      "options": {
+        "A": "Alfred Hitchcock",
+        "B": "Carol Reed",
+        "C": "Fritz Lang",
+        "D": "Otto Preminger"
+      },
+      "correct": "B",
+      "explanation": "Carol Reed directed this noir thriller set in post-war Vienna with Orson Welles."
+    },
+    {
+      "id": "q048",
+      "text": "What Hitchcock film featured Kim Novak in a dual role?",
+      "options": {
+        "A": "Rear Window",
+        "B": "Vertigo",
+        "C": "The Birds",
+        "D": "Marnie"
+      },
+      "correct": "B",
+      "explanation": "Kim Novak played both Madeleine and Judy in Vertigo (1958)."
+    },
+    {
+      "id": "q049",
+      "text": "Who played opposite Humphrey Bogart in 'The Big Sleep' (1946)?",
+      "options": {
+        "A": "Ingrid Bergman",
+        "B": "Lauren Bacall",
+        "C": "Rita Hayworth",
+        "D": "Barbara Stanwyck"
+      },
+      "correct": "B",
+      "explanation": "Lauren Bacall, Bogart's real-life wife, starred opposite him in this Raymond Chandler adaptation."
+    },
+    {
+      "id": "q050",
+      "text": "What film features the line 'You talking to me?'",
+      "options": {
+        "A": "The Godfather",
+        "B": "Mean Streets",
+        "C": "Taxi Driver",
+        "D": "Raging Bull"
+      },
+      "correct": "C",
+      "explanation": "Robert De Niro improvised this famous line while filming Taxi Driver (1976)."
+    }
+  ]
+}

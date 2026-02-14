@@ -1,0 +1,552 @@
+{
+  "meta": {
+    "id": "xena_tv_001",
+    "title": "Xena: Warrior Princess",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["TV", "Xena", "90s", "Fantasy", "Action"],
+    "questionCount": 45
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who played Xena in 'Xena: Warrior Princess'?",
+      "options": {
+        "A": "Lucy Lawless",
+        "B": "Renee O'Connor",
+        "C": "Hudson Leick",
+        "D": "Adrienne Wilkinson"
+      },
+      "correct": "A",
+      "explanation": "Lucy Lawless portrayed Xena throughout the series run from 1995-2001."
+    },
+    {
+      "id": "q002",
+      "text": "What was the name of Xena's sidekick and best friend?",
+      "options": {
+        "A": "Callisto",
+        "B": "Gabrielle",
+        "C": "Amarice",
+        "D": "Ephiny"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle, played by Renee O'Connor, was Xena's loyal companion and the heart of the series."
+    },
+    {
+      "id": "q003",
+      "text": "What was Xena's signature battle cry?",
+      "options": {
+        "A": "Aiyaaa!",
+        "B": "Yi-yi-yi-yi-yi!",
+        "C": "Alala!",
+        "D": "Yip-yip-yip!"
+      },
+      "correct": "B",
+      "explanation": "Xena's distinctive 'Yi-yi-yi-yi-yi!' battle cry became one of the show's most iconic elements."
+    },
+    {
+      "id": "q004",
+      "text": "What year did Xena first appear on Hercules?",
+      "options": {
+        "A": "1994",
+        "B": "1995",
+        "C": "1996",
+        "D": "1997"
+      },
+      "correct": "B",
+      "explanation": "Xena first appeared in three episodes of Hercules: The Legendary Journeys in 1995 before getting her own series."
+    },
+    {
+      "id": "q005",
+      "text": "What was Xena's signature weapon?",
+      "options": {
+        "A": "A sword",
+        "B": "A chakram",
+        "C": "A whip",
+        "D": "Throwing stars"
+      },
+      "correct": "B",
+      "explanation": "Xena's chakram, a circular throwing weapon, was her most iconic tool that she could ricochet off multiple targets."
+    },
+    {
+      "id": "q006",
+      "text": "Who was Xena's arch-nemesis?",
+      "options": {
+        "A": "Ares",
+        "B": "Caesar",
+        "C": "Callisto",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Xena had multiple major antagonists including Callisto, Caesar, and Ares, each representing different threats."
+    },
+    {
+      "id": "q007",
+      "text": "What weapon did Gabrielle use?",
+      "options": {
+        "A": "A sword",
+        "B": "A staff",
+        "C": "A bow",
+        "D": "Sais"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle initially used a staff, though she later also learned to use sais."
+    },
+    {
+      "id": "q008",
+      "text": "How many seasons did Xena run?",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7"
+      },
+      "correct": "C",
+      "explanation": "Xena: Warrior Princess ran for six seasons from 1995 to 2001."
+    },
+    {
+      "id": "q009",
+      "text": "Who played the psychotic Callisto?",
+      "options": {
+        "A": "Lucy Lawless",
+        "B": "Renee O'Connor",
+        "C": "Hudson Leick",
+        "D": "Claire Stansfield"
+      },
+      "correct": "C",
+      "explanation": "Hudson Leick brilliantly portrayed the vengeful and unhinged Callisto."
+    },
+    {
+      "id": "q010",
+      "text": "What was Gabrielle's initial profession?",
+      "options": {
+        "A": "Warrior",
+        "B": "Bard",
+        "C": "Priestess",
+        "D": "Healer"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle was originally a young bard from Potidaea who chronicled Xena's adventures."
+    },
+    {
+      "id": "q011",
+      "text": "Who was the God of War who constantly pursued Xena?",
+      "options": {
+        "A": "Zeus",
+        "B": "Hades",
+        "C": "Ares",
+        "D": "Apollo"
+      },
+      "correct": "C",
+      "explanation": "Ares, the God of War played by Kevin Smith, was obsessed with Xena and wanted her as his Warrior Queen."
+    },
+    {
+      "id": "q012",
+      "text": "What was the name of the Amazon tribe Gabrielle joined?",
+      "options": {
+        "A": "The Northern Amazons",
+        "B": "The Greek Amazons",
+        "C": "The Thessalian Amazons",
+        "D": "The Thracian Amazons"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle became an Amazon Princess and later Queen of the Greek Amazons."
+    },
+    {
+      "id": "q013",
+      "text": "What was the name of Xena's horse?",
+      "options": {
+        "A": "Pegasus",
+        "B": "Argo",
+        "C": "Thunder",
+        "D": "Spirit"
+      },
+      "correct": "B",
+      "explanation": "Argo was Xena's loyal palomino warhorse throughout most of the series."
+    },
+    {
+      "id": "q014",
+      "text": "Who was Xena's son?",
+      "options": {
+        "A": "Solon",
+        "B": "Solan",
+        "C": "Eve",
+        "D": "Both A/B (same character)"
+      },
+      "correct": "D",
+      "explanation": "Solan (sometimes spelled Solon) was Xena's son with the warlord Borias, raised by centaurs."
+    },
+    {
+      "id": "q015",
+      "text": "What was special about Xena's chakram?",
+      "options": {
+        "A": "It could split in two",
+        "B": "It always returned to her",
+        "C": "It could cut through anything",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Xena's chakram could split into two pieces, always returned when thrown, and could cut through most materials."
+    },
+    {
+      "id": "q016",
+      "text": "Who was Gabrielle's daughter?",
+      "options": {
+        "A": "Hope",
+        "B": "Eve",
+        "C": "Amarice",
+        "D": "Sarah"
+      },
+      "correct": "A",
+      "explanation": "Hope was Gabrielle's daughter, conceived when Gabrielle was impregnated by the demon Dahak."
+    },
+    {
+      "id": "q017",
+      "text": "What historical figure was a recurring antagonist?",
+      "options": {
+        "A": "Alexander the Great",
+        "B": "Julius Caesar",
+        "C": "Cleopatra",
+        "D": "Hannibal"
+      },
+      "correct": "B",
+      "explanation": "Julius Caesar, played by Karl Urban, was a major recurring villain who had a complex history with Xena."
+    },
+    {
+      "id": "q018",
+      "text": "What was the name of Xena's daughter?",
+      "options": {
+        "A": "Hope",
+        "B": "Livia",
+        "C": "Eve",
+        "D": "Both B and C"
+      },
+      "correct": "D",
+      "explanation": "Xena's daughter was named Eve, but she was known as Livia when she was a Roman warrior."
+    },
+    {
+      "id": "q019",
+      "text": "Where was Xena primarily filmed?",
+      "options": {
+        "A": "Greece",
+        "B": "Australia",
+        "C": "New Zealand",
+        "D": "California"
+      },
+      "correct": "C",
+      "explanation": "Like Hercules, Xena was filmed entirely in New Zealand, which doubled for ancient Greece."
+    },
+    {
+      "id": "q020",
+      "text": "What was Xena's relationship with Hercules?",
+      "options": {
+        "A": "She was his enemy",
+        "B": "They were friends and allies",
+        "C": "She was his student",
+        "D": "They were siblings"
+      },
+      "correct": "B",
+      "explanation": "After initially being a villain on Hercules, Xena reformed and became friends and allies with Hercules."
+    },
+    {
+      "id": "q021",
+      "text": "What special ability did Xena have?",
+      "options": {
+        "A": "The Pinch that cut off blood flow",
+        "B": "Superhuman strength",
+        "C": "Immortality",
+        "D": "Magic powers"
+      },
+      "correct": "A",
+      "explanation": "Xena could use a nerve pinch that cut off blood flow to the brain, giving victims 30 seconds to live unless released."
+    },
+    {
+      "id": "q022",
+      "text": "Who was Xena's mentor in her dark past?",
+      "options": {
+        "A": "Caesar",
+        "B": "Ares",
+        "C": "Alti",
+        "D": "Borias"
+      },
+      "correct": "C",
+      "explanation": "Alti, a shamaness, taught Xena dark arts and was a recurring villain from Xena's past."
+    },
+    {
+      "id": "q023",
+      "text": "What was the name of the warlord Xena loved?",
+      "options": {
+        "A": "Marcus",
+        "B": "Borias",
+        "C": "Ulysses",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Xena had romantic relationships with Marcus, Borias (father of her son), and Ulysses over the series."
+    },
+    {
+      "id": "q024",
+      "text": "What was Gabrielle's Amazon title?",
+      "options": {
+        "A": "Warrior",
+        "B": "Princess, then Queen",
+        "C": "Priestess",
+        "D": "Scout"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle inherited the title of Amazon Princess and later became Amazon Queen."
+    },
+    {
+      "id": "q025",
+      "text": "How did Xena typically defeat enemies?",
+      "options": {
+        "A": "With her sword",
+        "B": "Acrobatic fighting and strategy",
+        "C": "Magic",
+        "D": "Divine powers"
+      },
+      "correct": "B",
+      "explanation": "Xena relied on exceptional combat skills, acrobatics, and clever strategies rather than supernatural powers."
+    },
+    {
+      "id": "q026",
+      "text": "What was the 'Xena Scroll'?",
+      "options": {
+        "A": "A weapon",
+        "B": "Gabrielle's written account of their adventures",
+        "C": "A map",
+        "D": "A prophecy"
+      },
+      "correct": "B",
+      "explanation": "The Xena Scrolls were Gabrielle's written chronicles of their adventures, referenced in modern-day episodes."
+    },
+    {
+      "id": "q027",
+      "text": "Who composed the iconic Xena theme music?",
+      "options": {
+        "A": "John Williams",
+        "B": "Hans Zimmer",
+        "C": "Joseph LoDuca",
+        "D": "Danny Elfman"
+      },
+      "correct": "C",
+      "explanation": "Joseph LoDuca composed the memorable Xena theme and much of the series' music."
+    },
+    {
+      "id": "q028",
+      "text": "What religion did Gabrielle adopt later in the series?",
+      "options": {
+        "A": "Buddhism",
+        "B": "The Way of Love (Christianity-like)",
+        "C": "Hinduism",
+        "D": "Greek Paganism"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle followed Eli's Way of Love, a pacifist philosophy similar to early Christianity."
+    },
+    {
+      "id": "q029",
+      "text": "How did the series finale end?",
+      "options": {
+        "A": "Xena retired",
+        "B": "Xena died and remained dead",
+        "C": "Xena became a goddess",
+        "D": "Xena got married"
+      },
+      "correct": "B",
+      "explanation": "In the controversial finale, Xena died in Japan and chose to remain dead to save souls, appearing only as a spirit."
+    },
+    {
+      "id": "q030",
+      "text": "What was Callisto's motivation for revenge?",
+      "options": {
+        "A": "Xena killed her family",
+        "B": "Xena's army destroyed her village",
+        "C": "Xena stole from her",
+        "D": "Professional rivalry"
+      },
+      "correct": "B",
+      "explanation": "Callisto's family died when Xena's army burned her village of Cirra when she was a child."
+    },
+    {
+      "id": "q031",
+      "text": "What modern-day device appeared in fantasy episodes?",
+      "options": {
+        "A": "Cameras",
+        "B": "Cars",
+        "C": "Phones",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "The show had fun 'present day' episodes where descendants found the Xena Scrolls, featuring modern technology."
+    },
+    {
+      "id": "q032",
+      "text": "Who was Joxer?",
+      "options": {
+        "A": "A skilled warrior",
+        "B": "A bumbling wannabe warrior",
+        "C": "A god",
+        "D": "A king"
+      },
+      "correct": "B",
+      "explanation": "Joxer the Mighty was a comic relief character, a well-meaning but inept warrior who loved Gabrielle."
+    },
+    {
+      "id": "q033",
+      "text": "What was unique about the musical episodes?",
+      "options": {
+        "A": "They featured original songs",
+        "B": "Cast members sang live",
+        "C": "They advanced the plot",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Musical episodes like 'The Bitter Suite' featured original songs sung by the cast and furthered major storylines."
+    },
+    {
+      "id": "q034",
+      "text": "What was the relationship between Xena and Gabrielle?",
+      "options": {
+        "A": "Sisters",
+        "B": "Best friends/soulmates",
+        "C": "Teacher and student",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Their relationship encompassed all these dynamics and was the emotional core of the series."
+    },
+    {
+      "id": "q035",
+      "text": "Who played Autolycus in Xena crossover episodes?",
+      "options": {
+        "A": "Kevin Sorbo",
+        "B": "Bruce Campbell",
+        "C": "Ted Raimi",
+        "D": "Karl Urban"
+      },
+      "correct": "B",
+      "explanation": "Bruce Campbell reprised his Hercules role as Autolycus, the King of Thieves, in Xena episodes."
+    },
+    {
+      "id": "q036",
+      "text": "What was Xena's past before redemption?",
+      "options": {
+        "A": "She was a priestess",
+        "B": "She was a ruthless warlord",
+        "C": "She was a farmer",
+        "D": "She was a queen"
+      },
+      "correct": "B",
+      "explanation": "Xena was a brutal warlord known as 'Destroyer of Nations' before choosing the path of redemption."
+    },
+    {
+      "id": "q037",
+      "text": "Which god gave Xena her 'pinch' technique?",
+      "options": {
+        "A": "Ares",
+        "B": "No god, she learned it from a Chinese warrior",
+        "C": "Zeus",
+        "D": "Athena"
+      },
+      "correct": "B",
+      "explanation": "Xena learned the nerve pinch technique from Lao Ma, a Chinese warrior and philosopher."
+    },
+    {
+      "id": "q038",
+      "text": "What happened when Xena and Gabrielle went to India?",
+      "options": {
+        "A": "They learned new fighting styles",
+        "B": "They were crucified and reborn",
+        "C": "They met Buddha",
+        "D": "They found treasure"
+      },
+      "correct": "B",
+      "explanation": "In a major arc, Xena and Gabrielle were crucified in the Roman Empire and later reborn, jumping 25 years forward."
+    },
+    {
+      "id": "q039",
+      "text": "Who was Aphrodite in the series?",
+      "options": {
+        "A": "A villain",
+        "B": "A helpful, ditzy goddess",
+        "C": "Xena's mother",
+        "D": "An Amazon"
+      },
+      "correct": "B",
+      "explanation": "Aphrodite, goddess of love, was portrayed as a bubbly, helpful character who often aided the heroes."
+    },
+    {
+      "id": "q040",
+      "text": "What was the show's stance on historical accuracy?",
+      "options": {
+        "A": "Completely accurate",
+        "B": "Loosely based with creative freedom",
+        "C": "Documentary style",
+        "D": "Entirely fictional"
+      },
+      "correct": "B",
+      "explanation": "The show freely mixed different time periods and mythologies, prioritizing storytelling over historical accuracy."
+    },
+    {
+      "id": "q041",
+      "text": "What was Xena's home village?",
+      "options": {
+        "A": "Amphipolis",
+        "B": "Athens",
+        "C": "Potidaea",
+        "D": "Sparta"
+      },
+      "correct": "A",
+      "explanation": "Xena was from Amphipolis, where her mother Cyrene ran a tavern."
+    },
+    {
+      "id": "q042",
+      "text": "What significant event happened to Gabrielle's hair?",
+      "options": {
+        "A": "She dyed it",
+        "B": "She cut it short",
+        "C": "She grew it long",
+        "D": "Nothing changed"
+      },
+      "correct": "B",
+      "explanation": "Gabrielle cut her long hair short in Season 3, marking a significant character evolution."
+    },
+    {
+      "id": "q043",
+      "text": "Who was Eli?",
+      "options": {
+        "A": "A warlord",
+        "B": "A prophet of peace",
+        "C": "A Roman soldier",
+        "D": "A king"
+      },
+      "correct": "B",
+      "explanation": "Eli was a peaceful prophet whose Way of Love influenced Gabrielle and mirrored early Christianity."
+    },
+    {
+      "id": "q044",
+      "text": "What was the relationship between Ares and Xena?",
+      "options": {
+        "A": "Purely adversarial",
+        "B": "Unrequited love from Ares",
+        "C": "Complicated attraction",
+        "D": "Family"
+      },
+      "correct": "C",
+      "explanation": "Ares and Xena had a complex relationship involving attraction, manipulation, and occasional partnership."
+    },
+    {
+      "id": "q045",
+      "text": "How many times was Lucy Lawless pregnant during filming?",
+      "options": {
+        "A": "Never",
+        "B": "Once",
+        "C": "Twice",
+        "D": "Three times"
+      },
+      "correct": "C",
+      "explanation": "Lucy Lawless was pregnant twice during the show, which was written into the storyline both times."
+    }
+  ]
+}

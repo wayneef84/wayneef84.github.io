@@ -1,0 +1,612 @@
+{
+  "meta": {
+    "id": "greek_mythology_001",
+    "title": "Greek Mythology",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Greek", "Mythology", "Gods", "Heroes", "Ancient Greece"],
+    "questionCount": 50
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who was the Greek goddess of wisdom and warfare?",
+      "options": {
+        "A": "Hera",
+        "B": "Athena",
+        "C": "Artemis",
+        "D": "Aphrodite"
+      },
+      "correct": "B",
+      "explanation": "Athena was the goddess of wisdom, warfare, and handicrafts. She sprang fully grown from Zeus's head."
+    },
+    {
+      "id": "q002",
+      "text": "What was the name of the winged horse in Greek mythology?",
+      "options": {
+        "A": "Pegasus",
+        "B": "Centaur",
+        "C": "Chiron",
+        "D": "Hippogriff"
+      },
+      "correct": "A",
+      "explanation": "Pegasus was the immortal winged horse that sprang from Medusa's blood when Perseus beheaded her."
+    },
+    {
+      "id": "q003",
+      "text": "Which hero was forced to complete 12 labors?",
+      "options": {
+        "A": "Perseus",
+        "B": "Theseus",
+        "C": "Hercules",
+        "D": "Achilles"
+      },
+      "correct": "C",
+      "explanation": "Hercules (Heracles) was forced to complete 12 labors as penance for killing his family in a fit of madness induced by Hera."
+    },
+    {
+      "id": "q004",
+      "text": "Who was the god of the sea?",
+      "options": {
+        "A": "Zeus",
+        "B": "Hades",
+        "C": "Apollo",
+        "D": "Poseidon"
+      },
+      "correct": "D",
+      "explanation": "Poseidon was the god of the sea, earthquakes, and horses. He wielded a trident as his weapon."
+    },
+    {
+      "id": "q005",
+      "text": "What creature had the head of a bull and the body of a man?",
+      "options": {
+        "A": "Cyclops",
+        "B": "Minotaur",
+        "C": "Satyr",
+        "D": "Centaur"
+      },
+      "correct": "B",
+      "explanation": "The Minotaur was a creature with a bull's head and man's body, kept in the labyrinth of Crete and slain by Theseus."
+    },
+    {
+      "id": "q006",
+      "text": "Who was the goddess of love and beauty?",
+      "options": {
+        "A": "Athena",
+        "B": "Hera",
+        "C": "Aphrodite",
+        "D": "Demeter"
+      },
+      "correct": "C",
+      "explanation": "Aphrodite was the goddess of love, beauty, and desire. According to legend, she was born from sea foam."
+    },
+    {
+      "id": "q007",
+      "text": "What did Pandora release when she opened her box?",
+      "options": {
+        "A": "Treasures",
+        "B": "Animals",
+        "C": "All evils",
+        "D": "The gods"
+      },
+      "correct": "C",
+      "explanation": "Pandora released all the evils into the world, with only Hope remaining in the box."
+    },
+    {
+      "id": "q008",
+      "text": "Who was the messenger god with winged sandals?",
+      "options": {
+        "A": "Apollo",
+        "B": "Hermes",
+        "C": "Ares",
+        "D": "Dionysus"
+      },
+      "correct": "B",
+      "explanation": "Hermes was the messenger of the gods, known for his winged sandals and caduceus staff."
+    },
+    {
+      "id": "q009",
+      "text": "What was the name of Hades' three-headed dog?",
+      "options": {
+        "A": "Orthrus",
+        "B": "Cerberus",
+        "C": "Chimera",
+        "D": "Hydra"
+      },
+      "correct": "B",
+      "explanation": "Cerberus was the three-headed dog that guarded the gates of the Underworld, preventing the dead from leaving."
+    },
+    {
+      "id": "q010",
+      "text": "Who turned everything he touched into gold?",
+      "options": {
+        "A": "King Midas",
+        "B": "King Priam",
+        "C": "King Odysseus",
+        "D": "King Agamemnon"
+      },
+      "correct": "A",
+      "explanation": "King Midas was granted the 'golden touch' by Dionysus, which became a curse when he couldn't eat or drink."
+    },
+    {
+      "id": "q011",
+      "text": "Which goddess was married to Zeus?",
+      "options": {
+        "A": "Demeter",
+        "B": "Hera",
+        "C": "Athena",
+        "D": "Artemis"
+      },
+      "correct": "B",
+      "explanation": "Hera was Zeus's wife and the goddess of marriage and family, though their marriage was often troubled by Zeus's infidelities."
+    },
+    {
+      "id": "q012",
+      "text": "What was the home of the Greek gods?",
+      "options": {
+        "A": "Mount Etna",
+        "B": "Mount Parnassus",
+        "C": "Mount Olympus",
+        "D": "Mount Vesuvius"
+      },
+      "correct": "C",
+      "explanation": "Mount Olympus was believed to be the home of the twelve Olympian gods, led by Zeus."
+    },
+    {
+      "id": "q013",
+      "text": "Who flew too close to the sun with wax wings?",
+      "options": {
+        "A": "Perseus",
+        "B": "Icarus",
+        "C": "Daedalus",
+        "D": "Bellerophon"
+      },
+      "correct": "B",
+      "explanation": "Icarus flew too close to the sun despite his father Daedalus's warnings, melting the wax in his wings and falling to his death."
+    },
+    {
+      "id": "q014",
+      "text": "Which hero killed the Gorgon Medusa?",
+      "options": {
+        "A": "Hercules",
+        "B": "Perseus",
+        "C": "Theseus",
+        "D": "Jason"
+      },
+      "correct": "B",
+      "explanation": "Perseus beheaded Medusa using a mirrored shield to avoid her petrifying gaze."
+    },
+    {
+      "id": "q015",
+      "text": "What was the prize Jason sought with the Argonauts?",
+      "options": {
+        "A": "The Holy Grail",
+        "B": "The Golden Fleece",
+        "C": "The Apple of Discord",
+        "D": "Pandora's Box"
+      },
+      "correct": "B",
+      "explanation": "Jason and the Argonauts embarked on a quest to retrieve the Golden Fleece from Colchis."
+    },
+    {
+      "id": "q016",
+      "text": "Who was the god of wine and revelry?",
+      "options": {
+        "A": "Apollo",
+        "B": "Hermes",
+        "C": "Dionysus",
+        "D": "Pan"
+      },
+      "correct": "C",
+      "explanation": "Dionysus (Bacchus in Roman mythology) was the god of wine, festivity, and theater."
+    },
+    {
+      "id": "q017",
+      "text": "What was Achilles' only vulnerable spot?",
+      "options": {
+        "A": "His heart",
+        "B": "His heel",
+        "C": "His eye",
+        "D": "His forehead"
+      },
+      "correct": "B",
+      "explanation": "Achilles' heel was his only vulnerable point, where his mother held him when dipping him in the River Styx."
+    },
+    {
+      "id": "q018",
+      "text": "Who was the goddess of the hunt?",
+      "options": {
+        "A": "Athena",
+        "B": "Hera",
+        "C": "Artemis",
+        "D": "Demeter"
+      },
+      "correct": "C",
+      "explanation": "Artemis was the goddess of the hunt, wilderness, and moon, twin sister of Apollo."
+    },
+    {
+      "id": "q019",
+      "text": "What creature was half-man, half-horse?",
+      "options": {
+        "A": "Minotaur",
+        "B": "Satyr",
+        "C": "Centaur",
+        "D": "Faun"
+      },
+      "correct": "C",
+      "explanation": "Centaurs were creatures with the upper body of a human and the lower body of a horse."
+    },
+    {
+      "id": "q020",
+      "text": "Who was the Titan who gave fire to humanity?",
+      "options": {
+        "A": "Atlas",
+        "B": "Prometheus",
+        "C": "Cronus",
+        "D": "Epimetheus"
+      },
+      "correct": "B",
+      "explanation": "Prometheus stole fire from the gods and gave it to humanity, for which Zeus punished him by chaining him to a rock."
+    },
+    {
+      "id": "q021",
+      "text": "What was the name of Odysseus's wife who waited for him?",
+      "options": {
+        "A": "Helen",
+        "B": "Penelope",
+        "C": "Andromeda",
+        "D": "Cassandra"
+      },
+      "correct": "B",
+      "explanation": "Penelope waited faithfully for 20 years for Odysseus to return from the Trojan War and his subsequent journey."
+    },
+    {
+      "id": "q022",
+      "text": "Who was condemned to roll a boulder up a hill for eternity?",
+      "options": {
+        "A": "Tantalus",
+        "B": "Prometheus",
+        "C": "Sisyphus",
+        "D": "Ixion"
+      },
+      "correct": "C",
+      "explanation": "Sisyphus was punished in Tartarus by being forced to roll a boulder uphill, only to watch it roll back down forever."
+    },
+    {
+      "id": "q023",
+      "text": "What was the name of the winged goddess of victory?",
+      "options": {
+        "A": "Nike",
+        "B": "Iris",
+        "C": "Nemesis",
+        "D": "Eos"
+      },
+      "correct": "A",
+      "explanation": "Nike was the goddess of victory, often depicted with wings. The modern athletic brand is named after her."
+    },
+    {
+      "id": "q024",
+      "text": "Who was the god of war?",
+      "options": {
+        "A": "Apollo",
+        "B": "Hermes",
+        "C": "Ares",
+        "D": "Hephaestus"
+      },
+      "correct": "C",
+      "explanation": "Ares was the god of war, violence, and bloodshed, though he was not as favored as Athena, goddess of strategic warfare."
+    },
+    {
+      "id": "q025",
+      "text": "What multi-headed serpent did Hercules fight?",
+      "options": {
+        "A": "Cerberus",
+        "B": "Chimera",
+        "C": "Hydra",
+        "D": "Python"
+      },
+      "correct": "C",
+      "explanation": "The Lernaean Hydra was a serpent-like monster with multiple heads that grew back when cut off. It was Hercules' second labor."
+    },
+    {
+      "id": "q026",
+      "text": "Who was the god of the sun and music?",
+      "options": {
+        "A": "Helios",
+        "B": "Apollo",
+        "C": "Hermes",
+        "D": "Dionysus"
+      },
+      "correct": "B",
+      "explanation": "Apollo was the god of the sun, music, poetry, prophecy, and healing. He was the twin brother of Artemis."
+    },
+    {
+      "id": "q027",
+      "text": "What was the name of the nymphs who were Odysseus's temptresses?",
+      "options": {
+        "A": "Harpies",
+        "B": "Sirens",
+        "C": "Furies",
+        "D": "Graces"
+      },
+      "correct": "B",
+      "explanation": "The Sirens were dangerous creatures who lured sailors with their enchanting music and voices to shipwreck on their island."
+    },
+    {
+      "id": "q028",
+      "text": "Who was the blacksmith god?",
+      "options": {
+        "A": "Ares",
+        "B": "Apollo",
+        "C": "Hephaestus",
+        "D": "Hermes"
+      },
+      "correct": "C",
+      "explanation": "Hephaestus was the god of fire, metalworking, and crafts. He forged weapons and armor for the gods."
+    },
+    {
+      "id": "q029",
+      "text": "What creature did Theseus slay in the labyrinth?",
+      "options": {
+        "A": "Medusa",
+        "B": "Minotaur",
+        "C": "Chimera",
+        "D": "Hydra"
+      },
+      "correct": "B",
+      "explanation": "Theseus entered the labyrinth of Crete and killed the Minotaur, using Ariadne's thread to find his way out."
+    },
+    {
+      "id": "q030",
+      "text": "Who was the goddess of agriculture and harvest?",
+      "options": {
+        "A": "Hera",
+        "B": "Demeter",
+        "C": "Persephone",
+        "D": "Gaia"
+      },
+      "correct": "B",
+      "explanation": "Demeter was the goddess of agriculture, grain, and the harvest. Her daughter was Persephone."
+    },
+    {
+      "id": "q031",
+      "text": "What was the River of the Underworld called?",
+      "options": {
+        "A": "Lethe",
+        "B": "Acheron",
+        "C": "Styx",
+        "D": "Phlegethon"
+      },
+      "correct": "C",
+      "explanation": "The River Styx separated the world of the living from the dead. The gods swore their most binding oaths upon it."
+    },
+    {
+      "id": "q032",
+      "text": "Who opened a box releasing all evils into the world?",
+      "options": {
+        "A": "Persephone",
+        "B": "Pandora",
+        "C": "Helen",
+        "D": "Psyche"
+      },
+      "correct": "B",
+      "explanation": "Pandora, the first woman created by the gods, opened a jar (often mistranslated as 'box') releasing all evils, keeping only Hope inside."
+    },
+    {
+      "id": "q033",
+      "text": "Who was the Titan forced to hold up the sky?",
+      "options": {
+        "A": "Prometheus",
+        "B": "Cronus",
+        "C": "Atlas",
+        "D": "Oceanus"
+      },
+      "correct": "C",
+      "explanation": "Atlas was condemned by Zeus to hold up the celestial heavens for eternity after the Titanomachy."
+    },
+    {
+      "id": "q034",
+      "text": "What was the name of Hades' wife?",
+      "options": {
+        "A": "Demeter",
+        "B": "Persephone",
+        "C": "Athena",
+        "D": "Hestia"
+      },
+      "correct": "B",
+      "explanation": "Persephone was abducted by Hades to be his queen in the Underworld, causing her mother Demeter to create winter."
+    },
+    {
+      "id": "q035",
+      "text": "Who was the mortal woman loved by Zeus who was turned into a cow?",
+      "options": {
+        "A": "Europa",
+        "B": "Io",
+        "C": "Leda",
+        "D": "Danae"
+      },
+      "correct": "B",
+      "explanation": "Zeus transformed Io into a cow to hide her from Hera's jealousy, but Hera sent a gadfly to torment her."
+    },
+    {
+      "id": "q036",
+      "text": "What golden object caused the Trojan War?",
+      "options": {
+        "A": "The Golden Fleece",
+        "B": "The Apple of Discord",
+        "C": "Pandora's Box",
+        "D": "Midas's Crown"
+      },
+      "correct": "B",
+      "explanation": "The Apple of Discord, inscribed 'for the fairest,' was thrown by Eris and led to the judgment of Paris, sparking the Trojan War."
+    },
+    {
+      "id": "q037",
+      "text": "Who was the leader of the Greek forces at Troy?",
+      "options": {
+        "A": "Odysseus",
+        "B": "Achilles",
+        "C": "Agamemnon",
+        "D": "Menelaus"
+      },
+      "correct": "C",
+      "explanation": "Agamemnon, king of Mycenae, led the Greek forces during the Trojan War."
+    },
+    {
+      "id": "q038",
+      "text": "What creature had the head of a lion, body of a goat, and tail of a serpent?",
+      "options": {
+        "A": "Sphinx",
+        "B": "Chimera",
+        "C": "Manticore",
+        "D": "Griffin"
+      },
+      "correct": "B",
+      "explanation": "The Chimera was a fire-breathing hybrid monster slain by Bellerophon riding Pegasus."
+    },
+    {
+      "id": "q039",
+      "text": "Who fell in love with his own reflection?",
+      "options": {
+        "A": "Adonis",
+        "B": "Narcissus",
+        "C": "Hyacinth",
+        "D": "Ganymede"
+      },
+      "correct": "B",
+      "explanation": "Narcissus fell in love with his own reflection in a pool and wasted away, transforming into the narcissus flower."
+    },
+    {
+      "id": "q040",
+      "text": "What was the name of the nine goddesses of the arts?",
+      "options": {
+        "A": "The Fates",
+        "B": "The Graces",
+        "C": "The Muses",
+        "D": "The Furies"
+      },
+      "correct": "C",
+      "explanation": "The nine Muses were goddesses who presided over the arts and sciences, inspiring artists and thinkers."
+    },
+    {
+      "id": "q041",
+      "text": "Who was the Greek hero known for his cunning and the Trojan Horse?",
+      "options": {
+        "A": "Achilles",
+        "B": "Odysseus",
+        "C": "Ajax",
+        "D": "Diomedes"
+      },
+      "correct": "B",
+      "explanation": "Odysseus conceived the plan of the Trojan Horse, which led to the fall of Troy."
+    },
+    {
+      "id": "q042",
+      "text": "What were the three Furies goddesses of?",
+      "options": {
+        "A": "Love",
+        "B": "Vengeance",
+        "C": "Wisdom",
+        "D": "Fortune"
+      },
+      "correct": "B",
+      "explanation": "The Furies (Erinyes) were goddesses of vengeance who punished crimes, especially those against family."
+    },
+    {
+      "id": "q043",
+      "text": "Who was the goddess of the hearth and home?",
+      "options": {
+        "A": "Hera",
+        "B": "Demeter",
+        "C": "Hestia",
+        "D": "Athena"
+      },
+      "correct": "C",
+      "explanation": "Hestia was the virgin goddess of the hearth, home, and family. She was the first-born child of Cronus and Rhea."
+    },
+    {
+      "id": "q044",
+      "text": "What creature posed riddles to travelers and ate those who couldn't answer?",
+      "options": {
+        "A": "Minotaur",
+        "B": "Sphinx",
+        "C": "Chimera",
+        "D": "Harpy"
+      },
+      "correct": "B",
+      "explanation": "The Sphinx of Thebes posed a riddle to travelers and devoured those who failed. Oedipus solved it, causing the Sphinx to destroy itself."
+    },
+    {
+      "id": "q045",
+      "text": "Who was the god of dreams?",
+      "options": {
+        "A": "Hypnos",
+        "B": "Morpheus",
+        "C": "Thanatos",
+        "D": "Erebus"
+      },
+      "correct": "B",
+      "explanation": "Morpheus was the god of dreams, able to take any human form and appear in dreams."
+    },
+    {
+      "id": "q046",
+      "text": "What was the name of Odysseus's son?",
+      "options": {
+        "A": "Orestes",
+        "B": "Telemachus",
+        "C": "Neoptolemus",
+        "D": "Pylades"
+      },
+      "correct": "B",
+      "explanation": "Telemachus was the son of Odysseus and Penelope, who went searching for his father during the Odyssey."
+    },
+    {
+      "id": "q047",
+      "text": "Who was the primordial goddess of Earth?",
+      "options": {
+        "A": "Rhea",
+        "B": "Gaia",
+        "C": "Demeter",
+        "D": "Hera"
+      },
+      "correct": "B",
+      "explanation": "Gaia was the personification of Earth and the ancestral mother of all life in Greek mythology."
+    },
+    {
+      "id": "q048",
+      "text": "What was the food of the gods that granted immortality?",
+      "options": {
+        "A": "Nectar",
+        "B": "Ambrosia",
+        "C": "Manna",
+        "D": "Soma"
+      },
+      "correct": "B",
+      "explanation": "Ambrosia was the food of the gods that granted immortality, while nectar was their drink."
+    },
+    {
+      "id": "q049",
+      "text": "Who was the twin sister of Apollo?",
+      "options": {
+        "A": "Athena",
+        "B": "Aphrodite",
+        "C": "Artemis",
+        "D": "Hestia"
+      },
+      "correct": "C",
+      "explanation": "Artemis was Apollo's twin sister, born to Zeus and Leto on the island of Delos."
+    },
+    {
+      "id": "q050",
+      "text": "What was the labyrinth on Crete built to contain?",
+      "options": {
+        "A": "Medusa",
+        "B": "The Minotaur",
+        "C": "Cerberus",
+        "D": "The Chimera"
+      },
+      "correct": "B",
+      "explanation": "King Minos commissioned Daedalus to build the labyrinth to contain the Minotaur, a creature born from his wife and a bull."
+    }
+  ]
+}

@@ -1,0 +1,732 @@
+{
+  "meta": {
+    "id": "the_office_001",
+    "title": "The Office (US)",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["TV", "Comedy", "The Office", "Sitcom", "2000s"],
+    "questionCount": 60
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "Who plays Michael Scott?",
+      "options": {
+        "A": "Ricky Gervais",
+        "B": "Steve Carell",
+        "C": "Rainn Wilson",
+        "D": "John Krasinski"
+      },
+      "correct": "B",
+      "explanation": "Steve Carell played the bumbling regional manager Michael Scott for seven seasons."
+    },
+    {
+      "id": "q002",
+      "text": "What paper company is featured in The Office?",
+      "options": {
+        "A": "Staples",
+        "B": "Dunder Mifflin",
+        "C": "Office Depot",
+        "D": "Michael Scott Paper Company"
+      },
+      "correct": "B",
+      "explanation": "Dunder Mifflin Paper Company is the workplace where the show takes place."
+    },
+    {
+      "id": "q003",
+      "text": "What city is the Scranton branch located in?",
+      "options": {
+        "A": "Philadelphia, PA",
+        "B": "Buffalo, NY",
+        "C": "Scranton, PA",
+        "D": "Syracuse, NY"
+      },
+      "correct": "C",
+      "explanation": "The show is set in Scranton, Pennsylvania, though it was filmed in California."
+    },
+    {
+      "id": "q004",
+      "text": "Who does Jim Halpert marry?",
+      "options": {
+        "A": "Karen Filippelli",
+        "B": "Katy Moore",
+        "C": "Pam Beesly",
+        "D": "Angela Martin"
+      },
+      "correct": "C",
+      "explanation": "Jim and Pam's relationship is the emotional core of the series, and they marry in Season 6."
+    },
+    {
+      "id": "q005",
+      "text": "What is Dwight Schrute's title?",
+      "options": {
+        "A": "Regional Manager",
+        "B": "Assistant Regional Manager",
+        "C": "Assistant TO the Regional Manager",
+        "D": "Sales Representative"
+      },
+      "correct": "C",
+      "explanation": "Dwight's made-up title is 'Assistant TO the Regional Manager,' much to his chagrin."
+    },
+    {
+      "id": "q006",
+      "text": "What does Dwight grow on his family farm?",
+      "options": {
+        "A": "Corn",
+        "B": "Wheat",
+        "C": "Beets",
+        "D": "Potatoes"
+      },
+      "correct": "C",
+      "explanation": "Dwight owns and operates Schrute Farms, a beet farm and bed & breakfast."
+    },
+    {
+      "id": "q007",
+      "text": "What is the name of Michael Scott's alter ego?",
+      "options": {
+        "A": "Prison Mike",
+        "B": "Date Mike",
+        "C": "Blind Guy McSqueezy",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Michael has many alter egos including Prison Mike, Date Mike, and Blind Guy McSqueezy."
+    },
+    {
+      "id": "q008",
+      "text": "Who is the HR representative everyone dislikes?",
+      "options": {
+        "A": "Toby Flenderson",
+        "B": "Holly Flax",
+        "C": "David Wallace",
+        "D": "Jan Levinson"
+      },
+      "correct": "A",
+      "explanation": "Toby Flenderson is the HR rep whom Michael especially despises."
+    },
+    {
+      "id": "q009",
+      "text": "What is the name of the receptionist before Pam?",
+      "options": {
+        "A": "There was no receptionist before Pam",
+        "B": "Karen",
+        "C": "Erin",
+        "D": "Kelly"
+      },
+      "correct": "A",
+      "explanation": "Pam is the receptionist from the beginning, though Erin later replaces her when she moves to sales."
+    },
+    {
+      "id": "q010",
+      "text": "What does Kevin spill on the floor in Season 5?",
+      "options": {
+        "A": "Coffee",
+        "B": "His famous chili",
+        "C": "M&Ms",
+        "D": "Paper clips"
+      },
+      "correct": "B",
+      "explanation": "Kevin's famous chili spilling is one of the show's most memorable cold opens."
+    },
+    {
+      "id": "q011",
+      "text": "Who becomes regional manager after Michael leaves?",
+      "options": {
+        "A": "Jim Halpert",
+        "B": "Dwight Schrute",
+        "C": "Andy Bernard",
+        "D": "Robert California"
+      },
+      "correct": "C",
+      "explanation": "Andy Bernard becomes regional manager in Season 8, though the position changes hands multiple times."
+    },
+    {
+      "id": "q012",
+      "text": "What is Angela's favorite type of animal?",
+      "options": {
+        "A": "Dogs",
+        "B": "Cats",
+        "C": "Birds",
+        "D": "Fish"
+      },
+      "correct": "B",
+      "explanation": "Angela Martin is obsessed with cats and is a member of the Party Planning Committee."
+    },
+    {
+      "id": "q013",
+      "text": "What does Michael burn his foot on?",
+      "options": {
+        "A": "A toaster",
+        "B": "A George Foreman Grill",
+        "C": "An iron",
+        "D": "Hot coffee"
+      },
+      "correct": "B",
+      "explanation": "Michael burns his foot on a George Foreman Grill that he uses to cook bacon by his bed."
+    },
+    {
+      "id": "q014",
+      "text": "Who does Andy date before Angela?",
+      "options": {
+        "A": "Pam",
+        "B": "Kelly",
+        "C": "Angela",
+        "D": "Erin"
+      },
+      "correct": "C",
+      "explanation": "Andy dated Angela, who was secretly also seeing Dwight, creating a love triangle."
+    },
+    {
+      "id": "q015",
+      "text": "What is the name of Pam and Jim's first child?",
+      "options": {
+        "A": "Cecelia",
+        "B": "Philip",
+        "C": "Cece",
+        "D": "Both A and C"
+      },
+      "correct": "D",
+      "explanation": "Their daughter Cecelia (Cece) Halpert is born in Season 6."
+    },
+    {
+      "id": "q016",
+      "text": "What is Creed's job at Dunder Mifflin?",
+      "options": {
+        "A": "Quality Assurance",
+        "B": "Warehouse Worker",
+        "C": "Salesman",
+        "D": "It's unclear"
+      },
+      "correct": "A",
+      "explanation": "Creed works in Quality Assurance, though he's clearly not very good at it."
+    },
+    {
+      "id": "q017",
+      "text": "What does Jim put Dwight's stapler in?",
+      "options": {
+        "A": "A drawer",
+        "B": "Jello",
+        "C": "A vending machine",
+        "D": "The ceiling"
+      },
+      "correct": "B",
+      "explanation": "In the pilot episode, Jim puts Dwight's stapler in Jello, one of his many pranks."
+    },
+    {
+      "id": "q018",
+      "text": "What is Michael's movie idea called?",
+      "options": {
+        "A": "Agent Michael Scarn",
+        "B": "Threat Level Midnight",
+        "C": "The Office Movie",
+        "D": "Michael's Masterpiece"
+      },
+      "correct": "B",
+      "explanation": "Threat Level Midnight is Michael's amateur action film featuring his character Michael Scarn."
+    },
+    {
+      "id": "q019",
+      "text": "Who does Kelly Kapoor have an on-again, off-again relationship with?",
+      "options": {
+        "A": "Jim",
+        "B": "Darryl",
+        "C": "Ryan",
+        "D": "Toby"
+      },
+      "correct": "C",
+      "explanation": "Kelly and Ryan have a toxic, dramatic relationship throughout the series."
+    },
+    {
+      "id": "q020",
+      "text": "What is Phyllis's husband's name?",
+      "options": {
+        "A": "Bob Vance",
+        "B": "Roy Anderson",
+        "C": "Stanley Hudson",
+        "D": "David Wallace"
+      },
+      "correct": "A",
+      "explanation": "Bob Vance, of Vance Refrigeration, is Phyllis's husband."
+    },
+    {
+      "id": "q021",
+      "text": "What does Michael hit with his car?",
+      "options": {
+        "A": "A deer",
+        "B": "Meredith",
+        "C": "A fire hydrant",
+        "D": "Oscar's car"
+      },
+      "correct": "B",
+      "explanation": "Michael hits Meredith with his car in the Season 4 premiere, 'Fun Run.'"
+    },
+    {
+      "id": "q022",
+      "text": "What prize does Dwight win at the Dundies?",
+      "options": {
+        "A": "Salesman of the Year",
+        "B": "Best Beet Farmer",
+        "C": "Bushiest Beaver",
+        "D": "Tight Ass Award"
+      },
+      "correct": "C",
+      "explanation": "Dwight wins the 'Bushiest Beaver' award for his exceptional work ethic."
+    },
+    {
+      "id": "q023",
+      "text": "Where did Jim and Pam get married?",
+      "options": {
+        "A": "Scranton",
+        "B": "Niagara Falls",
+        "C": "New York City",
+        "D": "Philadelphia"
+      },
+      "correct": "B",
+      "explanation": "Jim and Pam got married at Niagara Falls in the Season 6 episode 'Niagara.'"
+    },
+    {
+      "id": "q024",
+      "text": "What is Stanley's favorite day?",
+      "options": {
+        "A": "Friday",
+        "B": "Pretzel Day",
+        "C": "Casual Friday",
+        "D": "Payday"
+      },
+      "correct": "B",
+      "explanation": "Stanley loves Pretzel Day, as shown in the episode '99.'"
+    },
+    {
+      "id": "q025",
+      "text": "Who is the Scranton Strangler?",
+      "options": {
+        "A": "Toby Flenderson",
+        "B": "Creed Bratton",
+        "C": "George Howard Skub",
+        "D": "It's never confirmed"
+      },
+      "correct": "D",
+      "explanation": "The true identity of the Scranton Strangler is never definitively revealed, though theories abound."
+    },
+    {
+      "id": "q026",
+      "text": "What does Michael propose to Holly with?",
+      "options": {
+        "A": "A ring pop",
+        "B": "A diamond ring",
+        "C": "A Dunder Mifflin pen",
+        "D": "A candlestick"
+      },
+      "correct": "D",
+      "explanation": "Michael uses a candlestick to propose to Holly during a Diwali celebration."
+    },
+    {
+      "id": "q027",
+      "text": "What is the name of the senator Angela marries?",
+      "options": {
+        "A": "Robert Lipton",
+        "B": "Oscar Martinez",
+        "C": "Kevin Malone",
+        "D": "David Wallace"
+      },
+      "correct": "A",
+      "explanation": "Angela marries State Senator Robert Lipton, who is later revealed to be gay."
+    },
+    {
+      "id": "q028",
+      "text": "What sport does Jim create in the office?",
+      "options": {
+        "A": "Flerken Ball",
+        "B": "Hateball",
+        "C": "Flonkerton",
+        "D": "Office Olympics"
+      },
+      "correct": "C",
+      "explanation": "Flonkerton is a box-walking race created during the Office Olympics."
+    },
+    {
+      "id": "q029",
+      "text": "Who replaces Pam as receptionist?",
+      "options": {
+        "A": "Kelly",
+        "B": "Erin",
+        "C": "Jordan",
+        "D": "Cathy"
+      },
+      "correct": "B",
+      "explanation": "Erin Hannon becomes the receptionist when Pam moves to sales."
+    },
+    {
+      "id": "q030",
+      "text": "What is the name of the warehouse worker who dates Pam?",
+      "options": {
+        "A": "Darryl",
+        "B": "Roy",
+        "C": "Hide",
+        "D": "Lonny"
+      },
+      "correct": "B",
+      "explanation": "Roy Anderson is Pam's fiancé at the start of the series before she breaks it off for Jim."
+    },
+    {
+      "id": "q031",
+      "text": "What does Dwight keep in his desk?",
+      "options": {
+        "A": "Knives",
+        "B": "Nunchucks",
+        "C": "Throwing stars",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Dwight keeps an arsenal of weapons in his desk, revealed in various episodes."
+    },
+    {
+      "id": "q032",
+      "text": "What is the name of Michael's improv class?",
+      "options": {
+        "A": "Yes, And",
+        "B": "Improv Everywhere",
+        "C": "The Michael Scott School of Acting",
+        "D": "Not mentioned"
+      },
+      "correct": "A",
+      "explanation": "Michael takes an improv class where he learns the 'Yes, And' technique."
+    },
+    {
+      "id": "q033",
+      "text": "Who becomes CEO of Dunder Mifflin?",
+      "options": {
+        "A": "David Wallace",
+        "B": "Robert California",
+        "C": "Jan Levinson",
+        "D": "Charles Miner"
+      },
+      "correct": "B",
+      "explanation": "Robert California manipulates his way into becoming CEO in Season 8."
+    },
+    {
+      "id": "q034",
+      "text": "What is the name of Jim's sports marketing company?",
+      "options": {
+        "A": "Athlead",
+        "B": "Athleap",
+        "C": "Both A and B",
+        "D": "J-Sports"
+      },
+      "correct": "C",
+      "explanation": "The company is renamed from Athlead to Athleap partway through Season 9."
+    },
+    {
+      "id": "q035",
+      "text": "What does Oscar win a Dundie for?",
+      "options": {
+        "A": "Best Accountant",
+        "B": "Whitest Sneakers",
+        "C": "Actually",
+        "D": "Accountant of the Year"
+      },
+      "correct": "C",
+      "explanation": "Oscar wins the 'Actually' award for frequently correcting people."
+    },
+    {
+      "id": "q036",
+      "text": "What game does Jim invent to mess with Dwight?",
+      "options": {
+        "A": "Battleship",
+        "B": "Megadesk",
+        "C": "Altoid",
+        "D": "All of the above"
+      },
+      "correct": "C",
+      "explanation": "Jim conditions Dwight to want an Altoid every time the computer makes a sound."
+    },
+    {
+      "id": "q037",
+      "text": "Where does Michael move at the end of Season 7?",
+      "options": {
+        "A": "Philadelphia",
+        "B": "Boulder, Colorado",
+        "C": "New York City",
+        "D": "Austin, Texas"
+      },
+      "correct": "B",
+      "explanation": "Michael moves to Boulder, Colorado to be with Holly."
+    },
+    {
+      "id": "q038",
+      "text": "What is the name of Andy's a cappella group?",
+      "options": {
+        "A": "The Nard Dogs",
+        "B": "Here Comes Treble",
+        "C": "The Cornell Notes",
+        "D": "The Tones"
+      },
+      "correct": "B",
+      "explanation": "Andy was in Cornell's a cappella group 'Here Comes Treble.'"
+    },
+    {
+      "id": "q039",
+      "text": "What does Dwight raise the thermostat to?",
+      "options": {
+        "A": "66 degrees",
+        "B": "72 degrees",
+        "C": "82 degrees",
+        "D": "90 degrees"
+      },
+      "correct": "C",
+      "explanation": "Dwight raises the thermostat to 82 degrees, causing the office to overheat."
+    },
+    {
+      "id": "q040",
+      "text": "What is Kevin's band called?",
+      "options": {
+        "A": "The Police",
+        "B": "Scrantonicity",
+        "C": "The Finer Things Club",
+        "D": "Kevin and the Zits"
+      },
+      "correct": "B",
+      "explanation": "Kevin plays in a Police cover band called Scrantonicity."
+    },
+    {
+      "id": "q041",
+      "text": "Who steals all of Jim's clients?",
+      "options": {
+        "A": "Dwight",
+        "B": "Ryan",
+        "C": "Danny Cordray",
+        "D": "Charles Miner"
+      },
+      "correct": "C",
+      "explanation": "Danny Cordray, played by Timothy Olyphant, is a rival salesman who steals Jim's clients."
+    },
+    {
+      "id": "q042",
+      "text": "What does Michael call his condo?",
+      "options": {
+        "A": "The Fortress of Solitude",
+        "B": "Casa de Scott",
+        "C": "Michael's Palace",
+        "D": "The Bat Cave"
+      },
+      "correct": "A",
+      "explanation": "Michael refers to his condo as his 'Fortress of Solitude.'"
+    },
+    {
+      "id": "q043",
+      "text": "Who wins the bronze medal in the Office Olympics?",
+      "options": {
+        "A": "Phyllis",
+        "B": "Jim",
+        "C": "Kevin",
+        "D": "Pam"
+      },
+      "correct": "A",
+      "explanation": "Phyllis wins the bronze medal during the Office Olympics episode."
+    },
+    {
+      "id": "q044",
+      "text": "What does Michael grill his foot on while making breakfast?",
+      "options": {
+        "A": "Bacon",
+        "B": "Eggs",
+        "C": "Sausages",
+        "D": "Pancakes"
+      },
+      "correct": "A",
+      "explanation": "Michael is cooking bacon on his bedside George Foreman Grill when he burns his foot."
+    },
+    {
+      "id": "q045",
+      "text": "Who does Ryan date briefly?",
+      "options": {
+        "A": "Pam",
+        "B": "Kelly",
+        "C": "Erin",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Ryan dated Kelly throughout, briefly pursued Pam, and dated Erin in Season 9."
+    },
+    {
+      "id": "q046",
+      "text": "What is the name of Jan's assistant?",
+      "options": {
+        "A": "Molly",
+        "B": "Hunter",
+        "C": "Clark",
+        "D": "Pete"
+      },
+      "correct": "B",
+      "explanation": "Hunter is Jan's young assistant whom she had an affair with."
+    },
+    {
+      "id": "q047",
+      "text": "What charity does Michael donate a giant check to?",
+      "options": {
+        "A": "Rabies Awareness",
+        "B": "Scott's Tots",
+        "C": "Dunder Mifflin Literacy",
+        "D": "Michael Scott Foundation"
+      },
+      "correct": "B",
+      "explanation": "Michael promises to pay for college tuition for a class of third-graders in 'Scott's Tots.'"
+    },
+    {
+      "id": "q048",
+      "text": "What does Pam fail at art school?",
+      "options": {
+        "A": "She doesn't fail",
+        "B": "Her final project",
+        "C": "A design course",
+        "D": "The whole semester"
+      },
+      "correct": "C",
+      "explanation": "Pam fails a design course and chooses to leave art school in New York."
+    },
+    {
+      "id": "q049",
+      "text": "Who becomes the father of Angela's baby?",
+      "options": {
+        "A": "Andy",
+        "B": "Dwight",
+        "C": "The Senator",
+        "D": "Roy"
+      },
+      "correct": "B",
+      "explanation": "Dwight is revealed to be the father of Angela's son, Philip."
+    },
+    {
+      "id": "q050",
+      "text": "What is the name of the documentary crew member?",
+      "options": {
+        "A": "Brian",
+        "B": "David",
+        "C": "Mark",
+        "D": "Steve"
+      },
+      "correct": "A",
+      "explanation": "Brian, the boom mic operator, becomes involved with Pam in Season 9."
+    },
+    {
+      "id": "q051",
+      "text": "What does Michael do at Phyllis's wedding?",
+      "options": {
+        "A": "Gives a speech",
+        "B": "Catches the bouquet",
+        "C": "Walks her down the aisle",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Michael inserts himself into Phyllis's wedding in multiple inappropriate ways."
+    },
+    {
+      "id": "q052",
+      "text": "What does Dwight gift Angela?",
+      "options": {
+        "A": "A cat",
+        "B": "A dead goose",
+        "C": "Beets",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Dwight gives Angela various strange gifts including a dead goose and a cat."
+    },
+    {
+      "id": "q053",
+      "text": "Who returns as a surprise in the finale?",
+      "options": {
+        "A": "Michael Scott",
+        "B": "Jan Levinson",
+        "C": "Holly Flax",
+        "D": "David Wallace"
+      },
+      "correct": "A",
+      "explanation": "Michael Scott returns as Dwight's best man in the series finale."
+    },
+    {
+      "id": "q054",
+      "text": "What does Creed do when he becomes manager?",
+      "options": {
+        "A": "Throws a party",
+        "B": "Fires people",
+        "C": "Does cartwheels",
+        "D": "Runs away"
+      },
+      "correct": "C",
+      "explanation": "When Creed briefly becomes manager, he does cartwheels in celebration."
+    },
+    {
+      "id": "q055",
+      "text": "What is Meredith's addiction?",
+      "options": {
+        "A": "Coffee",
+        "B": "Alcohol",
+        "C": "Cigarettes",
+        "D": "Shopping"
+      },
+      "correct": "B",
+      "explanation": "Meredith struggles with alcoholism throughout the series."
+    },
+    {
+      "id": "q056",
+      "text": "Who does Andy go on a boat trip with?",
+      "options": {
+        "A": "His brother",
+        "B": "His father",
+        "C": "Alone",
+        "D": "Erin"
+      },
+      "correct": "B",
+      "explanation": "Andy goes on a boat trip with his father, which tanks his relationship with Erin."
+    },
+    {
+      "id": "q057",
+      "text": "What is the name of Robert California's wife?",
+      "options": {
+        "A": "Susan",
+        "B": "Rachel",
+        "C": "Karen",
+        "D": "Jan"
+      },
+      "correct": "A",
+      "explanation": "Susan California briefly works at Dunder Mifflin in Season 8."
+    },
+    {
+      "id": "q058",
+      "text": "What does Jim wear to impersonate Dwight?",
+      "options": {
+        "A": "Glasses and a mustard shirt",
+        "B": "A brown suit",
+        "C": "A beet costume",
+        "D": "A wig"
+      },
+      "correct": "A",
+      "explanation": "Jim perfectly impersonates Dwight with glasses and a mustard-colored shirt."
+    },
+    {
+      "id": "q059",
+      "text": "How many years did the documentary take to film?",
+      "options": {
+        "A": "5 years",
+        "B": "7 years",
+        "C": "9 years",
+        "D": "10 years"
+      },
+      "correct": "C",
+      "explanation": "The documentary crew filmed for nine years, as revealed in Season 9."
+    },
+    {
+      "id": "q060",
+      "text": "What are Pam's last words in the series?",
+      "options": {
+        "A": "That's what she said",
+        "B": "There's a lot of beauty in ordinary things",
+        "C": "I love you",
+        "D": "Goodbye Dunder Mifflin"
+      },
+      "correct": "B",
+      "explanation": "Pam's final talking head reflects on finding beauty in ordinary things, the show's central theme."
+    }
+  ]
+}

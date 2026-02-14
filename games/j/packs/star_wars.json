@@ -1,0 +1,552 @@
+{
+  "meta": {
+    "id": "star_wars_001",
+    "title": "Star Wars",
+    "version": "1.0",
+    "difficulty": "Mixed",
+    "tags": ["Movies", "Star Wars", "Sci-Fi", "Space", "George Lucas"],
+    "questionCount": 45
+  },
+  "questions": [
+    {
+      "id": "q001",
+      "text": "What is Darth Vader's real name?",
+      "options": {
+        "A": "Luke Skywalker",
+        "B": "Anakin Skywalker",
+        "C": "Ben Solo",
+        "D": "Obi-Wan Kenobi"
+      },
+      "correct": "B",
+      "explanation": "Anakin Skywalker became Darth Vader after turning to the dark side of the Force."
+    },
+    {
+      "id": "q002",
+      "text": "What year was the first Star Wars film released?",
+      "options": {
+        "A": "1975",
+        "B": "1976",
+        "C": "1977",
+        "D": "1978"
+      },
+      "correct": "C",
+      "explanation": "Star Wars (later titled A New Hope) was released on May 25, 1977."
+    },
+    {
+      "id": "q003",
+      "text": "What species is Chewbacca?",
+      "options": {
+        "A": "Ewok",
+        "B": "Wookiee",
+        "C": "Jawa",
+        "D": "Wampa"
+      },
+      "correct": "B",
+      "explanation": "Chewbacca is a Wookiee from the planet Kashyyyk."
+    },
+    {
+      "id": "q004",
+      "text": "Who is Luke Skywalker's father?",
+      "options": {
+        "A": "Obi-Wan Kenobi",
+        "B": "Emperor Palpatine",
+        "C": "Darth Vader",
+        "D": "Han Solo"
+      },
+      "correct": "C",
+      "explanation": "Darth Vader reveals he is Luke's father in The Empire Strikes Back."
+    },
+    {
+      "id": "q005",
+      "text": "What is the name of Han Solo's ship?",
+      "options": {
+        "A": "X-Wing",
+        "B": "TIE Fighter",
+        "C": "Millennium Falcon",
+        "D": "Death Star"
+      },
+      "correct": "C",
+      "explanation": "The Millennium Falcon is the iconic modified YT-1300 light freighter piloted by Han Solo."
+    },
+    {
+      "id": "q006",
+      "text": "What planet is Princess Leia from?",
+      "options": {
+        "A": "Tatooine",
+        "B": "Naboo",
+        "C": "Alderaan",
+        "D": "Coruscant"
+      },
+      "correct": "C",
+      "explanation": "Princess Leia is from Alderaan, which was destroyed by the Death Star."
+    },
+    {
+      "id": "q007",
+      "text": "What color is Yoda's lightsaber?",
+      "options": {
+        "A": "Blue",
+        "B": "Green",
+        "C": "Purple",
+        "D": "Red"
+      },
+      "correct": "B",
+      "explanation": "Yoda wields a green-bladed lightsaber."
+    },
+    {
+      "id": "q008",
+      "text": "Who said 'I have a bad feeling about this'?",
+      "options": {
+        "A": "Only Han Solo",
+        "B": "Only Luke Skywalker",
+        "C": "Only Obi-Wan Kenobi",
+        "D": "Multiple characters across the saga"
+      },
+      "correct": "D",
+      "explanation": "This iconic line is said by various characters throughout the Star Wars films."
+    },
+    {
+      "id": "q009",
+      "text": "What is the Sith name of Count Dooku?",
+      "options": {
+        "A": "Darth Maul",
+        "B": "Darth Sidious",
+        "C": "Darth Tyranus",
+        "D": "Darth Plagueis"
+      },
+      "correct": "C",
+      "explanation": "Count Dooku's Sith name is Darth Tyranus."
+    },
+    {
+      "id": "q010",
+      "text": "Who killed Jabba the Hutt?",
+      "options": {
+        "A": "Luke Skywalker",
+        "B": "Han Solo",
+        "C": "Princess Leia",
+        "D": "Chewbacca"
+      },
+      "correct": "C",
+      "explanation": "Princess Leia strangled Jabba with her chains in Return of the Jedi."
+    },
+    {
+      "id": "q011",
+      "text": "What is the name of the ice planet in The Empire Strikes Back?",
+      "options": {
+        "A": "Hoth",
+        "B": "Tatooine",
+        "C": "Endor",
+        "D": "Dagobah"
+      },
+      "correct": "A",
+      "explanation": "The Rebel Alliance had their base on the ice planet Hoth."
+    },
+    {
+      "id": "q012",
+      "text": "What weapon does a Jedi use?",
+      "options": {
+        "A": "Blaster",
+        "B": "Lightsaber",
+        "C": "Sword",
+        "D": "Bow"
+      },
+      "correct": "B",
+      "explanation": "A lightsaber is the signature weapon of both Jedi and Sith."
+    },
+    {
+      "id": "q013",
+      "text": "Who trained Luke Skywalker?",
+      "options": {
+        "A": "Qui-Gon Jinn",
+        "B": "Mace Windu",
+        "C": "Yoda and Obi-Wan Kenobi",
+        "D": "Emperor Palpatine"
+      },
+      "correct": "C",
+      "explanation": "Luke was trained by both Obi-Wan Kenobi and Yoda."
+    },
+    {
+      "id": "q014",
+      "text": "What is the name of the furry creatures on Endor?",
+      "options": {
+        "A": "Wookiees",
+        "B": "Jawas",
+        "C": "Ewoks",
+        "D": "Porgs"
+      },
+      "correct": "C",
+      "explanation": "The Ewoks are the small, furry inhabitants of the forest moon of Endor."
+    },
+    {
+      "id": "q015",
+      "text": "What is the Emperor's real name?",
+      "options": {
+        "A": "Darth Sidious",
+        "B": "Sheev Palpatine",
+        "C": "Both A and B",
+        "D": "Snoke"
+      },
+      "correct": "C",
+      "explanation": "The Emperor is Sheev Palpatine, also known as Darth Sidious."
+    },
+    {
+      "id": "q016",
+      "text": "What planet does Obi-Wan Kenobi live on in hiding?",
+      "options": {
+        "A": "Naboo",
+        "B": "Tatooine",
+        "C": "Dagobah",
+        "D": "Coruscant"
+      },
+      "correct": "B",
+      "explanation": "Obi-Wan lived in exile on Tatooine, watching over young Luke Skywalker."
+    },
+    {
+      "id": "q017",
+      "text": "What is the name of Anakin's mother?",
+      "options": {
+        "A": "Padmé",
+        "B": "Leia",
+        "C": "Shmi",
+        "D": "Rey"
+      },
+      "correct": "C",
+      "explanation": "Shmi Skywalker was Anakin's mother on Tatooine."
+    },
+    {
+      "id": "q018",
+      "text": "Who is the clone template for the Clone Army?",
+      "options": {
+        "A": "Jango Fett",
+        "B": "Boba Fett",
+        "C": "Din Djarin",
+        "D": "Cad Bane"
+      },
+      "correct": "A",
+      "explanation": "Jango Fett was the genetic template for the entire Clone Army."
+    },
+    {
+      "id": "q019",
+      "text": "What creature did Luke ride on Hoth?",
+      "options": {
+        "A": "Bantha",
+        "B": "Tauntaun",
+        "C": "Dewback",
+        "D": "Rancor"
+      },
+      "correct": "B",
+      "explanation": "Luke rode a tauntaun across the frozen plains of Hoth."
+    },
+    {
+      "id": "q020",
+      "text": "What is the famous bar on Tatooine called?",
+      "options": {
+        "A": "Maz's Castle",
+        "B": "The Cantina",
+        "C": "Mos Eisley Cantina",
+        "D": "Jabba's Palace"
+      },
+      "correct": "C",
+      "explanation": "The Mos Eisley Cantina is where Luke and Obi-Wan met Han Solo."
+    },
+    {
+      "id": "q021",
+      "text": "What is Kylo Ren's real name?",
+      "options": {
+        "A": "Luke Skywalker",
+        "B": "Ben Solo",
+        "C": "Anakin Solo",
+        "D": "Jacen Solo"
+      },
+      "correct": "B",
+      "explanation": "Kylo Ren was born Ben Solo, son of Han Solo and Leia Organa."
+    },
+    {
+      "id": "q022",
+      "text": "Who composed the Star Wars music?",
+      "options": {
+        "A": "Hans Zimmer",
+        "B": "John Williams",
+        "C": "Danny Elfman",
+        "D": "Howard Shore"
+      },
+      "correct": "B",
+      "explanation": "John Williams composed the iconic Star Wars score and themes."
+    },
+    {
+      "id": "q023",
+      "text": "What color is Mace Windu's lightsaber?",
+      "options": {
+        "A": "Blue",
+        "B": "Green",
+        "C": "Purple",
+        "D": "Red"
+      },
+      "correct": "C",
+      "explanation": "Mace Windu's unique purple lightsaber was a special request by Samuel L. Jackson."
+    },
+    {
+      "id": "q024",
+      "text": "What is the Rebel Alliance's motto?",
+      "options": {
+        "A": "May the Force be with you",
+        "B": "Do or do not",
+        "C": "I have a bad feeling about this",
+        "D": "This is the way"
+      },
+      "correct": "A",
+      "explanation": "'May the Force be with you' became the iconic phrase of the Rebellion and Jedi."
+    },
+    {
+      "id": "q025",
+      "text": "What is the name of the Sith homeworld?",
+      "options": {
+        "A": "Korriban/Moraband",
+        "B": "Mustafar",
+        "C": "Exegol",
+        "D": "All of the above"
+      },
+      "correct": "D",
+      "explanation": "Various Sith worlds include Korriban (later Moraband), Mustafar, and Exegol."
+    },
+    {
+      "id": "q026",
+      "text": "Who said 'Do or do not. There is no try'?",
+      "options": {
+        "A": "Obi-Wan Kenobi",
+        "B": "Yoda",
+        "C": "Luke Skywalker",
+        "D": "Qui-Gon Jinn"
+      },
+      "correct": "B",
+      "explanation": "Yoda said this famous line while training Luke on Dagobah."
+    },
+    {
+      "id": "q027",
+      "text": "What is the name of the planet where Anakin and Obi-Wan duel?",
+      "options": {
+        "A": "Tatooine",
+        "B": "Mustafar",
+        "C": "Coruscant",
+        "D": "Naboo"
+      },
+      "correct": "B",
+      "explanation": "The volcanic planet Mustafar is where Anakin becomes Darth Vader after losing to Obi-Wan."
+    },
+    {
+      "id": "q028",
+      "text": "What is Padmé Amidala's profession?",
+      "options": {
+        "A": "Jedi",
+        "B": "Queen/Senator",
+        "C": "Pilot",
+        "D": "Bounty Hunter"
+      },
+      "correct": "B",
+      "explanation": "Padmé was Queen of Naboo and later became a Galactic Senator."
+    },
+    {
+      "id": "q029",
+      "text": "What is the name of the garbage compactor monster?",
+      "options": {
+        "A": "Sarlacc",
+        "B": "Rancor",
+        "C": "Dianoga",
+        "D": "Wampa"
+      },
+      "correct": "C",
+      "explanation": "The dianoga is the tentacled creature in the Death Star's trash compactor."
+    },
+    {
+      "id": "q030",
+      "text": "Who was Qui-Gon Jinn's apprentice?",
+      "options": {
+        "A": "Anakin Skywalker",
+        "B": "Luke Skywalker",
+        "C": "Obi-Wan Kenobi",
+        "D": "Yoda"
+      },
+      "correct": "C",
+      "explanation": "Obi-Wan Kenobi was Qui-Gon Jinn's Padawan before training Anakin."
+    },
+    {
+      "id": "q031",
+      "text": "What spice is smuggled in the Star Wars universe?",
+      "options": {
+        "A": "Salt",
+        "B": "Pepper",
+        "C": "Spice from Kessel",
+        "D": "Cinnamon"
+      },
+      "correct": "C",
+      "explanation": "Spice from the mines of Kessel is a valuable and illegal substance."
+    },
+    {
+      "id": "q032",
+      "text": "What is the Kessel Run measured in?",
+      "options": {
+        "A": "Time",
+        "B": "Parsecs (distance)",
+        "C": "Speed",
+        "D": "Jumps"
+      },
+      "correct": "B",
+      "explanation": "Han Solo made the Kessel Run in 'less than 12 parsecs,' a measure of distance not time."
+    },
+    {
+      "id": "q033",
+      "text": "What is the name of the droid protocol droid?",
+      "options": {
+        "A": "R2-D2",
+        "B": "C-3PO",
+        "C": "BB-8",
+        "D": "K-2SO"
+      },
+      "correct": "B",
+      "explanation": "C-3PO is the gold-plated protocol droid fluent in over 6 million forms of communication."
+    },
+    {
+      "id": "q034",
+      "text": "What is the name of the Rebel base planet in Return of the Jedi?",
+      "options": {
+        "A": "Yavin 4",
+        "B": "Hoth",
+        "C": "Endor",
+        "D": "D'Qar"
+      },
+      "correct": "C",
+      "explanation": "The Rebel Alliance gathered on the forest moon of Endor to destroy the second Death Star."
+    },
+    {
+      "id": "q035",
+      "text": "Who killed Qui-Gon Jinn?",
+      "options": {
+        "A": "Count Dooku",
+        "B": "Darth Maul",
+        "C": "General Grievous",
+        "D": "Darth Sidious"
+      },
+      "correct": "B",
+      "explanation": "Darth Maul killed Qui-Gon Jinn during the Battle of Naboo."
+    },
+    {
+      "id": "q036",
+      "text": "What is the name of the Death Star's weakness?",
+      "options": {
+        "A": "Shield generator",
+        "B": "Thermal exhaust port",
+        "C": "Power core",
+        "D": "Bridge"
+      },
+      "correct": "B",
+      "explanation": "A small thermal exhaust port led directly to the reactor, which Luke exploited."
+    },
+    {
+      "id": "q037",
+      "text": "What is Rey's heritage?",
+      "options": {
+        "A": "She's a Skywalker",
+        "B": "She's a Kenobi",
+        "C": "She's a Palpatine",
+        "D": "She's nobody"
+      },
+      "correct": "C",
+      "explanation": "Rey is revealed to be Emperor Palpatine's granddaughter but takes the Skywalker name."
+    },
+    {
+      "id": "q038",
+      "text": "What is the name of the Mandalorian creed?",
+      "options": {
+        "A": "The Way",
+        "B": "This is the Way",
+        "C": "The Code",
+        "D": "The Creed"
+      },
+      "correct": "A",
+      "explanation": "Mandalorians follow 'The Way,' saying 'This is the Way' as their motto."
+    },
+    {
+      "id": "q039",
+      "text": "Who is Boba Fett's father?",
+      "options": {
+        "A": "Din Djarin",
+        "B": "Jango Fett",
+        "C": "Cad Bane",
+        "D": "Pre Vizsla"
+      },
+      "correct": "B",
+      "explanation": "Boba Fett is an unaltered clone of Jango Fett, raised as his son."
+    },
+    {
+      "id": "q040",
+      "text": "What is the name of Han Solo's co-pilot?",
+      "options": {
+        "A": "Lando Calrissian",
+        "B": "Chewbacca",
+        "C": "Wedge Antilles",
+        "D": "Nien Nunb"
+      },
+      "correct": "B",
+      "explanation": "Chewbacca is Han Solo's loyal Wookiee co-pilot and best friend."
+    },
+    {
+      "id": "q041",
+      "text": "What is the name of the forest moon?",
+      "options": {
+        "A": "Endor",
+        "B": "Yavin",
+        "C": "Hoth",
+        "D": "Dagobah"
+      },
+      "correct": "A",
+      "explanation": "The forest moon of Endor is home to the Ewoks."
+    },
+    {
+      "id": "q042",
+      "text": "Who said 'These aren't the droids you're looking for'?",
+      "options": {
+        "A": "Luke Skywalker",
+        "B": "Obi-Wan Kenobi",
+        "C": "Darth Vader",
+        "D": "Yoda"
+      },
+      "correct": "B",
+      "explanation": "Obi-Wan used a Jedi mind trick on stormtroopers with this famous line."
+    },
+    {
+      "id": "q043",
+      "text": "What is Ahsoka Tano's species?",
+      "options": {
+        "A": "Twi'lek",
+        "B": "Togruta",
+        "C": "Zabrak",
+        "D": "Human"
+      },
+      "correct": "B",
+      "explanation": "Ahsoka Tano is a Togruta, recognized by her head-tails and montrals."
+    },
+    {
+      "id": "q044",
+      "text": "What is the name of the Sith Rule?",
+      "options": {
+        "A": "Rule of One",
+        "B": "Rule of Two",
+        "C": "Rule of Many",
+        "D": "Rule of Power"
+      },
+      "correct": "B",
+      "explanation": "The Rule of Two states there can only be a Master and an Apprentice at any time."
+    },
+    {
+      "id": "q045",
+      "text": "Who destroyed the first Death Star?",
+      "options": {
+        "A": "Han Solo",
+        "B": "Wedge Antilles",
+        "C": "Luke Skywalker",
+        "D": "Lando Calrissian"
+      },
+      "correct": "C",
+      "explanation": "Luke Skywalker fired the shot that destroyed the first Death Star."
+    }
+  ]
+}
