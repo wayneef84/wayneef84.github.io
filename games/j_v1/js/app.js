@@ -408,15 +408,20 @@ document.addEventListener('DOMContentLoaded', function() {
                  <button id="resetHistoryBtn" style="width:100%; margin-top:10px; background:none; border:1px solid #ef4444; color:#ef4444; padding:5px; border-radius:4px; cursor:pointer; font-size:0.8rem;">RESET HISTORY</button>
                  </div>`;
 
-        dom.historyPlaceholder.innerHTML = html;
+        if (dom.historyPlaceholder) {
+            dom.historyPlaceholder.innerHTML = html;
+        }
 
         // Bind Reset
-        document.getElementById('resetHistoryBtn').addEventListener('click', function() {
-            if(confirm("Clear records for this pack?")) {
-                ScoreManager.resetPackHistory(packMeta.id);
-                renderHistory(packMeta); // Re-render in place
-            }
-        });
+        var resetBtn = document.getElementById('resetHistoryBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                if(confirm("Clear records for this pack?")) {
+                    ScoreManager.resetPackHistory(packMeta.id);
+                    renderHistory(packMeta); // Re-render in place
+                }
+            });
+        }
     }
 
     function startGame() {
