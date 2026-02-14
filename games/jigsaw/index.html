@@ -16,6 +16,7 @@
                 <div class="form-group">
                     <label for="file-input">Select Image:</label>
                     <input type="file" id="file-input" accept="image/*">
+                    <button id="take-photo-btn" class="btn btn-secondary" style="margin-top: 10px;">Take Photo</button>
                     <div id="image-preview">No image selected</div>
                 </div>
 
@@ -79,6 +80,21 @@
             <h2>Puzzle Completed!</h2>
             <p>Time: <span id="final-time"></span></p>
             <button id="play-again-btn" class="btn">Play Again</button>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div id="camera-modal" class="modal-overlay hidden">
+        <div class="modal camera-modal-content">
+            <h2>Take a Photo</h2>
+            <div class="video-container">
+                <video id="camera-video" autoplay playsinline></video>
+                <canvas id="camera-canvas" class="hidden"></canvas>
+            </div>
+            <div class="modal-actions">
+                <button id="capture-btn" class="btn">Capture</button>
+                <button id="cancel-camera-btn" class="btn btn-secondary">Cancel</button>
+            </div>
         </div>
     </div>
 

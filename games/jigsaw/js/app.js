@@ -15,7 +15,9 @@ var App = (function() {
         jaggedness: document.getElementById('jaggedness'),
         snapDistance: document.getElementById('snap-distance'),
         customDiff: document.getElementById('custom-difficulty'),
-        preview: document.getElementById('image-preview')
+        preview: document.getElementById('image-preview'),
+        video: document.getElementById('camera-video'),
+        canvas: document.getElementById('camera-canvas')
     };
 
     var buttons = {
@@ -24,11 +26,15 @@ var App = (function() {
         exit: document.getElementById('exit-btn'),
         save: document.getElementById('save-btn'),
         hint: document.getElementById('hint-btn'),
-        playAgain: document.getElementById('play-again-btn')
+        playAgain: document.getElementById('play-again-btn'),
+        takePhoto: document.getElementById('take-photo-btn'),
+        capture: document.getElementById('capture-btn'),
+        cancelCamera: document.getElementById('cancel-camera-btn')
     };
 
     var modals = {
-        win: document.getElementById('win-modal')
+        win: document.getElementById('win-modal'),
+        camera: document.getElementById('camera-modal')
     };
 
     // State
@@ -42,6 +48,11 @@ var App = (function() {
     function bindEvents() {
         // File Input
         inputs.file.addEventListener('change', handleFileSelect);
+
+        // Camera Controls
+        buttons.takePhoto.addEventListener('click', startCamera);
+        buttons.capture.addEventListener('click', capturePhoto);
+        buttons.cancelCamera.addEventListener('click', stopCamera);
 
         // Difficulty Select
         inputs.difficulty.addEventListener('change', function() {
@@ -210,6 +221,65 @@ var App = (function() {
     function showWin(timeStr) {
         document.getElementById('final-time').textContent = timeStr;
         modals.win.classList.remove('hidden');
+    }
+
+    function startCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("Camera not supported or permission denied.");
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                inputs.video.srcObject = stream;
+                inputs.video.play();
+                modals.camera.classList.remove('hidden');
+            })
+            .catch(function(err) {
+                console.error("Error accessing camera: ", err);
+                alert("Could not access camera. Please allow camera permissions.");
+            });
+    }
+
+    function stopCamera() {
+        var stream = inputs.video.srcObject;
+        if (stream) {
+            var tracks = stream.getTracks();
+            tracks.forEach(function(track) {
+                track.stop();
+            });
+        }
+        inputs.video.srcObject = null;
+        modals.camera.classList.add('hidden');
+    }
+
+    function capturePhoto() {
+        var video = inputs.video;
+        var canvas = inputs.canvas;
+
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            var ctx = canvas.getContext('2d');
+
+            // Mirror the capture to match the CSS mirrored preview
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            var dataURL = canvas.toDataURL('image/png');
+
+            var img = new Image();
+            img.onload = function() {
+                currentImage = img;
+                // Show preview
+                inputs.preview.innerHTML = '';
+                inputs.preview.appendChild(img);
+                buttons.start.disabled = false;
+                stopCamera();
+            };
+            img.src = dataURL;
+        }
     }
 
     return {
