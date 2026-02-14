@@ -20,7 +20,7 @@ var projects = [
     { name: "J: Speed Quiz", path: "games/j/index.html", category: "arcade", icon: "⚡", tags: ["Trivia"], description: "High-velocity quiz engine. Test your reflexes and knowledge." },
     { name: "J: Speed Quiz (Legacy)", path: "games/j_v1/index.html", category: "arcade", icon: "⚡", tags: ["Legacy"], description: "Legacy version of the speed quiz engine." },
     { name: "Flash Classics", path: "games/flash_classics/index.html", category: "arcade", icon: "🕹️", tags: ["Retro"], description: "Collection of classic Flash-style games: Chopper, Defender, Runner." },
-    { name: "Solitaire", path: "games/solitaire/index.html", category: "cards", icon: "♠️", tags: ["Classic"], description: "The classic patience card game. Klondike rules." },
+    { name: "Solitaire", path: "games/cards/solitaire/index.html", category: "cards", icon: "♠️", tags: ["Classic"], description: "The classic patience card game. Klondike rules." },
     { name: "PuzzLLer", path: "games/puzzller/index.html", category: "puzzle", icon: "🧠", tags: ["Logic"], description: "Navigate grids and solve logic puzzles." },
     { name: "Jigsaw Engine", path: "games/jigsaw/index.html", category: "puzzle", icon: "🧩", tags: ["New", "Engine"], description: "Create and play custom jigsaw puzzles with any image." },
     { name: "C.o.D.E.", path: "projects/code/index.html", category: "puzzle", icon: "📟", tags: ["Simulation"], description: "Hacking simulator. Crack the numeric code against time." },
