@@ -7,6 +7,7 @@ class GameController {
         this.gameLogic = window.GameLogic;
 
         this.tracks = [];
+        this.distractorPool = [];
         this.currentTrack = null;
         this.score = 0;
         this.round = 1;
@@ -83,7 +84,8 @@ class GameController {
             // Fetch tracks
             const tracks = await this.audioEngine.searchTracks(genre, 50);
 
-            if (tracks.length < this.maxRounds * 4) { // Need enough for distractors
+            // Need enough for distractors
+            if (!tracks || tracks.length < this.maxRounds * 4) {
                 alert("Not enough tracks found for this genre. Try another one.");
                 this.loadingArea.classList.add('hidden');
                 this.startBtn.disabled = false;
@@ -124,7 +126,14 @@ class GameController {
         this.playPauseBtn.textContent = '▶️ Play Preview';
 
         // Generate Options
-        this.generateOptionsUI();
+        try {
+            this.generateOptionsUI();
+        } catch (e) {
+            console.error("Error generating options:", e);
+            alert("An error occurred while setting up the round.");
+            this.endGame();
+            return;
+        }
 
         this.updateUI();
 
@@ -137,6 +146,11 @@ class GameController {
      */
     generateOptionsUI() {
         this.optionsContainer.innerHTML = ''; // Clear previous
+
+        if (!this.distractorPool || this.distractorPool.length === 0) {
+            console.error("Distractor pool empty!");
+            return;
+        }
 
         // Pick 3 random wrong tracks from pool + current correct track
         // Ensure distractors are not the current track
@@ -155,12 +169,21 @@ class GameController {
             btn.className = 'option-btn btn secondary';
             // Display Title - Artist
             btn.innerHTML = `<strong>${track.trackName}</strong><br><span class="artist">${track.artistName}</span>`;
-            btn.dataset.trackId = track.trackId;
+
+            // Use fallback if trackId is missing (shouldn't happen with filter)
+            const tid = track.trackId || Math.random().toString();
+            btn.dataset.trackId = tid;
+
+            // Ensure visibility via inline style just in case CSS fails
+            btn.style.display = 'flex';
 
             btn.addEventListener('click', () => this.handleOptionClick(track, btn));
 
             this.optionsContainer.appendChild(btn);
         });
+
+        // Debug log
+        console.log(`Generated ${options.length} options for round ${this.round}`);
     }
 
     /**
@@ -199,7 +222,8 @@ class GameController {
             btnElement.classList.add('wrong-choice');
             // Highlight correct answer
             allBtns.forEach(b => {
-                if (parseInt(b.dataset.trackId) === this.currentTrack.trackId) {
+                // Parse correctly, handle string/number mismatch
+                if (b.dataset.trackId == this.currentTrack.trackId) {
                     b.classList.add('correct-choice');
                 }
             });
@@ -281,7 +305,7 @@ class GameController {
         const allBtns = document.querySelectorAll('.option-btn');
         allBtns.forEach(b => {
             b.disabled = true;
-            if (parseInt(b.dataset.trackId) === this.currentTrack.trackId) {
+            if (b.dataset.trackId == this.currentTrack.trackId) {
                 b.classList.add('correct-choice');
             }
         });
