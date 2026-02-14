@@ -128,51 +128,75 @@
         var sx = tile.x * (TILE_W / 2);
         var sy = tile.y * (TILE_H / 2) - tile.z * TILE_D;
 
-        // Calculate interaction state for visual feedback
         var isFree = this.board.isFree(tile);
         var isSelected = tile.isSelected;
 
-        // Shadow
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        this.roundRect(ctx, sx + SHADOW_OFFSET, sy + SHADOW_OFFSET, TILE_W, TILE_H, 5);
+        // Constants for 3D look
+        var radius = 6;
+        var depthX = 6;
+        var depthY = 6;
+
+        // --- 1. Shadow ---
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.roundRect(ctx, sx + SHADOW_OFFSET + 2, sy + SHADOW_OFFSET + 2, TILE_W, TILE_H, radius);
         ctx.fill();
 
-        // Side/Depth (Darker)
-        // Draw slightly offset to simulate thickness
-        // Bottom-Right offset for thickness
-        var depthX = 4;
-        var depthY = 4;
+        // --- 2. Side (Depth - Back of the tile) ---
+        // Create a gradient for the green plastic backing
+        var gradSide = ctx.createLinearGradient(sx + depthX, sy + depthY, sx + depthX + TILE_W, sy + depthY + TILE_H);
+        gradSide.addColorStop(0, '#43a047'); // Lighter green top-left
+        gradSide.addColorStop(1, '#1b5e20'); // Darker green bottom-right
 
-        ctx.fillStyle = '#1b5e20'; // Dark Green back
-        this.roundRect(ctx, sx + depthX, sy + depthY, TILE_W, TILE_H, 5);
+        ctx.fillStyle = gradSide;
+        this.roundRect(ctx, sx + depthX, sy + depthY, TILE_W, TILE_H, radius);
         ctx.fill();
 
-        // Face (Ivory/Bone)
-        if (isSelected) {
-            ctx.fillStyle = '#fff9c4'; // Yellowish highlight
-        } else if (!isFree) {
-            ctx.fillStyle = '#e0e0e0'; // Dimmed/Grayed if blocked?
-            // Standard Mahjong usually keeps same color but maybe darkened.
-            // Let's keep it ivory but maybe slight tint.
-            ctx.fillStyle = '#f0f0e0';
-        } else {
-            ctx.fillStyle = '#fcfcf0'; // Bright Ivory
-        }
-
-        // Draw Face
-        this.roundRect(ctx, sx, sy, TILE_W, TILE_H, 5);
-        ctx.fill();
-        ctx.strokeStyle = isSelected ? '#ff0000' : '#8d6e63';
-        ctx.lineWidth = isSelected ? 3 : 1;
+        // Side Stroke
+        ctx.strokeStyle = '#1b5e20';
+        ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Draw Symbol
+        // --- 3. Face (Top Surface) ---
+        // Ivory / Bone gradient
+        var gradFace = ctx.createLinearGradient(sx, sy, sx + TILE_W, sy + TILE_H);
+
+        if (isSelected) {
+            gradFace.addColorStop(0, '#fffde7'); // Very light yellow
+            gradFace.addColorStop(1, '#fff59d'); // Yellowish
+        } else {
+            gradFace.addColorStop(0, '#ffffff'); // Pure white highlight
+            gradFace.addColorStop(1, '#e0e0e0'); // Ivory shadow
+        }
+
+        ctx.fillStyle = gradFace;
+        this.roundRect(ctx, sx, sy, TILE_W, TILE_H, radius);
+        ctx.fill();
+
+        // Face Border
+        if (isSelected) {
+            ctx.strokeStyle = '#d32f2f'; // Red selection
+            ctx.lineWidth = 3;
+        } else {
+            ctx.strokeStyle = '#bdbdbd'; // Subtle greyish border
+            ctx.lineWidth = 1;
+        }
+        ctx.stroke();
+
+        // Highlight (Top Gloss)
+        ctx.beginPath();
+        ctx.moveTo(sx + radius, sy + 2);
+        ctx.lineTo(sx + TILE_W - radius, sy + 2);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // --- 4. Symbol ---
         this.drawSymbol(ctx, tile, sx, sy);
 
-        // Overlay for blocked?
+        // --- 5. Blocked Overlay ---
         if (!isFree) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            this.roundRect(ctx, sx, sy, TILE_W, TILE_H, 5);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Darken blocked tiles
+            this.roundRect(ctx, sx, sy, TILE_W, TILE_H, radius);
             ctx.fill();
         }
     };
@@ -192,48 +216,336 @@
     };
 
     Game.prototype.drawSymbol = function(ctx, tile, x, y) {
-        // Center text
-        var cx = x + TILE_W / 2;
-        var cy = y + TILE_H / 2 + 5;
+        var w = TILE_W;
+        var h = TILE_H;
 
-        ctx.fillStyle = '#000';
+        // Reset Styles
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Color coding
-        if (tile.type === 'DOTS') ctx.fillStyle = '#1565c0'; // Blue
-        else if (tile.type === 'BAMS') ctx.fillStyle = '#2e7d32'; // Green
-        else if (tile.type === 'CRAKS') ctx.fillStyle = '#c62828'; // Red
-        else if (tile.type === 'WINDS') ctx.fillStyle = '#000000'; // Black
-        else if (tile.type === 'DRAGONS') {
-            if (tile.value === 'R') ctx.fillStyle = '#d32f2f';
-            else if (tile.value === 'G') ctx.fillStyle = '#388e3c';
-            else ctx.fillStyle = '#1976d2'; // White usually blue frame in some sets
+        switch (tile.type) {
+            case 'DOTS':
+                this.drawDots(ctx, tile.value, x, y, w, h);
+                break;
+            case 'BAMS':
+                this.drawBams(ctx, tile.value, x, y, w, h);
+                break;
+            case 'CRAKS':
+                this.drawCraks(ctx, tile.value, x, y, w, h);
+                break;
+            case 'WINDS':
+                this.drawWind(ctx, tile.value, x, y, w, h);
+                break;
+            case 'DRAGONS':
+                this.drawDragon(ctx, tile.value, x, y, w, h);
+                break;
+            case 'FLOWERS':
+            case 'SEASONS':
+                this.drawFlowerSeason(ctx, tile.type, tile.value, x, y, w, h);
+                break;
+            default:
+                ctx.fillStyle = '#000';
+                ctx.font = '24px serif';
+                ctx.fillText(tile.value, x + w / 2, y + h / 2);
+                break;
         }
-        else if (tile.type === 'FLOWERS') ctx.fillStyle = '#e91e63'; // Pink
-        else if (tile.type === 'SEASONS') ctx.fillStyle = '#ff9800'; // Orange
 
-        // Font
+        // Small corner index for debug/clarity (optional, maybe remove for cleaner look? Keeping it subtle)
+        // ctx.font = '10px sans-serif';
+        // ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        // ctx.fillText(tile.value, x + 10, y + 10);
+    };
+
+    // --- Helpers for Symbols ---
+
+    Game.prototype.drawDots = function(ctx, value, x, y, w, h) {
+        // Colors
+        var cRed = '#d32f2f';
+        var cGreen = '#388e3c';
+        var cBlue = '#1976d2';
+
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+        var size = 10; // Dot radius
+
+        var val = parseInt(value);
+
+        // Helper to draw circle
+        var circle = function(px, py, color, r) {
+            ctx.beginPath();
+            ctx.arc(px, py, r || size, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            // detailed inner ring
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        };
+
+        // Positions relative to center
+        var d = 16; // spacing
+
+        switch (val) {
+            case 1:
+                // Large circle
+                circle(cx, cy, cRed, 18);
+                // Maybe a small inner detail
+                circle(cx, cy, '#b71c1c', 8);
+                break;
+            case 2:
+                circle(cx, cy - d, cGreen);
+                circle(cx, cy + d, cBlue);
+                break;
+            case 3:
+                circle(cx - d, cy - d, cBlue);
+                circle(cx, cy, cRed);
+                circle(cx + d, cy + d, cGreen);
+                break;
+            case 4:
+                circle(cx - d, cy - d, cBlue);
+                circle(cx + d, cy - d, cGreen);
+                circle(cx - d, cy + d, cGreen);
+                circle(cx + d, cy + d, cBlue);
+                break;
+            case 5:
+                // 4 corners + center
+                this.drawDots(ctx, 4, x, y, w, h);
+                circle(cx, cy, cRed);
+                break;
+            case 6:
+                circle(cx - d, cy - d, cGreen);
+                circle(cx + d, cy - d, cGreen);
+                circle(cx - d, cy, cRed);
+                circle(cx + d, cy, cRed);
+                circle(cx - d, cy + d, cRed);
+                circle(cx + d, cy + d, cRed);
+                break;
+            case 7:
+                // Slanted 3 top (green), 4 bottom? Usually 4 green, 3 red slanted.
+                // Let's do: Top-Left, Mid-Leftish, Mid-Rightish...
+                // Simplified 7: 3 diagonal (Green), 4 corners (Red)? No.
+                // Standard: Top slanted 3 (Green), Bottom 2x2 (Red)?
+                // Actually, let's just do a nice pattern.
+                // 3 Top (Green), 2 Mid (Red), 2 Bot (Red) -> 7
+                circle(cx - d, cy - d*1.2, cGreen);
+                circle(cx, cy - d*1.3, cGreen); // slightly offset
+                circle(cx + d, cy - d*1.4, cGreen); // slanted
+
+                // Bottom 4
+                circle(cx - d, cy, cRed);
+                circle(cx + d, cy, cRed);
+                circle(cx - d, cy + d*1.2, cRed);
+                circle(cx + d, cy + d*1.2, cRed);
+                break;
+            case 8:
+                circle(cx - d, cy - d*1.2, cBlue);
+                circle(cx + d, cy - d*1.2, cBlue);
+                circle(cx - d, cy - d*0.4, cBlue);
+                circle(cx + d, cy - d*0.4, cBlue);
+                circle(cx - d, cy + d*0.4, cBlue);
+                circle(cx + d, cy + d*0.4, cBlue);
+                circle(cx - d, cy + d*1.2, cBlue);
+                circle(cx + d, cy + d*1.2, cBlue);
+                break;
+            case 9:
+                // 3x3
+                for(var r=-1; r<=1; r++) {
+                    for(var c=-1; c<=1; c++) {
+                        var col = cRed; // default
+                        if(r===-1) col = cGreen; // top row
+                        if(r===0) col = cRed; // mid
+                        if(r===1) col = cBlue; // bot
+                        circle(cx + c*d, cy + r*d, col);
+                    }
+                }
+                break;
+        }
+    };
+
+    Game.prototype.drawBams = function(ctx, value, x, y, w, h) {
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+        var val = parseInt(value);
+
+        var cGreen = '#2e7d32';
+        var cBlue = '#1565c0';
+        var cRed = '#c62828';
+
+        if (val === 1) {
+            // Bird
+            // Use unicode peacock
+            ctx.fillStyle = '#000'; // Multi-color via font?
+            ctx.font = '40px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            // Try to draw a peacock emoji if supported, or a generic bird
+            // Windows: 🀐 (1 Bam). If not, fallback?
+            // Let's use the actual Unicode Mahjong Tile glyph for 1 Bam, but scaled up?
+            // No, that draws the whole tile.
+            // Let's use a Bird Emoji 🐦.
+            ctx.fillText('🐦', cx, cy);
+            return;
+        }
+
+        // Draw sticks
+        var stickW = 4;
+        var stickH = 16;
+        var gap = 6;
+
+        var drawStick = function(px, py, col) {
+            ctx.fillStyle = col;
+            // Draw a stick (rect with rounded ends or just rect)
+            ctx.fillRect(px - stickW/2, py - stickH/2, stickW, stickH);
+            // Detail (white ticks)
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fillRect(px - stickW/2, py - 2, stickW, 4);
+        };
+
+        // Layouts
+        switch(val) {
+            case 2:
+                drawStick(cx, cy - 12, cGreen);
+                drawStick(cx, cy + 12, cBlue);
+                break;
+            case 3:
+                drawStick(cx, cy - 20, cGreen);
+                drawStick(cx - 10, cy + 10, cBlue);
+                drawStick(cx + 10, cy + 10, cBlue);
+                break;
+            case 4:
+                drawStick(cx - 10, cy - 12, cGreen);
+                drawStick(cx + 10, cy - 12, cBlue);
+                drawStick(cx - 10, cy + 12, cBlue);
+                drawStick(cx + 10, cy + 12, cGreen);
+                break;
+            case 5:
+                drawStick(cx - 12, cy - 15, cGreen);
+                drawStick(cx + 12, cy - 15, cBlue);
+                drawStick(cx, cy, cRed);
+                drawStick(cx - 12, cy + 15, cBlue);
+                drawStick(cx + 12, cy + 15, cGreen);
+                break;
+            case 6:
+                for(var i=0; i<3; i++) drawStick(cx - 10, cy - 20 + i*20, cGreen);
+                for(var i=0; i<3; i++) drawStick(cx + 10, cy - 20 + i*20, cGreen);
+                break;
+            case 7:
+                // Top: 2 slanted?
+                // Bot: 3 straight?
+                // Simplified: 2 green top, 1 red mid, 4 green bot?
+                // Let's do 3 top, 4 bottom
+                drawStick(cx, cy - 25, cRed);
+                drawStick(cx - 10, cy - 15, cGreen);
+                drawStick(cx + 10, cy - 15, cGreen);
+
+                drawStick(cx - 12, cy + 10, cGreen);
+                drawStick(cx + 12, cy + 10, cGreen);
+                drawStick(cx - 12, cy + 28, cGreen);
+                drawStick(cx + 12, cy + 28, cGreen);
+                break;
+            case 8:
+                // slant top
+                // slant bot
+                // Just 4 pairs
+                 drawStick(cx - 15, cy - 25, cGreen); drawStick(cx + 15, cy - 25, cGreen);
+                 drawStick(cx - 10, cy - 8, cGreen); drawStick(cx + 10, cy - 8, cGreen);
+                 drawStick(cx - 10, cy + 8, cBlue); drawStick(cx + 10, cy + 8, cBlue);
+                 drawStick(cx - 15, cy + 25, cBlue); drawStick(cx + 15, cy + 25, cBlue);
+                 break;
+            case 9:
+                // 3 sets of 3
+                for(var r=-1; r<=1; r++) {
+                   var col = (r===0) ? cRed : (r===-1 ? cGreen : cBlue);
+                   drawStick(cx - 15, cy + r*20, col);
+                   drawStick(cx, cy + r*20, col);
+                   drawStick(cx + 15, cy + r*20, col);
+                }
+                break;
+        }
+    };
+
+    Game.prototype.drawCraks = function(ctx, value, x, y, w, h) {
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+        var val = parseInt(value);
+
+        var cRed = '#d32f2f';
+        var cBlack = '#000000';
+
+        var map = ['ERROR', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+        var char = map[val] || value;
+
+        // Draw Number (Blue or Black?) usually blue/black.
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 28px serif';
+        ctx.fillText(char, cx, cy - 12);
+
+        // Draw Wan (Red)
+        ctx.fillStyle = cRed;
+        ctx.font = 'bold 28px serif';
+        ctx.fillText('萬', cx, cy + 16);
+    };
+
+    Game.prototype.drawWind = function(ctx, value, x, y, w, h) {
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+        var map = { 'E': '東', 'S': '南', 'W': '西', 'N': '北' };
+
+        ctx.fillStyle = '#000';
+        ctx.font = '42px serif';
+        ctx.fillText(map[value] || value, cx, cy);
+    };
+
+    Game.prototype.drawDragon = function(ctx, value, x, y, w, h) {
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+
+        if (value === 'R') {
+            ctx.fillStyle = '#d32f2f'; // Red
+            ctx.font = '42px serif';
+            ctx.fillText('中', cx, cy);
+        } else if (value === 'G') {
+            ctx.fillStyle = '#388e3c'; // Green
+            ctx.font = '42px serif';
+            ctx.fillText('發', cx, cy);
+        } else {
+            // White Dragon - Blue Frame
+            ctx.strokeStyle = '#1565c0';
+            ctx.lineWidth = 3;
+            var size = 30;
+            ctx.strokeRect(cx - size/2, cy - size/2, size, size);
+            // Some texture?
+        }
+    };
+
+    Game.prototype.drawFlowerSeason = function(ctx, type, value, x, y, w, h) {
+        var cx = x + w / 2;
+        var cy = y + h / 2;
+
+        // Use Emoji
         ctx.font = '32px serif';
+        var txt = value;
 
-        // Symbol Logic
-        var text = tile.value;
+        // Flowers: 1=Plum, 2=Orchid, 3=Bamboo, 4=Chrysanthemum
+        // Seasons: 1=Spring, 2=Summer, 3=Autumn, 4=Winter
 
-        // Custom rendering for some types
-        if (tile.type === 'DOTS') {
-            text = '● ' + tile.value; // U+25CF
-        } else if (tile.type === 'BAMS') {
-            text = '🎋 ' + tile.value; // Bamboo
-        } else if (tile.type === 'CRAKS') {
-            text = tile.value + ' 万';
+        // Map to emoji if possible
+        if (type === 'FLOWERS') {
+             var fMap = { '1': '🌸', '2': '🌺', '3': '🎋', '4': '🌼' }; // Bamboo emoji for 3?
+             // Actually, 1=Plum (🌸), 2=Orchid (🌺), 3=Bamboo (🎍), 4=Chrysanthemum (🌼)
+             if (fMap[value]) txt = fMap[value];
+        } else {
+             var sMap = { '1': '🌱', '2': '☀️', '3': '🍂', '4': '❄️' };
+             if (sMap[value]) txt = sMap[value];
         }
 
-        ctx.fillText(text, cx, cy);
+        ctx.fillStyle = (type === 'FLOWERS') ? '#e91e63' : '#ff9800';
+        ctx.fillText(txt, cx, cy);
 
-        // Small corner index for clarity
-        ctx.font = '10px sans-serif';
-        ctx.fillStyle = '#555';
-        ctx.fillText(tile.value, x + 10, y + 10);
+        // Small number corner
+        ctx.font = '12px sans-serif';
+        ctx.fillStyle = '#333';
+        ctx.fillText(value, x + 50, y + 12);
     };
 
     Game.prototype.handleClick = function(e) {
