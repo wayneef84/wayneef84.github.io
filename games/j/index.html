@@ -66,6 +66,13 @@
                 <h2>SETTINGS & DATA</h2>
 
                 <div class="menu-section">
+                    <h3 class="menu-section-title">Updates</h3>
+                    <button id="changeLogBtn" class="menu-btn">
+                        <span class="icon">&#x1F4DC;</span> Change Log
+                    </button>
+                </div>
+
+                <div class="menu-section">
                     <h3 class="menu-section-title">Data Management</h3>
                     <button id="resetRecordsBtn" class="menu-btn danger-btn">
                         <span class="icon">&#x1F5D1;</span> Reset All Records
@@ -359,6 +366,21 @@
                     <button id="restartBtn" class="primary-btn">PLAY AGAIN</button>
                     <a href="#" id="changePack" class="secondary-btn">CHANGE PACK</a>
                     <a href="../../index.html" class="secondary-btn">EXIT</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================
+             CHANGE LOG MODAL
+             ============================== -->
+        <div id="changeLogModal" class="modal-overlay hidden">
+            <div class="modal-content menu-content">
+                <h2>CHANGE LOG</h2>
+                <div id="changeLogList" class="setup-scrollable" style="text-align: left; padding: 10px;">
+                    <!-- Change log items will be injected here -->
+                </div>
+                <div class="menu-actions">
+                    <button id="closeChangeLogBtn" class="secondary-btn">CLOSE</button>
                 </div>
             </div>
         </div>

@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
         restartBtn: document.getElementById('restartBtn'),
         changePack: document.getElementById('changePack'),
         backToPacksBtn: document.getElementById('backToPacksBtn'),
+        // Change Log Elements
+        changeLogBtn: document.getElementById('changeLogBtn'),
+        changeLogModal: document.getElementById('changeLogModal'),
+        closeChangeLogBtn: document.getElementById('closeChangeLogBtn'),
+        changeLogList: document.getElementById('changeLogList'),
+        mainMenu: document.getElementById('mainMenu'),
         // Revamp Elements
         powerupBar: document.getElementById('powerupBar'),
         buffsContainer: document.getElementById('buffsContainer'),
@@ -383,6 +389,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function openChangeLog() {
+        if (dom.mainMenu) dom.mainMenu.classList.add('hidden');
+        if (dom.changeLogModal) dom.changeLogModal.classList.remove('hidden');
+        renderChangeLog();
+    }
+
+    function closeChangeLog() {
+        if (dom.changeLogModal) dom.changeLogModal.classList.add('hidden');
+    }
+
+    function renderChangeLog() {
+        if (!dom.changeLogList) return;
+        dom.changeLogList.innerHTML = '';
+
+        // Take last 10 packs as "new"
+        var packs = MANIFEST.packs.slice().reverse().slice(0, 10);
+
+        packs.forEach(function(pack) {
+            var item = document.createElement('div');
+            item.style.marginBottom = '15px';
+            item.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+            item.style.paddingBottom = '10px';
+
+            var group = MANIFEST.groups.find(g => g.id === pack.groupId);
+            var groupName = group ? group.title : (pack.category || 'General');
+
+            item.innerHTML = `
+                <div style="font-weight: bold; color: var(--accent); margin-bottom: 5px;">${pack.title}</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">${groupName} &middot; ${pack.count || '?'} Q</div>
+            `;
+
+            var btn = document.createElement('button');
+            btn.className = 'primary-btn';
+            btn.style.fontSize = '0.8rem';
+            btn.style.padding = '5px 15px';
+            btn.textContent = 'PLAY NOW';
+            btn.addEventListener('click', function() {
+                closeChangeLog();
+                openSetupModal(pack.path);
+            });
+
+            item.appendChild(btn);
+            dom.changeLogList.appendChild(item);
+        });
+    }
+
     function startGame() {
         var limit = 10;
         var selectedLimit = document.querySelector('input[name="qLimit"]:checked');
@@ -576,6 +628,13 @@ document.addEventListener('DOMContentLoaded', function() {
                      dom.feedbackBackdrop.classList.add('hidden');
                 }
             });
+        }
+
+        if (dom.changeLogBtn) {
+            dom.changeLogBtn.addEventListener('click', openChangeLog);
+        }
+        if (dom.closeChangeLogBtn) {
+            dom.closeChangeLogBtn.addEventListener('click', closeChangeLog);
         }
 
         dom.restartBtn.addEventListener('click', function() {
