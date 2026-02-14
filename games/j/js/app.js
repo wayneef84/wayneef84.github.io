@@ -378,7 +378,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     '</div>';
         });
 
-        dom.historyPlaceholder.innerHTML = html;
+        if (dom.historyPlaceholder) {
+            dom.historyPlaceholder.innerHTML = html;
+        }
     }
 
     function startGame() {

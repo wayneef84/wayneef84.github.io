@@ -1,0 +1,190 @@
+{
+    "meta": {
+        "id": "snake_trivia",
+        "title": "Snake Trivia",
+        "author": "Jules",
+        "created": "2026-02-12"
+    },
+    "questions": [
+        {
+            "id": "st_001",
+            "text": "What is the longest venomous snake in the world?",
+            "options": {
+                "A": "King Cobra",
+                "B": "Black Mamba",
+                "C": "Inland Taipan",
+                "D": "Gaboon Viper"
+            },
+            "answer": "A",
+            "media": null
+        },
+        {
+            "id": "st_002",
+            "text": "Which continent has no wild snakes?",
+            "options": {
+                "A": "Australia",
+                "B": "Europe",
+                "C": "Antarctica",
+                "D": "South America"
+            },
+            "answer": "C",
+            "media": null
+        },
+        {
+            "id": "st_003",
+            "text": "What is the process of a snake shedding its skin called?",
+            "options": {
+                "A": "Moulting",
+                "B": "Ecdysis",
+                "C": "Sloughing",
+                "D": "Exfoliation"
+            },
+            "answer": "B",
+            "media": null
+        },
+        {
+            "id": "st_004",
+            "text": "Which snake is known for its distinctive rattle?",
+            "options": {
+                "A": "Python",
+                "B": "Anaconda",
+                "C": "Rattlesnake",
+                "D": "Boa Constrictor"
+            },
+            "answer": "C",
+            "media": null
+        },
+        {
+            "id": "st_005",
+            "text": "Snakes use which organ to smell?",
+            "options": {
+                "A": "Jacobson's Organ",
+                "B": "Pit Organ",
+                "C": "Tympanic Membrane",
+                "D": "Olfactory Bulb"
+            },
+            "answer": "A",
+            "media": null
+        },
+        {
+            "id": "st_006",
+            "text": "What type of snake is the 'Black Mamba'?",
+            "options": {
+                "A": "Constrictor",
+                "B": "Elapid",
+                "C": "Viper",
+                "D": "Colubrid"
+            },
+            "answer": "B",
+            "media": null
+        },
+        {
+            "id": "st_007",
+            "text": "Which snake is often confused with the venomous Coral Snake due to similar colors?",
+            "options": {
+                "A": "Milk Snake",
+                "B": "Corn Snake",
+                "C": "Garter Snake",
+                "D": "Rat Snake"
+            },
+            "answer": "A",
+            "media": null
+        },
+        {
+            "id": "st_008",
+            "text": "The Titanoboa, an extinct giant snake, lived during which epoch?",
+            "options": {
+                "A": "Jurassic",
+                "B": "Paleocene",
+                "C": "Pleistocene",
+                "D": "Cretaceous"
+            },
+            "answer": "B",
+            "media": null
+        },
+        {
+            "id": "st_009",
+            "text": "What is the primary diet of the King Cobra?",
+            "options": {
+                "A": "Rodents",
+                "B": "Birds",
+                "C": "Other Snakes",
+                "D": "Insects"
+            },
+            "answer": "C",
+            "media": null
+        },
+        {
+            "id": "st_010",
+            "text": "Which of these snakes is a constrictor?",
+            "options": {
+                "A": "Cobra",
+                "B": "Viper",
+                "C": "Python",
+                "D": "Mamba"
+            },
+            "answer": "C",
+            "media": null
+        },
+        {
+            "id": "st_011",
+            "text": "What is the fastest snake in the world?",
+            "options": {
+                "A": "Sidewinder",
+                "B": "Black Mamba",
+                "C": "King Brown",
+                "D": "Taipan"
+            },
+            "answer": "B",
+            "media": null
+        },
+        {
+            "id": "st_012",
+            "text": "Snakes lack which of the following body parts?",
+            "options": {
+                "A": "Eyelids",
+                "B": "Teeth",
+                "C": "Scales",
+                "D": "Tongue"
+            },
+            "answer": "A",
+            "media": null
+        },
+        {
+            "id": "st_013",
+            "text": "The 'Green Anaconda' is native to which region?",
+            "options": {
+                "A": "Southeast Asia",
+                "B": "South America",
+                "C": "Africa",
+                "D": "Australia"
+            },
+            "answer": "B",
+            "media": null
+        },
+        {
+            "id": "st_014",
+            "text": "Which snake has the longest fangs?",
+            "options": {
+                "A": "Gaboon Viper",
+                "B": "King Cobra",
+                "C": "Bushmaster",
+                "D": "Puff Adder"
+            },
+            "answer": "A",
+            "media": null
+        },
+        {
+            "id": "st_015",
+            "text": "In the game 'Snake', what happens if you hit your own tail?",
+            "options": {
+                "A": "You Win",
+                "B": "Game Over",
+                "C": "Level Up",
+                "D": "Speed Boost"
+            },
+            "answer": "B",
+            "media": null
+        }
+    ]
+}
