@@ -3,6 +3,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const game = new Game(canvas);
     game.start();
 
+    // Canvas Swipe Controls
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent scrolling
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+
+        // Threshold for swipe
+        if (Math.abs(dx) < 30 && Math.abs(dy) < 30) {
+            return;
+        }
+
+        let key = '';
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal
+            key = dx > 0 ? 'ArrowRight' : 'ArrowLeft';
+        } else {
+            // Vertical
+            key = dy > 0 ? 'ArrowDown' : 'ArrowUp';
+        }
+
+        if (key) {
+            game.input.simulateKey(key, true);
+            setTimeout(() => game.input.simulateKey(key, false), 50);
+        }
+    }, { passive: false });
+
     // Touch Controls Binding
     const controls = {
         'btn-up': 'ArrowUp',
