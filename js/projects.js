@@ -25,6 +25,7 @@ var projects = [
     { name: "PuzzLLer", path: "games/puzzller/index.html", category: "puzzle", icon: "🧠", tags: ["Logic"], description: "Navigate grids and solve logic puzzles." },
     { name: "Jigsaw Engine", path: "games/jigsaw/index.html", category: "puzzle", icon: "🧩", tags: ["New", "Engine"], description: "Create and play custom jigsaw puzzles with any image." },
     { name: "C.o.D.E.", path: "projects/code/index.html", category: "puzzle", icon: "📟", tags: ["Simulation"], description: "Hacking simulator. Crack the numeric code against time." },
+    { name: "Name That Tune", path: "projects/name-that-tune/index.html", category: "arcade", icon: "🎶", tags: ["Music", "Quiz"], description: "Guess the song from a 30-second preview." },
 
     // Tools / Projects
     { name: "Input A11y", path: "projects/input-a11y/index.html", category: "project", icon: "📷", tags: ["Utility"], description: "Barcode and QR code scanner with multiple detection modes." },
