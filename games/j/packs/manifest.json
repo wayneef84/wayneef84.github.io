@@ -3,43 +3,43 @@
         {
             "id": "professional",
             "title": "Professional & Technical",
-            "icon": "\ud83d\udcbc",
+            "icon": "💼",
             "description": "Career skills, tech, and industry knowledge."
         },
         {
             "id": "geek_culture",
             "title": "Geek & Internet Culture",
-            "icon": "\ud83d\udc7e",
+            "icon": "👾",
             "description": "Anime, memes, comics, and gaming."
         },
         {
             "id": "pub_trivia",
             "title": "Pub Trivia Classics",
-            "icon": "\ud83c\udf7b",
+            "icon": "🍻",
             "description": "General knowledge staples like History and Geography."
         },
         {
             "id": "buckeye_years",
             "title": "The Buckeye Years (Ohio 1955+)",
-            "icon": "\ud83c\udf30",
+            "icon": "🌰",
             "description": "A trip down memory lane for an Ohio native."
         },
         {
             "id": "golden_era",
             "title": "The Golden Era (60s & 70s)",
-            "icon": "\ud83d\udcfb",
+            "icon": "📻",
             "description": "Pop culture, daily life, and nostalgia."
         },
         {
             "id": "visual",
             "title": "Visual & Quick-Fire",
-            "icon": "\ud83d\udc41\ufe0f",
+            "icon": "👁️",
             "description": "Image-based quizzes and rapid identification."
         },
         {
             "id": "niche",
             "title": "Niche & Special Interest",
-            "icon": "\ud83d\udd0d",
+            "icon": "🔍",
             "description": "Deep dives into specific topics."
         }
     ],
@@ -49,7 +49,7 @@
             "groupId": "professional",
             "title": "Technology & Computing",
             "path": "packs/technology_v1.json",
-            "icon": "\u2753",
+            "icon": "💻",
             "count": 80
         },
         {
@@ -57,7 +57,7 @@
             "groupId": "pub_trivia",
             "title": "Sports & Athletics",
             "path": "packs/sports_v1.json",
-            "icon": "\u2753",
+            "icon": "🏅",
             "count": 80
         },
         {
@@ -65,7 +65,7 @@
             "groupId": "golden_era",
             "title": "Candy & Snacks of the 60s",
             "path": "packs/candy_60s.json",
-            "icon": "\u2753",
+            "icon": "🍬",
             "count": 15
         },
         {
@@ -73,7 +73,7 @@
             "groupId": "pub_trivia",
             "title": "Animals & Nature",
             "path": "packs/animals_v1.json",
-            "icon": "\u2753",
+            "icon": "🐾",
             "count": 80
         },
         {
@@ -81,7 +81,7 @@
             "groupId": "professional",
             "title": "Agile & Scrum",
             "path": "packs/agile_scrum.json",
-            "icon": "\u2753",
+            "icon": "🔄",
             "count": 15
         },
         {
@@ -89,7 +89,7 @@
             "groupId": "pub_trivia",
             "title": "Public Domain Trivia",
             "path": "packs/public_domain.json",
-            "icon": "\u2753",
+            "icon": "🏛️",
             "count": 15
         },
         {
@@ -97,7 +97,7 @@
             "groupId": "niche",
             "title": "True Crime",
             "path": "packs/true_crime.json",
-            "icon": "\u2753",
+            "icon": "🕵️",
             "count": 15
         },
         {
@@ -105,7 +105,7 @@
             "groupId": "golden_era",
             "title": "60s Pop Music",
             "path": "packs/music_60s.json",
-            "icon": "\u2753",
+            "icon": "🎶",
             "count": 15
         },
         {
@@ -113,7 +113,7 @@
             "groupId": "niche",
             "title": "90s Pop Music",
             "path": "packs/music_90s.json",
-            "icon": "\u2753",
+            "icon": "📼",
             "count": 15
         },
         {
@@ -121,7 +121,7 @@
             "groupId": "pub_trivia",
             "title": "Literature & Books",
             "path": "packs/literature_v1.json",
-            "icon": "\u2753",
+            "icon": "📚",
             "count": 80
         },
         {
@@ -129,7 +129,7 @@
             "groupId": "pub_trivia",
             "title": "Modern History",
             "path": "packs/modern_history.json",
-            "icon": "\u2753",
+            "icon": "📅",
             "count": 15
         },
         {
@@ -137,7 +137,7 @@
             "groupId": "pub_trivia",
             "title": "World Geography",
             "path": "packs/geography_v1.json",
-            "icon": "\u2753",
+            "icon": "🌍",
             "count": 80
         },
         {
@@ -145,7 +145,7 @@
             "groupId": "geek_culture",
             "title": "Sprunki Beats & Lore",
             "path": "packs/sprunki_v1.json",
-            "icon": "\u2753",
+            "icon": "🎧",
             "count": 30
         },
         {
@@ -153,7 +153,7 @@
             "groupId": "visual",
             "title": "Brands & Logos",
             "path": "packs/brands_logos.json",
-            "icon": "\u2753",
+            "icon": "™️",
             "count": 15
         },
         {
@@ -161,7 +161,7 @@
             "groupId": "geek_culture",
             "title": "Video Games",
             "path": "packs/videogames_v1.json",
-            "icon": "\u2753",
+            "icon": "🎮",
             "count": 80
         },
         {
@@ -169,7 +169,7 @@
             "groupId": "buckeye_years",
             "title": "The Big Red Machine & Ohio Sports",
             "path": "packs/ohio_sports.json",
-            "icon": "\u2753",
+            "icon": "⚾",
             "count": 15
         },
         {
@@ -177,7 +177,7 @@
             "groupId": "buckeye_years",
             "title": "Ohio's Space Race",
             "path": "packs/ohio_space.json",
-            "icon": "\u2753",
+            "icon": "🚀",
             "count": 15
         },
         {
@@ -185,7 +185,7 @@
             "groupId": "pub_trivia",
             "title": "World History",
             "path": "packs/history_v1.json",
-            "icon": "\u2753",
+            "icon": "📜",
             "count": 80
         },
         {
@@ -193,7 +193,7 @@
             "groupId": "professional",
             "title": "Cybersecurity Basics",
             "path": "packs/cybersecurity.json",
-            "icon": "\u2753",
+            "icon": "🔒",
             "count": 15
         },
         {
@@ -201,7 +201,7 @@
             "groupId": "niche",
             "title": "Music & Artists",
             "path": "packs/music_v1.json",
-            "icon": "\u2753",
+            "icon": "🎵",
             "count": 80
         },
         {
@@ -209,7 +209,7 @@
             "groupId": "geek_culture",
             "title": "Anime & Manga",
             "path": "packs/anime_manga.json",
-            "icon": "\u2753",
+            "icon": "🗾",
             "count": 15
         },
         {
@@ -217,7 +217,7 @@
             "groupId": "golden_era",
             "title": "Xanadu (1980)",
             "path": "packs/xanadu_v1.json",
-            "icon": "\u2753",
+            "icon": "⛸️",
             "count": 15
         },
         {
@@ -225,7 +225,7 @@
             "groupId": "pub_trivia",
             "title": "Language & Words",
             "path": "packs/language_v1.json",
-            "icon": "\u2753",
+            "icon": "🗣️",
             "count": 80
         },
         {
@@ -233,7 +233,7 @@
             "groupId": "pub_trivia",
             "title": "Space & Astronomy",
             "path": "packs/space_v1.json",
-            "icon": "\u2753",
+            "icon": "🌌",
             "count": 80
         },
         {
@@ -241,7 +241,7 @@
             "groupId": "golden_era",
             "title": "What Did It Cost? (1955 vs 1975)",
             "path": "packs/cost_of_living.json",
-            "icon": "\u2753",
+            "icon": "💲",
             "count": 15
         },
         {
@@ -249,7 +249,7 @@
             "groupId": "geek_culture",
             "title": "Cryptids & Mythology",
             "path": "packs/cryptids.json",
-            "icon": "\u2753",
+            "icon": "👣",
             "count": 15
         },
         {
@@ -257,7 +257,7 @@
             "groupId": "golden_era",
             "title": "The Vietnam Era (News & History)",
             "path": "packs/vietnam_era.json",
-            "icon": "\u2753",
+            "icon": "🚁",
             "count": 15
         },
         {
@@ -265,7 +265,7 @@
             "groupId": "buckeye_years",
             "title": "Rust Belt Rock & Radio",
             "path": "packs/rust_belt_rock.json",
-            "icon": "\u2753",
+            "icon": "🎸",
             "count": 15
         },
         {
@@ -273,7 +273,7 @@
             "groupId": "professional",
             "title": "PMI Project Management",
             "path": "packs/pmi_pm.json",
-            "icon": "\u2753",
+            "icon": "📊",
             "count": 30
         },
         {
@@ -281,7 +281,7 @@
             "groupId": "professional",
             "title": "Ops, Logistics & Trade",
             "path": "packs/ops_logistics.json",
-            "icon": "\u2753",
+            "icon": "📦",
             "count": 25
         },
         {
@@ -289,7 +289,7 @@
             "groupId": "geek_culture",
             "title": "Internet Culture",
             "path": "packs/internet_culture.json",
-            "icon": "\u2753",
+            "icon": "🌐",
             "count": 15
         },
         {
@@ -297,7 +297,7 @@
             "groupId": "pub_trivia",
             "title": "Mythology & Legends",
             "path": "packs/mythology_v1.json",
-            "icon": "\u2753",
+            "icon": "🐉",
             "count": 80
         },
         {
@@ -305,7 +305,7 @@
             "groupId": "niche",
             "title": "Automotive & Racing",
             "path": "packs/automotive.json",
-            "icon": "\u2753",
+            "icon": "🏎️",
             "count": 15
         },
         {
@@ -313,7 +313,7 @@
             "groupId": "golden_era",
             "title": "Saturday Morning Cartoons (60s)",
             "path": "packs/cartoons_60s.json",
-            "icon": "\u2753",
+            "icon": "📺",
             "count": 15
         },
         {
@@ -321,7 +321,7 @@
             "groupId": "pub_trivia",
             "title": "Food & Cuisine",
             "path": "packs/food_v1.json",
-            "icon": "\u2753",
+            "icon": "🍔",
             "count": 80
         },
         {
@@ -329,7 +329,7 @@
             "groupId": "professional",
             "title": "Andrew Ramdayal's Mindset",
             "path": "packs/andrew_ramdayal.json",
-            "icon": "\u2753",
+            "icon": "🧠",
             "count": 20
         },
         {
@@ -337,7 +337,7 @@
             "groupId": "golden_era",
             "title": "80s Pop Music",
             "path": "packs/music_80s.json",
-            "icon": "\u2753",
+            "icon": "🎹",
             "count": 15
         },
         {
@@ -345,7 +345,7 @@
             "groupId": "professional",
             "title": "General Science",
             "path": "packs/science_v1.json",
-            "icon": "\u2753",
+            "icon": "🔬",
             "count": 80
         },
         {
@@ -353,7 +353,7 @@
             "groupId": "niche",
             "title": "Pop Culture",
             "path": "packs/popculture_v1.json",
-            "icon": "\u2753",
+            "icon": "🍿",
             "count": 80
         },
         {
@@ -361,7 +361,7 @@
             "groupId": "niche",
             "title": "Movies & Film",
             "path": "packs/movies_v1.json",
-            "icon": "\u2753",
+            "icon": "🎬",
             "count": 80
         },
         {
@@ -369,7 +369,7 @@
             "groupId": "golden_era",
             "title": "70s Pop Music",
             "path": "packs/music_70s.json",
-            "icon": "\u2753",
+            "icon": "🕺",
             "count": 15
         },
         {
@@ -377,7 +377,7 @@
             "groupId": "professional",
             "title": "Mathematics",
             "path": "packs/math_v1.json",
-            "icon": "\u2753",
+            "icon": "📐",
             "count": 80
         },
         {
@@ -385,7 +385,7 @@
             "groupId": "pub_trivia",
             "title": "The Human Body",
             "path": "packs/human_body.json",
-            "icon": "\u2753",
+            "icon": "🦴",
             "count": 15
         },
         {
@@ -393,7 +393,7 @@
             "groupId": "golden_era",
             "title": "American Muscle: 1964-1974",
             "path": "packs/american_muscle.json",
-            "icon": "\u2753",
+            "icon": "🚘",
             "count": 15
         }
     ]
