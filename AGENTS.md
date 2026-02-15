@@ -11,13 +11,36 @@ This repository is co-maintained by three distinct AI agents. To prevent halluci
 | **Gemini** | `G` | Creative Director | Content, Assets, Rapid Prototyping | `*.html`, `*.css`, `GEMINI.md` |
 | **Jules** | `J` | Lead Architect | Git Ops, Refactoring, Integration | `.*` (Hidden), `JULES.md`, Root |
 
+## ⚠️ GROUND RULES AUTHORITY (MANDATORY FIRST STEP)
+
+**BEFORE reading anything else:**
+1. ✅ **Read [`GROUND_RULES.md`](GROUND_RULES.md)** - This supersedes all other architectural decisions
+2. ✅ **Acknowledge understanding** in your first `AI_FEEDBACK.md` entry (see template in `GROUND_RULES.md`)
+3. ⚠️ **Use `/admin/GROUND_RULES_CHECKLIST.md`** to verify compliance before every commit
+
+**The 9 Immutable Laws (Quick Reference):**
+1. Local-Only Assets (no CDNs)
+2. Strict ES5 Syntax
+3. Zero Build Tools
+4. Relative Paths Only
+5. Dev Branch Sovereignty
+6. Federated Dependencies
+7. Docs Precede Code
+8. License Compliance
+9. F.O.N.G. Branding & Mobile-First
+
+**Escalation Path:** If you're unsure whether a decision violates a ground rule, document your question in `AI_FEEDBACK.md` and wait for user clarification. **Do not guess.**
+
+---
+
 ## 🤝 Handshake Protocol
 When starting a session:
-1.  **Read `ONBOARDING.md`** (Start Here).
-2.  **Read `AGENTS.md`** (this file).
-3.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
-4.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
-5.  **Announce yourself** in your first output (e.g., "Hello, this is [Agent Name]...").
+1. ✅ **Read [`GROUND_RULES.md`](GROUND_RULES.md)** (MANDATORY FIRST)
+2.  **Read `ONBOARDING.md`** (Start Here).
+3.  **Read `AGENTS.md`** (this file).
+4.  **Read `AI_FEEDBACK.md`** to see the latest journal entries.
+5.  **Read your specific file** (`CLAUDE.md`, `GEMINI.md`, or `JULES.md`).
+6.  **Announce yourself** in your first output, including ground rules acknowledgment.
 
 ## 🚦 Collaboration Protocol ("F.O.N.G. Protocol")
 **(Acronym TBD)** — Maintained by **The Conjugators**
