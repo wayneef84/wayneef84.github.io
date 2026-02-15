@@ -16,8 +16,15 @@ const Game = {
     // Game entities
     player: null,
     platforms: [],
+    powerups: [],
 
     score: 0,
+    level: 1,
+    lives: 3,
+    invincible: false,
+    invincibleTimer: 0,
+    speedMultiplier: 1.0,
+    speedTimer: 0,
     baseSpeed: 0,
     currentSpeed: 0,
 
@@ -58,8 +65,9 @@ const Game = {
     },
 
     resize: function() {
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        const container = this.canvas.parentElement;
+        this.width = container.clientWidth;
+        this.height = container.clientHeight;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
     },
@@ -96,8 +104,20 @@ const Game = {
 
     reset: function() {
         this.score = 0;
+        this.level = 1;
+        this.lives = 3;
+        this.invincible = false;
+        this.invincibleTimer = 0;
+        this.speedMultiplier = 1.0;
+        this.speedTimer = 0;
         this.currentSpeed = this.baseSpeed;
         this.platforms = [];
+        this.powerups = [];
+
+        if (typeof UIManager !== 'undefined') {
+            if (UIManager.updateLevel) UIManager.updateLevel(this.level);
+            if (UIManager.updateLives) UIManager.updateLives(this.lives);
+        }
 
         // Initialize player
         this.player = {
@@ -130,6 +150,11 @@ const Game = {
             maxGap = 150;
         }
 
+        // Level scaling: Shrink gap by 2px per level
+        const levelShrink = (this.level - 1) * 2;
+        minGap = Math.max(30, minGap - levelShrink);
+        maxGap = Math.max(40, maxGap - levelShrink);
+
         const gapWidth = minGap + Math.random() * (maxGap - minGap);
         const gapX = Math.random() * (this.width - gapWidth);
 
@@ -138,6 +163,28 @@ const Game = {
             height: this.PLATFORM_HEIGHT,
             gaps: [{start: gapX, end: gapX + gapWidth}]
         });
+
+        // Spawn Powerup (10% chance)
+        if (Math.random() < 0.1) {
+            let spawnX = 0;
+            const buffer = 20;
+            // Decide left or right of gap
+            if (gapX > buffer * 2 && Math.random() < 0.5) {
+                spawnX = Math.random() * (gapX - buffer) + buffer/2;
+            } else if (this.width - (gapX + gapWidth) > buffer * 2) {
+                const start = gapX + gapWidth;
+                spawnX = start + Math.random() * (this.width - start - buffer) + buffer/2;
+            } else {
+                return; // No space
+            }
+
+            this.powerups.push({
+                x: spawnX,
+                y: y - 10,
+                type: ['speed', 'slow', 'ghost'][Math.floor(Math.random() * 3)],
+                radius: 8
+            });
+        }
     },
 
     loop: function(timestamp) {
@@ -157,6 +204,21 @@ const Game = {
     },
 
     update: function(dt) {
+        // Timers
+        if (this.invincible) {
+            this.invincibleTimer -= dt;
+            if (this.invincibleTimer <= 0) {
+                this.invincible = false;
+            }
+        }
+
+        if (this.speedTimer > 0) {
+            this.speedTimer -= dt;
+            if (this.speedTimer <= 0) {
+                this.speedMultiplier = 1.0;
+            }
+        }
+
         // 1. Update Game Speed (accelerate slowly over time)
         this.currentSpeed += dt * 2;
 
@@ -165,8 +227,14 @@ const Game = {
             p.y -= this.currentSpeed * dt;
         }
 
-        // Remove off-screen platforms (top)
+        // Move Powerups (UP)
+        for (let p of this.powerups) {
+            p.y -= this.currentSpeed * dt;
+        }
+
+        // Remove off-screen entities (top)
         this.platforms = this.platforms.filter(p => p.y + p.height > 0);
+        this.powerups = this.powerups.filter(p => p.y + 20 > 0);
 
         // Add new platforms at bottom
         const lastPlatform = this.platforms[this.platforms.length - 1];
@@ -180,10 +248,10 @@ const Game = {
         }
 
         // 3. Move Player
-        const control = InputManager.getControlState(); // { direction, intensity }
+        const control = InputManager.getControlState(this.player.x); // { direction, intensity }
 
         // Horizontal Movement
-        this.player.vx = control.direction * this.PLAYER_SPEED * control.intensity;
+        this.player.vx = control.direction * this.PLAYER_SPEED * this.speedMultiplier * control.intensity;
         this.player.x += this.player.vx * dt;
 
         // Wall collisions
@@ -202,20 +270,22 @@ const Game = {
         // Platform Collisions
         let onPlatform = false;
 
-        // We check if we crossed a platform boundary
         // Optimized: only check platforms near player
         for (let p of this.platforms) {
-            // Platform top edge
-            const pTop = p.y;
-            const pBottom = p.y + p.height;
+            // Pass through if invincible/ghost
+            if (this.invincible) continue;
 
-            // Check if player is within vertical range of platform
-            // We use previous Y and next Y to detect crossing
-            const playerBottom = this.player.y + this.player.radius;
+            const pTop = p.y;
+            // Estimated position in previous frame to detect crossing
+            const prevPTop = pTop + this.currentSpeed * dt;
+
+            const prevPlayerBottom = this.player.y + this.player.radius;
             const nextPlayerBottom = nextY + this.player.radius;
 
-            // Crossing the top of a platform downwards
-            if (playerBottom <= pTop + 5 && nextPlayerBottom >= pTop) {
+            // Check if we crossed the platform top edge
+            // Tolerance +5 allows for "resting" logic where player is slightly inside/above
+            if (prevPlayerBottom <= prevPTop + 5 && nextPlayerBottom >= pTop) {
+
                 // Check if in gap
                 let inGap = false;
                 for (let gap of p.gaps) {
@@ -226,7 +296,8 @@ const Game = {
                 }
 
                 if (!inGap) {
-                    // Landed
+                    // Collision!
+                    // Snap to top
                     nextY = pTop - this.player.radius;
                     this.player.vy = 0;
                     onPlatform = true;
@@ -235,6 +306,19 @@ const Game = {
         }
 
         this.player.y = nextY;
+
+        // Check Powerup Collisions
+        for (let i = this.powerups.length - 1; i >= 0; i--) {
+            const pup = this.powerups[i];
+            const dx = this.player.x - pup.x;
+            const dy = this.player.y - pup.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < this.player.radius + pup.radius) {
+                this.applyPowerup(pup.type);
+                this.powerups.splice(i, 1);
+            }
+        }
 
         // If on platform, we are naturally moved up by the platform in the next frame
         // because the platform moves up and we are constrained by gravity/collision next frame.
@@ -246,7 +330,11 @@ const Game = {
 
         // Game Over check (Top of screen)
         if (this.player.y - this.player.radius <= 0) {
-            this.gameOver();
+            if (this.lives > 1) {
+                this.loseLife();
+            } else {
+                this.gameOver();
+            }
         }
 
         // Bottom check (Floor)
@@ -260,9 +348,51 @@ const Game = {
         // Time based is smoother.
         if (this.state === 'PLAYING') {
             this.score += dt * (this.currentSpeed / 10);
+
+            // Level Up (Every 500 points)
+            if (this.score > this.level * 500) {
+                this.level++;
+                this.currentSpeed += 30;
+                if (typeof UIManager !== 'undefined' && UIManager.updateLevel) {
+                    UIManager.updateLevel(this.level);
+                }
+            }
+
             if (typeof UIManager !== 'undefined') {
                 UIManager.updateScore(Math.floor(this.score));
             }
+        }
+    },
+
+    loseLife: function() {
+        this.lives--;
+        if (typeof UIManager !== 'undefined' && UIManager.updateLives) {
+            UIManager.updateLives(this.lives);
+        }
+
+        // Respawn logic
+        this.player.y = 100;
+        this.player.vy = 0;
+        this.invincible = true;
+        this.invincibleTimer = 2.0; // 2 seconds
+
+        // Clear top platforms to make safe entry
+        this.platforms = this.platforms.filter(p => p.y > 200);
+    },
+
+    applyPowerup: function(type) {
+        switch(type) {
+            case 'speed':
+                this.speedMultiplier = 1.5;
+                this.speedTimer = 5.0;
+                break;
+            case 'slow':
+                this.currentSpeed = Math.max(50, this.currentSpeed * 0.5);
+                break;
+            case 'ghost':
+                this.invincible = true;
+                this.invincibleTimer = 5.0;
+                break;
         }
     },
 
@@ -310,25 +440,54 @@ const Game = {
             }
         }
 
-        // Draw Player
-        if (this.player) {
-            this.ctx.fillStyle = colors.player;
-            if (this.theme === 'neon') {
-                this.ctx.shadowColor = colors.player;
+        // Draw Powerups
+        for (let p of this.powerups) {
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+
+            switch(p.type) {
+                case 'speed': this.ctx.fillStyle = '#3498db'; break; // Blue
+                case 'slow': this.ctx.fillStyle = '#2ecc71'; break; // Green
+                case 'ghost': this.ctx.fillStyle = '#f1c40f'; break; // Yellow
+                default: this.ctx.fillStyle = '#ffffff';
             }
 
-            this.ctx.beginPath();
-            this.ctx.arc(this.player.x, this.player.y, this.player.radius, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.strokeStyle = '#fff';
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
 
-            // Highlights
-            if (this.theme === 'modern') {
-                this.ctx.shadowBlur = 5;
-                this.ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                this.ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            // Glow effect
+            if (this.theme === 'neon') {
+                this.ctx.shadowBlur = 10;
+                this.ctx.shadowColor = this.ctx.fillStyle;
+                this.ctx.stroke(); // Stroke again for glow
+                this.ctx.shadowBlur = 0;
+            }
+        }
+
+        // Draw Player
+        if (this.player) {
+            // Flash if invincible
+            if (!this.invincible || Math.floor(Date.now() / 100) % 2 === 0) {
+                this.ctx.fillStyle = colors.player;
+                if (this.theme === 'neon') {
+                    this.ctx.shadowColor = colors.player;
+                }
+
                 this.ctx.beginPath();
-                this.ctx.arc(this.player.x - this.player.radius*0.3, this.player.y - this.player.radius*0.3, this.player.radius * 0.4, 0, Math.PI * 2);
+                this.ctx.arc(this.player.x, this.player.y, this.player.radius, 0, Math.PI * 2);
                 this.ctx.fill();
+
+                // Highlights
+                if (this.theme === 'modern') {
+                    this.ctx.shadowBlur = 5;
+                    this.ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                    this.ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.player.x - this.player.radius*0.3, this.player.y - this.player.radius*0.3, this.player.radius * 0.4, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
             }
         }
 

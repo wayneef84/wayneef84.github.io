@@ -95,6 +95,16 @@ const UIManager = {
         document.getElementById('score-val').textContent = score;
     },
 
+    updateLevel: function(level) {
+        const el = document.getElementById('level-val');
+        if (el) el.textContent = level;
+    },
+
+    updateLives: function(lives) {
+        const el = document.getElementById('lives-val');
+        if (el) el.textContent = lives;
+    },
+
     showGameOver: function(score, isHighScore) {
         document.getElementById('final-score-val').textContent = score;
         const newScoreDiv = document.getElementById('new-high-score');
