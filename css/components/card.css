@@ -1,0 +1,64 @@
+/* Mobile-First Grid (Rule 9) */
+.game-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default to 1 column for mobile */
+  gap: 1.5rem;
+  padding: 2rem 5%;
+}
+
+@media (min-width: 480px) {
+  .game-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 768px) {
+  .game-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+.game-card {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: var(--transition-fast);
+  min-height: 140px; /* Ensure ample touch area */
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-primary);
+  background-color: var(--bg-surface-hover);
+}
+
+.category-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  width: fit-content;
+}
+
+.tag-arcade { background: rgba(245, 158, 11, 0.1); color: var(--cat-arcade); }
+.tag-card { background: rgba(16, 185, 129, 0.1); color: var(--cat-card); }
+.tag-puzzle { background: rgba(139, 92, 246, 0.1); color: var(--cat-puzzle); }
+.tag-edu { background: rgba(59, 130, 246, 0.1); color: var(--cat-educational); }
+
+.game-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
