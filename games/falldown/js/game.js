@@ -54,9 +54,13 @@ const Game = {
 
         // Load settings
         if (typeof StorageManager !== 'undefined') {
-            const settings = StorageManager.getSettings();
-            this.setTheme(settings.theme || 'classic');
-            this.setDifficulty(settings.difficulty || 'normal');
+            StorageManager.getSettings().then(settings => {
+                this.setTheme(settings.theme || 'classic');
+                this.setDifficulty(settings.difficulty || 'normal');
+            }).catch(err => {
+                // Fallback or just ignore, defaults are already set
+                console.warn('Failed to load settings', err);
+            });
         }
 
         // Start loop
@@ -510,19 +514,23 @@ const Game = {
 
     gameOver: function() {
         this.state = 'GAMEOVER';
+        const finalScore = Math.floor(this.score);
 
-        // Check High Score
-        let isNewHigh = false;
         if (typeof StorageManager !== 'undefined') {
-            const finalScore = Math.floor(this.score);
-            isNewHigh = StorageManager.isHighScore(finalScore);
-
-            // If not a high score but we want to show it in list, we save it?
-            // Usually we only ask name if it's a high score.
-        }
-
-        if (typeof UIManager !== 'undefined') {
-            UIManager.showGameOver(Math.floor(this.score), isNewHigh);
+            StorageManager.isHighScore(finalScore).then(isNewHigh => {
+                if (typeof UIManager !== 'undefined') {
+                    UIManager.showGameOver(finalScore, isNewHigh);
+                }
+            }).catch(err => {
+                console.error(err);
+                if (typeof UIManager !== 'undefined') {
+                    UIManager.showGameOver(finalScore, false);
+                }
+            });
+        } else {
+            if (typeof UIManager !== 'undefined') {
+                UIManager.showGameOver(finalScore, false);
+            }
         }
     },
 

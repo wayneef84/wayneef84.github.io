@@ -1,27 +1,113 @@
-# Flash Classics Collection
+# F.O.N.G. Flash Classics
 
-## Foundation
-This project aims to recreate the nostalgic feel of early 2000s Flash games using modern HTML5 Canvas and ES5 JavaScript.
+## What is this?
 
-### Core Principles
-1.  **Retro Aesthetic:** Use gradients, bevels, and simple vector-like graphics reminiscent of Macromedia Flash.
-2.  **Simplicity:** Games should be easy to pick up, hard to master. One-button or simple arrow key controls.
-3.  **Compatibility:** Code must be ES5 compliant to run on older devices, respecting the F.O.N.G. protocol.
-4.  **Self-Contained:** Each game is a single HTML file (or minimal dependencies) to ensure easy portability and offline play.
+F.O.N.G. Flash Classics is an experimental, historical archive of early 2000s-style web games, carefully ported from legacy ActionScript concepts into modern, plugin-free HTML5 and ES5 JavaScript.
 
-## Games List
-1.  **Chopper:** A classic helicopter tunnel game. Click to fly up, release to fall. Avoid obstacles.
-2.  **Defender:** Defend the center base from incoming stickman enemies. Click to shoot.
-3.  **Neon Runner:** A fast-paced, 1-button auto-runner platformer. Jump over spikes and gaps.
+**Who should play:** Nostalgic gamers who miss the golden era of browser-based portal games.
 
-## Future Plans (For Next Agents)
-The following features are planned for future iterations:
--   [ ] **High Score System:** Implement `localStorage` based high scores for each game.
--   [ ] **Sound Effects:** Add retro sound effects using a simple synthesizer or small audio files.
--   [ ] **Preloader:** Add a fake "Loading..." bar with a "Play" button to simulate the Flash loading experience.
--   [ ] **Medals/Achievements:** Unlockable achievements for reaching certain scores.
--   [ ] **More Games:**
-    -   *Tower Defense:* Simple path-based defense.
-    -   *Idle Clicker:* Resource accumulation game.
-    -   *Sniper:* Scope-based shooting gallery.
--   [ ] **Mobile Optimization:** Enhance touch controls and responsiveness for smaller screens.
+**Why it exists:** Flash is dead. This project exists to preserve the mechanical "feel" of classic, quirky web games using strictly local web standards, ensuring they remain playable forever without needing emulators.
+
+---
+
+## Quick Start (30 seconds)
+
+1. Launch the hub from the Development section.
+
+2. Select a mini-game from the archive list.
+
+3. Read the brief on-screen instructions (these games rely on simple, repetitive mechanics).
+
+4. Use your mouse, keyboard, or touchscreen to aim, click, and survive!
+
+**Pro Tip:** Because these are ports of mouse-heavy games, some titles play significantly better on a desktop computer than on a mobile touchscreen!
+
+---
+
+## Features
+
+- ✨ **Zero Plugins** - Completely rebuilt from scratch using the native HTML5 Canvas API. No Flash Player required.
+
+- 🎮 **Nostalgic Physics** - Recreates the slightly floaty, inaccurate physics of early web games for maximum authenticity.
+
+- 📱 **Adaptive Controls** - Attempts to map classic "Mouse Follow" controls to mobile touch-drag events where possible.
+
+- ⚡ **Local Archival** - All assets are stored within the repository, meaning these games are immune to future link-rot.
+
+---
+
+## How to Play
+
+**Objective:**
+
+Varies wildly per mini-game, but generally revolves around achieving a high score before inevitably failing.
+
+**Rules:**
+
+- Check the specific "How to Play" modal inside each mini-game.
+
+- Most games rely on single-click or click-and-hold mechanics.
+
+**Controls:**
+
+- **Desktop:** Highly recommended. Use the mouse to point, click, and drag.
+
+- **Mobile:** Tap or drag on the canvas to simulate mouse coordinates.
+
+---
+
+## Status
+
+- **Version:** 0.2.0
+
+- **Status:** Experimental / Development
+
+- **Last Updated:** 2026-02-15
+
+- **Mobile Optimized:** Partial (Depends heavily on the specific mini-game)
+
+- **Tested On:** Chrome 50+, Firefox 45+ (Desktop preferred)
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue:** My finger blocks the screen on mobile, and I can't see the cursor.
+
+- **Solution:** These games were originally designed for a mouse pointer. If touch tracking feels awkward, we highly recommend switching to a desktop browser for the true "Flash" experience.
+
+### Known Limitations
+
+- **Asset Fidelity:** To adhere to the F.O.N.G. strict local-asset rules, heavily compressed audio and procedural vector graphics replace large bitmap files from the original eras.
+
+---
+
+## Performance & Compatibility
+
+- **Load Time:** Instantaneous.
+
+- **Mobile Support:** Limited. Playable, but not the intended platform.
+
+- **Offline:** 100% offline capable.
+
+---
+
+## Documentation Links
+
+- 📚 [ARCHITECTURE.md](ARCHITECTURE.md) - How legacy mouse events map to touch listeners
+
+- 🛣️ [TODO.md](TODO.md) - Upcoming ports
+
+- 📜 [CHANGELOG.md](CHANGELOG.md) - Version history
+
+- 🧠 [CLAUDE.md](CLAUDE.md) - Developer notes & Canvas porting
+
+- 📋 [INFO.md](INFO.md) - Quick facts & dependencies
+
+---
+
+**Created By:** The C-G-J Alliance (F.O.N.G. Repository)
+
+**License:** Standard MIT / Non-Commercial Family Use

@@ -4,7 +4,7 @@
 **Last Updated:** 2026-02-04 (UTC)
 
 ## Overview
-A planned modular network library designed to handle real-time synchronization and peer-to-peer communication for the F.O.N.G. codebase. It is intended to integrate seamlessly with the Storage Engine (`/db/`) via event hooks.
+A planned modular network library designed to handle real-time synchronization and peer-to-peer communication for the F.O.N.G. codebase. It is intended to integrate seamlessly with the Storage Engine (`/storage/`) via event hooks.
 
 ## Architecture (Planned)
 - **Modular Sync**: The library will be separate from the storage engine. It will listen to storage events (`db.on('change', ... )`) to trigger sync operations.

@@ -1664,32 +1664,32 @@ var REPO_FILES = [
   },
   {
     "name": "index.js",
-    "path": "../../db/index.js",
-    "category": "Db",
+    "path": "../../storage/index.js",
+    "category": "Storage",
     "type": "js"
   },
   {
     "name": "README.md",
-    "path": "../../db/README.md",
-    "category": "Db",
+    "path": "../../storage/README.md",
+    "category": "Storage",
     "type": "md"
   },
   {
     "name": "ls-adapter.js",
-    "path": "../../db/adapters/ls-adapter.js",
-    "category": "Db",
+    "path": "../../storage/adapters/ls-adapter.js",
+    "category": "Storage",
     "type": "js"
   },
   {
     "name": "idb-adapter.js",
-    "path": "../../db/adapters/idb-adapter.js",
-    "category": "Db",
+    "path": "../../storage/adapters/idb-adapter.js",
+    "category": "Storage",
     "type": "js"
   },
   {
     "name": "fong-db.js",
-    "path": "../../db/core/fong-db.js",
-    "category": "Db",
+    "path": "../../storage/core/fong-db.js",
+    "category": "Storage",
     "type": "js"
   },
   {

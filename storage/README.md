@@ -7,8 +7,8 @@
 A generic, adapter-based storage engine designed for the F.O.N.G. codebase. It provides a unified API for data persistence, abstracting away the underlying storage mechanism (IndexedDB, LocalStorage, etc.).
 
 **Naming Convention:**
-- **Core Engine:** `FongDB` (`db/core/fong-db.js`)
-- **Adapters:** `NegenIDBAdapter`, `NegenLSAdapter` (`db/adapters/`)
+**Core Engine:** `FongDB` (`storage/core/fong-db.js`)
+**Adapters:** `NegenIDBAdapter`, `NegenLSAdapter` (`storage/adapters/`)
   - *Note: The core engine is legacy-named `FongDB`, while adapters use the modern `Negen` naming convention.*
 
 ## Architecture
