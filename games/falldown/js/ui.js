@@ -132,39 +132,39 @@ const UIManager = {
         const name = nameInput.value.trim() || 'Anonymous';
         const score = parseInt(document.getElementById('final-score-val').textContent);
 
-        StorageManager.saveScore(name, score);
-
-        // Hide input, show buttons
-        document.getElementById('new-high-score').classList.add('hidden');
-        document.getElementById('btn-retry').classList.remove('hidden');
-        document.getElementById('btn-menu').classList.remove('hidden');
-
-        // Refresh high scores list (optional, but good practice)
-        // this.showHighScores(); // No, we are staying on game over screen
+        StorageManager.saveScore(name, score).then(() => {
+            // Hide input, show buttons
+            document.getElementById('new-high-score').classList.add('hidden');
+            document.getElementById('btn-retry').classList.remove('hidden');
+            document.getElementById('btn-menu').classList.remove('hidden');
+        }).catch(err => console.error(err));
     },
 
     showHighScores: function() {
         const list = document.getElementById('scores-list');
-        list.innerHTML = '';
-
-        const scores = StorageManager.getScores();
-
-        if (scores.length === 0) {
-            list.innerHTML = '<div style="padding:10px; color:#777;">No scores yet.</div>';
-        } else {
-            scores.forEach((s, index) => {
-                const item = document.createElement('div');
-                item.className = 'score-item';
-                item.innerHTML = `
-                    <span class="score-rank">${index + 1}.</span>
-                    <span class="score-name">${this.escapeHtml(s.name)}</span>
-                    <span class="score-val">${s.score}</span>
-                `;
-                list.appendChild(item);
-            });
-        }
-
+        list.innerHTML = '<div class="loading">Loading...</div>';
         this.showScreen('high-scores-menu');
+
+        StorageManager.getScores().then(scores => {
+            list.innerHTML = '';
+            if (scores.length === 0) {
+                list.innerHTML = '<div style="padding:10px; color:#777;">No scores yet.</div>';
+            } else {
+                scores.forEach((s, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'score-item';
+                    item.innerHTML = `
+                        <span class="score-rank">${index + 1}.</span>
+                        <span class="score-name">${this.escapeHtml(s.name)}</span>
+                        <span class="score-val">${s.score}</span>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+        }).catch(err => {
+            list.innerHTML = '<div style="padding:10px; color:red;">Failed to load scores.</div>';
+            console.error(err);
+        });
     },
 
     updateToggle: function(groupId, activeBtn) {
@@ -178,37 +178,38 @@ const UIManager = {
             theme: Game.theme,
             difficulty: Game.difficulty
         };
-        StorageManager.saveSettings(settings);
+        StorageManager.saveSettings(settings).catch(err => console.error(err));
     },
 
     loadSettingsUI: function() {
         if (typeof StorageManager === 'undefined') return;
 
-        const settings = StorageManager.getSettings();
+        StorageManager.getSettings().then(settings => {
+            // Update Theme UI
+            const themeGroup = document.getElementById('theme-select');
+            const themeBtn = themeGroup.querySelector(`[data-value="${settings.theme}"]`);
+            if (themeBtn) this.updateToggle('#theme-select', themeBtn);
 
-        // Update Theme UI
-        const themeGroup = document.getElementById('theme-select');
-        const themeBtn = themeGroup.querySelector(`[data-value="${settings.theme}"]`);
-        if (themeBtn) this.updateToggle('#theme-select', themeBtn);
-
-        // Update Difficulty UI
-        const diffGroup = document.getElementById('difficulty-select');
-        const diffBtn = diffGroup.querySelector(`[data-value="${settings.difficulty}"]`);
-        if (diffBtn) this.updateToggle('#difficulty-select', diffBtn);
+            // Update Difficulty UI
+            const diffGroup = document.getElementById('difficulty-select');
+            const diffBtn = diffGroup.querySelector(`[data-value="${settings.difficulty}"]`);
+            if (diffBtn) this.updateToggle('#difficulty-select', diffBtn);
+        });
     },
 
     exportData: function() {
-        const data = StorageManager.exportData();
-        const blob = new Blob([data], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
+        StorageManager.exportData().then(data => {
+            const blob = new Blob([data], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
 
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `falldown_data_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `falldown_data_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }).catch(err => console.error(err));
     },
 
     hideOverlay: function(id) {
