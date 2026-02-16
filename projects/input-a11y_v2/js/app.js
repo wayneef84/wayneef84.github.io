@@ -1,4 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Configure shared StorageManager
+    StorageManager.config({
+        namespace: 'input_a11y',
+        maxHistory: 50,
+        defaults: {
+            detectMode: 'AUTO',
+            actionMode: 'URL_INPUT',
+            baseUrl: 'https://www.google.com/search?q=',
+            addValueToUrl: true,
+            scanRegion: 'BOX',
+            feedbackVibrate: true,
+            feedbackFrame: 'SCANNER',
+            feedbackFlash: 'SCANNER',
+            ocrDriver: '',
+            ocrFilterMode: 'NONE',
+            ocrFilterValue: '',
+            ocrConfirmPopup: true,
+            ocrScanLine: true,
+            ocrShowResize: true,
+            ocrConfidence: 40,
+            ocrDebounce: 3000,
+            ocrMinLength: 0,
+            ocrRoiWidth: 70,
+            ocrRoiHeight: 10,
+            ocrTextTransform: 'NONE',
+            ocrCharMode: 'OFF',
+            barcodeFps: 10,
+            barcodeBoxWidth: 250,
+            barcodeBoxHeight: 250
+        }
+    });
+
     var storage = new StorageManager();
     var generator = new GeneratorManager();
     var scanner = null;
