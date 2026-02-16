@@ -1,0 +1,97 @@
+/* Local Font Declarations (Rule 1 Compliance) */
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../../assets/fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('../../assets/fonts/SpaceMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-base: #121212;
+  --bg-surface: #1E1E1E;
+  --bg-surface-hover: #2A2A2A;
+  --accent-primary: #00E5FF;
+  --accent-secondary: #FF0055;
+  --cat-arcade: #F59E0B;
+  --cat-card: #10B981;
+  --cat-puzzle: #8B5CF6;
+  --cat-educational: #3B82F6;
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --radius-md: 8px;
+  --transition-fast: 0.2s ease-in-out;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: env(safe-area-inset-bottom); /* Rule 9 */
+}
+
+/* Global Navigation */
+.global-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  min-height: 60px;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  min-height: 44px; /* Rule 9 */
+}
+
+.stats-container {
+  display: flex;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 99px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* Rule 9 */
+  min-width: 44px;
+  transition: var(--transition-fast);
+}
+.btn-primary:hover { transform: scale(1.05); }
