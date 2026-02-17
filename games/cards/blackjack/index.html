@@ -238,7 +238,49 @@
         
         .hand-value.bust { background: #ef4444; border-color: #ff0000; }
         .hand-value.blackjack { background: #ffd700; color: #000; border-color: #fff; }
-        .hand-value.max { background: #3b82f6; border-color: #60a5fa; box-shadow: 0 0 10px #3b82f6; } 
+        .hand-value.max { background: #3b82f6; border-color: #60a5fa; box-shadow: 0 0 10px #3b82f6; }
+
+        /* --- SPLIT HANDS UI --- */
+        #splitHandsContainer {
+            display: none;
+            gap: 12px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+        #splitHandsContainer.active {
+            display: flex;
+        }
+        .split-hand-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 48%;
+        }
+        .split-hand-wrapper .cards-container {
+            min-width: 80px;
+        }
+        .split-hand-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2px;
+        }
+        .split-hand-wrapper.active-hand .cards-container {
+            outline: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 6px;
+        }
+        .split-hand-wrapper.done-hand {
+            opacity: 0.6;
+        }
+        .split-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.15);
+            align-self: stretch;
+            margin: 0 4px;
+        }
 
         /* --- FIXED FOOTER CONTROLS --- */
         .controls {
@@ -744,8 +786,23 @@
 
         <!-- Player Section (anchored at bottom) -->
         <div class="hand-area player-area" id="playerArea">
-            <div class="cards-container" id="playerCards"></div>
-            <div class="hand-value" id="playerValue">-</div>
+            <div id="splitHandsContainer" style="display:none; gap:12px; justify-content:center; align-items:flex-start;">
+                <div class="split-hand-wrapper" id="splitHandLeft">
+                    <div class="cards-container" id="playerCardsLeft"></div>
+                    <div class="hand-value" id="playerValueLeft">-</div>
+                    <div class="split-hand-label" id="splitLabelLeft">Hand 1</div>
+                </div>
+                <div class="split-divider"></div>
+                <div class="split-hand-wrapper" id="splitHandRight">
+                    <div class="cards-container" id="playerCardsRight"></div>
+                    <div class="hand-value" id="playerValueRight">-</div>
+                    <div class="split-hand-label" id="splitLabelRight">Hand 2</div>
+                </div>
+            </div>
+            <div id="singleHandContainer">
+                <div class="cards-container" id="playerCards"></div>
+                <div class="hand-value" id="playerValue">-</div>
+            </div>
             <h3>You</h3>
         </div>
     </main>
@@ -771,6 +828,7 @@
             <button id="btnHit" class="action-btn primary">HIT</button>
             <button id="btnStand" class="action-btn danger">STAND</button>
             <button id="btnDouble" class="action-btn">DOUBLE</button>
+            <button id="btnSplit" class="action-btn hidden">SPLIT</button>
         </div>
 
         <div id="gameOverRow" class="control-row hidden">
@@ -1096,12 +1154,29 @@
                     handHistoryPanel: document.getElementById('handHistoryPanel'),
                     handHistoryList: document.getElementById('handHistoryList'),
                     totalDealt: document.getElementById('totalDealt'),
-                    cardsRemaining: document.getElementById('cardsRemaining')
+                    cardsRemaining: document.getElementById('cardsRemaining'),
+                    btnSplit: document.getElementById('btnSplit'),
+                    splitHandsContainer: document.getElementById('splitHandsContainer'),
+                    singleHandContainer: document.getElementById('singleHandContainer'),
+                    splitHandLeft: document.getElementById('splitHandLeft'),
+                    splitHandRight: document.getElementById('splitHandRight'),
+                    playerCardsLeft: document.getElementById('playerCardsLeft'),
+                    playerCardsRight: document.getElementById('playerCardsRight'),
+                    playerValueLeft: document.getElementById('playerValueLeft'),
+                    playerValueRight: document.getElementById('playerValueRight'),
+                    splitLabelLeft: document.getElementById('splitLabelLeft'),
+                    splitLabelRight: document.getElementById('splitLabelRight')
                 };
 
                 // Insurance tracking
                 this.insuranceBet = 0;
                 this.insuranceOffered = false;
+
+                // Split hands tracking
+                this.isSplit = false;
+                this.activeHandIndex = 0; // 0 = left/first hand, 1 = right/second hand
+                this.splitHand0Done = false;
+                this.splitBet = 0;
 
                 // Triple-tap counter for debug console
                 this.tapCount = 0;
@@ -1186,9 +1261,10 @@
 
                 this.el.btnDeal.onclick = () => this.deal();
                 this.el.btnResetDeckBetting.onclick = () => this._resetDeck();
-                this.el.btnHit.onclick = () => this.engine.submitAction('player1', 'hit');
-                this.el.btnStand.onclick = () => this.engine.submitAction('player1', 'stand');
-                this.el.btnDouble.onclick = () => this.engine.submitAction('player1', 'double');
+                this.el.btnHit.onclick = () => this._handlePlayerAction('hit');
+                this.el.btnStand.onclick = () => this._handlePlayerAction('stand');
+                this.el.btnDouble.onclick = () => this._handlePlayerAction('double');
+                this.el.btnSplit.onclick = () => this._executeSplit();
                 this.el.btnPlayAgain.onclick = () => this.playAgain();
                 this.el.btnNew.onclick = () => this.newHand();
 
@@ -1369,6 +1445,13 @@
                 this.el.playerValue.className = 'hand-value';
                 this.el.dealerValue.className = 'hand-value';
                 this._showMessage('');
+
+                // Reset split state
+                this.isSplit = false;
+                this.activeHandIndex = 0;
+                this.splitHand0Done = false;
+                this.splitBet = 0;
+                this._hideSplitUI();
             }
 
             playAgain() {
@@ -1391,7 +1474,15 @@
             }
 
             _handleDealEvent(event) {
-                const container = event.to.id === 'dealer' ? this.el.dealerCards : this.el.playerCards;
+                var container;
+                if (event.to.id === 'dealer') {
+                    container = this.el.dealerCards;
+                } else if (this.isSplit) {
+                    // During split, route to the active hand container
+                    container = this.activeHandIndex === 0 ? this.el.playerCardsLeft : this.el.playerCardsRight;
+                } else {
+                    container = this.el.playerCards;
+                }
                 const faceUp = event.faceUp;
                 const placeholder = container.querySelector('.placeholder');
                 if(placeholder) placeholder.remove();
@@ -1479,10 +1570,22 @@
                     }
 
                     this._showControls('action');
-                    this._showMessage('Your turn');
+
+                    if (this.isSplit) {
+                        var handLabel = this.activeHandIndex === 0 ? 'Play Hand 1' : 'Play Hand 2';
+                        this._showMessage(handLabel);
+                        this._updateSplitActiveHighlight();
+                    } else {
+                        this._showMessage('Your turn');
+                    }
+
                     this._disableActionButtons(false);
                     const canDouble = event.availableActions && event.availableActions.includes('double');
                     this.el.btnDouble.disabled = !canDouble;
+
+                    // Show split button only if eligible (2 cards, pair, not already split, enough balance)
+                    this._updateSplitButton();
+
                 } else if (event.actorId === 'dealer') {
                     this._showControls('none');
                     this._showMessage("Dealer's turn...");
@@ -1523,7 +1626,9 @@
             }
 
             _handleResolution(event) {
+                // Handle split: may have multiple results
                 const result = event.playerResults[0];
+                const result2 = this.isSplit ? (event.playerResults[1] || null) : null;
                 let msg = '', cls = '';
                 const target = BlackjackRuleset.targetScore;
 
@@ -1563,10 +1668,26 @@
                     }
                 }
 
-                if (result.outcome === 'blackjack') { msg += 'BLACKJACK!'; cls = 'blackjack'; GameSounds.blackjack(); }
-                else if (result.outcome === 'win') { msg += 'You Win!'; cls = 'win'; GameSounds.win(); }
-                else if (result.outcome === 'push') { msg += 'Push'; cls = 'push'; GameSounds.push(); }
-                else { msg += result.playerValue > target ? 'Bust!' : 'Dealer Wins'; cls = 'lose'; GameSounds.lose(); }
+                if (this.isSplit && result2) {
+                    // Build combined outcome message for split hands
+                    var msg1 = this._getOutcomeLabel(result, target);
+                    var msg2 = this._getOutcomeLabel(result2, target);
+                    msg += 'H1: ' + msg1 + ' | H2: ' + msg2;
+                    // Determine overall audio/color
+                    var wins = (result.outcome === 'win' || result.outcome === 'blackjack') ||
+                               (result2.outcome === 'win' || result2.outcome === 'blackjack');
+                    if (wins) { cls = 'win'; GameSounds.win(); }
+                    else if (result.outcome === 'push' && result2.outcome === 'push') { cls = 'push'; GameSounds.push(); }
+                    else { cls = 'lose'; GameSounds.lose(); }
+                    // Mark each split hand with result visually
+                    this._markSplitHandResult(this.el.playerValueLeft, result.outcome);
+                    this._markSplitHandResult(this.el.playerValueRight, result2.outcome);
+                } else {
+                    if (result.outcome === 'blackjack') { msg += 'BLACKJACK!'; cls = 'blackjack'; GameSounds.blackjack(); }
+                    else if (result.outcome === 'win') { msg += 'You Win!'; cls = 'win'; GameSounds.win(); }
+                    else if (result.outcome === 'push') { msg += 'Push'; cls = 'push'; GameSounds.push(); }
+                    else { msg += result.playerValue > target ? 'Bust!' : 'Dealer Wins'; cls = 'lose'; GameSounds.lose(); }
+                }
                 this._showMessage(msg, cls);
 
                 // Log hand to history
@@ -1610,37 +1731,43 @@
                 const target = BlackjackRuleset.targetScore;
                 const player = this.engine.players[0];
 
-                // Player value bubble logic
-                if (player && player.hand.count > 0) {
-                    const pv = BlackjackRuleset.evaluateHand(player.hand.contents);
-                    this.el.playerValue.textContent = pv.best;
-                    let cls = 'hand-value';
-
-                    // BUBBLE LOGIC: Hide if value is 0
-                    if (pv.best === 0) {
-                        cls += ' hidden-value';
-                    }
-
-                    if (pv.best > target) {
-                        cls += ' bust';
-                        this._disableActionButtons(true); // Disable if bust
-                    } else if (pv.isBlackjack) {
-                        cls += ' blackjack';
-                    } else if (pv.best === target) {
-                        cls += ' max';
-                        this.el.btnHit.disabled = true; // Disable hit on 21
-                        this.el.btnDouble.disabled = true;
-                    }
-
-                    // FIX: Double Down only available on first move (2 cards)
-                    if (player.hand.count > 2) {
-                        this.el.btnDouble.disabled = true;
-                    }
-                    this.el.playerValue.className = cls;
+                if (this.isSplit) {
+                    // Split mode: update both hand value bubbles
+                    this._updateSplitHandValue(this.el.playerValueLeft, this.el.playerCardsLeft, target, this.activeHandIndex === 0);
+                    this._updateSplitHandValue(this.el.playerValueRight, this.el.playerCardsRight, target, this.activeHandIndex === 1);
                 } else {
-                    // BUBBLE LOGIC: Hide if no cards
-                    this.el.playerValue.className = 'hand-value hidden-value';
-                    this.el.playerValue.textContent = '-';
+                    // Player value bubble logic (single hand)
+                    if (player && player.hand.count > 0) {
+                        const pv = BlackjackRuleset.evaluateHand(player.hand.contents);
+                        this.el.playerValue.textContent = pv.best;
+                        let cls = 'hand-value';
+
+                        // BUBBLE LOGIC: Hide if value is 0
+                        if (pv.best === 0) {
+                            cls += ' hidden-value';
+                        }
+
+                        if (pv.best > target) {
+                            cls += ' bust';
+                            this._disableActionButtons(true); // Disable if bust
+                        } else if (pv.isBlackjack) {
+                            cls += ' blackjack';
+                        } else if (pv.best === target) {
+                            cls += ' max';
+                            this.el.btnHit.disabled = true; // Disable hit on 21
+                            this.el.btnDouble.disabled = true;
+                        }
+
+                        // FIX: Double Down only available on first move (2 cards)
+                        if (player.hand.count > 2) {
+                            this.el.btnDouble.disabled = true;
+                        }
+                        this.el.playerValue.className = cls;
+                    } else {
+                        // BUBBLE LOGIC: Hide if no cards
+                        this.el.playerValue.className = 'hand-value hidden-value';
+                        this.el.playerValue.textContent = '-';
+                    }
                 }
 
                 const dealer = this.engine.dealer;
@@ -1670,6 +1797,432 @@
                     // BUBBLE LOGIC: Hide if no cards
                     this.el.dealerValue.className = 'hand-value hidden-value';
                     this.el.dealerValue.textContent = '-';
+                }
+            }
+
+            // ================================================================
+            // SPLIT HANDS LOGIC
+            // ================================================================
+
+            _handlePlayerAction(action) {
+                if (this.isSplit) {
+                    // In split mode, handle via split state machine
+                    this._handleSplitAction(action);
+                } else {
+                    this.engine.submitAction('player1', action);
+                }
+            }
+
+            _updateSplitButton() {
+                if (this.isSplit) {
+                    // Already split - hide button
+                    this.el.btnSplit.classList.add('hidden');
+                    return;
+                }
+                var player = this.engine.players[0];
+                if (!player || player.hand.count !== 2) {
+                    this.el.btnSplit.classList.add('hidden');
+                    return;
+                }
+                var hv = BlackjackRuleset.evaluateHand(player.hand.contents);
+                var canSplit = hv.canSplit && (player.balance >= this.wager);
+                if (canSplit) {
+                    this.el.btnSplit.classList.remove('hidden');
+                } else {
+                    this.el.btnSplit.classList.add('hidden');
+                }
+            }
+
+            _executeSplit() {
+                var player = this.engine.players[0];
+                if (!player || player.hand.count !== 2) return;
+                var hv = BlackjackRuleset.evaluateHand(player.hand.contents);
+                if (!hv.canSplit || player.balance < this.wager) return;
+
+                // Deduct second bet
+                player.balance -= this.wager;
+                this.splitBet = this.wager;
+                this._updateBalance();
+
+                // Set up split state
+                this.isSplit = true;
+                this.activeHandIndex = 0;
+                this.splitHand0Done = false;
+
+                // Move cards from main hand to split containers
+                var card0 = player.hand.contents[0];
+                var card1 = player.hand.contents[1];
+
+                // Show split UI
+                this._showSplitUI();
+
+                // Populate hand 0 with card 0
+                this.el.playerCardsLeft.innerHTML = '';
+                var slot0 = this._createCardElement(card0, true);
+                this.el.playerCardsLeft.appendChild(slot0);
+
+                // Populate hand 1 with card 1
+                this.el.playerCardsRight.innerHTML = '';
+                var slot1 = this._createCardElement(card1, true);
+                this.el.playerCardsRight.appendChild(slot1);
+
+                // Set up hand models before dealing
+                this.splitCards = [card1]; // hand 1's cards (card1 moves to right)
+                // hand 0 keeps card0 + new card; remove card1 from main hand
+                player.hand.contents = [card0];
+
+                // Deal a new card to hand 0 (animate from shoe)
+                var self = this;
+                var shoe = this.engine.piles.shoe;
+                var newCard0 = shoe.give(0);
+                if (newCard0) {
+                    player.hand.receive(newCard0, -1);
+                    this._trackCard(newCard0.toJSON ? newCard0.toJSON() : newCard0);
+                    GameSounds.flip();
+                    this._flyCard(newCard0, this.el.playerCardsLeft, true);
+                }
+
+                // Deal a new card to hand 1 after short delay
+                setTimeout(function() {
+                    var newCard1 = shoe.give(0);
+                    if (newCard1) {
+                        self.splitCards.push(newCard1);
+                        self._trackCard(newCard1.toJSON ? newCard1.toJSON() : newCard1);
+                        GameSounds.flip();
+                        self._flyCard(newCard1, self.el.playerCardsRight, true);
+                    }
+                    // Start play on hand 0
+                    setTimeout(function() {
+                        self.activeHandIndex = 0;
+                        self._updateSplitActiveHighlight();
+                        self._showControls('action');
+                        self._showMessage('Play Hand 1');
+                        self._disableActionButtons(false);
+                        self.el.btnSplit.classList.add('hidden');
+                        // Check for 21 on hand 0
+                        self._updateValues();
+                        var hand0Val = BlackjackRuleset.evaluateHand(player.hand.contents);
+                        if (hand0Val.best >= BlackjackRuleset.targetScore) {
+                            self.el.btnHit.disabled = true;
+                        }
+                    }, 600);
+                }, 400);
+            }
+
+            _handleSplitAction(action) {
+                var player = this.engine.players[0];
+                var target = BlackjackRuleset.targetScore;
+
+                if (this.activeHandIndex === 0) {
+                    // Playing hand 0 (main hand)
+                    if (action === 'stand') {
+                        // Move to hand 1
+                        this._advanceToHand1();
+                    } else if (action === 'hit') {
+                        var shoe = this.engine.piles.shoe;
+                        var newCard = shoe.give(0);
+                        if (!newCard) return;
+                        player.hand.receive(newCard, -1);
+                        this._trackCard(newCard.toJSON ? newCard.toJSON() : newCard);
+                        GameSounds.flip();
+                        var self = this;
+                        this._flyCard(newCard, this.el.playerCardsLeft, true);
+                        setTimeout(function() {
+                            var hv = BlackjackRuleset.evaluateHand(player.hand.contents);
+                            self.el.btnDouble.disabled = true; // No double after hit
+                            self._updateSplitHandValue(self.el.playerValueLeft, self.el.playerCardsLeft, target, true);
+                            if (hv.best >= target) {
+                                // Bust or 21: advance to hand 1
+                                setTimeout(function() { self._advanceToHand1(); }, 400);
+                            }
+                        }, 550);
+                    } else if (action === 'double') {
+                        if (player.balance >= this.wager) {
+                            player.balance -= this.wager;
+                            this._updateBalance();
+                        }
+                        var shoe = this.engine.piles.shoe;
+                        var newCard = shoe.give(0);
+                        if (!newCard) { this._advanceToHand1(); return; }
+                        player.hand.receive(newCard, -1);
+                        this._trackCard(newCard.toJSON ? newCard.toJSON() : newCard);
+                        GameSounds.flip();
+                        var self = this;
+                        this._flyCard(newCard, this.el.playerCardsLeft, true);
+                        setTimeout(function() { self._advanceToHand1(); }, 600);
+                    }
+                } else {
+                    // Playing hand 1 (split hand)
+                    if (action === 'stand') {
+                        this._completeSplitHands();
+                    } else if (action === 'hit') {
+                        var shoe = this.engine.piles.shoe;
+                        var newCard = shoe.give(0);
+                        if (!newCard) return;
+                        this.splitCards.push(newCard);
+                        this._trackCard(newCard.toJSON ? newCard.toJSON() : newCard);
+                        GameSounds.flip();
+                        var self = this;
+                        this._flyCard(newCard, this.el.playerCardsRight, true);
+                        setTimeout(function() {
+                            var hv = BlackjackRuleset.evaluateHand(self.splitCards);
+                            self.el.btnDouble.disabled = true;
+                            self._updateSplitHandValue(self.el.playerValueRight, self.el.playerCardsRight, target, true);
+                            if (hv.best >= target) {
+                                self._completeSplitHands();
+                            }
+                        }, 550);
+                    } else if (action === 'double') {
+                        if (player.balance >= this.wager) {
+                            player.balance -= this.wager;
+                            this._updateBalance();
+                        }
+                        var shoe = this.engine.piles.shoe;
+                        var newCard = shoe.give(0);
+                        if (!newCard) { this._completeSplitHands(); return; }
+                        this.splitCards.push(newCard);
+                        this._trackCard(newCard.toJSON ? newCard.toJSON() : newCard);
+                        GameSounds.flip();
+                        var self = this;
+                        this._flyCard(newCard, this.el.playerCardsRight, true);
+                        setTimeout(function() { self._completeSplitHands(); }, 600);
+                    }
+                }
+            }
+
+            _advanceToHand1() {
+                this.activeHandIndex = 1;
+                this.splitHand0Done = true;
+                // Mark hand 0 as done
+                this.el.splitHandLeft.classList.remove('active-hand');
+                this.el.splitHandLeft.classList.add('done-hand');
+                this._updateSplitActiveHighlight();
+                this._showMessage('Play Hand 2');
+                this._disableActionButtons(false);
+                // Check 21 on hand 1
+                var hv = BlackjackRuleset.evaluateHand(this.splitCards);
+                var target = BlackjackRuleset.targetScore;
+                if (hv.best >= target) {
+                    this.el.btnHit.disabled = true;
+                }
+                this.el.btnDouble.disabled = this.splitCards.length !== 2;
+                this._updateValues();
+            }
+
+            _completeSplitHands() {
+                // Both hands done - run dealer turn and resolve
+                this._showControls('none');
+                this._showMessage("Dealer's turn...");
+                this._disableActionButtons(true);
+
+                // Reveal hole card
+                if (this.holeCardHidden) {
+                    var dealer = this.engine.dealer;
+                    if (dealer && dealer.hand.count >= 1) {
+                        var holeCard = dealer.hand.contents[0];
+                        this.holeCardHidden = false;
+                        this._trackCard(holeCard.toJSON ? holeCard.toJSON() : holeCard);
+                    } else {
+                        this.holeCardHidden = false;
+                    }
+                    this._redrawDealer();
+                }
+
+                // Run dealer draw loop
+                var self = this;
+                var dealerTarget = BlackjackRuleset.dealerStandThreshold;
+                var totalTarget = BlackjackRuleset.targetScore;
+                var dealer = this.engine.dealer;
+
+                function dealerDraw() {
+                    var dv = BlackjackRuleset.evaluateHand(dealer.hand.contents);
+                    var shouldDraw = dv.best < dealerTarget && dv.best <= totalTarget;
+                    if (shouldDraw) {
+                        var shoe = self.engine.piles.shoe;
+                        var card = shoe.give(0);
+                        if (!card) { self._resolveSplit(); return; }
+                        dealer.hand.receive(card, -1);
+                        self._trackCard(card.toJSON ? card.toJSON() : card);
+                        GameSounds.flip();
+                        self._flyCard(card, self.el.dealerCards, true);
+                        setTimeout(dealerDraw, 700);
+                    } else {
+                        self._resolveSplit();
+                    }
+                }
+
+                setTimeout(dealerDraw, 500);
+            }
+
+            _resolveSplit() {
+                var player = this.engine.players[0];
+                var dealer = this.engine.dealer;
+                var target = BlackjackRuleset.targetScore;
+
+                var dealerCards = dealer.hand.contents;
+                var dv = BlackjackRuleset.evaluateHand(dealerCards);
+                var dealerBust = dv.best > target;
+
+                // Evaluate hand 0
+                var h0cards = player.hand.contents;
+                var h0v = BlackjackRuleset.evaluateHand(h0cards);
+                var r0 = this._evaluateSplitOutcome(h0v, dv, this.wager);
+
+                // Evaluate hand 1
+                var h1v = BlackjackRuleset.evaluateHand(this.splitCards);
+                var r1 = this._evaluateSplitOutcome(h1v, dv, this.splitBet);
+
+                // Apply payouts
+                player.balance += r0.payout;
+                player.balance += r1.payout;
+                localStorage.setItem('family_arcade_balance', player.balance);
+                this._updateBalance();
+
+                // Build result message
+                var msg1 = this._getOutcomeLabel({outcome: r0.outcome, playerValue: h0v.best}, target);
+                var msg2 = this._getOutcomeLabel({outcome: r1.outcome, playerValue: h1v.best}, target);
+                var msg = 'H1: ' + msg1 + ' | H2: ' + msg2;
+                var cls = (r0.outcome === 'win' || r1.outcome === 'win') ? 'win' :
+                          (r0.outcome === 'push' && r1.outcome === 'push') ? 'push' : 'lose';
+
+                if (cls === 'win') GameSounds.win();
+                else if (cls === 'push') GameSounds.push();
+                else GameSounds.lose();
+
+                this._showMessage(msg, cls);
+                this._markSplitHandResult(this.el.playerValueLeft, r0.outcome);
+                this._markSplitHandResult(this.el.playerValueRight, r1.outcome);
+
+                // Remove active highlighting
+                this.el.splitHandLeft.classList.remove('active-hand');
+                this.el.splitHandRight.classList.remove('active-hand');
+
+                // Update dealer values
+                this._updateValues();
+                this._redrawDealer();
+
+                // Log to history
+                this.handNumber++;
+                this.handHistory.push({
+                    number: this.handNumber,
+                    outcome: r0.outcome + '/' + r1.outcome,
+                    playerValue: h0v.best + '/' + h1v.best,
+                    dealerValue: dv.best,
+                    playerCards: [],
+                    dealerCards: dealerCards.map(function(c) { return { rank: RankToAsset[c.rank], suit: c.suit }; }),
+                    bet: this.wager + this.splitBet,
+                    payout: (r0.payout - this.wager) + (r1.payout - this.splitBet),
+                    isSplit: true
+                });
+
+                // Show game over controls
+                this._showControls('gameover');
+                this.el.lastBetAmount.textContent = '$' + this.wager;
+            }
+
+            _evaluateSplitOutcome(playerValue, dealerValue, bet) {
+                var target = BlackjackRuleset.targetScore;
+                var outcome, multiplier;
+                var playerBust = playerValue.best > target;
+                var dealerBust = dealerValue.best > target;
+
+                if (playerBust) {
+                    outcome = 'lose'; multiplier = 0;
+                } else if (dealerBust) {
+                    outcome = 'win'; multiplier = 2;
+                } else if (playerValue.best > dealerValue.best) {
+                    outcome = 'win'; multiplier = 2;
+                } else if (playerValue.best === dealerValue.best) {
+                    outcome = 'push'; multiplier = 1;
+                } else {
+                    outcome = 'lose'; multiplier = 0;
+                }
+                return { outcome: outcome, payout: Math.floor(bet * multiplier) };
+            }
+
+            _getOutcomeLabel(result, target) {
+                if (result.outcome === 'blackjack') return 'BJ!';
+                if (result.outcome === 'win') return 'Win';
+                if (result.outcome === 'push') return 'Push';
+                if (result.playerValue > target) return 'Bust';
+                return 'Lose';
+            }
+
+            _updateSplitHandValue(valueEl, cardsEl, target, isActive) {
+                // Read cards from the DOM container to get count
+                var cardSlots = cardsEl.querySelectorAll('.card-slot:not(.placeholder)');
+                if (cardSlots.length === 0) {
+                    valueEl.className = 'hand-value hidden-value';
+                    valueEl.textContent = '-';
+                    return;
+                }
+                // Get card data from the correct model
+                var cards;
+                if (cardsEl === this.el.playerCardsLeft) {
+                    cards = this.engine.players[0].hand.contents;
+                } else {
+                    cards = this.splitCards || [];
+                }
+                if (!cards || cards.length === 0) {
+                    valueEl.className = 'hand-value hidden-value';
+                    valueEl.textContent = '-';
+                    return;
+                }
+                var pv = BlackjackRuleset.evaluateHand(cards);
+                valueEl.textContent = pv.best;
+                var cls = 'hand-value';
+                if (pv.best === 0) cls += ' hidden-value';
+                if (pv.best > target) {
+                    cls += ' bust';
+                    if (isActive) this._disableActionButtons(true);
+                } else if (pv.isBlackjack) {
+                    cls += ' blackjack';
+                } else if (pv.best === target) {
+                    cls += ' max';
+                    if (isActive) {
+                        this.el.btnHit.disabled = true;
+                        this.el.btnDouble.disabled = true;
+                    }
+                }
+                if (isActive && cards.length > 2) {
+                    this.el.btnDouble.disabled = true;
+                }
+                valueEl.className = cls;
+            }
+
+            _markSplitHandResult(valueEl, outcome) {
+                var cls = valueEl.className.replace(/ (bust|blackjack|max)/g, '');
+                if (outcome === 'win') cls += ' max';
+                else if (outcome === 'blackjack') cls += ' blackjack';
+                else if (outcome === 'push') { /* no extra class for push */ }
+                else cls += ' bust'; // lose or bust
+                valueEl.className = cls;
+            }
+
+            _showSplitUI() {
+                this.el.splitHandsContainer.classList.add('active');
+                this.el.singleHandContainer.style.display = 'none';
+                this.el.splitHandLeft.classList.add('active-hand');
+                this.el.splitHandRight.classList.remove('active-hand');
+                this.el.splitHandRight.classList.remove('done-hand');
+            }
+
+            _hideSplitUI() {
+                this.el.splitHandsContainer.classList.remove('active');
+                this.el.singleHandContainer.style.display = '';
+                this.el.splitHandLeft.classList.remove('active-hand', 'done-hand');
+                this.el.splitHandRight.classList.remove('active-hand', 'done-hand');
+                this.el.btnSplit.classList.add('hidden');
+            }
+
+            _updateSplitActiveHighlight() {
+                if (this.activeHandIndex === 0) {
+                    this.el.splitHandLeft.classList.add('active-hand');
+                    this.el.splitHandRight.classList.remove('active-hand');
+                } else {
+                    this.el.splitHandRight.classList.add('active-hand');
+                    this.el.splitHandLeft.classList.remove('active-hand');
+                    this.el.splitHandLeft.classList.add('done-hand');
                 }
             }
 
@@ -2175,15 +2728,19 @@
                 // Calculate payout (net gain/loss)
                 const payout = Math.floor(result.bet * result.multiplier) - result.bet;
 
+                // For split, include split hand label in the record
+                var isSplitHand = this.isSplit;
+
                 this.handHistory.push({
                     number: this.handNumber,
                     outcome: result.outcome,
                     playerValue: result.playerValue,
                     dealerValue: result.dealerValue,
-                    playerCards: playerCards,
+                    playerCards: isSplitHand ? [] : playerCards, // Split: cards tracked separately
                     dealerCards: dealerCards,
                     bet: result.bet,
-                    payout: payout
+                    payout: payout,
+                    isSplit: isSplitHand
                 });
 
                 console.log(`[History] Hand #${this.handNumber} logged:`, {
