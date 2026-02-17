@@ -17,7 +17,7 @@ function Sudoku() {
 Sudoku.prototype.init = function() {
     this.cacheDOM();
     this.bindEvents();
-    this.newGame();
+    this.restoreGameState() || this.newGame();
 };
 
 Sudoku.prototype.cacheDOM = function() {
@@ -380,6 +380,7 @@ Sudoku.prototype.handleInput = function(value) {
     }
 
     this.render();
+    this.saveGameState(); // Auto-save after each move
 };
 
 Sudoku.prototype.updatePeers = function(row, col, value) {
@@ -492,13 +493,83 @@ Sudoku.prototype.checkSolution = function() {
         this.statusMessage.textContent = "Congratulations! You solved it!";
         this.statusMessage.style.color = "#27ae60";
         this.isGameOver = true;
+        this.clearAutoSave(); // Clear save when game is won
     } else {
         this.statusMessage.textContent = "Keep trying! Errors highlighted.";
         this.statusMessage.style.color = "#e74c3c";
     }
 };
 
+Sudoku.prototype.saveGameState = function() {
+    try {
+        var state = {
+            fullBoard: this.fullBoard,
+            playerBoard: this.playerBoard,
+            selectedCell: this.selectedCell,
+            difficulty: this.difficulty,
+            history: this.history,
+            noteMode: this.noteMode,
+            isGameOver: this.isGameOver,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('sudoku_autosave', JSON.stringify(state));
+    } catch (e) {
+        // Silent fail if localStorage quota exceeded
+        console.warn('Sudoku auto-save failed:', e);
+    }
+};
+
+Sudoku.prototype.restoreGameState = function() {
+    try {
+        var saved = localStorage.getItem('sudoku_autosave');
+        if (!saved) return false;
+
+        var state = JSON.parse(saved);
+
+        // Validate state integrity (check required fields)
+        if (!state.fullBoard || !state.playerBoard || state.fullBoard.length !== 9) {
+            this.clearAutoSave();
+            return false;
+        }
+
+        // Restore state
+        this.fullBoard = state.fullBoard;
+        this.playerBoard = state.playerBoard;
+        this.selectedCell = state.selectedCell;
+        this.difficulty = state.difficulty;
+        this.history = state.history || [];
+        this.noteMode = state.noteMode || false;
+        this.isGameOver = state.isGameOver || false;
+
+        // Update difficulty selector to match restored state
+        this.difficultySelector.value = this.difficulty;
+
+        this.render();
+        return true;
+    } catch (e) {
+        // Corrupted data - clear and start fresh
+        console.warn('Sudoku auto-save corrupted:', e);
+        this.clearAutoSave();
+        return false;
+    }
+};
+
+Sudoku.prototype.clearAutoSave = function() {
+    try {
+        localStorage.removeItem('sudoku_autosave');
+    } catch (e) {
+        // Silent fail
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     var game = new Sudoku();
     game.init();
+
+    // Auto-save on every significant change
+    var saveInterval = setInterval(function() {
+        if (!game.isGameOver) {
+            game.saveGameState();
+        }
+    }, 2000); // Save every 2 seconds if game is in progress
 });

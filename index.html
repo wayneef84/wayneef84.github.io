@@ -25,103 +25,110 @@
         </section>
 
         <section style="padding-top: 2rem;">
-            <h2 style="padding: 0 5%; font-size: 1.5rem; margin-bottom: 1rem;">Production Library</h2>
+            <h2 style="padding: 0 5%; font-size: 1.5rem; margin-bottom: 1.5rem;">Production Library</h2>
+            <div id="category-filters" style="padding: 0 5%; margin-bottom: 2rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="arcade">Arcade</button>
+                <button class="filter-btn" data-category="card">Card</button>
+                <button class="filter-btn" data-category="puzzle">Puzzle</button>
+                <button class="filter-btn" data-category="edu">Educational</button>
+            </div>
             <div class="game-grid">
 
-                <a href="./games/cards/blackjack/index.html" class="game-card">
+                <a href="./games/cards/blackjack/index.html" class="game-card" data-category="card">
                     <span class="category-tag tag-card">Card</span>
                     <div class="game-title">Blackjack</div>
                     <div class="game-meta"><span>v1.0.5-C</span></div>
                 </a>
-                <a href="./games/cards/war/index.html" class="game-card">
+                <a href="./games/cards/war/index.html" class="game-card" data-category="card">
                     <span class="category-tag tag-card">Card</span>
                     <div class="game-title">War</div>
                     <div class="game-meta"><span>v1.1.0</span></div>
                 </a>
 
-                <a href="./games/tracing/index.html" class="game-card">
+                <a href="./games/tracing/index.html" class="game-card" data-category="edu">
                     <span class="category-tag tag-edu">Educational</span>
                     <div class="game-title">Letter Tracing</div>
                     <div class="game-meta"><span>v5.1</span></div>
                 </a>
-                <a href="./games/j/index.html" class="game-card">
+                <a href="./games/j/index.html" class="game-card" data-category="edu">
                     <span class="category-tag tag-edu">Educational</span>
                     <div class="game-title">J Quiz</div>
                     <div class="game-meta"><span>v4.x</span></div>
                 </a>
 
-                <a href="./games/slots/index.html" class="game-card">
+                <a href="./games/slots/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Slots</div>
                     <div class="game-meta"><span>v3.0</span></div>
                 </a>
-                <a href="./games/snake/index.html" class="game-card">
+                <a href="./games/snake/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Neon Snake</div>
                     <div class="game-meta"><span>v1.0</span></div>
                 </a>
-                <a href="./games/sprunki/index.html" class="game-card">
+                <a href="./games/sprunki/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Sprunki Mixer</div>
                     <div class="game-meta"><span>Local Server Req.</span></div>
                 </a>
-                <a href="./games/pong/index.html" class="game-card">
+                <a href="./games/pong/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Pong</div>
                     <div class="game-meta"><span>NEGEN Engine</span></div>
                 </a>
-                <a href="./games/space_invaders/index.html" class="game-card">
+                <a href="./games/space_invaders/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Space Invaders</div>
                     <div class="game-meta"><span>NEGEN Engine</span></div>
                 </a>
-                <a href="./games/breakout/index.html" class="game-card">
+                <a href="./games/breakout/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Breakout</div>
                     <div class="game-meta"><span>NEGEN Engine</span></div>
                 </a>
-                <a href="./games/sky_breakers/index.html" class="game-card">
+                <a href="./games/sky_breakers/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Sky Breakers</div>
                     <div class="game-meta"><span>Canvas Shooter</span></div>
                 </a>
-                <a href="./games/board/index.html" class="game-card">
+                <a href="./games/board/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Board Games</div>
                     <div class="game-meta"><span>Collection</span></div>
                 </a>
-                <a href="./games/animal_stack/index.html" class="game-card">
+                <a href="./games/animal_stack/index.html" class="game-card" data-category="arcade">
                     <span class="category-tag tag-arcade">Arcade</span>
                     <div class="game-title">Animal Stack</div>
                     <div class="game-meta"><span>Physics</span></div>
                 </a>
 
-                <a href="./games/flow/index.html" class="game-card">
+                <a href="./games/flow/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">Flow</div>
                     <div class="game-meta"><span>v1.0</span></div>
                 </a>
-                <a href="./games/sudoku/index.html" class="game-card">
+                <a href="./games/sudoku/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">Sudoku</div>
                     <div class="game-meta"><span>Dual Input</span></div>
                 </a>
-                <a href="./games/minesweeper/index.html" class="game-card">
+                <a href="./games/minesweeper/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">Minesweeper</div>
                     <div class="game-meta"><span>Hold-to-flag</span></div>
                 </a>
-                <a href="./games/mahjong/index.html" class="game-card">
+                <a href="./games/mahjong/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">Mahjong</div>
                     <div class="game-meta"><span>3D Tiles</span></div>
                 </a>
-                <a href="./games/jigsaw/index.html" class="game-card">
+                <a href="./games/jigsaw/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">Jigsaw</div>
                     <div class="game-meta"><span>Custom Image</span></div>
                 </a>
-                <a href="./games/xtc_ball/index.html" class="game-card">
+                <a href="./games/xtc_ball/index.html" class="game-card" data-category="puzzle">
                     <span class="category-tag tag-puzzle">Puzzle</span>
                     <div class="game-title">XTC Ball</div>
                     <div class="game-meta"><span>Magic 8-Ball</span></div>
@@ -132,5 +139,6 @@
     </main>
 
     <script src="./js/hub-data.js"></script>
+    <script src="./js/hub-filters.js"></script>
 </body>
 </html>
