@@ -128,6 +128,64 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
 });
 
+function initPasteModal() {
+    var modal = document.getElementById('pasteTextModal');
+    var openBtn = document.getElementById('openPasteModalBtn');
+    var closeBtn = document.getElementById('closePasteModal');
+    var renderBtn = document.getElementById('pasteRenderBtn');
+    var clearBtn = document.getElementById('pasteClearBtn');
+    var textarea = document.getElementById('pasteInput');
+
+    if (!modal || !openBtn) return;
+
+    function openModal() {
+        modal.classList.add('active');
+        textarea.focus();
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    openBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openModal();
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    clearBtn.addEventListener('click', function() {
+        textarea.value = '';
+        textarea.focus();
+    });
+
+    renderBtn.addEventListener('click', function() {
+        var text = textarea.value;
+        if (!text.trim()) return;
+
+        // Clean timestamp to be safe and ensure .md extension
+        var timestamp = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').replace(/:/g, '-');
+        var filename = 'Pasted_Text_' + timestamp + '.md';
+
+        // Store in session
+        importedFiles[filename] = text;
+        saveImportedToSession();
+
+        // Re-render sidebar
+        renderSidebar();
+
+        // Load file
+        loadImportedFile(filename);
+
+        closeModal();
+    });
+}
+
 // --- Theme Management ---
 function initTheme() {
     var storedTheme = localStorage.getItem('mdReader_theme') || 'dark';
@@ -238,6 +296,7 @@ function init() {
     setupExpandCollapse();
     renderSidebar();
     setupFileUpload();
+    initPasteModal();
 
     // View Toggle
     var toggleViewBtn = document.getElementById('toggleView');
