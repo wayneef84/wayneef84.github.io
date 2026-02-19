@@ -54,7 +54,7 @@
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   position: relative;
   z-index: 2;
@@ -64,8 +64,8 @@
   position: relative;
   right: auto;
   bottom: auto;
-  width: 48px;
-  height: 48px;
+  width: 96px;
+  height: 96px;
   color: var(--text-secondary);
   opacity: 0.7;
   transition: var(--transition-fast);
