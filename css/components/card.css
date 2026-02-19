@@ -25,6 +25,9 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: var(--transition-fast);
   min-height: 140px; /* Ensure ample touch area */
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .game-card:hover {
@@ -51,19 +54,27 @@
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .card-icon {
-  width: 24px;
-  height: 24px;
+  position: absolute;
+  right: -10%;
+  bottom: -10%;
+  width: 120px;
+  height: 120px;
   color: var(--text-secondary);
-  opacity: 0.7;
+  opacity: 0.05;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card-icon svg {
@@ -74,14 +85,16 @@
 
 .game-card:hover .card-icon {
   color: var(--accent-primary);
-  opacity: 1;
-  transform: scale(1.1) rotate(5deg);
+  opacity: 0.15;
+  transform: scale(1.1) rotate(0deg);
 }
 
 .game-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
+  position: relative;
+  z-index: 2;
 }
 
 .game-meta {
@@ -91,4 +104,6 @@
   margin-top: auto;
   font-size: 0.85rem;
   color: var(--text-secondary);
+  position: relative;
+  z-index: 2;
 }
