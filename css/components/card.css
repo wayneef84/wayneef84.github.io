@@ -25,6 +25,9 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: var(--transition-fast);
   min-height: 140px; /* Ensure ample touch area */
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .game-card:hover {
@@ -48,10 +51,75 @@
 .tag-puzzle { background: rgba(139, 92, 246, 0.1); color: var(--cat-puzzle); }
 .tag-edu { background: rgba(59, 130, 246, 0.1); color: var(--cat-educational); }
 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+/* Generic Category Icon (Small Watermark Top-Right) */
+.card-category-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.card-category-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+/* Specific Game Icon (Large Background Watermark) */
+.card-game-icon {
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 140px;
+  height: 140px;
+  color: var(--text-secondary);
+  opacity: 0.08; /* Very subtle */
+  transform: rotate(-10deg);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-game-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.game-card:hover .card-category-icon {
+  color: var(--accent-primary);
+  opacity: 0.9;
+}
+
+.game-card:hover .card-game-icon {
+  color: var(--accent-primary);
+  opacity: 0.15;
+  transform: rotate(0deg) scale(1.1);
+}
+
 .game-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
+  position: relative;
+  z-index: 2;
 }
 
 .game-meta {
@@ -61,4 +129,6 @@
   margin-top: auto;
   font-size: 0.85rem;
   color: var(--text-secondary);
+  position: relative;
+  z-index: 2;
 }
