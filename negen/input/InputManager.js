@@ -231,9 +231,11 @@ export default class InputManager {
             clientY = e.clientY;
         }
 
-        // Scale for canvas resolution vs css size
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+        // Scale for canvas resolution vs css size.
+        // Divide by DPR so coordinates match logical drawing space (not physical pixels).
+        var dpr = window.devicePixelRatio || 1;
+        const scaleX = (canvas.width / dpr) / rect.width;
+        const scaleY = (canvas.height / dpr) / rect.height;
 
         this.pointer.x = (clientX - rect.left) * scaleX;
         this.pointer.y = (clientY - rect.top) * scaleY;

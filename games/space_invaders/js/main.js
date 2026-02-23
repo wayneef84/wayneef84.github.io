@@ -67,7 +67,6 @@ const scene = new MenuScene(engine);
 engine.loadScene(scene);
 
 function start() {
-    engine.audio.init();
     engine.start();
     document.getElementById('startOverlay').style.display = 'none';
 
