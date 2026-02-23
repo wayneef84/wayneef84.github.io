@@ -1,6 +1,6 @@
 import Scene from '../../../negen/core/Scene.js';
 import InvadersScene from './InvadersScene.js';
-// Reuse LevelManager or create new one? JSON stringify is enough for now.
+import MenuScene from './MenuScene.js';
 
 export default class BuilderScene extends Scene {
     enter(engine) {
@@ -30,12 +30,46 @@ export default class BuilderScene extends Scene {
         }
 
         // Buttons
-        this.playBtn = { x: this.width - 100, y: this.height - 40, w: 80, h: 30, text: 'Play' };
-        this.shareBtn = { x: this.width - 200, y: this.height - 40, w: 80, h: 30, text: 'Share' };
-        this.clearBtn = { x: this.width - 300, y: this.height - 40, w: 80, h: 30, text: 'Clear' };
+        this.playBtn  = { x: this.width - 100, y: this.height - 40, w: 80, h: 30, text: 'Play' };
+        this.clearBtn = { x: this.width - 200, y: this.height - 40, w: 80, h: 30, text: 'Clear' };
+        this.backBtn  = { x: 20,               y: this.height - 40, w: 80, h: 30, text: 'Menu' };
 
         this.paletteY = this.height - 100;
         this.paletteH = 40;
+
+        // Erase mode — toggled by the Erase button or right-click on grid
+        this.eraseMode = false;
+
+        // Listen for right-click on canvas to erase
+        var self = this;
+        this._onContextMenu = function(e) {
+            e.preventDefault();
+            var canvas = engine.canvas;
+            var rect = canvas.getBoundingClientRect();
+            var dpr = window.devicePixelRatio || 1;
+            var scaleX = (canvas.width / dpr) / rect.width;
+            var scaleY = (canvas.height / dpr) / rect.height;
+            var mx = (e.clientX - rect.left) * scaleX;
+            var my = (e.clientY - rect.top) * scaleY;
+
+            var cellW = 30, cellH = 20, gap = 5, startX = 50, startY = 80;
+            var gridW = self.cols * (cellW + gap);
+            var gridH = self.rows * (cellH + gap);
+            if (my > startY && my < startY + gridH && mx > startX && mx < startX + gridW) {
+                var c = Math.floor((mx - startX) / (cellW + gap));
+                var r = Math.floor((my - startY) / (cellH + gap));
+                if (r >= 0 && r < self.rows && c >= 0 && c < self.cols) {
+                    self.grid[r][c].active = false;
+                }
+            }
+        };
+        engine.canvas.addEventListener('contextmenu', this._onContextMenu);
+    }
+
+    exit() {
+        if (this._onContextMenu && this.engine && this.engine.canvas) {
+            this.engine.canvas.removeEventListener('contextmenu', this._onContextMenu);
+        }
     }
 
     update(dt) {
@@ -81,8 +115,8 @@ export default class BuilderScene extends Scene {
                 this.playLevel();
             } else if (this.checkBtn(mx, my, this.clearBtn)) {
                 this.clearGrid();
-            } else if (this.checkBtn(mx, my, this.shareBtn)) {
-                alert("QR Generation shared with Breakout - Logic similar.");
+            } else if (this.checkBtn(mx, my, this.backBtn)) {
+                this.engine.loadScene(new MenuScene());
             }
         }
     }
@@ -158,10 +192,11 @@ export default class BuilderScene extends Scene {
 
         // Draw Buttons
         this.drawBtn(renderer, this.playBtn, '#0f0');
-        this.drawBtn(renderer, this.shareBtn, '#00f');
         this.drawBtn(renderer, this.clearBtn, '#f00');
+        this.drawBtn(renderer, this.backBtn, '#555');
 
         renderer.drawText("INVADERS BUILDER", this.width/2, 30, 24, '#fff');
+        renderer.drawText("drag to paint  |  right-click to erase", this.width/2, 55, 12, '#888');
     }
 
     drawBtn(renderer, btn, color) {

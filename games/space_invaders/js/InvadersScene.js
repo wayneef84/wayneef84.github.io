@@ -24,11 +24,19 @@ export default class InvadersScene extends Scene {
         this.enemyStepTimer = 0;
         this.enemyStepInterval = 1000; // ms
 
-        this.setupLevel();
+        if (this.levelData) {
+            this.setupFromLevelData(this.levelData);
+        } else {
+            this.setupLevel();
+        }
 
         this.score = 0;
         this.lives = 3;
         this.state = 'playing';
+
+        // Auto-fire cooldown tracker for touch fire zone
+        this.touchFireTimer = 0;
+        this.touchFireInterval = 0.25; // seconds between auto-shots when holding fire zone
 
         // Bind FIRE action so we can use isJustPressed for single-shot firing
         this.engine.input.bindAction('FIRE', ['Space'], 150);
@@ -84,6 +92,52 @@ export default class InvadersScene extends Scene {
         }
     }
 
+    setupFromLevelData(levelData) {
+        var startX = 50;
+        var startY = 80;
+        var gap = 15;
+        var w = 30;
+        var h = 20;
+        var typeColors = { 1: '#fff', 2: '#f0f', 3: 'rainbow' };
+
+        this.enemies = [];
+        this.enemyRows = levelData.rows;
+        this.enemyCols = levelData.cols;
+
+        for (var r = 0; r < levelData.rows; r++) {
+            for (var c = 0; c < levelData.cols; c++) {
+                var cell = levelData.grid[r][c];
+                if (!cell.active) continue;
+                var color = typeColors[cell.type] || '#fff';
+                this.enemies.push({
+                    x: startX + c * (w + gap),
+                    y: startY + r * (h + gap),
+                    w: w,
+                    h: h,
+                    active: true,
+                    color: color,
+                    baseColor: color,
+                    type: cell.type,
+                    row: r,
+                    col: c,
+                    state: 'idle',
+                    diveTargetX: 0,
+                    diveTargetY: 0,
+                    origX: 0,
+                    origY: 0
+                });
+            }
+        }
+
+        // Shields (same as default)
+        this.shields = [];
+        var shieldY = this.height - 100;
+        for (var i = 0; i < 4; i++) {
+            var sx = 80 + i * 120;
+            this.shields.push({x: sx, y: shieldY, w: 40, h: 30, active: true, health: 10});
+        }
+    }
+
     update(dt) {
         this.timer.update(dt);
         if (this.state !== 'playing') return;
@@ -92,29 +146,38 @@ export default class InvadersScene extends Scene {
         if (this.engine.input.keys['ArrowLeft']) this.player.x -= this.player.speed;
         if (this.engine.input.keys['ArrowRight']) this.player.x += this.player.speed;
 
-        // Touch
-        if (this.engine.input.pointer.isDown) {
-            if (this.engine.input.pointer.x < this.width/2) this.player.x -= this.player.speed;
-            else this.player.x += this.player.speed;
+        // Touch zones:
+        //   Top 2/3 of canvas = move zone  (swipe left/right of center to move)
+        //   Bottom 1/3        = fire zone  (hold to auto-fire, still moves by left/right)
+        var fireZoneY = this.height * (2/3);
+        var ptr = this.engine.input.pointer;
+
+        if (ptr.isDown) {
+            if (ptr.y < fireZoneY) {
+                // Move zone — left of center = left, right = right
+                if (ptr.x < this.width/2) this.player.x -= this.player.speed;
+                else this.player.x += this.player.speed;
+            } else {
+                // Fire zone — still allow moving by left/right of center
+                if (ptr.x < this.width/2) this.player.x -= this.player.speed;
+                else this.player.x += this.player.speed;
+
+                // Auto-fire while holding fire zone
+                this.touchFireTimer -= dt;
+                if (this.touchFireTimer <= 0) {
+                    this.touchFireTimer = this.touchFireInterval;
+                    this._firePlayerBullet();
+                }
+            }
+        } else {
+            this.touchFireTimer = 0; // Reset timer when not touching
         }
 
         this.player.x = MathUtils.clamp(this.player.x, 10, this.width - this.player.w - 10);
 
-        // Shoot
-        if (this.engine.input.isJustPressed('FIRE') || (this.engine.input.pointer.isJustPressed && this.engine.input.pointer.y > this.height/2)) {
-            // Limit player bullets
-            if (this.bullets.filter(b => b.type === 'player').length < 2) {
-                this.bullets.push({
-                    x: this.player.x + this.player.w/2 - 2,
-                    y: this.player.y - 10,
-                    w: 4,
-                    h: 10,
-                    dy: -10,
-                    color: '#0f0',
-                    type: 'player'
-                });
-                this.engine.audio.playTone(880, 'square', 0.1);
-            }
+        // Keyboard / gamepad shoot
+        if (this.engine.input.isJustPressed('FIRE')) {
+            this._firePlayerBullet();
         }
 
         // --- Enemies Update ---
@@ -219,9 +282,28 @@ export default class InvadersScene extends Scene {
 
         // Check win
         if (!this.enemies.some(e => e.active)) {
-             // Respawn harder?
-             this.setupLevel();
+             // Respawn harder — use custom level if one was loaded
+             if (this.levelData) {
+                 this.setupFromLevelData(this.levelData);
+             } else {
+                 this.setupLevel();
+             }
              this.enemyStepInterval *= 0.8;
+        }
+    }
+
+    _firePlayerBullet() {
+        if (this.bullets.filter(function(b) { return b.type === 'player'; }).length < 2) {
+            this.bullets.push({
+                x: this.player.x + this.player.w/2 - 2,
+                y: this.player.y - 10,
+                w: 4,
+                h: 10,
+                dy: -10,
+                color: '#0f0',
+                type: 'player'
+            });
+            this.engine.audio.playTone(880, 'square', 0.1);
         }
     }
 
@@ -308,6 +390,25 @@ export default class InvadersScene extends Scene {
 
     draw(renderer) {
         renderer.clear('#000');
+
+        // Touch zone divider — subtle dashed line at 2/3 height
+        var fireZoneY = this.height * (2/3);
+        renderer.ctx.save();
+        renderer.ctx.strokeStyle = 'rgba(0,255,0,0.12)';
+        renderer.ctx.lineWidth = 1;
+        renderer.ctx.setLineDash([6, 8]);
+        renderer.ctx.beginPath();
+        renderer.ctx.moveTo(0, fireZoneY);
+        renderer.ctx.lineTo(this.width, fireZoneY);
+        renderer.ctx.stroke();
+        renderer.ctx.setLineDash([]);
+        renderer.ctx.restore();
+
+        // Fire zone label (faint)
+        renderer.ctx.fillStyle = 'rgba(0,255,0,0.18)';
+        renderer.ctx.font = '11px monospace';
+        renderer.ctx.textAlign = 'center';
+        renderer.ctx.fillText('[ HOLD TO FIRE ]', this.width/2, fireZoneY + 14);
 
         // Player
         renderer.drawRect(this.player.x, this.player.y, this.player.w, this.player.h, this.player.color);
