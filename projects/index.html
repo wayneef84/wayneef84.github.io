@@ -1,617 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="pro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Projects - F.O.N.G.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Projects - F.O.N.G. Arcade</title>
+    <link rel="stylesheet" href="../css/components/global.css">
+    <link rel="stylesheet" href="../css/components/card.css">
     <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        .projects-page-header {
+            padding: 1.5rem 5% 0;
         }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 20px 0;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .project-card {
-            background: rgba(255,255,255,0.95);
-            color: #333;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-decoration: none;
-            display: block;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
-
-        .project-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .project-icon {
-            font-size: 3rem;
-            margin-right: 15px;
-        }
-
-        .project-title-group h2 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #667eea;
-        }
-
-        .project-version {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 2px;
-        }
-
-        .project-description {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .project-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .meta-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #f0f0f0;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .status-badge {
-            background: #10b981;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .status-badge.in-development {
-            background: #f59e0b;
-        }
-
-        .features-list {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 20px;
-        }
-
-        .features-list li {
-            padding: 5px 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .features-list li:before {
-            content: '✓ ';
-            color: #10b981;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.2s;
+        .projects-back {
             display: inline-block;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #333;
-        }
-
-        .updates-section {
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .updates-section h2 {
-            margin-top: 0;
-            font-size: 1.8rem;
-        }
-
-        .update-item {
-            background: rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .update-date {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin-bottom: 10px;
-        }
-
-        .update-changes {
-            list-style: none;
-            padding: 0;
-        }
-
-        .update-changes li {
-            padding: 5px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .update-changes li:before {
-            content: '•';
-            position: absolute;
-            left: 0;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .back-link a {
-            color: white;
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
             text-decoration: none;
-            font-size: 1.1rem;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            margin-bottom: 1.25rem;
+            transition: color 0.2s;
         }
-
-        .back-link a:hover {
-            opacity: 1;
+        .projects-back:hover { color: var(--text-secondary); }
+        .projects-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+            margin: 0 0 0.25rem;
         }
-
-        /* Accessibility */
-        .skip-link {
-            position: absolute;
-            top: -100px;
-            left: 20px;
-            background: #fff;
-            color: #667eea;
-            padding: 10px 15px;
-            z-index: 9999;
-            text-decoration: none;
-            border-radius: 0 0 8px 8px;
-            font-weight: bold;
-            transition: top 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        .projects-subtitle {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin: 0 0 1.25rem;
         }
-
-        .skip-link:focus {
-            top: 0;
-        }
-
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        :focus-visible {
-            outline: 3px solid #fff;
-            outline-offset: 2px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .subtitle {
-                font-size: 1rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+        .projects-grid-section {
+            padding: 0 5% 3rem;
         }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <div class="container">
-        <header>
-            <h1 role="img" aria-label="Tools">🛠️ Projects</h1>
-            <p class="subtitle">Utility tools and applications</p>
-        </header>
-
-        <main id="main-content">
-            <h2 class="visually-hidden">Project List</h2>
-            <div class="projects-grid">
-                <!-- Shipment Tracker -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Package">📦</div>
-                        <div class="project-title-group">
-                            <h2>Shipment Tracker</h2>
-                            <div class="project-version">v1.0.0</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Multi-carrier shipment tracking with smart API rate limiting. Track packages from DHL, FedEx, UPS, and USPS in one place with offline-first storage and beautiful analytics.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Production Ready</span>
-                        <span class="meta-badge">📱 Mobile First</span>
-                        <span class="meta-badge">🌙 Dark Mode</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Auto-detect carrier from tracking number</li>
-                        <li>IndexedDB offline storage</li>
-                        <li>JSON payload viewer & download</li>
-                        <li>Export to JSON/CSV/Excel</li>
-                        <li>Smart rate limiting (10min cooldown)</li>
-                        <li>Cloudflare Worker proxy support</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="shipment-tracker/" class="btn btn-primary">🚀 Launch App</a>
-                        <a href="shipment-tracker/CHANGELOG.md" class="btn btn-secondary">📋 Changelog</a>
-                        <a href="shipment-tracker/README.md" class="btn btn-secondary">📖 Docs</a>
-                    </div>
-                </div>
-
-                <!-- Markdown Reader -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Book">📖</div>
-                        <div class="project-title-group">
-                            <h2>Markdown Reader</h2>
-                            <div class="project-version">v1.0.0</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Access internal documentation, AI feedback, and project plans directly from the browser. Supports syntax highlighting and easy navigation.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Live</span>
-                        <span class="meta-badge">🌙 Dark Mode</span>
-                        <span class="meta-badge">📝 Documentation</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Read hidden project files (AI_FEEDBACK.md, etc.)</li>
-                        <li>Syntax highlighting for code blocks</li>
-                        <li>Sidebar navigation with categories</li>
-                        <li>Custom path loading support</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="md-reader/index.html" class="btn btn-primary">📖 Open Reader</a>
-                    </div>
-                </div>
-
-                <!-- Test Portal -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Test Tube">🧪</div>
-                        <div class="project-title-group">
-                            <h2>Test Portal (QA Dashboard)</h2>
-                            <div class="project-version">v0.1</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Centralized testing hub for F.O.N.G. codebase. Verifies FongDB, NEGEN engine, and other internal components.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Live</span>
-                        <span class="meta-badge">Internal</span>
-                        <span class="meta-badge">QA</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>FongDB Verification</li>
-                        <li>Centralized Verification Hub</li>
-                        <li>NEGEN Physics Benchmark (Planned)</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="internal-tests/index.html" class="btn btn-primary">🧪 Open Portal</a>
-                    </div>
-                </div>
-
-                <!-- C.o.D.E. -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Unlocked">🔓</div>
-                        <div class="project-title-group">
-                            <h2>C.o.D.E.</h2>
-                            <div class="project-version">v1.1</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Code Optimization & Decryption Engine. A simulation of brute-force and algorithmic code cracking with customizable patterns (Regex) and strategies.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Live</span>
-                        <span class="meta-badge">Simulation</span>
-                        <span class="meta-badge">Hacker UI</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Customizable patterns (e.g. License Plates)</li>
-                        <li>Strategies: Sequential, Random, Reverse</li>
-                        <li>Logarithmic Delay Slider & Glow Timer</li>
-                        <li>Regex Pattern Support</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="code/index.html" class="btn btn-primary">🔓 Launch Engine</a>
-                    </div>
-                </div>
-
-                <!-- Input A11y -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Camera">📷</div>
-                        <div class="project-title-group">
-                            <h2>Input A11y</h2>
-                            <div class="project-version">v1.1</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Barcode and QR code scanner with multiple detection modes. Scan, generate, and copy codes directly from your device camera.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Live</span>
-                        <span class="meta-badge">📱 Mobile First</span>
-                        <span class="meta-badge">📷 Camera</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>QR code scanning and generation</li>
-                        <li>Barcode detection (multiple formats)</li>
-                        <li>Copy scanned text to clipboard</li>
-                        <li>Camera-based real-time scanning</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="input-a11y/index.html" class="btn btn-primary">📷 Launch Scanner</a>
-                    </div>
-                </div>
-
-                <!-- Regex Builder -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Snowman">☃️</div>
-                        <div class="project-title-group">
-                            <h2>Regex Builder</h2>
-                            <div class="project-version">v1.0</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        A vanilla JavaScript regex builder with visual construction, live preview, and a local storage "Snowbank" to save your patterns. No libraries, just pure DOM.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge">✓ Live</span>
-                        <span class="meta-badge">Vanilla JS</span>
-                        <span class="meta-badge">Local Storage</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Visual Regex construction</li>
-                        <li>Live preview & validation</li>
-                        <li>"Snowbank" local storage library</li>
-                        <li>One-click clipboard copy</li>
-                        <li>Single file portable architecture</li>
-                    </ul>
-
-                    <div class="project-links">
-                        <a href="regex_builder/index.html" class="btn btn-primary">☃️ Build Regex</a>
-                    </div>
-                </div>
-
-                <!-- Future Projects Placeholder -->
-                <div class="project-card" style="opacity: 0.6;">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Money Bag">💰</div>
-                        <div class="project-title-group">
-                            <h2>Budget Tracker</h2>
-                            <div class="project-version">Coming Soon</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Personal finance management tool with expense tracking, budget planning, and financial insights.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge in-development">🚧 Planned</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Expense categorization</li>
-                        <li>Budget alerts & notifications</li>
-                        <li>Visual charts & reports</li>
-                        <li>Multi-currency support</li>
-                    </ul>
-                </div>
-
-                <div class="project-card" style="opacity: 0.6;">
-                    <div class="project-header">
-                        <div class="project-icon" role="img" aria-label="Memo">📝</div>
-                        <div class="project-title-group">
-                            <h2>Task Manager</h2>
-                            <div class="project-version">Coming Soon</div>
-                        </div>
-                    </div>
-
-                    <p class="project-description">
-                        Simple, beautiful task management with projects, tags, and priorities. Built for speed and clarity.
-                    </p>
-
-                    <div class="project-meta">
-                        <span class="status-badge in-development">🚧 Planned</span>
-                    </div>
-
-                    <ul class="features-list">
-                        <li>Project organization</li>
-                        <li>Kanban board view</li>
-                        <li>Due date reminders</li>
-                        <li>Collaborative features</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Recent Updates -->
-            <div class="updates-section">
-                <h2>📰 Recent Updates</h2>
-
-                <div class="update-item">
-                    <div class="update-date">February 6, 2026 - Test Portal v0.1</div>
-                    <ul class="update-changes">
-                        <li>🧪 Added centralized QA Dashboard</li>
-                        <li>🔗 Linked internal verification tools for FongDB and NEGEN engine</li>
-                    </ul>
-                </div>
-
-                <div class="update-item">
-                    <div class="update-date">January 23, 2026 - Shipment Tracker v1.0.0</div>
-                    <ul class="update-changes">
-                        <li>🎉 Initial release with DHL, FedEx, UPS support</li>
-                        <li>✨ Auto-detect carrier from tracking number</li>
-                        <li>🔍 JSON payload viewer with syntax highlighting</li>
-                        <li>📥 Download raw payloads as JSON files</li>
-                        <li>🛡️ Force refresh with confirmation (off by default)</li>
-                        <li>📱 Mobile-first responsive design</li>
-                        <li>🌙 Dark mode support</li>
-                    </ul>
-                </div>
-
-                <div class="update-item">
-                    <div class="update-date">January 23, 2026 - Bug Fixes</div>
-                    <ul class="update-changes">
-                        <li>🐛 Fixed Unix epoch date display (now shows "Not yet checked")</li>
-                        <li>🎨 Improved payload viewer styling</li>
-                        <li>⚙️ Fixed force refresh button behavior</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Upcoming Features -->
-            <div class="updates-section">
-                <h2>🚀 Upcoming Features</h2>
-
-                <div class="update-item">
-                    <div class="update-date">Shipment Tracker - Planned Features</div>
-                    <ul class="update-changes">
-                        <li>🤖 Query engine for smart batching & auto-refresh</li>
-                        <li>🔔 Push notifications for delivered shipments</li>
-                        <li>☁️ Cloud sync with Firebase/Supabase</li>
-                        <li>📊 Analytics dashboard (delivery times, carrier performance)</li>
-                        <li>🔗 Webhooks support for carrier callbacks</li>
-                        <li>📧 Email notifications</li>
-                        <li>🎯 Advanced filtering (date ranges, custom queries)</li>
-                        <li>🔄 Import from CSV/JSON</li>
-                        <li>📈 Excel export with charts</li>
-                    </ul>
-                </div>
-            </div>
-        </main>
-
-        <div class="back-link">
-            <a href="../">← Back to Games</a>
+    <header class="global-nav">
+        <a href="../index.html" class="nav-brand">F.O.N.G. ARCADE</a>
+        <div class="nav-right">
+            <a href="../index.html" class="theme-toggle-link">← Game Hub</a>
         </div>
-    </div>
+    </header>
+
+    <main>
+        <div class="projects-page-header">
+            <div class="library-header">
+                <h2 class="library-title">Projects Hub</h2>
+                <span id="project-count" class="library-count"></span>
+            </div>
+        </div>
+
+        <section class="projects-grid-section">
+            <div id="project-grid" class="game-grid" role="list"></div>
+        </section>
+    </main>
+
+    <script src="../js/catalog.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            var CATALOG = window.FONG_CATALOG || [];
+
+            function catLabel(cat) {
+                var labels = { card: 'Card', arcade: 'Arcade', puzzle: 'Puzzle', edu: 'Educational', project: 'Project' };
+                return labels[cat] || cat;
+            }
+
+            function render() {
+                var grid = document.getElementById('project-grid');
+                var countEl = document.getElementById('project-count');
+                if (!grid) return;
+
+                var count = 0;
+                grid.innerHTML = '';
+
+                for (var i = 0; i < CATALOG.length; i++) {
+                    var game = CATALOG[i];
+                    if (game.category !== 'project') continue;
+
+                    // Adjust href: catalog paths are relative to root (./projects/X)
+                    // This page is inside /projects/, so strip the ./projects/ prefix
+                    var href = game.href.replace('./projects/', './');
+
+                    var badgeHtml = game.isNew ? '<span class="badge-new">NEW</span>' : '';
+
+                    var card = document.createElement('a');
+                    card.href = href;
+                    card.className = 'game-card';
+                    card.setAttribute('data-category', game.category);
+
+                    card.innerHTML =
+                        '<div class="card-top">' +
+                            '<span class="card-icon">' + game.icon + '</span>' +
+                            '<span class="category-tag tag-project">' + catLabel(game.category) + '</span>' +
+                        '</div>' +
+                        '<div class="game-title">' + game.title + badgeHtml + '</div>' +
+                        '<p class="game-desc">' + game.description + '</p>' +
+                        '<div class="game-meta"><span>' + game.version + '</span></div>';
+
+                    grid.appendChild(card);
+                    count++;
+                }
+
+                if (countEl) countEl.textContent = count + ' projects';
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', render);
+            } else {
+                render();
+            }
+        })();
+    </script>
 </body>
 </html>
