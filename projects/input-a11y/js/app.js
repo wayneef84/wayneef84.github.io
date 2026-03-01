@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // OCR Tuning
     var setOcrConfidence = document.getElementById('set-ocr-confidence');
     var ocrConfidenceVal = document.getElementById('ocr-confidence-val');
+    var setOcrBinarize = document.getElementById('set-ocr-binarize');
+    var ocrBinarizeVal = document.getElementById('ocr-binarize-val');
     var setOcrDebounce = document.getElementById('set-ocr-debounce');
     var ocrDebounceVal = document.getElementById('ocr-debounce-val');
 
@@ -210,6 +212,10 @@ document.addEventListener('DOMContentLoaded', function() {
             setOcrConfidence.value = settings.ocrConfidence || 40;
             if (ocrConfidenceVal) ocrConfidenceVal.innerText = setOcrConfidence.value;
         }
+        if (setOcrBinarize) {
+            setOcrBinarize.value = settings.ocrBinarizeThreshold !== undefined ? settings.ocrBinarizeThreshold : 125;
+            if (ocrBinarizeVal) ocrBinarizeVal.innerText = setOcrBinarize.value;
+        }
         if (setOcrDebounce) {
             setOcrDebounce.value = settings.ocrDebounce || 3000;
             if (ocrDebounceVal) ocrDebounceVal.innerText = setOcrDebounce.value;
@@ -311,6 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmPopup: s.ocrConfirmPopup !== undefined ? s.ocrConfirmPopup : true,
             confidenceThreshold: parseInt(s.ocrConfidence, 10) || 40,
             debounceMs: parseInt(s.ocrDebounce, 10) || 3000,
+            binarizeThreshold: s.ocrBinarizeThreshold !== undefined ? parseInt(s.ocrBinarizeThreshold, 10) : 125,
             minTextLength: minLength,
             charMode: charMode,
             preprocessingMode: s.ocrPreprocessingMode || 'TRIM',
@@ -881,6 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // OCR Tuning Sliders
         bindRangeSlider(setOcrConfidence, ocrConfidenceVal, 'ocrConfidence', applyOCRFilterConfig);
+        bindRangeSlider(setOcrBinarize, ocrBinarizeVal, 'ocrBinarizeThreshold', applyOCRFilterConfig);
         bindRangeSlider(setOcrDebounce, ocrDebounceVal, 'ocrDebounce', applyOCRFilterConfig);
 
         // Barcode Tuning Sliders

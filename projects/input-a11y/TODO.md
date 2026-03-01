@@ -26,7 +26,7 @@
 - [ ] Sanitize image `src` in history rendering — `renderList()` sets `thumb.src = item.image` directly. Low risk (localStorage only) but should validate data URI format.
 - [x] ✅ History item deletion — Edit modal with delete button, plus inline delete button per history item (2026-02-08, G/C)
 - [x] ✅ History size limit — Auto-prune to 50 items per category on insert. Oldest items dropped first. (2026-02-08, C)
-- [ ] Binarization threshold tuning — Currently hardcoded at 128. Consider making configurable via Settings for different lighting conditions.
+- [x] ✅ Binarization threshold tuning — Configurable 0–255 slider in Settings > Text Scanner (OCR). Default 125. Lower for dark environments, higher for bright/washed-out. (2026-02-28, C)
 - [x] ✅ Auto-restart camera after modal/tab return — `visibilitychange` API restarts scanner when user returns from `window.open` or tab switch. No more manual reload needed. (2026-02-08, C)
 - [x] ✅ Tesseract worker memory leak — Added `beforeunload` handler to call `ocrManager.terminate()`. Prevents worker accumulation on page refreshes. (2026-02-08, C)
 - [x] ✅ Accessibility (ARIA) — Added `role="dialog"`, `aria-modal`, `aria-label` to all modals. Added `aria-live` to scan status and toasts. Added `aria-label` to all icon-only buttons. Escape key closes all modals. (2026-02-08, C)
