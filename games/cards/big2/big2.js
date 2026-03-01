@@ -120,6 +120,29 @@ var Big2Evaluator = (function () {
         var groups = groupByRank(cards);
         var rankKeys = Object.keys(groups);
 
+        // ── 1-CARD HAND ───────────────────────────────────────────────────────
+        if (n === 1) {
+            return {
+                type: Big2HandType.SINGLE,
+                primaryCard: sorted[0],
+                score: Big2HandType.SINGLE * 100000 + getCardValue(sorted[0], ruleset),
+                size: 1
+            };
+        }
+
+        // ── 2-CARD HAND ───────────────────────────────────────────────────────
+        if (n === 2) {
+            if (rankKeys.length === 1) { // Both cards same rank = valid pair
+                return {
+                    type: Big2HandType.DOUBLE,
+                    primaryCard: sorted[0],
+                    score: Big2HandType.DOUBLE * 100000 + getCardValue(sorted[0], ruleset),
+                    size: 2
+                };
+            }
+            return { type: Big2HandType.INVALID, primaryCard: null };
+        }
+
         // ── 3-CARD HANDS ─────────────────────────────────────────────────────
         if (n === 3) {
             var suitGroups3 = groupBySuit(cards);
@@ -286,18 +309,16 @@ var Big2Evaluator = (function () {
     }
 
     /**
-     * 3-card type set (for quick lookup)
+     * Size-category lookup maps
      */
+    var ONE_CARD_TYPES = { 1: true };   // SINGLE
+    var TWO_CARD_TYPES = { 3: true };   // DOUBLE
     var THREE_CARD_TYPES = {
         10: true,  // TRIPLE
         9:  true,  // THREE_STRAIGHT_FLUSH
         8:  true,  // THREE_FLUSH
         7:  true   // THREE_STRAIGHT
     };
-
-    /**
-     * 5-card type set (for quick lookup)
-     */
     var FIVE_CARD_TYPES = {
         58: true,  // STRAIGHT_FLUSH
         57: true,  // FOUR_OF_A_KIND
@@ -309,40 +330,35 @@ var Big2Evaluator = (function () {
         50: true   // HIGH_CARD (poker hands)
     };
 
-    function isThreeCardType(type) { return !!THREE_CARD_TYPES[type]; }
-    function isFiveCardType(type)  { return !!FIVE_CARD_TYPES[type]; }
+    function getSizeCategory(type) {
+        if (ONE_CARD_TYPES[type])   return 1;
+        if (TWO_CARD_TYPES[type])   return 2;
+        if (THREE_CARD_TYPES[type]) return 3;
+        if (FIVE_CARD_TYPES[type])  return 5;
+        return 0;
+    }
 
     /**
      * Can `challenger` beat `current`?
-     * Rules:
-     *   - 3-card hands can only beat other 3-card hands (same size).
-     *   - 5-card hands can only beat other 5-card hands (same size).
-     *   - Exception: fiveCardBeatsLower (Taiwanese) → 5-card beats a 3-card pile.
-     *   - Within same size: higher Big2HandType value wins; ties broken by score.
+     * - Hands must match size (1v1, 2v2, 3v3, 5v5).
+     * - Exception: fiveCardBeatsLower (Taiwanese) lets 5-card beat a 3-card pile.
+     * - Within same size: higher type value wins; ties broken by score.
      */
     function canBeat(challenger, current, ruleset) {
         if (challenger.type === Big2HandType.INVALID) return false;
-        if (current === null) return true; // Empty pile — any valid hand leads
+        if (current === null) return true; // Empty pile — any valid hand can lead
 
-        var cIsThree = isThreeCardType(challenger.type);
-        var cIsFive  = isFiveCardType(challenger.type);
-        var pIsThree = isThreeCardType(current.type);
-        var pIsFive  = isFiveCardType(current.type);
+        var cSize = getSizeCategory(challenger.type);
+        var pSize = getSizeCategory(current.type);
 
-        // Cross-size play: 5-card beating a 3-card pile (Taiwanese rule)
-        if (cIsFive && pIsThree) {
-            return !!ruleset.fiveCardBeatsLower;
-        }
+        // 5-card beating 3-card pile (Taiwanese rule)
+        if (cSize === 5 && pSize === 3) return !!ruleset.fiveCardBeatsLower;
 
-        // Cross-size the other way is never valid
-        if (cIsThree && pIsFive) return false;
+        // All other cross-size plays are invalid
+        if (cSize !== pSize) return false;
 
-        // Same-size: compare by hand type value first (higher type = stronger category)
-        if (challenger.type !== current.type) {
-            return challenger.type > current.type;
-        }
-
-        // Same hand type: compare scores (primary card value)
+        // Same size: compare by hand type (higher = stronger category), then score
+        if (challenger.type !== current.type) return challenger.type > current.type;
         return challenger.score > current.score;
     }
 
@@ -394,14 +410,19 @@ var Big2AI = (function () {
         if (currentPileHand) {
             defaultSizes = [currentPileHand.cards.length];
         } else {
-            // If ruleset has no 3-card types allowed, only try 5-card combos.
-            // 3-card hand type values are 7-10 (THREE_STRAIGHT through TRIPLE).
-            var hasThreeCard = false;
+            // When leading (empty pile), try all sizes the ruleset allows
             var allowed = ruleset.allowedHandTypes || [];
+            var hasOne = false, hasTwo = false, hasThree = false;
             for (var ai = 0; ai < allowed.length; ai++) {
-                if (allowed[ai] >= 7 && allowed[ai] <= 10) { hasThreeCard = true; break; }
+                if (allowed[ai] === 1)                          hasOne   = true;
+                if (allowed[ai] === 3)                          hasTwo   = true;
+                if (allowed[ai] >= 7 && allowed[ai] <= 10)     hasThree = true;
             }
-            defaultSizes = hasThreeCard ? [3, 5] : [5];
+            defaultSizes = [];
+            if (hasOne)   defaultSizes.push(1);
+            if (hasTwo)   defaultSizes.push(2);
+            if (hasThree) defaultSizes.push(3);
+            defaultSizes.push(5);
         }
         var sizes = defaultSizes;
         var validPlays = [];

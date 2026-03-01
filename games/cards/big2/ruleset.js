@@ -51,6 +51,12 @@ var Big2SuitValues = {
 var Big2HandType = Object.freeze({
     INVALID:              0,
 
+    // ── 1-card hands (size category: 1) ─────────────────────────────
+    SINGLE:               1,    // Single card
+
+    // ── 2-card hands (size category: 2) ─────────────────────────────
+    DOUBLE:               3,    // Pair — two cards of the same rank
+
     // ── 3-card hands (size category: 3) ─────────────────────────────
     TRIPLE:               10,   // Three of a kind  (strongest 3-card)
     THREE_STRAIGHT_FLUSH: 9,    // e.g. 7♠ 8♠ 9♠
@@ -104,6 +110,10 @@ var Big2Rulesets = {
         // --- Play Validity ---
         // Which hand types are allowed
         allowedHandTypes: [
+            // 1-card hands
+            Big2HandType.SINGLE,
+            // 2-card hands
+            Big2HandType.DOUBLE,
             // 3-card hands
             Big2HandType.THREE_STRAIGHT,
             Big2HandType.THREE_FLUSH,
@@ -170,6 +180,10 @@ var Big2Rulesets = {
         canPassOnFirstTurn: false,
 
         allowedHandTypes: [
+            // 1-card hands
+            Big2HandType.SINGLE,
+            // 2-card hands
+            Big2HandType.DOUBLE,
             // 3-card hands
             Big2HandType.THREE_STRAIGHT,
             Big2HandType.THREE_FLUSH,
@@ -218,6 +232,10 @@ var Big2Rulesets = {
         canPassOnFirstTurn: false,
 
         allowedHandTypes: [
+            // 1-card hands
+            Big2HandType.SINGLE,
+            // 2-card hands
+            Big2HandType.DOUBLE,
             // 3-card hands
             Big2HandType.THREE_STRAIGHT,
             Big2HandType.THREE_FLUSH,
