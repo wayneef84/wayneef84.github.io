@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Big 2 (大老二) - F.O.N.G. Arcade</title>
+    <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+    <style>
+        /* ================================================================
+           ROOT & RESET
+        ================================================================ */
+        :root {
+            --bg: #1a472a;
+            --felt: #2d5a27;
+            --felt-dark: #1e3d1b;
+            --accent: #ffd700;
+            --accent-dim: rgba(255,215,0,0.15);
+            --card-w: 68px;
+            --card-h: 96px;
+            --card-w-sm: 52px;
+            --card-h-sm: 74px;
+            --radius: 8px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.5);
+            --text: #f0f0f0;
+            --text-dim: #aaa;
+            --red: #e74c3c;
+            --blue: #3498db;
+            --selected-glow: 0 0 0 3px #ffd700, 0 -8px 0 0 rgba(255,215,0,0.3);
+            --valid-glow: 0 0 0 2px #4ade80;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 50% 0%, #2a5c3a 0%, #1a472a 60%),
+                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(0,0,0,0.03) 20px, rgba(0,0,0,0.03) 40px);
+            font-family: system-ui, -apple-system, sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* ================================================================
+           HEADER
+        ================================================================ */
+        #header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            position: relative;
+        }
+        #back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        #back-btn:hover { background: rgba(255,255,255,0.18); }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 0;
+            text-shadow: 0 0 15px rgba(255,215,0,0.4);
+            text-align: center;
+            flex: 1;
+        }
+        #ruleset-badge {
+            background: rgba(255,215,0,0.15);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        #ruleset-badge:hover { background: rgba(255,215,0,0.25); }
+
+        /* ================================================================
+           SCREENS
+        ================================================================ */
+        .screen { display: none; width: 100%; max-width: 900px; padding: 0 12px; }
+        .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+        /* --- Setup Screen --- */
+        #setup-screen { gap: 20px; padding-top: 20px; }
+        .setup-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 480px;
+        }
+        .setup-card h2 { margin: 0 0 16px; font-size: 1.1rem; color: var(--accent); }
+
+        .ruleset-list { display: flex; flex-direction: column; gap: 10px; }
+        .ruleset-option {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ruleset-option:hover { border-color: rgba(255,215,0,0.4); }
+        .ruleset-option.selected { border-color: var(--accent); background: rgba(255,215,0,0.1); }
+        .ruleset-option .name { font-weight: bold; font-size: 1rem; }
+        .ruleset-option .desc { color: var(--text-dim); font-size: 0.8rem; margin-top: 4px; }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            min-height: 44px;
+            transition: opacity 0.15s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn.danger { background: var(--red); color: #fff; }
+
+        /* ================================================================
+           GAME TABLE
+        ================================================================ */
+        #game-screen { padding-top: 8px; gap: 8px; }
+
+        /* Opponent slots (top 3 players) */
+        #opponents-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .opponent-slot {
+            flex: 1;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        .opponent-slot.active-turn {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(255,215,0,0.3);
+        }
+        .opponent-slot .opp-name {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .opponent-slot.active-turn .opp-name { color: var(--accent); }
+
+        /* Mini card backs for opponent hands */
+        .mini-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2px;
+            min-height: 28px;
+        }
+        .mini-card-back {
+            width: 18px;
+            height: 26px;
+            background: linear-gradient(135deg, #1a3a6e, #2d5aa0);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        .opp-count {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+        .pass-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(200,200,200,0.2);
+            color: #ccc;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        /* ---- TABLE CENTER ---- */
+        #table-center {
+            width: 100%;
+            background: var(--felt-dark);
+            border-radius: 24px;
+            padding: 16px;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        #pile-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #pile-cards {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 96px;
+            align-items: center;
+        }
+
+        #pile-hand-name {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        #status-msg {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* ================================================================
+           CARDS (SVG-based inline rendering)
+        ================================================================ */
+        .card {
+            width: var(--card-w);
+            height: var(--card-h);
+            border-radius: var(--radius);
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.12s, box-shadow 0.12s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Georgia, serif;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-4px); }
+        .card.selected {
+            box-shadow: var(--selected-glow);
+            transform: translateY(-10px);
+        }
+        .card.valid-play {
+            box-shadow: var(--valid-glow);
+        }
+        .card.selected.valid-play {
+            box-shadow: var(--selected-glow), var(--valid-glow);
+        }
+
+        .card-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 4px 5px;
+        }
+        .card-rank-top { font-size: 14px; font-weight: bold; line-height: 1; }
+        .card-suit-top { font-size: 11px; line-height: 1; }
+        .card-center { font-size: 28px; flex: 1; display: flex; align-items: center; justify-content: center; }
+        .card-rank-bot { font-size: 14px; font-weight: bold; line-height: 1; }
+        .card-suit-bot { font-size: 11px; line-height: 1; }
+        .card-bottom { display: flex; flex-direction: column; align-items: flex-end; }
+
+        .card.red .card-rank-top,
+        .card.red .card-suit-top,
+        .card.red .card-center,
+        .card.red .card-rank-bot,
+        .card.red .card-suit-bot { color: var(--red); }
+
+        .card.black .card-rank-top,
+        .card.black .card-suit-top,
+        .card.black .card-center,
+        .card.black .card-rank-bot,
+        .card.black .card-suit-bot { color: #1a1a2e; }
+
+        /* Pile cards (smaller) */
+        #pile-cards .card {
+            width: var(--card-w-sm);
+            height: var(--card-h-sm);
+            cursor: default;
+        }
+        #pile-cards .card .card-rank-top { font-size: 11px; }
+        #pile-cards .card .card-suit-top { font-size: 9px; }
+        #pile-cards .card .card-center { font-size: 22px; }
+
+        /* ================================================================
+           PLAYER HAND
+        ================================================================ */
+        #player-area {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 12px;
+        }
+        #player-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        #player-name-label {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+        #your-turn-indicator {
+            background: var(--accent);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 10px;
+            display: none;
+        }
+        #your-turn-indicator.visible { display: block; }
+
+        #hand-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            min-height: var(--card-h);
+            align-items: flex-end;
+        }
+
+        /* ================================================================
+           ACTION BUTTONS
+        ================================================================ */
+        #action-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            padding: 4px 0;
+        }
+        #action-row .btn { flex: 1; font-size: 0.9rem; padding: 12px; }
+
+        #play-btn { background: #4ade80; color: #000; }
+        #play-btn:disabled { background: rgba(74,222,128,0.3); color: rgba(0,0,0,0.5); cursor: not-allowed; }
+        #pass-btn { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid rgba(255,255,255,0.2); }
+        #pass-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        #selected-info {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: center;
+            min-height: 18px;
+        }
+
+        /* ================================================================
+           GAME OVER OVERLAY
+        ================================================================ */
+        #gameover-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        #gameover-overlay.visible { display: flex; }
+
+        #gameover-panel {
+            background: #1a2f1a;
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+        }
+        #gameover-panel h2 { color: var(--accent); font-size: 2rem; margin: 0 0 8px; }
+        #gameover-panel .winner-name { font-size: 1.3rem; margin-bottom: 20px; }
+        #scores-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        #scores-table td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        #scores-table td:last-child { text-align: right; color: var(--red); }
+        #scores-table tr.winner-row td { color: var(--accent); }
+        #scores-table tr.winner-row td:last-child { color: #4ade80; }
+
+        /* ================================================================
+           RULESET MODAL
+        ================================================================ */
+        #ruleset-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        #ruleset-modal.visible { display: flex; }
+        #ruleset-panel {
+            background: #1a2f1a;
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 420px;
+            width: 90%;
+        }
+        #ruleset-panel h2 { color: var(--accent); margin: 0 0 16px; }
+        .rule-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.9rem;
+        }
+        .rule-row:last-child { border-bottom: none; }
+        .rule-key { color: var(--text-dim); }
+        .rule-val { font-weight: bold; color: var(--text); }
+
+        /* ================================================================
+           RESPONSIVE
+        ================================================================ */
+        @media (max-width: 500px) {
+            :root {
+                --card-w: 54px;
+                --card-h: 76px;
+            }
+            h1 { font-size: 1.1rem; }
+            #hand-cards { gap: 4px; }
+            .mini-card-back { width: 14px; height: 20px; }
+        }
+
+        /* ================================================================
+           HINT CARD
+        ================================================================ */
+        .card.hint {
+            box-shadow: 0 0 0 2px #4ade80, 0 0 14px rgba(74,222,128,0.6);
+            transform: translateY(-14px);
+            animation: hint-pulse 1.2s ease-in-out infinite;
+        }
+        .card.hint.selected {
+            box-shadow: var(--selected-glow), 0 0 14px rgba(74,222,128,0.5);
+            transform: translateY(-14px);
+        }
+        @keyframes hint-pulse {
+            0%, 100% { box-shadow: 0 0 0 2px #4ade80, 0 0 14px rgba(74,222,128,0.5); }
+            50%       { box-shadow: 0 0 0 2px #4ade80, 0 0 28px rgba(74,222,128,0.9); }
+        }
+
+        /* ================================================================
+           HINT BUTTON
+        ================================================================ */
+        #hint-btn {
+            background: rgba(74,222,128,0.1);
+            color: #4ade80;
+            border: 1px solid rgba(74,222,128,0.3);
+            flex: 0.7;
+        }
+        #hint-btn:hover:not(:disabled) { background: rgba(74,222,128,0.2); }
+        #hint-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* ================================================================
+           AUTO-PASS ROW
+        ================================================================ */
+        #auto-pass-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            padding: 4px 2px;
+            user-select: none;
+        }
+        #auto-pass-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #4ade80;
+        }
+        #auto-pass-row label { cursor: pointer; }
+
+        /* ================================================================
+           SETTINGS BUTTON (header)
+        ================================================================ */
+        #settings-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--text-dim);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        #settings-btn:hover { background: rgba(255,255,255,0.15); color: var(--text); }
+
+        /* ================================================================
+           SETTINGS MODAL
+        ================================================================ */
+        #settings-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        #settings-modal.visible { display: flex; }
+        #settings-panel {
+            background: #1a2f1a;
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 360px;
+            width: 90%;
+        }
+        #settings-panel h2 { color: var(--accent); margin: 0 0 20px; font-size: 1.2rem; }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            gap: 16px;
+        }
+        .setting-row:last-of-type { border-bottom: none; }
+        .setting-label { color: var(--text-dim); font-size: 0.9rem; }
+        .setting-desc { color: var(--text-dim); font-size: 0.78rem; margin-top: 2px; }
+        /* iOS-style toggle */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-track::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-track { background: #4ade80; }
+        .toggle-switch input:checked + .toggle-track::before { transform: translateX(20px); }
+
+        /* ================================================================
+           ANIMATIONS
+        ================================================================ */
+        @keyframes cardFromBottom {
+            from { transform: translateY(60px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes cardFromTop {
+            from { transform: translateY(-60px); opacity: 0; }
+            to   { transform: translateY(0);     opacity: 1; }
+        }
+        @keyframes cardDeal {
+            from { transform: translateY(28px) scale(0.85); opacity: 0; }
+            to   { transform: translateY(0)    scale(1);    opacity: 1; }
+        }
+        @keyframes cardSweep {
+            from { transform: translateY(0);     opacity: 1; }
+            to   { transform: translateY(-50px); opacity: 0; }
+        }
+        @keyframes oppPulse {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.06); box-shadow: 0 0 22px rgba(255,215,0,0.7); }
+            100% { transform: scale(1); }
+        }
+
+        /* Pile entry — direction based on who last played */
+        #pile-cards[data-source="human"] .card { animation: cardFromBottom 0.28s ease-out both; }
+        #pile-cards[data-source="ai"]    .card { animation: cardFromTop    0.28s ease-out both; }
+
+        /* Stagger each pile card slightly */
+        #pile-cards .card:nth-child(2) { animation-delay: 0.04s; }
+        #pile-cards .card:nth-child(3) { animation-delay: 0.08s; }
+        #pile-cards .card:nth-child(4) { animation-delay: 0.12s; }
+        #pile-cards .card:nth-child(5) { animation-delay: 0.16s; }
+
+        /* Deal cards into hand */
+        .card.deal-in { animation: cardDeal 0.35s ease-out both; }
+
+        /* Sweep pile cards out before clearing */
+        .card.pile-sweep {
+            animation: cardSweep 0.25s ease-in both !important;
+            pointer-events: none;
+        }
+
+        /* Opponent slot pulse when they play */
+        .opponent-slot.opp-played { animation: oppPulse 0.6s ease-out; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+    <a id="back-btn" href="../../index.html">← Cards</a>
+    <h1>大老二 Big 2</h1>
+    <div id="ruleset-badge" onclick="UI.showRulesetModal()">HK Rules</div>
+    <button id="settings-btn" onclick="UI.openSettings()" title="Settings">⚙</button>
+</div>
+
+<!-- ================================================================
+     SETUP SCREEN
+================================================================ -->
+<div id="setup-screen" class="screen active">
+    <div class="setup-card">
+        <h2>Choose Ruleset</h2>
+        <div class="ruleset-list" id="ruleset-list"></div>
+    </div>
+
+    <div class="setup-card">
+        <h2>Players</h2>
+        <div style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 12px;">
+            You vs 3 AI opponents. Play 3-card or 5-card poker hands. Multiplayer coming soon!
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div style="background:rgba(255,215,0,0.1); border:1px solid var(--accent); border-radius:10px; padding:10px 16px; font-size:0.9rem;">
+                👤 You (Human)
+            </div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:10px; padding:10px 16px; font-size:0.9rem; color:var(--text-dim);">
+                🤖 AI Player 1
+            </div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:10px; padding:10px 16px; font-size:0.9rem; color:var(--text-dim);">
+                🤖 AI Player 2
+            </div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:10px; padding:10px 16px; font-size:0.9rem; color:var(--text-dim);">
+                🤖 AI Player 3
+            </div>
+        </div>
+    </div>
+
+    <button class="btn" id="start-btn" onclick="UI.startGame()">Deal Cards</button>
+</div>
+
+<!-- ================================================================
+     GAME SCREEN
+================================================================ -->
+<div id="game-screen" class="screen">
+
+    <!-- Opponents -->
+    <div id="opponents-row">
+        <div class="opponent-slot" id="opp0">
+            <div class="opp-name" id="opp0-name">Player 2</div>
+            <div class="mini-cards" id="opp0-cards"></div>
+            <div class="opp-count" id="opp0-count">13 cards</div>
+        </div>
+        <div class="opponent-slot" id="opp1">
+            <div class="opp-name" id="opp1-name">Player 3</div>
+            <div class="mini-cards" id="opp1-cards"></div>
+            <div class="opp-count" id="opp1-count">13 cards</div>
+        </div>
+        <div class="opponent-slot" id="opp2">
+            <div class="opp-name" id="opp2-name">Player 4</div>
+            <div class="mini-cards" id="opp2-cards"></div>
+            <div class="opp-count" id="opp2-count">13 cards</div>
+        </div>
+    </div>
+
+    <!-- Table Center -->
+    <div id="table-center">
+        <div id="pile-label">Played Cards</div>
+        <div id="pile-cards"></div>
+        <div id="pile-hand-name"></div>
+        <div id="status-msg">Waiting for game to start...</div>
+    </div>
+
+    <!-- Player Area -->
+    <div id="player-area">
+        <div id="player-info-row">
+            <span id="player-name-label">Your Hand</span>
+            <span id="your-turn-indicator">YOUR TURN</span>
+        </div>
+        <div id="hand-cards"></div>
+    </div>
+
+    <!-- Selected Info -->
+    <div id="selected-info"></div>
+
+    <!-- Actions -->
+    <div id="action-row">
+        <button class="btn" id="hint-btn" disabled onclick="UI.showHint()">💡 Hint</button>
+        <button class="btn" id="play-btn" disabled onclick="UI.playSelected()">Play</button>
+        <button class="btn" id="pass-btn" disabled onclick="UI.pass()">Pass</button>
+    </div>
+    <div id="auto-pass-row">
+        <input type="checkbox" id="auto-pass-cb" onchange="UI.toggleAutoPass()">
+        <label for="auto-pass-cb">Auto-Pass when no moves</label>
+    </div>
+
+</div>
+
+<!-- ================================================================
+     GAME OVER OVERLAY
+================================================================ -->
+<div id="gameover-overlay">
+    <div id="gameover-panel">
+        <h2 id="gameover-title">Game Over</h2>
+        <div class="winner-name" id="gameover-winner"></div>
+        <table id="scores-table">
+            <tbody id="scores-body"></tbody>
+        </table>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn" onclick="UI.newGame()">New Game</button>
+            <button class="btn secondary" onclick="UI.goSetup()">Change Rules</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     RULESET MODAL
+================================================================ -->
+<div id="ruleset-modal">
+    <div id="ruleset-panel">
+        <h2 id="modal-ruleset-name">Rules</h2>
+        <div id="modal-ruleset-desc" style="color:var(--text-dim); font-size:0.85rem; margin-bottom:16px;"></div>
+        <div id="modal-rules-list"></div>
+        <div style="margin-top:20px; text-align:right;">
+            <button class="btn secondary" onclick="UI.closeRulesetModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     SETTINGS MODAL
+================================================================ -->
+<div id="settings-modal">
+    <div id="settings-panel">
+        <h2>⚙ Settings</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Auto-Pass</div>
+                <div class="setting-desc">Automatically passes your turn when you have no valid moves</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settings-auto-pass" onchange="UI.toggleAutoPass(this.checked)">
+                <span class="toggle-track"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">💡 Hint</div>
+                <div class="setting-desc">Shows the weakest valid play — green glow + raised cards</div>
+            </div>
+        </div>
+        <div style="margin-top: 20px; text-align: right;">
+            <button class="btn secondary" onclick="UI.closeSettings()">Done</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     SCRIPTS
+================================================================ -->
+<script src="../shared/enums.js"></script>
+<script src="ruleset.js"></script>
+<script src="big2.js"></script>
+<script>
+// ============================================================================
+// UI CONTROLLER
+// ============================================================================
+var UI = (function () {
+
+    var game = null;
+    var selectedCards = [];
+    var humanPlayerId = 'player0';
+    var currentRulesetId = 'hongkong';
+    var isYourTurn = false;
+    var autoPass = false;
+    var hintUuids = {};
+    var isFirstDeal = false;
+
+    // Card display helpers
+    var SUIT_SYMBOLS = { SPADES: '\u2660', HEARTS: '\u2665', DIAMONDS: '\u2666', CLUBS: '\u2663' };
+    var RANK_LABELS  = {
+        THREE:'3', FOUR:'4', FIVE:'5', SIX:'6', SEVEN:'7', EIGHT:'8',
+        NINE:'9', TEN:'10', JACK:'J', QUEEN:'Q', KING:'K', ACE:'A', TWO:'2'
+    };
+    // Map Big2HandType numeric values → display names
+    var HAND_TYPE_NAMES = {
+        0:  'Invalid',
+        // 1-card hands
+        1:  'Single',
+        // 2-card hands
+        3:  'Pair',
+        // 3-card hands
+        10: 'Triple',
+        9:  '3-Card Straight Flush',
+        8:  '3-Card Flush',
+        7:  '3-Card Straight',
+        // 5-card hands
+        58: 'Straight Flush',
+        57: 'Four of a Kind',
+        56: 'Full House',
+        55: 'Flush',
+        54: 'Straight',
+        53: 'Three of a Kind',
+        51: 'Pair',
+        50: 'High Card'
+    };
+
+    function isRed(suit) { return suit === 'HEARTS' || suit === 'DIAMONDS'; }
+
+    function makeCardEl(card, clickable) {
+        var sym = SUIT_SYMBOLS[card.suit];
+        var lbl = RANK_LABELS[card.rank];
+        var colorClass = isRed(card.suit) ? 'red' : 'black';
+
+        var el = document.createElement('div');
+        el.className = 'card ' + colorClass;
+        el.setAttribute('data-uuid', card.uuid);
+        el.innerHTML =
+            '<div class="card-inner">' +
+                '<span class="card-rank-top">' + lbl + '</span>' +
+                '<span class="card-suit-top">' + sym + '</span>' +
+                '<span class="card-center">' + sym + '</span>' +
+                '<div class="card-bottom">' +
+                    '<span class="card-suit-bot">' + sym + '</span>' +
+                    '<span class="card-rank-bot">' + lbl + '</span>' +
+                '</div>' +
+            '</div>';
+
+        if (clickable) {
+            el.onclick = function () { toggleCard(card, el); };
+        }
+        return el;
+    }
+
+    function toggleCard(card, el) {
+        if (!isYourTurn) return;
+        clearHint(); // dismiss hint when user starts selecting
+        var idx = -1;
+        for (var i = 0; i < selectedCards.length; i++) {
+            if (selectedCards[i].uuid === card.uuid) { idx = i; break; }
+        }
+        if (idx >= 0) {
+            selectedCards.splice(idx, 1);
+            el.classList.remove('selected');
+        } else {
+            selectedCards.push(card);
+            el.classList.add('selected');
+        }
+        updateActionBar();
+    }
+
+    function updateActionBar() {
+        var playBtn = document.getElementById('play-btn');
+        var passBtn = document.getElementById('pass-btn');
+        var hintBtn = document.getElementById('hint-btn');
+        var infoEl  = document.getElementById('selected-info');
+
+        if (!isYourTurn) {
+            playBtn.disabled = true;
+            passBtn.disabled = true;
+            if (hintBtn) hintBtn.disabled = true;
+            infoEl.textContent = '';
+            return;
+        }
+
+        if (hintBtn) hintBtn.disabled = false;
+        passBtn.disabled = false;
+        passBtn.textContent = autoPass ? 'Auto-Pass' : 'Pass';
+
+        // Determine valid hand sizes for the active ruleset
+        var rs = Big2Rulesets.active || Big2Rulesets.hongkong;
+        var allowed = rs.allowedHandTypes || [];
+        var hasOne = false, hasTwo = false, hasThreeCard = false;
+        for (var hti = 0; hti < allowed.length; hti++) {
+            if (allowed[hti] === 1)                         hasOne       = true;
+            if (allowed[hti] === 3)                         hasTwo       = true;
+            if (allowed[hti] >= 7 && allowed[hti] <= 10)   hasThreeCard = true;
+        }
+        var sizeParts = [];
+        if (hasOne)       sizeParts.push('1');
+        if (hasTwo)       sizeParts.push('2');
+        if (hasThreeCard) sizeParts.push('3');
+        sizeParts.push('5');
+        var sizeHint = sizeParts.join(', ');
+
+        if (selectedCards.length === 0) {
+            playBtn.disabled = true;
+            infoEl.textContent = 'Select ' + sizeHint + ' cards to play';
+            infoEl.style.color = 'var(--text-dim)';
+            return;
+        }
+
+        var n = selectedCards.length;
+        var validSize = (n === 5) ||
+                        (hasThreeCard && n === 3) ||
+                        (hasTwo       && n === 2) ||
+                        (hasOne       && n === 1);
+        if (!validSize) {
+            playBtn.disabled = true;
+            infoEl.textContent = 'Select ' + sizeHint + ' cards';
+            infoEl.style.color = 'var(--text-dim)';
+            return;
+        }
+
+        var validation = game.validatePlay(selectedCards);
+        if (validation.valid) {
+            playBtn.disabled = false;
+            infoEl.textContent = (HAND_TYPE_NAMES[validation.type] || 'Hand') + ' — Beats current pile!';
+            infoEl.style.color = '#4ade80';
+        } else if (validation.type !== Big2HandType.INVALID) {
+            playBtn.disabled = true;
+            infoEl.textContent = (HAND_TYPE_NAMES[validation.type] || 'Hand') + ' — Doesn\'t beat pile';
+            infoEl.style.color = 'var(--red)';
+        } else {
+            playBtn.disabled = true;
+            infoEl.textContent = 'Not a valid hand combination';
+            infoEl.style.color = 'var(--text-dim)';
+        }
+    }
+
+    function renderHand(cards) {
+        hintUuids = {}; // clear hint state when hand re-renders
+        var container = document.getElementById('hand-cards');
+        container.innerHTML = '';
+        // Sort hand for display: by rank then suit
+        var sorted = Big2Evaluator.sortCards(cards, Big2Rulesets.active);
+        sorted.reverse(); // Low to high left to right
+
+        var applyDeal = isFirstDeal;
+        isFirstDeal = false; // only animate the first deal
+
+        for (var i = 0; i < sorted.length; i++) {
+            var el = makeCardEl(sorted[i], true);
+            // Re-apply selected state
+            for (var si = 0; si < selectedCards.length; si++) {
+                if (selectedCards[si].uuid === sorted[i].uuid) {
+                    el.classList.add('selected');
+                    break;
+                }
+            }
+            if (applyDeal) {
+                el.classList.add('deal-in');
+                el.style.animationDelay = (i * 0.04) + 's';
+            }
+            container.appendChild(el);
+        }
+    }
+
+    function renderPile(pileHand) {
+        var container = document.getElementById('pile-cards');
+        var handNameEl = document.getElementById('pile-hand-name');
+        container.innerHTML = '';
+
+        if (!pileHand || !pileHand.cards || pileHand.cards.length === 0) {
+            handNameEl.textContent = '';
+            return;
+        }
+
+        for (var i = 0; i < pileHand.cards.length; i++) {
+            var el = makeCardEl(pileHand.cards[i], false);
+            container.appendChild(el);
+        }
+        handNameEl.textContent = HAND_TYPE_NAMES[pileHand.evaluated.type] || '';
+    }
+
+    function renderOpponents(players) {
+        // players: all 4; find the 3 non-human ones
+        var opps = [];
+        for (var pi = 0; pi < players.length; pi++) {
+            if (players[pi].id !== humanPlayerId) opps.push(players[pi]);
+        }
+        for (var oi = 0; oi < 3; oi++) {
+            var opp = opps[oi];
+            if (!opp) continue;
+            document.getElementById('opp' + oi + '-name').textContent = opp.name;
+            document.getElementById('opp' + oi + '-count').textContent = opp.cardCount + ' card' + (opp.cardCount !== 1 ? 's' : '');
+            var miniContainer = document.getElementById('opp' + oi + '-cards');
+            miniContainer.innerHTML = '';
+            var show = Math.min(opp.cardCount, 13);
+            for (var ci = 0; ci < show; ci++) {
+                var mini = document.createElement('div');
+                mini.className = 'mini-card-back';
+                miniContainer.appendChild(mini);
+            }
+        }
+    }
+
+    function setActiveTurn(currentPlayerId) {
+        // Reset all opponent highlights and pass badges
+        var allOpps = document.querySelectorAll('.opponent-slot');
+        for (var i = 0; i < allOpps.length; i++) {
+            allOpps[i].classList.remove('active-turn');
+            var badge = allOpps[i].querySelector('.pass-badge');
+            if (badge) badge.remove();
+        }
+
+        isYourTurn = (currentPlayerId === humanPlayerId);
+        var indicator = document.getElementById('your-turn-indicator');
+        if (isYourTurn) {
+            indicator.classList.add('visible');
+            // Auto-pass: if enabled and no valid moves, pass automatically
+            if (autoPass && game) {
+                var humanPlayer = game._getPlayer(humanPlayerId);
+                if (humanPlayer) {
+                    var plays = Big2AI.findValidPlays(humanPlayer.hand, game.pileHand, Big2Rulesets.active, null);
+                    if (plays.length === 0) {
+                        setStatus('No valid moves — auto-passing...');
+                        setTimeout(function () { if (isYourTurn) UI.pass(); }, 600);
+                    }
+                }
+            }
+        } else {
+            indicator.classList.remove('visible');
+            // Highlight the correct opponent slot
+            var opps = [];
+            if (game) {
+                for (var pi = 0; pi < game.players.length; pi++) {
+                    if (game.players[pi].id !== humanPlayerId) opps.push(game.players[pi]);
+                }
+            }
+            for (var oi = 0; oi < opps.length; oi++) {
+                if (opps[oi].id === currentPlayerId) {
+                    document.getElementById('opp' + oi).classList.add('active-turn');
+                    break;
+                }
+            }
+        }
+        updateActionBar();
+    }
+
+    function setStatus(msg) {
+        document.getElementById('status-msg').textContent = msg;
+    }
+
+    // ---- HINT ----
+
+    function showHint() {
+        if (!isYourTurn || !game) return;
+        clearHint();
+        var humanPlayer = game._getPlayer(humanPlayerId);
+        if (!humanPlayer) return;
+        var plays = Big2AI.findValidPlays(humanPlayer.hand, game.pileHand, Big2Rulesets.active, null);
+        if (plays.length === 0) {
+            setStatus('No valid moves — you must pass!');
+            return;
+        }
+        var best = plays[0]; // weakest valid play
+        for (var i = 0; i < best.cards.length; i++) {
+            hintUuids[best.cards[i].uuid] = true;
+        }
+        var cardEls = document.querySelectorAll('#hand-cards .card');
+        for (var j = 0; j < cardEls.length; j++) {
+            if (hintUuids[cardEls[j].getAttribute('data-uuid')]) {
+                cardEls[j].classList.add('hint');
+            }
+        }
+        var typeName = HAND_TYPE_NAMES[best.evaluated.type] || 'hand';
+        setStatus('Hint: try playing a ' + typeName + ' (green cards)');
+    }
+
+    function clearHint() {
+        hintUuids = {};
+        var cardEls = document.querySelectorAll('#hand-cards .card');
+        for (var i = 0; i < cardEls.length; i++) {
+            cardEls[i].classList.remove('hint');
+        }
+    }
+
+    // ---- AUTO-PASS ----
+
+    function toggleAutoPass(val) {
+        // val may come from the settings toggle (checked bool) or from inline checkbox
+        if (typeof val === 'boolean') {
+            autoPass = val;
+        } else {
+            autoPass = !autoPass;
+        }
+        // Sync both checkboxes
+        var cb = document.getElementById('auto-pass-cb');
+        var scb = document.getElementById('settings-auto-pass');
+        if (cb) cb.checked = autoPass;
+        if (scb) scb.checked = autoPass;
+        updateActionBar();
+    }
+
+    // ---- SETTINGS ----
+
+    function openSettings() {
+        // Sync toggle to current state
+        var scb = document.getElementById('settings-auto-pass');
+        if (scb) scb.checked = autoPass;
+        document.getElementById('settings-modal').classList.add('visible');
+    }
+
+    function closeSettings() {
+        document.getElementById('settings-modal').classList.remove('visible');
+    }
+
+    // ---- SETUP ----
+
+    function buildRulesetList() {
+        var container = document.getElementById('ruleset-list');
+        container.innerHTML = '';
+        var ids = ['hongkong', 'taiwanese', 'singapore', 'pokerhands'];
+        for (var i = 0; i < ids.length; i++) {
+            (function (rId) {
+                var rs = Big2Rulesets[rId];
+                var el = document.createElement('div');
+                el.className = 'ruleset-option' + (rId === currentRulesetId ? ' selected' : '');
+                el.innerHTML =
+                    '<div class="name">' + rs.displayName + '</div>' +
+                    '<div class="desc">' + rs.description + '</div>';
+                el.onclick = function () {
+                    currentRulesetId = rId;
+                    var all = document.querySelectorAll('.ruleset-option');
+                    for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
+                    el.classList.add('selected');
+                };
+                container.appendChild(el);
+            })(ids[i]);
+        }
+    }
+
+    function startGame() {
+        Big2Rulesets.active = Big2Rulesets[currentRulesetId];
+        document.getElementById('ruleset-badge').textContent =
+            Big2Rulesets.active.displayName.split(' ')[0] + ' Rules';
+
+        var players = [
+            { id: 'player0', name: 'You', type: 'human' },
+            { id: 'player1', name: 'Alex (AI)', type: 'ai' },
+            { id: 'player2', name: 'Sam (AI)', type: 'ai' },
+            { id: 'player3', name: 'Kai (AI)', type: 'ai' }
+        ];
+
+        game = new Big2Game(Big2Rulesets.active, players);
+        selectedCards = [];
+        isYourTurn = false;
+
+        // Wire up callbacks
+        game.onTurnStart = function (playerId) {
+            var snap = game._getSnapshot();
+            renderOpponents(snap.players);
+            var humanPlayer = game._getPlayer(humanPlayerId);
+            if (humanPlayer) renderHand(humanPlayer.hand);
+            renderPile(snap.pileHand);
+            setActiveTurn(playerId);
+
+            var playerName = '';
+            for (var pi = 0; pi < game.players.length; pi++) {
+                if (game.players[pi].id === playerId) { playerName = game.players[pi].name; break; }
+            }
+            setStatus(playerId === humanPlayerId ? 'Your turn - select cards to play' : playerName + ' is thinking...');
+        };
+
+        game.onPlayMade = function (data) {
+            var snap = game._getSnapshot();
+
+            // Set direction attribute before rendering pile cards
+            var pileContainer = document.getElementById('pile-cards');
+            pileContainer.setAttribute('data-source', data.playerId === humanPlayerId ? 'human' : 'ai');
+
+            renderPile(snap.pileHand);
+            renderOpponents(snap.players);
+            var humanPlayer = game._getPlayer(humanPlayerId);
+            if (humanPlayer) renderHand(humanPlayer.hand);
+
+            // Pulse the opponent slot that just played
+            if (data.playerId !== humanPlayerId) {
+                var opps = [];
+                for (var pi2 = 0; pi2 < game.players.length; pi2++) {
+                    if (game.players[pi2].id !== humanPlayerId) opps.push(game.players[pi2]);
+                }
+                for (var oi = 0; oi < opps.length; oi++) {
+                    if (opps[oi].id === data.playerId) {
+                        (function (slot) {
+                            slot.classList.remove('opp-played');
+                            void slot.offsetWidth; // reflow to restart animation
+                            slot.classList.add('opp-played');
+                            slot.addEventListener('animationend', function handler() {
+                                slot.classList.remove('opp-played');
+                                slot.removeEventListener('animationend', handler);
+                            });
+                        })(document.getElementById('opp' + oi));
+                        break;
+                    }
+                }
+            }
+
+            // Clear selection
+            selectedCards = [];
+            var typeName = HAND_TYPE_NAMES[data.evaluated.type] || 'hand';
+            var playerLabel = data.playerId === humanPlayerId ? 'You played' : (data.playerId + ' played');
+            setStatus(playerLabel + ' a ' + typeName + '!');
+        };
+
+        game.onPassMade = function (data) {
+            var playerName = data.playerId;
+            for (var pi = 0; pi < game.players.length; pi++) {
+                if (game.players[pi].id === data.playerId) { playerName = game.players[pi].name; break; }
+            }
+            if (data.playerId !== humanPlayerId) {
+                // Show pass badge on opponent
+                var opps = [];
+                for (var pi2 = 0; pi2 < game.players.length; pi2++) {
+                    if (game.players[pi2].id !== humanPlayerId) opps.push(game.players[pi2]);
+                }
+                for (var oi = 0; oi < opps.length; oi++) {
+                    if (opps[oi].id === data.playerId) {
+                        var badge = document.createElement('div');
+                        badge.className = 'pass-badge';
+                        badge.textContent = 'PASS';
+                        document.getElementById('opp' + oi).appendChild(badge);
+                        break;
+                    }
+                }
+            }
+            setStatus(playerName + ' passed.');
+        };
+
+        game.onPileCleared = function (data) {
+            var pileContainer = document.getElementById('pile-cards');
+            var pileCards = pileContainer.querySelectorAll('.card');
+            var winnerLabel = data.winnerId === humanPlayerId ? 'Your' : data.winnerId + '\'s';
+            if (pileCards.length > 0) {
+                for (var ci = 0; ci < pileCards.length; ci++) {
+                    pileCards[ci].classList.add('pile-sweep');
+                }
+                setTimeout(function () {
+                    renderPile(null);
+                    pileContainer.removeAttribute('data-source');
+                    setStatus('Pile cleared. ' + winnerLabel + ' turn to lead.');
+                }, 280);
+            } else {
+                renderPile(null);
+                pileContainer.removeAttribute('data-source');
+                setStatus('Pile cleared. ' + winnerLabel + ' turn to lead.');
+            }
+        };
+
+        game.onGameOver = function (data) {
+            showGameOver(data);
+        };
+
+        // Show game screen
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+
+        isFirstDeal = true;
+        game.deal();
+    }
+
+    function playSelected() {
+        if (!game || !isYourTurn || selectedCards.length === 0) return;
+        var result = game.playCards(humanPlayerId, selectedCards.slice());
+        if (!result.ok) {
+            setStatus('Error: ' + result.error);
+        } else {
+            selectedCards = [];
+            updateActionBar();
+        }
+    }
+
+    function pass() {
+        if (!game || !isYourTurn) return;
+        var result = game.pass(humanPlayerId);
+        if (!result.ok) {
+            setStatus('Cannot pass: ' + result.error);
+        }
+    }
+
+    function showGameOver(data) {
+        var overlay = document.getElementById('gameover-overlay');
+        var winnerName = '';
+        for (var pi = 0; pi < game.players.length; pi++) {
+            if (game.players[pi].id === data.winnerId) { winnerName = game.players[pi].name; break; }
+        }
+
+        document.getElementById('gameover-title').textContent =
+            data.winnerId === humanPlayerId ? 'You Win!' : 'Game Over';
+        document.getElementById('gameover-winner').textContent =
+            winnerName + ' wins!';
+
+        var tbody = document.getElementById('scores-body');
+        tbody.innerHTML = '';
+        for (var pi = 0; pi < game.players.length; pi++) {
+            var p = game.players[pi];
+            var tr = document.createElement('tr');
+            if (p.id === data.winnerId) tr.className = 'winner-row';
+            tr.innerHTML =
+                '<td>' + p.name + (p.id === data.winnerId ? ' 🏆' : '') + '</td>' +
+                '<td>' + (p.id === data.winnerId ? '0 pts' : '-' + data.scores[p.id] + ' pts') + '</td>';
+            tbody.appendChild(tr);
+        }
+        overlay.classList.add('visible');
+    }
+
+    function newGame() {
+        document.getElementById('gameover-overlay').classList.remove('visible');
+        selectedCards = [];
+        isYourTurn = false;
+        startGame();
+    }
+
+    function goSetup() {
+        document.getElementById('gameover-overlay').classList.remove('visible');
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('setup-screen').classList.add('active');
+        game = null;
+    }
+
+    function showRulesetModal() {
+        var rs = Big2Rulesets.active || Big2Rulesets.hongkong;
+        document.getElementById('modal-ruleset-name').textContent = rs.displayName;
+        document.getElementById('modal-ruleset-desc').textContent = rs.description;
+
+        var list = document.getElementById('modal-rules-list');
+        list.innerHTML = '';
+
+        var rows = [
+            ['First Turn', rs.firstTurnRule === 'diamond3' ? 'Player with 3♦' : 'Lowest card'],
+            ['Must play start card', rs.firstPlayMustIncludeStartCard ? 'Yes' : 'No'],
+            ['Valid plays', '3-card or 5-card hands'],
+            ['3-card hands', 'Straight, Flush, Str. Flush, Triple'],
+            ['5-card hands', 'Straight, Flush, Full House, Quads, Str. Flush'],
+            ['5-card beats 3-card', rs.fiveCardBeatsLower ? 'Yes' : 'No'],
+            ['Suit order', rs.suitOrder === 'reversed' ? 'S < H < C < D' : 'D < C < H < S'],
+            ['2s are highest rank', rs.twosAreHigh ? 'Yes' : 'No'],
+            ['Ace wraps in straights', (rs.aceWrapsLow || rs.aceWrapsHigh) ? 'Yes' : 'No'],
+            ['Penalty per card', rs.penaltyPerCard + ' pt'],
+            ['Double if 10+ cards left', rs.doubleIfTenOrMore ? 'Yes' : 'No'],
+            ['Triple if 13 cards left', rs.tripleIfThirteen ? 'Yes' : 'No'],
+        ];
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = document.createElement('div');
+            row.className = 'rule-row';
+            row.innerHTML =
+                '<span class="rule-key">' + rows[i][0] + '</span>' +
+                '<span class="rule-val">' + rows[i][1] + '</span>';
+            list.appendChild(row);
+        }
+
+        document.getElementById('ruleset-modal').classList.add('visible');
+    }
+
+    function closeRulesetModal() {
+        document.getElementById('ruleset-modal').classList.remove('visible');
+    }
+
+    // ---- INIT ----
+    buildRulesetList();
+
+    return {
+        startGame: startGame,
+        playSelected: playSelected,
+        pass: pass,
+        newGame: newGame,
+        goSetup: goSetup,
+        showRulesetModal: showRulesetModal,
+        closeRulesetModal: closeRulesetModal,
+        showHint: showHint,
+        toggleAutoPass: toggleAutoPass,
+        openSettings: openSettings,
+        closeSettings: closeSettings
+    };
+
+})();
+</script>
+</body>
+</html>

@@ -11,6 +11,7 @@
     var GAME_PATHS = [
         'games/cards/blackjack/index.html',
         'games/cards/war/index.html',
+        'games/cards/big2/index.html',
         'games/tracing/index.html',
         'games/j/index.html',
         'games/slots/index.html',
