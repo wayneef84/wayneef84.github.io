@@ -384,6 +384,10 @@ var Big2AI = (function () {
      * Find all valid plays from a hand given a current pile hand.
      * Returns array of {cards, evaluated} objects, sorted weakest first.
      */
+    // Max combos to evaluate per AI turn — prevents long pauses with HIGH_CARD rulesets.
+    // Cards are pre-sorted weakest-first so the cap preserves the weakest plays.
+    var MAX_COMBOS = 300;
+
     function findValidPlays(handCards, currentPileHand, ruleset, mustIncludeCard) {
         // Determine which sizes to try based on ruleset allowed types
         var defaultSizes;
@@ -401,10 +405,17 @@ var Big2AI = (function () {
         var sizes = defaultSizes;
         var validPlays = [];
 
-        for (var si = 0; si < sizes.length; si++) {
+        // Sort weakest-first so the combo cap preserves the weakest plays (what easy AI wants)
+        var sortedHand = Big2Evaluator.sortCards(handCards, ruleset).reverse();
+        var combosEvaluated = 0;
+        var capHit = false;
+
+        for (var si = 0; si < sizes.length && !capHit; si++) {
             var sz = sizes[si];
-            var combos = combinations(handCards, sz);
+            var combos = combinations(sortedHand, sz);
             for (var ci = 0; ci < combos.length; ci++) {
+                if (combosEvaluated >= MAX_COMBOS) { capHit = true; break; }
+                combosEvaluated++;
                 var combo = combos[ci];
                 // If mustIncludeCard, skip combos that don't contain it
                 if (mustIncludeCard) {
