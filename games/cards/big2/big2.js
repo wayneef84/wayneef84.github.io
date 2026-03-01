@@ -394,11 +394,12 @@ var Big2AI = (function () {
         if (currentPileHand) {
             defaultSizes = [currentPileHand.cards.length];
         } else {
-            // If ruleset has no 3-card types allowed, only try 5-card combos
+            // If ruleset has no 3-card types allowed, only try 5-card combos.
+            // 3-card hand type values are 7-10 (THREE_STRAIGHT through TRIPLE).
             var hasThreeCard = false;
             var allowed = ruleset.allowedHandTypes || [];
             for (var ai = 0; ai < allowed.length; ai++) {
-                if (THREE_CARD_TYPES[allowed[ai]]) { hasThreeCard = true; break; }
+                if (allowed[ai] >= 7 && allowed[ai] <= 10) { hasThreeCard = true; break; }
             }
             defaultSizes = hasThreeCard ? [3, 5] : [5];
         }
