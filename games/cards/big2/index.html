@@ -465,6 +465,137 @@
             #hand-cards { gap: 4px; }
             .mini-card-back { width: 14px; height: 20px; }
         }
+
+        /* ================================================================
+           HINT CARD
+        ================================================================ */
+        .card.hint {
+            box-shadow: 0 0 0 2px #4ade80, 0 0 14px rgba(74,222,128,0.6);
+            transform: translateY(-14px);
+            animation: hint-pulse 1.2s ease-in-out infinite;
+        }
+        .card.hint.selected {
+            box-shadow: var(--selected-glow), 0 0 14px rgba(74,222,128,0.5);
+            transform: translateY(-14px);
+        }
+        @keyframes hint-pulse {
+            0%, 100% { box-shadow: 0 0 0 2px #4ade80, 0 0 14px rgba(74,222,128,0.5); }
+            50%       { box-shadow: 0 0 0 2px #4ade80, 0 0 28px rgba(74,222,128,0.9); }
+        }
+
+        /* ================================================================
+           HINT BUTTON
+        ================================================================ */
+        #hint-btn {
+            background: rgba(74,222,128,0.1);
+            color: #4ade80;
+            border: 1px solid rgba(74,222,128,0.3);
+            flex: 0.7;
+        }
+        #hint-btn:hover:not(:disabled) { background: rgba(74,222,128,0.2); }
+        #hint-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* ================================================================
+           AUTO-PASS ROW
+        ================================================================ */
+        #auto-pass-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            padding: 4px 2px;
+            user-select: none;
+        }
+        #auto-pass-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #4ade80;
+        }
+        #auto-pass-row label { cursor: pointer; }
+
+        /* ================================================================
+           SETTINGS BUTTON (header)
+        ================================================================ */
+        #settings-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--text-dim);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        #settings-btn:hover { background: rgba(255,255,255,0.15); color: var(--text); }
+
+        /* ================================================================
+           SETTINGS MODAL
+        ================================================================ */
+        #settings-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        #settings-modal.visible { display: flex; }
+        #settings-panel {
+            background: #1a2f1a;
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 360px;
+            width: 90%;
+        }
+        #settings-panel h2 { color: var(--accent); margin: 0 0 20px; font-size: 1.2rem; }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            gap: 16px;
+        }
+        .setting-row:last-of-type { border-bottom: none; }
+        .setting-label { color: var(--text-dim); font-size: 0.9rem; }
+        .setting-desc { color: var(--text-dim); font-size: 0.78rem; margin-top: 2px; }
+        /* iOS-style toggle */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-track::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-track { background: #4ade80; }
+        .toggle-switch input:checked + .toggle-track::before { transform: translateX(20px); }
     </style>
 </head>
 <body>
@@ -474,6 +605,7 @@
     <a id="back-btn" href="../../index.html">← Cards</a>
     <h1>大老二 Big 2</h1>
     <div id="ruleset-badge" onclick="UI.showRulesetModal()">HK Rules</div>
+    <button id="settings-btn" onclick="UI.openSettings()" title="Settings">⚙</button>
 </div>
 
 <!-- ================================================================
@@ -555,8 +687,13 @@
 
     <!-- Actions -->
     <div id="action-row">
+        <button class="btn" id="hint-btn" disabled onclick="UI.showHint()">💡 Hint</button>
         <button class="btn" id="play-btn" disabled onclick="UI.playSelected()">Play</button>
         <button class="btn" id="pass-btn" disabled onclick="UI.pass()">Pass</button>
+    </div>
+    <div id="auto-pass-row">
+        <input type="checkbox" id="auto-pass-cb" onchange="UI.toggleAutoPass()">
+        <label for="auto-pass-cb">Auto-Pass when no moves</label>
     </div>
 
 </div>
@@ -593,6 +730,34 @@
 </div>
 
 <!-- ================================================================
+     SETTINGS MODAL
+================================================================ -->
+<div id="settings-modal">
+    <div id="settings-panel">
+        <h2>⚙ Settings</h2>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Auto-Pass</div>
+                <div class="setting-desc">Automatically passes your turn when you have no valid moves</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="settings-auto-pass" onchange="UI.toggleAutoPass(this.checked)">
+                <span class="toggle-track"></span>
+            </label>
+        </div>
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">💡 Hint</div>
+                <div class="setting-desc">Shows the weakest valid play — green glow + raised cards</div>
+            </div>
+        </div>
+        <div style="margin-top: 20px; text-align: right;">
+            <button class="btn secondary" onclick="UI.closeSettings()">Done</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
      SCRIPTS
 ================================================================ -->
 <script src="../shared/enums.js"></script>
@@ -609,6 +774,8 @@ var UI = (function () {
     var humanPlayerId = 'player0';
     var currentRulesetId = 'hongkong';
     var isYourTurn = false;
+    var autoPass = false;
+    var hintUuids = {};
 
     // Card display helpers
     var SUIT_SYMBOLS = { SPADES: '\u2660', HEARTS: '\u2665', DIAMONDS: '\u2666', CLUBS: '\u2663' };
@@ -629,7 +796,10 @@ var UI = (function () {
         57: 'Four of a Kind',
         56: 'Full House',
         55: 'Flush',
-        54: 'Straight'
+        54: 'Straight',
+        53: 'Three of a Kind',
+        51: 'Pair',
+        50: 'High Card'
     };
 
     function isRed(suit) { return suit === 'HEARTS' || suit === 'DIAMONDS'; }
@@ -661,6 +831,7 @@ var UI = (function () {
 
     function toggleCard(card, el) {
         if (!isYourTurn) return;
+        clearHint(); // dismiss hint when user starts selecting
         var idx = -1;
         for (var i = 0; i < selectedCards.length; i++) {
             if (selectedCards[i].uuid === card.uuid) { idx = i; break; }
@@ -678,28 +849,41 @@ var UI = (function () {
     function updateActionBar() {
         var playBtn = document.getElementById('play-btn');
         var passBtn = document.getElementById('pass-btn');
+        var hintBtn = document.getElementById('hint-btn');
         var infoEl  = document.getElementById('selected-info');
 
         if (!isYourTurn) {
             playBtn.disabled = true;
             passBtn.disabled = true;
+            if (hintBtn) hintBtn.disabled = true;
             infoEl.textContent = '';
             return;
         }
 
+        if (hintBtn) hintBtn.disabled = false;
         passBtn.disabled = false;
+        passBtn.textContent = autoPass ? 'Auto-Pass' : 'Pass';
+
+        // Determine valid hand sizes for the active ruleset
+        var rs = Big2Rulesets.active || Big2Rulesets.hongkong;
+        var allowed = rs.allowedHandTypes || [];
+        var hasThreeCard = false;
+        for (var hti = 0; hti < allowed.length; hti++) {
+            if (allowed[hti] >= 7 && allowed[hti] <= 10) { hasThreeCard = true; break; }
+        }
+        var sizeHint = hasThreeCard ? '3 or 5' : '5';
 
         if (selectedCards.length === 0) {
             playBtn.disabled = true;
-            infoEl.textContent = 'Select 3 or 5 cards to play';
+            infoEl.textContent = 'Select ' + sizeHint + ' cards to play';
             infoEl.style.color = 'var(--text-dim)';
             return;
         }
 
-        // Only 3-card and 5-card hands are valid — give early feedback
-        if (selectedCards.length !== 3 && selectedCards.length !== 5) {
+        var validSize = (selectedCards.length === 5) || (hasThreeCard && selectedCards.length === 3);
+        if (!validSize) {
             playBtn.disabled = true;
-            infoEl.textContent = 'Select exactly 3 or 5 cards';
+            infoEl.textContent = 'Select exactly ' + sizeHint + ' cards';
             infoEl.style.color = 'var(--text-dim)';
             return;
         }
@@ -721,6 +905,7 @@ var UI = (function () {
     }
 
     function renderHand(cards) {
+        hintUuids = {}; // clear hint state when hand re-renders
         var container = document.getElementById('hand-cards');
         container.innerHTML = '';
         // Sort hand for display: by rank then suit
@@ -792,6 +977,17 @@ var UI = (function () {
         var indicator = document.getElementById('your-turn-indicator');
         if (isYourTurn) {
             indicator.classList.add('visible');
+            // Auto-pass: if enabled and no valid moves, pass automatically
+            if (autoPass && game) {
+                var humanPlayer = game._getPlayer(humanPlayerId);
+                if (humanPlayer) {
+                    var plays = Big2AI.findValidPlays(humanPlayer.hand, game.pileHand, Big2Rulesets.active, null);
+                    if (plays.length === 0) {
+                        setStatus('No valid moves — auto-passing...');
+                        setTimeout(function () { if (isYourTurn) UI.pass(); }, 600);
+                    }
+                }
+            }
         } else {
             indicator.classList.remove('visible');
             // Highlight the correct opponent slot
@@ -815,12 +1011,76 @@ var UI = (function () {
         document.getElementById('status-msg').textContent = msg;
     }
 
+    // ---- HINT ----
+
+    function showHint() {
+        if (!isYourTurn || !game) return;
+        clearHint();
+        var humanPlayer = game._getPlayer(humanPlayerId);
+        if (!humanPlayer) return;
+        var plays = Big2AI.findValidPlays(humanPlayer.hand, game.pileHand, Big2Rulesets.active, null);
+        if (plays.length === 0) {
+            setStatus('No valid moves — you must pass!');
+            return;
+        }
+        var best = plays[0]; // weakest valid play
+        for (var i = 0; i < best.cards.length; i++) {
+            hintUuids[best.cards[i].uuid] = true;
+        }
+        var cardEls = document.querySelectorAll('#hand-cards .card');
+        for (var j = 0; j < cardEls.length; j++) {
+            if (hintUuids[cardEls[j].getAttribute('data-uuid')]) {
+                cardEls[j].classList.add('hint');
+            }
+        }
+        var typeName = HAND_TYPE_NAMES[best.evaluated.type] || 'hand';
+        setStatus('Hint: try playing a ' + typeName + ' (green cards)');
+    }
+
+    function clearHint() {
+        hintUuids = {};
+        var cardEls = document.querySelectorAll('#hand-cards .card');
+        for (var i = 0; i < cardEls.length; i++) {
+            cardEls[i].classList.remove('hint');
+        }
+    }
+
+    // ---- AUTO-PASS ----
+
+    function toggleAutoPass(val) {
+        // val may come from the settings toggle (checked bool) or from inline checkbox
+        if (typeof val === 'boolean') {
+            autoPass = val;
+        } else {
+            autoPass = !autoPass;
+        }
+        // Sync both checkboxes
+        var cb = document.getElementById('auto-pass-cb');
+        var scb = document.getElementById('settings-auto-pass');
+        if (cb) cb.checked = autoPass;
+        if (scb) scb.checked = autoPass;
+        updateActionBar();
+    }
+
+    // ---- SETTINGS ----
+
+    function openSettings() {
+        // Sync toggle to current state
+        var scb = document.getElementById('settings-auto-pass');
+        if (scb) scb.checked = autoPass;
+        document.getElementById('settings-modal').classList.add('visible');
+    }
+
+    function closeSettings() {
+        document.getElementById('settings-modal').classList.remove('visible');
+    }
+
     // ---- SETUP ----
 
     function buildRulesetList() {
         var container = document.getElementById('ruleset-list');
         container.innerHTML = '';
-        var ids = ['hongkong', 'taiwanese', 'singapore'];
+        var ids = ['hongkong', 'taiwanese', 'singapore', 'pokerhands'];
         for (var i = 0; i < ids.length; i++) {
             (function (rId) {
                 var rs = Big2Rulesets[rId];
@@ -1033,7 +1293,11 @@ var UI = (function () {
         newGame: newGame,
         goSetup: goSetup,
         showRulesetModal: showRulesetModal,
-        closeRulesetModal: closeRulesetModal
+        closeRulesetModal: closeRulesetModal,
+        showHint: showHint,
+        toggleAutoPass: toggleAutoPass,
+        openSettings: openSettings,
+        closeSettings: closeSettings
     };
 
 })();
