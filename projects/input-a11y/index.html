@@ -314,6 +314,16 @@
                     </div>
                 </div>
                 <div class="setting-item">
+                    <label for="set-ocr-binarize">Binarize Threshold</label>
+                    <div class="range-group">
+                        <input type="range" id="set-ocr-binarize" min="0" max="255" step="5" value="125">
+                        <input type="number" id="set-ocr-binarize-manual" class="manual-input hidden" min="0" max="255" value="125">
+                        <span id="ocr-binarize-val" class="range-val">125</span>
+                        <button class="manual-toggle-btn" data-target="set-ocr-binarize" title="Toggle Manual Input">⌨️</button>
+                    </div>
+                </div>
+                <div class="filter-hint">Controls black/white split during image processing. Lower = more black (dark environments), Higher = more white (bright/washed-out).</div>
+                <div class="setting-item">
                     <label for="set-ocr-debounce">Debounce (ms)</label>
                     <div class="range-group">
                         <input type="range" id="set-ocr-debounce" min="500" max="10000" step="500" value="3000">
