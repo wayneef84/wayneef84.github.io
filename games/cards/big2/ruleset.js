@@ -62,7 +62,10 @@ var Big2HandType = Object.freeze({
     FOUR_OF_A_KIND:       57,
     FULL_HOUSE:           56,
     FLUSH:                55,
-    STRAIGHT:             54    // Weakest 5-card
+    STRAIGHT:             54,
+    THREE_OF_A_KIND:      53,   // Three of a kind as 5-card play (poker hands only)
+    PAIR:                 51,   // One pair (poker hands only)
+    HIGH_CARD:            50    // No matching cards (poker hands only)
 });
 
 // ============================================================================
@@ -243,6 +246,52 @@ var Big2Rulesets = {
         tripleIfThirteen: true,
         // Power wins DO double in Singapore scoring
         powerWinDoubles: true,
+        aiPlayerCount: 3,
+        aiDifficulty: 'medium'
+    },
+
+    /**
+     * Poker Hands Rules
+     * 5-card only hands ranked by poker hand strength.
+     * Valid plays: straight, flush, full house, three of a kind, pair, high card.
+     * No 3-card hands. No 2s-are-highest special rule.
+     * Good for players already familiar with poker.
+     */
+    pokerhands: {
+        id: 'pokerhands',
+        displayName: 'Poker Hands',
+        description: '5-card only. Pair, three of a kind, straight, flush, full house, four of a kind, straight flush.',
+
+        playerCount: 4,
+        startingHandSize: 13,
+        firstTurnRule: 'diamond3',
+        firstPlayMustIncludeStartCard: true,
+        canPassOnFirstTurn: false,
+
+        allowedHandTypes: [
+            Big2HandType.HIGH_CARD,
+            Big2HandType.PAIR,
+            Big2HandType.THREE_OF_A_KIND,
+            Big2HandType.STRAIGHT,
+            Big2HandType.FLUSH,
+            Big2HandType.FULL_HOUSE,
+            Big2HandType.FOUR_OF_A_KIND,
+            Big2HandType.STRAIGHT_FLUSH
+        ],
+        clearPileOnAllPass: true,
+        fiveCardBeatsLower: false,
+
+        suitOrder: 'standard',
+        twosAreHigh: true,
+        flushCompareBy: 'highest_card',
+
+        aceWrapsLow: false,
+        aceWrapsHigh: false,
+
+        penaltyPerCard: 1,
+        doubleIfTenOrMore: true,
+        tripleIfThirteen: true,
+        powerWinDoubles: false,
         aiPlayerCount: 3,
         aiDifficulty: 'medium'
     }

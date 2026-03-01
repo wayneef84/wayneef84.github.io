@@ -229,12 +229,52 @@ var Big2Evaluator = (function () {
                 };
             }
 
-            // Straight (weakest 5-card)
+            // Straight (weakest 5-card in standard rulesets)
             if (isStraight5) {
                 return {
                     type: Big2HandType.STRAIGHT,
                     primaryCard: sorted[0],
                     score: Big2HandType.STRAIGHT * 100000 + getCardValue(sorted[0], ruleset),
+                    size: 5
+                };
+            }
+
+            // Three of a Kind (5-card play — 3 matching + 2 unrelated, poker hands only)
+            if (groupLengths[0] === 3 && groupLengths[1] === 1) {
+                var tripleRankPH = null;
+                for (var k in groups) {
+                    if (groups[k].length === 3) { tripleRankPH = k; break; }
+                }
+                var primaryCardTOAK = sortCards(groups[tripleRankPH], ruleset)[0];
+                return {
+                    type: Big2HandType.THREE_OF_A_KIND,
+                    primaryCard: primaryCardTOAK,
+                    score: Big2HandType.THREE_OF_A_KIND * 100000 + getCardValue(primaryCardTOAK, ruleset),
+                    size: 5
+                };
+            }
+
+            // Pair (one pair + 3 unrelated, poker hands only)
+            if (groupLengths[0] === 2 && groupLengths[1] === 1) {
+                var pairRank = null;
+                for (var k in groups) {
+                    if (groups[k].length === 2) { pairRank = k; break; }
+                }
+                var primaryCardPair = sortCards(groups[pairRank], ruleset)[0];
+                return {
+                    type: Big2HandType.PAIR,
+                    primaryCard: primaryCardPair,
+                    score: Big2HandType.PAIR * 100000 + getCardValue(primaryCardPair, ruleset),
+                    size: 5
+                };
+            }
+
+            // High Card (all 5 cards different rank, no combination, poker hands only)
+            if (rankKeys.length === 5 && !isFlush5 && !isStraight5) {
+                return {
+                    type: Big2HandType.HIGH_CARD,
+                    primaryCard: sorted[0],
+                    score: Big2HandType.HIGH_CARD * 100000 + getCardValue(sorted[0], ruleset),
                     size: 5
                 };
             }
@@ -263,7 +303,10 @@ var Big2Evaluator = (function () {
         57: true,  // FOUR_OF_A_KIND
         56: true,  // FULL_HOUSE
         55: true,  // FLUSH
-        54: true   // STRAIGHT
+        54: true,  // STRAIGHT
+        53: true,  // THREE_OF_A_KIND (poker hands)
+        51: true,  // PAIR (poker hands)
+        50: true   // HIGH_CARD (poker hands)
     };
 
     function isThreeCardType(type) { return !!THREE_CARD_TYPES[type]; }
@@ -342,7 +385,20 @@ var Big2AI = (function () {
      * Returns array of {cards, evaluated} objects, sorted weakest first.
      */
     function findValidPlays(handCards, currentPileHand, ruleset, mustIncludeCard) {
-        var sizes = currentPileHand ? [currentPileHand.cards.length] : [3, 5];
+        // Determine which sizes to try based on ruleset allowed types
+        var defaultSizes;
+        if (currentPileHand) {
+            defaultSizes = [currentPileHand.cards.length];
+        } else {
+            // If ruleset has no 3-card types allowed, only try 5-card combos
+            var hasThreeCard = false;
+            var allowed = ruleset.allowedHandTypes || [];
+            for (var ai = 0; ai < allowed.length; ai++) {
+                if (THREE_CARD_TYPES[allowed[ai]]) { hasThreeCard = true; break; }
+            }
+            defaultSizes = hasThreeCard ? [3, 5] : [5];
+        }
+        var sizes = defaultSizes;
         var validPlays = [];
 
         for (var si = 0; si < sizes.length; si++) {
@@ -360,6 +416,13 @@ var Big2AI = (function () {
                 }
                 var evl = Big2Evaluator.evaluate(combo, ruleset);
                 if (evl.type === Big2HandType.INVALID) continue;
+                // Skip hand types not permitted by this ruleset
+                var allowedTypes = ruleset.allowedHandTypes || [];
+                var isAllowed = false;
+                for (var ati = 0; ati < allowedTypes.length; ati++) {
+                    if (allowedTypes[ati] === evl.type) { isAllowed = true; break; }
+                }
+                if (!isAllowed) continue;
                 var pileEval = currentPileHand ? currentPileHand.evaluated : null;
                 if (Big2Evaluator.canBeat(evl, pileEval, ruleset)) {
                     validPlays.push({ cards: combo, evaluated: evl });
