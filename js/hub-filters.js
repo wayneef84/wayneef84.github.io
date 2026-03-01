@@ -79,6 +79,7 @@
             version: 'v0.1',
             href: './games/cards/big2/index.html',
             featured: false,
+            isNew: true,
             theme: 'both'
         },
 
@@ -133,6 +134,7 @@
             version: 'v1.0',
             href: './games/space_invaders/index.html',
             featured: false,
+            isNew: true,
             theme: 'both'
         },
         {
@@ -395,17 +397,41 @@
         var sectionLabel = MODE === 'fun' ? '&#9733; TODAY\'S PICK' : 'FEATURED GAME';
 
         section.innerHTML =
-            '<div class="featured-label">' + sectionLabel + '</div>' +
-            '<div class="featured-icon">' + game.icon + '</div>' +
-            '<h1 class="featured-title">' + title + ' <span class="featured-version">' + game.version + '</span></h1>' +
-            '<p class="featured-desc">' + desc + '</p>' +
-            '<a href="' + game.href + '" class="btn-primary">' + btnLabel + '</a>';
+            '<div class="featured-content">' +
+                '<div class="featured-label">' + sectionLabel + '</div>' +
+                '<div class="featured-icon">' + game.icon + '</div>' +
+                '<h1 class="featured-title">' + title + ' <span class="featured-version">' + game.version + '</span></h1>' +
+                '<p class="featured-desc">' + desc + '</p>' +
+                '<a href="' + game.href + '" class="btn-primary">' + btnLabel + '</a>' +
+            '</div>' +
+            '<div class="featured-visual" aria-hidden="true">' +
+                '<div class="featured-visual-icon">' + game.icon + '</div>' +
+            '</div>';
     }
 
     // ─── CARD RENDERER ────────────────────────────────────────────────────────
     function _catLabel(cat) {
         var labels = { card: 'Card', arcade: 'Arcade', puzzle: 'Puzzle', edu: 'Educational', project: 'Project' };
         return labels[cat] || cat;
+    }
+
+    function _getCategoryCount(cat) {
+        var count = 0;
+        for (var i = 0; i < CATALOG.length; i++) {
+            var g = CATALOG[i];
+            if (g.theme === 'pro' && MODE === 'fun') continue;
+            if (g.theme === 'fun' && MODE === 'pro') continue;
+            if (cat !== 'all' && g.category !== cat) continue;
+            count++;
+        }
+        return count;
+    }
+
+    function updateGameCount(category) {
+        var el = document.getElementById('game-count');
+        if (!el) return;
+        var count = _getCategoryCount(category);
+        el.textContent = count + ' games';
     }
 
     function renderCards(category) {
@@ -427,6 +453,7 @@
             var title = MODE === 'fun' ? game.funTitle : game.title;
             var desc  = MODE === 'fun' ? game.funDescription : game.description;
             var tagClass = 'tag-' + game.category;
+            var badgeHtml = game.isNew ? '<span class="badge-new">NEW</span>' : '';
 
             var card = document.createElement('a');
             card.href = game.href;
@@ -438,18 +465,28 @@
                     '<span class="card-icon">' + game.icon + '</span>' +
                     '<span class="category-tag ' + tagClass + '">' + _catLabel(game.category) + '</span>' +
                 '</div>' +
-                '<div class="game-title">' + title + '</div>' +
+                '<div class="game-title">' + title + badgeHtml + '</div>' +
                 '<p class="game-desc">' + desc + '</p>' +
                 '<div class="game-meta"><span>' + game.version + '</span></div>';
 
             grid.appendChild(card);
         }
+
+        updateGameCount(category);
     }
 
     // ─── FILTER BUTTONS ───────────────────────────────────────────────────────
     function initFilters() {
         var filterBtns = document.querySelectorAll('.filter-btn');
         var currentFilter = localStorage.getItem('hub_filter') || 'all';
+
+        // Add game counts to each filter button label
+        for (var i = 0; i < filterBtns.length; i++) {
+            var cat = filterBtns[i].getAttribute('data-category');
+            var label = filterBtns[i].textContent.trim();
+            var count = _getCategoryCount(cat);
+            filterBtns[i].innerHTML = label + '<span class="filter-count">(' + count + ')</span>';
+        }
 
         // Set initial active state
         for (var i = 0; i < filterBtns.length; i++) {

@@ -4,7 +4,16 @@
   margin-bottom: 1.5rem;
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-btn {
@@ -58,7 +67,7 @@
 }
 
 @media (min-width: 768px) {
-  .game-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .game-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
 
 /* ── Game Card ──────────────────────────────────────────────────────────── */
@@ -160,6 +169,36 @@
 [data-theme="fun"] .game-desc {
   color: var(--text-secondary);
   font-size: 0.78rem;
+}
+
+/* ── NEW Badge ──────────────────────────────────────────────────────────── */
+.badge-new {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 2px 6px;
+  border-radius: 99px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  line-height: 1.6;
+}
+
+[data-theme="fun"] .badge-new {
+  background: rgba(0, 255, 136, 0.15);
+  color: #00ff88;
+  border-color: rgba(0, 255, 136, 0.4);
+}
+
+/* ── Filter Count ───────────────────────────────────────────────────────── */
+.filter-count {
+  font-size: 0.65em;
+  opacity: 0.55;
+  margin-left: 0.2rem;
 }
 
 /* ── Card Meta (version) ────────────────────────────────────────────────── */

@@ -217,12 +217,67 @@ body {
 
 /* ── Featured Section ───────────────────────────────────────────────────── */
 .featured-section {
-  padding: 3rem 5%;
+  padding: 2.5rem 5%;
   border-bottom: var(--featured-border);
   background: var(--bg-featured);
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .featured-section {
+    flex-direction: row;
+    align-items: center;
+    padding: 3rem 5%;
+  }
+}
+
+/* Left: all text content */
+.featured-content {
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
+  flex: 1;
+}
+
+/* Right: large decorative icon, desktop only */
+.featured-visual {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .featured-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    position: relative;
+  }
+  .featured-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 70%);
+    animation: hero-pulse 3s ease-in-out infinite;
+  }
+}
+
+.featured-visual-icon {
+  font-size: 5.5rem;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 0 20px var(--accent-glow));
+}
+
+@keyframes hero-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.7; }
+  50%       { transform: scale(1.12); opacity: 1; }
 }
 
 .featured-label {
@@ -234,10 +289,15 @@ body {
   color: var(--accent-secondary);
 }
 
+/* Small icon shown on mobile only (hidden on desktop since visual panel takes over) */
 .featured-icon {
   font-size: 2.5rem;
   line-height: 1;
   margin-bottom: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .featured-icon { display: none; }
 }
 
 [data-theme="fun"] .featured-icon {
@@ -316,6 +376,16 @@ body {
 .library-header {
   padding: 0 5%;
   margin-bottom: 1.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.library-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
 }
 
 .library-title {
