@@ -625,7 +625,7 @@ Big2Game.prototype._startTurn = function () {
     if (player.type === 'ai') {
         setTimeout(function () {
             self._aiTakeTurn();
-        }, 900);
+        }, 500);
     }
 };
 
