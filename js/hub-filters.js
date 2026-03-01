@@ -363,6 +363,19 @@
             href: './projects/encyclopedia/index.html',
             featured: false,
             theme: 'both'
+        },
+        {
+            id: 'dev-utils',
+            category: 'project',
+            icon: '🛠️',
+            title: 'Dev Utils',
+            funTitle: 'Dev Toolbox 🛠️',
+            description: 'JSON validator, Base64 & URL encoder/decoder, CSV↔JSON, timestamp & date tools.',
+            funDescription: 'Your developer Swiss Army knife — JSON, Base64, CSV, timestamps and more!',
+            version: 'v1.0',
+            href: './projects/dev-utils/index.html',
+            featured: false,
+            theme: 'pro'
         }
     ];
 
