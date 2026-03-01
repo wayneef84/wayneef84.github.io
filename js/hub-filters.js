@@ -71,7 +71,7 @@
         {
             id: 'big2',
             category: 'card',
-            icon: '🀄',
+            icon: '🂢',
             title: 'Big 2',
             funTitle: 'Big 2 大老二',
             description: 'Classic shedding game with HK, Taiwanese & Singapore rulesets. Play vs AI.',
