@@ -376,6 +376,19 @@
             href: './projects/dev-utils/index.html',
             featured: false,
             theme: 'pro'
+        },
+        {
+            id: 'input-a11y',
+            category: 'project',
+            icon: '📷',
+            title: 'Input A11y',
+            funTitle: 'OCR Scanner 📷',
+            description: 'Camera-based OCR text scanner with Google Search/Lens integration. PWA, offline-first.',
+            funDescription: 'Point your camera at anything and scan the text — magic!',
+            version: 'v2.0',
+            href: './projects/input-a11y/index.html',
+            featured: false,
+            theme: 'both'
         }
     ];
 
