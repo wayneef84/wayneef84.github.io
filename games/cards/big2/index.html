@@ -596,6 +596,53 @@
         }
         .toggle-switch input:checked + .toggle-track { background: #4ade80; }
         .toggle-switch input:checked + .toggle-track::before { transform: translateX(20px); }
+
+        /* ================================================================
+           ANIMATIONS
+        ================================================================ */
+        @keyframes cardFromBottom {
+            from { transform: translateY(60px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes cardFromTop {
+            from { transform: translateY(-60px); opacity: 0; }
+            to   { transform: translateY(0);     opacity: 1; }
+        }
+        @keyframes cardDeal {
+            from { transform: translateY(28px) scale(0.85); opacity: 0; }
+            to   { transform: translateY(0)    scale(1);    opacity: 1; }
+        }
+        @keyframes cardSweep {
+            from { transform: translateY(0);     opacity: 1; }
+            to   { transform: translateY(-50px); opacity: 0; }
+        }
+        @keyframes oppPulse {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.06); box-shadow: 0 0 22px rgba(255,215,0,0.7); }
+            100% { transform: scale(1); }
+        }
+
+        /* Pile entry — direction based on who last played */
+        #pile-cards[data-source="human"] .card { animation: cardFromBottom 0.28s ease-out both; }
+        #pile-cards[data-source="ai"]    .card { animation: cardFromTop    0.28s ease-out both; }
+
+        /* Stagger each pile card slightly */
+        #pile-cards .card:nth-child(2) { animation-delay: 0.04s; }
+        #pile-cards .card:nth-child(3) { animation-delay: 0.08s; }
+        #pile-cards .card:nth-child(4) { animation-delay: 0.12s; }
+        #pile-cards .card:nth-child(5) { animation-delay: 0.16s; }
+
+        /* Deal cards into hand */
+        .card.deal-in { animation: cardDeal 0.35s ease-out both; }
+
+        /* Sweep pile cards out before clearing */
+        .card.pile-sweep {
+            animation: cardSweep 0.25s ease-in both !important;
+            pointer-events: none;
+        }
+
+        /* Opponent slot pulse when they play */
+        .opponent-slot.opp-played { animation: oppPulse 0.6s ease-out; }
     </style>
 </head>
 <body>
@@ -776,6 +823,7 @@ var UI = (function () {
     var isYourTurn = false;
     var autoPass = false;
     var hintUuids = {};
+    var isFirstDeal = false;
 
     // Card display helpers
     var SUIT_SYMBOLS = { SPADES: '\u2660', HEARTS: '\u2665', DIAMONDS: '\u2666', CLUBS: '\u2663' };
@@ -912,6 +960,9 @@ var UI = (function () {
         var sorted = Big2Evaluator.sortCards(cards, Big2Rulesets.active);
         sorted.reverse(); // Low to high left to right
 
+        var applyDeal = isFirstDeal;
+        isFirstDeal = false; // only animate the first deal
+
         for (var i = 0; i < sorted.length; i++) {
             var el = makeCardEl(sorted[i], true);
             // Re-apply selected state
@@ -920,6 +971,10 @@ var UI = (function () {
                     el.classList.add('selected');
                     break;
                 }
+            }
+            if (applyDeal) {
+                el.classList.add('deal-in');
+                el.style.animationDelay = (i * 0.04) + 's';
             }
             container.appendChild(el);
         }
@@ -1134,10 +1189,38 @@ var UI = (function () {
 
         game.onPlayMade = function (data) {
             var snap = game._getSnapshot();
+
+            // Set direction attribute before rendering pile cards
+            var pileContainer = document.getElementById('pile-cards');
+            pileContainer.setAttribute('data-source', data.playerId === humanPlayerId ? 'human' : 'ai');
+
             renderPile(snap.pileHand);
             renderOpponents(snap.players);
             var humanPlayer = game._getPlayer(humanPlayerId);
             if (humanPlayer) renderHand(humanPlayer.hand);
+
+            // Pulse the opponent slot that just played
+            if (data.playerId !== humanPlayerId) {
+                var opps = [];
+                for (var pi2 = 0; pi2 < game.players.length; pi2++) {
+                    if (game.players[pi2].id !== humanPlayerId) opps.push(game.players[pi2]);
+                }
+                for (var oi = 0; oi < opps.length; oi++) {
+                    if (opps[oi].id === data.playerId) {
+                        (function (slot) {
+                            slot.classList.remove('opp-played');
+                            void slot.offsetWidth; // reflow to restart animation
+                            slot.classList.add('opp-played');
+                            slot.addEventListener('animationend', function handler() {
+                                slot.classList.remove('opp-played');
+                                slot.removeEventListener('animationend', handler);
+                            });
+                        })(document.getElementById('opp' + oi));
+                        break;
+                    }
+                }
+            }
+
             // Clear selection
             selectedCards = [];
             var typeName = HAND_TYPE_NAMES[data.evaluated.type] || 'hand';
@@ -1170,8 +1253,23 @@ var UI = (function () {
         };
 
         game.onPileCleared = function (data) {
-            renderPile(null);
-            setStatus('Pile cleared. ' + (data.winnerId === humanPlayerId ? 'Your' : data.winnerId + '\'s') + ' turn to lead.');
+            var pileContainer = document.getElementById('pile-cards');
+            var pileCards = pileContainer.querySelectorAll('.card');
+            var winnerLabel = data.winnerId === humanPlayerId ? 'Your' : data.winnerId + '\'s';
+            if (pileCards.length > 0) {
+                for (var ci = 0; ci < pileCards.length; ci++) {
+                    pileCards[ci].classList.add('pile-sweep');
+                }
+                setTimeout(function () {
+                    renderPile(null);
+                    pileContainer.removeAttribute('data-source');
+                    setStatus('Pile cleared. ' + winnerLabel + ' turn to lead.');
+                }, 280);
+            } else {
+                renderPile(null);
+                pileContainer.removeAttribute('data-source');
+                setStatus('Pile cleared. ' + winnerLabel + ' turn to lead.');
+            }
         };
 
         game.onGameOver = function (data) {
@@ -1182,6 +1280,7 @@ var UI = (function () {
         document.getElementById('setup-screen').classList.remove('active');
         document.getElementById('game-screen').classList.add('active');
 
+        isFirstDeal = true;
         game.deal();
     }
 
