@@ -68,6 +68,19 @@
             featured: false,
             theme: 'both'
         },
+        {
+            id: 'big2',
+            category: 'card',
+            icon: '🀄',
+            title: 'Big 2',
+            funTitle: 'Big 2 大老二',
+            description: 'Classic shedding game with HK, Taiwanese & Singapore rulesets. Play vs AI.',
+            funDescription: 'Shed your cards before anyone else! Three rulesets, serious AI.',
+            version: 'v0.1',
+            href: './games/cards/big2/index.html',
+            featured: false,
+            theme: 'both'
+        },
 
         // ── Arcade Games ─────────────────────────────────────────────
         {
