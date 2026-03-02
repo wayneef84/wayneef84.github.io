@@ -410,5 +410,57 @@ var FONG_CATALOG = [
         href: './projects/name-that-tune/index.html',
         featured: false,
         theme: 'both'
+    },
+    {
+        id: 'code',
+        category: 'project',
+        icon: '🔓',
+        title: 'C.o.D.E.',
+        funTitle: 'CRACKING ENGINE 🔓',
+        description: 'Code Optimization & Decryption Engine. Crack and decode obfuscated code strings.',
+        funDescription: 'Hack the planet! Crack codes and decrypt secret strings!',
+        version: 'v1.0',
+        href: './projects/code/index.html',
+        featured: false,
+        theme: 'both'
+    },
+    {
+        id: 'regex-builder',
+        category: 'project',
+        icon: '☃️',
+        title: 'Regex Builder',
+        funTitle: 'REGEX BUILDER ☃️',
+        description: 'Visual regex builder with live preview and "Snowbank" pattern library. Vanilla JS, no dependencies.',
+        funDescription: 'Build regex patterns visually! Save your faves in the Snowbank!',
+        version: 'v1.0',
+        href: './projects/regex_builder/index.html',
+        featured: false,
+        theme: 'both'
+    },
+    {
+        id: 'web-archive',
+        category: 'project',
+        icon: '🗄️',
+        title: 'Web Archive',
+        funTitle: 'WEB ARCHIVE 🗄️',
+        description: 'Retro web museum. Browse faithfully recreated websites from 1996–2000 in a terminal curator UI.',
+        funDescription: 'Dial-up vibes! Visit the old internet — Geocities and all!',
+        version: 'v2.0',
+        href: './projects/web-archive/index.html',
+        featured: false,
+        theme: 'both'
+    },
+    {
+        id: 'project-ti-tanium',
+        category: 'project',
+        icon: '🧮',
+        title: 'TI-tanium',
+        funTitle: 'TI CALCULATOR 🧮',
+        description: 'TI-84 graphing calculator emulator. Canvas screen, full keypad, and math engine.',
+        funDescription: 'Your old TI-84, in the browser! Calculate ALL the things!',
+        version: 'v1.0',
+        href: './projects/project-ti-tanium/index.html',
+        featured: false,
+        theme: 'both'
     }
 ];
