@@ -397,5 +397,18 @@ var FONG_CATALOG = [
         href: './projects/input-a11y/index.html',
         featured: false,
         theme: 'both'
+    },
+    {
+        id: 'name-that-tune',
+        category: 'project',
+        icon: '🎵',
+        title: 'Name That Tune',
+        funTitle: 'NAME THAT TUNE 🎵',
+        description: 'Music guessing game. Identify songs from 30-second previews across 7 genres and decades.',
+        funDescription: 'Can you name that tune?! 80s, 90s, Pop, Rock, Hip Hop and more!',
+        version: 'v1.0',
+        href: './projects/name-that-tune/index.html',
+        featured: false,
+        theme: 'both'
     }
 ];
