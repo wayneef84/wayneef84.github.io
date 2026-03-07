@@ -1,4 +1,56 @@
 /* games/jigsaw/css/style.css */
+
+/* ── Back link (setup screen) ── */
+.setup-nav {
+    margin-bottom: 12px;
+}
+
+.back-link {
+    display: inline-block;
+    color: #888;
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    min-height: 44px;
+    line-height: 32px;
+}
+
+.back-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+}
+
+/* ── Piece counter (toolbar) ── */
+.piece-count {
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    color: #aaa;
+    background: #000;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    white-space: nowrap;
+}
+
+/* ── Win modal emoji ── */
+.win-emoji {
+    font-size: 3rem;
+    margin-bottom: 8px;
+}
+
+.win-time {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin: 20px 0;
+}
+
+.win-time span {
+    color: #0f0;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
 body {
     margin: 0;
     padding: 0;

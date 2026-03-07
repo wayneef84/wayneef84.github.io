@@ -283,9 +283,9 @@ var FONG_CATALOG = [
         icon: '🧩',
         title: 'Jigsaw Engine',
         funTitle: 'JIGSAW 🧩',
-        description: 'Custom image jigsaw generator. Upload any image and play.',
-        funDescription: "Use YOUR own photos! Slice 'em up and put 'em back together!",
-        version: 'v1.0',
+        description: 'Upload any photo and play. Rounded piece shapes, snap sound, and lift effect.',
+        funDescription: "Use YOUR own photos! Slice 'em up and snap 'em back together!",
+        version: 'v1.1',
         href: './games/jigsaw/index.html',
         featured: false,
         theme: 'both'

@@ -12,80 +12,99 @@ var Puzzle = (function() {
         startTime: 0,
         elapsedTime: 0,
         timerInterval: null,
-        isComplete: false
+        isComplete: false,
+        snappedCount: 0
     };
 
     var canvas = null;
     var ctx = null;
+    var _onSnap = null;
 
-    // Constants
-    var TAB_SIZE_RATIO = 0.25; // Size of tab relative to piece size
+    // Tab protrudes 28% of piece width/height — slightly bigger than before for visibility
+    var TAB_SIZE_RATIO = 0.28;
 
+    // --- Audio ---
+    var _audioCtx = null;
+
+    function getAudioCtx() {
+        if (!_audioCtx) {
+            try {
+                _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {}
+        }
+        return _audioCtx;
+    }
+
+    function playSnapSound() {
+        var ac = getAudioCtx();
+        if (!ac) return;
+        try {
+            var osc  = ac.createOscillator();
+            var gain = ac.createGain();
+            osc.connect(gain);
+            gain.connect(ac.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1100, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(380, ac.currentTime + 0.06);
+            gain.gain.setValueAtTime(0.18, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.13);
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.14);
+        } catch (e) {}
+    }
+
+    // --- Init ---
     function init(image, settings) {
-        state.image = image;
+        state.image    = image;
         state.settings = settings || { rows: 5, cols: 8, jaggedness: 0.5, snapDistance: 20 };
-
-        // Calculate grid
-        // Ensure aspect ratio is maintained by cropping or fitting?
-        // For simplicity, we fit the image into the canvas area, or resize canvas to fit image?
-        // Let's resize canvas to fit image (scaled down if needed).
+        state.snappedCount = 0;
 
         canvas = document.getElementById('puzzle-canvas');
-        ctx = canvas.getContext('2d');
+        ctx    = canvas.getContext('2d');
 
-        // Resize canvas to fit screen but keep image aspect ratio
-        var maxWidth = window.innerWidth - 40;
+        // Fit canvas to screen while preserving image aspect ratio
+        var maxWidth  = window.innerWidth  - 40;
         var maxHeight = window.innerHeight - 100;
 
-        var imgRatio = image.width / image.height;
+        var imgRatio    = image.width / image.height;
         var screenRatio = maxWidth / maxHeight;
 
         var renderWidth, renderHeight;
-
         if (imgRatio > screenRatio) {
-            renderWidth = maxWidth;
+            renderWidth  = maxWidth;
             renderHeight = maxWidth / imgRatio;
         } else {
             renderHeight = maxHeight;
-            renderWidth = maxHeight * imgRatio;
+            renderWidth  = maxHeight * imgRatio;
         }
 
-        canvas.width = renderWidth;
+        canvas.width  = renderWidth;
         canvas.height = renderHeight;
 
-        state.pieceWidth = renderWidth / state.settings.cols;
+        state.pieceWidth  = renderWidth  / state.settings.cols;
         state.pieceHeight = renderHeight / state.settings.rows;
 
         generatePieces();
         shufflePieces();
 
-        state.startTime = Date.now();
+        state.startTime   = Date.now();
         state.elapsedTime = 0;
-        state.isComplete = false;
+        state.isComplete  = false;
 
         startTimer();
-
-        // Initial Draw
         draw();
-
-        // Setup Input
         Input.init(canvas, state);
     }
 
+    // --- Piece generation ---
     function generatePieces() {
         state.pieces = [];
         var rows = state.settings.rows;
         var cols = state.settings.cols;
 
-        // Helper to get random edge type: 1 (tab) or -1 (blank)
-        function randomEdge() {
-            return Math.random() > 0.5 ? 1 : -1;
-        }
+        function randomEdge() { return Math.random() > 0.5 ? 1 : -1; }
 
-        // 1. Define edges
-        // verticalEdges[r][c] is the right edge of piece (r, c)
-        // horizontalEdges[r][c] is the bottom edge of piece (r, c)
-        var verticalEdges = [];
+        var verticalEdges   = [];
         var horizontalEdges = [];
 
         for (var r = 0; r < rows; r++) {
@@ -94,7 +113,6 @@ var Puzzle = (function() {
                 verticalEdges[r][c] = randomEdge();
             }
         }
-
         for (var r = 0; r < rows - 1; r++) {
             horizontalEdges[r] = [];
             for (var c = 0; c < cols; c++) {
@@ -102,28 +120,26 @@ var Puzzle = (function() {
             }
         }
 
-        // 2. Create pieces
         for (var r = 0; r < rows; r++) {
             for (var c = 0; c < cols; c++) {
                 var piece = {
-                    id: r + '-' + c,
-                    row: r,
-                    col: c,
-                    x: 0, // Current X (will be shuffled)
-                    y: 0, // Current Y
+                    id:       r + '-' + c,
+                    row:      r,
+                    col:      c,
+                    x:        0,
+                    y:        0,
                     correctX: c * state.pieceWidth,
                     correctY: r * state.pieceHeight,
-                    width: state.pieceWidth,
-                    height: state.pieceHeight,
+                    width:    state.pieceWidth,
+                    height:   state.pieceHeight,
                     edges: {
-                        top: (r === 0) ? 0 : -horizontalEdges[r-1][c],
-                        right: (c === cols - 1) ? 0 : verticalEdges[r][c],
-                        bottom: (r === rows - 1) ? 0 : horizontalEdges[r][c],
-                        left: (c === 0) ? 0 : -verticalEdges[r][c-1]
+                        top:    (r === 0)           ? 0 : -horizontalEdges[r-1][c],
+                        right:  (c === cols - 1)    ? 0 :  verticalEdges[r][c],
+                        bottom: (r === rows - 1)    ? 0 :  horizontalEdges[r][c],
+                        left:   (c === 0)           ? 0 : -verticalEdges[r][c-1]
                     },
-                    shape: null // Will generate path
+                    shape: null
                 };
-
                 piece.shape = generatePieceShape(piece);
                 state.pieces.push(piece);
             }
@@ -131,117 +147,135 @@ var Puzzle = (function() {
     }
 
     function generatePieceShape(piece) {
-        // Returns a Path2D object
         var path = new Path2D();
-        var w = piece.width;
-        var h = piece.height;
-        var jaggedness = state.settings.jaggedness || 0; // 0 to 1
+        var w    = piece.width;
+        var h    = piece.height;
+        var jag  = state.settings.jaggedness || 0;
 
-        // Base points
         var x = 0, y = 0;
         path.moveTo(x, y);
 
-        // Top Edge
-        drawEdge(path, x, y, x + w, y, piece.edges.top, jaggedness);
-
-        // Right Edge
-        drawEdge(path, x + w, y, x + w, y + h, piece.edges.right, jaggedness);
-
-        // Bottom Edge
-        drawEdge(path, x + w, y + h, x, y + h, piece.edges.bottom, jaggedness);
-
-        // Left Edge
-        drawEdge(path, x, y + h, x, y, piece.edges.left, jaggedness);
+        drawEdge(path, x,     y,     x + w, y,     piece.edges.top,    jag);
+        drawEdge(path, x + w, y,     x + w, y + h, piece.edges.right,  jag);
+        drawEdge(path, x + w, y + h, x,     y + h, piece.edges.bottom, jag);
+        drawEdge(path, x,     y + h, x,     y,     piece.edges.left,   jag);
 
         path.closePath();
         return path;
     }
 
+    // --- Rounded Jigsaw Tab Shape ---
+    //
+    // Produces a classic jigsaw tab with:
+    //   · zero-angle tangent entry/exit at shoulders (no hard corner)
+    //   · a neck that NARROWS before the head
+    //   · a round bulbous head — G1-continuous at all junctions
+    //   · symmetric left / right profile
+    //
+    // type  1 = tab protrudes outward
+    // type -1 = notch cuts inward (mirror of tab)
+    //
     function drawEdge(path, x1, y1, x2, y2, type, jaggedness) {
         if (type === 0) {
             path.lineTo(x2, y2);
             return;
         }
 
-        var dx = x2 - x1;
-        var dy = y2 - y1;
-        var dist = Math.sqrt(dx * dx + dy * dy);
+        var dx    = x2 - x1;
+        var dy    = y2 - y1;
+        var dist  = Math.sqrt(dx * dx + dy * dy);
         var angle = Math.atan2(dy, dx);
+        var h     = type * dist * TAB_SIZE_RATIO;  // signed height
 
-        var h = type * dist * TAB_SIZE_RATIO; // Height of the tab
-        var w = dist / 3; // Width of the tab base
-
-        // Function to transform local coordinates (lx, ly) to global coordinates
-        function t(lx, ly) {
-            // Apply jaggedness as random noise
-            var noiseX = (Math.random() - 0.5) * jaggedness * (dist * 0.1);
-            var noiseY = (Math.random() - 0.5) * jaggedness * (dist * 0.1);
-
-            lx += noiseX;
-            ly += noiseY;
-
-            var rx = lx * Math.cos(angle) - ly * Math.sin(angle);
-            var ry = lx * Math.sin(angle) + ly * Math.cos(angle);
+        function t(along, perp) {
+            var rx = along * Math.cos(angle) - perp * Math.sin(angle);
+            var ry = along * Math.sin(angle) + perp * Math.cos(angle);
             return { x: x1 + rx, y: y1 + ry };
         }
 
-        // Standard Jigsaw Tab Shape (Cubic Bezier)
-        // We use 3 curves:
-        // 1. Shoulder to Top Left of Tab
-        // 2. Top of Tab
-        // 3. Top Right of Tab to Shoulder
+        var E = dist;
 
-        var xA = dist * 0.35; // Shoulder Start
-        var xB = dist * 0.38; // Neck Start
-        var xC = dist * 0.38; // Head Start
-        var xD = dist * 0.62; // Head End
-        var xE = dist * 0.62; // Neck End
-        var xF = dist * 0.65; // Shoulder End
+        // Noise baked into structural points only (Path2D is static after generation)
+        var tabCenter = E * 0.50 + (Math.random() - 0.5) * jaggedness * E * 0.06;
+        var headYvar  = h * (1.0  + (Math.random() - 0.5) * jaggedness * 0.06);
 
-        var yNeck = h * 0.15;
-        var yHead = h;
+        // Half-widths at each stage
+        var shoulderHW = E * 0.19;    // where tab begins on flat edge
+        var neckHW     = E * 0.075;   // narrow constriction
+        var headHW     = E * 0.135;   // bulbous head
 
-        // Points
-        var p0 = t(xA, 0); // Shoulder Start
+        // Heights
+        var neckY    = h * 0.40;
+        var headY    = headYvar;
+        var headCapY = headY + type * E * 0.095;  // control point beyond head → round cap
 
-        var p1 = t(xC, yHead); // Top Left
-        var p2 = t(xD, yHead); // Top Right
+        // X positions
+        var sh1 = tabCenter - shoulderHW;
+        var n1  = tabCenter - neckHW;
+        var hL  = tabCenter - headHW;
+        var hR  = tabCenter + headHW;
+        var n2  = tabCenter + neckHW;
+        var sh2 = tabCenter + shoulderHW;
 
-        var p3 = t(xF, 0); // Shoulder End
+        // Entry/exit points on the flat edge — bezier departs/arrives tangentially (no hard corner)
+        var entryL = t(sh1 - E * 0.04, 0);
+        var entryR = t(sh2 + E * 0.04, 0);
 
-        // Control Points
-        // Curve 1: Shoulder to Top Left
-        var cp1_1 = t(xB, yNeck);
-        var cp1_2 = t(xB - (dist*0.05), yHead * 0.8);
+        var pN1 = t(n1, neckY);
+        var pHL = t(hL, headY);
+        var pHR = t(hR, headY);
+        var pN2 = t(n2, neckY);
 
-        // Curve 2: Top (Left to Right)
-        var cp2_1 = t(xC + (dist*0.1), yHead + (dist*0.05));
-        var cp2_2 = t(xD - (dist*0.1), yHead + (dist*0.05));
+        // ---- Bezier control points ----
+        // [A] Smooth entry → left neck
+        //     cp1 ON flat edge → zero departure angle (no shoulder kink)
+        var cA1 = t(sh1 + E * 0.055, 0);
+        var cA2 = t(n1  - E * 0.022, neckY * 0.65);
 
-        // Curve 3: Top Right to Shoulder
-        var cp3_1 = t(xE + (dist*0.05), yHead * 0.8);
-        var cp3_2 = t(xE, yNeck);
+        // [B] Left neck → head-left
+        //     cp2 DIRECTLY BELOW pHL → vertical approach → G1 continuity with head arc
+        var cB1 = t(n1  - E * 0.010, neckY + (headY - neckY) * 0.52);
+        var cB2 = t(hL,              headY * 0.85);
 
-        path.lineTo(p0.x, p0.y);
-        path.bezierCurveTo(cp1_1.x, cp1_1.y, cp1_2.x, cp1_2.y, p1.x, p1.y);
-        path.bezierCurveTo(cp2_1.x, cp2_1.y, cp2_2.x, cp2_2.y, p2.x, p2.y);
-        path.bezierCurveTo(cp3_1.x, cp3_1.y, cp3_2.x, cp3_2.y, p3.x, p3.y);
+        // [C] Head arc: left → right (both CPs directly above → collinear with cB2 and cD1)
+        var cC1 = t(hL, headCapY);
+        var cC2 = t(hR, headCapY);
+
+        // [D] Head-right → right neck
+        //     cp1 DIRECTLY BELOW pHR → vertical departure → G1 continuity with head arc
+        var cD1 = t(hR,              headY * 0.85);
+        var cD2 = t(n2  + E * 0.010, neckY + (headY - neckY) * 0.52);
+
+        // [E] Right neck → smooth exit
+        //     cp2 ON flat edge → zero arrival angle (no shoulder kink)
+        var cE1 = t(n2  + E * 0.022, neckY * 0.65);
+        var cE2 = t(sh2 - E * 0.055, 0);
+
+        // Draw — entry via flat point (smooth departure), no lineTo to shoulder
+        path.lineTo(entryL.x, entryL.y);
+        path.bezierCurveTo(cA1.x, cA1.y, cA2.x, cA2.y, pN1.x, pN1.y);
+        path.bezierCurveTo(cB1.x, cB1.y, cB2.x, cB2.y, pHL.x, pHL.y);
+        path.bezierCurveTo(cC1.x, cC1.y, cC2.x, cC2.y, pHR.x, pHR.y);
+        path.bezierCurveTo(cD1.x, cD1.y, cD2.x, cD2.y, pN2.x, pN2.y);
+        path.bezierCurveTo(cE1.x, cE1.y, cE2.x, cE2.y, entryR.x, entryR.y);
         path.lineTo(x2, y2);
     }
 
+    // --- Shuffle ---
     function shufflePieces() {
-        var buffer = 50; // pixels padding
-        var w = canvas.width - buffer*2;
-        var h = canvas.height - buffer*2;
+        var buffer = 50;
+        var w = canvas.width  - buffer * 2;
+        var h = canvas.height - buffer * 2;
 
         state.pieces.forEach(function(p) {
-            p.x = buffer + Math.random() * (w - p.width);
-            p.y = buffer + Math.random() * (h - p.height);
+            p.x         = buffer + Math.random() * (w - p.width);
+            p.y         = buffer + Math.random() * (h - p.height);
             p.isDragging = false;
-            p.isSnapped = false;
+            p.isSnapped  = false;
         });
     }
 
+    // --- Draw loop ---
     function draw() {
         if (!ctx) return;
         Renderer.draw(ctx, state);
@@ -250,15 +284,15 @@ var Puzzle = (function() {
         }
     }
 
+    // --- Timer ---
     function startTimer() {
         clearInterval(state.timerInterval);
         var timerEl = document.getElementById('timer');
         state.timerInterval = setInterval(function() {
-            var now = Date.now();
-            var diff = now - state.startTime + state.elapsedTime; // ms
-            var sec = Math.floor(diff / 1000);
-            var m = Math.floor(sec / 60);
-            var s = sec % 60;
+            var diff = Date.now() - state.startTime + state.elapsedTime;
+            var sec  = Math.floor(diff / 1000);
+            var m    = Math.floor(sec / 60);
+            var s    = sec % 60;
             timerEl.textContent = (m < 10 ? '0'+m : m) + ':' + (s < 10 ? '0'+s : s);
         }, 1000);
     }
@@ -267,13 +301,17 @@ var Puzzle = (function() {
         clearInterval(state.timerInterval);
     }
 
+    // --- Snap ---
     function checkSnap(piece) {
-        var dist = Math.sqrt(Math.pow(piece.x - piece.correctX, 2) + Math.pow(piece.y - piece.correctY, 2));
-        if (dist < state.settings.snapDistance) {
-            piece.x = piece.correctX;
-            piece.y = piece.correctY;
+        var dx = piece.x - piece.correctX;
+        var dy = piece.y - piece.correctY;
+        if (Math.sqrt(dx * dx + dy * dy) < state.settings.snapDistance) {
+            piece.x        = piece.correctX;
+            piece.y        = piece.correctY;
             piece.isSnapped = true;
-            // Play snap sound?
+            state.snappedCount++;
+            playSnapSound();
+            if (_onSnap) _onSnap(state.snappedCount, state.pieces.length);
             checkWin();
             return true;
         }
@@ -281,24 +319,27 @@ var Puzzle = (function() {
     }
 
     function checkWin() {
-        var allSnapped = state.pieces.every(function(p) { return p.isSnapped; });
+        var allSnapped = true;
+        for (var i = 0; i < state.pieces.length; i++) {
+            if (!state.pieces[i].isSnapped) { allSnapped = false; break; }
+        }
         if (allSnapped) {
             state.isComplete = true;
             stopTimer();
-            // Show Win Modal
             var timerEl = document.getElementById('timer');
             if (typeof App !== 'undefined') App.showWin(timerEl.textContent);
         }
     }
 
+    // --- Persistence ---
     function save() {
         var saveData = {
             pieces: state.pieces.map(function(p) {
                 return { id: p.id, x: p.x, y: p.y, isSnapped: p.isSnapped };
             }),
-            settings: state.settings,
+            settings:    state.settings,
             elapsedTime: Date.now() - state.startTime + state.elapsedTime,
-            timestamp: new Date().toLocaleString()
+            timestamp:   new Date().toLocaleString()
         };
         Storage.save('state', saveData);
     }
@@ -306,32 +347,45 @@ var Puzzle = (function() {
     function load(image) {
         var savedState = Storage.load('state');
         if (!savedState) return;
-
-        // Re-init with saved settings
         init(image, savedState.settings);
-
-        // Restore piece positions
         savedState.pieces.forEach(function(sp) {
-            var p = state.pieces.find(function(ip) { return ip.id === sp.id; });
-            if (p) {
-                p.x = sp.x;
-                p.y = sp.y;
-                p.isSnapped = sp.isSnapped;
+            for (var i = 0; i < state.pieces.length; i++) {
+                if (state.pieces[i].id === sp.id) {
+                    state.pieces[i].x        = sp.x;
+                    state.pieces[i].y        = sp.y;
+                    state.pieces[i].isSnapped = sp.isSnapped;
+                    if (sp.isSnapped) state.snappedCount++;
+                    break;
+                }
             }
         });
-
         state.elapsedTime = savedState.elapsedTime;
-        state.startTime = Date.now();
+        state.startTime   = Date.now();
     }
 
+    // --- Public API ---
     return {
-        init: init,
-        load: load,
-        save: save,
-        startTimer: startTimer,
-        stopTimer: stopTimer,
-        checkSnap: checkSnap,
-        draw: draw, // Expose for loop? No, loop is internal.
-        getState: function() { return state; }
+        init:        init,
+        load:        load,
+        save:        save,
+        draw:        draw,
+        startTimer:  startTimer,
+        stopTimer:   stopTimer,
+        checkSnap:   checkSnap,
+        getState:    function() { return state; },
+
+        // Stop draw loop and timer (called by App.showSetup)
+        stop: function() {
+            stopTimer();
+            state.isComplete = true;
+        },
+
+        // Delegate hint toggle to Renderer (app.js calls Puzzle.toggleHint)
+        toggleHint: function(val) {
+            if (typeof Renderer !== 'undefined') Renderer.toggleHint(val);
+        },
+
+        // Register a callback: fn(snappedCount, totalPieces)
+        setOnSnap: function(fn) { _onSnap = fn; }
     };
 })();

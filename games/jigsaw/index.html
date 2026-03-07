@@ -11,12 +11,15 @@
         <!-- Setup Screen -->
         <div id="setup-screen">
             <div class="setup-container">
+                <div class="setup-nav">
+                    <a href="../../index.html" class="back-link">← Arcade</a>
+                </div>
                 <h1>Jigsaw Puzzle Engine</h1>
 
                 <div class="form-group">
                     <label for="file-input">Select Image:</label>
                     <input type="file" id="file-input" accept="image/*">
-                    <button id="take-photo-btn" class="btn btn-secondary" style="margin-top: 10px;">Take Photo</button>
+                    <button id="take-photo-btn" class="btn btn-secondary" style="margin-top: 10px;">📷 Take Photo</button>
                     <div id="image-preview">No image selected</div>
                 </div>
 
@@ -44,8 +47,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="jaggedness">Jaggedness:</label>
-                    <input type="range" id="jaggedness" min="0" max="100" value="50">
+                    <label for="jaggedness">Edge Variation:</label>
+                    <input type="range" id="jaggedness" min="0" max="100" value="40">
                 </div>
 
                 <div class="form-group">
@@ -66,6 +69,7 @@
                     <button id="save-btn" class="btn btn-secondary">Save</button>
                 </div>
                 <div id="timer">00:00</div>
+                <div id="piece-count" class="piece-count">0 / 0</div>
                 <div>
                     <button id="hint-btn" class="btn btn-secondary">Hint (Hold)</button>
                 </div>
@@ -77,8 +81,9 @@
     <!-- Win Modal -->
     <div id="win-modal" class="modal-overlay hidden">
         <div class="modal">
-            <h2>Puzzle Completed!</h2>
-            <p>Time: <span id="final-time"></span></p>
+            <div class="win-emoji">🧩</div>
+            <h2>Puzzle Complete!</h2>
+            <p class="win-time">Time: <span id="final-time"></span></p>
             <button id="play-again-btn" class="btn">Play Again</button>
         </div>
     </div>

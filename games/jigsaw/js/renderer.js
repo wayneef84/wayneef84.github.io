@@ -43,27 +43,46 @@ var Renderer = (function() {
             else loose.push(p);
         }
 
+        // Ghost placement hint — dashed outline at correct position while dragging
+        if (dragged && dragged.shape) {
+            ctx.save();
+            ctx.translate(dragged.correctX, dragged.correctY);
+            ctx.setLineDash([5, 5]);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = dragged.isNearSnap
+                ? 'rgba(0, 255, 120, 0.85)'
+                : 'rgba(255, 255, 255, 0.25)';
+            ctx.stroke(dragged.shape);
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+
         // Draw Snapped
         for (var i = 0; i < snapped.length; i++) drawPiece(ctx, snapped[i], state);
 
         // Draw Loose
         for (var i = 0; i < loose.length; i++) drawPiece(ctx, loose[i], state);
 
-        // Draw Dragged
+        // Draw Dragged — lift effect + shadow; green glow when near snap zone
         if (dragged) {
             ctx.save();
-            // Shadow
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 15;
-            ctx.shadowOffsetX = 5;
-            ctx.shadowOffsetY = 5;
-            // Lift effect
-            // We can scale, but that requires re-calculating the path or scaling context
-            // Scaling context around center of piece:
-            // ctx.translate(dragged.x + dragged.width/2, dragged.y + dragged.height/2);
-            // ctx.scale(1.05, 1.05);
-            // ctx.translate(-(dragged.x + dragged.width/2), -(dragged.y + dragged.height/2));
-            // Just shadow is enough for now.
+            var LIFT = 1.05;
+            var cx = dragged.x + dragged.width  / 2;
+            var cy = dragged.y + dragged.height / 2;
+            ctx.translate(cx, cy);
+            ctx.scale(LIFT, LIFT);
+            ctx.translate(-cx, -cy);
+            if (dragged.isNearSnap) {
+                ctx.shadowColor   = 'rgba(0, 255, 120, 0.90)';
+                ctx.shadowBlur    = 22;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            } else {
+                ctx.shadowColor    = 'rgba(0, 0, 0, 0.65)';
+                ctx.shadowBlur     = 24;
+                ctx.shadowOffsetX  = 10;
+                ctx.shadowOffsetY  = 10;
+            }
             drawPiece(ctx, dragged, state);
             ctx.restore();
         }

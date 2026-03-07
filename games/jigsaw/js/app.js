@@ -43,6 +43,13 @@ var App = (function() {
     function init() {
         bindEvents();
         checkSavedGame();
+        // Register snap progress callback
+        if (typeof Puzzle !== 'undefined') {
+            Puzzle.setOnSnap(function(snapped, total) {
+                var el = document.getElementById('piece-count');
+                if (el) el.textContent = snapped + ' / ' + total;
+            });
+        }
     }
 
     function bindEvents() {
@@ -167,6 +174,10 @@ var App = (function() {
 
         screens.setup.classList.add('hidden');
         screens.game.classList.remove('hidden');
+
+        // Reset piece counter display
+        var countEl = document.getElementById('piece-count');
+        if (countEl) countEl.textContent = '0 / ' + (settings.rows * settings.cols);
 
         // Init Puzzle
         if (typeof Puzzle !== 'undefined') {

@@ -98,6 +98,12 @@ var Input = (function() {
         draggingPiece.x = x;
         draggingPiece.y = y;
 
+        // Near-snap hint: glow green when piece is close to its correct position
+        var snapDist = (state.settings && state.settings.snapDistance) || 20;
+        var dx = draggingPiece.x - draggingPiece.correctX;
+        var dy = draggingPiece.y - draggingPiece.correctY;
+        draggingPiece.isNearSnap = Math.sqrt(dx * dx + dy * dy) < snapDist * 2.8;
+
         Puzzle.draw();
     }
 
@@ -106,6 +112,7 @@ var Input = (function() {
         // e.preventDefault(); // Might interfere with click events elsewhere if attached to window?
 
         draggingPiece.isDragging = false;
+        draggingPiece.isNearSnap = false;
 
         // Check snap
         if (Puzzle.checkSnap(draggingPiece)) {
