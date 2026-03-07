@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Wayne Fong — Developer Profile</title>
+    <meta name="description" content="Wayne Fong - Full-stack developer building the F.O.N.G. Arcade, a collection of 33 browser-based games and tools with zero CDN dependencies.">
+    <meta property="og:title" content="Wayne Fong — Developer Profile">
+    <meta property="og:description" content="Full-stack developer building 33+ browser games and tools with vanilla JavaScript, no frameworks, no build tools.">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://wayneef84.github.io/profile/">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <style>
+        /* ── Fonts ──────────────────────────────────────────────── */
+        @font-face {
+            font-family: 'Inter';
+            src: url('../assets/fonts/Inter-Regular.woff2') format('woff2');
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('../assets/fonts/Inter-Bold.woff2') format('woff2');
+            font-weight: 700; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Space Mono';
+            src: url('../assets/fonts/SpaceMono-Regular.woff2') format('woff2');
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+
+        :root {
+            --bg:        #0f172a;
+            --surface:   rgba(30, 41, 59, 0.75);
+            --border:    rgba(255, 255, 255, 0.1);
+            --text:      #f8fafc;
+            --muted:     #94a3b8;
+            --gold:      #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.25);
+            --cyan:      #00e5ff;
+            --cyan-glow: rgba(0, 229, 255, 0.2);
+            --pink:      #ff0055;
+            --pink-glow: rgba(255, 0, 85, 0.2);
+            --purple:    #a855f7;
+            --purp-glow: rgba(168, 85, 247, 0.2);
+            --radius:    16px;
+            --font:      'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --mono:      'Space Mono', 'Courier New', Courier, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        html, body { overflow-x: hidden; max-width: 100%; }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 10%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, #1a0a2e 0%, var(--bg) 60%);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: calc(40px + env(safe-area-inset-bottom));
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Floating ambient blobs ────────────────────────────── */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(80px);
+            opacity: 0.35;
+        }
+        body::before {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.14), transparent 70%);
+            top: -100px; left: -100px;
+            animation: float-blob 20s ease-in-out infinite alternate;
+        }
+        body::after {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.12), transparent 70%);
+            bottom: -80px; right: -80px;
+            animation: float-blob 25s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes float-blob {
+            0%   { transform: translate(0, 0); }
+            33%  { transform: translate(40px, 60px); }
+            66%  { transform: translate(-30px, 30px); }
+            100% { transform: translate(20px, -40px); }
+        }
+
+        /* ── Nav bar ─────────────────────────────────────────────── */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .top-nav a:hover { color: var(--gold); }
+
+        .top-nav .brand {
+            font-size: 0.85rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* ── Layout wrapper ──────────────────────────────────────── */
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ── Section spacing ─────────────────────────────────────── */
+        section { padding: 64px 0; }
+
+        /* Gradient section dividers */
+        section + section {
+            border-top: none;
+            position: relative;
+        }
+        section + section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), rgba(0, 229, 255, 0.2), var(--border), transparent);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-family: var(--mono);
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 32px;
+        }
+
+        /* ── Glass card ──────────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 32px;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* ── Animations ──────────────────────────────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes avatar-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Scroll reveal ───────────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-d1 { transition-delay: 0.1s; }
+        .reveal-d2 { transition-delay: 0.2s; }
+        .reveal-d3 { transition-delay: 0.3s; }
+        .reveal-d4 { transition-delay: 0.4s; }
+        .reveal-d5 { transition-delay: 0.5s; }
+        .reveal-d6 { transition-delay: 0.6s; }
+
+        /* ── Focus states ────────────────────────────────────────── */
+        :focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 2px;
+        }
+        .contact-btn:focus-visible,
+        .project-card:focus-visible,
+        .footer-back:focus-visible {
+            outline-color: var(--gold);
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §1  HERO
+        ══════════════════════════════════════════════════════════ */
+        .hero {
+            padding-top: 72px;
+            padding-bottom: 64px;
+            text-align: center;
+            animation: fadeUp 0.7s ease-out both;
+        }
+
+        /* Avatar with animated conic-gradient border */
+        .avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 28px;
+            width: 134px;
+            height: 134px;
+        }
+
+        .avatar-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--cyan),
+                var(--purple),
+                var(--pink),
+                var(--gold),
+                var(--cyan)
+            );
+            animation: avatar-spin 6s linear infinite;
+            z-index: 0;
+        }
+
+        .avatar-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: var(--bg);
+            z-index: 1;
+        }
+
+        .avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+            font-family: var(--mono);
+            position: absolute;
+            inset: 3px;
+            z-index: 2;
+            /* TODO: Replace with <img> tag when you have a photo */
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #22c55e;
+            border: 3px solid var(--bg);
+            z-index: 3;
+        }
+
+        /* Name + title */
+        .hero-name {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .hero-title {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .hero-title span { color: var(--cyan); }
+
+        .hero-tagline {
+            font-size: 1rem;
+            color: var(--text);
+            font-style: italic;
+            max-width: 480px;
+            margin: 0 auto 32px;
+            opacity: 0.85;
+        }
+
+        /* Contact links */
+        .contact-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            min-height: 44px;
+        }
+
+        .contact-btn:hover {
+            border-color: var(--gold);
+            background: var(--gold-glow);
+            transform: translateY(-1px);
+        }
+
+        .contact-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--muted);
+            flex-shrink: 0;
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §2  ABOUT
+        ══════════════════════════════════════════════════════════ */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .bio-text {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.75;
+        }
+
+        .bio-text strong { color: var(--gold); }
+
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .stat-chip {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            padding: 20px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: var(--mono);
+            color: var(--cyan);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §2b  PHILOSOPHY
+        ══════════════════════════════════════════════════════════ */
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .philosophy-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .philosophy-card:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        .philosophy-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+
+        .philosophy-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .philosophy-desc {
+            font-size: 0.87rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §3  SKILLS
+        ══════════════════════════════════════════════════════════ */
+        .skill-group { margin-bottom: 24px; }
+        .skill-group:last-child { margin-bottom: 0; }
+
+        .skill-group-label {
+            font-size: 0.75rem;
+            font-family: var(--mono);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 0.82rem;
+            color: var(--text);
+            white-space: nowrap;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
+        }
+
+        .pill:hover { transform: scale(1.08); }
+
+        .pill.cyan  { border-color: rgba(0, 229, 255, 0.4);  color: var(--cyan);   background: rgba(0, 229, 255, 0.08); }
+        .pill.gold  { border-color: rgba(255, 215, 0, 0.4);  color: var(--gold);   background: rgba(255, 215, 0, 0.08); }
+        .pill.pink  { border-color: rgba(255, 0, 85, 0.4);   color: var(--pink);   background: rgba(255, 0, 85, 0.08); }
+        .pill.purp  { border-color: rgba(168, 85, 247, 0.4); color: var(--purple); background: rgba(168, 85, 247, 0.08); }
+
+        .pill.cyan:hover  { box-shadow: 0 0 12px var(--cyan-glow); }
+        .pill.gold:hover  { box-shadow: 0 0 12px var(--gold-glow); }
+        .pill.pink:hover  { box-shadow: 0 0 12px var(--pink-glow); }
+        .pill.purp:hover  { box-shadow: 0 0 12px var(--purp-glow); }
+
+        /* ══════════════════════════════════════════════════════════
+           §4  TIMELINE
+        ══════════════════════════════════════════════════════════ */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--cyan), var(--purple));
+            border-radius: 2px;
+        }
+
+        .tl-item {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .tl-item:last-child { margin-bottom: 0; }
+
+        .tl-dot {
+            position: absolute;
+            left: -27px;
+            top: 16px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--cyan);
+            border: 2px solid var(--bg);
+            box-shadow: 0 0 8px var(--cyan-glow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .tl-item:hover .tl-dot {
+            transform: scale(1.3);
+            box-shadow: 0 0 16px var(--cyan-glow);
+        }
+
+        .tl-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .tl-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tl-phase {
+            font-size: 0.7rem;
+            font-family: var(--mono);
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .tl-date {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-family: var(--mono);
+        }
+
+        .tl-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .tl-desc {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .tl-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .tl-tag {
+            font-size: 0.72rem;
+            padding: 2px 10px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--mono);
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §5  AI FEEDBACK
+        ══════════════════════════════════════════════════════════ */
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .feedback-card {
+            border-radius: var(--radius);
+            padding: 28px 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .feedback-card:hover { transform: translateY(-2px); }
+
+        .feedback-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .feedback-card.agent-c {
+            background: rgba(0, 229, 255, 0.06);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+        }
+        .feedback-card.agent-c::before { background: var(--cyan); }
+        .feedback-card.agent-c:hover { box-shadow: 0 8px 24px rgba(0, 229, 255, 0.15); }
+
+        .feedback-card.agent-g {
+            background: rgba(255, 0, 85, 0.06);
+            border: 1px solid rgba(255, 0, 85, 0.25);
+        }
+        .feedback-card.agent-g::before { background: var(--pink); }
+        .feedback-card.agent-g:hover { box-shadow: 0 8px 24px rgba(255, 0, 85, 0.15); }
+
+        .feedback-card.agent-j {
+            background: rgba(168, 85, 247, 0.06);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+        .feedback-card.agent-j::before { background: var(--purple); }
+        .feedback-card.agent-j:hover { box-shadow: 0 8px 24px rgba(168, 85, 247, 0.15); }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .agent-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: var(--mono);
+            flex-shrink: 0;
+        }
+
+        .agent-c .agent-avatar { background: var(--cyan-glow);  color: var(--cyan);   border: 1px solid rgba(0, 229, 255, 0.4); }
+        .agent-g .agent-avatar { background: var(--pink-glow);  color: var(--pink);   border: 1px solid rgba(255, 0, 85, 0.4); }
+        .agent-j .agent-avatar { background: var(--purp-glow);  color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.4); }
+
+        .agent-meta { flex: 1; }
+
+        .agent-name { font-weight: 700; font-size: 0.95rem; }
+
+        .agent-c .agent-name { color: var(--cyan); }
+        .agent-g .agent-name { color: var(--pink); }
+        .agent-j .agent-name { color: var(--purple); }
+
+        .agent-role { font-size: 0.78rem; color: var(--muted); }
+
+        .feedback-date {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-family: var(--mono);
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+
+        .feedback-subject {
+            font-size: 0.78rem;
+            font-family: var(--mono);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .feedback-quote {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-style: italic;
+            border-left: 3px solid var(--border);
+            padding-left: 16px;
+            margin-bottom: 16px;
+        }
+
+        .feedback-lessons {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feedback-lessons li {
+            font-size: 0.85rem;
+            color: var(--muted);
+            padding: 4px 0 4px 20px;
+            position: relative;
+        }
+
+        .feedback-lessons li::before {
+            content: '\2192';
+            position: absolute;
+            left: 0;
+            color: var(--muted);
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           §6  PROJECTS
+        ══════════════════════════════════════════════════════════ */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .project-card:hover {
+            border-color: rgba(0, 229, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0, 229, 255, 0.12), 0 0 0 1px rgba(0, 229, 255, 0.1);
+        }
+
+        /* Category color stripes */
+        .project-card[data-category="card"]    { border-left: 3px solid #10b981; }
+        .project-card[data-category="arcade"]  { border-left: 3px solid #f59e0b; }
+        .project-card[data-category="puzzle"]  { border-left: 3px solid #8b5cf6; }
+        .project-card[data-category="edu"]     { border-left: 3px solid #3b82f6; }
+        .project-card[data-category="project"] { border-left: 3px solid #64748b; }
+
+        .project-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .project-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .project-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .project-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .version-badge {
+            font-size: 0.7rem;
+            font-family: var(--mono);
+            padding: 2px 8px;
+            border-radius: 99px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--cyan);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .project-desc {
+            font-size: 0.87rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .project-link {
+            font-size: 0.82rem;
+            color: var(--cyan);
+            font-family: var(--mono);
+            margin-top: 4px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .project-card:hover .project-link { opacity: 1; }
+
+        /* ══════════════════════════════════════════════════════════
+           FOOTER
+        ══════════════════════════════════════════════════════════ */
+        .site-footer {
+            text-align: center;
+            padding: 48px 20px calc(24px + env(safe-area-inset-bottom));
+            border-top: none;
+            position: relative;
+        }
+
+        .site-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), rgba(0, 229, 255, 0.2), var(--border), transparent);
+        }
+
+        .footer-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            min-height: 44px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 99px;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .footer-back:hover {
+            background: var(--gold-glow);
+            transform: translateY(-1px);
+        }
+
+        .footer-credit {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 12px;
+        }
+
+        /* ── Scroll-to-top button ────────────────────────────────── */
+        .scroll-top {
+            position: fixed;
+            bottom: calc(24px + env(safe-area-inset-bottom));
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--cyan);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s, background 0.2s, border-color 0.2s;
+            transform: translateY(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            background: var(--cyan-glow);
+            border-color: var(--cyan);
+        }
+
+        /* ══════════════════════════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════════════════════════ */
+        @media (min-width: 560px) {
+            .feedback-grid   { grid-template-columns: 1fr; }
+            .project-grid    { grid-template-columns: repeat(2, 1fr); }
+            .philosophy-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 760px) {
+            .about-grid      { grid-template-columns: 1fr; }
+            .feedback-grid   { grid-template-columns: repeat(3, 1fr); }
+            .project-grid    { grid-template-columns: repeat(3, 1fr); }
+            .hero-name       { font-size: 3.2rem; }
+        }
+
+        @media (max-width: 480px) {
+            section          { padding: 48px 0; }
+            .card            { padding: 20px; }
+            .tl-card         { padding: 16px; }
+            .feedback-card   { padding: 20px; }
+            .hero            { padding-top: 48px; }
+            .hero-name       { font-size: 2rem; }
+            .timeline        { padding-left: 24px; }
+            .timeline::before { left: 7px; }
+            .tl-dot          { left: -21px; width: 10px; height: 10px; }
+            .tl-header       { flex-direction: column; gap: 4px; }
+        }
+
+        /* ── Print ───────────────────────────────────────────────── */
+        @media print {
+            body { background: #fff !important; color: #111 !important; }
+            body::before, body::after { display: none !important; }
+            .top-nav, .scroll-top, .avatar-badge { display: none !important; }
+            .card, .tl-card, .feedback-card, .project-card, .philosophy-card {
+                background: #fff !important;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            .hero-name {
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                background-clip: unset !important;
+                color: #111 !important;
+            }
+            .reveal { opacity: 1 !important; transform: none !important; }
+            a { color: #111 !important; text-decoration: underline !important; }
+            .stat-number { color: #333 !important; }
+            .section-label { color: #666 !important; }
+            .pill { border-color: #ccc !important; color: #333 !important; background: #f5f5f5 !important; }
+            .footer-back { display: none !important; }
+        }
+
+        /* ── Reduced motion ──────────────────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal { opacity: 1 !important; transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Nav ─────────────────────────────────────────────────── -->
+    <nav class="top-nav">
+        <a href="../index.html">&larr; F.O.N.G. Arcade</a>
+        <span class="brand">Developer Profile</span>
+    </nav>
+
+    <div class="page">
+
+        <!-- ══════════════════════════════════════════════════════
+             §1  HERO
+        ══════════════════════════════════════════════════════════ -->
+        <section class="hero">
+            <div class="avatar-wrap">
+                <!-- TODO: Replace .avatar div with <img src="../assets/photo.jpg" class="avatar" alt="Wayne"> when you have a photo -->
+                <div class="avatar">WF</div>
+                <div class="avatar-badge" title="Online"></div>
+            </div>
+
+            <h1 class="hero-name">Wayne Fong</h1>
+            <p class="hero-title">
+                Full-Stack Developer &nbsp;&middot;&nbsp;
+                <span>Maker</span> &nbsp;&middot;&nbsp;
+                Dad
+            </p>
+            <p class="hero-tagline">
+                "Building arcade magic for the family &mdash; one game at a time."
+            </p>
+
+            <div class="contact-row">
+                <!-- TODO: Replace # with your actual URLs -->
+                <a class="contact-btn" href="#" title="GitHub">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a class="contact-btn" href="#" title="LinkedIn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                </a>
+                <a class="contact-btn" href="mailto:TODO@example.com" title="Email">
+                    <!-- TODO: Replace with your actual email -->
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.886.702-1.611 1.573-1.636L12 10.09l10.427-6.268C23.298 3.846 24 4.57 24 5.457z"/>
+                    </svg>
+                    Email
+                </a>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §2  ABOUT
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// about</p>
+            <h2 class="section-title">About Me</h2>
+
+            <div class="card">
+                <p class="bio-text">
+                    I'm a developer who builds things <strong>for the people I love</strong>. The
+                    F.O.N.G. Arcade started as a personal project to create games the whole family
+                    could play on any device &mdash; from a modern laptop to a beat-up old tablet.
+                    Over the past year it's grown into a platform of <strong>33 games and
+                    utility tools</strong>, built entirely in vanilla JavaScript, no frameworks,
+                    no build tools, no shortcuts.
+                </p>
+                <p class="bio-text" style="margin-top: 16px;">
+                    I collaborate with a team of AI agents &mdash; <strong>Claude</strong> (Senior Dev &amp;
+                    Docs), <strong>Gemini</strong> (Creative Director), and <strong>Jules</strong>
+                    (Lead Architect) &mdash; to design, build, and ship real software. The result is a
+                    living arcade that grows a little more every week.
+                </p>
+
+                <div class="stats-row">
+                    <div class="stat-chip reveal reveal-d1">
+                        <span class="stat-number">33</span>
+                        <span class="stat-label">Projects Built</span>
+                    </div>
+                    <div class="stat-chip reveal reveal-d2">
+                        <span class="stat-number">2025</span>
+                        <span class="stat-label">Arcade Est.</span>
+                    </div>
+                    <div class="stat-chip reveal reveal-d3">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">AI Collaborators</span>
+                    </div>
+                    <div class="stat-chip reveal reveal-d4">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">CDN Dependencies</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §2b  PHILOSOPHY
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// philosophy</p>
+            <h2 class="section-title">How I Build</h2>
+
+            <div class="philosophy-grid">
+                <div class="philosophy-card reveal reveal-d1">
+                    <span class="philosophy-icon">&#128268;</span>
+                    <h3 class="philosophy-title">Zero Dependencies</h3>
+                    <p class="philosophy-desc">No CDNs, no npm, no build step. Every game runs from a single folder of HTML, CSS, and vanilla JS.</p>
+                </div>
+                <div class="philosophy-card reveal reveal-d2">
+                    <span class="philosophy-icon">&#128241;</span>
+                    <h3 class="philosophy-title">Device Agnostic</h3>
+                    <p class="philosophy-desc">ES5 syntax and touch-first design so it works on the family's oldest tablet just as well as a new laptop.</p>
+                </div>
+                <div class="philosophy-card reveal reveal-d3">
+                    <span class="philosophy-icon">&#129302;</span>
+                    <h3 class="philosophy-title">Human + AI</h3>
+                    <p class="philosophy-desc">Three AI collaborators and one human. We use agent handoff documents, not prompts. Real software engineering, not copy-paste.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §3  SKILLS
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// skills</p>
+            <h2 class="section-title">Tech Stack</h2>
+
+            <div class="card">
+                <div class="skill-group">
+                    <p class="skill-group-label">Languages</p>
+                    <div class="pill-row">
+                        <span class="pill cyan">JavaScript (ES5)</span>
+                        <span class="pill cyan">HTML5</span>
+                        <span class="pill cyan">CSS3</span>
+                    </div>
+                </div>
+
+                <div class="skill-group" style="margin-top: 24px;">
+                    <p class="skill-group-label">Browser APIs</p>
+                    <div class="pill-row">
+                        <span class="pill gold">Canvas API</span>
+                        <span class="pill gold">Web Audio API</span>
+                        <span class="pill gold">Web Speech API</span>
+                        <span class="pill gold">IndexedDB</span>
+                        <span class="pill gold">FileReader API</span>
+                        <span class="pill gold">localStorage</span>
+                        <span class="pill gold">Touch Events</span>
+                    </div>
+                </div>
+
+                <div class="skill-group" style="margin-top: 24px;">
+                    <p class="skill-group-label">Architecture &amp; Patterns</p>
+                    <div class="pill-row">
+                        <span class="pill purp">Mobile-First CSS</span>
+                        <span class="pill purp">Offline-First Architecture</span>
+                        <span class="pill purp">State Machines</span>
+                        <span class="pill purp">Federated Module Design</span>
+                        <span class="pill purp">Entity-Component Systems</span>
+                        <span class="pill purp">IIFE Module Pattern</span>
+                        <span class="pill purp">CSS Variables &amp; Theming</span>
+                    </div>
+                </div>
+
+                <div class="skill-group" style="margin-top: 24px;">
+                    <p class="skill-group-label">Tooling &amp; Workflow</p>
+                    <div class="pill-row">
+                        <span class="pill pink">Git / GitHub Pages</span>
+                        <span class="pill pink">Multi-Agent AI Collaboration</span>
+                        <span class="pill pink">Playwright (Verification)</span>
+                        <span class="pill pink">Zero Build Tools</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §4  DEVELOPMENT TIMELINE
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// history</p>
+            <h2 class="section-title">Development Timeline</h2>
+
+            <div class="timeline">
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 1</span>
+                            <span class="tl-date">Late 2025</span>
+                        </div>
+                        <h3 class="tl-title">Shipment Tracker &mdash; The Foundation</h3>
+                        <p class="tl-desc">
+                            The project began as an offline-first multi-carrier package tracker.
+                            This phase established the core engineering principles that govern
+                            everything built since: strict ES5 syntax for old tablet compatibility,
+                            no external CDNs, IndexedDB for offline storage, and the BYOK
+                            (Bring Your Own Keys) security model for API credentials.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">IndexedDB</span>
+                            <span class="tl-tag">ES5 Standard Established</span>
+                            <span class="tl-tag">Offline-First</span>
+                            <span class="tl-tag">DHL / FedEx / UPS / USPS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 2</span>
+                            <span class="tl-date">Dec 2025 &ndash; Jan 2026</span>
+                        </div>
+                        <h3 class="tl-title">Card Engine &amp; Blackjack</h3>
+                        <p class="tl-desc">
+                            Built a reusable card game engine from scratch with an Entity-Component
+                            architecture. Blackjack was the first implementation, requiring a full
+                            state machine (IDLE &rarr; BETTING &rarr; DEALING &rarr; PLAYER_TURN &rarr; DEALER_TURN &rarr;
+                            RESOLUTION &rarr; PAYOUT) to prevent race conditions. Shipped double down,
+                            insurance, and a procedural card renderer &mdash; zero image dependencies.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">State Machine</span>
+                            <span class="tl-tag">CSS Animations</span>
+                            <span class="tl-tag">Shared Engine (card.js / deck.js / pile.js)</span>
+                            <span class="tl-tag">Safari Compatibility Fixes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 3</span>
+                            <span class="tl-date">January 2026</span>
+                        </div>
+                        <h3 class="tl-title">Educational Games &mdash; Letter Tracing</h3>
+                        <p class="tl-desc">
+                            Built a voice-guided letter tracing app for young learners using
+                            Canvas stroke detection and the Web Speech API. Supports A&ndash;Z,
+                            words, sentences, and Chinese characters. Touch event normalization
+                            across mouse, touch, and stylus inputs ensures it works on any device.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">Canvas API</span>
+                            <span class="tl-tag">Web Speech API</span>
+                            <span class="tl-tag">Touch Normalization</span>
+                            <span class="tl-tag">Chinese Characters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 4</span>
+                            <span class="tl-date">January 2026</span>
+                        </div>
+                        <h3 class="tl-title">Casino Suite &mdash; Slots v3.1</h3>
+                        <p class="tl-desc">
+                            A 5-reel, 4-row slot machine with 20 unique data-driven themes, a
+                            physical drag-to-pull lever, 3D CSS transforms for realistic reel
+                            spinning, particle effects for wins, and a "Dad Mode" with adjustable
+                            RTP (return-to-player) for family play. The Web Audio sound manager
+                            supports per-theme audio packs.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">3D CSS Transforms</span>
+                            <span class="tl-tag">Web Audio API</span>
+                            <span class="tl-tag">Data-Driven Themes</span>
+                            <span class="tl-tag">Particle Effects</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 5</span>
+                            <span class="tl-date">January 2026</span>
+                        </div>
+                        <h3 class="tl-title">Puzzle &amp; Casual Games Expansion</h3>
+                        <p class="tl-desc">
+                            Rapid expansion into puzzle and casual genres: Neon Snake v3 (Canvas +
+                            Web Audio + swipe controls), Flow (pipe-connection puzzle with level
+                            generator), Sudoku (auto-save, dual input), XTC Ball (magic 8-ball with
+                            synthesized speech), Sprunki Mixer (music mixing with character system),
+                            and Board Games (Chess, Checkers, Xiangqi with minimax AI). A recurring
+                            pattern emerged &mdash; duplicated Sound, Input, and Timer systems across games
+                            &mdash; planting the seed for the NEGEN engine proposal.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">Snake / Flow / Sudoku / XTC Ball</span>
+                            <span class="tl-tag">Sprunki / Board Games</span>
+                            <span class="tl-tag">Minimax + Alpha-Beta Pruning AI</span>
+                            <span class="tl-tag">NEGEN Concept Emerged</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <div class="tl-header">
+                            <span class="tl-phase">Phase 6 &mdash; Current</span>
+                            <span class="tl-date">February 2026 &ndash; Present</span>
+                        </div>
+                        <h3 class="tl-title">The C-G-J Alliance &amp; Hub Revamp</h3>
+                        <p class="tl-desc">
+                            Jules performed "The Great Convergence," merging 12+ feature branches
+                            into a clean main. Gemini formalized the Visual Identity System and
+                            built the Modern Dark Arcade design. Claude established the documentation
+                            standard (7 required files per game). Together we shipped a fully
+                            revamped root hub with featured hero, Quick Play carousel, responsive
+                            game grid, category filters, and mobile bottom-sheet. Catalog grew to
+                            33 games and utility projects.
+                        </p>
+                        <div class="tl-tags">
+                            <span class="tl-tag">Multi-Agent Collaboration</span>
+                            <span class="tl-tag">Hub UI Revamp</span>
+                            <span class="tl-tag">33 Games &amp; Projects</span>
+                            <span class="tl-tag">NEGEN Engine (In Progress)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §5  AI COLLABORATOR FEEDBACK
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// team feedback</p>
+            <h2 class="section-title">From the AI Collaborators</h2>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; margin-top: -20px;">
+                Real entries from <code style="font-size: 0.82rem; color: var(--cyan);">AI_FEEDBACK.md</code> &mdash; the inter-agent communication log.
+            </p>
+
+            <div class="feedback-grid">
+
+                <!-- Claude -->
+                <div class="feedback-card agent-c reveal reveal-d1">
+                    <div class="agent-header">
+                        <div class="agent-avatar">C</div>
+                        <div class="agent-meta">
+                            <div class="agent-name">Claude (C)</div>
+                            <div class="agent-role">Senior Developer &amp; Docs Lead</div>
+                        </div>
+                        <div class="feedback-date">2026-02-05</div>
+                    </div>
+                    <p class="feedback-subject">Subject: Phase Retrospective</p>
+                    <blockquote class="feedback-quote">
+                        "The Documentation-First approach prevented knowledge loss between sessions.
+                        The federated architecture remains intact despite the massive merge.
+                        ES5 discipline is painful but necessary &mdash; the arcade runs on old tablets."
+                    </blockquote>
+                    <p class="feedback-subject" style="margin-top: 8px;">Lessons Logged:</p>
+                    <ul class="feedback-lessons">
+                        <li>State machines prevent race conditions in turn-based games</li>
+                        <li>Card UUIDs are essential for animation tracking</li>
+                        <li>Write <code style="font-size: 0.78rem;">ARCHITECTURE.md</code> before coding &mdash; prevents context loss</li>
+                        <li>Wayne values "Dad made this" charm over over-engineering</li>
+                    </ul>
+                </div>
+
+                <!-- Gemini -->
+                <div class="feedback-card agent-g reveal reveal-d2">
+                    <div class="agent-header">
+                        <div class="agent-avatar">G</div>
+                        <div class="agent-meta">
+                            <div class="agent-name">Gemini (G)</div>
+                            <div class="agent-role">Creative Director</div>
+                        </div>
+                        <div class="feedback-date">2026-02-04</div>
+                    </div>
+                    <p class="feedback-subject">Subject: Redesign &amp; Foundation</p>
+                    <blockquote class="feedback-quote">
+                        "The Federated Architecture &mdash; games vs. projects &mdash; is solid.
+                        The separation of concerns works well. My contribution focused on
+                        the wrapper: the experience of <em>entering</em> the arcade."
+                    </blockquote>
+                    <p class="feedback-subject" style="margin-top: 8px;">Lessons Logged:</p>
+                    <ul class="feedback-lessons">
+                        <li>Vanilla JS for filtering avoids framework overhead</li>
+                        <li>The "Junior Dev" risk: raw code generators endanger ES5/No-Bundler constraints</li>
+                        <li>Hybrid rendering necessary: Canvas for physics, DOM for card UI</li>
+                    </ul>
+                </div>
+
+                <!-- Jules -->
+                <div class="feedback-card agent-j reveal reveal-d3">
+                    <div class="agent-header">
+                        <div class="agent-avatar">J</div>
+                        <div class="agent-meta">
+                            <div class="agent-name">Jules (J)</div>
+                            <div class="agent-role">Lead Architect</div>
+                        </div>
+                        <div class="feedback-date">2026-02-15</div>
+                    </div>
+                    <p class="feedback-subject">Subject: Phase 2 Visual Integration</p>
+                    <blockquote class="feedback-quote">
+                        "The Modern Dark Arcade design system is live with CSS variables and
+                        mobile-first breakpoints. Playwright verification confirmed the
+                        responsive grid works perfectly on both desktop and mobile."
+                    </blockquote>
+                    <p class="feedback-subject" style="margin-top: 8px;">Lessons Logged:</p>
+                    <ul class="feedback-lessons">
+                        <li>Branch hygiene: delete feature branches after merging</li>
+                        <li>Explicit handoff docs beat git log comments for continuity</li>
+                        <li>Automated screenshots reliably verify CSS media queries</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             §6  FEATURED PROJECTS
+        ══════════════════════════════════════════════════════════ -->
+        <section class="reveal">
+            <p class="section-label">// work</p>
+            <h2 class="section-title">Featured Projects</h2>
+
+            <div class="project-grid">
+
+                <a class="project-card reveal reveal-d1" href="../games/cards/blackjack/index.html" data-category="card">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#127183;</span>
+                            <span class="project-name">Blackjack</span>
+                        </div>
+                        <span class="version-badge">v1.0.6</span>
+                    </div>
+                    <p class="project-desc">
+                        Full casino ruleset with split hands, double down, insurance, and a
+                        shared card engine. Procedural renderer &mdash; zero image files.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d2" href="../games/slots/index.html" data-category="arcade">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#127920;</span>
+                            <span class="project-name">Slots</span>
+                        </div>
+                        <span class="version-badge">v3.1</span>
+                    </div>
+                    <p class="project-desc">
+                        3D CSS slot machine with 20 themes, a physical drag lever, particle
+                        effects, and adjustable RTP for family play.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d3" href="../games/snake/index.html" data-category="arcade">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#128013;</span>
+                            <span class="project-name">Neon Snake</span>
+                        </div>
+                        <span class="version-badge">v3.0</span>
+                    </div>
+                    <p class="project-desc">
+                        Canvas-rendered snake with Web Audio, swipe controls, speed ramping,
+                        and neon visual effects.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d4" href="../games/sudoku/index.html" data-category="puzzle">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#128290;</span>
+                            <span class="project-name">Sudoku</span>
+                        </div>
+                        <span class="version-badge">v2.0</span>
+                    </div>
+                    <p class="project-desc">
+                        ES5-refactored Sudoku with auto-save to localStorage, dual input modes,
+                        and difficulty levels from Easy to Expert.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d5" href="../projects/shipment-tracker/index.html" data-category="project">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#128230;</span>
+                            <span class="project-name">Shipment Tracker</span>
+                        </div>
+                        <span class="version-badge">v1.2</span>
+                    </div>
+                    <p class="project-desc">
+                        Offline-first multi-carrier tracker (DHL, FedEx, UPS, USPS) with
+                        IndexedDB persistence, smart rate limiting, and a JSON payload debugger.
+                    </p>
+                    <span class="project-link">Open &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d6" href="../games/tracing/index.html" data-category="edu">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#9999;&#65039;</span>
+                            <span class="project-name">Letter Tracing</span>
+                        </div>
+                        <span class="version-badge">v5.1</span>
+                    </div>
+                    <p class="project-desc">
+                        Voice-guided writing app with Canvas stroke validation, speed controls,
+                        and support for English and Chinese characters.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d1" href="../games/flow/index.html" data-category="puzzle">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#127744;</span>
+                            <span class="project-name">Flow</span>
+                        </div>
+                        <span class="version-badge">v1.0</span>
+                    </div>
+                    <p class="project-desc">
+                        Pipe connection puzzle. Connect matching colors to fill the board with
+                        procedurally generated levels.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d2" href="../games/jigsaw/index.html" data-category="puzzle">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#129513;</span>
+                            <span class="project-name">Jigsaw Engine</span>
+                        </div>
+                        <span class="version-badge">v1.1</span>
+                    </div>
+                    <p class="project-desc">
+                        Upload any photo and play. Rounded piece shapes with snap sound,
+                        lift effect, and drag placement hints.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d3" href="../games/minesweeper/index.html" data-category="puzzle">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#128163;</span>
+                            <span class="project-name">Minesweeper+</span>
+                        </div>
+                        <span class="version-badge">v1.0</span>
+                    </div>
+                    <p class="project-desc">
+                        Enhanced Minesweeper with lives, power-ups, and custom themes. Classic
+                        gameplay with modern quality-of-life features.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d4" href="../games/cards/big2/index.html" data-category="card">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#127136;</span>
+                            <span class="project-name">Big 2</span>
+                        </div>
+                        <span class="version-badge">v0.1</span>
+                    </div>
+                    <p class="project-desc">
+                        Classic shedding card game with Hong Kong, Taiwanese, and Singapore
+                        rulesets. AI opponents included.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d5" href="../games/board/index.html" data-category="puzzle">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#9823;</span>
+                            <span class="project-name">Board Games</span>
+                        </div>
+                        <span class="version-badge">v0.3.1</span>
+                    </div>
+                    <p class="project-desc">
+                        Chess, Checkers, and Xiangqi with minimax AI opponents and
+                        alpha-beta pruning for challenging gameplay.
+                    </p>
+                    <span class="project-link">Play &rarr;</span>
+                </a>
+
+                <a class="project-card reveal reveal-d6" href="../projects/dev-utils/index.html" data-category="project">
+                    <div class="project-top">
+                        <div class="project-icon-title">
+                            <span class="project-icon">&#128295;</span>
+                            <span class="project-name">Dev Utils</span>
+                        </div>
+                        <span class="version-badge">v1.0</span>
+                    </div>
+                    <p class="project-desc">
+                        JSON validator, Base64 &amp; URL encoder/decoder, CSV converter, and
+                        timestamp tools. Developer utilities suite.
+                    </p>
+                    <span class="project-link">Open &rarr;</span>
+                </a>
+
+            </div>
+        </section>
+
+    </div><!-- /page -->
+
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <footer class="site-footer">
+        <a class="footer-back" href="../index.html">&larr; Back to F.O.N.G. Arcade</a>
+        <p class="footer-credit">Built with Claude, Gemini &amp; Jules &nbsp;&middot;&nbsp; F.O.N.G. Arcade &copy; 2025&ndash;2026</p>
+    </footer>
+
+    <!-- ── Scroll-to-top button ────────────────────────────────── -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Back to top">&#8593;</button>
+
+    <!-- ── Scripts (ES5 only) ──────────────────────────────────── -->
+    <script>
+    (function () {
+        // ── Scroll reveal (IntersectionObserver) ──
+        if (!('IntersectionObserver' in window)) {
+            var els = document.querySelectorAll('.reveal');
+            for (var i = 0; i < els.length; i++) {
+                els[i].classList.add('visible');
+            }
+        } else {
+            var observer = new IntersectionObserver(function (entries) {
+                for (var i = 0; i < entries.length; i++) {
+                    if (entries[i].isIntersecting) {
+                        entries[i].target.classList.add('visible');
+                        observer.unobserve(entries[i].target);
+                    }
+                }
+            }, { threshold: 0.15 });
+
+            var targets = document.querySelectorAll('.reveal');
+            for (var j = 0; j < targets.length; j++) {
+                observer.observe(targets[j]);
+            }
+        }
+
+        // ── Scroll-to-top button ──
+        var btn = document.getElementById('scrollTopBtn');
+        if (btn) {
+            window.addEventListener('scroll', function () {
+                if (window.pageYOffset > 600) {
+                    btn.classList.add('show');
+                } else {
+                    btn.classList.remove('show');
+                }
+            });
+
+            btn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+    </script>
+
+</body>
+</html>
