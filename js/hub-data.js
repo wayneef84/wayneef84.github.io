@@ -7,28 +7,45 @@
 (function() {
     'use strict';
 
-    // List of all games to track
+    // List of all games and projects to track
     var GAME_PATHS = [
+        // Card
         'games/cards/blackjack/index.html',
         'games/cards/war/index.html',
+        'games/cards/solitaire/index.html',
         'games/cards/big2/index.html',
-        'games/tracing/index.html',
-        'games/j/index.html',
+        // Arcade
         'games/slots/index.html',
         'games/snake/index.html',
-        'games/sprunki/index.html',
         'games/pong/index.html',
         'games/space_invaders/index.html',
         'games/breakout/index.html',
         'games/sky_breakers/index.html',
-        'games/board/index.html',
         'games/animal_stack/index.html',
+        'games/sprunki/index.html',
+        'games/j/index.html',
+        'games/flash_classics/index.html',
+        // Puzzle
         'games/flow/index.html',
         'games/sudoku/index.html',
         'games/minesweeper/index.html',
         'games/mahjong/index.html',
         'games/jigsaw/index.html',
-        'games/xtc_ball/index.html'
+        'games/xtc_ball/index.html',
+        'games/board/index.html',
+        // Educational
+        'games/tracing/index.html',
+        // Projects
+        'projects/shipment-tracker/index.html',
+        'projects/md-reader/index.html',
+        'projects/encyclopedia/index.html',
+        'projects/dev-utils/index.html',
+        'projects/input-a11y/index.html',
+        'projects/name-that-tune/index.html',
+        'projects/code/index.html',
+        'projects/regex_builder/index.html',
+        'projects/web-archive/index.html',
+        'projects/project-ti-tanium/index.html'
     ];
 
     /**

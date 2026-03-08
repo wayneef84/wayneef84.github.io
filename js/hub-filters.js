@@ -1,5 +1,5 @@
 /**
- * Hub Filters, Theme Switcher & Card Renderer
+ * Hub Landing Page — Featured Apps + Category Navigation
  * Catalog data lives in js/catalog.js (FONG_CATALOG).
  * Default mode: professional. Add ?mode=fun to URL for arcade theme.
  * Strict ES5 compatible.
@@ -8,7 +8,6 @@
 (function() {
     'use strict';
 
-    // CATALOG data is loaded from catalog.js as window.FONG_CATALOG
     var CATALOG = window.FONG_CATALOG || [];
 
     // ─── THEME DETECTION ──────────────────────────────────────────────────────
@@ -18,312 +17,161 @@
     }
 
     var MODE = getMode();
-
-    // Apply theme attribute to <html> immediately
     document.documentElement.setAttribute('data-theme', MODE);
 
-    // ─── FEATURED GAME ROTATION ───────────────────────────────────────────────
-    function renderFeatured() {
-        var section = document.getElementById('featured-section');
-        if (!section) return;
-
-        var eligible = [];
-        for (var i = 0; i < CATALOG.length; i++) {
-            if (CATALOG[i].featured) eligible.push(CATALOG[i]);
-        }
-        if (!eligible.length) return;
-
-        var dayIndex = (new Date().getDate() - 1) % eligible.length;
-        var game = eligible[dayIndex];
-
-        var title = MODE === 'fun' ? game.funTitle : game.title;
-        var desc  = MODE === 'fun' ? game.funDescription : game.description;
-        var btnLabel = MODE === 'fun' ? '&#9658; PLAY NOW!' : 'Play Now';
-        var sectionLabel = MODE === 'fun' ? '&#9733; TODAY\'S PICK' : 'FEATURED GAME';
-
-        section.innerHTML =
-            '<div class="featured-content">' +
-                '<div class="featured-label">' + sectionLabel + '</div>' +
-                '<div class="featured-icon">' + game.icon + '</div>' +
-                '<h1 class="featured-title">' + title + ' <span class="featured-version">' + game.version + '</span></h1>' +
-                '<p class="featured-desc">' + desc + '</p>' +
-                '<a href="' + game.href + '" class="btn-primary">' + btnLabel + '</a>' +
-            '</div>' +
-            '<div class="featured-visual" aria-hidden="true">' +
-                '<div class="featured-visual-icon">' + game.icon + '</div>' +
-            '</div>';
-    }
-
-    // ─── CARD RENDERER ────────────────────────────────────────────────────────
-    function _catLabel(cat) {
-        var labels = { card: 'Card', arcade: 'Arcade', puzzle: 'Puzzle', edu: 'Educational', project: 'Project' };
-        return labels[cat] || cat;
-    }
-
-    function _getCategoryCount(cat) {
+    // ─── CATEGORY COUNTS ────────────────────────────────────────────────────
+    function getCategoryCount(cat) {
         var count = 0;
         for (var i = 0; i < CATALOG.length; i++) {
             var g = CATALOG[i];
             if (g.theme === 'pro' && MODE === 'fun') continue;
             if (g.theme === 'fun' && MODE === 'pro') continue;
-            if (cat !== 'all' && g.category !== cat) continue;
-            count++;
+            if (g.category === cat) count++;
         }
         return count;
     }
 
-    function updateGameCount(category) {
-        var el = document.getElementById('game-count');
-        if (!el) return;
-        var count = _getCategoryCount(category);
-        el.textContent = count + ' games';
-    }
-
-    function renderCards(category) {
-        var grid = document.getElementById('game-grid');
-        if (!grid) return;
-
-        grid.innerHTML = '';
-
-        for (var i = 0; i < CATALOG.length; i++) {
-            var game = CATALOG[i];
-
-            // Theme filtering
-            if (game.theme === 'pro' && MODE === 'fun') continue;
-            if (game.theme === 'fun' && MODE === 'pro') continue;
-
-            // Category filtering
-            if (category !== 'all' && game.category !== category) continue;
-
-            var title = MODE === 'fun' ? game.funTitle : game.title;
-            var desc  = MODE === 'fun' ? game.funDescription : game.description;
-            var tagClass = 'tag-' + game.category;
-            var badgeHtml = game.isNew ? '<span class="badge-new">NEW</span>' : '';
-
-            var card = document.createElement('a');
-            card.href = game.href;
-            card.className = 'game-card';
-            card.setAttribute('data-category', game.category);
-
-            card.innerHTML =
-                '<div class="card-top">' +
-                    '<span class="card-icon">' + game.icon + '</span>' +
-                    '<span class="category-tag ' + tagClass + '">' + _catLabel(game.category) + '</span>' +
-                '</div>' +
-                '<div class="game-title">' + title + badgeHtml + '</div>' +
-                '<p class="game-desc">' + desc + '</p>' +
-                '<div class="game-meta"><span>' + game.version + '</span></div>';
-
-            grid.appendChild(card);
-        }
-
-        updateGameCount(category);
-    }
-
-    // ─── QUICK PLAY CAROUSEL ──────────────────────────────────────────────────
-    function renderCarousel() {
-        var section = document.getElementById('carousel-section');
+    // ─── FEATURED APPS ──────────────────────────────────────────────────────
+    function renderFeaturedApps() {
+        var section = document.getElementById('featured-apps');
         if (!section) return;
 
-        var cardsHtml = '';
+        // Find Card Games hub entry and MD Reader
+        var cardsEntry = null;
+        var mdEntry = null;
         for (var i = 0; i < CATALOG.length; i++) {
-            var game = CATALOG[i];
-            if (game.theme === 'pro' && MODE === 'fun') continue;
-            if (game.theme === 'fun' && MODE === 'pro') continue;
-            cardsHtml +=
-                '<a class="carousel-card" href="' + game.href + '">' +
-                    '<div class="carousel-card-icon">' + game.icon + '</div>' +
-                    '<div class="carousel-card-name">' + game.title + '</div>' +
+            if (CATALOG[i].id === 'poker-hall') cardsEntry = CATALOG[i];
+            if (CATALOG[i].id === 'md-reader') mdEntry = CATALOG[i];
+        }
+
+        var cardCount = getCategoryCount('card');
+
+        var html = '';
+
+        // Card Games featured card
+        if (cardsEntry) {
+            var cardsTitle = MODE === 'fun' ? 'CARD ROOM' : 'Card Games';
+            var cardsDesc = MODE === 'fun'
+                ? 'Blackjack, Poker, War, Big 2 &mdash; shuffle up and deal!'
+                : 'Blackjack, Poker, War, Solitaire, Big 2. Shared engine, full rules.';
+            var cardsBtnLabel = MODE === 'fun' ? '&#9658; DEAL ME IN!' : 'Enter Card Room';
+
+            html +=
+                '<a href="./games/cards/index.html" class="featured-app-card featured-card-games">' +
+                    '<div class="featured-app-icon">&#127183;</div>' +
+                    '<div class="featured-app-body">' +
+                        '<div class="featured-app-label">' + cardCount + ' games</div>' +
+                        '<h2 class="featured-app-title">' + cardsTitle + '</h2>' +
+                        '<p class="featured-app-desc">' + cardsDesc + '</p>' +
+                        '<span class="featured-app-btn">' + cardsBtnLabel + '</span>' +
+                    '</div>' +
                 '</a>';
         }
 
-        var titleLabel = MODE === 'fun' ? '&#127918; Quick Play' : 'Quick Play';
+        // MD Reader featured card
+        if (mdEntry) {
+            var mdTitle = MODE === 'fun' ? 'DOC READER' : 'MD Reader';
+            var mdDesc = MODE === 'fun'
+                ? 'Read all the docs! Markdown made beautiful.'
+                : 'Markdown reader and documentation viewer.';
+            var mdBtnLabel = MODE === 'fun' ? '&#9658; READ STUFF!' : 'Open Reader';
 
-        section.innerHTML =
-            '<div class="carousel-header">' +
-                '<h3 class="carousel-title">' + titleLabel + '</h3>' +
-                '<div class="carousel-controls">' +
-                    '<button class="carousel-btn" id="carousel-prev" aria-label="Scroll left">&#8249;</button>' +
-                    '<button class="carousel-btn" id="carousel-next" aria-label="Scroll right">&#8250;</button>' +
-                '</div>' +
-            '</div>' +
-            '<div class="carousel-track" id="carousel-track">' + cardsHtml + '</div>';
-
-        var track = document.getElementById('carousel-track');
-        var prevBtn = document.getElementById('carousel-prev');
-        var nextBtn = document.getElementById('carousel-next');
-
-        if (prevBtn && track) {
-            prevBtn.addEventListener('click', function() {
-                if (track.scrollBy) {
-                    track.scrollBy({ left: -300, behavior: 'smooth' });
-                } else {
-                    track.scrollLeft -= 300;
-                }
-            });
+            html +=
+                '<a href="' + mdEntry.href + '" class="featured-app-card featured-md-reader">' +
+                    '<div class="featured-app-icon">&#128214;</div>' +
+                    '<div class="featured-app-body">' +
+                        '<div class="featured-app-label">Tool</div>' +
+                        '<h2 class="featured-app-title">' + mdTitle + '</h2>' +
+                        '<p class="featured-app-desc">' + mdDesc + '</p>' +
+                        '<span class="featured-app-btn">' + mdBtnLabel + '</span>' +
+                    '</div>' +
+                '</a>';
         }
-        if (nextBtn && track) {
-            nextBtn.addEventListener('click', function() {
-                if (track.scrollBy) {
-                    track.scrollBy({ left: 300, behavior: 'smooth' });
-                } else {
-                    track.scrollLeft += 300;
-                }
-            });
-        }
+
+        section.innerHTML = html;
     }
 
-    // ─── MOBILE FILTER POPUP ──────────────────────────────────────────────────
-    function initMobileFilter(filterBtns, currentFilter) {
-        var bar = document.querySelector('.filter-bar');
-        if (!bar) return;
+    // ─── NAVIGATION CARDS ───────────────────────────────────────────────────
+    function renderNavCards() {
+        var grid = document.getElementById('nav-grid');
+        if (!grid) return;
 
-        var LABELS = {
-            all: 'All', arcade: 'Arcade', card: 'Card',
-            puzzle: 'Puzzle', edu: 'Educational', project: 'Projects'
-        };
-        var CATEGORIES = [
-            { cat: 'all',     label: 'All' },
-            { cat: 'arcade',  label: 'Arcade' },
-            { cat: 'card',    label: 'Card' },
-            { cat: 'puzzle',  label: 'Puzzle' },
-            { cat: 'edu',     label: 'Educational' },
-            { cat: 'project', label: 'Projects' }
+        var modeSuffix = MODE === 'fun' ? '?mode=fun' : '';
+
+        var categories = [
+            {
+                id: 'arcade',
+                icon: '&#127918;',
+                title: MODE === 'fun' ? 'ARCADE' : 'Arcade',
+                href: './arcade/' + (modeSuffix ? 'index.html' + modeSuffix : ''),
+                cat: 'arcade',
+                desc: MODE === 'fun'
+                    ? 'Snake, Slots, Breakout, shooters &mdash; HIGH SCORES!'
+                    : 'Snake, Slots, Breakout, Space Invaders and more.'
+            },
+            {
+                id: 'cards',
+                icon: '&#127183;',
+                title: MODE === 'fun' ? 'CARD GAMES' : 'Card Games',
+                href: './games/cards/index.html',
+                cat: 'card',
+                desc: MODE === 'fun'
+                    ? 'Blackjack, Poker, War, Big 2 &mdash; deal me in!'
+                    : 'Blackjack, Poker, War, Solitaire, Big 2.'
+            },
+            {
+                id: 'puzzle',
+                icon: '&#129513;',
+                title: MODE === 'fun' ? 'PUZZLES' : 'Puzzle',
+                href: './puzzle/' + (modeSuffix ? 'index.html' + modeSuffix : ''),
+                cat: 'puzzle',
+                desc: MODE === 'fun'
+                    ? 'Sudoku, Flow, Mahjong, Jigsaw &mdash; BRAIN POWER!'
+                    : 'Sudoku, Flow, Mahjong, Minesweeper+, Jigsaw and more.'
+            },
+            {
+                id: 'edu',
+                icon: '&#9999;&#65039;',
+                title: MODE === 'fun' ? 'LEARN!' : 'Educational',
+                href: './games/tracing/index.html',
+                cat: 'edu',
+                desc: MODE === 'fun'
+                    ? 'Draw letters! Voice says what to write!'
+                    : 'Letter Tracing with voice guidance and stroke validation.'
+            },
+            {
+                id: 'projects',
+                icon: '&#128736;&#65039;',
+                title: MODE === 'fun' ? 'PROJECTS' : 'Projects & Tools',
+                href: './projects/' + (modeSuffix ? 'index.html' + modeSuffix : ''),
+                cat: 'project',
+                desc: MODE === 'fun'
+                    ? 'Tracker, DevUtils, Calculator, OCR and more!'
+                    : 'Shipment Tracker, Dev Utils, TI Calculator, OCR Scanner and more.'
+            }
         ];
 
-        // ── Build mobile trigger button ──
-        var wrap = document.createElement('div');
-        wrap.className = 'filter-mobile-trigger';
-        wrap.id = 'filter-mobile-trigger';
+        var html = '';
+        for (var i = 0; i < categories.length; i++) {
+            var c = categories[i];
+            var count = getCategoryCount(c.cat);
+            var countLabel = count === 1 ? '1 app' : count + ' ' + (c.cat === 'project' ? 'tools' : 'games');
 
-        var currentLabel = LABELS[currentFilter] || 'All';
-        var currentCount = _getCategoryCount(currentFilter);
-
-        wrap.innerHTML =
-            '<button class="filter-mobile-btn" id="filter-mobile-btn">' +
-                '<span id="filter-mobile-label">' + currentLabel + ' (' + currentCount + ')</span>' +
-                '<span class="filter-mobile-arrow">&#9662;</span>' +
-            '</button>';
-
-        bar.parentNode.insertBefore(wrap, bar);
-
-        // ── Build popup overlay ──
-        var optionsHtml = '';
-        for (var i = 0; i < CATEGORIES.length; i++) {
-            var c = CATEGORIES[i];
-            var count = _getCategoryCount(c.cat);
-            var activeClass = c.cat === currentFilter ? ' active' : '';
-            optionsHtml +=
-                '<button class="filter-popup-option' + activeClass + '" data-category="' + c.cat + '" data-label="' + c.label + '">' +
-                    c.label +
-                    '<span class="filter-popup-count">(' + count + ')</span>' +
-                '</button>';
+            html +=
+                '<a href="' + c.href + '" class="nav-card nav-card-' + c.id + '" role="listitem">' +
+                    '<div class="nav-card-icon">' + c.icon + '</div>' +
+                    '<div class="nav-card-body">' +
+                        '<div class="nav-card-title">' + c.title + '</div>' +
+                        '<div class="nav-card-count">' + countLabel + '</div>' +
+                        '<p class="nav-card-desc">' + c.desc + '</p>' +
+                    '</div>' +
+                '</a>';
         }
 
-        var overlay = document.createElement('div');
-        overlay.className = 'filter-popup-overlay';
-        overlay.id = 'filter-popup-overlay';
-        overlay.setAttribute('aria-hidden', 'true');
-        overlay.innerHTML =
-            '<div class="filter-popup">' +
-                '<div class="filter-popup-header">' +
-                    '<span class="filter-popup-title">Filter Games</span>' +
-                    '<button class="filter-popup-close" id="filter-popup-close" aria-label="Close">&#10005;</button>' +
-                '</div>' +
-                '<div class="filter-popup-options">' + optionsHtml + '</div>' +
-            '</div>';
-
-        document.body.appendChild(overlay);
-
-        // ── Open / close ──
-        function openPopup() {
-            overlay.classList.add('open');
-            overlay.setAttribute('aria-hidden', 'false');
-        }
-        function closePopup() {
-            overlay.classList.remove('open');
-            overlay.setAttribute('aria-hidden', 'true');
-        }
-
-        document.getElementById('filter-mobile-btn').addEventListener('click', openPopup);
-        document.getElementById('filter-popup-close').addEventListener('click', closePopup);
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) closePopup();
-        });
-
-        // ── Option selection ──
-        var optionBtns = overlay.querySelectorAll('.filter-popup-option');
-        for (var j = 0; j < optionBtns.length; j++) {
-            (function(btn) {
-                btn.addEventListener('click', function() {
-                    var cat = btn.getAttribute('data-category');
-                    var label = btn.getAttribute('data-label');
-                    var count = _getCategoryCount(cat);
-
-                    // Sync desktop pill buttons
-                    for (var k = 0; k < filterBtns.length; k++) {
-                        filterBtns[k].classList.toggle('active', filterBtns[k].getAttribute('data-category') === cat);
-                    }
-                    // Sync popup options
-                    for (var m = 0; m < optionBtns.length; m++) {
-                        optionBtns[m].classList.toggle('active', optionBtns[m].getAttribute('data-category') === cat);
-                    }
-
-                    // Update trigger label
-                    var labelEl = document.getElementById('filter-mobile-label');
-                    if (labelEl) labelEl.textContent = label + ' (' + count + ')';
-
-                    localStorage.setItem('hub_filter', cat);
-                    renderCards(cat);
-                    closePopup();
-                });
-            })(optionBtns[j]);
-        }
+        grid.innerHTML = html;
     }
 
-    // ─── FILTER BUTTONS ───────────────────────────────────────────────────────
-    function initFilters() {
-        var filterBtns = document.querySelectorAll('.filter-btn');
-        var currentFilter = localStorage.getItem('hub_filter') || 'all';
-
-        // Add game counts to each filter button label
-        for (var i = 0; i < filterBtns.length; i++) {
-            var cat = filterBtns[i].getAttribute('data-category');
-            var label = filterBtns[i].textContent.trim();
-            var count = _getCategoryCount(cat);
-            filterBtns[i].innerHTML = label + '<span class="filter-count">(' + count + ')</span>';
-        }
-
-        // Set initial active state
-        for (var i = 0; i < filterBtns.length; i++) {
-            if (filterBtns[i].getAttribute('data-category') === currentFilter) {
-                filterBtns[i].classList.add('active');
-            } else {
-                filterBtns[i].classList.remove('active');
-            }
-        }
-
-        renderCards(currentFilter);
-
-        // Attach click handlers (IIFE for loop closure)
-        for (var j = 0; j < filterBtns.length; j++) {
-            (function(btn) {
-                btn.addEventListener('click', function() {
-                    var cat = btn.getAttribute('data-category');
-                    for (var k = 0; k < filterBtns.length; k++) {
-                        filterBtns[k].classList.remove('active');
-                    }
-                    btn.classList.add('active');
-                    localStorage.setItem('hub_filter', cat);
-                    renderCards(cat);
-                });
-            })(filterBtns[j]);
-        }
-
-        initMobileFilter(filterBtns, currentFilter);
-    }
-
-    // ─── THEME TOGGLE LINK ────────────────────────────────────────────────────
+    // ─── THEME TOGGLE LINK ──────────────────────────────────────────────────
     function renderThemeToggle() {
         var toggle = document.getElementById('theme-toggle');
         if (!toggle) return;
@@ -333,15 +181,14 @@
             toggle.textContent = 'Professional View';
         } else {
             toggle.href = window.location.pathname + '?mode=fun';
-            toggle.textContent = '🎮 Fun Mode';
+            toggle.innerHTML = '&#127918; Fun Mode';
         }
     }
 
-    // ─── INIT ─────────────────────────────────────────────────────────────────
+    // ─── INIT ───────────────────────────────────────────────────────────────
     function init() {
-        renderFeatured();
-        renderCarousel();
-        initFilters();
+        renderFeaturedApps();
+        renderNavCards();
         renderThemeToggle();
     }
 

@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "generated": "2026-03-07",
+  "site": {
+    "name": "F.O.N.G. Arcade",
+    "root": "https://wayneef84.github.io"
+  },
+  "hubs": [
+    { "id": "home", "title": "Homepage", "path": "./index.html" },
+    { "id": "arcade", "title": "Arcade", "path": "./arcade/index.html" },
+    { "id": "cards", "title": "Card Games", "path": "./games/cards/index.html" },
+    { "id": "puzzle", "title": "Puzzle", "path": "./puzzle/index.html" },
+    { "id": "projects", "title": "Projects & Tools", "path": "./projects/index.html" },
+    { "id": "profile", "title": "Developer Profile", "path": "./profile/index.html" }
+  ],
+  "programs": [
+    { "id": "blackjack", "title": "Blackjack", "category": "card", "hub": "cards", "path": "./games/cards/blackjack/index.html", "version": "v1.0.6" },
+    { "id": "war", "title": "War", "category": "card", "hub": "cards", "path": "./games/cards/war/index.html", "version": "v1.1.0" },
+    { "id": "solitaire", "title": "Solitaire", "category": "card", "hub": "cards", "path": "./games/cards/solitaire/index.html", "version": "v1.0" },
+    { "id": "poker-hall", "title": "Poker Hall", "category": "card", "hub": "cards", "path": "./games/cards/index.html", "version": "v0.9" },
+    { "id": "big2", "title": "Big 2", "category": "card", "hub": "cards", "path": "./games/cards/big2/index.html", "version": "v0.1" },
+    { "id": "slots", "title": "Slots", "category": "arcade", "hub": "arcade", "path": "./games/slots/index.html", "version": "v3.1" },
+    { "id": "snake", "title": "Neon Snake", "category": "arcade", "hub": "arcade", "path": "./games/snake/index.html", "version": "v3.0" },
+    { "id": "pong", "title": "Pong", "category": "arcade", "hub": "arcade", "path": "./games/pong/index.html", "version": "v1.0" },
+    { "id": "space-invaders", "title": "Space Invaders", "category": "arcade", "hub": "arcade", "path": "./games/space_invaders/index.html", "version": "v1.0" },
+    { "id": "breakout", "title": "Breakout", "category": "arcade", "hub": "arcade", "path": "./games/breakout/index.html", "version": "v1.0" },
+    { "id": "sky-breakers", "title": "Sky Breakers", "category": "arcade", "hub": "arcade", "path": "./games/sky_breakers/index.html", "version": "v1.0" },
+    { "id": "animal-stack", "title": "Animal Stack", "category": "arcade", "hub": "arcade", "path": "./games/animal_stack/index.html", "version": "v1.0" },
+    { "id": "sprunki", "title": "Sprunki Mixer", "category": "arcade", "hub": "arcade", "path": "./games/sprunki/index.html", "version": "v1.1" },
+    { "id": "j-quiz", "title": "J: Speed Quiz", "category": "arcade", "hub": "arcade", "path": "./games/j/index.html", "version": "v4.x" },
+    { "id": "flash-classics", "title": "Flash Classics", "category": "arcade", "hub": "arcade", "path": "./games/flash_classics/index.html", "version": "v1.0" },
+    { "id": "flow", "title": "Flow", "category": "puzzle", "hub": "puzzle", "path": "./games/flow/index.html", "version": "v1.0" },
+    { "id": "sudoku", "title": "Sudoku", "category": "puzzle", "hub": "puzzle", "path": "./games/sudoku/index.html", "version": "v2.0" },
+    { "id": "minesweeper", "title": "Minesweeper+", "category": "puzzle", "hub": "puzzle", "path": "./games/minesweeper/index.html", "version": "v1.0" },
+    { "id": "mahjong", "title": "Mahjong", "category": "puzzle", "hub": "puzzle", "path": "./games/mahjong/index.html", "version": "v1.0" },
+    { "id": "jigsaw", "title": "Jigsaw Engine", "category": "puzzle", "hub": "puzzle", "path": "./games/jigsaw/index.html", "version": "v1.1" },
+    { "id": "xtc-ball", "title": "XTC Ball", "category": "puzzle", "hub": "puzzle", "path": "./games/xtc_ball/index.html", "version": "v5.0" },
+    { "id": "board", "title": "Board Games", "category": "puzzle", "hub": "puzzle", "path": "./games/board/index.html", "version": "v0.3.1" },
+    { "id": "letter-tracing", "title": "Letter Tracing", "category": "edu", "hub": "home", "path": "./games/tracing/index.html", "version": "v5.1" },
+    { "id": "shipment-tracker", "title": "Shipment Tracker", "category": "project", "hub": "projects", "path": "./projects/shipment-tracker/index.html", "version": "v1.2" },
+    { "id": "md-reader", "title": "MD Reader", "category": "project", "hub": "projects", "path": "./projects/md-reader/index.html", "version": "v1.0" },
+    { "id": "encyclopedia", "title": "Encyclopedia", "category": "project", "hub": "projects", "path": "./projects/encyclopedia/index.html", "version": "v1.0" },
+    { "id": "dev-utils", "title": "Dev Utils", "category": "project", "hub": "projects", "path": "./projects/dev-utils/index.html", "version": "v1.0" },
+    { "id": "input-a11y", "title": "Input A11y", "category": "project", "hub": "projects", "path": "./projects/input-a11y/index.html", "version": "v2.0" },
+    { "id": "name-that-tune", "title": "Name That Tune", "category": "project", "hub": "projects", "path": "./projects/name-that-tune/index.html", "version": "v1.0" },
+    { "id": "code", "title": "C.o.D.E.", "category": "project", "hub": "projects", "path": "./projects/code/index.html", "version": "v1.0" },
+    { "id": "regex-builder", "title": "Regex Builder", "category": "project", "hub": "projects", "path": "./projects/regex_builder/index.html", "version": "v1.0" },
+    { "id": "web-archive", "title": "Web Archive", "category": "project", "hub": "projects", "path": "./projects/web-archive/index.html", "version": "v2.0" },
+    { "id": "project-ti-tanium", "title": "TI-tanium", "category": "project", "hub": "projects", "path": "./projects/project-ti-tanium/index.html", "version": "v1.0" }
+  ]
+}

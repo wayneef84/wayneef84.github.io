@@ -18,6 +18,7 @@
  *   featured      - eligible for daily hero rotation
  *   isNew         - show NEW badge
  *   theme         - 'both' | 'pro' | 'fun'
+ *   hub           - 'arcade' | 'cards' | 'puzzle' | 'projects' | 'home'
  *
  * ES5 strict — no const/let/arrow functions.
  */
@@ -34,6 +35,7 @@ var FONG_CATALOG = [
         funDescription: 'Hit, stand, or bust! Can you beat the dealer?',
         version: 'v1.0.6',
         href: './games/cards/blackjack/index.html',
+        hub: 'cards',
         featured: true,
         theme: 'both'
     },
@@ -47,6 +49,7 @@ var FONG_CATALOG = [
         funDescription: 'Flip cards and go to WAR! Endless battles await.',
         version: 'v1.1.0',
         href: './games/cards/war/index.html',
+        hub: 'cards',
         featured: false,
         theme: 'both'
     },
@@ -60,6 +63,7 @@ var FONG_CATALOG = [
         funDescription: 'The classic one-player card game. Can you win?',
         version: 'v1.0',
         href: './games/cards/solitaire/index.html',
+        hub: 'cards',
         featured: false,
         theme: 'both'
     },
@@ -73,6 +77,7 @@ var FONG_CATALOG = [
         funDescription: "All-in! Hold'em, Draw, and more at the Poker Hall.",
         version: 'v0.9',
         href: './games/cards/index.html',
+        hub: 'cards',
         featured: false,
         theme: 'both'
     },
@@ -86,6 +91,7 @@ var FONG_CATALOG = [
         funDescription: 'Shed your cards before anyone else! Three rulesets, serious AI.',
         version: 'v0.1',
         href: './games/cards/big2/index.html',
+        hub: 'cards',
         featured: false,
         isNew: true,
         theme: 'both'
@@ -102,6 +108,7 @@ var FONG_CATALOG = [
         funDescription: 'Pull the lever and win big! 20 themes and JACKPOTS!',
         version: 'v3.1',
         href: './games/slots/index.html',
+        hub: 'arcade',
         featured: true,
         theme: 'both'
     },
@@ -115,6 +122,7 @@ var FONG_CATALOG = [
         funDescription: "Slither, grow, and don't crash! Neon lights, epic sounds.",
         version: 'v3.0',
         href: './games/snake/index.html',
+        hub: 'arcade',
         featured: true,
         theme: 'both'
     },
@@ -128,6 +136,7 @@ var FONG_CATALOG = [
         funDescription: 'Bip boop! The OG tennis game is back. 1P vs CPU.',
         version: 'v1.0',
         href: './games/pong/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -141,6 +150,7 @@ var FONG_CATALOG = [
         funDescription: 'Aliens incoming! Blast them before they reach you!',
         version: 'v1.0',
         href: './games/space_invaders/index.html',
+        hub: 'arcade',
         featured: false,
         isNew: true,
         theme: 'both'
@@ -155,6 +165,7 @@ var FONG_CATALOG = [
         funDescription: 'Smash bricks with a ball! Particles fly everywhere!',
         version: 'v1.0',
         href: './games/breakout/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -168,6 +179,7 @@ var FONG_CATALOG = [
         funDescription: 'Rockets! Lasers! Explosions! Break through the sky!',
         version: 'v1.0',
         href: './games/sky_breakers/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -181,6 +193,7 @@ var FONG_CATALOG = [
         funDescription: 'Stack giraffes on penguins on bears... how HIGH can you go?!',
         version: 'v1.0',
         href: './games/animal_stack/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -194,6 +207,7 @@ var FONG_CATALOG = [
         funDescription: 'Mix beats with the Sprunkis! Make some music magic!',
         version: 'v1.1',
         href: './games/sprunki/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -207,6 +221,7 @@ var FONG_CATALOG = [
         funDescription: 'Fast! Fast! FAST! Quiz questions at lightning speed!',
         version: 'v4.x',
         href: './games/j/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -220,6 +235,7 @@ var FONG_CATALOG = [
         funDescription: "Old-school Flash vibes! Chopper, Defender, Runner - all here!",
         version: 'v1.0',
         href: './games/flash_classics/index.html',
+        hub: 'arcade',
         featured: false,
         theme: 'both'
     },
@@ -235,6 +251,7 @@ var FONG_CATALOG = [
         funDescription: 'Connect the dots! Fill the whole board with color pipes!',
         version: 'v1.0',
         href: './games/flow/index.html',
+        hub: 'puzzle',
         featured: true,
         theme: 'both'
     },
@@ -248,6 +265,7 @@ var FONG_CATALOG = [
         funDescription: "Fill the grid! Numbers, logic, and brain power - let's go!",
         version: 'v2.0',
         href: './games/sudoku/index.html',
+        hub: 'puzzle',
         featured: true,
         theme: 'both'
     },
@@ -261,6 +279,7 @@ var FONG_CATALOG = [
         funDescription: "Don't blow up! Hold to flag, lives to spare, power-ups!",
         version: 'v1.0',
         href: './games/minesweeper/index.html',
+        hub: 'puzzle',
         featured: false,
         theme: 'both'
     },
@@ -274,6 +293,7 @@ var FONG_CATALOG = [
         funDescription: 'Match tiles, clear the board! Classic 3D Mahjong!',
         version: 'v1.0',
         href: './games/mahjong/index.html',
+        hub: 'puzzle',
         featured: false,
         theme: 'both'
     },
@@ -287,6 +307,7 @@ var FONG_CATALOG = [
         funDescription: "Use YOUR own photos! Slice 'em up and snap 'em back together!",
         version: 'v1.1',
         href: './games/jigsaw/index.html',
+        hub: 'puzzle',
         featured: false,
         theme: 'both'
     },
@@ -300,6 +321,7 @@ var FONG_CATALOG = [
         funDescription: 'Ask it anything! The mystical ball KNOWS ALL!',
         version: 'v5.0',
         href: './games/xtc_ball/index.html',
+        hub: 'puzzle',
         featured: false,
         theme: 'both'
     },
@@ -313,6 +335,7 @@ var FONG_CATALOG = [
         funDescription: 'Chess! Checkers! Chinese Chess! Beat the AI if you dare!',
         version: 'v0.3.1',
         href: './games/board/index.html',
+        hub: 'puzzle',
         featured: false,
         theme: 'both'
     },
@@ -328,6 +351,7 @@ var FONG_CATALOG = [
         funDescription: 'Draw letters! Voice says what to write. Great for little ones!',
         version: 'v5.1',
         href: './games/tracing/index.html',
+        hub: 'home',
         featured: false,
         theme: 'both'
     },
@@ -343,6 +367,7 @@ var FONG_CATALOG = [
         funDescription: "Where's my package?! Track ALL your deliveries here.",
         version: 'v1.2',
         href: './projects/shipment-tracker/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -356,6 +381,7 @@ var FONG_CATALOG = [
         funDescription: 'Read all the docs! Markdown made beautiful.',
         version: 'v1.0',
         href: './projects/md-reader/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'pro'
     },
@@ -369,6 +395,7 @@ var FONG_CATALOG = [
         funDescription: 'Everything you ever wanted to know about F.O.N.G.!',
         version: 'v1.0',
         href: './projects/encyclopedia/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -382,6 +409,7 @@ var FONG_CATALOG = [
         funDescription: 'Your developer Swiss Army knife — JSON, Base64, CSV, timestamps and more!',
         version: 'v1.0',
         href: './projects/dev-utils/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'pro'
     },
@@ -395,6 +423,7 @@ var FONG_CATALOG = [
         funDescription: 'Point your camera at anything and scan the text — magic!',
         version: 'v2.0',
         href: './projects/input-a11y/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -408,6 +437,7 @@ var FONG_CATALOG = [
         funDescription: 'Can you name that tune?! 80s, 90s, Pop, Rock, Hip Hop and more!',
         version: 'v1.0',
         href: './projects/name-that-tune/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -421,6 +451,7 @@ var FONG_CATALOG = [
         funDescription: 'Hack the planet! Crack codes and decrypt secret strings!',
         version: 'v1.0',
         href: './projects/code/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -434,6 +465,7 @@ var FONG_CATALOG = [
         funDescription: 'Build regex patterns visually! Save your faves in the Snowbank!',
         version: 'v1.0',
         href: './projects/regex_builder/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -447,6 +479,7 @@ var FONG_CATALOG = [
         funDescription: 'Dial-up vibes! Visit the old internet — Geocities and all!',
         version: 'v2.0',
         href: './projects/web-archive/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     },
@@ -460,6 +493,7 @@ var FONG_CATALOG = [
         funDescription: 'Your old TI-84, in the browser! Calculate ALL the things!',
         version: 'v1.0',
         href: './projects/project-ti-tanium/index.html',
+        hub: 'projects',
         featured: false,
         theme: 'both'
     }

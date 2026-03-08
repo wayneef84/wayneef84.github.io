@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Projects - F.O.N.G. Arcade</title>
+    <title>Arcade - F.O.N.G. Arcade</title>
     <link rel="stylesheet" href="../css/components/global.css">
     <link rel="stylesheet" href="../css/components/card.css">
     <style>
-        .projects-page-header {
+        .hub-page-header {
             padding: 1.5rem 5% 0;
         }
-        .projects-back {
+        .hub-back {
             display: inline-block;
             font-size: 0.8rem;
             font-family: var(--font-mono);
@@ -19,22 +19,8 @@
             margin-bottom: 1.25rem;
             transition: color 0.2s;
         }
-        .projects-back:hover { color: var(--text-secondary); }
-        .projects-title {
-            font-family: var(--font-display);
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: 0.5px;
-            margin: 0 0 0.25rem;
-        }
-        .projects-subtitle {
-            font-size: 0.75rem;
-            font-family: var(--font-mono);
-            color: var(--text-muted);
-            margin: 0 0 1.25rem;
-        }
-        .projects-grid-section {
+        .hub-back:hover { color: var(--text-secondary); }
+        .hub-grid-section {
             padding: 0 5% 3rem;
         }
     </style>
@@ -49,15 +35,15 @@
     </header>
 
     <main>
-        <div class="projects-page-header">
+        <div class="hub-page-header">
             <div class="library-header">
-                <h2 class="library-title">Projects Hub</h2>
-                <span id="project-count" class="library-count"></span>
+                <h2 class="library-title">Arcade Games</h2>
+                <span id="hub-count" class="library-count"></span>
             </div>
         </div>
 
-        <section class="projects-grid-section">
-            <div id="project-grid" class="game-grid" role="list"></div>
+        <section class="hub-grid-section">
+            <div id="hub-grid" class="game-grid" role="list"></div>
         </section>
     </main>
 
@@ -67,12 +53,14 @@
             'use strict';
 
             var CATALOG = window.FONG_CATALOG || [];
+            var HUB_CATEGORY = 'arcade';
 
             // Detect theme
             var params = (window.location.search || '').toLowerCase();
             var MODE = params.indexOf('mode=fun') !== -1 ? 'fun' : 'pro';
             document.documentElement.setAttribute('data-theme', MODE);
 
+            // Update back link with theme
             if (MODE === 'fun') {
                 var backLink = document.getElementById('back-link');
                 if (backLink) backLink.href = '../index.html?mode=fun';
@@ -84,8 +72,8 @@
             }
 
             function render() {
-                var grid = document.getElementById('project-grid');
-                var countEl = document.getElementById('project-count');
+                var grid = document.getElementById('hub-grid');
+                var countEl = document.getElementById('hub-count');
                 if (!grid) return;
 
                 var count = 0;
@@ -93,12 +81,19 @@
 
                 for (var i = 0; i < CATALOG.length; i++) {
                     var game = CATALOG[i];
-                    if (game.category !== 'project') continue;
+                    if (game.category !== HUB_CATEGORY) continue;
 
-                    // Adjust href: catalog paths are relative to root (./projects/X)
-                    // This page is inside /projects/, so strip the ./projects/ prefix
-                    var href = game.href.replace('./projects/', './');
+                    // Theme filtering
+                    if (game.theme === 'pro' && MODE === 'fun') continue;
+                    if (game.theme === 'fun' && MODE === 'pro') continue;
 
+                    // Adjust href: catalog paths are relative to root (./games/X)
+                    // This page is inside /arcade/, so replace './' with '../'
+                    var href = game.href.replace('./', '../');
+
+                    var title = MODE === 'fun' ? game.funTitle : game.title;
+                    var desc = MODE === 'fun' ? game.funDescription : game.description;
+                    var tagClass = 'tag-' + game.category;
                     var badgeHtml = game.isNew ? '<span class="badge-new">NEW</span>' : '';
 
                     var card = document.createElement('a');
@@ -109,17 +104,17 @@
                     card.innerHTML =
                         '<div class="card-top">' +
                             '<span class="card-icon">' + game.icon + '</span>' +
-                            '<span class="category-tag tag-project">' + catLabel(game.category) + '</span>' +
+                            '<span class="category-tag ' + tagClass + '">' + catLabel(game.category) + '</span>' +
                         '</div>' +
-                        '<div class="game-title">' + game.title + badgeHtml + '</div>' +
-                        '<p class="game-desc">' + game.description + '</p>' +
+                        '<div class="game-title">' + title + badgeHtml + '</div>' +
+                        '<p class="game-desc">' + desc + '</p>' +
                         '<div class="game-meta"><span>' + game.version + '</span></div>';
 
                     grid.appendChild(card);
                     count++;
                 }
 
-                if (countEl) countEl.textContent = count + ' projects';
+                if (countEl) countEl.textContent = count + ' games';
             }
 
             if (document.readyState === 'loading') {
