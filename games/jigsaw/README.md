@@ -22,8 +22,13 @@ F.O.N.G. Jigsaw is a highly customizable, browser-based jigsaw puzzle game engin
 ## Features
 - ✨ **Custom Image Upload** - Play with your own photos. All image processing happens locally in your browser; nothing is sent to the cloud.
 - 📸 **Camera Integration** - Directly access your device's webcam or phone camera to take a picture and instantly scramble it into a puzzle.
-- 🎮 **Variable Difficulty** - You define the `a x b` grid size, meaning the game scales infinitely from a simple 9-piece toddler puzzle to a massive 400-piece challenge.
-- 📱 **Mobile-First Touch Controls** - Fluid drag-and-drop physics optimized for touchscreens, with a panning canvas for larger puzzles.
+- 🎮 **Variable Difficulty** - Choose from Very Easy (12 pieces) to Expert (192), or set a fully custom grid size.
+- 🧩 **Rounded Jigsaw Shapes** - Redesigned bezier tab: proper neck constriction → bulbous round head for a classic interlocking silhouette.
+- 🔊 **Snap Sound** - Satisfying audio click (Web Audio API) every time a piece locks into place.
+- 🖐️ **Lift Effect** - Dragged pieces scale up 5% with a deep drop shadow, giving a physical "held" feel.
+- 📊 **Piece Counter** - Live "12 / 48" progress tracker in the toolbar.
+- 💾 **Save & Resume** - Saves puzzle state to localStorage so you can pick up where you left off.
+- 📱 **Mobile-First Touch Controls** - Fluid drag-and-drop optimized for touchscreens.
 
 ---
 
@@ -38,16 +43,17 @@ Reassemble the scrambled image by connecting all the interlocking puzzle pieces.
 - The game is won when all pieces merge into a single, complete image.
 
 **Controls:**
-- **Select & Move:** Tap/Click and hold a piece, then drag it across the board.
-- **Pan Canvas:** On larger grid sizes, drag the empty background to pan your view around the workspace.
-- **Preview:** Tap the "Eye" icon to temporarily view the completed target image.
+- **Select & Move:** Tap/Click and hold a piece, then drag it to position.
+- **Snap:** Release near the correct position — piece snaps with a click sound.
+- **Hint:** Hold the "Hint (Hold)" button in the toolbar to see the completed image at 30% opacity.
+- **Save / Load:** Use the toolbar buttons to save progress to localStorage and resume later.
 
 ---
 
 ## Status
-- **Version:** 1.0.0
+- **Version:** 1.1.0
 - **Status:** Production
-- **Last Updated:** 2026-02-13
+- **Last Updated:** 2026-03-07
 - **Mobile Optimized:** Yes
 - **Tested On:** iOS Safari 12+, Chrome 50+, Firefox 45+
 

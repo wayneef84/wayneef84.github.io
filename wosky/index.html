@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOSKY_3169 — WOS Toolkit</title>
+    <meta name="description" content="Personal Whiteout Survival toolkit for WarMachine · State 3169 · OTT Alliance.">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./css/wosky.css">
+</head>
+<body>
+
+    <!-- Top Nav -->
+    <nav class="wosky-nav">
+        <a href="../index.html" class="wosky-nav-home">&#8592; Hub</a>
+        <span class="wosky-nav-sep">/</span>
+        <span class="wosky-nav-brand">WOSKY_3169</span>
+        <span class="wosky-nav-sep">&mdash;</span>
+        <span class="wosky-nav-page">WarMachine &middot; State 3169 &middot; OTT</span>
+    </nav>
+
+    <!-- Character Bar -->
+    <div id="wosky-char-bar"></div>
+
+    <!-- Main Content -->
+    <main class="wosky-main">
+
+        <!-- Hero -->
+        <div style="margin-bottom: 2rem;">
+            <div class="wosky-page-title">&#10052; WOSKY_3169</div>
+            <div class="wosky-page-sub">
+                Personal Whiteout Survival toolkit &mdash; WarMachine &middot; State 3169 &middot; OTT Alliance &middot; #13 &middot; GameOver
+            </div>
+            <div id="wosky-active-summary" style="margin-top: 0.5rem;"></div>
+        </div>
+
+        <!-- Tool Grid -->
+        <div class="w-card-title">Calculators</div>
+        <div class="wosky-tool-grid" id="wosky-tool-grid">
+
+            <a href="./charms/" class="wosky-tool-card">
+                <span class="wtc-icon">&#10024;</span>
+                <span class="wtc-title">Chief Charms</span>
+                <span class="wtc-desc">Upgrade costs, SvS pts, Designs / Guides / Secrets</span>
+                <span class="wtc-badge">Live</span>
+            </a>
+
+            <a href="./gear/" class="wosky-tool-card">
+                <span class="wtc-icon">&#128737;&#65039;</span>
+                <span class="wtc-title">Chief Gear</span>
+                <span class="wtc-desc">Tier / star upgrades &mdash; Alloy, Polishing, Lunar Amber</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./hero-gear/" class="wosky-tool-card">
+                <span class="wtc-icon">&#9876;&#65039;</span>
+                <span class="wtc-title">Hero Gear</span>
+                <span class="wtc-desc">Forge level, empowerment flip points, Mithril tracker</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./war-academy/" class="wosky-tool-card">
+                <span class="wtc-icon">&#128293;</span>
+                <span class="wtc-title">War Academy</span>
+                <span class="wtc-desc">FC &#8594; FCS exchange, node costs, days-to-complete, FC floor</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./svs/" class="wosky-tool-card">
+                <span class="wtc-icon">&#9876;&#65039;</span>
+                <span class="wtc-title">SvS Prep (5 Days)</span>
+                <span class="wtc-desc">Day-by-day targets, hold/exec/skip tags, running totals</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./troops/" class="wosky-tool-card">
+                <span class="wtc-icon">&#128120;</span>
+                <span class="wtc-title">Troop Training</span>
+                <span class="wtc-desc">T9&#8594;T11 costs, promotion, Minister of Education buff</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./pets/" class="wosky-tool-card">
+                <span class="wtc-icon">&#128062;</span>
+                <span class="wtc-title">Pets</span>
+                <span class="wtc-desc">Advancement milestones, refinement switch threshold</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./experts/" class="wosky-tool-card">
+                <span class="wtc-icon">&#128218;</span>
+                <span class="wtc-title">Experts</span>
+                <span class="wtc-desc">Sigils (6k pts) + Books of Knowledge (60 pts) for SvS</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+            <a href="./building/" class="wosky-tool-card">
+                <span class="wtc-icon">&#127963;&#65039;</span>
+                <span class="wtc-title">Building</span>
+                <span class="wtc-desc">RSS cost, time, and power gain per building level</span>
+                <span class="wtc-badge wtc-badge-soon">Coming Soon</span>
+            </a>
+
+        </div>
+
+        <!-- Character Data Summary -->
+        <div style="margin-top: 2rem;">
+            <div class="w-card-title">Active Character Data</div>
+            <div id="wosky-char-detail" class="w-card w-card-accent">
+                <div class="wosky-stub">
+                    <div class="wosky-stub-icon">&#10052;</div>
+                    <p>Loading character&hellip;</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem; text-align: center;">
+            <a href="../index.html" class="wbtn wbtn-ghost wbtn-sm">&#8592; Back to F.O.N.G. Hub</a>
+        </div>
+
+    </main>
+
+    <script src="./js/character.js"></script>
+    <script src="./js/char-bar.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        function renderCharDetail() {
+            var c = window.WOSKY_CHARS.getActive();
+            var el = document.getElementById('wosky-char-detail');
+            if (!el) return;
+            if (!c) { el.innerHTML = '<p style="color:var(--w-text-muted)">No character loaded.</p>'; return; }
+
+            var mithrilFlag = c.materials && c.materials.mithril !== undefined
+                ? '<span class="w-hard-resource">&#9888; HARD: ' + c.materials.mithril + ' Mithril</span>'
+                : '';
+
+            var fcFlag = c.materials && c.materials.fire_crystals !== undefined
+                ? '<span style="font-family:var(--w-mono);font-size:0.8rem;color:var(--w-warn)">&#128293; ' + c.materials.fire_crystals.toLocaleString() + ' FC</span>'
+                : '';
+
+            el.innerHTML =
+                '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-bottom:0.75rem;">' +
+                    '<span style="font-family:var(--w-mono);font-size:1rem;font-weight:700;color:var(--w-red);">' + escHtml(c.name) + '</span>' +
+                    '<span style="font-size:0.75rem;color:var(--w-text-muted);">' + (c.playerId || '') + '</span>' +
+                    (c.power ? '<span style="font-family:var(--w-mono);font-size:0.75rem;color:var(--w-text-secondary);">' + c.power.toLocaleString() + ' power</span>' : '') +
+                    mithrilFlag + fcFlag +
+                '</div>' +
+                '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.4rem;">' +
+                    statRow('State', c.state) +
+                    statRow('Alliance', c.alliance) +
+                    statRow('Furnace', c.furnaceLevel) +
+                    (c.warAcademy ? statRow('FC Floor', c.warAcademy.fcFloor ? c.warAcademy.fcFloor.toLocaleString() : '—') : '') +
+                '</div>';
+        }
+
+        function statRow(key, val) {
+            return '<div style="background:var(--w-surface2);border:1px solid var(--w-border);border-radius:var(--w-radius-sm);padding:0.4rem 0.6rem;">' +
+                '<div style="font-family:var(--w-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--w-text-muted);">' + key + '</div>' +
+                '<div style="font-family:var(--w-mono);font-size:0.85rem;font-weight:700;color:var(--w-text);">' + (val || '—') + '</div>' +
+                '</div>';
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        /* Re-render on character change */
+        document.addEventListener('wosky:character-changed', renderCharDetail);
+
+        /* Also expose so char-bar can trigger it after import */
+        window.woskyOnCharacterChanged = renderCharDetail;
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderCharDetail);
+        } else {
+            renderCharDetail();
+        }
+    })();
+    </script>
+
+</body>
+</html>
