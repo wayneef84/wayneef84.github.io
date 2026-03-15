@@ -148,6 +148,14 @@
                 desc: MODE === 'fun'
                     ? 'Tracker, DevUtils, Calculator, OCR and more!'
                     : 'Shipment Tracker, Dev Utils, TI Calculator, OCR Scanner and more.'
+            },
+            {
+                id: 'wosky',
+                icon: '&#10052;&#65039;',
+                title: 'WOSKY_3169',
+                href: './wosky/',
+                cat: 'wosky',
+                desc: 'Personal WOS toolkit — Charms, Chief Gear, Hero Gear, War Academy calculators.'
             }
         ];
 
@@ -155,7 +163,7 @@
         for (var i = 0; i < categories.length; i++) {
             var c = categories[i];
             var count = getCategoryCount(c.cat);
-            var countLabel = count === 1 ? '1 app' : count + ' ' + (c.cat === 'project' ? 'tools' : 'games');
+            var countLabel = count === 1 ? '1 app' : count + ' ' + (c.cat === 'project' || c.cat === 'wosky' ? 'tools' : 'games');
 
             html +=
                 '<a href="' + c.href + '" class="nav-card nav-card-' + c.id + '" role="listitem">' +

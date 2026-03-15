@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chief Charms — WOSKY_3169</title>
+    <meta name="description" content="Chief Charms upgrade cost calculator for Whiteout Survival. Tracks Designs, Guides, Secrets, and SvS points.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../css/wosky.css">
+    <style>
+        /* ── Charms page overrides ─────────────────────────────────────────── */
+        .charm-header-row {
+            display: grid;
+            grid-template-columns: 5rem 1fr 1fr;
+            gap: 0.4rem;
+            margin-bottom: 0.3rem;
+            padding: 0 0 0.25rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+        .charm-header-cell {
+            font-family: var(--w-mono);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--w-text-muted);
+            text-align: center;
+        }
+        .charm-row {
+            display: grid;
+            grid-template-columns: 5rem 1fr 1fr;
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 0.45rem;
+        }
+        .charm-slot-label {
+            font-family: var(--w-mono);
+            font-size: 0.72rem;
+            color: var(--w-text-secondary);
+        }
+        .charm-input-pair {
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            justify-content: center;
+        }
+        .charm-input-pair .w-input {
+            width: 44px;
+            text-align: center;
+            padding: 0.3rem 0.3rem;
+        }
+        .charm-dot { color: var(--w-text-muted); font-size: 1rem; font-family: var(--w-mono); }
+
+        @media (max-width: 480px) {
+            .charm-row { grid-template-columns: 4rem 1fr 1fr; gap: 0.3rem; }
+            .charm-input-pair .w-input { width: 38px; font-size: 0.75rem; }
+        }
+
+        /* Results table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--w-mono);
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+        }
+        .results-table th {
+            text-align: left;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--w-text-muted);
+            padding: 0.3rem 0.5rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+        .results-table td {
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid var(--w-border);
+            color: var(--w-text);
+        }
+        .results-table tr:last-child td { border-bottom: none; }
+        .results-table .val { text-align: right; font-weight: 700; }
+        .results-table .val-red { color: var(--w-red); }
+        .results-table .val-green { color: var(--w-success); }
+        .results-table .val-gold { color: var(--w-warn); }
+        .results-table .total-row td { color: var(--w-red); font-size: 0.88rem; border-top: 2px solid var(--w-red-dim); }
+
+        /* Save plan bar */
+        .plan-loaded {
+            background: var(--w-red-subtle);
+            border: 1px solid var(--w-red-dim);
+            border-radius: var(--w-radius-sm);
+            padding: 0.3rem 0.6rem;
+            font-family: var(--w-mono);
+            font-size: 0.68rem;
+            color: var(--w-red);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Nav -->
+    <nav class="wosky-nav">
+        <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
+        <span class="wosky-nav-sep">/</span>
+        <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+        <span class="wosky-nav-sep">/</span>
+        <span class="wosky-nav-brand">Chief Charms</span>
+    </nav>
+
+    <!-- Character Bar -->
+    <div id="wosky-char-bar"></div>
+
+    <!-- Main -->
+    <main class="wosky-main">
+
+        <div class="wosky-page-title">&#10024; Chief Charms Calculator</div>
+        <div class="wosky-page-sub">
+            18 charm slots across 6 gear pieces (3 charms each).
+            Enter <strong>current</strong> level.step and <strong>target</strong> level.step for each charm.
+            Level = integer (1&ndash;20). Step = 0&ndash;3 (3 = fully completed that level).
+        </div>
+
+        <!-- Controls -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+            <button class="wbtn" id="btn-calc">&#9654; Calculate Costs</button>
+            <button class="wbtn wbtn-outline" id="btn-load-char">&#8635; Load from Character</button>
+            <button class="wbtn wbtn-outline" id="btn-save-char">&#128190; Save to Character</button>
+            <button class="wbtn wbtn-ghost" id="btn-set-plan">&#128204; Set as Plan</button>
+            <button class="wbtn wbtn-ghost" id="btn-load-plan">&#128204; Load Plan</button>
+        </div>
+        <div id="plan-status"></div>
+
+        <!-- Charm Input Grid -->
+        <div id="charm-sections"></div>
+
+        <!-- Results -->
+        <div id="charm-results" style="display:none;">
+            <div class="w-card-title" style="margin-top:1.5rem;">Results</div>
+            <div class="w-result-panel">
+                <table class="results-table" id="results-table"></table>
+            </div>
+        </div>
+
+        <div style="margin-top:1.5rem;font-size:0.72rem;color:var(--w-text-muted);font-family:var(--w-mono);">
+            &#9888; Cost tables are community-sourced estimates. Verify against in-game values before SvS.<br>
+            SvS scoring: 70 pts per charm level completed (not per step).
+        </div>
+
+    </main>
+
+    <script src="../js/character.js"></script>
+    <script src="../js/char-bar.js"></script>
+    <script src="../js/data/charms-data.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var DATA   = window.WOSKY_CHARMS_DATA;
+        var CHARS  = window.WOSKY_CHARS;
+        var PIECES = DATA.pieces;
+
+        /* ── Build input grid ─────────────────────────────────────────────── */
+        function buildGrid() {
+            var container = document.getElementById('charm-sections');
+            var html = '';
+
+            for (var p = 0; p < PIECES.length; p++) {
+                var piece = PIECES[p];
+                html +=
+                    '<div class="charm-piece-section">' +
+                    '<div class="charm-piece-title">' + piece.label + '</div>' +
+                    '<div class="charm-header-row">' +
+                        '<div class="charm-header-cell" style="text-align:left;">Slot</div>' +
+                        '<div class="charm-header-cell">Current (lv.step)</div>' +
+                        '<div class="charm-header-cell">Target (lv.step)</div>' +
+                    '</div>';
+
+                for (var s = 0; s < 3; s++) {
+                    var base = piece.key + '_' + s;
+                    html +=
+                        '<div class="charm-row" data-piece="' + piece.key + '" data-slot="' + s + '">' +
+                            '<span class="charm-slot-label">Charm ' + (s + 1) + '</span>' +
+                            '<div class="charm-input-pair">' +
+                                '<input class="w-input charm-cur-lv" type="number" min="1" max="20" id="cur_lv_' + base + '" value="1" aria-label="Current level ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<span class="charm-dot">.</span>' +
+                                '<input class="w-input charm-cur-st" type="number" min="0" max="3" id="cur_st_' + base + '" value="0" aria-label="Current step ' + piece.label + ' charm ' + (s+1) + '">' +
+                            '</div>' +
+                            '<div class="charm-input-pair">' +
+                                '<input class="w-input charm-tgt-lv" type="number" min="1" max="20" id="tgt_lv_' + base + '" value="1" aria-label="Target level ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<span class="charm-dot">.</span>' +
+                                '<input class="w-input charm-tgt-st" type="number" min="0" max="3" id="tgt_st_' + base + '" value="3" aria-label="Target step ' + piece.label + ' charm ' + (s+1) + '">' +
+                            '</div>' +
+                        '</div>';
+                }
+
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        /* ── Populate inputs from character data ─────────────────────────── */
+        function loadFromChar() {
+            var c = CHARS.getActive();
+            if (!c || !c.charms) return;
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                var slots = c.charms[key] || [];
+                for (var s = 0; s < 3; s++) {
+                    var charm = slots[s];
+                    if (!charm) continue;
+                    var base = key + '_' + s;
+                    setVal('cur_lv_' + base, charm.level || 1);
+                    setVal('cur_st_' + base, charm.step  || 0);
+                }
+            }
+        }
+
+        /* ── Load plan targets ────────────────────────────────────────────── */
+        function loadPlan() {
+            var c = CHARS.getActive();
+            if (!c || !c.plans || !c.plans.charms) {
+                showPlanStatus('No plan saved for this character.');
+                return;
+            }
+            var plan = c.plans.charms;
+            var loaded = false;
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                var pieceTargets = plan[key];
+                if (!pieceTargets) continue;
+                for (var s = 0; s < 3; s++) {
+                    var t = pieceTargets[s];
+                    if (!t) continue;
+                    var base = key + '_' + s;
+                    setVal('tgt_lv_' + base, t.level || 1);
+                    setVal('tgt_st_' + base, t.step  || 3);
+                    loaded = true;
+                }
+            }
+            if (loaded) showPlanStatus('Plan targets loaded.');
+            else showPlanStatus('Plan exists but has no charm targets yet.');
+        }
+
+        /* ── Save current inputs to character charms ─────────────────────── */
+        function saveToChar() {
+            var c = CHARS.getActive();
+            if (!c) { alert('No active character.'); return; }
+            var charms = {};
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                charms[key] = [];
+                for (var s = 0; s < 3; s++) {
+                    var base = key + '_' + s;
+                    charms[key].push({
+                        level: getInt('cur_lv_' + base, 1),
+                        step:  getInt('cur_st_' + base, 0)
+                    });
+                }
+            }
+            CHARS.saveCharms(c.id, charms);
+            flashBtn('btn-save-char', 'Saved!');
+        }
+
+        /* ── Set upgrade plan (targets) ──────────────────────────────────── */
+        function setPlan() {
+            var c = CHARS.getActive();
+            if (!c) { alert('No active character.'); return; }
+            var planCharms = {};
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                planCharms[key] = [];
+                for (var s = 0; s < 3; s++) {
+                    var base = key + '_' + s;
+                    planCharms[key].push({
+                        level: getInt('tgt_lv_' + base, 1),
+                        step:  getInt('tgt_st_' + base, 3)
+                    });
+                }
+            }
+            CHARS.savePlan(c.id, 'charms', planCharms);
+            showPlanStatus('Plan saved to character!');
+            flashBtn('btn-set-plan', 'Plan Saved!');
+        }
+
+        /* ── Calculate ────────────────────────────────────────────────────── */
+        function calculate() {
+            var totalD = 0, totalG = 0, totalS = 0, totalSvS = 0;
+            var rows = [];
+
+            for (var p = 0; p < PIECES.length; p++) {
+                var piece = PIECES[p];
+                var pieceD = 0, pieceG = 0, pieceS = 0, pieceSvS = 0;
+
+                for (var s = 0; s < 3; s++) {
+                    var base = piece.key + '_' + s;
+                    var cLv  = getInt('cur_lv_' + base, 1);
+                    var cSt  = getInt('cur_st_' + base, 0);
+                    var tLv  = getInt('tgt_lv_' + base, 1);
+                    var tSt  = getInt('tgt_st_' + base, 3);
+
+                    /* Clamp */
+                    if (tLv < cLv || (tLv === cLv && tSt <= cSt)) continue;
+
+                    var result = DATA.calcRange(cLv, cSt, tLv, tSt);
+                    pieceD   += result.d;
+                    pieceG   += result.g;
+                    pieceS   += result.s;
+                    pieceSvS += result.svs_pts;
+                }
+
+                if (pieceD + pieceG + pieceS + pieceSvS > 0) {
+                    rows.push({ label: piece.label, d: pieceD, g: pieceG, s: pieceS, svs: pieceSvS });
+                }
+                totalD   += pieceD;
+                totalG   += pieceG;
+                totalS   += pieceS;
+                totalSvS += pieceSvS;
+            }
+
+            renderResults(rows, totalD, totalG, totalS, totalSvS);
+        }
+
+        function renderResults(rows, totalD, totalG, totalS, totalSvS) {
+            var panel = document.getElementById('charm-results');
+            var table = document.getElementById('results-table');
+
+            var html =
+                '<thead><tr>' +
+                    '<th>Piece</th>' +
+                    '<th class="val">Designs</th>' +
+                    '<th class="val">Guides</th>' +
+                    '<th class="val">Secrets</th>' +
+                    '<th class="val">SvS Pts</th>' +
+                '</tr></thead><tbody>';
+
+            for (var i = 0; i < rows.length; i++) {
+                var r = rows[i];
+                html += '<tr>' +
+                    '<td>' + r.label + '</td>' +
+                    '<td class="val">' + fmt(r.d) + '</td>' +
+                    '<td class="val">' + fmt(r.g) + '</td>' +
+                    '<td class="val ' + (r.s > 0 ? 'val-gold' : '') + '">' + fmt(r.s) + '</td>' +
+                    '<td class="val val-green">' + fmt(r.svs) + '</td>' +
+                '</tr>';
+            }
+
+            html += '<tr class="total-row">' +
+                '<td><strong>TOTAL</strong></td>' +
+                '<td class="val val-red"><strong>' + fmt(totalD) + '</strong></td>' +
+                '<td class="val val-red"><strong>' + fmt(totalG) + '</strong></td>' +
+                '<td class="val ' + (totalS > 0 ? 'val-gold' : 'val-red') + '"><strong>' + fmt(totalS) + '</strong></td>' +
+                '<td class="val val-green"><strong>' + fmt(totalSvS) + ' pts</strong></td>' +
+            '</tr></tbody>';
+
+            table.innerHTML = html;
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /* ── Utilities ────────────────────────────────────────────────────── */
+        function getInt(id, def) {
+            var el = document.getElementById(id);
+            if (!el) return def;
+            var v = parseInt(el.value, 10);
+            return isNaN(v) ? def : v;
+        }
+        function setVal(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.value = val;
+        }
+        function fmt(n) { return n.toLocaleString(); }
+        function showPlanStatus(msg) {
+            var el = document.getElementById('plan-status');
+            if (el) el.innerHTML = '<div class="plan-loaded" style="margin-bottom:0.6rem;">' + msg + '</div>';
+        }
+        function flashBtn(id, label) {
+            var btn = document.getElementById(id);
+            if (!btn) return;
+            var orig = btn.innerHTML;
+            btn.innerHTML = label;
+            btn.disabled = true;
+            setTimeout(function () { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+        }
+
+        /* ── Wire buttons ─────────────────────────────────────────────────── */
+        function bindButtons() {
+            var btnCalc      = document.getElementById('btn-calc');
+            var btnLoadChar  = document.getElementById('btn-load-char');
+            var btnSaveChar  = document.getElementById('btn-save-char');
+            var btnSetPlan   = document.getElementById('btn-set-plan');
+            var btnLoadPlan  = document.getElementById('btn-load-plan');
+
+            if (btnCalc)     btnCalc.addEventListener('click', calculate);
+            if (btnLoadChar) btnLoadChar.addEventListener('click', loadFromChar);
+            if (btnSaveChar) btnSaveChar.addEventListener('click', saveToChar);
+            if (btnSetPlan)  btnSetPlan.addEventListener('click', setPlan);
+            if (btnLoadPlan) btnLoadPlan.addEventListener('click', loadPlan);
+        }
+
+        /* ── Re-load character data when character changes ─────────────────── */
+        document.addEventListener('wosky:character-changed', function () {
+            loadFromChar();
+        });
+
+        /* Hook for char-bar import */
+        window.woskyOnCharacterChanged = function () { loadFromChar(); };
+
+        /* ── Init ─────────────────────────────────────────────────────────── */
+        function init() {
+            buildGrid();
+            loadFromChar();
+            bindButtons();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+    </script>
+
+</body>
+</html>
