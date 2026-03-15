@@ -143,8 +143,9 @@
         </div>
 
         <div style="margin-top:1.5rem;font-size:0.72rem;color:var(--w-text-muted);font-family:var(--w-mono);">
-            &#9888; Cost tables are community-sourced estimates. Verify against in-game values before SvS.<br>
-            SvS scoring: 70 pts per charm level completed (not per step).
+            &#9888; Level range: 1–16. Each level has 4 steps (0 = start, 4 = complete).<br>
+            &#9888; L2 Design costs and L1 Step 4 are UNVERIFIED — double-check before SvS.<br>
+            SvS scoring: 70 pts per charm level completed (step 4 done).
         </div>
 
     </main>
@@ -182,14 +183,14 @@
                         '<div class="charm-row" data-piece="' + piece.key + '" data-slot="' + s + '">' +
                             '<span class="charm-slot-label">Charm ' + (s + 1) + '</span>' +
                             '<div class="charm-input-pair">' +
-                                '<input class="w-input charm-cur-lv" type="number" min="1" max="20" id="cur_lv_' + base + '" value="1" aria-label="Current level ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<input class="w-input charm-cur-lv" type="number" min="1" max="16" id="cur_lv_' + base + '" value="1" aria-label="Current level ' + piece.label + ' charm ' + (s+1) + '">' +
                                 '<span class="charm-dot">.</span>' +
-                                '<input class="w-input charm-cur-st" type="number" min="0" max="3" id="cur_st_' + base + '" value="0" aria-label="Current step ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<input class="w-input charm-cur-st" type="number" min="0" max="4" id="cur_st_' + base + '" value="0" aria-label="Current step ' + piece.label + ' charm ' + (s+1) + '">' +
                             '</div>' +
                             '<div class="charm-input-pair">' +
-                                '<input class="w-input charm-tgt-lv" type="number" min="1" max="20" id="tgt_lv_' + base + '" value="1" aria-label="Target level ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<input class="w-input charm-tgt-lv" type="number" min="1" max="16" id="tgt_lv_' + base + '" value="1" aria-label="Target level ' + piece.label + ' charm ' + (s+1) + '">' +
                                 '<span class="charm-dot">.</span>' +
-                                '<input class="w-input charm-tgt-st" type="number" min="0" max="3" id="tgt_st_' + base + '" value="3" aria-label="Target step ' + piece.label + ' charm ' + (s+1) + '">' +
+                                '<input class="w-input charm-tgt-st" type="number" min="0" max="4" id="tgt_st_' + base + '" value="4" aria-label="Target step ' + piece.label + ' charm ' + (s+1) + '">' +
                             '</div>' +
                         '</div>';
                 }
