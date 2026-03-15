@@ -162,12 +162,14 @@
 .nav-card-puzzle  { border-left: 3px solid var(--cat-puzzle); }
 .nav-card-edu     { border-left: 3px solid var(--cat-edu); }
 .nav-card-projects { border-left: 3px solid var(--cat-project); }
+.nav-card-wosky    { border-left: 3px solid var(--cat-wosky); }
 
-.nav-card-arcade:hover  { border-color: var(--cat-arcade); }
-.nav-card-cards:hover   { border-color: var(--cat-card); }
-.nav-card-puzzle:hover  { border-color: var(--cat-puzzle); }
-.nav-card-edu:hover     { border-color: var(--cat-edu); }
+.nav-card-arcade:hover   { border-color: var(--cat-arcade); }
+.nav-card-cards:hover    { border-color: var(--cat-card); }
+.nav-card-puzzle:hover   { border-color: var(--cat-puzzle); }
+.nav-card-edu:hover      { border-color: var(--cat-edu); }
 .nav-card-projects:hover { border-color: var(--cat-project); }
+.nav-card-wosky:hover    { border-color: var(--cat-wosky); }
 
 .nav-card-icon {
   font-size: 1.75rem;

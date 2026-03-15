@@ -496,5 +496,21 @@ var FONG_CATALOG = [
         hub: 'projects',
         featured: false,
         theme: 'both'
+    },
+    // ── WOSKY_3169 ───────────────────────────────────────────────────────────
+    {
+        id: 'wosky-3169',
+        category: 'wosky',
+        icon: '❄️',
+        title: 'WOSKY_3169',
+        funTitle: 'WOSKY_3169 ❄️',
+        description: 'Personal Whiteout Survival toolkit. Charms, Gear, Hero Gear, War Academy calculators.',
+        funDescription: 'WOS toolkit — charm costs, gear upgrades, SvS prep!',
+        version: 'v0.1.0',
+        href: './wosky/index.html',
+        hub: 'home',
+        featured: false,
+        isNew: true,
+        theme: 'both'
     }
 ];
