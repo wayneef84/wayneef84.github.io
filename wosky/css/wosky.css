@@ -1,9 +1,11 @@
 /* ── WOSKY_3169 Shared Stylesheet ────────────────────────────────────────── */
 /* WarMachine · State 3169 · OTT Alliance                                    */
 /* Dark / black + red highlights. No external CDN dependencies.               */
+/* Theme system: data-theme="" | "ice" | "fire" | "sky" | "light"            */
 
-/* ── Variables ────────────────────────────────────────────────────────────── */
+/* ── Variables — Default: Dark Red ───────────────────────────────────────── */
 :root {
+    /* Surfaces */
     --w-bg:           #0a0a0a;
     --w-surface:      #111111;
     --w-surface2:     #1a1a1a;
@@ -11,27 +13,130 @@
     --w-border:       #2a2a2a;
     --w-border-accent:#3a0000;
 
+    /* Primary accent — overridden by themes */
     --w-red:          #e11d48;
     --w-red-dim:      #9b1030;
     --w-red-glow:     rgba(225, 29, 72, 0.18);
     --w-red-subtle:   rgba(225, 29, 72, 0.08);
 
+    /* Text */
     --w-text:         #f5f5f5;
     --w-text-secondary:#a0a0a0;
     --w-text-muted:   #555555;
 
+    /* Status */
     --w-success:      #22c55e;
     --w-warn:         #f59e0b;
     --w-info:         #38bdf8;
 
+    /* Shape */
     --w-radius-sm:    4px;
     --w-radius-md:    8px;
     --w-radius-lg:    14px;
 
+    /* Typography */
     --w-mono:         'Space Mono', 'Courier New', monospace;
     --w-ui:           'Inter', system-ui, sans-serif;
 
     --w-transition:   0.2s ease;
+
+    /* Troop type identity colours — constant across all themes */
+    --w-infantry:        #e11d48;
+    --w-infantry-dim:    #9b1030;
+    --w-infantry-subtle: rgba(225, 29, 72, 0.08);
+    --w-infantry-glow:   rgba(225, 29, 72, 0.18);
+
+    --w-lancer:          #38bdf8;
+    --w-lancer-dim:      #0369a1;
+    --w-lancer-subtle:   rgba(56, 189, 248, 0.08);
+    --w-lancer-glow:     rgba(56, 189, 248, 0.18);
+
+    --w-marksman:        #f59e0b;
+    --w-marksman-dim:    #b45309;
+    --w-marksman-subtle: rgba(245, 158, 11, 0.08);
+    --w-marksman-glow:   rgba(245, 158, 11, 0.18);
+}
+
+/* ── Theme: Ice (Dark Blue) ───────────────────────────────────────────────── */
+:root[data-theme="ice"] {
+    --w-bg:           #060d14;
+    --w-surface:      #0d1a24;
+    --w-surface2:     #122030;
+    --w-surface3:     #172840;
+    --w-border:       #1e3549;
+    --w-border-accent:#003060;
+
+    --w-red:          #38bdf8;
+    --w-red-dim:      #0369a1;
+    --w-red-glow:     rgba(56, 189, 248, 0.18);
+    --w-red-subtle:   rgba(56, 189, 248, 0.08);
+
+    --w-text:         #e0f0fa;
+    --w-text-secondary:#8ab4cc;
+    --w-text-muted:   #3a6880;
+}
+
+/* ── Theme: Fire (Dark Amber) ─────────────────────────────────────────────── */
+:root[data-theme="fire"] {
+    --w-bg:           #0f0700;
+    --w-surface:      #1a0e00;
+    --w-surface2:     #231500;
+    --w-surface3:     #2d1c00;
+    --w-border:       #3d2500;
+    --w-border-accent:#5a3000;
+
+    --w-red:          #f59e0b;
+    --w-red-dim:      #b45309;
+    --w-red-glow:     rgba(245, 158, 11, 0.18);
+    --w-red-subtle:   rgba(245, 158, 11, 0.08);
+
+    --w-text:         #fef3e2;
+    --w-text-secondary:#d4b06a;
+    --w-text-muted:   #7a5c20;
+}
+
+/* ── Theme: Sky (Sky Blue + Clouds) ──────────────────────────────────────── */
+:root[data-theme="sky"] {
+    --w-bg:           #dbeafe;
+    --w-surface:      #ffffff;
+    --w-surface2:     #eff6ff;
+    --w-surface3:     #e0edff;
+    --w-border:       #bfdbfe;
+    --w-border-accent:#93c5fd;
+
+    --w-red:          #0284c7;
+    --w-red-dim:      #0369a1;
+    --w-red-glow:     rgba(2, 132, 199, 0.20);
+    --w-red-subtle:   rgba(2, 132, 199, 0.09);
+
+    --w-text:         #0c4a6e;
+    --w-text-secondary:#1d6fa5;
+    --w-text-muted:   #64a5c8;
+
+    --w-success:      #16a34a;
+    --w-warn:         #d97706;
+}
+
+/* ── Theme: Light ─────────────────────────────────────────────────────────── */
+:root[data-theme="light"] {
+    --w-bg:           #f9fafb;
+    --w-surface:      #ffffff;
+    --w-surface2:     #f3f4f6;
+    --w-surface3:     #e5e7eb;
+    --w-border:       #d1d5db;
+    --w-border-accent:#fca5a5;
+
+    --w-red:          #e11d48;
+    --w-red-dim:      #9b1030;
+    --w-red-glow:     rgba(225, 29, 72, 0.14);
+    --w-red-subtle:   rgba(225, 29, 72, 0.06);
+
+    --w-text:         #111827;
+    --w-text-secondary:#4b5563;
+    --w-text-muted:   #9ca3af;
+
+    --w-success:      #16a34a;
+    --w-warn:         #d97706;
 }
 
 /* ── Reset / Base ─────────────────────────────────────────────────────────── */
@@ -469,6 +574,187 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; }
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--w-text-muted);
+}
+
+/* ── Theme Switcher (rendered by char-bar.js) ─────────────────────────────── */
+.char-bar-themes {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+    flex-shrink: 0;
+    padding-left: 0.5rem;
+}
+.char-bar-themes-label {
+    font-family: var(--w-mono);
+    font-size: 0.6rem;
+    color: var(--w-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+.w-theme-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform var(--w-transition), border-color var(--w-transition), box-shadow var(--w-transition);
+    flex-shrink: 0;
+    padding: 0;
+    outline: none;
+}
+.w-theme-btn:hover  { transform: scale(1.25); }
+.w-theme-btn.active { border-color: var(--w-text); box-shadow: 0 0 6px var(--w-red-glow); }
+
+/* Each theme button's background colour */
+.w-theme-btn[data-theme=""]      { background: #e11d48; }
+.w-theme-btn[data-theme="ice"]   { background: #38bdf8; }
+.w-theme-btn[data-theme="fire"]  { background: #f59e0b; }
+.w-theme-btn[data-theme="sky"]   { background: #0ea5e9; border: 2px solid #93c5fd; }
+.w-theme-btn[data-theme="light"] { background: #f9fafb; border: 2px solid #9ca3af; }
+
+/* ── Troop Group Sections (charm grouping) ────────────────────────────────── */
+.charm-troop-group {
+    margin-bottom: 1.5rem;
+    border-radius: var(--w-radius-lg);
+    border: 1px solid var(--w-border);
+    overflow: hidden;
+}
+
+.charm-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--w-border);
+}
+.charm-group-emoji  { font-size: 1.1rem; line-height: 1; flex-shrink: 0; }
+.charm-group-label  {
+    font-family: var(--w-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.charm-group-count  {
+    font-family: var(--w-mono);
+    font-size: 0.62rem;
+    color: var(--w-text-muted);
+    margin-left: auto;
+}
+
+/* Infantry — red */
+.charm-troop-group.group-infantry { border-left: 4px solid var(--w-infantry); }
+.charm-troop-group.group-infantry .charm-group-header { background: var(--w-infantry-subtle); }
+.charm-troop-group.group-infantry .charm-group-label  { color: var(--w-infantry); }
+
+/* Lancer — blue */
+.charm-troop-group.group-lancer   { border-left: 4px solid var(--w-lancer); }
+.charm-troop-group.group-lancer   .charm-group-header { background: var(--w-lancer-subtle); }
+.charm-troop-group.group-lancer   .charm-group-label  { color: var(--w-lancer); }
+
+/* Marksman — gold */
+.charm-troop-group.group-marksman { border-left: 4px solid var(--w-marksman); }
+.charm-troop-group.group-marksman .charm-group-header { background: var(--w-marksman-subtle); }
+.charm-troop-group.group-marksman .charm-group-label  { color: var(--w-marksman); }
+
+/* Pieces inside a troop group */
+.charm-troop-group .charm-piece-section {
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--w-border);
+    border-left: none;
+    margin-bottom: 0;
+}
+.charm-troop-group .charm-piece-section:last-child { border-bottom: none; }
+
+/* Infantry pieces left-border */
+.charm-troop-group.group-infantry .charm-piece-section { border-left: 3px solid var(--w-infantry); }
+.charm-troop-group.group-infantry .charm-piece-title   { color: var(--w-infantry); }
+
+/* Lancer pieces left-border */
+.charm-troop-group.group-lancer   .charm-piece-section { border-left: 3px solid var(--w-lancer); }
+.charm-troop-group.group-lancer   .charm-piece-title   { color: var(--w-lancer); }
+
+/* Marksman pieces left-border */
+.charm-troop-group.group-marksman .charm-piece-section { border-left: 3px solid var(--w-marksman); }
+.charm-troop-group.group-marksman .charm-piece-title   { color: var(--w-marksman); }
+
+/* ── Master Tier Controls ─────────────────────────────────────────────────── */
+.w-tier-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 0.65rem;
+    border-top: 1px solid var(--w-border);
+    margin-top: 0.65rem;
+}
+.w-tier-controls-label {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+    flex-shrink: 0;
+}
+.w-tier-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+.w-tier-sub {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    color: var(--w-text-secondary);
+    white-space: nowrap;
+}
+.w-tier-select {
+    padding: 0.3rem 1.6rem 0.3rem 0.5rem;
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    color: var(--w-text);
+    font-family: var(--w-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23e11d48'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    min-width: 120px;
+}
+.w-tier-select:focus { outline: none; border-color: var(--w-red); }
+.w-tier-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--w-border);
+    flex-shrink: 0;
+}
+@media (max-width: 540px) {
+    .w-tier-controls { gap: 0.5rem; }
+    .w-tier-divider  { display: none; }
+    .w-tier-group    { width: 100%; }
+}
+
+/* ── Unverified data warning ──────────────────────────────────────────────── */
+.w-unverified-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--w-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--w-warn);
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--w-radius-sm);
+    padding: 0.25rem 0.55rem;
+    margin-top: 0.6rem;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */

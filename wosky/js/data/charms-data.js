@@ -1,51 +1,62 @@
 /**
- * WOSKY_3169 — Chief Charms Cost Data
+ * WOSKY_3169 — Chief Charms Cost Data  v2.0
  * Strict ES5 — no const/let/arrow functions/fetch.
  *
- * SOURCE: In-game data provided by WarMachine (State 3169).
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║  HOW TO UPDATE THIS FILE WHEN THE GAME CHANGES                  ║
+ * ╠══════════════════════════════════════════════════════════════════╣
+ * ║  meta.stepsPerLevel   change if game adds/removes upgrade steps  ║
+ * ║  meta.maxLevel        raise when new charm levels are added      ║
+ * ║  meta.svsPtsPerLevel  update if SvS scoring formula changes      ║
+ * ║  pieces[].troopType   reassign a piece to a different troop grp  ║
+ * ║  troopGroups          add/rename/reorder troop groups            ║
+ * ║  costs[level][step]   correct any value; set verified: true      ║
+ * ║  milestones           update cumulative stat% / power per level  ║
+ * ╚══════════════════════════════════════════════════════════════════╝
  *
- * Structure:
- *   Each charm level has 4 sub-steps (1, 2, 3, 4).
- *   Steps 1–3 carry the bulk of the cost; step 4 carries any remainder.
- *   "step 0" = start of a level (nothing paid yet).
- *   "step 4" = level fully completed.
+ * VERIFICATION STATUS
+ *   verified: true  — confirmed against live in-game data
+ *   verified: false — best estimate; must be checked before SvS math
  *
- *   User notation "10.3" means level=10, step=3 (one step before complete).
- *
- * Resources per step:
- *   d = Charm Designs
- *   g = Charm Guides
- *   s = Charm Secrets  (0 before level 12)
- *
- * SvS scoring: 70 pts per charm LEVEL completed (step 1→4 all done).
- *
- * milestones[level] = cumulative { stat (%), power } after that level is fully done.
- *   These are the TOTAL across all 18 charm slots combined.
- *
- * NOTES:
- *   Level 2 D values (marked UNVERIFIED) could not be read clearly from source — verify.
- *   Level 1 Step 4 values also uncertain — verify against in-game.
- *   Max level in table: 16. Caps at 16 for calcRange.
+ * ⚠  Level 1 step 4 remainder cost is UNVERIFIED.
+ * ⚠  Level 2 Design (d) values are UNVERIFIED.
+ *    Update both when you can screenshot the in-game upgrade screen.
  */
 
 var WOSKY_CHARMS_DATA = {
 
-    svs_pts_per_level: 70,
+    /* ── Meta ────────────────────────────────────────────────────────────── */
+    /* Edit these numbers here — the calculator reads everything from meta.   */
+    meta: {
+        version:        '2.0',
+        maxLevel:       16,
+        stepsPerLevel:  4,       /* steps 1–N per level. Raise to 10 etc if needed */
+        svsPtsPerLevel: 70       /* SvS points awarded when a charm level completes */
+    },
 
-    pieces: [
-        { key: 'legs',    label: 'Legs'    },
-        { key: 'offhand', label: 'Offhand' },
-        { key: 'chest',   label: 'Chest'   },
-        { key: 'neck',    label: 'Neck'    },
-        { key: 'helm',    label: 'Helm'    },
-        { key: 'ring',    label: 'Ring'    }
+    /* ── Troop Groups ─────────────────────────────────────────────────────── */
+    /* Each group needs a unique key. Add or rename groups freely.            */
+    /* The cssClass drives the left-border accent colour in wosky.css.        */
+    troopGroups: [
+        { key: 'infantry', label: 'Infantry',  emoji: '\u2694\uFE0F',  cssClass: 'group-infantry' },
+        { key: 'lancer',   label: 'Lancer',    emoji: '\uD83C\uDFC7',  cssClass: 'group-lancer'   },
+        { key: 'marksman', label: 'Marksman',  emoji: '\uD83C\uDFAF',  cssClass: 'group-marksman' }
     ],
 
-    /**
-     * milestones[level] — cumulative stat/power after that level is fully done.
-     * "stat" is the total % stat bonus from all 18 charms combined.
-     * "power" is the total power contribution from all 18 charms combined.
-     */
+    /* ── Pieces ───────────────────────────────────────────────────────────── */
+    /* troopType must exactly match a key in troopGroups above.               */
+    /* Reorder rows here to change the display order within each group.       */
+    pieces: [
+        { key: 'helm',    label: 'Helm',    emoji: '\uD83E\uDE96', troopType: 'infantry' },
+        { key: 'chest',   label: 'Chest',   emoji: '\uD83D\uDEE1\uFE0F', troopType: 'infantry' },
+        { key: 'ring',    label: 'Ring',    emoji: '\uD83D\uDC8D', troopType: 'lancer'   },
+        { key: 'legs',    label: 'Legs',    emoji: '\uD83E\uDDB5', troopType: 'lancer'   },
+        { key: 'offhand', label: 'Offhand', emoji: '\uD83D\uDDE1\uFE0F', troopType: 'marksman' },
+        { key: 'neck',    label: 'Neck',    emoji: '\uD83D\uDCFF', troopType: 'marksman' }
+    ],
+
+    /* ── Milestones ───────────────────────────────────────────────────────── */
+    /* Cumulative stat % and power across ALL 18 charms combined.             */
     milestones: {
         1:  { stat:   9.00, power:  20570 },
         2:  { stat:  12.00, power:  28800 },
@@ -65,163 +76,199 @@ var WOSKY_CHARMS_DATA = {
         16: { stat: 100.00, power: 194000 }
     },
 
-    /**
-     * costs[level][step] = { d, g, s }
-     * step: 1, 2, 3, or 4.  (0 = start of level, costs nothing)
-     */
+    /* ── Costs ────────────────────────────────────────────────────────────── */
+    /*                                                                         */
+    /* costs[level][step] = { d, g, s, verified }                             */
+    /*   d = Charm Designs   g = Charm Guides   s = Charm Secrets (L12+)      */
+    /*   verified: true  — confirmed in-game                                   */
+    /*   verified: false — estimate; flag shows in results                     */
+    /*                                                                         */
+    /* step 0 = start of a level (nothing paid yet, no entry here)            */
+    /* step N (= stepsPerLevel) = level fully complete                        */
     costs: {
-        /* ── Level 1 ── */
+
+        /* ── Level 1 ── ⚠ step 4 remainder is UNVERIFIED */
         1: {
-            1: { d: 10,  g: 12,  s: 0 },
-            2: { d: 10,  g: 13,  s: 0 },
-            3: { d: 10,  g: 14,  s: 0 },
-            4: { d:  2,  g:  2,  s: 0 }   /* UNVERIFIED — remainder step */
+            1: { d: 10,  g: 12,  s: 0, verified: true  },
+            2: { d: 10,  g: 13,  s: 0, verified: true  },
+            3: { d: 10,  g: 14,  s: 0, verified: true  },
+            4: { d:  2,  g:  2,  s: 0, verified: false } /* ⚠ UNVERIFIED remainder */
         },
-        /* ── Level 2 ── UNVERIFIED D values — check in-game before using */
+
+        /* ── Level 2 ── ⚠ ALL d values UNVERIFIED — verify in-game */
         2: {
-            1: { d:  3,  g: 10,  s: 0 },  /* UNVERIFIED */
-            2: { d:  4,  g: 10,  s: 0 },  /* UNVERIFIED */
-            3: { d:  4,  g: 10,  s: 0 },  /* UNVERIFIED */
-            4: { d:  4,  g: 10,  s: 0 }   /* UNVERIFIED */
+            1: { d:  3,  g: 10,  s: 0, verified: false },
+            2: { d:  4,  g: 10,  s: 0, verified: false },
+            3: { d:  4,  g: 10,  s: 0, verified: false },
+            4: { d:  4,  g: 10,  s: 0, verified: false }
         },
+
         /* ── Level 3 ── */
         3: {
-            1: { d: 10,  g: 15,  s: 0 },
-            2: { d: 10,  g: 15,  s: 0 },
-            3: { d: 10,  g: 15,  s: 0 },
-            4: { d: 10,  g: 15,  s: 0 }
+            1: { d: 10,  g: 15,  s: 0, verified: true },
+            2: { d: 10,  g: 15,  s: 0, verified: true },
+            3: { d: 10,  g: 15,  s: 0, verified: true },
+            4: { d: 10,  g: 15,  s: 0, verified: true }
         },
+
         /* ── Level 4 ── */
         4: {
-            1: { d: 25,  g: 20,  s: 0 },
-            2: { d: 25,  g: 20,  s: 0 },
-            3: { d: 25,  g: 20,  s: 0 },
-            4: { d: 25,  g: 20,  s: 0 }
+            1: { d: 25,  g: 20,  s: 0, verified: true },
+            2: { d: 25,  g: 20,  s: 0, verified: true },
+            3: { d: 25,  g: 20,  s: 0, verified: true },
+            4: { d: 25,  g: 20,  s: 0, verified: true }
         },
+
         /* ── Level 5 ── */
         5: {
-            1: { d: 50,  g: 25,  s: 0 },
-            2: { d: 50,  g: 25,  s: 0 },
-            3: { d: 50,  g: 25,  s: 0 },
-            4: { d: 50,  g: 25,  s: 0 }
+            1: { d: 50,  g: 25,  s: 0, verified: true },
+            2: { d: 50,  g: 25,  s: 0, verified: true },
+            3: { d: 50,  g: 25,  s: 0, verified: true },
+            4: { d: 50,  g: 25,  s: 0, verified: true }
         },
+
         /* ── Level 6 ── */
         6: {
-            1: { d: 75,  g: 30,  s: 0 },
-            2: { d: 75,  g: 30,  s: 0 },
-            3: { d: 75,  g: 30,  s: 0 },
-            4: { d: 75,  g: 30,  s: 0 }
+            1: { d: 75,  g: 30,  s: 0, verified: true },
+            2: { d: 75,  g: 30,  s: 0, verified: true },
+            3: { d: 75,  g: 30,  s: 0, verified: true },
+            4: { d: 75,  g: 30,  s: 0, verified: true }
         },
+
         /* ── Level 7 ── */
         7: {
-            1: { d: 100, g: 35,  s: 0 },
-            2: { d: 100, g: 35,  s: 0 },
-            3: { d: 100, g: 35,  s: 0 },
-            4: { d: 100, g: 35,  s: 0 }
+            1: { d: 100, g: 35,  s: 0, verified: true },
+            2: { d: 100, g: 35,  s: 0, verified: true },
+            3: { d: 100, g: 35,  s: 0, verified: true },
+            4: { d: 100, g: 35,  s: 0, verified: true }
         },
+
         /* ── Level 8 ── */
         8: {
-            1: { d: 100, g: 50,  s: 0 },
-            2: { d: 100, g: 50,  s: 0 },
-            3: { d: 100, g: 50,  s: 0 },
-            4: { d: 100, g: 50,  s: 0 }
+            1: { d: 100, g: 50,  s: 0, verified: true },
+            2: { d: 100, g: 50,  s: 0, verified: true },
+            3: { d: 100, g: 50,  s: 0, verified: true },
+            4: { d: 100, g: 50,  s: 0, verified: true }
         },
+
         /* ── Level 9 ── */
         9: {
-            1: { d: 100, g: 75,  s: 0 },
-            2: { d: 100, g: 75,  s: 0 },
-            3: { d: 100, g: 75,  s: 0 },
-            4: { d: 100, g: 75,  s: 0 }
+            1: { d: 100, g: 75,  s: 0, verified: true },
+            2: { d: 100, g: 75,  s: 0, verified: true },
+            3: { d: 100, g: 75,  s: 0, verified: true },
+            4: { d: 100, g: 75,  s: 0, verified: true }
         },
+
         /* ── Level 10 ── */
         10: {
-            1: { d: 105, g: 105, s: 0 },
-            2: { d: 105, g: 105, s: 0 },
-            3: { d: 105, g: 105, s: 0 },
-            4: { d: 105, g: 105, s: 0 }
+            1: { d: 105, g: 105, s: 0, verified: true },
+            2: { d: 105, g: 105, s: 0, verified: true },
+            3: { d: 105, g: 105, s: 0, verified: true },
+            4: { d: 105, g: 105, s: 0, verified: true }
         },
+
         /* ── Level 11 ── */
         11: {
-            1: { d: 105, g: 140, s: 0 },
-            2: { d: 105, g: 140, s: 0 },
-            3: { d: 105, g: 140, s: 0 },
-            4: { d: 105, g: 140, s: 0 }
+            1: { d: 105, g: 140, s: 0, verified: true },
+            2: { d: 105, g: 140, s: 0, verified: true },
+            3: { d: 105, g: 140, s: 0, verified: true },
+            4: { d: 105, g: 140, s: 0, verified: true }
         },
+
         /* ── Level 12 — Charm Secrets introduced ── */
         12: {
-            1: { d: 112, g: 145, s: 3 },
-            2: { d: 112, g: 145, s: 3 },
-            3: { d: 113, g: 145, s: 3 },
-            4: { d: 113, g: 145, s: 3 }
+            1: { d: 112, g: 145, s:  3, verified: true },
+            2: { d: 112, g: 145, s:  3, verified: true },
+            3: { d: 113, g: 145, s:  3, verified: true },
+            4: { d: 113, g: 145, s:  3, verified: true }
         },
+
         /* ── Level 13 ── */
         13: {
-            1: { d: 112, g: 145, s: 7 },
-            2: { d: 112, g: 145, s: 7 },
-            3: { d: 113, g: 145, s: 8 },
-            4: { d: 113, g: 145, s: 8 }
+            1: { d: 112, g: 145, s:  7, verified: true },
+            2: { d: 112, g: 145, s:  7, verified: true },
+            3: { d: 113, g: 145, s:  8, verified: true },
+            4: { d: 113, g: 145, s:  8, verified: true }
         },
+
         /* ── Level 14 ── */
         14: {
-            1: { d: 125, g: 150, s: 11 },
-            2: { d: 125, g: 150, s: 11 },
-            3: { d: 125, g: 150, s: 11 },
-            4: { d: 125, g: 150, s: 12 }
+            1: { d: 125, g: 150, s: 11, verified: true },
+            2: { d: 125, g: 150, s: 11, verified: true },
+            3: { d: 125, g: 150, s: 11, verified: true },
+            4: { d: 125, g: 150, s: 12, verified: true }
         },
+
         /* ── Level 15 ── */
         15: {
-            1: { d: 125, g: 150, s: 17 },
-            2: { d: 125, g: 150, s: 17 },
-            3: { d: 125, g: 150, s: 17 },
-            4: { d: 125, g: 150, s: 18 }
+            1: { d: 125, g: 150, s: 17, verified: true },
+            2: { d: 125, g: 150, s: 17, verified: true },
+            3: { d: 125, g: 150, s: 17, verified: true },
+            4: { d: 125, g: 150, s: 18, verified: true }
         },
-        /* ── Level 16 (max) ── */
+
+        /* ── Level 16 (current max) ── */
         16: {
-            1: { d: 137, g: 162, s: 25 },
-            2: { d: 137, g: 162, s: 25 },
-            3: { d: 138, g: 163, s: 25 },
-            4: { d: 138, g: 163, s: 25 }
+            1: { d: 137, g: 162, s: 25, verified: true },
+            2: { d: 137, g: 162, s: 25, verified: true },
+            3: { d: 138, g: 163, s: 25, verified: true },
+            4: { d: 138, g: 163, s: 25, verified: true }
         }
     },
 
-    /** getCost — returns cost for one step. Zeroes if level/step not in table. */
+    /* ══════════════════════════════════════════════════════════════════════ */
+    /*  API — do not edit below unless you know what you're doing            */
+    /* ══════════════════════════════════════════════════════════════════════ */
+
+    /** Returns the cost for one step at a level. Safe — returns zeroes if missing. */
     getCost: function (level, step) {
         var lvl = this.costs[level];
-        if (!lvl) return { d: 0, g: 0, s: 0 };
+        if (!lvl) return { d: 0, g: 0, s: 0, verified: true };
         var stp = lvl[step];
-        if (!stp) return { d: 0, g: 0, s: 0 };
+        if (!stp) return { d: 0, g: 0, s: 0, verified: true };
         return stp;
     },
 
     /**
-     * calcRange(fromLevel, fromStep, toLevel, toStep)
-     *
-     * Returns total { d, g, s, svs_pts } to upgrade from fromLevel.fromStep
-     * to toLevel.toStep.
-     *
-     * fromStep = 0  → charm is at the START of fromLevel (about to do step 1).
-     * fromStep = 4  → level fully complete (nothing left to pay at fromLevel).
-     * toStep   = 4  → want the charm fully at toLevel.
-     *
-     * A level completion (svs_pts) is counted when step 4 of a level is paid.
+     * Returns true if any step in the range contains unverified data.
+     * Used to show a warning flag in results.
      */
-    calcRange: function (fromLevel, fromStep, toLevel, toStep) {
-        var MAX_LEVEL = 16;
-        var totD = 0, totG = 0, totS = 0, levelsCompleted = 0;
+    rangeHasUnverified: function (fromLevel, fromStep, toLevel, toStep) {
+        var stepsPerLevel = this.meta.stepsPerLevel;
+        var maxLevel      = this.meta.maxLevel;
         var curLevel = fromLevel;
         var curStep  = fromStep;
-
-        /* Cap targets */
-        if (toLevel > MAX_LEVEL) { toLevel = MAX_LEVEL; }
-        if (toLevel === MAX_LEVEL && toStep > 4) { toStep = 4; }
+        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = stepsPerLevel; }
 
         while (curLevel < toLevel || (curLevel === toLevel && curStep < toStep)) {
             curStep++;
-            if (curStep > 4) {
-                curStep = 1;
-                curLevel++;
-            }
+            if (curStep > stepsPerLevel) { curStep = 1; curLevel++; }
+            if (curLevel > toLevel) break;
+            if (curLevel === toLevel && curStep > toStep) break;
+            if (this.getCost(curLevel, curStep).verified === false) return true;
+        }
+        return false;
+    },
 
+    /**
+     * calcRange(fromLevel, fromStep, toLevel, toStep)
+     * Returns total { d, g, s, svs_pts, hasUnverified }.
+     *
+     * fromStep 0 = start of fromLevel (about to pay step 1).
+     * toStep N  = level fully complete (all stepsPerLevel steps paid).
+     */
+    calcRange: function (fromLevel, fromStep, toLevel, toStep) {
+        var stepsPerLevel = this.meta.stepsPerLevel;
+        var maxLevel      = this.meta.maxLevel;
+        var totD = 0, totG = 0, totS = 0, levelsCompleted = 0, unverified = false;
+        var curLevel = fromLevel;
+        var curStep  = fromStep;
+
+        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = stepsPerLevel; }
+
+        while (curLevel < toLevel || (curLevel === toLevel && curStep < toStep)) {
+            curStep++;
+            if (curStep > stepsPerLevel) { curStep = 1; curLevel++; }
             if (curLevel > toLevel) break;
             if (curLevel === toLevel && curStep > toStep) break;
 
@@ -229,16 +276,45 @@ var WOSKY_CHARMS_DATA = {
             totD += cost.d;
             totG += cost.g;
             totS += cost.s;
-
-            /* Level completed when step 4 is paid */
-            if (curStep === 4) levelsCompleted++;
+            if (cost.verified === false) unverified = true;
+            if (curStep === stepsPerLevel) levelsCompleted++;
         }
 
         return {
-            d:        totD,
-            g:        totG,
-            s:        totS,
-            svs_pts:  levelsCompleted * this.svs_pts_per_level
+            d:           totD,
+            g:           totG,
+            s:           totS,
+            svs_pts:     levelsCompleted * this.meta.svsPtsPerLevel,
+            hasUnverified: unverified
         };
+    },
+
+    /**
+     * Returns the pieces array organised into troop groups.
+     * Result: [ { meta: {key,label,emoji,cssClass}, pieces: [...] }, ... ]
+     */
+    getPiecesByGroup: function () {
+        var groupMap = {};
+        var groupOrder = [];
+        var i, j, tg = this.troopGroups;
+
+        for (i = 0; i < tg.length; i++) {
+            groupMap[tg[i].key] = { meta: tg[i], pieces: [] };
+            groupOrder.push(tg[i].key);
+        }
+
+        var pieces = this.pieces;
+        for (j = 0; j < pieces.length; j++) {
+            var p = pieces[j];
+            if (groupMap[p.troopType]) {
+                groupMap[p.troopType].pieces.push(p);
+            }
+        }
+
+        var result = [];
+        for (i = 0; i < groupOrder.length; i++) {
+            result.push(groupMap[groupOrder[i]]);
+        }
+        return result;
     }
 };
