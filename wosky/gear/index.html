@@ -3,11 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chief Gear — WOSKY_3169</title>
+    <title>Chief Gear &mdash; WOSKY_3169</title>
+    <meta name="description" content="Chief Gear upgrade cost calculator for Whiteout Survival. Tracks Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber across all 6 gear pieces.">
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/wosky.css">
+    <style>
+        /* ── Gear page overrides ─────────────────────────────────────────── */
+        .gear-piece-section {
+            background: var(--w-surface);
+            border: 1px solid var(--w-border);
+            border-radius: var(--w-radius);
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .gear-piece-title {
+            font-family: var(--w-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--w-red);
+            margin-bottom: 0.6rem;
+        }
+        .gear-row {
+            display: grid;
+            grid-template-columns: 3rem 1fr 1fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .gear-row-label {
+            font-family: var(--w-mono);
+            font-size: 0.65rem;
+            color: var(--w-text-muted);
+            text-transform: uppercase;
+        }
+        .gear-select {
+            width: 100%;
+            padding: 0.3rem 0.4rem;
+            background: var(--w-input-bg, #111);
+            border: 1px solid var(--w-border);
+            border-radius: var(--w-radius-sm);
+            color: var(--w-text);
+            font-family: var(--w-mono);
+            font-size: 0.72rem;
+            cursor: pointer;
+        }
+        .gear-select:focus {
+            outline: 1px solid var(--w-red);
+        }
+        .gear-header {
+            display: grid;
+            grid-template-columns: 3rem 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+        .gear-header-cell {
+            font-family: var(--w-mono);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--w-text-muted);
+            text-align: center;
+        }
+        .gear-header-cell:first-child { text-align: left; }
+
+        /* Results table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--w-mono);
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+        }
+        .results-table th {
+            text-align: left;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--w-text-muted);
+            padding: 0.3rem 0.5rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+        .results-table td {
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid var(--w-border);
+            color: var(--w-text);
+        }
+        .results-table tr:last-child td { border-bottom: none; }
+        .results-table .val { text-align: right; font-weight: 700; }
+        .results-table .val-red  { color: var(--w-red); }
+        .results-table .val-gold { color: var(--w-warn); }
+        .results-table .val-green { color: var(--w-success); }
+        .results-table .total-row td {
+            color: var(--w-red);
+            font-size: 0.88rem;
+            border-top: 2px solid var(--w-red-dim);
+        }
+
+        /* Plan status */
+        .plan-loaded {
+            background: var(--w-red-subtle);
+            border: 1px solid var(--w-red-dim);
+            border-radius: var(--w-radius-sm);
+            padding: 0.3rem 0.6rem;
+            font-family: var(--w-mono);
+            font-size: 0.68rem;
+            color: var(--w-red);
+        }
+
+        @media (max-width: 480px) {
+            .gear-row { grid-template-columns: 2.5rem 1fr 1fr; gap: 0.3rem; }
+            .gear-select { font-size: 0.65rem; }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Top Nav -->
     <nav class="wosky-nav">
         <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
         <span class="wosky-nav-sep">/</span>
@@ -15,22 +130,291 @@
         <span class="wosky-nav-sep">/</span>
         <span class="wosky-nav-brand">Chief Gear</span>
     </nav>
+
+    <!-- Character Bar -->
     <div id="wosky-char-bar"></div>
+
+    <!-- Main -->
     <main class="wosky-main">
+
         <div class="wosky-page-title">&#128737;&#65039; Chief Gear Calculator</div>
-        <div class="wosky-page-sub">Tier / star upgrade costs &mdash; Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber.</div>
-        <div class="wosky-stub">
-            <div class="wosky-stub-icon">&#128737;&#65039;</div>
-            <h2>Coming Soon</h2>
-            <p>Chief Gear calculator is under construction.<br>
-            Tracks: Ring, Offhand, Chest, Legs, Helm, Neck &mdash; tier upgrades and star leveling.<br>
-            Lunar Amber daily cap: 500 exchanges &times; 10 LA = 5,000 LA/day.</p>
-            <div style="margin-top:1.5rem;">
-                <a href="../index.html" class="wbtn wbtn-ghost">&#8592; Back to WOSKY</a>
+        <div class="wosky-page-sub">
+            6 gear pieces &mdash; Ring, Offhand, Chest, Legs, Helm, Neck.<br>
+            Select <strong>Current</strong> (steps completed) and <strong>Target</strong> for each piece.
+            Costs are identical across all pieces.
+        </div>
+
+        <!-- Controls -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+            <button class="wbtn" id="btn-calc">&#9654; Calculate Costs</button>
+            <button class="wbtn wbtn-outline" id="btn-load-char">&#8635; Load from Character</button>
+            <button class="wbtn wbtn-outline" id="btn-save-char">&#128190; Save to Character</button>
+            <button class="wbtn wbtn-ghost" id="btn-set-plan">&#128204; Set as Plan</button>
+            <button class="wbtn wbtn-ghost" id="btn-load-plan">&#128204; Load Plan</button>
+        </div>
+        <div id="plan-status"></div>
+
+        <!-- Gear Piece Sections -->
+        <div id="gear-sections"></div>
+
+        <!-- Results -->
+        <div id="gear-results" style="display:none;">
+            <div class="w-card-title" style="margin-top:1.5rem;">Results</div>
+            <div class="w-result-panel">
+                <table class="results-table" id="results-table"></table>
             </div>
         </div>
+
+        <div style="margin-top:1.5rem;font-size:0.72rem;color:var(--w-text-muted);font-family:var(--w-mono);">
+            &#9888; Lower-tier costs (Green &rarr; Gold) sourced from in-game data &mdash; verify before planning.<br>
+            &#9888; Lunar Amber daily cap: 500 exchanges &times; 10 LA = 5,000 LA/day.<br>
+            &#9888; Costs are identical for all 6 gear pieces.
+        </div>
+
     </main>
+
     <script src="../js/character.js"></script>
     <script src="../js/char-bar.js"></script>
+    <script src="../js/data/gear-data.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var DATA   = window.WOSKY_GEAR_DATA;
+        var CHARS  = window.WOSKY_CHARS;
+
+        var PIECES = [
+            {key: 'ring',    label: 'Ring'},
+            {key: 'offhand', label: 'Offhand'},
+            {key: 'chest',   label: 'Chest'},
+            {key: 'legs',    label: 'Legs'},
+            {key: 'helm',    label: 'Helm'},
+            {key: 'neck',    label: 'Neck'}
+        ];
+
+        /* ── Build input grid ─────────────────────────────────────────────── */
+        function buildGrid() {
+            var container = document.getElementById('gear-sections');
+            var html = '';
+
+            for (var p = 0; p < PIECES.length; p++) {
+                var piece = PIECES[p];
+                html +=
+                    '<div class="gear-piece-section">' +
+                    '<div class="gear-piece-title">' + piece.label + '</div>' +
+                    '<div class="gear-header">' +
+                        '<div class="gear-header-cell">Piece</div>' +
+                        '<div class="gear-header-cell">Current (steps done)</div>' +
+                        '<div class="gear-header-cell">Target (steps done)</div>' +
+                    '</div>' +
+                    '<div class="gear-row">' +
+                        '<span class="gear-row-label">' + piece.label + '</span>' +
+                        '<select class="gear-select gear-cur" id="cur_' + piece.key + '" aria-label="Current position ' + piece.label + '"></select>' +
+                        '<select class="gear-select gear-tgt" id="tgt_' + piece.key + '" aria-label="Target position ' + piece.label + '"></select>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            container.innerHTML = html;
+
+            /* Populate all select options from data */
+            for (var q = 0; q < PIECES.length; q++) {
+                var pk = PIECES[q].key;
+                DATA.buildOptions(document.getElementById('cur_' + pk));
+                DATA.buildOptions(document.getElementById('tgt_' + pk));
+                /* Default: current=0, target=26 (gold T2-3 done) */
+                document.getElementById('tgt_' + pk).value = '26';
+            }
+        }
+
+        /* ── Load current positions from character ────────────────────────── */
+        function loadFromChar() {
+            var c = CHARS.getActive();
+            if (!c || !c.chiefGear) return;
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                var pos = c.chiefGear[key];
+                if (pos === undefined || pos === null) continue;
+                setVal('cur_' + key, String(pos));
+            }
+        }
+
+        /* ── Load plan targets ────────────────────────────────────────────── */
+        function loadPlan() {
+            var c = CHARS.getActive();
+            if (!c || !c.plans || !c.plans.chiefGear) {
+                showPlanStatus('No Chief Gear plan saved for this character.');
+                return;
+            }
+            var plan = c.plans.chiefGear;
+            var loaded = false;
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                if (plan[key] === undefined || plan[key] === null) continue;
+                setVal('tgt_' + key, String(plan[key]));
+                loaded = true;
+            }
+            if (loaded) showPlanStatus('Plan targets loaded.');
+            else showPlanStatus('Plan exists but has no gear targets yet.');
+        }
+
+        /* ── Save current positions to character ──────────────────────────── */
+        function saveToChar() {
+            var c = CHARS.getActive();
+            if (!c) { alert('No active character.'); return; }
+            var gearObj = {};
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                gearObj[key] = getPos('cur_' + key);
+            }
+            if (!c.chiefGear) c.chiefGear = {};
+            c.chiefGear = gearObj;
+            CHARS.save(c);
+            flashBtn('btn-save-char', 'Saved!');
+        }
+
+        /* ── Set upgrade plan (target positions) ──────────────────────────── */
+        function setPlan() {
+            var c = CHARS.getActive();
+            if (!c) { alert('No active character.'); return; }
+            var planObj = {};
+            for (var p = 0; p < PIECES.length; p++) {
+                var key = PIECES[p].key;
+                planObj[key] = getPos('tgt_' + key);
+            }
+            CHARS.savePlan(c.id, 'chiefGear', planObj);
+            showPlanStatus('Plan saved to character!');
+            flashBtn('btn-set-plan', 'Plan Saved!');
+        }
+
+        /* ── Calculate ────────────────────────────────────────────────────── */
+        function calculate() {
+            var totalHA = 0, totalPS = 0, totalDP = 0, totalLA = 0;
+            var rows = [];
+
+            for (var p = 0; p < PIECES.length; p++) {
+                var piece = PIECES[p];
+                var fromPos = getPos('cur_' + piece.key);
+                var toPos   = getPos('tgt_' + piece.key);
+
+                if (toPos <= fromPos) continue;
+
+                var r = DATA.calcRange(fromPos, toPos);
+                if (r.ha + r.ps + r.dp + r.la === 0) continue;
+
+                rows.push({label: piece.label, ha: r.ha, ps: r.ps, dp: r.dp, la: r.la});
+                totalHA += r.ha;
+                totalPS += r.ps;
+                totalDP += r.dp;
+                totalLA += r.la;
+            }
+
+            renderResults(rows, totalHA, totalPS, totalDP, totalLA);
+        }
+
+        function renderResults(rows, totalHA, totalPS, totalDP, totalLA) {
+            var panel = document.getElementById('gear-results');
+            var table = document.getElementById('results-table');
+
+            var html =
+                '<thead><tr>' +
+                    '<th>Piece</th>' +
+                    '<th class="val">Hardened Alloy</th>' +
+                    '<th class="val">Polishing Sol.</th>' +
+                    '<th class="val">Design Plans</th>' +
+                    '<th class="val">Lunar Amber</th>' +
+                '</tr></thead><tbody>';
+
+            if (rows.length === 0) {
+                html += '<tr><td colspan="5" style="color:var(--w-text-muted);font-style:italic;">No upgrades needed &mdash; target is at or below current for all pieces.</td></tr>';
+            } else {
+                for (var i = 0; i < rows.length; i++) {
+                    var r = rows[i];
+                    html += '<tr>' +
+                        '<td>' + r.label + '</td>' +
+                        '<td class="val' + (r.ha > 0 ? ' val-red' : '') + '">' + fmt(r.ha) + '</td>' +
+                        '<td class="val' + (r.ps > 0 ? ' val-red' : '') + '">' + fmt(r.ps) + '</td>' +
+                        '<td class="val' + (r.dp > 0 ? ' val-gold' : '') + '">' + fmt(r.dp) + '</td>' +
+                        '<td class="val' + (r.la > 0 ? ' val-green' : '') + '">' + fmt(r.la) + '</td>' +
+                    '</tr>';
+                }
+
+                html += '<tr class="total-row">' +
+                    '<td><strong>TOTAL</strong></td>' +
+                    '<td class="val val-red"><strong>' + fmt(totalHA) + '</strong></td>' +
+                    '<td class="val val-red"><strong>' + fmt(totalPS) + '</strong></td>' +
+                    '<td class="val' + (totalDP > 0 ? ' val-gold' : ' val-red') + '"><strong>' + fmt(totalDP) + '</strong></td>' +
+                    '<td class="val' + (totalLA > 0 ? ' val-green' : ' val-red') + '"><strong>' + fmt(totalLA) + '</strong></td>' +
+                '</tr>';
+            }
+
+            html += '</tbody>';
+            table.innerHTML = html;
+            panel.style.display = 'block';
+            panel.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        }
+
+        /* ── Utilities ────────────────────────────────────────────────────── */
+        function getPos(id) {
+            var el = document.getElementById(id);
+            if (!el) return 0;
+            var v = parseInt(el.value, 10);
+            return isNaN(v) ? 0 : v;
+        }
+        function setVal(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.value = val;
+        }
+        function fmt(n) { return n.toLocaleString(); }
+        function showPlanStatus(msg) {
+            var el = document.getElementById('plan-status');
+            if (el) el.innerHTML = '<div class="plan-loaded" style="margin-bottom:0.6rem;">' + msg + '</div>';
+        }
+        function flashBtn(id, label) {
+            var btn = document.getElementById(id);
+            if (!btn) return;
+            var orig = btn.innerHTML;
+            btn.innerHTML = label;
+            btn.disabled = true;
+            setTimeout(function () { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+        }
+
+        /* ── Wire buttons ─────────────────────────────────────────────────── */
+        function bindButtons() {
+            var btnCalc     = document.getElementById('btn-calc');
+            var btnLoadChar = document.getElementById('btn-load-char');
+            var btnSaveChar = document.getElementById('btn-save-char');
+            var btnSetPlan  = document.getElementById('btn-set-plan');
+            var btnLoadPlan = document.getElementById('btn-load-plan');
+
+            if (btnCalc)     btnCalc.addEventListener('click', calculate);
+            if (btnLoadChar) btnLoadChar.addEventListener('click', loadFromChar);
+            if (btnSaveChar) btnSaveChar.addEventListener('click', saveToChar);
+            if (btnSetPlan)  btnSetPlan.addEventListener('click', setPlan);
+            if (btnLoadPlan) btnLoadPlan.addEventListener('click', loadPlan);
+        }
+
+        /* ── Re-load on character change ──────────────────────────────────── */
+        document.addEventListener('wosky:character-changed', function () {
+            loadFromChar();
+        });
+        window.woskyOnCharacterChanged = function () { loadFromChar(); };
+
+        /* ── Init ─────────────────────────────────────────────────────────── */
+        function init() {
+            buildGrid();
+            loadFromChar();
+            bindButtons();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+    </script>
+
 </body>
 </html>
