@@ -1,44 +1,80 @@
 /**
- * WOSKY_3169 — Hero Gear Data  v1.0
+ * WOSKY_3169 — Hero Gear Data  v1.2
  * Strict ES5 — no const/let/arrow functions/fetch.
  *
  * ╔══════════════════════════════════════════════════════════════════════╗
  * ║  HOW TO UPDATE THIS FILE                                            ║
  * ╠══════════════════════════════════════════════════════════════════════╣
- * ║  meta.maxForgeLevel    raise when new forge levels are confirmed     ║
- * ║  meta.statFlipPoints   update if the game changes stat milestones    ║
- * ║  forgeCosts[level]     fill in verified values; set verified: true   ║
- * ║  empowerCosts[n]       full data already verified — only fix typos   ║
- * ║  troopGroups / pieces  add/rename as needed                          ║
+ * ║  meta.maxForgeLevel        raise when new forge levels are unlocked  ║
+ * ║  meta.empowerGates         update if forge/mithril/mythic reqs change║
+ * ║  meta.statFlipPoints       update if game adds/removes flip points   ║
+ * ║  forgeCosts[n]             add higher-level rows when unlocked       ║
+ * ║  empowerCosts              full E1–E200 data — only fix typos        ║
  * ╚══════════════════════════════════════════════════════════════════════╝
  *
- * EMPOWERMENT STAGES
- *   Stage 1  E0   → E100   (empowerCosts index  1–100)
- *   Stage 2  E101 → E200   (empowerCosts index 101–200)
- *   Verified: true for all empowerment data (sourced from WarMachine).
+ * THREE UPGRADE AXES PER PIECE
+ *   F  Forge level    F1–F20 (verified). XP + Hero Stones; F11+ adds Mythic gear.
+ *   E  Empowerment    E0–E200 (XP verified). Requires forge level + gate unlock.
  *
- * FLIP POINTS — stat bonuses change at these empowerment milestones:
- *   Stat flips:       E20, E60, E80, E100  (in-game bonus thresholds)
- *   Free milestones:  E101, E120, E140, E160, E180, E200  (cost = 0)
+ * EMPOWERMENT GATES — paid ONCE to unlock each empowerment range:
+ *   Gate  E1   (start):  F10 · 0 Mithril · 1 Mythic piece
+ *   Gate  E20  →  E21+:  F11 · 10 Mithril · 3 Mythic pieces
+ *   Gate  E40  →  E41+:  F12 · 20 Mithril · 5 Mythic pieces
+ *   Gate  E60  →  E61+:  F13 · 30 Mithril · 5 Mythic pieces
+ *   Gate  E80  →  E81+:  F14 · 40 Mithril · 10 Mythic pieces
+ *   Gate  E100 → E101+:  F? (⚠ unverified) · 50 Mithril · 10 Mythic pieces
  *
- * FORGE COSTS — ⚠ NOT YET VERIFIED. Fill in when data is available.
- *   Resources: Gear XP (as XP-10 and XP-100 items), Hero Stones, Mithril.
+ * MITHRIL = HARD RESOURCE. No farming assumed. Calculator flags shortfall.
  *
- * XP DISPLAY
- *   Total XP is presented as:  [N × XP-100] + [M × XP-10] + [R remaining]
+ * VERIFIED STATUS
+ *   Empowerment XP (E1–E200):  verified (WarMachine in-game)
+ *   Forge costs (F1–F20):      verified (WarMachine in-game)
+ *   Empowerment gates:         verified except E101+ forge req
  */
 
 var WOSKY_HERO_GEAR_DATA = {
 
     /* ── Meta ─────────────────────────────────────────────────────────────── */
     meta: {
-        version:         '1.0',
-        maxForgeLevel:   30,     /* ⚠ UNVERIFIED — update when confirmed in-game */
-        maxEmpowerment:  200,    /* E0–E200 (two stages)                          */
-        statFlipPoints:  [20, 60, 80, 100],  /* stat bonuses change at these E values */
-        stageBreak:      100,    /* empowerment stage 1 ends at E100              */
-        /* Stage-2 zero-cost milestones (free upgrades): */
-        freeFlips:       [101, 120, 140, 160, 180, 200]
+        version:        '1.2',
+        maxForgeLevel:  20,     /* highest verified forge level — update when more unlocked */
+        maxEmpowerment: 200,
+
+        /* Empowerment stat-bonus milestones — piece_variant:true means the exact
+           stat type (Atk vs Health etc.) can vary per piece; update per-piece
+           overrides in pieces[] when you have that data.                        */
+        statFlipPoints: [20, 40, 60, 80, 100],
+        flipBonuses: {
+            20:  { label: '+20% Atk / Def',           piece_variant: true },
+            40:  { label: '+7.5% Hero Health / Atk',  piece_variant: true },
+            60:  { label: '+30% Atk / Def',           piece_variant: true },
+            80:  { label: '+15% Hero Health / Atk',   piece_variant: true },
+            100: { label: '+50% Atk / Def',           piece_variant: true }
+        },
+
+        stageBreak:     100,    /* E100 = stage 1 / stage 2 boundary */
+        freeFlips:      [101, 120, 140, 160, 180, 200],
+
+        /*
+         * empowerGates — each gate must be unlocked (one-time cost) before the
+         * piece can be empowered into the next range.
+         *
+         *   minE / maxE   empowerment range this gate covers
+         *   requiredF     minimum forge level needed
+         *   mithril       Mithril cost to unlock this gate
+         *   mythic        Mythic hero gear pieces sacrificed
+         *
+         * The calculator checks which gates fall within (fromE, toE] and sums
+         * the Mithril + Mythic costs for each crossed gate.
+         */
+        empowerGates: [
+            { minE:   1, maxE:  20, requiredF: 10, mithril:  0, mythic:  1, verified: true  },
+            { minE:  21, maxE:  40, requiredF: 11, mithril: 10, mythic:  3, verified: true  },
+            { minE:  41, maxE:  60, requiredF: 12, mithril: 20, mythic:  5, verified: true  },
+            { minE:  61, maxE:  80, requiredF: 13, mithril: 30, mythic:  5, verified: true  },
+            { minE:  81, maxE: 100, requiredF: 14, mithril: 40, mythic: 10, verified: true  },
+            { minE: 101, maxE: 200, requiredF: 100, mithril: 50, mythic: 10, verified: false } /* ⚠ F? unverified */
+        ]
     },
 
     /* ── Troop Groups ─────────────────────────────────────────────────────── */
@@ -49,7 +85,6 @@ var WOSKY_HERO_GEAR_DATA = {
     ],
 
     /* ── Pieces ───────────────────────────────────────────────────────────── */
-    /* All three troop types share the same 4 piece slots.                    */
     pieces: [
         { key: 'goggles', label: 'Goggles', emoji: '\uD83E\uDD7D' },
         { key: 'gloves',  label: 'Gloves',  emoji: '\uD83E\uDDE4' },
@@ -58,255 +93,75 @@ var WOSKY_HERO_GEAR_DATA = {
     ],
 
     /* ── Forge Costs ──────────────────────────────────────────────────────── */
-    /* forgeCosts[n] = cost to upgrade FROM forge level n TO n+1              */
-    /* ⚠ ALL VALUES UNVERIFIED — update with in-game screenshots.             */
+    /*                                                                         */
+    /* forgeCosts[n] = cost to upgrade FROM forge level n TO n+1.             */
+    /*   xp          = n × 10 Gear XP                                          */
+    /*   hero_stones = n Hero Stones                                            */
+    /*   mythic_gear = max(0, n–10) Mythic gear pieces (required F11+)         */
+    /*                                                                         */
+    /* Example: to go F10 → F11 costs 110 XP, 11 Hero Stones, 1 Mythic piece. */
+    /* verified: true — sourced from WarMachine in-game data.                  */
     forgeCosts: {
-        1:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        2:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        3:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        4:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        5:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        6:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        7:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        8:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        9:  { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        10: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        11: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        12: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        13: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        14: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        15: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        16: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        17: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        18: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        19: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        20: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        21: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        22: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        23: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        24: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        25: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        26: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        27: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        28: { xp: 0, hero_stones: 0, mithril: 0, verified: false },
-        29: { xp: 0, hero_stones: 0, mithril: 0, verified: false }
-        /* Add more levels as they are unlocked and verified */
+        1:  { xp:  10, hero_stones:  1, mythic_gear:  0, verified: true },
+        2:  { xp:  20, hero_stones:  2, mythic_gear:  0, verified: true },
+        3:  { xp:  30, hero_stones:  3, mythic_gear:  0, verified: true },
+        4:  { xp:  40, hero_stones:  4, mythic_gear:  0, verified: true },
+        5:  { xp:  50, hero_stones:  5, mythic_gear:  0, verified: true },
+        6:  { xp:  60, hero_stones:  6, mythic_gear:  0, verified: true },
+        7:  { xp:  70, hero_stones:  7, mythic_gear:  0, verified: true },
+        8:  { xp:  80, hero_stones:  8, mythic_gear:  0, verified: true },
+        9:  { xp:  90, hero_stones:  9, mythic_gear:  0, verified: true },
+        10: { xp: 100, hero_stones: 10, mythic_gear:  0, verified: true },
+        11: { xp: 110, hero_stones: 11, mythic_gear:  1, verified: true },
+        12: { xp: 120, hero_stones: 12, mythic_gear:  2, verified: true },
+        13: { xp: 130, hero_stones: 13, mythic_gear:  3, verified: true },
+        14: { xp: 140, hero_stones: 14, mythic_gear:  4, verified: true },
+        15: { xp: 150, hero_stones: 15, mythic_gear:  5, verified: true },
+        16: { xp: 160, hero_stones: 16, mythic_gear:  6, verified: true },
+        17: { xp: 170, hero_stones: 17, mythic_gear:  7, verified: true },
+        18: { xp: 180, hero_stones: 18, mythic_gear:  8, verified: true },
+        19: { xp: 190, hero_stones: 19, mythic_gear:  9, verified: true },
+        20: { xp: 200, hero_stones: 20, mythic_gear: 10, verified: true }
+        /* Add higher levels here when they are unlocked and verified */
     },
 
     /* ── Empowerment Costs ────────────────────────────────────────────────── */
-    /*                                                                         */
-    /* empowerCosts[n] = Gear XP to advance from E(n-1) to E(n).             */
-    /* Index 0 is unused (starting point).                                     */
-    /* 0 cost = free milestone / flip point.                                   */
-    /* Verified: true — sourced directly from WarMachine in-game data.         */
-    /*                                                                         */
-    /* Stage 1: E1–E100                                                        */
-    /* Stage 2: E101–E200 (higher costs; free flips at E101, 120, 140, 160,   */
-    /*          180, 200)                                                       */
-    /*                                                                         */
+    /* empowerCosts[n] = Gear XP to advance from E(n-1) to E(n).              */
+    /* 0 = free milestone (flip point or stage-2 gate reward).                 */
+    /* Stage 1: E1–E100 | Stage 2: E101–E200                                   */
     empowerCosts: [
         /* idx 0 — unused */
         0,
         /* ── Stage 1: E1–E100 ── */
-        10,    /* E1   */
-        15,    /* E2   */
-        20,    /* E3   */
-        25,    /* E4   */
-        30,    /* E5   */
-        35,    /* E6   */
-        45,    /* E7   */
-        45,    /* E8   */
-        50,    /* E9   */
-        55,    /* E10  */
-        60,    /* E11  */
-        65,    /* E12  */
-        70,    /* E13  */
-        75,    /* E14  */
-        80,    /* E15  */
-        85,    /* E16  */
-        90,    /* E17  */
-        95,    /* E18  */
-        100,   /* E19  */
-        105,   /* E20  ← stat flip */
-        110,   /* E21  */
-        115,   /* E22  */
-        120,   /* E23  */
-        125,   /* E24  */
-        130,   /* E25  */
-        135,   /* E26  */
-        140,   /* E27  */
-        145,   /* E28  */
-        150,   /* E29  */
-        160,   /* E30  */
-        170,   /* E31  */
-        180,   /* E32  */
-        190,   /* E33  */
-        200,   /* E34  */
-        210,   /* E35  */
-        220,   /* E36  */
-        230,   /* E37  */
-        240,   /* E38  */
-        250,   /* E39  */
-        270,   /* E40  */
-        290,   /* E41  */
-        310,   /* E42  */
-        330,   /* E43  */
-        350,   /* E44  */
-        370,   /* E45  */
-        390,   /* E46  */
-        410,   /* E47  */
-        430,   /* E48  */
-        450,   /* E49  */
-        470,   /* E50  */
-        490,   /* E51  */
-        510,   /* E52  */
-        530,   /* E53  */
-        550,   /* E54  */
-        570,   /* E55  */
-        590,   /* E56  */
-        610,   /* E57  */
-        630,   /* E58  */
-        630,   /* E59  */
-        680,   /* E60  ← stat flip */
-        700,   /* E61  */
-        740,   /* E62  */
-        770,   /* E63  */
-        800,   /* E64  */
-        830,   /* E65  */
-        860,   /* E66  */
-        890,   /* E67  */
-        920,   /* E68  */
-        950,   /* E69  */
-        990,   /* E70  */
-        1030,  /* E71  */
-        1070,  /* E72  */
-        1110,  /* E73  */
-        1150,  /* E74  */
-        1190,  /* E75  */
-        1230,  /* E76  */
-        1270,  /* E77  */
-        1310,  /* E78  */
-        1350,  /* E79  */
-        1400,  /* E80  ← stat flip */
-        1450,  /* E81  */
-        1500,  /* E82  */
-        1550,  /* E83  */
-        1600,  /* E84  */
-        1650,  /* E85  */
-        1700,  /* E86  */
-        1750,  /* E87  */
-        1800,  /* E88  */
-        1850,  /* E89  */
-        1900,  /* E90  */
-        1950,  /* E91  */
-        2000,  /* E92  */
-        2050,  /* E93  */
-        2100,  /* E94  */
-        2150,  /* E95  */
-        2200,  /* E96  */
-        2250,  /* E97  */
-        2300,  /* E98  */
-        2350,  /* E99  */
-        2400,  /* E100 ← stat flip / stage break */
+        10, 15, 20, 25, 30, 35, 45, 45, 50, 55,       /* E1–E10   */
+        60, 65, 70, 75, 80, 85, 90, 95, 100, 105,     /* E11–E20  ← stat flip */
+        110, 115, 120, 125, 130, 135, 140, 145, 150, 160, /* E21–E30 */
+        170, 180, 190, 200, 210, 220, 230, 240, 250, 270, /* E31–E40 */
+        290, 310, 330, 350, 370, 390, 410, 430, 450, 470, /* E41–E50 */
+        490, 510, 530, 550, 570, 590, 610, 630, 630, 680, /* E51–E60  ← stat flip */
+        700, 740, 770, 800, 830, 860, 890, 920, 950, 990, /* E61–E70 */
+        1030, 1070, 1110, 1150, 1190, 1230, 1270, 1310, 1350, 1400, /* E71–E80 ← stat flip */
+        1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, /* E81–E90 */
+        1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300, 2350, 2400, /* E91–E100 ← stat flip */
         /* ── Stage 2: E101–E200 ── */
         0,     /* E101 ← free (flip reward) */
-        2500,  /* E102 */
-        2550,  /* E103 */
-        2600,  /* E104 */
-        2650,  /* E105 */
-        2700,  /* E106 */
-        2750,  /* E107 */
-        2800,  /* E108 */
-        2850,  /* E109 */
-        2900,  /* E110 */
-        2950,  /* E111 */
-        3000,  /* E112 */
-        3050,  /* E113 */
-        3100,  /* E114 */
-        3150,  /* E115 */
-        3200,  /* E116 */
-        3250,  /* E117 */
-        3300,  /* E118 */
-        3350,  /* E119 */
+        2500, 2550, 2600, 2650, 2700, 2750, 2800, 2850, 2900, /* E102–E110 */
+        2950, 3000, 3050, 3100, 3150, 3200, 3250, 3300, 3350, /* E111–E119 */
         0,     /* E120 ← free flip */
-        3500,  /* E121 */
-        3550,  /* E122 */
-        3600,  /* E123 */
-        3650,  /* E124 */
-        3700,  /* E125 */
-        3750,  /* E126 */
-        3800,  /* E127 */
-        3850,  /* E128 */
-        3900,  /* E129 */
-        3950,  /* E130 */
-        4000,  /* E131 */
-        4050,  /* E132 */
-        4100,  /* E133 */
-        4150,  /* E134 */
-        4200,  /* E135 */
-        4250,  /* E136 */
-        4300,  /* E137 */
-        4350,  /* E138 */
+        3500, 3550, 3600, 3650, 3700, 3750, 3800, 3850, 3900, /* E121–E129 */
+        3950, 4000, 4050, 4100, 4150, 4200, 4250, 4300, 4350, /* E130–E138 */
         4400,  /* E139 */
         0,     /* E140 ← free flip */
-        4450,  /* E141 */
-        4500,  /* E142 */
-        4550,  /* E143 */
-        4600,  /* E144 */
-        4650,  /* E145 */
-        4700,  /* E146 */
-        4750,  /* E147 */
-        4800,  /* E148 */
-        4850,  /* E149 */
-        4900,  /* E150 */
-        4950,  /* E151 */
-        5000,  /* E152 */
-        5050,  /* E153 */
-        5100,  /* E154 */
-        5150,  /* E155 */
-        5200,  /* E156 */
-        5250,  /* E157 */
-        5300,  /* E158 */
+        4450, 4500, 4550, 4600, 4650, 4700, 4750, 4800, 4850, /* E141–E149 */
+        4900, 4950, 5000, 5050, 5100, 5150, 5200, 5250, 5300, /* E150–E158 */
         5350,  /* E159 */
         0,     /* E160 ← free flip */
-        5500,  /* E161 */
-        5600,  /* E162 */
-        5700,  /* E163 */
-        5800,  /* E164 */
-        5900,  /* E165 */
-        6000,  /* E166 */
-        6100,  /* E167 */
-        6200,  /* E168 */
-        6300,  /* E169 */
-        6400,  /* E170 */
-        6500,  /* E171 */
-        6600,  /* E172 */
-        6700,  /* E173 */
-        6800,  /* E174 */
-        6900,  /* E175 */
-        7000,  /* E176 */
-        7100,  /* E177 */
-        7200,  /* E178 */
+        5500, 5600, 5700, 5800, 5900, 6000, 6100, 6200, 6300, /* E161–E169 */
+        6400, 6500, 6600, 6700, 6800, 6900, 7000, 7100, 7200, /* E170–E178 */
         7300,  /* E179 */
         0,     /* E180 ← free flip */
-        7500,  /* E181 */
-        7600,  /* E182 */
-        7700,  /* E183 */
-        7800,  /* E184 */
-        7900,  /* E185 */
-        8000,  /* E186 */
-        8100,  /* E187 */
-        8200,  /* E188 */
-        8300,  /* E189 */
-        8400,  /* E190 */
-        8500,  /* E191 */
-        8600,  /* E192 */
-        8700,  /* E193 */
-        8800,  /* E194 */
-        8900,  /* E195 */
-        9000,  /* E196 */
-        9100,  /* E197 */
-        9200,  /* E198 */
+        7500, 7600, 7700, 7800, 7900, 8000, 8100, 8200, 8300, /* E181–E189 */
+        8400, 8500, 8600, 8700, 8800, 8900, 9000, 9100, 9200, /* E190–E198 */
         9300,  /* E199 */
         0      /* E200 ← free flip / max */
     ],
@@ -315,93 +170,131 @@ var WOSKY_HERO_GEAR_DATA = {
     /*  API                                                                   */
     /* ══════════════════════════════════════════════════════════════════════ */
 
-    /** XP cost to advance from E(n-1) to E(n). Returns 0 if out of range. */
     getEmpowerCost: function (n) {
         if (n < 1 || n > this.meta.maxEmpowerment) return 0;
         return this.empowerCosts[n] || 0;
     },
 
-    /** True if E(n) is a free-flip milestone (zero XP cost). */
     isFreeFlip: function (n) {
         var ff = this.meta.freeFlips;
-        for (var i = 0; i < ff.length; i++) {
-            if (ff[i] === n) return true;
-        }
+        for (var i = 0; i < ff.length; i++) { if (ff[i] === n) return true; }
         return false;
     },
 
-    /** True if E(n) is a stat-bonus flip point. */
     isStatFlip: function (n) {
         var sf = this.meta.statFlipPoints;
-        for (var i = 0; i < sf.length; i++) {
-            if (sf[i] === n) return true;
-        }
+        for (var i = 0; i < sf.length; i++) { if (sf[i] === n) return true; }
         return false;
     },
 
-    /** Next stat flip point above currentE, or null if already at/past all. */
     nextStatFlip: function (currentE) {
         var sf = this.meta.statFlipPoints;
-        for (var i = 0; i < sf.length; i++) {
-            if (sf[i] > currentE) return sf[i];
+        for (var i = 0; i < sf.length; i++) { if (sf[i] > currentE) return sf[i]; }
+        return null;
+    },
+
+    /** Returns the bonus label for a flip point, or '' if none. */
+    getFlipBonus: function (e) {
+        var b = this.meta.flipBonuses[e];
+        return b ? b.label : '';
+    },
+
+    /**
+     * getGateForE(e) — returns the gate object that covers empowerment level e.
+     */
+    getGateForE: function (e) {
+        var gates = this.meta.empowerGates;
+        for (var i = 0; i < gates.length; i++) {
+            if (e >= gates[i].minE && e <= gates[i].maxE) return gates[i];
         }
         return null;
     },
 
     /**
+     * forgeGateWarning(currentF, targetE)
+     * Returns warning string if currentF is below the required forge level for targetE,
+     * or null if the forge level is sufficient.
+     */
+    forgeGateWarning: function (currentF, targetE) {
+        var gate = this.getGateForE(targetE);
+        if (!gate) return null;
+        if (currentF >= gate.requiredF) return null;
+        return 'F' + gate.requiredF + ' req' + (gate.verified === false ? ' \u26A0\uFE0F' : '');
+    },
+
+    /**
      * calcEmpower(fromE, toE)
-     * Returns { xp, freeFlipsCrossed[], statFlipsCrossed[], verified }
-     * XP is total Gear XP needed (excludes free-flip steps).
+     * Returns total XP + lists of free-flip and stat-flip milestones crossed.
      */
     calcEmpower: function (fromE, toE) {
         var maxE = this.meta.maxEmpowerment;
         if (toE > maxE) toE = maxE;
         if (toE <= fromE) return { xp: 0, freeFlipsCrossed: [], statFlipsCrossed: [], verified: true };
-
-        var totalXP = 0;
-        var freeFlipsCrossed = [];
-        var statFlipsCrossed = [];
-
+        var totalXP = 0, freeFlips = [], statFlips = [];
         for (var e = fromE + 1; e <= toE; e++) {
-            var cost = this.getEmpowerCost(e);
-            totalXP += cost;
-            if (this.isFreeFlip(e)) freeFlipsCrossed.push(e);
-            if (this.isStatFlip(e)) statFlipsCrossed.push(e);
+            totalXP += this.getEmpowerCost(e);
+            if (this.isFreeFlip(e)) freeFlips.push(e);
+            if (this.isStatFlip(e)) statFlips.push(e);
         }
-
-        return {
-            xp:               totalXP,
-            freeFlipsCrossed: freeFlipsCrossed,
-            statFlipsCrossed: statFlipsCrossed,
-            verified:         true
-        };
+        return { xp: totalXP, freeFlipsCrossed: freeFlips, statFlipsCrossed: statFlips, verified: true };
     },
 
     /**
      * calcForge(fromLevel, toLevel)
-     * Returns { xp, hero_stones, mithril, verified }
-     * ⚠ All costs are currently 0 / unverified — update forgeCosts first.
+     * Returns { xp, hero_stones, mythic_gear, verified }
      */
     calcForge: function (fromLevel, toLevel) {
         var maxF = this.meta.maxForgeLevel;
         if (toLevel > maxF) toLevel = maxF;
-        if (toLevel <= fromLevel) return { xp: 0, hero_stones: 0, mithril: 0, verified: true };
-
-        var totXP = 0, totStones = 0, totMithril = 0, allVerified = true;
-
+        if (toLevel <= fromLevel) return { xp: 0, hero_stones: 0, mythic_gear: 0, verified: true };
+        var totXP = 0, totStones = 0, totMythic = 0, allVerified = true;
         for (var f = fromLevel; f < toLevel; f++) {
             var c = this.forgeCosts[f];
-            if (!c) continue;
-            totXP      += c.xp      || 0;
-            totStones  += c.hero_stones || 0;
-            totMithril += c.mithril || 0;
+            if (!c) { allVerified = false; continue; }
+            totXP     += c.xp         || 0;
+            totStones += c.hero_stones || 0;
+            totMythic += c.mythic_gear || 0;
             if (c.verified === false) allVerified = false;
         }
-
-        return { xp: totXP, hero_stones: totStones, mithril: totMithril, verified: allVerified };
+        return { xp: totXP, hero_stones: totStones, mythic_gear: totMythic, verified: allVerified };
     },
 
-    /** Format XP as "N×100 + M×10 (+ R)" for display. */
+    /**
+     * calcGateCosts(fromE, toE)
+     * Returns the total one-time gate unlock costs (Mithril + Mythic pieces)
+     * for all empowerment gates crossed going from fromE to toE.
+     * Also returns list of gate warnings if forge level is insufficient.
+     *
+     * gatesCrossed: array of gate objects whose minE is within (fromE, toE]
+     */
+    calcGateCosts: function (fromE, toE) {
+        var maxE = this.meta.maxEmpowerment;
+        if (toE > maxE) toE = maxE;
+        var totMithril = 0, totMythic = 0, allVerified = true;
+        var gatesCrossed = [];
+        var gates = this.meta.empowerGates;
+
+        for (var i = 0; i < gates.length; i++) {
+            var g = gates[i];
+            /* A gate is "crossed" when we move INTO its range for the first time:
+               i.e., fromE is below the gate's minE and toE reaches into its range. */
+            if (fromE < g.minE && toE >= g.minE) {
+                totMithril += g.mithril;
+                totMythic  += g.mythic;
+                if (g.verified === false) allVerified = false;
+                gatesCrossed.push(g);
+            }
+        }
+
+        return {
+            mithril:      totMithril,
+            mythic:       totMythic,
+            gatesCrossed: gatesCrossed,
+            verified:     allVerified
+        };
+    },
+
+    /** Format XP as "N×XP-100 + M×XP-10 (+ R)" */
     fmtXP: function (xp) {
         if (xp === 0) return '0';
         var h = Math.floor(xp / 100);

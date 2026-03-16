@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>&#9876;&#65039; Hero Gear &mdash; WOSKY_3169</title>
-    <meta name="description" content="Hero Gear forge level and empowerment calculator for Whiteout Survival. Tracks XP costs, flip milestones, and Mithril across Infantry, Lancer, and Marksman sets.">
+    <meta name="description" content="Hero Gear forge level and empowerment calculator for Whiteout Survival. Tracks XP, Hero Stones, Mithril, gate unlock costs, and stat flip milestones.">
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/wosky.css">
     <style>
-        /* ── Hero Gear page — local overrides ─────────────────────────────── */
+        /* ── Hero Gear page — local styles ──────────────────────────────────── */
 
-        /* Piece row: label | Forge pair | Empower pair | flip badge */
+        /* Piece row */
         .hg-piece-row {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.55rem;
             flex-wrap: wrap;
-            padding: 0.55rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid var(--w-border);
         }
         .hg-piece-row:last-child { border-bottom: none; }
@@ -30,7 +30,7 @@
             flex-shrink: 0;
         }
 
-        /* A pair = label + cur input + → + tgt input */
+        /* Input pair: icon | cur input | → | tgt input */
         .hg-pair {
             display: flex;
             align-items: center;
@@ -42,58 +42,46 @@
             font-size: 0.6rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: var(--w-text-muted);
             width: 1.4rem;
             flex-shrink: 0;
         }
-        .hg-arrow {
-            color: var(--w-text-muted);
-            font-family: var(--w-mono);
-            font-size: 0.75rem;
-        }
-        .hg-pair .w-input {
-            width: 48px;
-            text-align: center;
-            padding: 0.3rem;
-            font-size: 0.8rem;
-        }
+        .hg-arrow { color: var(--w-text-muted); font-family: var(--w-mono); font-size: 0.75rem; }
+        .hg-pair .w-input { width: 46px; text-align: center; padding: 0.3rem; font-size: 0.8rem; }
 
-        /* Flip badge — next stat milestone */
-        .hg-flip-badge {
+        /* Flip / gate badge (live indicator) */
+        .hg-status-badge {
             font-family: var(--w-mono);
-            font-size: 0.62rem;
+            font-size: 0.6rem;
             font-weight: 700;
-            padding: 0.15rem 0.45rem;
+            padding: 0.15rem 0.4rem;
             border-radius: var(--w-radius-sm);
             white-space: nowrap;
-            margin-left: auto;
             flex-shrink: 0;
         }
-        .hg-flip-badge.at-flip {
-            background: var(--w-red-subtle);
-            color: var(--w-red);
-            border: 1px solid var(--w-red-dim);
-        }
-        .hg-flip-badge.next-flip {
-            background: rgba(245,158,11,0.08);
-            color: var(--w-warn);
-            border: 1px solid rgba(245,158,11,0.3);
-        }
-        .hg-flip-badge.maxed {
-            background: rgba(34,197,94,0.08);
-            color: var(--w-success);
-            border: 1px solid rgba(34,197,94,0.3);
-        }
-        .hg-flip-badge.hidden { visibility: hidden; }
+        .hg-status-badge.next-flip  { background: rgba(245,158,11,0.08); color: var(--w-warn);    border: 1px solid rgba(245,158,11,0.3); }
+        .hg-status-badge.gate-warn  { background: var(--w-red-subtle);   color: var(--w-red);     border: 1px solid var(--w-red-dim); }
+        .hg-status-badge.maxed      { background: rgba(34,197,94,0.08);  color: var(--w-success); border: 1px solid rgba(34,197,94,0.3); }
+        .hg-status-badge.hidden     { visibility: hidden; }
 
-        /* Column header above piece rows */
+        /* Piece section inside troop group */
+        .charm-piece-section { padding: 0.7rem 1rem; }
+        .charm-piece-title {
+            font-family: var(--w-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Column header row */
         .hg-col-header {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.55rem;
             flex-wrap: wrap;
-            padding: 0.3rem 0 0.4rem;
+            padding-bottom: 0.3rem;
             border-bottom: 1px solid var(--w-border);
             margin-bottom: 0.1rem;
         }
@@ -105,27 +93,17 @@
             letter-spacing: 0.5px;
             color: var(--w-text-muted);
         }
-        .hg-col-piece { min-width: 5.5rem; flex-shrink: 0; }
-        .hg-col-forge  { width: 8rem; flex-shrink: 0; }
-        .hg-col-empower{ width: 8rem; flex-shrink: 0; }
-
-        /* Piece section (inside troop group) */
-        .charm-piece-section { padding: 0.7rem 1rem; }
-        .charm-piece-title {
-            font-family: var(--w-mono);
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
+        .hg-col-piece   { min-width: 5.5rem; flex-shrink: 0; }
+        .hg-col-forge   { width: 9rem; flex-shrink: 0; }
+        .hg-col-empower { width: 9rem; flex-shrink: 0; }
+        .hg-col-status  { flex: 1; }
 
         /* Results table */
         .results-table {
             width: 100%;
             border-collapse: collapse;
             font-family: var(--w-mono);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             margin-top: 0.75rem;
         }
         .results-table th {
@@ -138,43 +116,78 @@
             border-bottom: 1px solid var(--w-border);
         }
         .results-table td {
-            padding: 0.35rem 0.5rem;
+            padding: 0.3rem 0.5rem;
             border-bottom: 1px solid var(--w-border);
             color: var(--w-text);
-            font-size: 0.78rem;
         }
         .results-table tr:last-child td { border-bottom: none; }
-        .results-table .val     { text-align: right; font-weight: 700; }
-        .results-table .val-red { color: var(--w-red); }
+        .results-table .val       { text-align: right; font-weight: 700; }
+        .results-table .val-red   { color: var(--w-red); }
         .results-table .val-green { color: var(--w-success); }
         .results-table .val-gold  { color: var(--w-warn); }
         .results-table .val-muted { color: var(--w-text-muted); font-weight: 400; font-style: italic; }
-        .results-table .total-row td { color: var(--w-red); font-size: 0.88rem; border-top: 2px solid var(--w-red-dim); }
+        .results-table .total-row td { color: var(--w-red); font-size: 0.85rem; border-top: 2px solid var(--w-red-dim); }
 
         .troop-dot {
             display: inline-block;
             width: 8px; height: 8px;
             border-radius: 50%;
-            margin-right: 0.4rem;
+            margin-right: 0.35rem;
             vertical-align: middle;
         }
         .troop-dot-infantry { background: var(--w-infantry); }
         .troop-dot-lancer   { background: var(--w-lancer);   }
         .troop-dot-marksman { background: var(--w-marksman); }
 
-        /* Flip milestone pills in results */
-        .flip-pill {
+        /* Flip / gate pills in results */
+        .res-pill {
             display: inline-block;
             font-family: var(--w-mono);
-            font-size: 0.58rem;
+            font-size: 0.55rem;
             font-weight: 700;
             padding: 0.1rem 0.35rem;
             border-radius: 20px;
-            margin: 0.1rem 0.15rem 0.1rem 0;
+            margin: 0.1rem 0.1rem 0.1rem 0;
             vertical-align: middle;
+            white-space: nowrap;
         }
-        .flip-stat  { background: var(--w-red-subtle);      color: var(--w-red);     border: 1px solid var(--w-red-dim); }
-        .flip-free  { background: rgba(34,197,94,0.08);      color: var(--w-success); border: 1px solid rgba(34,197,94,0.3); }
+        .pill-stat { background: var(--w-red-subtle);      color: var(--w-red);     border: 1px solid var(--w-red-dim); }
+        .pill-free { background: rgba(34,197,94,0.08);     color: var(--w-success); border: 1px solid rgba(34,197,94,0.3); }
+        .pill-gate { background: rgba(245,158,11,0.1);     color: var(--w-warn);    border: 1px solid rgba(245,158,11,0.35); }
+        .pill-hard { background: rgba(245,158,11,0.1);     color: var(--w-warn);    border: 1px solid rgba(245,158,11,0.35); font-weight: 900; }
+
+        /* Gate summary box */
+        .hg-gate-summary {
+            margin-top: 0.75rem;
+            background: var(--w-surface2);
+            border: 1px solid var(--w-border-accent);
+            border-left: 3px solid var(--w-warn);
+            border-radius: var(--w-radius-md);
+            padding: 0.75rem 1rem;
+        }
+        .hg-gate-summary-title {
+            font-family: var(--w-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--w-warn);
+            margin-bottom: 0.5rem;
+        }
+        .hg-gate-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid var(--w-border);
+            font-family: var(--w-mono);
+            font-size: 0.72rem;
+        }
+        .hg-gate-row:last-child { border-bottom: none; }
+        .hg-gate-label { color: var(--w-text-secondary); min-width: 4rem; }
+        .hg-gate-cost  { color: var(--w-warn); font-weight: 700; }
+        .hg-gate-req   { color: var(--w-text-muted); }
 
         /* Controls card */
         .hg-controls {
@@ -185,35 +198,8 @@
             margin-bottom: 1rem;
         }
 
-        /* Plan status */
-        .plan-loaded {
-            background: var(--w-red-subtle);
-            border: 1px solid var(--w-red-dim);
-            border-radius: var(--w-radius-sm);
-            padding: 0.3rem 0.6rem;
-            font-family: var(--w-mono);
-            font-size: 0.68rem;
-            color: var(--w-red);
-        }
-
-        /* Hard resource flag */
-        .hg-mithril-flag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-family: var(--w-mono);
-            font-size: 0.68rem;
-            font-weight: 700;
-            color: var(--w-warn);
-            background: rgba(245,158,11,0.08);
-            border: 1px solid rgba(245,158,11,0.3);
-            border-radius: var(--w-radius-sm);
-            padding: 0.25rem 0.55rem;
-            margin-top: 0.5rem;
-        }
-
         @media (max-width: 500px) {
-            .hg-pair .w-input { width: 40px; font-size: 0.75rem; }
+            .hg-pair .w-input { width: 40px; }
             .hg-piece-label   { min-width: 4.5rem; }
         }
     </style>
@@ -236,80 +222,72 @@
     <main class="wosky-main">
 
         <!-- Page header -->
-        <div style="margin-bottom: 1.25rem;">
+        <div style="margin-bottom:1.25rem;">
             <div class="wosky-page-title">&#9876;&#65039; Hero Gear Calculator</div>
             <div class="wosky-page-sub">
-                12 gear pieces across 3 troop types (4 pieces each).
-                Track <strong>Forge</strong> level (F1&ndash;<span id="lbl-max-forge">30</span>) and
-                <strong>Empower</strong> level (E0&ndash;<span id="lbl-max-empower">200</span>).
-                Stat flip milestones: <span id="lbl-flip-points">E20, E60, E80, E100</span>.
+                12 pieces &bull; 3 troop types &bull; Forge F1&ndash;<span id="lbl-max-forge">20</span>
+                &bull; Empower E0&ndash;<span id="lbl-max-empower">200</span><br>
+                Stat flip milestones: <span id="lbl-flip-points"></span><br>
+                Gate unlock required at each flip: Forge level + Mithril + Mythic piece sacrifice.
+                <span class="w-hard-resource" style="margin-left:0.5rem;">&#9888; HARD: Mithril</span>
             </div>
         </div>
 
         <!-- ── Controls card ── -->
         <div class="hg-controls">
-
             <!-- Row 1: data management -->
-            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-                <button class="wbtn"             id="btn-calc">&#9654; Calculate</button>
-                <button class="wbtn wbtn-outline" id="btn-load-char">&#8635; Load Character</button>
-                <button class="wbtn wbtn-outline" id="btn-save-char">&#128190; Save to Character</button>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.6rem;">
+                <button class="wbtn"              id="btn-calc">&#9654; Calculate</button>
+                <button class="wbtn wbtn-outline"  id="btn-load-char">&#8635; Load Character</button>
+                <button class="wbtn wbtn-outline"  id="btn-save-char">&#128190; Save to Character</button>
             </div>
-
-            <!-- Row 2: master tier controls -->
+            <!-- Row 2: master controls -->
             <div class="w-tier-controls">
                 <span class="w-tier-controls-label">&#9889; Set All</span>
-
                 <div class="w-tier-group">
-                    <span class="w-tier-sub">&#8595; Forge cur</span>
-                    <input class="w-tier-select" style="min-width:60px;padding-right:0.5rem;" type="number" min="1" id="master-forge-cur" value="1">
-                    <button class="wbtn wbtn-sm wbtn-outline" id="btn-set-forge-cur">Apply</button>
+                    <span class="w-tier-sub">&#8595; F cur</span>
+                    <input class="w-tier-select" style="min-width:54px;padding-right:0.4rem;" type="number" min="1" id="master-f-cur" value="1">
+                    <button class="wbtn wbtn-sm wbtn-outline" id="btn-mfc">Apply</button>
                 </div>
-
                 <div class="w-tier-group">
-                    <span class="w-tier-sub">&#8593; Forge tgt</span>
-                    <input class="w-tier-select" style="min-width:60px;padding-right:0.5rem;" type="number" min="1" id="master-forge-tgt" value="30">
-                    <button class="wbtn wbtn-sm" id="btn-set-forge-tgt">Apply</button>
+                    <span class="w-tier-sub">&#8593; F tgt</span>
+                    <input class="w-tier-select" style="min-width:54px;padding-right:0.4rem;" type="number" min="1" id="master-f-tgt" value="20">
+                    <button class="wbtn wbtn-sm" id="btn-mft">Apply</button>
                 </div>
-
                 <div class="w-tier-divider"></div>
-
                 <div class="w-tier-group">
-                    <span class="w-tier-sub">&#8595; Empower cur</span>
-                    <input class="w-tier-select" style="min-width:60px;padding-right:0.5rem;" type="number" min="0" id="master-empower-cur" value="0">
-                    <button class="wbtn wbtn-sm wbtn-outline" id="btn-set-empower-cur">Apply</button>
+                    <span class="w-tier-sub">&#8595; E cur</span>
+                    <input class="w-tier-select" style="min-width:54px;padding-right:0.4rem;" type="number" min="0" id="master-e-cur" value="0">
+                    <button class="wbtn wbtn-sm wbtn-outline" id="btn-mec">Apply</button>
                 </div>
-
                 <div class="w-tier-group">
-                    <span class="w-tier-sub">&#8593; Empower tgt</span>
-                    <input class="w-tier-select" style="min-width:60px;padding-right:0.5rem;" type="number" min="0" id="master-empower-tgt" value="200">
-                    <button class="wbtn wbtn-sm" id="btn-set-empower-tgt">Apply</button>
+                    <span class="w-tier-sub">&#8593; E tgt</span>
+                    <input class="w-tier-select" style="min-width:54px;padding-right:0.4rem;" type="number" min="0" id="master-e-tgt" value="200">
+                    <button class="wbtn wbtn-sm" id="btn-met">Apply</button>
                 </div>
             </div>
+        </div>
 
-        </div><!-- /controls -->
-
-        <!-- Plan status -->
         <div id="plan-status" style="margin-bottom:0.5rem;"></div>
 
-        <!-- ── Gear Groups (built by JS) ── -->
+        <!-- ── Gear Groups ── -->
         <div id="gear-sections"></div>
 
         <!-- ── Results ── -->
-        <div id="hg-results" style="display:none; margin-top:1.5rem;">
+        <div id="hg-results" style="display:none;margin-top:1.5rem;">
             <div class="w-card-title">&#128200; Results</div>
             <div class="w-result-panel">
                 <table class="results-table" id="results-table"></table>
             </div>
-            <div id="results-unverified"></div>
+            <div id="results-details"></div>
         </div>
 
-        <!-- Footer notes -->
-        <div style="margin-top:1.5rem;font-size:0.72rem;color:var(--w-text-muted);font-family:var(--w-mono);line-height:1.7;">
-            &#9888; <span class="w-hard-resource">&#9888; HARD: Mithril</span> &mdash; Mithril is a hard resource. No farming assumed.<br>
-            &#9888; Forge cost data is <strong>UNVERIFIED</strong> &mdash; forge XP, Hero Stones, and Mithril costs in <code>hero-gear-data.js</code> are all placeholders.<br>
-            &#9888; Empower XP data (E1&ndash;E200) is verified from WarMachine in-game.<br>
-            XP shown as: <strong>N&times;XP-100</strong> + remainder. Stage 2 (E101&ndash;E200) has free flip upgrades at E120, E140, E160, E180, E200.
+        <!-- Footer -->
+        <div style="margin-top:1.5rem;font-size:0.72rem;color:var(--w-text-muted);font-family:var(--w-mono);line-height:1.8;">
+            &#9888; Forge cost data (XP / Hero Stones / Mythic gear): <strong>verified</strong> F1&ndash;F20.<br>
+            &#9888; Empowerment XP (E1&ndash;E200): <strong>verified</strong> (WarMachine in-game).<br>
+            &#9888; Gate unlock costs (Mithril + Mythic): <strong>verified</strong> E1&ndash;E100; E101+ forge req <strong>unverified</strong>.<br>
+            &#9888; Stat bonus variants per piece — exact stat type (Atk vs Health etc.) may differ per gear piece. Update <code>pieces[]</code> in <code>hero-gear-data.js</code> when confirmed.
         </div>
 
         <div style="margin-top:1rem;text-align:center;">
@@ -331,26 +309,29 @@
         var GROUPS = DATA.troopGroups;
         var PIECES = DATA.pieces;
 
-        /* ── Update labels from meta ────────────────────────────────────── */
+        /* ── Update labels from meta ─────────────────────────────────────── */
         function updateMetaLabels() {
-            var elF = document.getElementById('lbl-max-forge');
-            var elE = document.getElementById('lbl-max-empower');
-            var elFP = document.getElementById('lbl-flip-points');
-            if (elF)  elF.textContent  = META.maxForgeLevel;
-            if (elE)  elE.textContent  = META.maxEmpowerment;
-            if (elFP) {
-                elFP.textContent = META.statFlipPoints.map(function(n){ return 'E' + n; }).join(', ');
+            setTxt('lbl-max-forge',   META.maxForgeLevel);
+            setTxt('lbl-max-empower', META.maxEmpowerment);
+            /* Flip points with bonus labels */
+            var fpEl = document.getElementById('lbl-flip-points');
+            if (fpEl) {
+                var parts = [];
+                for (var i = 0; i < META.statFlipPoints.length; i++) {
+                    var e = META.statFlipPoints[i];
+                    var b = META.flipBonuses[e];
+                    parts.push('E' + e + (b ? ' (' + b.label + ')' : ''));
+                }
+                fpEl.textContent = parts.join(' \u00b7 ');
             }
-            /* Sync master inputs max */
-            var mfc = document.getElementById('master-forge-cur');
-            var mft = document.getElementById('master-forge-tgt');
-            var mec = document.getElementById('master-empower-cur');
-            var met = document.getElementById('master-empower-tgt');
-            if (mfc) { mfc.max = META.maxForgeLevel;   mft.max = META.maxForgeLevel;   }
-            if (mec) { mec.max = META.maxEmpowerment;  met.max = META.maxEmpowerment;  }
+            /* Sync master input max */
+            setAttr('master-f-cur', 'max', META.maxForgeLevel);
+            setAttr('master-f-tgt', 'max', META.maxForgeLevel);
+            setAttr('master-e-cur', 'max', META.maxEmpowerment);
+            setAttr('master-e-tgt', 'max', META.maxEmpowerment);
         }
 
-        /* ── Build the grouped gear input grid ──────────────────────────── */
+        /* ── Build input grid ────────────────────────────────────────────── */
         function buildGrid() {
             var container = document.getElementById('gear-sections');
             var html = '';
@@ -372,39 +353,31 @@
                         '<span class="hg-col-header-cell hg-col-piece">Piece</span>' +
                         '<span class="hg-col-header-cell hg-col-forge">\u2692\uFE0F Forge (cur \u2192 tgt)</span>' +
                         '<span class="hg-col-header-cell hg-col-empower">\u26A1 Empower (cur \u2192 tgt)</span>' +
+                        '<span class="hg-col-header-cell hg-col-status">Status</span>' +
                     '</div>';
 
                 for (var p = 0; p < PIECES.length; p++) {
                     var piece = PIECES[p];
                     var base  = grp.key + '_' + piece.key;
                     html +=
-                        '<div class="hg-piece-row" id="row_' + base + '">' +
+                        '<div class="hg-piece-row">' +
                             '<span class="hg-piece-label">' + piece.emoji + ' ' + escHtml(piece.label) + '</span>' +
                             /* Forge pair */
                             '<div class="hg-pair">' +
                                 '<span class="hg-pair-label">F</span>' +
-                                '<input class="w-input hg-f-cur" type="number" min="1" max="' + META.maxForgeLevel + '"' +
-                                    ' id="f_cur_' + base + '" value="1"' +
-                                    ' aria-label="Forge current ' + escHtml(grp.label) + ' ' + escHtml(piece.label) + '">' +
+                                '<input class="w-input hg-f-cur" type="number" min="1" max="' + META.maxForgeLevel + '" id="f_cur_' + base + '" value="1" aria-label="Forge cur">' +
                                 '<span class="hg-arrow">\u2192</span>' +
-                                '<input class="w-input hg-f-tgt" type="number" min="1" max="' + META.maxForgeLevel + '"' +
-                                    ' id="f_tgt_' + base + '" value="' + META.maxForgeLevel + '"' +
-                                    ' aria-label="Forge target ' + escHtml(grp.label) + ' ' + escHtml(piece.label) + '">' +
+                                '<input class="w-input hg-f-tgt" type="number" min="1" max="' + META.maxForgeLevel + '" id="f_tgt_' + base + '" value="' + META.maxForgeLevel + '" aria-label="Forge tgt">' +
                             '</div>' +
                             /* Empower pair */
                             '<div class="hg-pair">' +
                                 '<span class="hg-pair-label">E</span>' +
-                                '<input class="w-input hg-e-cur" type="number" min="0" max="' + META.maxEmpowerment + '"' +
-                                    ' id="e_cur_' + base + '" value="0"' +
-                                    ' aria-label="Empower current ' + escHtml(grp.label) + ' ' + escHtml(piece.label) + '"' +
-                                    ' data-base="' + base + '">' +
+                                '<input class="w-input hg-e-cur" type="number" min="0" max="' + META.maxEmpowerment + '" id="e_cur_' + base + '" value="0" aria-label="Empower cur" data-base="' + base + '">' +
                                 '<span class="hg-arrow">\u2192</span>' +
-                                '<input class="w-input hg-e-tgt" type="number" min="0" max="' + META.maxEmpowerment + '"' +
-                                    ' id="e_tgt_' + base + '" value="' + META.maxEmpowerment + '"' +
-                                    ' aria-label="Empower target ' + escHtml(grp.label) + ' ' + escHtml(piece.label) + '">' +
+                                '<input class="w-input hg-e-tgt" type="number" min="0" max="' + META.maxEmpowerment + '" id="e_tgt_' + base + '" value="' + META.maxEmpowerment + '" aria-label="Empower tgt" data-base="' + base + '">' +
                             '</div>' +
-                            /* Flip badge */
-                            '<span class="hg-flip-badge hidden" id="flip_' + base + '">&mdash;</span>' +
+                            /* Status badge */
+                            '<span class="hg-status-badge hidden" id="badge_' + base + '"></span>' +
                         '</div>';
                 }
 
@@ -412,52 +385,83 @@
             }
 
             container.innerHTML = html;
-            bindFlipUpdaters();
+            bindLiveUpdaters();
         }
 
-        /* ── Live flip badge updates ─────────────────────────────────────── */
-        function updateFlipBadge(base) {
-            var badge  = document.getElementById('flip_' + base);
-            var eInp   = document.getElementById('e_cur_' + base);
-            if (!badge || !eInp) return;
-            var curE = parseInt(eInp.value, 10);
-            if (isNaN(curE)) { badge.className = 'hg-flip-badge hidden'; return; }
+        /* ── Live status badge ───────────────────────────────────────────── */
+        function updateBadge(base) {
+            var badge  = document.getElementById('badge_' + base);
+            var eCurEl = document.getElementById('e_cur_' + base);
+            var eTgtEl = document.getElementById('e_tgt_' + base);
+            var fCurEl = document.getElementById('f_cur_' + base);
+            if (!badge || !eCurEl || !eTgtEl || !fCurEl) return;
+
+            var curE = parseInt(eCurEl.value, 10) || 0;
+            var tgtE = parseInt(eTgtEl.value, 10) || 0;
+            var curF = parseInt(fCurEl.value, 10) || 1;
+
+            /* Priority 1: forge gate warning for the TARGET empower level */
+            var gateWarn = DATA.forgeGateWarning(curF, tgtE);
+            if (gateWarn) {
+                badge.textContent = '\u26A0\uFE0F ' + gateWarn;
+                badge.className   = 'hg-status-badge gate-warn';
+                return;
+            }
+            /* Priority 2: next stat flip */
             if (curE >= META.maxEmpowerment) {
                 badge.textContent = 'E' + META.maxEmpowerment + ' \u2713';
-                badge.className   = 'hg-flip-badge maxed';
+                badge.className   = 'hg-status-badge maxed';
                 return;
             }
             var nextFlip = DATA.nextStatFlip(curE);
             if (nextFlip !== null) {
-                badge.textContent = '\u2192 E' + nextFlip;
-                badge.className   = 'hg-flip-badge next-flip';
+                var bonus = DATA.getFlipBonus(nextFlip);
+                badge.textContent = '\u2192 E' + nextFlip + (bonus ? ' ' + bonus : '');
+                badge.className   = 'hg-status-badge next-flip';
             } else {
                 badge.textContent = 'Stage 2';
-                badge.className   = 'hg-flip-badge at-flip';
+                badge.className   = 'hg-status-badge next-flip';
             }
         }
 
-        function bindFlipUpdaters() {
-            var inputs = document.querySelectorAll ? document.querySelectorAll('.hg-e-cur') : [];
-            if (!inputs || !inputs.length) return;
-            for (var i = 0; i < inputs.length; i++) {
-                (function (inp) {
-                    var base = inp.getAttribute('data-base');
-                    if (base) {
-                        updateFlipBadge(base);
-                        inp.addEventListener('input', function () { updateFlipBadge(base); });
-                        inp.addEventListener('change', function () { updateFlipBadge(base); });
-                    }
-                }(inputs[i]));
+        function bindLiveUpdaters() {
+            var eCurs = document.querySelectorAll ? document.querySelectorAll('.hg-e-cur') : [];
+            var eTgts = document.querySelectorAll ? document.querySelectorAll('.hg-e-tgt') : [];
+            var fCurs = document.querySelectorAll ? document.querySelectorAll('.hg-f-cur') : [];
+            var i;
+            function bindOne(el) {
+                var base = el.getAttribute('data-base');
+                if (!base) return;
+                updateBadge(base);
+                el.addEventListener('input',  function () { updateBadge(base); });
+                el.addEventListener('change', function () { updateBadge(base); });
+            }
+            for (i = 0; i < eCurs.length; i++) bindOne(eCurs[i]);
+            for (i = 0; i < eTgts.length; i++) bindOne(eTgts[i]);
+            /* forge changes also affect gate warning */
+            for (i = 0; i < fCurs.length; i++) {
+                (function (el) {
+                    el.addEventListener('input',  function () {
+                        /* Need base from sibling — find the row's data-base badges */
+                        var row = el.parentNode && el.parentNode.parentNode;
+                        if (row) {
+                            var badges = row.querySelectorAll ? row.querySelectorAll('[data-base]') : [];
+                            for (var j = 0; j < badges.length; j++) {
+                                var b = badges[j].getAttribute('data-base');
+                                if (b) updateBadge(b);
+                            }
+                        }
+                    });
+                }(fCurs[i]));
             }
         }
 
-        /* ── Load from active character ─────────────────────────────────── */
+        /* ── Load from character ─────────────────────────────────────────── */
         function loadFromChar() {
             var c = CHARS.getActive();
             if (!c || !c.heroGear) return;
             for (var g = 0; g < GROUPS.length; g++) {
-                var gKey = GROUPS[g].key;
+                var gKey  = GROUPS[g].key;
                 var gData = c.heroGear[gKey] || {};
                 for (var p = 0; p < PIECES.length; p++) {
                     var pKey = PIECES[p].key;
@@ -466,12 +470,12 @@
                     var base = gKey + '_' + pKey;
                     setVal('f_cur_' + base, slot.f || 1);
                     setVal('e_cur_' + base, slot.e || 0);
-                    updateFlipBadge(base);
+                    updateBadge(base);
                 }
             }
         }
 
-        /* ── Save current inputs to character heroGear ──────────────────── */
+        /* ── Save to character ───────────────────────────────────────────── */
         function saveToChar() {
             var c = CHARS.getActive();
             if (!c) { alert('No active character.'); return; }
@@ -493,15 +497,15 @@
             flashBtn('btn-save-char', '&#10003; Saved!');
         }
 
-        /* ── Master controls ────────────────────────────────────────────── */
-        function setAllField(fieldPrefix, masterId) {
+        /* ── Master set-all ──────────────────────────────────────────────── */
+        function setAllField(fieldPrefix, masterId, updateBadges) {
             var val = getInt(masterId, null);
             if (val === null) return;
             for (var g = 0; g < GROUPS.length; g++) {
                 for (var p = 0; p < PIECES.length; p++) {
                     var base = GROUPS[g].key + '_' + PIECES[p].key;
                     setVal(fieldPrefix + base, val);
-                    if (fieldPrefix === 'e_cur_') updateFlipBadge(base);
+                    if (updateBadges) updateBadge(base);
                 }
             }
         }
@@ -509,13 +513,12 @@
         /* ── Calculate ───────────────────────────────────────────────────── */
         function calculate() {
             var rows = [];
-            var totXPEmpower    = 0;
-            var totXPForge      = 0;
-            var totHeroStones   = 0;
-            var totMithril      = 0;
-            var anyForgeUnver   = false;
-            var allStatFlips    = [];
-            var allFreeFlips    = [];
+            var totXPEmpower = 0, totXPForge = 0, totHeroStones = 0, totMythicGear = 0;
+            var totMithril = 0, totGateMythic = 0;
+            var anyForgeUnver = false;
+            /* Collect all unique gates crossed (across all pieces) for the summary */
+            var gatesSeen = {};
+            var gatesSummary = [];
 
             for (var g = 0; g < GROUPS.length; g++) {
                 var grp = GROUPS[g];
@@ -530,141 +533,175 @@
 
                     var empRes   = DATA.calcEmpower(eCur, eTgt);
                     var forgeRes = DATA.calcForge(fCur, fTgt);
+                    var gateRes  = DATA.calcGateCosts(eCur, eTgt);
 
-                    if (empRes.xp === 0 && forgeRes.xp === 0 &&
-                        forgeRes.hero_stones === 0 && forgeRes.mithril === 0 &&
+                    /* Check forge gate warning for target empower */
+                    var gateWarn = DATA.forgeGateWarning(fCur, eTgt);
+
+                    var totalRowXP = empRes.xp + forgeRes.xp;
+                    if (totalRowXP === 0 && forgeRes.hero_stones === 0 &&
+                        forgeRes.mythic_gear === 0 && gateRes.mithril === 0 &&
                         fCur >= fTgt && eCur >= eTgt) continue;
 
                     totXPEmpower  += empRes.xp;
                     totXPForge    += forgeRes.xp;
                     totHeroStones += forgeRes.hero_stones;
-                    totMithril    += forgeRes.mithril;
+                    totMythicGear += forgeRes.mythic_gear;
+                    totMithril    += gateRes.mithril;
+                    totGateMythic += gateRes.mythic;
                     if (!forgeRes.verified) anyForgeUnver = true;
 
-                    /* Collect flip milestones */
-                    var i;
-                    for (i = 0; i < empRes.statFlipsCrossed.length; i++)  allStatFlips.push('E' + empRes.statFlipsCrossed[i]);
-                    for (i = 0; i < empRes.freeFlipsCrossed.length; i++)   allFreeFlips.push('E' + empRes.freeFlipsCrossed[i]);
+                    /* Collect gate info for the summary panel */
+                    for (var gi = 0; gi < gateRes.gatesCrossed.length; gi++) {
+                        var gkey = 'E' + gateRes.gatesCrossed[gi].minE;
+                        if (!gatesSeen[gkey]) {
+                            gatesSeen[gkey] = true;
+                            gatesSummary.push(gateRes.gatesCrossed[gi]);
+                        }
+                    }
 
                     rows.push({
-                        label:       piece.emoji + ' ' + piece.label,
-                        troopType:   grp.key,
+                        label:     piece.emoji + ' ' + piece.label,
+                        troopType: grp.key,
                         fCur: fCur, fTgt: fTgt,
                         eCur: eCur, eTgt: eTgt,
-                        xpEmpower:   empRes.xp,
-                        xpForge:     forgeRes.xp,
-                        heroStones:  forgeRes.hero_stones,
-                        mithril:     forgeRes.mithril,
-                        statFlips:   empRes.statFlipsCrossed,
-                        freeFlips:   empRes.freeFlipsCrossed,
-                        forgeUnver:  !forgeRes.verified
+                        xpEmpower:    empRes.xp,
+                        xpForge:      forgeRes.xp,
+                        heroStones:   forgeRes.hero_stones,
+                        mythicForge:  forgeRes.mythic_gear,
+                        mithril:      gateRes.mithril,
+                        gateMythic:   gateRes.mythic,
+                        statFlips:    empRes.statFlipsCrossed,
+                        freeFlips:    empRes.freeFlipsCrossed,
+                        gateWarn:     gateWarn,
+                        forgeUnver:   !forgeRes.verified
                     });
                 }
             }
 
-            renderResults(rows, totXPEmpower, totXPForge, totHeroStones, totMithril, anyForgeUnver, allStatFlips, allFreeFlips);
+            renderResults(rows, totXPEmpower, totXPForge, totHeroStones, totMythicGear,
+                          totMithril, totGateMythic, anyForgeUnver, gatesSummary);
         }
 
-        function renderResults(rows, totXPEmpower, totXPForge, totHeroStones, totMithril, anyForgeUnver, allStatFlips, allFreeFlips) {
+        function renderResults(rows, totXPEmpower, totXPForge, totHeroStones, totMythicForge,
+                               totMithril, totGateMythic, anyForgeUnver, gatesSummary) {
             var panel    = document.getElementById('hg-results');
             var table    = document.getElementById('results-table');
-            var flagZone = document.getElementById('results-unverified');
+            var details  = document.getElementById('results-details');
 
             var html =
                 '<thead><tr>' +
                     '<th>Piece</th>' +
-                    '<th class="val">\u2692\uFE0F Forge F\u2192F</th>' +
-                    '<th class="val">\u26A1 Empower E\u2192E</th>' +
-                    '<th class="val">\uD83D\uDCE6 XP (Empower)</th>' +
-                    '<th class="val">\uD83E\uDE82 XP (Forge)</th>' +
-                    '<th class="val">\uD83D\uDDA4 Milestones</th>' +
+                    '<th class="val">\u26A1 Empower XP</th>' +
+                    '<th class="val">\u2692\uFE0F Forge XP</th>' +
+                    '<th class="val">\uD83D\uDDA4 H.Stones</th>' +
+                    '<th class="val">\uD83D\uDD2E Mythic (Forge)</th>' +
+                    '<th class="val">\uD83D\uDCA7 Mithril</th>' +
+                    '<th class="val">\uD83D\uDD2E Mythic (Gate)</th>' +
+                    '<th>Milestones</th>' +
                 '</tr></thead><tbody>';
 
             for (var i = 0; i < rows.length; i++) {
                 var r   = rows[i];
                 var dot = '<span class="troop-dot troop-dot-' + r.troopType + '"></span>';
 
-                /* Flip pills */
+                /* Pills */
                 var pills = '';
                 var j;
+                if (r.gateWarn) {
+                    pills += '<span class="res-pill pill-gate">\u26A0\uFE0F ' + r.gateWarn + '</span>';
+                }
                 for (j = 0; j < r.statFlips.length; j++) {
-                    pills += '<span class="flip-pill flip-stat">\u2B50 E' + r.statFlips[j] + '</span>';
+                    var bonus = DATA.getFlipBonus(r.statFlips[j]);
+                    pills += '<span class="res-pill pill-stat">\u2B50 E' + r.statFlips[j] + (bonus ? ' ' + bonus : '') + '</span>';
                 }
                 for (j = 0; j < r.freeFlips.length; j++) {
-                    pills += '<span class="flip-pill flip-free">\uD83C\uDF81 E' + r.freeFlips[j] + '</span>';
+                    pills += '<span class="res-pill pill-free">\uD83C\uDF81 E' + r.freeFlips[j] + '</span>';
                 }
                 if (!pills) pills = '<span style="color:var(--w-text-muted);font-size:0.65rem;">\u2014</span>';
 
                 html += '<tr>' +
-                    '<td>' + dot + r.label + (r.forgeUnver ? ' <span style="color:var(--w-warn);font-size:0.65rem;" title="Forge costs unverified">\u26A0\uFE0F</span>' : '') + '</td>' +
-                    '<td class="val val-muted">F' + r.fCur + '\u2192F' + r.fTgt + '</td>' +
-                    '<td class="val">E' + r.eCur + '\u2192E' + r.eTgt + '</td>' +
+                    '<td>' + dot + r.label + '</td>' +
                     '<td class="val val-green">' + fmt(r.xpEmpower) + '</td>' +
-                    '<td class="val val-muted">' + (r.forgeUnver ? '<span title="Unverified">\u26A0\uFE0F \u2014</span>' : fmt(r.xpForge)) + '</td>' +
+                    '<td class="val ' + (r.forgeUnver ? 'val-muted' : 'val-green') + '">' + (r.forgeUnver ? '\u26A0\uFE0F \u2014' : fmt(r.xpForge)) + '</td>' +
+                    '<td class="val">' + fmt(r.heroStones) + '</td>' +
+                    '<td class="val val-gold">' + (r.mythicForge ? fmt(r.mythicForge) : '\u2014') + '</td>' +
+                    '<td class="val ' + (r.mithril > 0 ? 'val-gold' : '') + '">' + (r.mithril ? fmt(r.mithril) : '\u2014') + '</td>' +
+                    '<td class="val val-gold">' + (r.gateMythic ? fmt(r.gateMythic) : '\u2014') + '</td>' +
                     '<td>' + pills + '</td>' +
                 '</tr>';
             }
 
             if (rows.length === 0) {
-                html += '<tr><td colspan="6" style="text-align:center;color:var(--w-text-muted);padding:1rem;">No upgrades needed \u2014 all targets already met.</td></tr>';
+                html += '<tr><td colspan="8" style="text-align:center;color:var(--w-text-muted);padding:1rem;">No upgrades needed \u2014 all targets already met.</td></tr>';
             }
 
-            /* Totals */
+            /* Totals row */
             html += '<tr class="total-row">' +
                 '<td><strong>TOTAL</strong></td>' +
-                '<td class="val val-muted">\u2014</td>' +
-                '<td class="val">\u2014</td>' +
-                '<td class="val val-green"><strong>' + fmt(totXPEmpower) + ' XP</strong></td>' +
-                '<td class="val val-muted"><strong>' + (anyForgeUnver ? '\u26A0\uFE0F unverified' : fmt(totXPForge) + ' XP') + '</strong></td>' +
-                '<td>\u2014</td>' +
+                '<td class="val val-green"><strong>' + fmt(totXPEmpower) + '</strong></td>' +
+                '<td class="val ' + (anyForgeUnver ? 'val-muted' : 'val-green') + '"><strong>' + (anyForgeUnver ? '\u26A0\uFE0F unverified' : fmt(totXPForge)) + '</strong></td>' +
+                '<td class="val"><strong>' + fmt(totHeroStones) + '</strong></td>' +
+                '<td class="val val-gold"><strong>' + (totMythicForge ? fmt(totMythicForge) : '\u2014') + '</strong></td>' +
+                '<td class="val ' + (totMithril > 0 ? 'val-gold' : '') + '"><strong>' + (totMithril ? fmt(totMithril) : '\u2014') + '</strong></td>' +
+                '<td class="val val-gold"><strong>' + (totGateMythic ? fmt(totGateMythic) : '\u2014') + '</strong></td>' +
+                '<td></td>' +
             '</tr></tbody>';
 
             table.innerHTML = html;
 
+            /* ── Details panel ── */
+            var detHTML = '';
+
             /* XP breakdown */
-            var breakdownHTML = '';
             if (totXPEmpower > 0) {
-                breakdownHTML +=
+                detHTML +=
                     '<div style="margin-top:0.75rem;font-family:var(--w-mono);font-size:0.72rem;color:var(--w-text-secondary);">' +
-                        '<strong style="color:var(--w-success);">\u26A1 Empower XP total:</strong> ' +
-                        fmt(totXPEmpower) + ' XP &nbsp;\u2014&nbsp; ' + DATA.fmtXP(totXPEmpower) +
+                        '<strong style="color:var(--w-success);">\u26A1 Empower XP:</strong> ' +
+                        fmt(totXPEmpower) + ' &nbsp;\u2014&nbsp; ' + DATA.fmtXP(totXPEmpower) +
                     '</div>';
             }
-            if (allStatFlips.length > 0) {
-                /* Deduplicate */
-                var seenS = {};
-                var uniqS = [];
-                for (var si = 0; si < allStatFlips.length; si++) {
-                    if (!seenS[allStatFlips[si]]) { seenS[allStatFlips[si]] = true; uniqS.push(allStatFlips[si]); }
-                }
-                breakdownHTML +=
+            if (totXPForge > 0 && !anyForgeUnver) {
+                detHTML +=
                     '<div style="margin-top:0.4rem;font-family:var(--w-mono);font-size:0.72rem;color:var(--w-text-secondary);">' +
-                        '<strong style="color:var(--w-red);">\u2B50 Stat flips reached:</strong> ' + uniqS.join(', ') +
+                        '<strong style="color:var(--w-success);">\u2692\uFE0F Forge XP:</strong> ' +
+                        fmt(totXPForge) + ' &nbsp;\u2014&nbsp; ' + DATA.fmtXP(totXPForge) +
                     '</div>';
             }
-            if (allFreeFlips.length > 0) {
-                var seenF = {};
-                var uniqF = [];
-                for (var fi = 0; fi < allFreeFlips.length; fi++) {
-                    if (!seenF[allFreeFlips[fi]]) { seenF[allFreeFlips[fi]] = true; uniqF.push(allFreeFlips[fi]); }
+
+            /* Gate summary */
+            if (gatesSummary.length > 0) {
+                detHTML += '<div class="hg-gate-summary">';
+                detHTML += '<div class="hg-gate-summary-title">\uD83D\uDEAA Empowerment Gate Unlock Costs (one-time per piece)</div>';
+                for (var gi = 0; gi < gatesSummary.length; gi++) {
+                    var gate = gatesSummary[gi];
+                    var bonus = DATA.getFlipBonus(gate.minE);
+                    var unverFlag = gate.verified === false ? ' <span style="color:var(--w-warn);">\u26A0\uFE0F unverified</span>' : '';
+                    detHTML +=
+                        '<div class="hg-gate-row">' +
+                            '<span class="hg-gate-label">E' + gate.minE + '\u2013E' + gate.maxE + '</span>' +
+                            (bonus ? '<span class="res-pill pill-stat" style="margin:0;">\u2B50 ' + bonus + '</span>' : '') +
+                            '<span class="hg-gate-cost">' + (gate.mithril > 0 ? '\uD83D\uDCA7 ' + gate.mithril + ' Mithril' : '\uD83D\uDCA7 0 Mithril') + '</span>' +
+                            '<span class="hg-gate-cost">\uD83D\uDD2E ' + gate.mythic + ' Mythic piece' + (gate.mythic !== 1 ? 's' : '') + '</span>' +
+                            '<span class="hg-gate-req">F' + gate.requiredF + ' required' + unverFlag + '</span>' +
+                        '</div>';
                 }
-                breakdownHTML +=
-                    '<div style="margin-top:0.4rem;font-family:var(--w-mono);font-size:0.72rem;color:var(--w-text-secondary);">' +
-                        '<strong style="color:var(--w-success);">\uD83C\uDF81 Free flips earned:</strong> ' + uniqF.join(', ') +
-                    '</div>';
+                if (totMithril > 0) {
+                    detHTML +=
+                        '<div class="hg-gate-row" style="border-top:2px solid var(--w-warn);margin-top:0.3rem;">' +
+                            '<span class="hg-gate-label"><strong>TOTAL</strong></span>' +
+                            '<span class="hg-gate-cost"><strong>\uD83D\uDCA7 ' + fmt(totMithril) + ' Mithril</strong></span>' +
+                            '<span class="hg-gate-cost"><strong>\uD83D\uDD2E ' + fmt(totGateMythic) + ' Mythic pieces</strong></span>' +
+                        '</div>';
+                    detHTML +=
+                        '<div class="hg-mithril-flag" style="margin-top:0.5rem;display:inline-flex;align-items:center;gap:0.3rem;font-family:var(--w-mono);font-size:0.68rem;font-weight:700;color:var(--w-warn);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:var(--w-radius-sm);padding:0.25rem 0.55rem;">' +
+                            '&#9888; HARD: ' + fmt(totMithril) + ' Mithril total &mdash; no farming. Plan ahead.' +
+                        '</div>';
+                }
+                detHTML += '</div>';
             }
 
-            /* Forge unverified notice */
-            var flagHTML = '';
-            if (anyForgeUnver) {
-                flagHTML = '<div class="w-unverified-flag">&#9888; Forge cost data is UNVERIFIED &mdash; update <code>forgeCosts</code> in <code>hero-gear-data.js</code> before using forge totals.</div>';
-            }
-            if (totMithril > 0) {
-                flagHTML += '<div class="hg-mithril-flag">&#9888; HARD: ' + fmt(totMithril) + ' Mithril needed &mdash; no farming. Plan ahead.</div>';
-            }
-
-            if (flagZone) flagZone.innerHTML = breakdownHTML + flagHTML;
-
+            if (details) details.innerHTML = detHTML;
             panel.style.display = 'block';
             panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -676,47 +713,38 @@
             var v = parseInt(el.value, 10);
             return isNaN(v) ? def : v;
         }
-        function setVal(id, val) {
-            var el = document.getElementById(id);
-            if (el) el.value = val;
-        }
+        function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
+        function setTxt(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+        function setAttr(id, attr, val) { var el = document.getElementById(id); if (el) el.setAttribute(attr, val); }
         function fmt(n) { return Number(n).toLocaleString(); }
-        function escHtml(str) {
-            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        }
+        function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
         function flashBtn(id, label) {
             var btn = document.getElementById(id);
             if (!btn) return;
-            var orig = btn.innerHTML;
-            btn.innerHTML = label;
-            btn.disabled  = true;
+            var orig = btn.innerHTML; btn.innerHTML = label; btn.disabled = true;
             setTimeout(function () { btn.innerHTML = orig; btn.disabled = false; }, 1500);
-        }
-        function showPlanStatus(msg) {
-            var el = document.getElementById('plan-status');
-            if (el) el.innerHTML = '<div class="plan-loaded">' + msg + '</div>';
         }
 
         /* ── Wire buttons ────────────────────────────────────────────────── */
         function bindButtons() {
-            var btnCalc    = document.getElementById('btn-calc');
-            var btnLoad    = document.getElementById('btn-load-char');
-            var btnSave    = document.getElementById('btn-save-char');
-            var btnFCur    = document.getElementById('btn-set-forge-cur');
-            var btnFTgt    = document.getElementById('btn-set-forge-tgt');
-            var btnECur    = document.getElementById('btn-set-empower-cur');
-            var btnETgt    = document.getElementById('btn-set-empower-tgt');
-
-            if (btnCalc) btnCalc.addEventListener('click', calculate);
-            if (btnLoad) btnLoad.addEventListener('click', loadFromChar);
-            if (btnSave) btnSave.addEventListener('click', saveToChar);
-            if (btnFCur) btnFCur.addEventListener('click', function () { setAllField('f_cur_', 'master-forge-cur');    flashBtn('btn-set-forge-cur', '\u2713 Done'); });
-            if (btnFTgt) btnFTgt.addEventListener('click', function () { setAllField('f_tgt_', 'master-forge-tgt');    flashBtn('btn-set-forge-tgt', '\u2713 Done'); });
-            if (btnECur) btnECur.addEventListener('click', function () { setAllField('e_cur_', 'master-empower-cur');  flashBtn('btn-set-empower-cur', '\u2713 Done'); });
-            if (btnETgt) btnETgt.addEventListener('click', function () { setAllField('e_tgt_', 'master-empower-tgt');  flashBtn('btn-set-empower-tgt', '\u2713 Done'); });
+            var b = document.getElementById.bind(document);
+            var map = [
+                ['btn-calc',     function () { calculate(); }],
+                ['btn-load-char',function () { loadFromChar(); }],
+                ['btn-save-char',function () { saveToChar(); }],
+                ['btn-mfc',      function () { setAllField('f_cur_', 'master-f-cur', false); flashBtn('btn-mfc', '\u2713'); }],
+                ['btn-mft',      function () { setAllField('f_tgt_', 'master-f-tgt', false); flashBtn('btn-mft', '\u2713'); }],
+                ['btn-mec',      function () { setAllField('e_cur_', 'master-e-cur', true);  flashBtn('btn-mec', '\u2713'); }],
+                ['btn-met',      function () { setAllField('e_tgt_', 'master-e-tgt', true);  flashBtn('btn-met', '\u2713'); }]
+            ];
+            for (var i = 0; i < map.length; i++) {
+                (function (id, fn) {
+                    var el = b(id);
+                    if (el) el.addEventListener('click', fn);
+                }(map[i][0], map[i][1]));
+            }
         }
 
-        /* Character change listeners */
         document.addEventListener('wosky:character-changed', function () { loadFromChar(); });
         window.woskyOnCharacterChanged = function () { loadFromChar(); };
 
