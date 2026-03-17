@@ -1,0 +1,7 @@
+Copyright (c) 2026
+
+All rights reserved.
+
+This software, including all related source code and documentation (collectively, the "Software"), is the intellectual property of its creator. You may not copy, modify, distribute, display, reproduce, publish, license, create derivative works from, or sell any information, software, products, or services obtained from this Software without express written permission from the copyright owner.
+
+Unauthorized use, reproduction, or distribution of this Software, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.

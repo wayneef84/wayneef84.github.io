@@ -264,8 +264,8 @@
             for (var lv = 1; lv <= META.maxLevel; lv++) {
                 for (var st = 0; st <= META.stepsPerLevel; st++) {
                     var label = 'Lv ' + lv + '.' + st;
-                    if (st === 0)                 label += ' \u2014 Start';
-                    if (st === META.stepsPerLevel) label += ' \u2713 Done';
+                    if (st === 0) label += ' \u2014 Base';
+                    if (st === META.stepsPerLevel && lv !== META.maxLevel) continue; if (st === META.stepsPerLevel) label += ' \u2713 Max';
                     html += '<option value="' + lv + '_' + st + '">' + label + '</option>';
                 }
             }
@@ -622,6 +622,45 @@
 
             if (btnCalc)          btnCalc.addEventListener('click',          calculate);
             if (btnLoadChar)      btnLoadChar.addEventListener('click',      loadFromChar);
+
+            var gridWrapper = document.getElementById('charms-grid-wrapper');
+            if (gridWrapper) {
+                gridWrapper.addEventListener('change', function (e) {
+                    var el = e.target;
+                    if (el.tagName === 'INPUT' && el.type === 'number') {
+                        var id = el.id;
+                        var isCur = id.indexOf('cur_st_') === 0;
+                        var isTgt = id.indexOf('tgt_st_') === 0;
+
+                        if (isCur || isTgt) {
+                            var prefix = isCur ? 'cur_' : 'tgt_';
+                            var base = id.replace(prefix + 'st_', '');
+                            var lvEl = document.getElementById(prefix + 'lv_' + base);
+                            if (lvEl) {
+                                var lv = parseInt(lvEl.value, 10);
+                                var st = parseInt(el.value, 10);
+                                if (isNaN(lv)) lv = 1;
+                                if (isNaN(st)) st = 0;
+
+                                if (st === META.stepsPerLevel && lv !== META.maxLevel) {
+                                    el.value = 0;
+                                    lvEl.value = lv + 1;
+                                } else if (st > META.stepsPerLevel) {
+                                    el.value = META.stepsPerLevel;
+                                } else if (st < 0) {
+                                    if (lv > 1) {
+                                        lvEl.value = lv - 1;
+                                        el.value = (lv - 1 === META.maxLevel) ? META.stepsPerLevel : META.stepsPerLevel - 1;
+                                    } else {
+                                        el.value = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
             if (btnSaveChar)      btnSaveChar.addEventListener('click',      saveToChar);
             if (btnSetPlan)       btnSetPlan.addEventListener('click',       setPlan);
             if (btnLoadPlan)      btnLoadPlan.addEventListener('click',      loadPlan);
