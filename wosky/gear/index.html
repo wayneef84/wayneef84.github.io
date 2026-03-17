@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!--
+  /* PROPRIETARY AND CONFIDENTIAL. (c) 2026 Fong Family Arcade / Wayne Edmond Fong. Do not distribute. */
   WOSKY_3169 — Chief Gear Cost Calculator
   Strict ES5 — no const/let/arrow functions/fetch.
   Copyright (c) 2026. All Rights Reserved.
@@ -167,9 +168,33 @@
             color: var(--w-text);
         }
 
+        .consent-banner {
+            background-color: var(--w-surface2);
+            color: var(--w-text);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+
+        .bonus-alert {
+            background-color: rgba(255, 152, 0, 0.1);
+            border: 1px solid var(--w-warn);
+            color: var(--w-warn);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
+    <div class="consent-banner">
+        This site uses cookies and local storage to save your character data. By continuing, you consent to this.
+    </div>
     <nav class="wosky-nav">
         <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
         <span class="wosky-nav-sep">/</span>
@@ -181,6 +206,10 @@
     <main class="wosky-main">
         <div class="wosky-page-title">&#128737;&#65039; Chief Gear Calculator</div>
         <div class="wosky-page-sub">Plan gear upgrades to Red T4. Calculates Hardened Alloy, Polishing Solution, Design Plans, and Lunar Amber costs.</div>
+
+        <div class="bonus-alert">
+            Important: Keep all 6 pieces within the same tier to maintain 3-piece and 6-piece universal Set Bonuses!
+        </div>
 
         <div class="quick-select">
             <span style="font-size:0.85rem; color:var(--w-text-secondary); font-weight:bold; text-transform:uppercase;">Quick Set All</span>
@@ -238,6 +267,10 @@
                     <span class="result-value" id="res-m">0</span>
                     <span class="result-label" id="short-m" style="font-size:0.7rem;"></span>
                 </div>
+                <div class="result-item">
+                    <span class="result-label">SvS Points</span>
+                    <span class="result-value" id="res-svs">0</span>
+                </div>
             </div>
         </div>
 
@@ -267,6 +300,7 @@
             s: document.getElementById('res-s'),
             d: document.getElementById('res-d'),
             m: document.getElementById('res-m'),
+            svs: document.getElementById('res-svs'),
             sa: document.getElementById('short-a'),
             ss: document.getElementById('short-s'),
             sd: document.getElementById('short-d'),
@@ -448,7 +482,7 @@
         }
 
         function calculateAll() {
-            var totA = 0, totS = 0, totD = 0, totM = 0;
+            var totA = 0, totS = 0, totD = 0, totM = 0, totSvs = 0;
 
             var pieces = DATA.pieces;
             for (var i = 0; i < pieces.length; i++) {
@@ -468,6 +502,7 @@
                 totS += cost.s;
                 totD += cost.d;
                 totM += cost.m;
+                totSvs += cost.svs;
 
                 var pText = [];
                 if (cost.a > 0) pText.push('Alloy: ' + fmtNum(cost.a));
@@ -486,6 +521,7 @@
             resEls.s.innerText = fmtNum(totS);
             resEls.d.innerText = fmtNum(totD);
             resEls.m.innerText = fmtNum(totM);
+            resEls.svs.innerText = fmtNum(totSvs * 70);
 
             var invA = parseInt(invInputs.a.value) || 0;
             var invS = parseInt(invInputs.s.value) || 0;
