@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!--
+  /* PROPRIETARY AND CONFIDENTIAL. (c) 2026 Fong Family Arcade / Wayne Edmond Fong. Do not distribute. */
+  WOSKY_3169 — Chief Gear Cost Calculator
+  Strict ES5 — no const/let/arrow functions/fetch.
+  Copyright (c) 2026. All Rights Reserved.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,31 +12,536 @@
     <title>Chief Gear — WOSKY_3169</title>
     <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/wosky.css">
+    <style>
+        .gear-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gear-card {
+            background-color: var(--w-surface);
+            border: 1px solid var(--w-border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gear-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background-color: var(--w-surface2);
+            border-bottom: 1px solid var(--w-border);
+            font-weight: bold;
+        }
+
+        .gear-card-body {
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .gear-selects {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .gear-selects select {
+            flex: 1;
+            padding: 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--w-border);
+            background-color: var(--w-bg);
+            color: var(--w-text);
+            font-family: var(--w-ui);
+            font-size: 0.85rem;
+        }
+
+        .troop-badge {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .group-infantry .troop-badge, .group-infantry.gear-card { border-color: var(--w-infantry); }
+        .group-infantry .troop-badge { background-color: var(--w-infantry); }
+        .group-lancer .troop-badge, .group-lancer.gear-card { border-color: var(--w-lancer); }
+        .group-lancer .troop-badge { background-color: var(--w-lancer); }
+        .group-marksman .troop-badge, .group-marksman.gear-card { border-color: var(--w-marksman); }
+        .group-marksman .troop-badge { background-color: var(--w-marksman); }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background-color: var(--w-surface);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--w-border);
+        }
+
+        .inventory-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--w-text-secondary);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .inventory-item input {
+            width: 100%;
+            padding: 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--w-border);
+            background-color: var(--w-bg);
+            color: var(--w-text);
+            font-family: var(--w-mono);
+            box-sizing: border-box;
+        }
+
+        .results-panel {
+            background-color: var(--w-surface);
+            border: 1px solid var(--w-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: var(--w-text-secondary);
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-family: var(--w-mono);
+            font-weight: bold;
+        }
+
+        .result-shortfall {
+            color: var(--w-warn);
+        }
+
+        .result-ok {
+            color: var(--w-success);
+        }
+
+        .quick-select {
+            background-color: var(--w-surface2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .quick-select select {
+            padding: 0.4rem;
+            border-radius: 4px;
+            border: 1px solid var(--w-border);
+            background-color: var(--w-bg);
+            color: var(--w-text);
+        }
+
+        .consent-banner {
+            background-color: var(--w-surface2);
+            color: var(--w-text);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--w-border);
+        }
+
+        .bonus-alert {
+            background-color: rgba(255, 152, 0, 0.1);
+            border: 1px solid var(--w-warn);
+            color: var(--w-warn);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+    </style>
 </head>
 <body>
+    <div class="consent-banner">
+        This site uses cookies and local storage to save your character data. By continuing, you consent to this.
+    </div>
     <nav class="wosky-nav">
         <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
         <span class="wosky-nav-sep">/</span>
         <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
         <span class="wosky-nav-sep">/</span>
-        <span class="wosky-nav-brand">Chief Gear</span>
+        <span class="wosky-nav-brand">&#128737;&#65039; Chief Gear</span>
     </nav>
     <div id="wosky-char-bar"></div>
     <main class="wosky-main">
         <div class="wosky-page-title">&#128737;&#65039; Chief Gear Calculator</div>
-        <div class="wosky-page-sub">Tier / star upgrade costs &mdash; Hardened Alloy, Polishing Solution, Design Plans, Lunar Amber.</div>
-        <div class="wosky-stub">
-            <div class="wosky-stub-icon">&#128737;&#65039;</div>
-            <h2>Coming Soon</h2>
-            <p>Chief Gear calculator is under construction.<br>
-            Tracks: Ring, Offhand, Chest, Legs, Helm, Neck &mdash; tier upgrades and star leveling.<br>
-            Lunar Amber daily cap: 500 exchanges &times; 10 LA = 5,000 LA/day.</p>
-            <div style="margin-top:1.5rem;">
-                <a href="../index.html" class="wbtn wbtn-ghost">&#8592; Back to WOSKY</a>
+        <div class="wosky-page-sub">Plan gear upgrades to Red T4. Calculates Hardened Alloy, Polishing Solution, Design Plans, and Lunar Amber costs.</div>
+
+        <div class="bonus-alert">
+            Important: Keep all 6 pieces within the same tier to maintain 3-piece and 6-piece universal Set Bonuses!
+        </div>
+
+        <div class="quick-select">
+            <span style="font-size:0.85rem; color:var(--w-text-secondary); font-weight:bold; text-transform:uppercase;">Quick Set All</span>
+            <select id="quick-current" aria-label="Set all current tiers">
+                <option value="">Current Tier...</option>
+            </select>
+            <span style="color:var(--w-text-muted);">&rarr;</span>
+            <select id="quick-target" aria-label="Set all target tiers">
+                <option value="">Target Tier...</option>
+            </select>
+        </div>
+
+        <div id="gear-container"></div>
+
+        <div class="wosky-page-title" style="font-size:1.2rem; margin-top:2rem;">Inventory</div>
+        <div class="inventory-grid">
+            <div class="inventory-item">
+                <label>Hardened Alloy</label>
+                <input type="number" id="inv-a" min="0" placeholder="0">
+            </div>
+            <div class="inventory-item">
+                <label>Polishing Sol.</label>
+                <input type="number" id="inv-s" min="0" placeholder="0">
+            </div>
+            <div class="inventory-item">
+                <label>Design Plans</label>
+                <input type="number" id="inv-d" min="0" placeholder="0">
+            </div>
+            <div class="inventory-item">
+                <label>Lunar Amber</label>
+                <input type="number" id="inv-m" min="0" placeholder="0">
             </div>
         </div>
+
+        <div class="results-panel">
+            <div class="wosky-page-title" style="font-size:1.2rem; margin-bottom: 1rem;">Total Cost</div>
+            <div class="results-grid">
+                <div class="result-item">
+                    <span class="result-label">Hardened Alloy</span>
+                    <span class="result-value" id="res-a">0</span>
+                    <span class="result-label" id="short-a" style="font-size:0.7rem;"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Polishing Sol.</span>
+                    <span class="result-value" id="res-s">0</span>
+                    <span class="result-label" id="short-s" style="font-size:0.7rem;"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Design Plans</span>
+                    <span class="result-value" id="res-d">0</span>
+                    <span class="result-label" id="short-d" style="font-size:0.7rem;"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Lunar Amber</span>
+                    <span class="result-value" id="res-m">0</span>
+                    <span class="result-label" id="short-m" style="font-size:0.7rem;"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">SvS Points</span>
+                    <span class="result-value" id="res-svs">0</span>
+                </div>
+            </div>
+        </div>
+
     </main>
+
     <script src="../js/character.js"></script>
     <script src="../js/char-bar.js"></script>
+    <script src="../js/data/gear-data.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var DATA = window.WOSKY_GEAR_DATA;
+        var container = document.getElementById('gear-container');
+        var quickCur = document.getElementById('quick-current');
+        var quickTgt = document.getElementById('quick-target');
+
+        var invInputs = {
+            a: document.getElementById('inv-a'),
+            s: document.getElementById('inv-s'),
+            d: document.getElementById('inv-d'),
+            m: document.getElementById('inv-m')
+        };
+
+        var resEls = {
+            a: document.getElementById('res-a'),
+            s: document.getElementById('res-s'),
+            d: document.getElementById('res-d'),
+            m: document.getElementById('res-m'),
+            svs: document.getElementById('res-svs'),
+            sa: document.getElementById('short-a'),
+            ss: document.getElementById('short-s'),
+            sd: document.getElementById('short-d'),
+            sm: document.getElementById('short-m')
+        };
+
+        var defaultPlan = {
+            helm:    { cur: 'none', tgt: 'none' },
+            chest:   { cur: 'none', tgt: 'none' },
+            ring:    { cur: 'none', tgt: 'none' },
+            legs:    { cur: 'none', tgt: 'none' },
+            offhand: { cur: 'none', tgt: 'none' },
+            neck:    { cur: 'none', tgt: 'none' }
+        };
+
+        function buildOptions() {
+            var html = '';
+            for (var i = 0; i < DATA.costs.length; i++) {
+                html += '<option value="' + DATA.costs[i].id + '">' + DATA.costs[i].label + '</option>';
+            }
+            return html;
+        }
+
+        function renderPieces() {
+            var groups = DATA.getPiecesByGroup();
+            var optionsHtml = buildOptions();
+            var html = '';
+
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i];
+                html += '<div class="gear-grid">';
+
+                for (var j = 0; j < group.pieces.length; j++) {
+                    var p = group.pieces[j];
+                    html += '<div class="gear-card ' + group.meta.cssClass + '" data-piece="' + p.key + '">';
+                    html += '<div class="gear-card-header">';
+                    html += '<span>' + p.emoji + '</span> <span>' + p.label + '</span>';
+                    html += '<span class="troop-badge">' + group.meta.label + '</span>';
+                    html += '</div>';
+                    html += '<div class="gear-card-body">';
+                    html += '<div class="gear-selects">';
+                    html += '<select class="sel-cur" data-key="' + p.key + '">' + optionsHtml + '</select>';
+                    html += '<span style="color:var(--w-text-muted);">&rarr;</span>';
+                    html += '<select class="sel-tgt" data-key="' + p.key + '">' + optionsHtml + '</select>';
+                    html += '</div>';
+                    html += '<div class="cost-preview" id="preview-' + p.key + '" style="font-size:0.75rem; color:var(--w-text-secondary); text-align:right;"></div>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+            quickCur.innerHTML += optionsHtml;
+            quickTgt.innerHTML += optionsHtml;
+
+            // Attach listeners
+            var selects = container.querySelectorAll('select');
+            for (var k = 0; k < selects.length; k++) {
+                selects[k].addEventListener('change', onUserChange);
+            }
+
+            for (var key in invInputs) {
+                invInputs[key].addEventListener('input', onUserChange);
+            }
+
+            quickCur.addEventListener('change', function() {
+                var val = quickCur.value;
+                if (!val) return;
+                var curs = container.querySelectorAll('.sel-cur');
+                for (var x = 0; x < curs.length; x++) {
+                    curs[x].value = val;
+                }
+                onUserChange();
+                quickCur.value = '';
+            });
+
+            quickTgt.addEventListener('change', function() {
+                var val = quickTgt.value;
+                if (!val) return;
+                var tgts = container.querySelectorAll('.sel-tgt');
+                for (var x = 0; x < tgts.length; x++) {
+                    tgts[x].value = val;
+                }
+                onUserChange();
+                quickTgt.value = '';
+            });
+        }
+
+        function fmtNum(n) {
+            return n.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ",");
+        }
+
+        function getCharData() {
+            var c = window.WOSKY_CHARS.getActive();
+            if (!c) return { plan: defaultPlan, inv: {a:0,s:0,d:0,m:0} };
+            var plan = (c.plans && c.plans.gear) ? c.plans.gear : defaultPlan;
+            var inv = c.materials || {hardened_alloy:0, polishing_solution:0, design_plans:0, lunar_amber:0};
+
+            // Map legacy nulls to 'none' if present
+            for (var k in plan) {
+                if (!plan[k]) plan[k] = {cur: 'none', tgt: 'none'};
+            }
+
+            return {
+                plan: plan,
+                inv: {
+                    a: inv.hardened_alloy || 0,
+                    s: inv.polishing_solution || 0,
+                    d: inv.design_plans || 0,
+                    m: inv.lunar_amber || 0
+                },
+                charId: c.id
+            };
+        }
+
+        function updateUIFromData() {
+            var data = getCharData();
+
+            // Inv
+            invInputs.a.value = data.inv.a || '';
+            invInputs.s.value = data.inv.s || '';
+            invInputs.d.value = data.inv.d || '';
+            invInputs.m.value = data.inv.m || '';
+
+            // Selects
+            var pieces = DATA.pieces;
+            for (var i = 0; i < pieces.length; i++) {
+                var pk = pieces[i].key;
+                var pData = data.plan[pk] || {cur:'none', tgt:'none'};
+
+                var curSel = container.querySelector('.sel-cur[data-key="'+pk+'"]');
+                var tgtSel = container.querySelector('.sel-tgt[data-key="'+pk+'"]');
+
+                if (curSel) curSel.value = pData.cur;
+                if (tgtSel) tgtSel.value = pData.tgt;
+            }
+
+            calculateAll();
+        }
+
+        function onUserChange() {
+            calculateAll();
+            saveData();
+        }
+
+        function saveData() {
+            var c = window.WOSKY_CHARS.getActive();
+            if (!c) return;
+
+            var newPlan = {};
+            var pieces = DATA.pieces;
+            for (var i = 0; i < pieces.length; i++) {
+                var pk = pieces[i].key;
+                var curSel = container.querySelector('.sel-cur[data-key="'+pk+'"]');
+                var tgtSel = container.querySelector('.sel-tgt[data-key="'+pk+'"]');
+                newPlan[pk] = {
+                    cur: curSel ? curSel.value : 'none',
+                    tgt: tgtSel ? tgtSel.value : 'none'
+                };
+            }
+
+            window.WOSKY_CHARS.savePlan(c.id, 'gear', newPlan);
+
+            if (!c.materials) c.materials = {};
+            c.materials.hardened_alloy = parseInt(invInputs.a.value) || 0;
+            c.materials.polishing_solution = parseInt(invInputs.s.value) || 0;
+            c.materials.design_plans = parseInt(invInputs.d.value) || 0;
+            c.materials.lunar_amber = parseInt(invInputs.m.value) || 0;
+
+            window.WOSKY_CHARS.save(c);
+        }
+
+        function formatShortfall(req, inv) {
+            if (req === 0) return '';
+            var diff = inv - req;
+            if (diff >= 0) return '<span class="result-ok">Available</span>';
+            return '<span class="result-shortfall">Need ' + fmtNum(Math.abs(diff)) + '</span>';
+        }
+
+        function calculateAll() {
+            var totA = 0, totS = 0, totD = 0, totM = 0, totSvs = 0;
+
+            var pieces = DATA.pieces;
+            for (var i = 0; i < pieces.length; i++) {
+                var pk = pieces[i].key;
+                var curSel = container.querySelector('.sel-cur[data-key="'+pk+'"]');
+                var tgtSel = container.querySelector('.sel-tgt[data-key="'+pk+'"]');
+                var preview = document.getElementById('preview-' + pk);
+
+                if (!curSel || !tgtSel || !preview) continue;
+
+                var curIdx = DATA.getIndexById(curSel.value);
+                var tgtIdx = DATA.getIndexById(tgtSel.value);
+
+                var cost = DATA.calcRange(curIdx, tgtIdx);
+
+                totA += cost.a;
+                totS += cost.s;
+                totD += cost.d;
+                totM += cost.m;
+                totSvs += cost.svs;
+
+                var pText = [];
+                if (cost.a > 0) pText.push('Alloy: ' + fmtNum(cost.a));
+                if (cost.s > 0) pText.push('Sol: ' + fmtNum(cost.s));
+                if (cost.d > 0) pText.push('Plans: ' + fmtNum(cost.d));
+                if (cost.m > 0) pText.push('Amber: ' + fmtNum(cost.m));
+
+                if (tgtIdx <= curIdx) {
+                    preview.innerHTML = '<em>No upgrade</em>';
+                } else {
+                    preview.innerHTML = pText.join(' | ');
+                }
+            }
+
+            resEls.a.innerText = fmtNum(totA);
+            resEls.s.innerText = fmtNum(totS);
+            resEls.d.innerText = fmtNum(totD);
+            resEls.m.innerText = fmtNum(totM);
+            resEls.svs.innerText = fmtNum(totSvs * 70);
+
+            var invA = parseInt(invInputs.a.value) || 0;
+            var invS = parseInt(invInputs.s.value) || 0;
+            var invD = parseInt(invInputs.d.value) || 0;
+            var invM = parseInt(invInputs.m.value) || 0;
+
+            resEls.sa.innerHTML = formatShortfall(totA, invA);
+            resEls.ss.innerHTML = formatShortfall(totS, invS);
+            resEls.sd.innerHTML = formatShortfall(totD, invD);
+            resEls.sm.innerHTML = formatShortfall(totM, invM);
+        }
+
+        // Init
+        renderPieces();
+        updateUIFromData();
+
+        document.addEventListener('wosky:character-changed', updateUIFromData);
+        window.woskyOnCharacterChanged = updateUIFromData;
+
+    })();
+    </script>
 </body>
 </html>

@@ -29,7 +29,8 @@ var WOSKY_CHARMS_DATA = {
     /* Edit these numbers here — the calculator reads everything from meta.   */
     meta: {
         version:        '2.0',
-        maxLevel:       16,
+        maxLevel:       11,
+        maxStep:        0,
         stepsPerLevel:  4,       /* steps 1–N per level. Raise to 10 etc if needed */
         svsPtsPerLevel: 70       /* SvS points awarded when a charm level completes */
     },
@@ -236,9 +237,11 @@ var WOSKY_CHARMS_DATA = {
     rangeHasUnverified: function (fromLevel, fromStep, toLevel, toStep) {
         var stepsPerLevel = this.meta.stepsPerLevel;
         var maxLevel      = this.meta.maxLevel;
+        var maxStep       = this.meta.maxStep !== undefined ? this.meta.maxStep : stepsPerLevel;
         var curLevel = fromLevel;
         var curStep  = fromStep;
-        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = stepsPerLevel; }
+        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = maxStep; }
+        else if (toLevel === maxLevel && toStep > maxStep) { toStep = maxStep; }
 
         while (curLevel < toLevel || (curLevel === toLevel && curStep < toStep)) {
             curStep++;
@@ -260,11 +263,13 @@ var WOSKY_CHARMS_DATA = {
     calcRange: function (fromLevel, fromStep, toLevel, toStep) {
         var stepsPerLevel = this.meta.stepsPerLevel;
         var maxLevel      = this.meta.maxLevel;
+        var maxStep       = this.meta.maxStep !== undefined ? this.meta.maxStep : stepsPerLevel;
         var totD = 0, totG = 0, totS = 0, levelsCompleted = 0, unverified = false;
         var curLevel = fromLevel;
         var curStep  = fromStep;
 
-        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = stepsPerLevel; }
+        if (toLevel > maxLevel) { toLevel = maxLevel; toStep = maxStep; }
+        else if (toLevel === maxLevel && toStep > maxStep) { toStep = maxStep; }
 
         while (curLevel < toLevel || (curLevel === toLevel && curStep < toStep)) {
             curStep++;
