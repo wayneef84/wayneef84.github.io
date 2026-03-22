@@ -1,5 +1,5 @@
 /**
- * /* PROPRIETARY AND CONFIDENTIAL. (c) 2026 Fong Family Arcade / Wayne Edmond Fong. Do not distribute. */
+ * PROPRIETARY AND CONFIDENTIAL. (c) 2026 Fong Family Arcade / Wayne Edmond Fong. Do not distribute.
  * WOSKY_3169 — Chief Gear Cost Data  v1.0
  * Strict ES5 — no const/let/arrow functions/fetch.
  * Copyright (c) 2026. All Rights Reserved.

@@ -34,7 +34,6 @@
   var ML  = CFG.charms.maxLevel;
   var MS  = CFG.charms.maxStep;
 
-  /* ── State ──────────────────────────────────────────────────────────────── */
   function loadState() {
     try {
       var raw = localStorage.getItem(SK);
@@ -66,7 +65,6 @@
 
   var state = loadState();
 
-  /* ── Charm cost helper ───────────────────────────────────────────────────── */
   function charmCost(piece, slot) {
     var cur = state.charms[piece][slot];
     var tgt = state.charmTargets[piece][slot];
@@ -74,64 +72,74 @@
     catch (e) { return { d: 0, g: 0, s: 0, svs_pts: 0 }; }
   }
 
-  /* ── Render ─────────────────────────────────────────────────────────────── */
+  function troopSetterRow(group) {
+    return '<div class="troop-setter">' +
+      '<span class="troop-setter-label">Set ' + cap(group) + '</span>' +
+      '<div class="global-field"><span class="global-field-label">Tgt L</span>' +
+        '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + group + '-tl" value="11"></div>' +
+      '<div class="global-field"><span class="global-field-label">Tgt S</span>' +
+        '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + group + '-ts" value="0"></div>' +
+      '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
+      '<span class="g-divider">&mdash;</span>' +
+      '<div class="global-field"><span class="global-field-label">Cur L</span>' +
+        '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + group + '-cl" value="10"></div>' +
+      '<div class="global-field"><span class="global-field-label">Cur S</span>' +
+        '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + group + '-cs" value="3"></div>' +
+      '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
+    '</div>';
+  }
+
   function render() {
     var html = '';
 
-    /* WarMachine header */
     html += '<div class="wm-header">' +
       '<div class="wm-logo">W<span>M</span></div>' +
       '<div class="wm-title-block">' +
-        '<div class="wm-title">Chief Charms Calculator</div>' +
+        '<div class="wm-title">Chief Charms</div>' +
         '<div class="wm-sub">WOSKY_3169 &middot; WarMachine &middot; State 3169</div>' +
       '</div>' +
       '<div class="wm-badges">' +
         '<span class="wm-badge wm-badge-red">3169</span>' +
         '<span class="wm-badge wm-badge-sky">SKY Breakers</span>' +
-        '<span class="wm-badge wm-badge-red">Calc v2</span>' +
       '</div>' +
     '</div>';
 
-    /* Global controls */
-    html += '<div class="global-controls">';
-    html += '<div class="global-controls-title">&#9881; Global Controls — changes recalc immediately</div>';
-
-    var rows = [
-      { key: 'all',       label: 'All Pieces', cls: '' },
-      { key: 'infantry',  label: 'Infantry',   cls: 'infantry' },
-      { key: 'marksman',  label: 'Marksman',   cls: 'marksman' },
-      { key: 'lancer',    label: 'Lancer',     cls: 'lancer'   }
-    ];
-
-    for (var ri = 0; ri < rows.length; ri++) {
-      var row = rows[ri];
-      html += '<div class="global-row">' +
-        '<span class="global-row-label ' + row.cls + '">' + row.label + '</span>' +
+    /* Global — All Pieces only */
+    html += '<div class="global-controls">' +
+      '<div class="global-controls-title">&#9881; Global — All Pieces</div>' +
+      '<div class="global-row">' +
+        '<span class="global-row-label">All Pieces</span>' +
         '<div class="global-field"><span class="global-field-label">Tgt L</span>' +
-          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + row.key + '-tl" value="11"></div>' +
+          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-all-tl" value="11"></div>' +
         '<div class="global-field"><span class="global-field-label">Tgt S</span>' +
-          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + row.key + '-ts" value="0"></div>' +
-        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + row.key + '">Set Target</button>' +
+          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-all-ts" value="0"></div>' +
+        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Cur L</span>' +
-          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + row.key + '-cl" value="10"></div>' +
+          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-all-cl" value="10"></div>' +
         '<div class="global-field"><span class="global-field-label">Cur S</span>' +
-          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + row.key + '-cs" value="3"></div>' +
-        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + row.key + '">Set Current</button>' +
-      '</div>';
-    }
-    html += '</div>';
+          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-all-cs" value="3"></div>' +
+        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
+      '</div>' +
+    '</div>';
 
-    /* Troop groups */
     var groups = CFG.groups;
     for (var gi = 0; gi < groups.length; gi++) {
       var group  = groups[gi];
       var pieces = CFG.pieces[group];
+
       html += '<div class="troop-block ' + group + '">';
+
+      /* Group header */
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
       '</div>';
+
+      /* Troop-level setter (lives inside the block) */
+      html += troopSetterRow(group);
+
+      /* Table */
       html += '<div class="troop-block-body">';
       html += '<table class="calc-table">';
       html += '<thead><tr>' +
@@ -147,9 +155,8 @@
           var slot = 'c' + ci;
           var cur  = state.charms[piece][slot];
           var tgt  = state.charmTargets[piece][slot];
-          var firstSlot = (ci === 1);
           html += '<tr>';
-          if (firstSlot) {
+          if (ci === 1) {
             html += '<td class="piece-name" rowspan="' + CFG.charms.charmsPerPiece + '">' + cap(piece) + '</td>';
           }
           html += '<td class="slot-label">' + slot.toUpperCase() + '</td>';
@@ -167,103 +174,77 @@
       html += '</tbody></table></div></div>';
     }
 
-    /* Grand total */
-    html += '<div class="grand-strip" id="grand-strip">' +
-      '<span class="grand-strip-label">&#9876; Grand Total</span>' +
-    '</div>';
+    html += '<div class="grand-strip" id="grand-strip"><span class="grand-strip-label">&#9876; Grand Total</span></div>';
 
     document.getElementById('app').innerHTML = html;
     attachListeners();
     calc();
   }
 
-  /* ── Calc ────────────────────────────────────────────────────────────────── */
   function calc() {
-    var grand = { d: 0, g: 0, s: 0, pts: 0 };
+    var grand  = { d: 0, g: 0, s: 0, pts: 0 };
     var groups = CFG.groups;
-
     for (var gi = 0; gi < groups.length; gi++) {
       var group  = groups[gi];
       var pieces = CFG.pieces[group];
       var gt     = { d: 0, g: 0, s: 0, pts: 0 };
-
       for (var pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
         for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
           var slot = 'c' + ci;
-          var r = charmCost(piece, slot);
+          var r    = charmCost(piece, slot);
           var d = r.d || 0, g = r.g || 0, sv = r.s || 0, pts = r.svs_pts || 0;
-          setCostCell('cd', piece, slot, d);
-          setCostCell('cg', piece, slot, g);
-          setCostCell('cs', piece, slot, sv);
-          setCostCell('cp', piece, slot, pts);
+          setCell('cd', piece, slot, d);
+          setCell('cg', piece, slot, g);
+          setCell('cs', piece, slot, sv);
+          setCell('cp', piece, slot, pts);
           gt.d += d; gt.g += g; gt.s += sv; gt.pts += pts;
           grand.d += d; grand.g += g; grand.s += sv; grand.pts += pts;
         }
       }
       var tel = document.getElementById('group-total-' + group);
-      if (tel) tel.innerHTML =
-        'D: ' + fmt(gt.d) + ' &nbsp; G: ' + fmt(gt.g) +
-        (gt.s ? ' &nbsp; S: ' + fmt(gt.s) : '') +
-        ' &nbsp;&nbsp; <strong>' + fmt(gt.pts) + ' pts</strong>';
+      if (tel) tel.innerHTML = 'D: ' + fmt(gt.d) + ' &nbsp; G: ' + fmt(gt.g) +
+        (gt.s ? ' &nbsp; S: ' + fmt(gt.s) : '') + ' &nbsp;&mdash; ' + fmt(gt.pts) + ' pts';
     }
-
-    /* Grand total */
     var gs = document.getElementById('grand-strip');
-    if (!gs) return;
-    gs.innerHTML = '<span class="grand-strip-label">&#9876; Grand Total</span>' +
-      grandStat('Designs',  grand.d) +
-      grandStat('Guides',   grand.g) +
-      (grand.s ? grandStat('Secrets', grand.s) : '') +
-      grandStat('SvS Pts',  grand.pts);
+    if (gs) gs.innerHTML = '<span class="grand-strip-label">&#9876; Grand Total</span>' +
+      gStat('Designs', grand.d) + gStat('Guides', grand.g) +
+      (grand.s ? gStat('Secrets', grand.s) : '') + gStat('SvS Pts', grand.pts);
   }
 
-  function setCostCell(prefix, piece, slot, val) {
-    var el = document.getElementById(prefix + '-' + piece + '-' + slot);
+  function setCell(pfx, piece, slot, val) {
+    var el = document.getElementById(pfx + '-' + piece + '-' + slot);
     if (!el) return;
     el.textContent = val ? fmt(val) : '—';
     el.className   = 'cost-cell' + (val ? '' : ' zero');
   }
-
-  function grandStat(key, val) {
-    return '<div class="grand-stat">' +
-      '<span class="grand-stat-key">' + key + '</span>' +
-      '<span class="grand-stat-val">' + fmt(val) + '</span>' +
-    '</div>';
+  function gStat(k, v) {
+    return '<div class="grand-stat"><span class="grand-stat-key">' + k + '</span><span class="grand-stat-val">' + fmt(v) + '</span></div>';
   }
 
-  /* ── Listeners ────────────────────────────────────────────────────────────── */
   function attachListeners() {
-    /* Individual cell inputs */
     var inputs = document.querySelectorAll('[data-p]');
-    for (var i = 0; i < inputs.length; i++) {
-      inputs[i].addEventListener('input', onCellInput);
-    }
-
-    /* Global control buttons */
+    for (var i = 0; i < inputs.length; i++) inputs[i].addEventListener('input', onCellInput);
     var btns = document.querySelectorAll('[data-gc]');
-    for (var bi = 0; bi < btns.length; bi++) {
-      btns[bi].addEventListener('click', onGlobalBtn);
-    }
+    for (var bi = 0; bi < btns.length; bi++) btns[bi].addEventListener('click', onGlobalBtn);
   }
 
   function onCellInput() {
     var piece = this.getAttribute('data-p');
     var slot  = this.getAttribute('data-c');
     var field = this.getAttribute('data-f');
-    var val   = clamp(parseInt(this.value) || 1, 1, field === 'cs' || field === 'ts' ? MS : ML);
-    if (field === 'cl') state.charms[piece][slot].l       = val;
-    if (field === 'cs') state.charms[piece][slot].s       = clamp(val, 0, MS);
-    if (field === 'tl') state.charmTargets[piece][slot].l = val;
-    if (field === 'ts') state.charmTargets[piece][slot].s = clamp(val, 0, MS);
-    saveState();
-    calc();
+    var isStep = (field === 'cs' || field === 'ts');
+    var val = clamp(parseInt(this.value) || 0, 0, isStep ? MS : ML);
+    if (field === 'cl') state.charms[piece][slot].l       = Math.max(1, val);
+    if (field === 'cs') state.charms[piece][slot].s       = val;
+    if (field === 'tl') state.charmTargets[piece][slot].l = Math.max(1, val);
+    if (field === 'ts') state.charmTargets[piece][slot].s = val;
+    saveState(); calc();
   }
 
   function onGlobalBtn() {
-    var action = this.getAttribute('data-gc');  /* set-tgt | set-cur */
-    var scope  = this.getAttribute('data-scope'); /* all | infantry | marksman | lancer */
-
+    var action = this.getAttribute('data-gc');
+    var scope  = this.getAttribute('data-scope');
     var lVal, sVal;
     if (action === 'set-tgt') {
       lVal = clamp(parseInt(document.getElementById('gl-' + scope + '-tl').value) || 11, 1, ML);
@@ -272,28 +253,16 @@
       lVal = clamp(parseInt(document.getElementById('gl-' + scope + '-cl').value) || 10, 1, ML);
       sVal = clamp(parseInt(document.getElementById('gl-' + scope + '-cs').value) || 3,  0, MS);
     }
-
-    var piecesToUpdate = getPieces(scope);
-    for (var pi = 0; pi < piecesToUpdate.length; pi++) {
-      var piece = piecesToUpdate[pi];
+    var pieces = (scope === 'all') ? ['chest','legs','ring','offhand','helm','neck'] : (CFG.pieces[scope] || []);
+    for (var pi = 0; pi < pieces.length; pi++) {
+      var piece = pieces[pi];
       for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
         var slot = 'c' + ci;
-        if (action === 'set-tgt') {
-          state.charmTargets[piece][slot] = { l: lVal, s: sVal };
-        } else {
-          state.charms[piece][slot] = { l: lVal, s: sVal };
-        }
+        if (action === 'set-tgt') state.charmTargets[piece][slot] = { l: lVal, s: sVal };
+        else                      state.charms[piece][slot]       = { l: lVal, s: sVal };
       }
     }
-    saveState();
-    render(); /* full re-render keeps all inputs in sync */
-  }
-
-  function getPieces(scope) {
-    if (scope === 'all') {
-      return ['chest','legs','ring','offhand','helm','neck'];
-    }
-    return CFG.pieces[scope] || [];
+    saveState(); render();
   }
 
   render();
