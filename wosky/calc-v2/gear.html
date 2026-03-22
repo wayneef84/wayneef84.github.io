@@ -63,10 +63,21 @@
   var state = loadState();
 
   function tierOpts(sel) {
-    var html = '', tiers = CFG.gearTiers;
-    for (var i = 0; i < tiers.length; i++) {
-      html += '<option value="' + tiers[i].id + '"' + (tiers[i].id === sel ? ' selected' : '') + '>' + tiers[i].label + '</option>';
+    var html = '';
+    var costs = WOSKY_GEAR_DATA.costs;
+    var lastColor = null;
+    for (var i = 1; i < costs.length; i++) {
+      var c = costs[i];
+      var color = c.id.replace(/-.*/, ''); /* "pink-t1-2" → "pink" */
+      if (color !== lastColor) {
+        if (lastColor !== null) html += '</optgroup>';
+        html += '<optgroup label="' + color.charAt(0).toUpperCase() + color.slice(1) + '">';
+        lastColor = color;
+      }
+      var s = (c.id === sel) ? ' selected' : '';
+      html += '<option value="' + c.id + '"' + s + '>' + c.label + '</option>';
     }
+    if (lastColor !== null) html += '</optgroup>';
     return html;
   }
 

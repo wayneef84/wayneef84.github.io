@@ -888,3 +888,44 @@
 
 /* ── Charm select width ───────────────────────────────────────────────── */
 .charm-select { min-width: 130px; }
+
+/* ── Hero Gear UI ─────────────────────────────────────────────────────── */
+.hg-pair { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.hg-group { flex: 1; min-width: 120px; border: 1px solid var(--w-border); border-radius: var(--w-radius-sm); overflow: hidden; }
+.hg-group-label { display: block; font-family: var(--w-mono); font-size: 0.57rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); padding: 0.25rem 0.5rem; background: var(--w-surface3); border-bottom: 1px solid var(--w-border); }
+.hg-group.target .hg-group-label { color: var(--w-red); border-bottom-color: var(--w-red-dim); background: var(--w-red-subtle); }
+.hg-fields { display: flex; gap: 0.35rem; padding: 0.4rem 0.45rem; flex-wrap: wrap; }
+.hg-field { flex: 1; min-width: 60px; display: flex; flex-direction: column; gap: 2px; }
+.hg-field-label { font-family: var(--w-mono); font-size: 0.55rem; text-transform: uppercase; color: var(--w-text-muted); letter-spacing: 0.3px; }
+.hg-field .t-select { width: 100%; min-width: 0; font-size: 0.68rem; padding-right: 1.2rem; }
+.hg-no-target { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0.75rem; font-size: 0.7rem; color: var(--w-text-muted); font-family: var(--w-mono); font-style: italic; border: 1px dashed var(--w-border); border-radius: var(--w-radius-sm); }
+
+/* Target toggle */
+.target-toggle { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; margin-left: auto; user-select: none; }
+.target-toggle-cb { display: none; }
+.target-toggle-track { width: 26px; height: 14px; background: var(--w-surface3); border: 1px solid var(--w-border); border-radius: 99px; position: relative; transition: background 0.15s, border-color 0.15s; flex-shrink: 0; }
+.target-toggle-track::after { content: ''; position: absolute; width: 10px; height: 10px; top: 1px; left: 1px; background: var(--w-text-muted); border-radius: 50%; transition: left 0.12s, background 0.12s; }
+.target-toggle-cb:checked ~ .target-toggle-track { background: var(--w-red-subtle); border-color: var(--w-red-dim); }
+.target-toggle-cb:checked ~ .target-toggle-track::after { left: 13px; background: var(--w-red); }
+.target-toggle-label { font-family: var(--w-mono); font-size: 0.58rem; text-transform: uppercase; color: var(--w-text-muted); letter-spacing: 0.3px; }
+
+/* Upgrade plan */
+.upgrade-plan { background: var(--w-surface); border: 1px solid var(--w-border); border-radius: var(--w-radius-md); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+.upgrade-plan-title { font-family: var(--w-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); margin-bottom: 0.5rem; }
+.up-item { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.25rem 0; border-bottom: 1px solid var(--w-border); font-size: 0.73rem; }
+.up-item:last-child { border-bottom: none; }
+.up-piece-name { font-family: var(--w-display); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--w-text); min-width: 80px; }
+.up-levels { font-family: var(--w-mono); font-size: 0.7rem; color: var(--w-text-secondary); }
+.up-cost { font-family: var(--w-mono); font-size: 0.68rem; color: var(--w-info); }
+.up-no-target { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-muted); font-style: italic; }
+
+/* Materials on hand */
+.mats-on-hand { background: var(--w-surface); border: 1px solid var(--w-border); border-radius: var(--w-radius-md); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+.moh-title { font-family: var(--w-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); margin-bottom: 0.5rem; }
+.moh-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.moh-item { display: flex; align-items: center; gap: 0.5rem; }
+.moh-label { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+.moh-input { width: 72px; padding: 0.25rem 0.4rem; background: var(--w-surface2); border: 1px solid var(--w-border); border-radius: var(--w-radius-sm); color: var(--w-text); font-family: var(--w-mono); font-size: 0.72rem; text-align: right; }
+.moh-need { font-family: var(--w-mono); font-size: 0.65rem; min-width: 90px; }
+.moh-ok { color: var(--w-success); }
+.moh-short { color: var(--w-red); }

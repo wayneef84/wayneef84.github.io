@@ -26,21 +26,8 @@ var WOSKY_V2_CONFIG = {
 
   /* ── Chief Gear ──────────────────────────────────────────────────────────── */
   /* Tier list order matters — index used for calcRange(fromIdx, toIdx) */
-  gearTiers: [
-    { id: 'green',      label: 'Green' },
-    { id: 'blue',       label: 'Blue' },
-    { id: 'purple',     label: 'Purple' },
-    { id: 'orange',     label: 'Orange' },
-    { id: 'pink-t1',    label: 'Red T1 0\u2605' },
-    { id: 'pink-t1-1',  label: 'Red T1 1\u2605' },
-    { id: 'pink-t1-2',  label: 'Red T1 2\u2605' },
-    { id: 'pink-t1-3',  label: 'Red T1 3\u2605' },
-    { id: 'pink-t2',    label: 'Red T2 0\u2605' },
-    { id: 'pink-t2-1',  label: 'Red T2 1\u2605' },
-    { id: 'pink-t2-2',  label: 'Red T2 2\u2605' },
-    { id: 'pink-t2-3',  label: 'Red T2 3\u2605' },
-    { id: 'pink-t3',    label: 'Red T3 0\u2605' }
-  ],
+  /* gearTiers: now driven directly by WOSKY_GEAR_DATA.costs — IDs must match */
+  /* Kept here for reference only; gear.html reads WOSKY_GEAR_DATA directly   */
 
   /* ── Hero Gear ───────────────────────────────────────────────────────────── */
   hero: {
@@ -116,22 +103,22 @@ var WOSKY_V2_CONFIG = {
 
     hero: {
       infantry: {
-        goggles: { cf:11, ce:12,  tf:15, te:60 },
-        gloves:  { cf:15, ce:100, tf:15, te:60 },
-        belt:    { cf:15, ce:79,  tf:15, te:60 },
-        boots:   { cf:11, ce:20,  tf:15, te:60 }
+        goggles: { cf:11, ce:12,  tf:15, te:60, active:true },
+        gloves:  { cf:15, ce:100, tf:15, te:60, active:true },
+        belt:    { cf:15, ce:79,  tf:15, te:60, active:true },
+        boots:   { cf:11, ce:20,  tf:15, te:60, active:true }
       },
       marksman: {
-        goggles: { cf:12, ce:39, tf:15, te:60 },
-        boots:   { cf:13, ce:59, tf:15, te:60 },
-        gloves:  { cf:5,  ce:0,  tf:15, te:60 },
-        belt:    { cf:10, ce:0,  tf:15, te:60 }
+        goggles: { cf:12, ce:39, tf:15, te:60, active:true },
+        boots:   { cf:13, ce:59, tf:15, te:60, active:true },
+        gloves:  { cf:5,  ce:0,  tf:15, te:60, active:true },
+        belt:    { cf:10, ce:0,  tf:15, te:60, active:true }
       },
       lancer: {
-        goggles: { cf:12, ce:39, tf:15, te:60 },
-        boots:   { cf:13, ce:59, tf:15, te:60 },
-        gloves:  { cf:5,  ce:0,  tf:15, te:60 },
-        belt:    { cf:10, ce:0,  tf:15, te:60 }
+        goggles: { cf:12, ce:39, tf:15, te:60, active:true },
+        boots:   { cf:13, ce:59, tf:15, te:60, active:true },
+        gloves:  { cf:5,  ce:0,  tf:15, te:60, active:true },
+        belt:    { cf:10, ce:0,  tf:15, te:60, active:true }
       }
     }
   }

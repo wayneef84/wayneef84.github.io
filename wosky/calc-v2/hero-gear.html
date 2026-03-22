@@ -31,31 +31,61 @@
   'use strict';
   var SK  = 'wosky_v2_player';
   var CFG = WOSKY_V2_CONFIG;
-  var MF  = CFG.hero.maxForge;
-  var ME  = CFG.hero.maxEmp;
+  var MF  = CFG.hero.maxForge;  /* 20 */
 
+  /* ── Helpers ──────────────────────────────────────────────────────────── */
   function loadState() {
     try {
       var raw = localStorage.getItem(SK);
-      if (raw) { var s = JSON.parse(raw); return { hero: s.hero || deepCopy(CFG.defaults.hero) }; }
+      if (raw) {
+        var s = JSON.parse(raw);
+        var hero = s.hero || deepCopy(CFG.defaults.hero);
+        ensureActive(hero);
+        return { hero: hero, mats: s.mats || deepCopy(CFG.defaults.mats) };
+      }
     } catch (e) {}
-    return { hero: deepCopy(CFG.defaults.hero) };
+    return { hero: deepCopy(CFG.defaults.hero), mats: deepCopy(CFG.defaults.mats) };
   }
   function saveState() {
     try {
-      var raw = localStorage.getItem(SK); var full = raw ? JSON.parse(raw) : {};
-      full.hero = state.hero; localStorage.setItem(SK, JSON.stringify(full));
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.hero = state.hero;
+      localStorage.setItem(SK, JSON.stringify(full));
     } catch (e) {}
   }
   function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
   function fmt(n) { return (n || 0).toLocaleString(); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-  function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+  /* Ensure active field exists on all hero pieces */
+  function ensureActive(hero) {
+    var groups = CFG.groups;
+    var pieces = CFG.heroPieces;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var grp = groups[gi];
+      if (!hero[grp]) hero[grp] = {};
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var pc = pieces[pi];
+        if (!hero[grp][pc]) hero[grp][pc] = { cf:1, ce:1, tf:15, te:60, active:true };
+        if (typeof hero[grp][pc].active === 'undefined') hero[grp][pc].active = true;
+      }
+    }
+  }
+
+  /* Translate 1-200 value to display label */
+  function levelLabel(val) {
+    val = parseInt(val) || 1;
+    if (val <= 100) return 'L' + val;
+    return 'E' + (val - 100);
+  }
 
   var state = loadState();
 
+  /* ── Cost calc ────────────────────────────────────────────────────────── */
   function heroCost(group, piece) {
     var h = state.hero[group][piece];
+    if (!h || !h.active) return null;
     try {
       var fRes = WOSKY_HERO_GEAR_DATA.calcForge(h.cf, h.tf);
       var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(h.ce, h.te);
@@ -65,32 +95,149 @@
         xp:     (fRes.xp || 0) + (eRes.xp || 0),
         mith:   gRes.mithril || 0,
         mythic: (fRes.mythic_gear || 0) + (gRes.mythic || 0),
-        warn:   warn || null,
-        flips:  eRes.statFlipsCrossed || []
+        warn:   warn || null
       };
-    } catch (e) { return { xp: 0, mith: 0, mythic: 0, warn: null, flips: [] }; }
+    } catch (e) {
+      return { xp: 0, mith: 0, mythic: 0, warn: null };
+    }
   }
 
-  function troopSetter(group) {
-    return '<div class="troop-setter">' +
-      '<span class="troop-setter-label">Set ' + cap(group) + '</span>' +
-      '<div class="global-field"><span class="global-field-label">Tgt F</span>' +
-        '<input class="g-input" type="number" min="1" max="' + MF + '" id="gl-' + group + '-tf" value="15"></div>' +
-      '<div class="global-field"><span class="global-field-label">Tgt E</span>' +
-        '<input class="g-input" type="number" min="0" max="' + ME + '" id="gl-' + group + '-te" value="60"></div>' +
-      '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
-      '<span class="g-divider">&mdash;</span>' +
-      '<div class="global-field"><span class="global-field-label">Cur F</span>' +
-        '<input class="g-input" type="number" min="1" max="' + MF + '" id="gl-' + group + '-cf" value="12"></div>' +
-      '<div class="global-field"><span class="global-field-label">Cur E</span>' +
-        '<input class="g-input" type="number" min="0" max="' + ME + '" id="gl-' + group + '-ce" value="40"></div>' +
-      '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
+  /* ── Forge (mastery) select HTML ──────────────────────────────────────── */
+  function forgeOpts(sel) {
+    var html = '';
+    for (var i = 1; i <= MF; i++) {
+      html += '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>F' + i + '</option>';
+    }
+    return html;
+  }
+
+  /* ── Level dropdown HTML (L1-L100, E1-E100) ──────────────────────────── */
+  /* forgeVal: current forge level used to determine which E options to disable */
+  /* pass forgeVal=0 to enable all (global setter) */
+  function levelOpts(sel, forgeVal) {
+    var html = '<optgroup label="Level">';
+    for (var i = 1; i <= 100; i++) {
+      html += '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>L' + i + '</option>';
+    }
+    html += '</optgroup><optgroup label="Empowerment">';
+    for (var e = 1; e <= 100; e++) {
+      var val = 100 + e;
+      /* Determine required forge for this E level */
+      var reqForge = 0;
+      if (e >= 1  && e <= 19)  reqForge = 10;
+      if (e >= 20 && e <= 39)  reqForge = 11;
+      if (e >= 40 && e <= 59)  reqForge = 12;
+      if (e >= 60 && e <= 79)  reqForge = 13;
+      if (e >= 80 && e <= 99)  reqForge = 14;
+      if (e === 100)            reqForge = 15;
+      var disabled = (forgeVal > 0 && forgeVal < reqForge) ? ' disabled' : '';
+      html += '<option value="' + val + '"' + (val === sel ? ' selected' : '') + disabled + '>E' + e + '</option>';
+    }
+    html += '</optgroup>';
+    return html;
+  }
+
+  /* ── Grand setter row HTML ────────────────────────────────────────────── */
+  function globalSetterRow(scope) {
+    var idPfx = 'hg-gl-' + scope;
+    return '<div class="global-controls">' +
+      '<div class="global-controls-title">&#9881; ' + (scope === 'all' ? 'All Pieces' : 'Set ' + cap(scope)) + '</div>' +
+      '<div class="global-row">' +
+        '<div class="global-field"><span class="global-field-label">Cur Mastery</span>' +
+          '<select class="g-select" id="' + idPfx + '-cf">' + forgeOpts(12) + '</select></div>' +
+        '<div class="global-field"><span class="global-field-label">Cur Level</span>' +
+          '<select class="g-select" id="' + idPfx + '-ce">' + levelOpts(40, 0) + '</select></div>' +
+        '<button class="wbtn-xs secondary" data-hg-gc="set-cur" data-hg-scope="' + scope + '">Set Current</button>' +
+        '<span class="g-divider">&mdash;</span>' +
+        '<div class="global-field"><span class="global-field-label">Tgt Mastery</span>' +
+          '<select class="g-select" id="' + idPfx + '-tf">' + forgeOpts(15) + '</select></div>' +
+        '<div class="global-field"><span class="global-field-label">Tgt Level</span>' +
+          '<select class="g-select" id="' + idPfx + '-te">' + levelOpts(160, 0) + '</select></div>' +
+        '<button class="wbtn-xs" data-hg-gc="set-tgt" data-hg-scope="' + scope + '">Set Target</button>' +
+      '</div>' +
     '</div>';
   }
 
+  /* ── Piece card HTML ──────────────────────────────────────────────────── */
+  function pieceCard(group, piece) {
+    var h = state.hero[group][piece];
+    var active = !!h.active;
+    var html = '<div class="piece-card" id="pc-' + group + '-' + piece + '">';
+
+    /* Header */
+    html += '<div class="piece-card-header">' +
+      '<span class="piece-card-name">' + cap(piece) + '</span>' +
+      '<span class="troop-badge ' + group + '">' + cap(group) + '</span>' +
+      '<label class="target-toggle">' +
+        '<input type="checkbox" class="target-toggle-cb" data-hg-group="' + group + '" data-hg-piece="' + piece + '"' + (active ? ' checked' : '') + '>' +
+        '<span class="target-toggle-track"></span>' +
+        '<span class="target-toggle-label">Target</span>' +
+      '</label>' +
+    '</div>';
+
+    /* Body */
+    html += '<div class="piece-card-body">';
+    html += '<div class="hg-pair">';
+
+    /* Current group */
+    html += '<div class="hg-group current">' +
+      '<span class="hg-group-label">Current</span>' +
+      '<div class="hg-fields">' +
+        '<div class="hg-field">' +
+          '<span class="hg-field-label">Mastery</span>' +
+          '<select class="t-select" data-hg-f="cf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-cur">' +
+            forgeOpts(h.cf) +
+          '</select>' +
+        '</div>' +
+        '<div class="hg-field">' +
+          '<span class="hg-field-label">Level</span>' +
+          '<select class="t-select" id="lvl-' + group + '-' + piece + '-cur" data-hg-f="ce" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+            levelOpts(h.ce, h.cf) +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    /* Target group or no-target placeholder */
+    if (active) {
+      html += '<div class="hg-group target">' +
+        '<span class="hg-group-label">Target</span>' +
+        '<div class="hg-fields">' +
+          '<div class="hg-field">' +
+            '<span class="hg-field-label">Mastery</span>' +
+            '<select class="t-select" data-hg-f="tf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-tgt">' +
+              forgeOpts(h.tf) +
+            '</select>' +
+          '</div>' +
+          '<div class="hg-field">' +
+            '<span class="hg-field-label">Level</span>' +
+            '<select class="t-select" id="lvl-' + group + '-' + piece + '-tgt" data-hg-f="te" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+              levelOpts(h.te, h.tf) +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    } else {
+      html += '<div class="hg-no-target">No target — toggle to set</div>';
+    }
+
+    html += '</div>'; /* hg-pair */
+
+    /* Cost strip (only if active) */
+    if (active) {
+      html += '<div class="gear-cost-strip" id="hgcs-' + group + '-' + piece + '"><span class="gcs-zero">—</span></div>';
+    }
+
+    html += '</div>'; /* piece-card-body */
+    html += '</div>'; /* piece-card */
+    return html;
+  }
+
+  /* ── Render ───────────────────────────────────────────────────────────── */
   function render() {
     var html = '';
 
+    /* WM Header */
     html += '<div class="wm-header">' +
       '<div class="wm-logo">W<span>M</span></div>' +
       '<div class="wm-title-block">' +
@@ -103,123 +250,248 @@
       '</div>' +
     '</div>';
 
-    /* Global — All only */
-    html += '<div class="global-controls">' +
-      '<div class="global-controls-title">&#9881; Global — All Pieces</div>' +
-      '<div class="global-row">' +
-        '<span class="global-row-label">All Pieces</span>' +
-        '<div class="global-field"><span class="global-field-label">Tgt F</span>' +
-          '<input class="g-input" type="number" min="1" max="' + MF + '" id="gl-all-tf" value="15"></div>' +
-        '<div class="global-field"><span class="global-field-label">Tgt E</span>' +
-          '<input class="g-input" type="number" min="0" max="' + ME + '" id="gl-all-te" value="60"></div>' +
-        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
-        '<span class="g-divider">&mdash;</span>' +
-        '<div class="global-field"><span class="global-field-label">Cur F</span>' +
-          '<input class="g-input" type="number" min="1" max="' + MF + '" id="gl-all-cf" value="12"></div>' +
-        '<div class="global-field"><span class="global-field-label">Cur E</span>' +
-          '<input class="g-input" type="number" min="0" max="' + ME + '" id="gl-all-ce" value="40"></div>' +
-        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
-      '</div>' +
-    '</div>';
+    /* Global setter */
+    html += globalSetterRow('all');
 
+    /* Troop groups */
     var groups = CFG.groups;
+    var pieces = CFG.heroPieces;
     for (var gi = 0; gi < groups.length; gi++) {
-      var group  = groups[gi];
-      var pieces = CFG.heroPieces;
+      var group = groups[gi];
       html += '<div class="troop-block ' + group + '">';
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
       '</div>';
-      html += troopSetter(group);
-      html += '<div class="troop-block-body"><table class="calc-table">';
-      html += '<thead><tr><th>Piece</th><th>Cur F</th><th>Tgt F</th><th>Cur E</th><th>Tgt E</th><th>Hero XP</th><th>Mithril</th><th>Mythic</th><th>Notes</th></tr></thead><tbody>';
+      html += globalSetterRow(group);
+      html += '<div class="piece-grid">';
       for (var pi = 0; pi < pieces.length; pi++) {
-        var piece = pieces[pi];
-        var h = state.hero[group][piece];
-        html += '<tr>' +
-          '<td class="piece-name">' + cap(piece) + '</td>' +
-          '<td><input class="t-input" type="number" min="1" max="' + MF + '" data-g="' + group + '" data-p="' + piece + '" data-f="cf" value="' + h.cf + '"></td>' +
-          '<td><input class="t-input" type="number" min="1" max="' + MF + '" data-g="' + group + '" data-p="' + piece + '" data-f="tf" value="' + h.tf + '"></td>' +
-          '<td><input class="t-input" type="number" min="0" max="' + ME + '" data-g="' + group + '" data-p="' + piece + '" data-f="ce" value="' + h.ce + '"></td>' +
-          '<td><input class="t-input" type="number" min="0" max="' + ME + '" data-g="' + group + '" data-p="' + piece + '" data-f="te" value="' + h.te + '"></td>' +
-          '<td class="cost-cell" id="hxp-'    + group + '-' + piece + '">—</td>' +
-          '<td class="cost-cell" id="hmith-'  + group + '-' + piece + '">—</td>' +
-          '<td class="cost-cell" id="hmythic-'+ group + '-' + piece + '">—</td>' +
-          '<td id="hnotes-' + group + '-' + piece + '"></td>' +
-        '</tr>';
+        html += pieceCard(group, pieces[pi]);
       }
-      html += '</tbody></table></div></div>';
+      html += '</div>'; /* piece-grid */
+      html += '</div>'; /* troop-block */
     }
 
+    /* Upgrade plan */
+    html += '<div class="upgrade-plan">' +
+      '<div class="upgrade-plan-title">Upgrade Plan</div>' +
+      '<div id="upgrade-plan-list"></div>' +
+    '</div>';
+
+    /* Materials on hand */
+    var defMats = CFG.defaults.mats;
+    html += '<div class="mats-on-hand" id="mats-on-hand">' +
+      '<div class="moh-title">Materials On Hand</div>' +
+      '<div class="moh-row">' +
+        '<div class="moh-item">' +
+          '<span class="moh-label">Mithril</span>' +
+          '<input type="number" class="moh-input" id="moh-mithril" value="' + (defMats.mithril || 120) + '" min="0">' +
+          '<span class="moh-need" id="moh-mithril-need"></span>' +
+        '</div>' +
+        '<div class="moh-item">' +
+          '<span class="moh-label">Mythic Gear</span>' +
+          '<input type="number" class="moh-input" id="moh-mythic" value="' + (defMats.mythic_gear || 36) + '" min="0">' +
+          '<span class="moh-need" id="moh-mythic-need"></span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    /* Grand total strip */
     html += '<div class="grand-strip" id="grand-strip"><span class="grand-strip-label">&#128081; Grand Total</span></div>';
+
     document.getElementById('app').innerHTML = html;
-    attachListeners(); calc();
+    attachListeners();
+    calc();
   }
 
+  /* ── Calc ─────────────────────────────────────────────────────────────── */
   function calc() {
     var grand = { xp: 0, mith: 0, mythic: 0 };
     var groups = CFG.groups;
+    var pieces = CFG.heroPieces;
+    var planHtml = '';
+
     for (var gi = 0; gi < groups.length; gi++) {
-      var group = groups[gi]; var pieces = CFG.heroPieces; var gt = { xp: 0, mith: 0, mythic: 0 };
+      var group = groups[gi];
+      var gt = { xp: 0, mith: 0, mythic: 0 };
+
       for (var pi = 0; pi < pieces.length; pi++) {
-        var piece = pieces[pi]; var r = heroCost(group, piece);
-        setCell('hxp', group, piece, r.xp);
-        setCell('hmith', group, piece, r.mith);
-        setCell('hmythic', group, piece, r.mythic);
-        var nel = document.getElementById('hnotes-' + group + '-' + piece);
-        if (nel) {
-          var notes = '';
-          if (r.warn) notes += '<span class="tag tag-warn">' + r.warn + '</span>';
-          if (r.flips && r.flips.length) notes += '<span class="tag tag-info">Flip@' + r.flips.join(',') + '</span>';
-          nel.innerHTML = notes;
+        var piece = pieces[pi];
+        var h = state.hero[group][piece];
+        var r = heroCost(group, piece);
+
+        /* Cost strip */
+        var strip = document.getElementById('hgcs-' + group + '-' + piece);
+        if (strip) {
+          if (!r || (!r.xp && !r.mith && !r.mythic)) {
+            strip.innerHTML = '<span class="gcs-zero">—</span>';
+          } else {
+            var parts = [];
+            if (r.xp)     parts.push(gcsItem('XP', r.xp));
+            if (r.mith)   parts.push(gcsItem('Mithril', r.mith));
+            if (r.mythic) parts.push(gcsItem('Mythic', r.mythic));
+            if (r.warn)   parts.push('<span class="tag tag-warn">' + r.warn + '</span>');
+            strip.innerHTML = parts.join('');
+          }
         }
-        gt.xp += r.xp; gt.mith += r.mith; gt.mythic += r.mythic;
-        grand.xp += r.xp; grand.mith += r.mith; grand.mythic += r.mythic;
+
+        /* Upgrade plan row */
+        var pieceName = '<span class="up-piece-name">' + cap(group) + ' ' + cap(piece) + '</span>';
+        if (h.active) {
+          var levels = '<span class="up-levels">' + levelLabel(h.ce) + '&#8594;' + levelLabel(h.te) +
+            ' | Mastery F' + h.cf + '&#8594;F' + h.tf + '</span>';
+          var costs = r ? '<span class="up-cost">' + fmt(r.mith) + ' Mithril | ' + fmt(r.mythic) + ' Mythic</span>' : '';
+          planHtml += '<div class="up-item">' + pieceName + levels + costs + '</div>';
+        } else {
+          planHtml += '<div class="up-item">' + pieceName + '<span class="up-no-target">No target</span></div>';
+        }
+
+        if (r) {
+          gt.xp += r.xp; gt.mith += r.mith; gt.mythic += r.mythic;
+          grand.xp += r.xp; grand.mith += r.mith; grand.mythic += r.mythic;
+        }
       }
+
       var tel = document.getElementById('group-total-' + group);
       if (tel) tel.innerHTML = 'XP: ' + fmt(gt.xp) + ' &nbsp; Mithril: ' + fmt(gt.mith) + ' &nbsp; Mythic: ' + fmt(gt.mythic);
     }
+
+    /* Upgrade plan */
+    var planEl = document.getElementById('upgrade-plan-list');
+    if (planEl) planEl.innerHTML = planHtml || '<span class="up-no-target">No pieces with targets set.</span>';
+
+    /* Materials on hand */
+    var mohMithEl   = document.getElementById('moh-mithril');
+    var mohMythEl   = document.getElementById('moh-mythic');
+    var mohMithNeed = document.getElementById('moh-mithril-need');
+    var mohMythNeed = document.getElementById('moh-mythic-need');
+    if (mohMithEl && mohMithNeed) {
+      var haveMith = parseInt(mohMithEl.value) || 0;
+      var needMith = grand.mith;
+      var diffMith = haveMith - needMith;
+      if (diffMith >= 0) {
+        mohMithNeed.className = 'moh-need moh-ok';
+        mohMithNeed.textContent = 'Surplus: ' + fmt(diffMith);
+      } else {
+        mohMithNeed.className = 'moh-need moh-short';
+        mohMithNeed.textContent = 'Need: ' + fmt(-diffMith);
+      }
+    }
+    if (mohMythEl && mohMythNeed) {
+      var haveMyth = parseInt(mohMythEl.value) || 0;
+      var needMyth = grand.mythic;
+      var diffMyth = haveMyth - needMyth;
+      if (diffMyth >= 0) {
+        mohMythNeed.className = 'moh-need moh-ok';
+        mohMythNeed.textContent = 'Surplus: ' + fmt(diffMyth);
+      } else {
+        mohMythNeed.className = 'moh-need moh-short';
+        mohMythNeed.textContent = 'Need: ' + fmt(-diffMyth);
+      }
+    }
+
+    /* Grand strip */
     var gs = document.getElementById('grand-strip');
     if (gs) gs.innerHTML = '<span class="grand-strip-label">&#128081; Grand Total</span>' +
       gStat('Hero XP', grand.xp) + gStat('Mithril', grand.mith) + gStat('Mythic Gear', grand.mythic);
   }
 
-  function setCell(pfx, group, piece, val) {
-    var el = document.getElementById(pfx + '-' + group + '-' + piece);
-    if (!el) return; el.textContent = val ? fmt(val) : '—'; el.className = 'cost-cell' + (val ? '' : ' zero');
+  function gcsItem(k, v) {
+    return '<span class="gcs-item"><span class="gcs-label">' + k + '</span> ' + fmt(v) + '</span>';
   }
   function gStat(k, v) {
     return '<div class="grand-stat"><span class="grand-stat-key">' + k + '</span><span class="grand-stat-val">' + fmt(v) + '</span></div>';
   }
 
-  function attachListeners() {
-    var inputs = document.querySelectorAll('[data-g]');
-    for (var i = 0; i < inputs.length; i++) inputs[i].addEventListener('input', onCellInput);
-    var btns = document.querySelectorAll('[data-gc]');
-    for (var bi = 0; bi < btns.length; bi++) btns[bi].addEventListener('click', onGlobalBtn);
+  /* ── Rebuild level dropdown when forge changes ────────────────────────── */
+  function rebuildLevelDropdown(pairedId, forgeVal, currentVal) {
+    var el = document.getElementById(pairedId);
+    if (!el) return;
+    /* Preserve current selection if valid */
+    var sel = currentVal !== undefined ? currentVal : (parseInt(el.value) || 1);
+    el.innerHTML = levelOpts(sel, forgeVal);
   }
 
-  function onCellInput() {
-    var group = this.getAttribute('data-g'), piece = this.getAttribute('data-p'), field = this.getAttribute('data-f');
-    var val = clamp(parseInt(this.value) || 0, 0, (field === 'cf' || field === 'tf') ? MF : ME);
-    state.hero[group][piece][field] = Math.max(field === 'cf' || field === 'tf' ? 1 : 0, val);
-    saveState(); calc();
+  /* ── Listeners ────────────────────────────────────────────────────────── */
+  function attachListeners() {
+    /* Piece selects */
+    var sels = document.querySelectorAll('[data-hg-f]');
+    for (var i = 0; i < sels.length; i++) {
+      sels[i].addEventListener('change', onPieceSelect);
+    }
+    /* Global setter buttons */
+    var btns = document.querySelectorAll('[data-hg-gc]');
+    for (var bi = 0; bi < btns.length; bi++) {
+      btns[bi].addEventListener('click', onGlobalBtn);
+    }
+    /* Target toggle checkboxes */
+    var cbs = document.querySelectorAll('.target-toggle-cb');
+    for (var ci = 0; ci < cbs.length; ci++) {
+      cbs[ci].addEventListener('change', onTargetToggle);
+    }
+    /* Materials on hand inputs */
+    var mohs = document.querySelectorAll('.moh-input');
+    for (var mi = 0; mi < mohs.length; mi++) {
+      mohs[mi].addEventListener('input', calc);
+    }
+  }
+
+  function onPieceSelect() {
+    var group  = this.getAttribute('data-hg-group');
+    var piece  = this.getAttribute('data-hg-piece');
+    var field  = this.getAttribute('data-hg-f');
+    var val    = parseInt(this.value) || 1;
+    state.hero[group][piece][field] = val;
+
+    /* If forge changed, rebuild paired level dropdown */
+    var pairedId = this.getAttribute('data-hg-paired');
+    if (pairedId) {
+      /* figure out current value of paired level select */
+      var pairedEl = document.getElementById(pairedId);
+      var pairedVal = pairedEl ? (parseInt(pairedEl.value) || 1) : 1;
+      rebuildLevelDropdown(pairedId, val, pairedVal);
+      /* Re-read possibly clamped value */
+      pairedEl = document.getElementById(pairedId);
+      if (pairedEl) {
+        var newLvl = parseInt(pairedEl.value) || 1;
+        /* Determine which field the level corresponds to */
+        var lvlField = (field === 'cf') ? 'ce' : 'te';
+        state.hero[group][piece][lvlField] = newLvl;
+      }
+    }
+
+    saveState();
+    calc();
+  }
+
+  function onTargetToggle() {
+    var group = this.getAttribute('data-hg-group');
+    var piece = this.getAttribute('data-hg-piece');
+    state.hero[group][piece].active = this.checked;
+    saveState();
+    render();
   }
 
   function onGlobalBtn() {
-    var action = this.getAttribute('data-gc'), scope = this.getAttribute('data-scope');
+    var action = this.getAttribute('data-hg-gc');
+    var scope  = this.getAttribute('data-hg-scope');
     var prefix = (action === 'set-tgt') ? 't' : 'c';
-    var fVal = clamp(parseInt(document.getElementById('gl-' + scope + '-' + prefix + 'f').value) || 15, 1, MF);
-    var eVal = clamp(parseInt(document.getElementById('gl-' + scope + '-' + prefix + 'e').value) || 60, 0, ME);
+    var idPfx  = 'hg-gl-' + scope;
+    var fVal = parseInt(document.getElementById(idPfx + '-' + prefix + 'f').value) || 1;
+    var eVal = parseInt(document.getElementById(idPfx + '-' + prefix + 'e').value) || 1;
+    fVal = Math.max(1, Math.min(MF, fVal));
+    eVal = Math.max(1, Math.min(200, eVal));
+
     var groups = (scope === 'all') ? CFG.groups : [scope];
     var pieces = CFG.heroPieces;
-    for (var gi = 0; gi < groups.length; gi++)
+    for (var gi = 0; gi < groups.length; gi++) {
       for (var pi = 0; pi < pieces.length; pi++) {
         state.hero[groups[gi]][pieces[pi]][prefix + 'f'] = fVal;
         state.hero[groups[gi]][pieces[pi]][prefix + 'e'] = eVal;
       }
-    saveState(); render();
+    }
+    saveState();
+    render();
   }
 
   render();
