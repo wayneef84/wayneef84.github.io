@@ -109,11 +109,13 @@
     padding: 0 0.5rem;
     min-width: min-content;
 }
+
+/* Nav items */
 .calc-nav-item {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 0.85rem;
     font-family: var(--w-mono);
     font-size: 0.68rem;
     font-weight: 700;
@@ -128,9 +130,34 @@
 .calc-nav-item:hover { color: var(--w-text); background: var(--w-surface2); text-decoration: none; }
 .calc-nav-item.active { color: var(--w-red); border-color: var(--w-red); }
 .calc-nav-item .cni-icon { font-size: 0.95rem; line-height: 1; }
-@media (max-width: 480px) {
-    .calc-nav-item span:not(.cni-icon) { display: none; }
-    .calc-nav-item { padding: 0.6rem 0.7rem; }
+
+/* Toggle button — pushed to the far right */
+.calc-nav-toggle {
+    margin-left: auto;
+    padding: 0 0.85rem;
+    font-family: var(--w-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s;
+    flex-shrink: 0;
+}
+.calc-nav-toggle:hover { color: var(--w-red); }
+
+/* Collapsed state — just the toggle strip */
+.calc-v2-nav.nav-hidden { border-bottom-color: transparent; }
+.calc-v2-nav.nav-hidden .calc-nav-inner { justify-content: flex-end; }
+
+/* Mobile */
+@media (max-width: 560px) {
+    .calc-nav-item .cni-label { display: none; }
+    .calc-nav-item { padding: 0.6rem 0.6rem; }
     .calc-nav-item .cni-icon { font-size: 1.1rem; }
 }
 
