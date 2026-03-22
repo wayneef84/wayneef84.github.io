@@ -334,9 +334,14 @@
     gap: 0.55rem;
     flex-wrap: wrap;
     padding: 0.55rem 1rem;
-    background: var(--w-surface2);
+    background: var(--w-surface3);      /* lighter than surface2 so inputs contrast */
     border-top: 1px solid var(--w-border);
     border-bottom: 1px solid var(--w-border);
+}
+/* Inputs inside the setter need to be darker than surface3 to be visible */
+.troop-setter .g-input,
+.troop-setter .g-select {
+    background: var(--w-surface);
 }
 .troop-setter-label {
     font-family: var(--w-mono);
@@ -344,10 +349,18 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--w-text-muted);
+    color: var(--w-text-secondary);     /* stronger than text-muted */
     min-width: 72px;
     flex-shrink: 0;
 }
+/* Color setter label to match its troop type */
+.troop-block.infantry .troop-setter-label { color: var(--w-infantry); }
+.troop-block.marksman .troop-setter-label { color: var(--w-marksman); }
+.troop-block.lancer   .troop-setter-label { color: var(--w-lancer); }
+/* Tinted border to tie visually to the troop color */
+.troop-block.infantry .troop-setter { border-color: var(--w-infantry-dim); }
+.troop-block.marksman .troop-setter { border-color: var(--w-marksman-dim); }
+.troop-block.lancer   .troop-setter { border-color: var(--w-lancer-dim); }
 
 /* ── Calc Tables ─────────────────────────────────────────────────────────── */
 .calc-table {
