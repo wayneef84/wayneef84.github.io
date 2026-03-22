@@ -95,14 +95,20 @@
     var h = state.hero[group][piece];
     if (!h || !h.active) return null;
     try {
+      /* Level portion: plain level 1-100 (values above 100 = empowerment) */
+      var fromL = Math.min(100, h.ce);
+      var toL   = Math.min(100, h.te);
+      /* Empowerment portion: E1-E100 (subtract 100 from stored value) */
       var fromE = Math.max(0, h.ce - 100);
       var toE   = Math.max(0, h.te - 100);
+
+      var lRes = WOSKY_HERO_GEAR_DATA.calcLevel(fromL, toL);
       var fRes = WOSKY_HERO_GEAR_DATA.calcForge(h.cf, h.tf);
       var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(fromE, toE);
       var gRes = WOSKY_HERO_GEAR_DATA.calcGateCosts(fromE, toE);
       var warn = WOSKY_HERO_GEAR_DATA.forgeGateWarning(h.tf, toE);
       return {
-        xp:     (fRes.xp || 0) + (eRes.xp || 0),
+        xp:     (lRes.xp || 0) + (fRes.xp || 0) + (eRes.xp || 0),
         mith:   gRes.mithril || 0,
         mythic: (fRes.mythic_gear || 0) + (gRes.mythic || 0),
         warn:   warn || null
