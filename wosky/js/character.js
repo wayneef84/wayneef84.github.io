@@ -18,7 +18,7 @@
         playerId: '3169-WarMachine',
         name: 'WarMachine',
         state: 3169,
-        alliance: 'OTT',
+        alliance: 'SKY',
         furnaceLevel: 'FC3',
         power: 370065289,
         troops: {
