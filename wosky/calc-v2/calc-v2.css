@@ -929,3 +929,117 @@
 .moh-need { font-family: var(--w-mono); font-size: 0.65rem; min-width: 90px; }
 .moh-ok { color: var(--w-success); }
 .moh-short { color: var(--w-red); }
+
+/* ── Collapsible troop sections ────────────────────────────────────────── */
+.troop-collapse-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--w-border);
+    color: var(--w-text-muted);
+    cursor: pointer;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--w-radius-sm);
+    line-height: 1;
+    transition: background 0.1s, color 0.1s;
+}
+.troop-collapse-btn:hover { background: var(--w-surface3); color: var(--w-text); }
+.troop-block.collapsed .troop-block-body,
+.troop-block.collapsed .troop-setter,
+.troop-block.collapsed .piece-grid,
+.troop-block.collapsed .global-controls,
+.troop-block.collapsed .troop-two-col { display: none; }
+
+/* ── Disabled option separator (replaces optgroup to remove blue triangles) */
+.t-select option:disabled.opt-sep,
+.g-select option:disabled.opt-sep {
+    color: var(--w-text-muted);
+    font-style: italic;
+    font-size: 0.65em;
+}
+
+/* ── Hero Gear: two-column current/target layout ────────────────────────── */
+.troop-two-col {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem 0.6rem;
+}
+.troop-col {
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    overflow: hidden;
+}
+.troop-col-header {
+    display: block;
+    padding: 0.28rem 0.6rem;
+    background: var(--w-surface3);
+    font-family: var(--w-mono);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+    border-bottom: 1px solid var(--w-border);
+}
+.troop-col-tgt .troop-col-header {
+    color: var(--w-red);
+    background: var(--w-red-subtle);
+    border-bottom-color: var(--w-red-dim);
+}
+.troop-piece-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.28rem 0.5rem;
+    border-bottom: 1px solid var(--w-border);
+}
+.troop-piece-row:last-child { border-bottom: none; }
+.troop-piece-name {
+    font-family: var(--w-mono);
+    font-size: 0.63rem;
+    color: var(--w-text-secondary);
+    min-width: 52px;
+    text-transform: capitalize;
+    flex-shrink: 0;
+}
+.troop-piece-row .t-select {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.65rem;
+    padding-right: 1.1rem;
+}
+.hg-no-target-inline {
+    flex: 1;
+    font-family: var(--w-mono);
+    font-size: 0.62rem;
+    color: var(--w-text-muted);
+    font-style: italic;
+}
+.troop-piece-row .target-toggle { margin-left: 0; flex-shrink: 0; }
+.troop-piece-row .target-toggle-label { display: none; } /* hide label in compact rows */
+
+/* ── Chief Gear / Charms no-target toggle in piece cards ─────────────── */
+.piece-no-target {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    color: var(--w-text-muted);
+    font-style: italic;
+    border: 1px dashed var(--w-border);
+    border-radius: var(--w-radius-sm);
+    padding: 0.3rem 0.5rem;
+    text-align: center;
+}
+.piece-active-toggle { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; user-select: none; margin-left: auto; }
+.piece-active-cb { display: none; }
+.piece-active-track { width: 26px; height: 14px; background: var(--w-surface3); border: 1px solid var(--w-border); border-radius: 99px; position: relative; transition: background 0.15s; flex-shrink: 0; }
+.piece-active-track::after { content: ''; position: absolute; width: 10px; height: 10px; top: 1px; left: 1px; background: var(--w-text-muted); border-radius: 50%; transition: left 0.12s, background 0.12s; }
+.piece-active-cb:checked ~ .piece-active-track { background: var(--w-red-subtle); border-color: var(--w-red-dim); }
+.piece-active-cb:checked ~ .piece-active-track::after { left: 13px; background: var(--w-red); }
+.piece-active-label { font-family: var(--w-mono); font-size: 0.57rem; text-transform: uppercase; color: var(--w-text-muted); letter-spacing: 0.3px; }
