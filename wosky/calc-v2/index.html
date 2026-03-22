@@ -3,148 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WOSKY_3169 — Calc v2 Hub</title>
+  <title>Calc v2 Hub — WOSKY_3169</title>
   <link rel="stylesheet" href="../css/wosky.css">
+  <link rel="stylesheet" href="calc-v2.css">
   <style>
     .hub-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.75rem;
     }
     .hub-card {
-      display: block;
-      padding: 20px;
-      border-radius: 8px;
-      background: var(--w-bg2, #1a1a2e);
-      border: 1px solid var(--w-border, #333);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: var(--w-surface);
+      border: 1px solid var(--w-border);
+      border-left: 3px solid var(--w-red);
+      border-radius: var(--w-radius-md);
+      padding: 1.1rem 1rem;
       text-decoration: none;
-      color: var(--w-text, #ccc);
-      transition: border-color 0.2s, background 0.2s;
+      color: var(--w-text);
+      transition: border-color var(--w-transition), background var(--w-transition), transform var(--w-transition);
     }
-    .hub-card:hover { border-color: var(--w-accent, #6c63ff); background: var(--w-bg3, #222); }
-    .hub-card.placeholder { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-    .hub-card .icon { font-size: 28px; margin-bottom: 8px; }
-    .hub-card .title { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
-    .hub-card .desc { font-size: 12px; opacity: 0.7; line-height: 1.5; }
-    .hub-card .badge {
-      display: inline-block; font-size: 10px; padding: 2px 6px;
-      border-radius: 3px; margin-bottom: 8px;
-      background: var(--w-accent, #6c63ff); color: #fff;
+    .hub-card:hover {
+      background: var(--w-surface2);
+      border-color: var(--w-red);
+      transform: translateY(-2px);
+      text-decoration: none;
     }
-    .hub-card .badge.soon { background: var(--w-warn, #FF9800); color: #000; }
-    .section-label { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 8px; }
+    .hub-card.placeholder {
+      opacity: 0.42;
+      pointer-events: none;
+      border-left-color: var(--w-border);
+    }
+    .hub-card .hc-icon  { font-size: 1.4rem; line-height: 1; }
+    .hub-card .hc-title { font-family: var(--w-mono); font-size: 0.82rem; font-weight: 700; color: var(--w-text); }
+    .hub-card .hc-desc  { font-size: 0.74rem; color: var(--w-text-secondary); line-height: 1.5; }
+    .hub-card .hc-badge {
+      align-self: flex-start;
+      font-family: var(--w-mono);
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--w-radius-sm);
+      background: var(--w-red-subtle);
+      color: var(--w-red);
+      border: 1px solid var(--w-red-dim);
+    }
+    .hub-card .hc-badge.soon {
+      background: var(--w-surface2);
+      color: var(--w-text-muted);
+      border-color: var(--w-border);
+    }
+    .section-label {
+      font-family: var(--w-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--w-red);
+      margin: 1.75rem 0 0.5rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--w-border);
+    }
+    .wm-hero {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      flex-wrap: wrap;
+      padding: 1.5rem;
+      background: var(--w-surface);
+      border: 1px solid var(--w-border);
+      border-left: 5px solid var(--w-red);
+      border-radius: var(--w-radius-lg);
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .wm-hero::before {
+      content: 'WM';
+      position: absolute;
+      right: -0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--w-mono);
+      font-size: 7rem;
+      font-weight: 900;
+      color: var(--w-red);
+      opacity: 0.04;
+      letter-spacing: -6px;
+      pointer-events: none;
+      user-select: none;
+    }
+    .wm-hero-logo { font-family: var(--w-mono); font-size: 2.5rem; font-weight: 900; color: var(--w-red); letter-spacing: -3px; line-height: 1; text-shadow: 0 0 30px var(--w-red-glow); }
+    .wm-hero-logo span { color: var(--w-text-muted); }
+    .wm-hero-body { flex: 1; min-width: 0; }
+    .wm-hero-title { font-family: var(--w-mono); font-size: 1rem; font-weight: 700; color: var(--w-text); letter-spacing: 1px; text-transform: uppercase; }
+    .wm-hero-sub { font-size: 0.78rem; color: var(--w-text-secondary); margin-top: 0.2rem; }
+    .wm-hero-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    .wm-tag { font-family: var(--w-mono); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.2rem 0.5rem; border-radius: var(--w-radius-sm); }
+    .wm-tag-red { background: var(--w-red-subtle); color: var(--w-red); border: 1px solid var(--w-red-dim); }
+    .wm-tag-sky { background: rgba(56,189,248,0.08); color: var(--w-lancer); border: 1px solid var(--w-lancer-dim); }
+    .wm-tag-dim { background: var(--w-surface2); color: var(--w-text-muted); border: 1px solid var(--w-border); }
   </style>
 </head>
 <body>
   <nav class="wosky-nav">
-    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
     <span class="wosky-nav-sep">/</span>
     <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
     <span class="wosky-nav-sep">/</span>
     <span class="wosky-nav-brand">Calc v2</span>
   </nav>
   <div id="wosky-char-bar"></div>
-  <main class="wosky-main">
-    <h2 style="margin-top:0">Upgrade Planner v2</h2>
-    <p style="opacity:0.7;font-size:13px">All calculators share your player profile stored locally. Update your materials once — every calc stays in sync.</p>
+  <div class="calc-v2-nav" id="calc-nav"></div>
 
-    <div class="section-label">Active Calculators</div>
+  <main class="wosky-main">
+
+    <!-- WarMachine Hero Banner -->
+    <div class="wm-hero">
+      <div class="wm-hero-logo">W<span>M</span></div>
+      <div class="wm-hero-body">
+        <div class="wm-hero-title">Upgrade Planner v2</div>
+        <div class="wm-hero-sub">Unified calculators — shared materials, live recalc, global controls. State 3169 edition.</div>
+        <div class="wm-hero-tags">
+          <span class="wm-tag wm-tag-red">WarMachine</span>
+          <span class="wm-tag wm-tag-red">State 3169</span>
+          <span class="wm-tag wm-tag-sky">SKY Breakers</span>
+          <span class="wm-tag wm-tag-dim">Calc v2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">&#9876; Live Calculators</div>
     <div class="hub-grid">
 
       <a class="hub-card" href="charms.html">
-        <div class="icon">✨</div>
-        <div class="badge">Live</div>
-        <div class="title">Charms</div>
-        <div class="desc">Plan charm upgrades for all 6 pieces across 3 troop types. Tracks Designs, Guides, Secrets &amp; SvS pts.</div>
+        <span class="hc-icon">&#10024;</span>
+        <span class="hc-badge">Live</span>
+        <span class="hc-title">Chief Charms</span>
+        <span class="hc-desc">All 6 pieces &times; 3 slots. Global / troop / per-piece controls. Designs, Guides, Secrets, SvS pts.</span>
       </a>
 
       <a class="hub-card" href="gear.html">
-        <div class="icon">⚔️</div>
-        <div class="badge">Live</div>
-        <div class="title">Chief Gear</div>
-        <div class="desc">Calculate Alloy, Polish, Plans &amp; Amber needed to upgrade gear from current tier to target tier.</div>
+        <span class="hc-icon">&#9876;&#65039;</span>
+        <span class="hc-badge">Live</span>
+        <span class="hc-title">Chief Gear</span>
+        <span class="hc-desc">Tier dropdowns per piece. Alloy, Polish, Plans, Amber. Global + troop-type bulk set.</span>
       </a>
 
       <a class="hub-card" href="hero-gear.html">
-        <div class="icon">🦸</div>
-        <div class="badge">Live</div>
-        <div class="title">Hero Gear</div>
-        <div class="desc">Forge levels, empowerment gates, mithril costs, stat flips &amp; mythic gear requirements.</div>
+        <span class="hc-icon">&#128081;</span>
+        <span class="hc-badge">Live</span>
+        <span class="hc-title">Hero Gear</span>
+        <span class="hc-desc">Forge + empowerment. Mithril gate costs, stat flip milestones, mythic gear needs.</span>
       </a>
 
       <a class="hub-card" href="plan.html">
-        <div class="icon">📋</div>
-        <div class="badge">Live</div>
-        <div class="title">Plan &amp; Summary</div>
-        <div class="desc">Materials vs needs across all calculators. SvS day-by-day guide with shortfall highlights.</div>
+        <span class="hc-icon">&#128203;</span>
+        <span class="hc-badge">Live</span>
+        <span class="hc-title">Plan &amp; Materials</span>
+        <span class="hc-desc">Your material stockpile — shared across all calcs. SvS 5-day guide.</span>
       </a>
 
       <a class="hub-card" href="reference.html">
-        <div class="icon">📖</div>
-        <div class="badge">Live</div>
-        <div class="title">Reference</div>
-        <div class="desc">Charm cost tables, gear tier list, empowerment gates, forge costs &amp; SvS scoring info.</div>
+        <span class="hc-icon">&#128218;</span>
+        <span class="hc-badge">Live</span>
+        <span class="hc-title">Reference</span>
+        <span class="hc-desc">Charm cost tables, gear tier costs, empower gates, piece assignments, SvS scoring.</span>
       </a>
 
     </div>
 
-    <div class="section-label">Coming Soon</div>
+    <div class="section-label">&#9200; Coming Soon</div>
     <div class="hub-grid">
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">🏗️</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">Building</div>
-        <div class="desc">Track building levels and upgrade costs across all categories.</div>
+        <span class="hc-icon">&#127963;&#65039;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">Building</span>
+        <span class="hc-desc">Building level costs and SvS points per tier.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">⚗️</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">Research</div>
-        <div class="desc">Research tree progress, costs and SvS point planning.</div>
+        <span class="hc-icon">&#128300;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">Research</span>
+        <span class="hc-desc">Research tree progress, costs, SvS point planning.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">🪖</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">Troops</div>
-        <div class="desc">Troop training costs, capacity planning and stat comparisons.</div>
+        <span class="hc-icon">&#128120;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">Troops</span>
+        <span class="hc-desc">Training costs, capacity, stat comparisons per troop type.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">⚔️</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">SvS</div>
-        <div class="desc">Full SvS event planner with day-by-day point targets and activity breakdown.</div>
+        <span class="hc-icon">&#9876;&#65039;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">SvS Full Planner</span>
+        <span class="hc-desc">Day-by-day targets with pts budget breakdown.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">🐾</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">Pets</div>
-        <div class="desc">Pet upgrade costs, skill levels and stat bonuses.</div>
+        <span class="hc-icon">&#128062;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">Pets</span>
+        <span class="hc-desc">Advancement milestones, refinement thresholds.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">🎓</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">War Academy</div>
-        <div class="desc">War academy skill levels, costs and combat bonus tracking.</div>
+        <span class="hc-icon">&#128293;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">War Academy</span>
+        <span class="hc-desc">FC/FCS exchange, node costs, FC floor.</span>
       </a>
 
       <a class="hub-card placeholder" href="#">
-        <div class="icon">🌟</div>
-        <div class="badge soon">Soon</div>
-        <div class="title">Experts</div>
-        <div class="desc">Expert upgrade planner with material requirements per tier.</div>
+        <span class="hc-icon">&#127775;</span>
+        <span class="hc-badge soon">Soon</span>
+        <span class="hc-title">Experts</span>
+        <span class="hc-desc">Sigils + Books of Knowledge for SvS scoring.</span>
       </a>
 
     </div>
+
   </main>
 
   <script src="../js/character.js"></script>
   <script src="../js/char-bar.js"></script>
+  <script src="calc-nav.js"></script>
 </body>
 </html>

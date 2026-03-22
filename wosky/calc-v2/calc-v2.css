@@ -1,0 +1,418 @@
+/* ── Calc v2 — Supplement to wosky.css ───────────────────────────────────── */
+/* WarMachine · State 3169 · SKY Breakers                                    */
+/* All vars come from wosky.css — NO hardcoded colors here.                  */
+
+/* ── WarMachine Header ────────────────────────────────────────────────────── */
+.wm-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--w-border);
+}
+.wm-logo {
+    font-family: var(--w-mono);
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: var(--w-red);
+    line-height: 1;
+    text-shadow: 0 0 20px var(--w-red-glow);
+    flex-shrink: 0;
+}
+.wm-logo span { color: var(--w-text-muted); }
+.wm-title-block { flex: 1; min-width: 0; }
+.wm-title {
+    font-family: var(--w-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--w-text);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.wm-sub {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    color: var(--w-text-muted);
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+.wm-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.wm-badge {
+    font-family: var(--w-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--w-radius-sm);
+    border: 1px solid var(--w-border);
+    background: var(--w-surface2);
+    color: var(--w-text-secondary);
+}
+.wm-badge-red {
+    background: var(--w-red-subtle);
+    color: var(--w-red);
+    border-color: var(--w-red-dim);
+}
+.wm-badge-sky {
+    background: rgba(56, 189, 248, 0.08);
+    color: var(--w-lancer);
+    border-color: var(--w-lancer-dim);
+}
+
+/* ── Inner Calc Nav ───────────────────────────────────────────────────────── */
+.calc-v2-nav {
+    background: var(--w-surface);
+    border-bottom: 1px solid var(--w-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.calc-v2-nav::-webkit-scrollbar { display: none; }
+.calc-nav-inner {
+    display: flex;
+    align-items: stretch;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    min-width: min-content;
+}
+.calc-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.9rem;
+    font-family: var(--w-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color var(--w-transition), border-color var(--w-transition);
+}
+.calc-nav-item:hover { color: var(--w-text); text-decoration: none; border-color: var(--w-border); }
+.calc-nav-item.active { color: var(--w-red); border-color: var(--w-red); }
+.calc-nav-item .cni-icon { font-size: 0.9rem; line-height: 1; }
+@media (max-width: 480px) {
+    .calc-nav-item span:not(.cni-icon) { display: none; }
+    .calc-nav-item { padding: 0.55rem 0.65rem; }
+    .calc-nav-item .cni-icon { font-size: 1.1rem; }
+}
+
+/* ── Global Controls Panel ───────────────────────────────────────────────── */
+.global-controls {
+    background: var(--w-surface);
+    border: 1px solid var(--w-border);
+    border-left: 3px solid var(--w-red);
+    border-radius: var(--w-radius-md);
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+}
+.global-controls-title {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--w-red);
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--w-border);
+}
+.global-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--w-border);
+}
+.global-row:last-child { border-bottom: none; }
+.global-row-label {
+    font-family: var(--w-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-secondary);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+.global-row-label.infantry { color: var(--w-infantry); }
+.global-row-label.marksman { color: var(--w-marksman); }
+.global-row-label.lancer   { color: var(--w-lancer); }
+.global-field {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+}
+.global-field-label {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    color: var(--w-text-muted);
+}
+.g-input {
+    padding: 0.3rem 0.45rem;
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    color: var(--w-text);
+    font-family: var(--w-mono);
+    font-size: 0.8rem;
+    width: 62px;
+    transition: border-color var(--w-transition);
+}
+.g-input:focus { outline: none; border-color: var(--w-red); }
+.g-select {
+    padding: 0.3rem 1.6rem 0.3rem 0.5rem;
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    color: var(--w-text);
+    font-family: var(--w-mono);
+    font-size: 0.72rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23e11d48'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    min-width: 130px;
+    transition: border-color var(--w-transition);
+}
+.g-select:focus { outline: none; border-color: var(--w-red); }
+.g-divider { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-muted); }
+.wbtn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+    font-family: var(--w-mono);
+    font-weight: 700;
+    background: var(--w-red-subtle);
+    color: var(--w-red);
+    border: 1px solid var(--w-red-dim);
+    border-radius: var(--w-radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--w-transition), box-shadow var(--w-transition);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+.wbtn-xs:hover { background: var(--w-red); color: #fff; box-shadow: 0 0 8px var(--w-red-glow); }
+.wbtn-xs.secondary {
+    background: var(--w-surface2);
+    color: var(--w-text-secondary);
+    border-color: var(--w-border);
+}
+.wbtn-xs.secondary:hover { border-color: var(--w-red); color: var(--w-text); background: var(--w-surface3); }
+
+/* ── Troop Group Blocks ───────────────────────────────────────────────────── */
+.troop-block { margin-bottom: 1.25rem; }
+.troop-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--w-radius-md) var(--w-radius-md) 0 0;
+    border: 1px solid var(--w-border);
+    border-bottom: none;
+}
+.troop-block-title {
+    font-family: var(--w-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.troop-block-total {
+    font-family: var(--w-mono);
+    font-size: 0.7rem;
+    color: var(--w-text-secondary);
+}
+.troop-block-body {
+    border: 1px solid var(--w-border);
+    border-radius: 0 0 var(--w-radius-md) var(--w-radius-md);
+    overflow: hidden;
+}
+
+/* Infantry */
+.troop-block.infantry .troop-block-header { background: var(--w-infantry-subtle); border-left: 4px solid var(--w-infantry); }
+.troop-block.infantry .troop-block-title  { color: var(--w-infantry); }
+/* Marksman */
+.troop-block.marksman .troop-block-header { background: var(--w-marksman-subtle); border-left: 4px solid var(--w-marksman); }
+.troop-block.marksman .troop-block-title  { color: var(--w-marksman); }
+/* Lancer */
+.troop-block.lancer   .troop-block-header { background: var(--w-lancer-subtle);   border-left: 4px solid var(--w-lancer); }
+.troop-block.lancer   .troop-block-title  { color: var(--w-lancer); }
+
+/* ── Calc Tables ─────────────────────────────────────────────────────────── */
+.calc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+.calc-table th {
+    font-family: var(--w-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    background: var(--w-surface2);
+    border-bottom: 1px solid var(--w-border);
+    white-space: nowrap;
+}
+.calc-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--w-border);
+    vertical-align: middle;
+    color: var(--w-text);
+}
+.calc-table tr:last-child td { border-bottom: none; }
+.calc-table tr:hover td { background: var(--w-surface2); }
+.calc-table td.piece-name {
+    font-family: var(--w-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--w-text);
+    white-space: nowrap;
+}
+.calc-table td.slot-label {
+    font-family: var(--w-mono);
+    font-size: 0.68rem;
+    color: var(--w-text-muted);
+    white-space: nowrap;
+}
+.t-input {
+    padding: 0.3rem 0.4rem;
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    color: var(--w-text);
+    font-family: var(--w-mono);
+    font-size: 0.78rem;
+    width: 58px;
+    transition: border-color var(--w-transition);
+    text-align: center;
+}
+.t-input:focus { outline: none; border-color: var(--w-red); }
+.t-select {
+    padding: 0.3rem 1.5rem 0.3rem 0.45rem;
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    color: var(--w-text);
+    font-family: var(--w-mono);
+    font-size: 0.72rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23e11d48'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.4rem center;
+    min-width: 110px;
+    transition: border-color var(--w-transition);
+}
+.t-select:focus { outline: none; border-color: var(--w-red); }
+.cost-cell {
+    font-family: var(--w-mono);
+    font-size: 0.72rem;
+    color: var(--w-info);
+    white-space: nowrap;
+}
+.cost-cell.zero { color: var(--w-text-muted); }
+
+/* Tag chips */
+.tag {
+    display: inline-block;
+    font-family: var(--w-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--w-radius-sm);
+    margin: 0 1px;
+    vertical-align: middle;
+}
+.tag-warn { background: rgba(245,158,11,0.15); color: var(--w-warn); border: 1px solid rgba(245,158,11,0.3); }
+.tag-info { background: rgba(56,189,248,0.12); color: var(--w-lancer); border: 1px solid rgba(56,189,248,0.25); }
+.tag-red  { background: var(--w-red-subtle); color: var(--w-red); border: 1px solid var(--w-red-dim); }
+
+/* ── Grand Total Strip ───────────────────────────────────────────────────── */
+.grand-strip {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding: 0.85rem 1.1rem;
+    background: var(--w-surface);
+    border: 1px solid var(--w-border-accent);
+    border-left: 4px solid var(--w-red);
+    border-radius: var(--w-radius-md);
+    margin-top: 0.5rem;
+}
+.grand-strip-label {
+    font-family: var(--w-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--w-red);
+    flex-shrink: 0;
+}
+.grand-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.grand-stat-key {
+    font-family: var(--w-mono);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--w-text-muted);
+}
+.grand-stat-val {
+    font-family: var(--w-mono);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--w-text);
+}
+
+/* ── Piece quick-set row (inside troop group header) ─────────────────────── */
+.piece-bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    padding: 0.45rem 0.75rem;
+    background: var(--w-surface2);
+    border-top: 1px solid var(--w-border);
+    border-bottom: 1px solid var(--w-border);
+}
+.piece-bulk-label {
+    font-family: var(--w-mono);
+    font-size: 0.6rem;
+    color: var(--w-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .global-row { gap: 0.35rem; }
+    .global-row-label { min-width: 60px; }
+    .calc-table { font-size: 0.72rem; }
+    .t-input, .g-input { width: 50px; }
+    .t-select, .g-select { min-width: 90px; font-size: 0.68rem; }
+    .calc-table th, .calc-table td { padding: 0.4rem 0.5rem; }
+}

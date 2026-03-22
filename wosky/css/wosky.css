@@ -762,3 +762,31 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; }
 ::-webkit-scrollbar-track { background: var(--w-bg); }
 ::-webkit-scrollbar-thumb { background: var(--w-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--w-red-dim); }
+
+/* ── Theme — ensure select/input inherit correctly ────────────────────────── */
+/* Prevents hardcoded grays bleeding through on Sky / Light themes */
+select, input, textarea {
+    background: var(--w-surface2);
+    color: var(--w-text);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+    font-family: var(--w-mono);
+    font-size: 0.82rem;
+}
+select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--w-red);
+}
+
+/* ── Theme: Sky — override select arrow to dark ────────────────────────────── */
+:root[data-theme="sky"] select,
+:root[data-theme="light"] select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230284c7'/%3E%3C/svg%3E");
+}
+
+/* ── w-input overrides (keeps font/sizing, inherits color from above) ─────── */
+.w-input {
+    background: var(--w-surface2);
+    border: 1px solid var(--w-border);
+    color: var(--w-text);
+}

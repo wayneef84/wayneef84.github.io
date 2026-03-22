@@ -3,200 +3,301 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WOSKY_3169 — Charms Calc v2</title>
+  <title>Charms — WOSKY_3169 Calc v2</title>
   <link rel="stylesheet" href="../css/wosky.css">
-  <style>
-    .global-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; margin-bottom:16px; }
-    .global-bar label { font-size:12px; opacity:0.8; }
-    .group-block { margin-bottom:20px; }
-    .group-header { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; margin-bottom:8px; font-weight:bold; font-size:13px; }
-    .group-infantry .group-header { background:rgba(76,175,80,.15); border-left:3px solid var(--w-infantry,#4CAF50); }
-    .group-marksman .group-header { background:rgba(33,150,243,.15); border-left:3px solid var(--w-marksman,#2196F3); }
-    .group-lancer   .group-header { background:rgba(255,87,34,.15);  border-left:3px solid var(--w-lancer,#FF5722); }
-    .piece-table { width:100%; border-collapse:collapse; font-size:13px; }
-    .piece-table th { font-size:11px; opacity:0.65; text-transform:uppercase; padding:5px 8px; text-align:left; border-bottom:1px solid var(--w-border,#333); }
-    .piece-table td { padding:5px 8px; border-bottom:1px solid var(--w-border,#222); vertical-align:middle; }
-    .piece-table tr:last-child td { border-bottom:none; }
-    input.sm { width:52px; }
-    .cost-out { font-size:12px; color:var(--w-info,#29b6f6); }
-    .grand-total { padding:12px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; font-size:13px; margin-top:8px; }
-  </style>
+  <link rel="stylesheet" href="calc-v2.css">
 </head>
 <body>
   <nav class="wosky-nav">
-    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <a href="../../index.html" class="wosky-nav-home">&#8592; Hub</a>
     <span class="wosky-nav-sep">/</span>
     <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
     <span class="wosky-nav-sep">/</span>
     <a href="index.html" class="wosky-nav-home">Calc v2</a>
     <span class="wosky-nav-sep">/</span>
-    <span class="wosky-nav-brand">✨ Charms</span>
+    <span class="wosky-nav-brand">&#10024; Charms</span>
   </nav>
   <div id="wosky-char-bar"></div>
+  <div class="calc-v2-nav" id="calc-nav"></div>
   <main class="wosky-main" id="app"></main>
 
   <script src="../js/data/charms-data.js"></script>
   <script src="../js/character.js"></script>
   <script src="../js/char-bar.js"></script>
   <script src="data/config.js"></script>
+  <script src="calc-nav.js"></script>
   <script>
-(function() {
+(function () {
   'use strict';
-  var SK = 'wosky_v2_player';
+  var SK  = 'wosky_v2_player';
   var CFG = WOSKY_V2_CONFIG;
+  var ML  = CFG.charms.maxLevel;
+  var MS  = CFG.charms.maxStep;
 
+  /* ── State ──────────────────────────────────────────────────────────────── */
   function loadState() {
     try {
       var raw = localStorage.getItem(SK);
       if (raw) {
-        var saved = JSON.parse(raw);
-        var def = CFG.defaults;
+        var s = JSON.parse(raw);
         return {
-          charms:       saved.charms       || JSON.parse(JSON.stringify(def.charms)),
-          charmTargets: saved.charmTargets || JSON.parse(JSON.stringify(def.charmTargets))
+          charms:       s.charms       || deepCopy(CFG.defaults.charms),
+          charmTargets: s.charmTargets || deepCopy(CFG.defaults.charmTargets)
         };
       }
-    } catch(e) {}
-    return {
-      charms:       JSON.parse(JSON.stringify(CFG.defaults.charms)),
-      charmTargets: JSON.parse(JSON.stringify(CFG.defaults.charmTargets))
-    };
+    } catch (e) {}
+    return { charms: deepCopy(CFG.defaults.charms), charmTargets: deepCopy(CFG.defaults.charmTargets) };
   }
 
-  function saveState(st) {
+  function saveState() {
     try {
-      var raw = localStorage.getItem(SK);
+      var raw  = localStorage.getItem(SK);
       var full = raw ? JSON.parse(raw) : {};
-      full.charms       = st.charms;
-      full.charmTargets = st.charmTargets;
+      full.charms       = state.charms;
+      full.charmTargets = state.charmTargets;
       localStorage.setItem(SK, JSON.stringify(full));
-    } catch(e) {}
+    } catch (e) {}
   }
 
+  function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
   function fmt(n) { return (n || 0).toLocaleString(); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
 
   var state = loadState();
 
-  /* ── Build UI ─────────────────────────────────────────────────────────── */
+  /* ── Charm cost helper ───────────────────────────────────────────────────── */
+  function charmCost(piece, slot) {
+    var cur = state.charms[piece][slot];
+    var tgt = state.charmTargets[piece][slot];
+    try { return WOSKY_CHARMS_DATA.calcRange(cur.l, cur.s, tgt.l, tgt.s); }
+    catch (e) { return { d: 0, g: 0, s: 0, svs_pts: 0 }; }
+  }
+
+  /* ── Render ─────────────────────────────────────────────────────────────── */
   function render() {
-    var app = document.getElementById('app');
     var html = '';
 
-    html += '<div class="global-bar">';
-    html += '<strong>Global Target:</strong>';
-    html += '<label>Level <input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" id="gt-l" value="11"></label>';
-    html += '<label>Step <input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" id="gt-s" value="0"></label>';
-    html += '<button class="wbtn" id="btn-apply-global">Apply to All</button>';
+    /* WarMachine header */
+    html += '<div class="wm-header">' +
+      '<div class="wm-logo">W<span>M</span></div>' +
+      '<div class="wm-title-block">' +
+        '<div class="wm-title">Chief Charms Calculator</div>' +
+        '<div class="wm-sub">WOSKY_3169 &middot; WarMachine &middot; State 3169</div>' +
+      '</div>' +
+      '<div class="wm-badges">' +
+        '<span class="wm-badge wm-badge-red">3169</span>' +
+        '<span class="wm-badge wm-badge-sky">SKY Breakers</span>' +
+        '<span class="wm-badge wm-badge-red">Calc v2</span>' +
+      '</div>' +
+    '</div>';
+
+    /* Global controls */
+    html += '<div class="global-controls">';
+    html += '<div class="global-controls-title">&#9881; Global Controls — changes recalc immediately</div>';
+
+    var rows = [
+      { key: 'all',       label: 'All Pieces', cls: '' },
+      { key: 'infantry',  label: 'Infantry',   cls: 'infantry' },
+      { key: 'marksman',  label: 'Marksman',   cls: 'marksman' },
+      { key: 'lancer',    label: 'Lancer',     cls: 'lancer'   }
+    ];
+
+    for (var ri = 0; ri < rows.length; ri++) {
+      var row = rows[ri];
+      html += '<div class="global-row">' +
+        '<span class="global-row-label ' + row.cls + '">' + row.label + '</span>' +
+        '<div class="global-field"><span class="global-field-label">Tgt L</span>' +
+          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + row.key + '-tl" value="11"></div>' +
+        '<div class="global-field"><span class="global-field-label">Tgt S</span>' +
+          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + row.key + '-ts" value="0"></div>' +
+        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + row.key + '">Set Target</button>' +
+        '<span class="g-divider">&mdash;</span>' +
+        '<div class="global-field"><span class="global-field-label">Cur L</span>' +
+          '<input class="g-input" type="number" min="1" max="' + ML + '" id="gl-' + row.key + '-cl" value="10"></div>' +
+        '<div class="global-field"><span class="global-field-label">Cur S</span>' +
+          '<input class="g-input" type="number" min="0" max="' + MS + '" id="gl-' + row.key + '-cs" value="3"></div>' +
+        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + row.key + '">Set Current</button>' +
+      '</div>';
+    }
     html += '</div>';
 
+    /* Troop groups */
     var groups = CFG.groups;
     for (var gi = 0; gi < groups.length; gi++) {
-      var group = groups[gi];
+      var group  = groups[gi];
       var pieces = CFG.pieces[group];
-      html += '<div class="group-block group-' + group + '">';
-      html += '<div class="group-header"><span>' + cap(group) + '</span><span id="gtotal-' + group + '" style="font-weight:normal;font-size:12px;opacity:0.85"></span></div>';
+      html += '<div class="troop-block ' + group + '">';
+      html += '<div class="troop-block-header">' +
+        '<span class="troop-block-title">' + cap(group) + '</span>' +
+        '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
+      '</div>';
+      html += '<div class="troop-block-body">';
+      html += '<table class="calc-table">';
+      html += '<thead><tr>' +
+        '<th>Piece</th><th>Slot</th>' +
+        '<th>Cur L</th><th>Cur S</th>' +
+        '<th>Tgt L</th><th>Tgt S</th>' +
+        '<th>Designs</th><th>Guides</th><th>Secrets</th><th>SvS pts</th>' +
+      '</tr></thead><tbody>';
 
       for (var pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
-        html += '<div class="w-card" style="margin-bottom:10px">';
-        html += '<table class="piece-table">';
-        html += '<thead><tr><th>' + cap(piece) + '</th><th>Cur Level</th><th>Cur Step</th><th>Tgt Level</th><th>Tgt Step</th><th>Cost</th></tr></thead>';
-        html += '<tbody>';
         for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
           var slot = 'c' + ci;
-          var cur = state.charms[piece][slot];
-          var tgt = state.charmTargets[piece][slot];
+          var cur  = state.charms[piece][slot];
+          var tgt  = state.charmTargets[piece][slot];
+          var firstSlot = (ci === 1);
           html += '<tr>';
-          html += '<td><strong>' + slot.toUpperCase() + '</strong></td>';
-          html += '<td><input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cl" value="' + cur.l + '"></td>';
-          html += '<td><input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cs" value="' + cur.s + '"></td>';
-          html += '<td><input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" data-p="' + piece + '" data-c="' + slot + '" data-f="tl" value="' + tgt.l + '"></td>';
-          html += '<td><input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" data-p="' + piece + '" data-c="' + slot + '" data-f="ts" value="' + tgt.s + '"></td>';
-          html += '<td class="cost-out" id="cost-' + piece + '-' + slot + '">—</td>';
+          if (firstSlot) {
+            html += '<td class="piece-name" rowspan="' + CFG.charms.charmsPerPiece + '">' + cap(piece) + '</td>';
+          }
+          html += '<td class="slot-label">' + slot.toUpperCase() + '</td>';
+          html += '<td><input class="t-input" type="number" min="1" max="' + ML + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cl" value="' + cur.l + '"></td>';
+          html += '<td><input class="t-input" type="number" min="0" max="' + MS + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cs" value="' + cur.s + '"></td>';
+          html += '<td><input class="t-input" type="number" min="1" max="' + ML + '" data-p="' + piece + '" data-c="' + slot + '" data-f="tl" value="' + tgt.l + '"></td>';
+          html += '<td><input class="t-input" type="number" min="0" max="' + MS + '" data-p="' + piece + '" data-c="' + slot + '" data-f="ts" value="' + tgt.s + '"></td>';
+          html += '<td class="cost-cell" id="cd-' + piece + '-' + slot + '">—</td>';
+          html += '<td class="cost-cell" id="cg-' + piece + '-' + slot + '">—</td>';
+          html += '<td class="cost-cell" id="cs-' + piece + '-' + slot + '">—</td>';
+          html += '<td class="cost-cell" id="cp-' + piece + '-' + slot + '">—</td>';
           html += '</tr>';
         }
-        html += '</tbody></table></div>';
       }
-      html += '</div>';
+      html += '</tbody></table></div></div>';
     }
 
-    html += '<div class="grand-total" id="grand-total"></div>';
-    app.innerHTML = html;
+    /* Grand total */
+    html += '<div class="grand-strip" id="grand-strip">' +
+      '<span class="grand-strip-label">&#9876; Grand Total</span>' +
+    '</div>';
+
+    document.getElementById('app').innerHTML = html;
     attachListeners();
     calc();
   }
 
-  /* ── Calc ─────────────────────────────────────────────────────────────── */
+  /* ── Calc ────────────────────────────────────────────────────────────────── */
   function calc() {
-    var grand = { d:0, g:0, s:0, svs:0 };
+    var grand = { d: 0, g: 0, s: 0, pts: 0 };
     var groups = CFG.groups;
+
     for (var gi = 0; gi < groups.length; gi++) {
-      var group = groups[gi];
+      var group  = groups[gi];
       var pieces = CFG.pieces[group];
-      var gt = { d:0, g:0, s:0, svs:0 };
+      var gt     = { d: 0, g: 0, s: 0, pts: 0 };
+
       for (var pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
         for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
           var slot = 'c' + ci;
-          var cur = state.charms[piece][slot];
-          var tgt = state.charmTargets[piece][slot];
-          var el = document.getElementById('cost-' + piece + '-' + slot);
-          if (!el) continue;
-          try {
-            var r = WOSKY_CHARMS_DATA.calcRange(cur.l, cur.s, tgt.l, tgt.s);
-            var d = r.d || 0, g = r.g || 0, sv = r.s || 0, svs = r.svs_pts || 0;
-            el.innerHTML = 'D:' + fmt(d) + ' G:' + fmt(g) + (sv ? ' S:' + fmt(sv) : '') + ' | ' + fmt(svs) + ' pts';
-            gt.d += d; gt.g += g; gt.s += sv; gt.svs += svs;
-            grand.d += d; grand.g += g; grand.s += sv; grand.svs += svs;
-          } catch(e) { el.textContent = 'err'; }
+          var r = charmCost(piece, slot);
+          var d = r.d || 0, g = r.g || 0, sv = r.s || 0, pts = r.svs_pts || 0;
+          setCostCell('cd', piece, slot, d);
+          setCostCell('cg', piece, slot, g);
+          setCostCell('cs', piece, slot, sv);
+          setCostCell('cp', piece, slot, pts);
+          gt.d += d; gt.g += g; gt.s += sv; gt.pts += pts;
+          grand.d += d; grand.g += g; grand.s += sv; grand.pts += pts;
         }
       }
-      var tel = document.getElementById('gtotal-' + group);
-      if (tel) tel.innerHTML = 'D:' + fmt(gt.d) + ' G:' + fmt(gt.g) + (gt.s ? ' S:' + fmt(gt.s) : '') + ' | SvS: ' + fmt(gt.svs) + ' pts';
+      var tel = document.getElementById('group-total-' + group);
+      if (tel) tel.innerHTML =
+        'D: ' + fmt(gt.d) + ' &nbsp; G: ' + fmt(gt.g) +
+        (gt.s ? ' &nbsp; S: ' + fmt(gt.s) : '') +
+        ' &nbsp;&nbsp; <strong>' + fmt(gt.pts) + ' pts</strong>';
     }
-    var gel = document.getElementById('grand-total');
-    if (gel) gel.innerHTML = '<strong>Grand Total —</strong> Designs: ' + fmt(grand.d) + ' &nbsp; Guides: ' + fmt(grand.g) + (grand.s ? ' &nbsp; Secrets: ' + fmt(grand.s) : '') + ' &nbsp; SvS: ' + fmt(grand.svs) + ' pts';
+
+    /* Grand total */
+    var gs = document.getElementById('grand-strip');
+    if (!gs) return;
+    gs.innerHTML = '<span class="grand-strip-label">&#9876; Grand Total</span>' +
+      grandStat('Designs',  grand.d) +
+      grandStat('Guides',   grand.g) +
+      (grand.s ? grandStat('Secrets', grand.s) : '') +
+      grandStat('SvS Pts',  grand.pts);
   }
 
-  /* ── Listeners ────────────────────────────────────────────────────────── */
+  function setCostCell(prefix, piece, slot, val) {
+    var el = document.getElementById(prefix + '-' + piece + '-' + slot);
+    if (!el) return;
+    el.textContent = val ? fmt(val) : '—';
+    el.className   = 'cost-cell' + (val ? '' : ' zero');
+  }
+
+  function grandStat(key, val) {
+    return '<div class="grand-stat">' +
+      '<span class="grand-stat-key">' + key + '</span>' +
+      '<span class="grand-stat-val">' + fmt(val) + '</span>' +
+    '</div>';
+  }
+
+  /* ── Listeners ────────────────────────────────────────────────────────────── */
   function attachListeners() {
+    /* Individual cell inputs */
     var inputs = document.querySelectorAll('[data-p]');
     for (var i = 0; i < inputs.length; i++) {
-      inputs[i].addEventListener('change', onInput);
+      inputs[i].addEventListener('input', onCellInput);
     }
-    document.getElementById('btn-apply-global').addEventListener('click', applyGlobal);
+
+    /* Global control buttons */
+    var btns = document.querySelectorAll('[data-gc]');
+    for (var bi = 0; bi < btns.length; bi++) {
+      btns[bi].addEventListener('click', onGlobalBtn);
+    }
   }
 
-  function onInput() {
+  function onCellInput() {
     var piece = this.getAttribute('data-p');
     var slot  = this.getAttribute('data-c');
     var field = this.getAttribute('data-f');
-    var val   = parseInt(this.value) || 0;
-    if (field === 'cl') state.charms[piece][slot].l = val;
-    if (field === 'cs') state.charms[piece][slot].s = val;
+    var val   = clamp(parseInt(this.value) || 1, 1, field === 'cs' || field === 'ts' ? MS : ML);
+    if (field === 'cl') state.charms[piece][slot].l       = val;
+    if (field === 'cs') state.charms[piece][slot].s       = clamp(val, 0, MS);
     if (field === 'tl') state.charmTargets[piece][slot].l = val;
-    if (field === 'ts') state.charmTargets[piece][slot].s = val;
-    saveState(state);
+    if (field === 'ts') state.charmTargets[piece][slot].s = clamp(val, 0, MS);
+    saveState();
     calc();
   }
 
-  function applyGlobal() {
-    var l = parseInt(document.getElementById('gt-l').value) || 11;
-    var s = parseInt(document.getElementById('gt-s').value) || 0;
-    var pieces = ['chest','legs','ring','offhand','helm','neck'];
-    for (var pi = 0; pi < pieces.length; pi++) {
-      var piece = pieces[pi];
+  function onGlobalBtn() {
+    var action = this.getAttribute('data-gc');  /* set-tgt | set-cur */
+    var scope  = this.getAttribute('data-scope'); /* all | infantry | marksman | lancer */
+
+    var lVal, sVal;
+    if (action === 'set-tgt') {
+      lVal = clamp(parseInt(document.getElementById('gl-' + scope + '-tl').value) || 11, 1, ML);
+      sVal = clamp(parseInt(document.getElementById('gl-' + scope + '-ts').value) || 0,  0, MS);
+    } else {
+      lVal = clamp(parseInt(document.getElementById('gl-' + scope + '-cl').value) || 10, 1, ML);
+      sVal = clamp(parseInt(document.getElementById('gl-' + scope + '-cs').value) || 3,  0, MS);
+    }
+
+    var piecesToUpdate = getPieces(scope);
+    for (var pi = 0; pi < piecesToUpdate.length; pi++) {
+      var piece = piecesToUpdate[pi];
       for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
-        state.charmTargets[piece]['c'+ci] = { l:l, s:s };
+        var slot = 'c' + ci;
+        if (action === 'set-tgt') {
+          state.charmTargets[piece][slot] = { l: lVal, s: sVal };
+        } else {
+          state.charms[piece][slot] = { l: lVal, s: sVal };
+        }
       }
     }
-    saveState(state);
-    render();
+    saveState();
+    render(); /* full re-render keeps all inputs in sync */
+  }
+
+  function getPieces(scope) {
+    if (scope === 'all') {
+      return ['chest','legs','ring','offhand','helm','neck'];
+    }
+    return CFG.pieces[scope] || [];
   }
 
   render();
-})();
+}());
   </script>
 </body>
 </html>
