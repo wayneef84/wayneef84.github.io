@@ -31,15 +31,15 @@ var WOSKY_V2_CONFIG = {
     { id: 'blue',       label: 'Blue' },
     { id: 'purple',     label: 'Purple' },
     { id: 'orange',     label: 'Orange' },
-    { id: 'pink-t1',    label: 'Pink T1' },
-    { id: 'pink-t1-1',  label: 'Pink T1+1' },
-    { id: 'pink-t1-2',  label: 'Pink T1+2' },
-    { id: 'pink-t1-3',  label: 'Pink T1+3' },
-    { id: 'pink-t2',    label: 'Pink T2' },
-    { id: 'pink-t2-1',  label: 'Pink T2+1' },
-    { id: 'pink-t2-2',  label: 'Pink T2+2' },
-    { id: 'pink-t2-3',  label: 'Pink T2+3' },
-    { id: 'pink-t3',    label: 'Pink T3' }
+    { id: 'pink-t1',    label: 'Red T1 0\u2605' },
+    { id: 'pink-t1-1',  label: 'Red T1 1\u2605' },
+    { id: 'pink-t1-2',  label: 'Red T1 2\u2605' },
+    { id: 'pink-t1-3',  label: 'Red T1 3\u2605' },
+    { id: 'pink-t2',    label: 'Red T2 0\u2605' },
+    { id: 'pink-t2-1',  label: 'Red T2 1\u2605' },
+    { id: 'pink-t2-2',  label: 'Red T2 2\u2605' },
+    { id: 'pink-t2-3',  label: 'Red T2 3\u2605' },
+    { id: 'pink-t3',    label: 'Red T3 0\u2605' }
   ],
 
   /* ── Hero Gear ───────────────────────────────────────────────────────────── */
