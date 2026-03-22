@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Calc v2 Hub</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .hub-card {
+      display: block;
+      padding: 20px;
+      border-radius: 8px;
+      background: var(--w-bg2, #1a1a2e);
+      border: 1px solid var(--w-border, #333);
+      text-decoration: none;
+      color: var(--w-text, #ccc);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .hub-card:hover { border-color: var(--w-accent, #6c63ff); background: var(--w-bg3, #222); }
+    .hub-card.placeholder { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+    .hub-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .hub-card .title { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+    .hub-card .desc { font-size: 12px; opacity: 0.7; line-height: 1.5; }
+    .hub-card .badge {
+      display: inline-block; font-size: 10px; padding: 2px 6px;
+      border-radius: 3px; margin-bottom: 8px;
+      background: var(--w-accent, #6c63ff); color: #fff;
+    }
+    .hub-card .badge.soon { background: var(--w-warn, #FF9800); color: #000; }
+    .section-label { font-size: 11px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 8px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">Calc v2</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main">
+    <h2 style="margin-top:0">Upgrade Planner v2</h2>
+    <p style="opacity:0.7;font-size:13px">All calculators share your player profile stored locally. Update your materials once — every calc stays in sync.</p>
+
+    <div class="section-label">Active Calculators</div>
+    <div class="hub-grid">
+
+      <a class="hub-card" href="charms.html">
+        <div class="icon">✨</div>
+        <div class="badge">Live</div>
+        <div class="title">Charms</div>
+        <div class="desc">Plan charm upgrades for all 6 pieces across 3 troop types. Tracks Designs, Guides, Secrets &amp; SvS pts.</div>
+      </a>
+
+      <a class="hub-card" href="gear.html">
+        <div class="icon">⚔️</div>
+        <div class="badge">Live</div>
+        <div class="title">Chief Gear</div>
+        <div class="desc">Calculate Alloy, Polish, Plans &amp; Amber needed to upgrade gear from current tier to target tier.</div>
+      </a>
+
+      <a class="hub-card" href="hero-gear.html">
+        <div class="icon">🦸</div>
+        <div class="badge">Live</div>
+        <div class="title">Hero Gear</div>
+        <div class="desc">Forge levels, empowerment gates, mithril costs, stat flips &amp; mythic gear requirements.</div>
+      </a>
+
+      <a class="hub-card" href="plan.html">
+        <div class="icon">📋</div>
+        <div class="badge">Live</div>
+        <div class="title">Plan &amp; Summary</div>
+        <div class="desc">Materials vs needs across all calculators. SvS day-by-day guide with shortfall highlights.</div>
+      </a>
+
+      <a class="hub-card" href="reference.html">
+        <div class="icon">📖</div>
+        <div class="badge">Live</div>
+        <div class="title">Reference</div>
+        <div class="desc">Charm cost tables, gear tier list, empowerment gates, forge costs &amp; SvS scoring info.</div>
+      </a>
+
+    </div>
+
+    <div class="section-label">Coming Soon</div>
+    <div class="hub-grid">
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">🏗️</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">Building</div>
+        <div class="desc">Track building levels and upgrade costs across all categories.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">⚗️</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">Research</div>
+        <div class="desc">Research tree progress, costs and SvS point planning.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">🪖</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">Troops</div>
+        <div class="desc">Troop training costs, capacity planning and stat comparisons.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">⚔️</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">SvS</div>
+        <div class="desc">Full SvS event planner with day-by-day point targets and activity breakdown.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">🐾</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">Pets</div>
+        <div class="desc">Pet upgrade costs, skill levels and stat bonuses.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">🎓</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">War Academy</div>
+        <div class="desc">War academy skill levels, costs and combat bonus tracking.</div>
+      </a>
+
+      <a class="hub-card placeholder" href="#">
+        <div class="icon">🌟</div>
+        <div class="badge soon">Soon</div>
+        <div class="title">Experts</div>
+        <div class="desc">Expert upgrade planner with material requirements per tier.</div>
+      </a>
+
+    </div>
+  </main>
+
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+</body>
+</html>

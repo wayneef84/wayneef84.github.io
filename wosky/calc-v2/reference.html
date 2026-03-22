@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Reference v2</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .ref-table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:4px; }
+    .ref-table th { font-size:11px; opacity:0.65; text-transform:uppercase; padding:5px 8px; text-align:left; background:var(--w-bg2,#1a1a2e); }
+    .ref-table td { padding:5px 8px; border-bottom:1px solid var(--w-border,#222); }
+    .ref-table tr:last-child td { border-bottom:none; }
+    .section { margin-bottom:20px; }
+    h3 { margin-top:0; font-size:14px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="index.html" class="wosky-nav-home">Calc v2</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">📖 Reference</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main" id="app"></main>
+
+  <script src="../js/data/charms-data.js"></script>
+  <script src="../js/data/gear-data.js"></script>
+  <script src="../js/data/hero-gear-data.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+  <script src="data/config.js"></script>
+  <script>
+(function() {
+  'use strict';
+  var CFG = WOSKY_V2_CONFIG;
+
+  function fmt(n) { return (n || 0).toLocaleString(); }
+
+  function render() {
+    var app = document.getElementById('app');
+    var html = '';
+
+    /* ── Empowerment Gates ───────────────────────────────────────────────── */
+    html += '<div class="w-card section"><h3>Empowerment Gates</h3>';
+    html += '<table class="ref-table"><thead><tr><th>Emp Range</th><th>Forge Required</th><th>Mithril</th><th>Mythic Gear</th></tr></thead><tbody>';
+    var gates = CFG.hero.gates;
+    for (var g = 0; g < gates.length; g++) {
+      html += '<tr><td>' + gates[g][0] + '–' + gates[g][1] + '</td><td>F' + gates[g][2] + '</td><td>' + gates[g][3] + '</td><td>' + gates[g][4] + '</td></tr>';
+    }
+    html += '</tbody></table></div>';
+
+    /* ── Charm Costs per Level ───────────────────────────────────────────── */
+    html += '<div class="w-card section"><h3>Charm Costs per Level (full level, 0→0)</h3>';
+    html += '<table class="ref-table"><thead><tr><th>Level</th><th>Designs</th><th>Guides</th><th>Secrets</th><th>SvS Pts</th></tr></thead><tbody>';
+    for (var lv = 1; lv <= 15; lv++) {
+      try {
+        var r = WOSKY_CHARMS_DATA.calcRange(lv, 0, lv + 1, 0);
+        html += '<tr><td>' + lv + ' → ' + (lv+1) + '</td><td>' + fmt(r.d) + '</td><td>' + fmt(r.g) + '</td><td>' + fmt(r.s || 0) + '</td><td>' + fmt(r.svs_pts) + '</td></tr>';
+      } catch(e) {
+        html += '<tr><td>' + lv + ' → ' + (lv+1) + '</td><td colspan="4" style="opacity:0.5">N/A</td></tr>';
+      }
+    }
+    html += '</tbody></table></div>';
+
+    /* ── Chief Gear Tiers (cumulative from pink-t1) ──────────────────────── */
+    html += '<div class="w-card section"><h3>Chief Gear Tiers (cumulative cost from Pink T1)</h3>';
+    html += '<table class="ref-table"><thead><tr><th>ID</th><th>Label</th><th>Alloy</th><th>Polish</th><th>Plans</th><th>Amber</th></tr></thead><tbody>';
+    try {
+      var baseIdx = WOSKY_GEAR_DATA.getIndexById('pink-t1');
+      var tiers = CFG.gearTiers;
+      for (var ti = 0; ti < tiers.length; ti++) {
+        try {
+          var tidx = WOSKY_GEAR_DATA.getIndexById(tiers[ti].id);
+          var tr = WOSKY_GEAR_DATA.calcRange(baseIdx, tidx);
+          html += '<tr><td>' + tiers[ti].id + '</td><td>' + tiers[ti].label + '</td><td>' + fmt(tr.a) + '</td><td>' + fmt(tr.s) + '</td><td>' + fmt(tr.d) + '</td><td>' + fmt(tr.m) + '</td></tr>';
+        } catch(e) {
+          html += '<tr><td>' + tiers[ti].id + '</td><td>' + tiers[ti].label + '</td><td colspan="4" style="opacity:0.5">—</td></tr>';
+        }
+      }
+    } catch(e) {
+      html += '<tr><td colspan="6" style="opacity:0.5">Error loading gear data</td></tr>';
+    }
+    html += '</tbody></table></div>';
+
+    /* ── SvS Scoring ─────────────────────────────────────────────────────── */
+    html += '<div class="w-card section"><h3>SvS Scoring Reference</h3>';
+    html += '<table class="ref-table"><thead><tr><th>Activity</th><th>Points</th></tr></thead><tbody>';
+    var scoring = [
+      ['Charm upgrade (per level)', '70 pts'],
+      ['Chief Gear upgrade', 'Varies by tier'],
+      ['Hero Gear forge level', 'Varies per level'],
+      ['Hero Gear empower level', 'Varies per level'],
+      ['Research completion', 'Pts per % progress'],
+      ['Building upgrade', 'Pts per level']
+    ];
+    for (var si = 0; si < scoring.length; si++) {
+      html += '<tr><td>' + scoring[si][0] + '</td><td>' + scoring[si][1] + '</td></tr>';
+    }
+    html += '</tbody></table></div>';
+
+    /* ── Piece Assignments ───────────────────────────────────────────────── */
+    html += '<div class="w-card section"><h3>Piece Assignments</h3>';
+    html += '<table class="ref-table"><thead><tr><th>Troop Type</th><th>Pieces</th></tr></thead><tbody>';
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var grp = groups[gi];
+      html += '<tr><td style="text-transform:capitalize">' + grp + '</td><td>' + CFG.pieces[grp].join(', ') + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    html += '<p style="font-size:12px;opacity:0.6;margin-bottom:0">Edit piece assignments in <code>calc-v2/data/config.js</code></p>';
+    html += '</div>';
+
+    app.innerHTML = html;
+  }
+
+  render();
+})();
+  </script>
+</body>
+</html>

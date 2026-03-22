@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Charms Calc v2</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .global-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; margin-bottom:16px; }
+    .global-bar label { font-size:12px; opacity:0.8; }
+    .group-block { margin-bottom:20px; }
+    .group-header { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; margin-bottom:8px; font-weight:bold; font-size:13px; }
+    .group-infantry .group-header { background:rgba(76,175,80,.15); border-left:3px solid var(--w-infantry,#4CAF50); }
+    .group-marksman .group-header { background:rgba(33,150,243,.15); border-left:3px solid var(--w-marksman,#2196F3); }
+    .group-lancer   .group-header { background:rgba(255,87,34,.15);  border-left:3px solid var(--w-lancer,#FF5722); }
+    .piece-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .piece-table th { font-size:11px; opacity:0.65; text-transform:uppercase; padding:5px 8px; text-align:left; border-bottom:1px solid var(--w-border,#333); }
+    .piece-table td { padding:5px 8px; border-bottom:1px solid var(--w-border,#222); vertical-align:middle; }
+    .piece-table tr:last-child td { border-bottom:none; }
+    input.sm { width:52px; }
+    .cost-out { font-size:12px; color:var(--w-info,#29b6f6); }
+    .grand-total { padding:12px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; font-size:13px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="index.html" class="wosky-nav-home">Calc v2</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">✨ Charms</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main" id="app"></main>
+
+  <script src="../js/data/charms-data.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+  <script src="data/config.js"></script>
+  <script>
+(function() {
+  'use strict';
+  var SK = 'wosky_v2_player';
+  var CFG = WOSKY_V2_CONFIG;
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(SK);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        var def = CFG.defaults;
+        return {
+          charms:       saved.charms       || JSON.parse(JSON.stringify(def.charms)),
+          charmTargets: saved.charmTargets || JSON.parse(JSON.stringify(def.charmTargets))
+        };
+      }
+    } catch(e) {}
+    return {
+      charms:       JSON.parse(JSON.stringify(CFG.defaults.charms)),
+      charmTargets: JSON.parse(JSON.stringify(CFG.defaults.charmTargets))
+    };
+  }
+
+  function saveState(st) {
+    try {
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.charms       = st.charms;
+      full.charmTargets = st.charmTargets;
+      localStorage.setItem(SK, JSON.stringify(full));
+    } catch(e) {}
+  }
+
+  function fmt(n) { return (n || 0).toLocaleString(); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  var state = loadState();
+
+  /* ── Build UI ─────────────────────────────────────────────────────────── */
+  function render() {
+    var app = document.getElementById('app');
+    var html = '';
+
+    html += '<div class="global-bar">';
+    html += '<strong>Global Target:</strong>';
+    html += '<label>Level <input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" id="gt-l" value="11"></label>';
+    html += '<label>Step <input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" id="gt-s" value="0"></label>';
+    html += '<button class="wbtn" id="btn-apply-global">Apply to All</button>';
+    html += '</div>';
+
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      var pieces = CFG.pieces[group];
+      html += '<div class="group-block group-' + group + '">';
+      html += '<div class="group-header"><span>' + cap(group) + '</span><span id="gtotal-' + group + '" style="font-weight:normal;font-size:12px;opacity:0.85"></span></div>';
+
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        html += '<div class="w-card" style="margin-bottom:10px">';
+        html += '<table class="piece-table">';
+        html += '<thead><tr><th>' + cap(piece) + '</th><th>Cur Level</th><th>Cur Step</th><th>Tgt Level</th><th>Tgt Step</th><th>Cost</th></tr></thead>';
+        html += '<tbody>';
+        for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
+          var slot = 'c' + ci;
+          var cur = state.charms[piece][slot];
+          var tgt = state.charmTargets[piece][slot];
+          html += '<tr>';
+          html += '<td><strong>' + slot.toUpperCase() + '</strong></td>';
+          html += '<td><input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cl" value="' + cur.l + '"></td>';
+          html += '<td><input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" data-p="' + piece + '" data-c="' + slot + '" data-f="cs" value="' + cur.s + '"></td>';
+          html += '<td><input class="w-input sm" type="number" min="1" max="' + CFG.charms.maxLevel + '" data-p="' + piece + '" data-c="' + slot + '" data-f="tl" value="' + tgt.l + '"></td>';
+          html += '<td><input class="w-input sm" type="number" min="0" max="' + CFG.charms.maxStep + '" data-p="' + piece + '" data-c="' + slot + '" data-f="ts" value="' + tgt.s + '"></td>';
+          html += '<td class="cost-out" id="cost-' + piece + '-' + slot + '">—</td>';
+          html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+      }
+      html += '</div>';
+    }
+
+    html += '<div class="grand-total" id="grand-total"></div>';
+    app.innerHTML = html;
+    attachListeners();
+    calc();
+  }
+
+  /* ── Calc ─────────────────────────────────────────────────────────────── */
+  function calc() {
+    var grand = { d:0, g:0, s:0, svs:0 };
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      var pieces = CFG.pieces[group];
+      var gt = { d:0, g:0, s:0, svs:0 };
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
+          var slot = 'c' + ci;
+          var cur = state.charms[piece][slot];
+          var tgt = state.charmTargets[piece][slot];
+          var el = document.getElementById('cost-' + piece + '-' + slot);
+          if (!el) continue;
+          try {
+            var r = WOSKY_CHARMS_DATA.calcRange(cur.l, cur.s, tgt.l, tgt.s);
+            var d = r.d || 0, g = r.g || 0, sv = r.s || 0, svs = r.svs_pts || 0;
+            el.innerHTML = 'D:' + fmt(d) + ' G:' + fmt(g) + (sv ? ' S:' + fmt(sv) : '') + ' | ' + fmt(svs) + ' pts';
+            gt.d += d; gt.g += g; gt.s += sv; gt.svs += svs;
+            grand.d += d; grand.g += g; grand.s += sv; grand.svs += svs;
+          } catch(e) { el.textContent = 'err'; }
+        }
+      }
+      var tel = document.getElementById('gtotal-' + group);
+      if (tel) tel.innerHTML = 'D:' + fmt(gt.d) + ' G:' + fmt(gt.g) + (gt.s ? ' S:' + fmt(gt.s) : '') + ' | SvS: ' + fmt(gt.svs) + ' pts';
+    }
+    var gel = document.getElementById('grand-total');
+    if (gel) gel.innerHTML = '<strong>Grand Total —</strong> Designs: ' + fmt(grand.d) + ' &nbsp; Guides: ' + fmt(grand.g) + (grand.s ? ' &nbsp; Secrets: ' + fmt(grand.s) : '') + ' &nbsp; SvS: ' + fmt(grand.svs) + ' pts';
+  }
+
+  /* ── Listeners ────────────────────────────────────────────────────────── */
+  function attachListeners() {
+    var inputs = document.querySelectorAll('[data-p]');
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('change', onInput);
+    }
+    document.getElementById('btn-apply-global').addEventListener('click', applyGlobal);
+  }
+
+  function onInput() {
+    var piece = this.getAttribute('data-p');
+    var slot  = this.getAttribute('data-c');
+    var field = this.getAttribute('data-f');
+    var val   = parseInt(this.value) || 0;
+    if (field === 'cl') state.charms[piece][slot].l = val;
+    if (field === 'cs') state.charms[piece][slot].s = val;
+    if (field === 'tl') state.charmTargets[piece][slot].l = val;
+    if (field === 'ts') state.charmTargets[piece][slot].s = val;
+    saveState(state);
+    calc();
+  }
+
+  function applyGlobal() {
+    var l = parseInt(document.getElementById('gt-l').value) || 11;
+    var s = parseInt(document.getElementById('gt-s').value) || 0;
+    var pieces = ['chest','legs','ring','offhand','helm','neck'];
+    for (var pi = 0; pi < pieces.length; pi++) {
+      var piece = pieces[pi];
+      for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
+        state.charmTargets[piece]['c'+ci] = { l:l, s:s };
+      }
+    }
+    saveState(state);
+    render();
+  }
+
+  render();
+})();
+  </script>
+</body>
+</html>
