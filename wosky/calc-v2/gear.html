@@ -32,98 +32,82 @@
   var SK  = 'wosky_v2_player';
   var CFG = WOSKY_V2_CONFIG;
 
-  /* ── State ──────────────────────────────────────────────────────────────── */
   function loadState() {
     try {
       var raw = localStorage.getItem(SK);
-      if (raw) {
-        var s = JSON.parse(raw);
-        return { gear: s.gear || deepCopy(CFG.defaults.gear) };
-      }
+      if (raw) { var s = JSON.parse(raw); return { gear: s.gear || deepCopy(CFG.defaults.gear) }; }
     } catch (e) {}
     return { gear: deepCopy(CFG.defaults.gear) };
   }
-
   function saveState() {
     try {
-      var raw  = localStorage.getItem(SK);
-      var full = raw ? JSON.parse(raw) : {};
-      full.gear = state.gear;
-      localStorage.setItem(SK, JSON.stringify(full));
+      var raw = localStorage.getItem(SK); var full = raw ? JSON.parse(raw) : {};
+      full.gear = state.gear; localStorage.setItem(SK, JSON.stringify(full));
     } catch (e) {}
   }
-
   function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
   function fmt(n) { return (n || 0).toLocaleString(); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   var state = loadState();
 
-  /* ── Tier options HTML ───────────────────────────────────────────────────── */
-  function tierOpts(selected) {
-    var html = '';
-    var tiers = CFG.gearTiers;
-    for (var i = 0; i < tiers.length; i++) {
-      html += '<option value="' + tiers[i].id + '"' + (tiers[i].id === selected ? ' selected' : '') + '>' + tiers[i].label + '</option>';
-    }
+  function tierOpts(sel) {
+    var html = '', tiers = CFG.gearTiers;
+    for (var i = 0; i < tiers.length; i++)
+      html += '<option value="' + tiers[i].id + '"' + (tiers[i].id === sel ? ' selected' : '') + '>' + tiers[i].label + '</option>';
     return html;
   }
 
-  /* ── Gear cost helper ─────────────────────────────────────────────────────── */
   function gearCost(piece) {
     var g = state.gear[piece];
     try {
-      var fi = WOSKY_GEAR_DATA.getIndexById(g.cur);
-      var ti = WOSKY_GEAR_DATA.getIndexById(g.tgt);
-      return WOSKY_GEAR_DATA.calcRange(fi, ti);
+      return WOSKY_GEAR_DATA.calcRange(WOSKY_GEAR_DATA.getIndexById(g.cur), WOSKY_GEAR_DATA.getIndexById(g.tgt));
     } catch (e) { return { a: 0, s: 0, d: 0, m: 0 }; }
   }
 
-  /* ── Render ─────────────────────────────────────────────────────────────── */
+  function troopSetter(group) {
+    return '<div class="troop-setter">' +
+      '<span class="troop-setter-label">Set ' + cap(group) + '</span>' +
+      '<div class="global-field"><span class="global-field-label">Target</span>' +
+        '<select class="g-select" id="gl-' + group + '-tgt">' + tierOpts('pink-t2') + '</select></div>' +
+      '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
+      '<span class="g-divider">&mdash;</span>' +
+      '<div class="global-field"><span class="global-field-label">Current</span>' +
+        '<select class="g-select" id="gl-' + group + '-cur">' + tierOpts('pink-t1') + '</select></div>' +
+      '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
+    '</div>';
+  }
+
   function render() {
     var html = '';
 
-    /* WarMachine header */
     html += '<div class="wm-header">' +
       '<div class="wm-logo">W<span>M</span></div>' +
       '<div class="wm-title-block">' +
-        '<div class="wm-title">Chief Gear Calculator</div>' +
+        '<div class="wm-title">Chief Gear</div>' +
         '<div class="wm-sub">WOSKY_3169 &middot; WarMachine &middot; State 3169</div>' +
       '</div>' +
       '<div class="wm-badges">' +
         '<span class="wm-badge wm-badge-red">3169</span>' +
         '<span class="wm-badge wm-badge-sky">SKY Breakers</span>' +
-        '<span class="wm-badge wm-badge-red">Calc v2</span>' +
       '</div>' +
     '</div>';
 
-    /* Global controls */
-    html += '<div class="global-controls">';
-    html += '<div class="global-controls-title">&#9881; Global Controls — changes recalc immediately</div>';
-
-    var rows = [
-      { key: 'all',      label: 'All Pieces', cls: '' },
-      { key: 'infantry', label: 'Infantry',   cls: 'infantry' },
-      { key: 'marksman', label: 'Marksman',   cls: 'marksman' },
-      { key: 'lancer',   label: 'Lancer',     cls: 'lancer'   }
-    ];
-
-    for (var ri = 0; ri < rows.length; ri++) {
-      var row = rows[ri];
-      html += '<div class="global-row">' +
-        '<span class="global-row-label ' + row.cls + '">' + row.label + '</span>' +
+    /* Global — All only */
+    html += '<div class="global-controls">' +
+      '<div class="global-controls-title">&#9881; Global — All Pieces</div>' +
+      '<div class="global-row">' +
+        '<span class="global-row-label">All Pieces</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select" id="gl-' + row.key + '-tgt">' + tierOpts('pink-t2') + '</select></div>' +
-        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + row.key + '">Set Target</button>' +
+          '<select class="g-select" id="gl-all-tgt">' + tierOpts('pink-t2') + '</select></div>' +
+        '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Current</span>' +
-          '<select class="g-select" id="gl-' + row.key + '-cur">' + tierOpts('pink-t1') + '</select></div>' +
-        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + row.key + '">Set Current</button>' +
-      '</div>';
-    }
-    html += '</div>';
+          '<select class="g-select" id="gl-all-cur">' + tierOpts('pink-t1') + '</select></div>' +
+        '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
+      '</div>' +
+    '</div>';
 
-    /* Troop groups */
     var groups = CFG.groups;
     for (var gi = 0; gi < groups.length; gi++) {
       var group  = groups[gi];
@@ -133,104 +117,67 @@
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
       '</div>';
-      html += '<div class="troop-block-body">';
-      html += '<table class="calc-table">';
-      html += '<thead><tr><th>Piece</th><th>Current Tier</th><th>Target Tier</th><th>Alloy</th><th>Polish</th><th>Plans</th><th>Amber</th></tr></thead>';
-      html += '<tbody>';
-
+      html += troopSetter(group);
+      html += '<div class="troop-block-body"><table class="calc-table">';
+      html += '<thead><tr><th>Piece</th><th>Current Tier</th><th>Target Tier</th><th>Alloy</th><th>Polish</th><th>Plans</th><th>Amber</th></tr></thead><tbody>';
       for (var pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
         var g = state.gear[piece];
-        html += '<tr>';
-        html += '<td class="piece-name">' + cap(piece) + '</td>';
-        html += '<td><select class="t-select" data-gear="' + piece + '" data-f="cur">' + tierOpts(g.cur) + '</select></td>';
-        html += '<td><select class="t-select" data-gear="' + piece + '" data-f="tgt">' + tierOpts(g.tgt) + '</select></td>';
-        html += '<td class="cost-cell" id="ga-' + piece + '">—</td>';
-        html += '<td class="cost-cell" id="gs-' + piece + '">—</td>';
-        html += '<td class="cost-cell" id="gd-' + piece + '">—</td>';
-        html += '<td class="cost-cell" id="gm-' + piece + '">—</td>';
-        html += '</tr>';
+        html += '<tr>' +
+          '<td class="piece-name">' + cap(piece) + '</td>' +
+          '<td><select class="t-select" data-gear="' + piece + '" data-f="cur">' + tierOpts(g.cur) + '</select></td>' +
+          '<td><select class="t-select" data-gear="' + piece + '" data-f="tgt">' + tierOpts(g.tgt) + '</select></td>' +
+          '<td class="cost-cell" id="ga-' + piece + '">—</td>' +
+          '<td class="cost-cell" id="gs-' + piece + '">—</td>' +
+          '<td class="cost-cell" id="gd-' + piece + '">—</td>' +
+          '<td class="cost-cell" id="gm-' + piece + '">—</td>' +
+        '</tr>';
       }
       html += '</tbody></table></div></div>';
     }
 
-    /* Grand total */
-    html += '<div class="grand-strip" id="grand-strip">' +
-      '<span class="grand-strip-label">&#9876; Grand Total</span>' +
-    '</div>';
-
+    html += '<div class="grand-strip" id="grand-strip"><span class="grand-strip-label">&#9876; Grand Total</span></div>';
     document.getElementById('app').innerHTML = html;
-    attachListeners();
-    calc();
+    attachListeners(); calc();
   }
 
-  /* ── Calc ─────────────────────────────────────────────────────────────── */
   function calc() {
     var grand = { a: 0, s: 0, d: 0, m: 0 };
     var groups = CFG.groups;
-
     for (var gi = 0; gi < groups.length; gi++) {
-      var group  = groups[gi];
-      var pieces = CFG.pieces[group];
-      var gt     = { a: 0, s: 0, d: 0, m: 0 };
-
+      var group = groups[gi]; var pieces = CFG.pieces[group]; var gt = { a: 0, s: 0, d: 0, m: 0 };
       for (var pi = 0; pi < pieces.length; pi++) {
-        var piece = pieces[pi];
-        var r = gearCost(piece);
-        var a = r.a || 0, s = r.s || 0, d = r.d || 0, m = r.m || 0;
-        setCostCell('ga', piece, a);
-        setCostCell('gs', piece, s);
-        setCostCell('gd', piece, d);
-        setCostCell('gm', piece, m);
-        gt.a += a; gt.s += s; gt.d += d; gt.m += m;
-        grand.a += a; grand.s += s; grand.d += d; grand.m += m;
+        var piece = pieces[pi]; var r = gearCost(piece);
+        var a = r.a||0, s = r.s||0, d = r.d||0, m = r.m||0;
+        setCell('ga', piece, a); setCell('gs', piece, s); setCell('gd', piece, d); setCell('gm', piece, m);
+        gt.a+=a; gt.s+=s; gt.d+=d; gt.m+=m; grand.a+=a; grand.s+=s; grand.d+=d; grand.m+=m;
       }
-
       var tel = document.getElementById('group-total-' + group);
-      if (tel) tel.innerHTML =
-        'A: ' + fmt(gt.a) + ' &nbsp; P: ' + fmt(gt.s) +
-        ' &nbsp; Pl: ' + fmt(gt.d) + (gt.m ? ' &nbsp; Am: ' + fmt(gt.m) : '');
+      if (tel) tel.innerHTML = 'A: ' + fmt(gt.a) + ' &nbsp; P: ' + fmt(gt.s) + ' &nbsp; Pl: ' + fmt(gt.d) + (gt.m ? ' &nbsp; Am: ' + fmt(gt.m) : '');
     }
-
     var gs = document.getElementById('grand-strip');
-    if (!gs) return;
-    gs.innerHTML = '<span class="grand-strip-label">&#9876; Grand Total</span>' +
-      grandStat('Alloy',  grand.a) +
-      grandStat('Polish', grand.s) +
-      grandStat('Plans',  grand.d) +
-      (grand.m ? grandStat('Amber', grand.m) : '');
+    if (gs) gs.innerHTML = '<span class="grand-strip-label">&#9876; Grand Total</span>' +
+      gStat('Alloy', grand.a) + gStat('Polish', grand.s) + gStat('Plans', grand.d) + (grand.m ? gStat('Amber', grand.m) : '');
   }
 
-  function setCostCell(prefix, piece, val) {
-    var el = document.getElementById(prefix + '-' + piece);
-    if (!el) return;
-    el.textContent = val ? fmt(val) : '—';
-    el.className   = 'cost-cell' + (val ? '' : ' zero');
+  function setCell(pfx, piece, val) {
+    var el = document.getElementById(pfx + '-' + piece);
+    if (!el) return; el.textContent = val ? fmt(val) : '—'; el.className = 'cost-cell' + (val ? '' : ' zero');
+  }
+  function gStat(k, v) {
+    return '<div class="grand-stat"><span class="grand-stat-key">' + k + '</span><span class="grand-stat-val">' + fmt(v) + '</span></div>';
   }
 
-  function grandStat(key, val) {
-    return '<div class="grand-stat"><span class="grand-stat-key">' + key + '</span>' +
-      '<span class="grand-stat-val">' + fmt(val) + '</span></div>';
-  }
-
-  /* ── Listeners ────────────────────────────────────────────────────────── */
   function attachListeners() {
     var sels = document.querySelectorAll('[data-gear]');
-    for (var i = 0; i < sels.length; i++) {
-      sels[i].addEventListener('change', onCellSelect);
-    }
+    for (var i = 0; i < sels.length; i++) sels[i].addEventListener('change', onCellSelect);
     var btns = document.querySelectorAll('[data-gc]');
-    for (var bi = 0; bi < btns.length; bi++) {
-      btns[bi].addEventListener('click', onGlobalBtn);
-    }
+    for (var bi = 0; bi < btns.length; bi++) btns[bi].addEventListener('click', onGlobalBtn);
   }
 
   function onCellSelect() {
-    var piece = this.getAttribute('data-gear');
-    var field = this.getAttribute('data-f');
-    state.gear[piece][field] = this.value;
-    saveState();
-    calc();
+    state.gear[this.getAttribute('data-gear')][this.getAttribute('data-f')] = this.value;
+    saveState(); calc();
   }
 
   function onGlobalBtn() {
@@ -239,17 +186,9 @@
     var field  = (action === 'set-tgt') ? 'tgt' : 'cur';
     var val    = document.getElementById('gl-' + scope + '-' + field).value;
     if (!val) return;
-    var pieces = getPieces(scope);
-    for (var i = 0; i < pieces.length; i++) {
-      state.gear[pieces[i]][field] = val;
-    }
-    saveState();
-    render();
-  }
-
-  function getPieces(scope) {
-    if (scope === 'all') return ['chest','legs','ring','offhand','helm','neck'];
-    return CFG.pieces[scope] || [];
+    var pieces = (scope === 'all') ? ['chest','legs','ring','offhand','helm','neck'] : (CFG.pieces[scope] || []);
+    for (var i = 0; i < pieces.length; i++) state.gear[pieces[i]][field] = val;
+    saveState(); render();
   }
 
   render();
