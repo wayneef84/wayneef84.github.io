@@ -917,6 +917,8 @@
 .up-piece-name { font-family: var(--w-display); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--w-text); min-width: 80px; }
 .up-levels { font-family: var(--w-mono); font-size: 0.7rem; color: var(--w-text-secondary); }
 .up-cost { font-family: var(--w-mono); font-size: 0.68rem; color: var(--w-info); }
+.up-xp { font-family: var(--w-mono); font-size: 0.68rem; color: var(--w-success); }
+.up-essence { font-family: var(--w-mono); font-size: 0.68rem; color: #f59e0b; }
 .up-no-target { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-muted); font-style: italic; }
 
 /* Materials on hand */
