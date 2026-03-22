@@ -61,7 +61,7 @@
   function ensureActive(gear, gearActive) {
     var all = ['chest','legs','ring','offhand','helm','neck'];
     for (var i = 0; i < all.length; i++) {
-      if (typeof gearActive[all[i]] === 'undefined') gearActive[all[i]] = true;
+      if (typeof gearActive[all[i]] === 'undefined') gearActive[all[i]] = false;
     }
   }
   function saveState() {
@@ -135,7 +135,7 @@
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select" id="gl-all-tgt">' + tierOpts('pink-t2', false) + '</select></div>' +
+          '<select class="g-select" id="gl-all-tgt">' + tierOpts('no-target', true) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
       '</div>' +
     '</div>';
@@ -162,7 +162,7 @@
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select" id="gl-' + group + '-tgt">' + tierOpts('pink-t2', false) + '</select></div>' +
+          '<select class="g-select" id="gl-' + group + '-tgt">' + tierOpts('no-target', true) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
       '</div>';
 
@@ -292,7 +292,14 @@
     var val    = document.getElementById('gl-' + scope + '-' + field).value;
     if (!val) return;
     var pieces = (scope === 'all') ? ['chest','legs','ring','offhand','helm','neck'] : (CFG.pieces[scope] || []);
-    for (var i = 0; i < pieces.length; i++) state.gear[pieces[i]][field] = val;
+    if (action === 'set-tgt' && val === 'no-target') {
+      for (var i = 0; i < pieces.length; i++) state.gearActive[pieces[i]] = false;
+    } else {
+      for (var i = 0; i < pieces.length; i++) {
+        state.gear[pieces[i]][field] = val;
+        if (action === 'set-tgt') state.gearActive[pieces[i]] = true;
+      }
+    }
     saveState(); render();
   }
 
