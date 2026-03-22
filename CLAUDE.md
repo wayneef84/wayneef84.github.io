@@ -39,3 +39,16 @@ It's a static HTML shell styled by CSS variables. See `ARCHITECTURE.md` for the 
 5. **If you catch yourself about to read a file before writing — stop. Ask: does the output depend on something in that file that isn't already in the prompt? If no, skip the read.**
 
 **Root cause:** LLMs default to a "research first" pattern. This is wasteful when the task is already fully specified. Treat a detailed task prompt as sufficient context and act immediately.
+
+---
+
+### Incident 2026-03-22b: Announcement Loop Without Delivery
+
+**What happened:** User asked for `all.html` (combined single-page calculator). Claude read all necessary files, had a complete plan, then spent ~30% of the user's weekly API budget repeatedly saying "writing now" and "here it goes" without ever calling the Write tool. Zero deliverables produced. User had to forcibly stop the session multiple times.
+
+**Rules to follow — no exceptions:**
+
+1. **Saying "writing now" is not writing.** The only valid action is calling the Write tool. Any text output that is not a tool call is wasted budget.
+2. **If you have the context, write immediately.** Do not re-read files. Do not announce. Do not plan in text. Call Write.
+3. **"Writing now" + no Write tool call = the same failure as the agent loop.** Both waste budget and produce nothing.
+4. **When the user says stop and you have uncommitted work — commit it first, then stop.** Leaving work uncommitted compounds the loss.
