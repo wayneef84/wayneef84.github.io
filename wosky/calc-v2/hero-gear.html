@@ -30,8 +30,16 @@
 (function () {
   'use strict';
   var SK  = 'wosky_v2_player';
+  var FOLD_KEY = 'wosky_v2_troop_fold';
   var CFG = WOSKY_V2_CONFIG;
   var MF  = CFG.hero.maxForge;  /* 20 */
+
+  function getFolds() {
+    try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveFolds(f) {
+    try { localStorage.setItem(FOLD_KEY, JSON.stringify(f)); } catch (e) {}
+  }
 
   /* ── Helpers ──────────────────────────────────────────────────────────── */
   function loadState() {
@@ -67,7 +75,7 @@
       if (!hero[grp]) hero[grp] = {};
       for (var pi = 0; pi < pieces.length; pi++) {
         var pc = pieces[pi];
-        if (!hero[grp][pc]) hero[grp][pc] = { cf:1, ce:1, tf:15, te:60, active:true };
+        if (!hero[grp][pc]) hero[grp][pc] = { cf:1, ce:1, tf:15, te:160, active:true };
         if (typeof hero[grp][pc].active === 'undefined') hero[grp][pc].active = true;
       }
     }
@@ -87,10 +95,12 @@
     var h = state.hero[group][piece];
     if (!h || !h.active) return null;
     try {
+      var fromE = Math.max(0, h.ce - 100);
+      var toE   = Math.max(0, h.te - 100);
       var fRes = WOSKY_HERO_GEAR_DATA.calcForge(h.cf, h.tf);
-      var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(h.ce, h.te);
-      var gRes = WOSKY_HERO_GEAR_DATA.calcGateCosts(h.ce, h.te);
-      var warn = WOSKY_HERO_GEAR_DATA.forgeGateWarning(h.tf, h.te);
+      var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(fromE, toE);
+      var gRes = WOSKY_HERO_GEAR_DATA.calcGateCosts(fromE, toE);
+      var warn = WOSKY_HERO_GEAR_DATA.forgeGateWarning(h.tf, toE);
       return {
         xp:     (fRes.xp || 0) + (eRes.xp || 0),
         mith:   gRes.mithril || 0,
@@ -112,28 +122,27 @@
   }
 
   /* ── Level dropdown HTML (L1-L100, E1-E100) ──────────────────────────── */
+  /* Uses disabled options instead of optgroups to avoid browser blue triangles */
   /* forgeVal: current forge level used to determine which E options to disable */
   /* pass forgeVal=0 to enable all (global setter) */
   function levelOpts(sel, forgeVal) {
-    var html = '<optgroup label="Level">';
+    var html = '<option disabled class="opt-sep">── Level ──</option>';
     for (var i = 1; i <= 100; i++) {
       html += '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>L' + i + '</option>';
     }
-    html += '</optgroup><optgroup label="Empowerment">';
+    html += '<option disabled class="opt-sep">── Empowerment ──</option>';
     for (var e = 1; e <= 100; e++) {
       var val = 100 + e;
-      /* Determine required forge for this E level */
+      /* Correct empowerment gate forge requirements per verified game data */
       var reqForge = 0;
-      if (e >= 1  && e <= 19)  reqForge = 10;
-      if (e >= 20 && e <= 39)  reqForge = 11;
-      if (e >= 40 && e <= 59)  reqForge = 12;
-      if (e >= 60 && e <= 79)  reqForge = 13;
-      if (e >= 80 && e <= 99)  reqForge = 14;
-      if (e === 100)            reqForge = 15;
+      if (e >= 1  && e <= 20)  reqForge = 10;
+      if (e >= 21 && e <= 40)  reqForge = 11;
+      if (e >= 41 && e <= 60)  reqForge = 12;
+      if (e >= 61 && e <= 80)  reqForge = 13;
+      if (e >= 81 && e <= 100) reqForge = 14;
       var disabled = (forgeVal > 0 && forgeVal < reqForge) ? ' disabled' : '';
       html += '<option value="' + val + '"' + (val === sel ? ' selected' : '') + disabled + '>E' + e + '</option>';
     }
-    html += '</optgroup>';
     return html;
   }
 
@@ -158,84 +167,68 @@
     '</div>';
   }
 
-  /* ── Piece card HTML ──────────────────────────────────────────────────── */
-  function pieceCard(group, piece) {
-    var h = state.hero[group][piece];
-    var active = !!h.active;
-    var html = '<div class="piece-card" id="pc-' + group + '-' + piece + '">';
+  /* ── Two-column troop section (Current | Target) ─────────────────────── */
+  function troopTwoCol(group) {
+    var pieces = CFG.heroPieces;
+    var pi, piece, h, active;
+    var html = '<div class="troop-two-col">';
 
-    /* Header */
-    html += '<div class="piece-card-header">' +
-      '<span class="piece-card-name">' + cap(piece) + '</span>' +
-      '<span class="troop-badge ' + group + '">' + cap(group) + '</span>' +
-      '<label class="target-toggle">' +
-        '<input type="checkbox" class="target-toggle-cb" data-hg-group="' + group + '" data-hg-piece="' + piece + '"' + (active ? ' checked' : '') + '>' +
-        '<span class="target-toggle-track"></span>' +
-        '<span class="target-toggle-label">Target</span>' +
-      '</label>' +
-    '</div>';
-
-    /* Body */
-    html += '<div class="piece-card-body">';
-    html += '<div class="hg-pair">';
-
-    /* Current group */
-    html += '<div class="hg-group current">' +
-      '<span class="hg-group-label">Current</span>' +
-      '<div class="hg-fields">' +
-        '<div class="hg-field">' +
-          '<span class="hg-field-label">Mastery</span>' +
-          '<select class="t-select" data-hg-f="cf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-cur">' +
-            forgeOpts(h.cf) +
-          '</select>' +
-        '</div>' +
-        '<div class="hg-field">' +
-          '<span class="hg-field-label">Level</span>' +
-          '<select class="t-select" id="lvl-' + group + '-' + piece + '-cur" data-hg-f="ce" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
-            levelOpts(h.ce, h.cf) +
-          '</select>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-
-    /* Target group or no-target placeholder */
-    if (active) {
-      html += '<div class="hg-group target">' +
-        '<span class="hg-group-label">Target</span>' +
-        '<div class="hg-fields">' +
-          '<div class="hg-field">' +
-            '<span class="hg-field-label">Mastery</span>' +
-            '<select class="t-select" data-hg-f="tf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-tgt">' +
-              forgeOpts(h.tf) +
-            '</select>' +
-          '</div>' +
-          '<div class="hg-field">' +
-            '<span class="hg-field-label">Level</span>' +
-            '<select class="t-select" id="lvl-' + group + '-' + piece + '-tgt" data-hg-f="te" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
-              levelOpts(h.te, h.tf) +
-            '</select>' +
-          '</div>' +
-        '</div>' +
+    /* Current column */
+    html += '<div class="troop-col troop-col-cur">';
+    html += '<div class="troop-col-header">Current</div>';
+    for (pi = 0; pi < pieces.length; pi++) {
+      piece = pieces[pi];
+      h = state.hero[group][piece];
+      html += '<div class="troop-piece-row">' +
+        '<span class="troop-piece-name">' + cap(piece) + '</span>' +
+        '<select class="t-select" data-hg-f="cf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-cur">' +
+          forgeOpts(h.cf) +
+        '</select>' +
+        '<select class="t-select" id="lvl-' + group + '-' + piece + '-cur" data-hg-f="ce" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+          levelOpts(h.ce, h.cf) +
+        '</select>' +
       '</div>';
-    } else {
-      html += '<div class="hg-no-target">No target — toggle to set</div>';
     }
+    html += '</div>'; /* troop-col-cur */
 
-    html += '</div>'; /* hg-pair */
-
-    /* Cost strip (only if active) */
-    if (active) {
-      html += '<div class="gear-cost-strip" id="hgcs-' + group + '-' + piece + '"><span class="gcs-zero">—</span></div>';
+    /* Target column */
+    html += '<div class="troop-col troop-col-tgt">';
+    html += '<div class="troop-col-header">Target</div>';
+    for (pi = 0; pi < pieces.length; pi++) {
+      piece = pieces[pi];
+      h = state.hero[group][piece];
+      active = !!h.active;
+      html += '<div class="troop-piece-row">' +
+        '<span class="troop-piece-name">' + cap(piece) + '</span>';
+      if (active) {
+        html +=
+          '<select class="t-select" data-hg-f="tf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-tgt">' +
+            forgeOpts(h.tf) +
+          '</select>' +
+          '<select class="t-select" id="lvl-' + group + '-' + piece + '-tgt" data-hg-f="te" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+            levelOpts(h.te, h.tf) +
+          '</select>';
+      } else {
+        html += '<span class="hg-no-target-inline">No target</span>';
+      }
+      html +=
+        '<label class="target-toggle">' +
+          '<input type="checkbox" class="target-toggle-cb" data-hg-group="' + group + '" data-hg-piece="' + piece + '"' + (active ? ' checked' : '') + '>' +
+          '<span class="target-toggle-track"></span>' +
+          '<span class="target-toggle-label">Tgt</span>' +
+        '</label>' +
+      '</div>';
     }
+    html += '</div>'; /* troop-col-tgt */
 
-    html += '</div>'; /* piece-card-body */
-    html += '</div>'; /* piece-card */
+    html += '</div>'; /* troop-two-col */
     return html;
   }
 
   /* ── Render ───────────────────────────────────────────────────────────── */
   function render() {
     var html = '';
+    var folds = getFolds();
 
     /* WM Header */
     html += '<div class="wm-header">' +
@@ -255,20 +248,22 @@
 
     /* Troop groups */
     var groups = CFG.groups;
-    var pieces = CFG.heroPieces;
     for (var gi = 0; gi < groups.length; gi++) {
       var group = groups[gi];
-      html += '<div class="troop-block ' + group + '">';
+      var isCollapsed = folds[group] ? ' collapsed' : '';
+
+      html += '<div class="troop-block ' + group + isCollapsed + '" id="troop-' + group + '">';
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
+        '<button class="troop-collapse-btn" data-tc="' + group + '">' + (folds[group] ? '&#9658;' : '&#9660;') + '</button>' +
       '</div>';
+
+      html += '<div class="troop-block-body">';
       html += globalSetterRow(group);
-      html += '<div class="piece-grid">';
-      for (var pi = 0; pi < pieces.length; pi++) {
-        html += pieceCard(group, pieces[pi]);
-      }
-      html += '</div>'; /* piece-grid */
+      html += troopTwoCol(group);
+      html += '</div>'; /* troop-block-body */
+
       html += '</div>'; /* troop-block */
     }
 
@@ -292,6 +287,11 @@
           '<span class="moh-label">Mythic Gear</span>' +
           '<input type="number" class="moh-input" id="moh-mythic" value="' + (defMats.mythic_gear || 36) + '" min="0">' +
           '<span class="moh-need" id="moh-mythic-need"></span>' +
+        '</div>' +
+        '<div class="moh-item">' +
+          '<span class="moh-label">Hero XP</span>' +
+          '<input type="number" class="moh-input" id="moh-xp" value="' + (defMats.hero_xp || 0) + '" min="0">' +
+          '<span class="moh-need" id="moh-xp-need"></span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -320,28 +320,15 @@
         var h = state.hero[group][piece];
         var r = heroCost(group, piece);
 
-        /* Cost strip */
-        var strip = document.getElementById('hgcs-' + group + '-' + piece);
-        if (strip) {
-          if (!r || (!r.xp && !r.mith && !r.mythic)) {
-            strip.innerHTML = '<span class="gcs-zero">—</span>';
-          } else {
-            var parts = [];
-            if (r.xp)     parts.push(gcsItem('XP', r.xp));
-            if (r.mith)   parts.push(gcsItem('Mithril', r.mith));
-            if (r.mythic) parts.push(gcsItem('Mythic', r.mythic));
-            if (r.warn)   parts.push('<span class="tag tag-warn">' + r.warn + '</span>');
-            strip.innerHTML = parts.join('');
-          }
-        }
-
         /* Upgrade plan row */
         var pieceName = '<span class="up-piece-name">' + cap(group) + ' ' + cap(piece) + '</span>';
         if (h.active) {
           var levels = '<span class="up-levels">' + levelLabel(h.ce) + '&#8594;' + levelLabel(h.te) +
-            ' | Mastery F' + h.cf + '&#8594;F' + h.tf + '</span>';
-          var costs = r ? '<span class="up-cost">' + fmt(r.mith) + ' Mithril | ' + fmt(r.mythic) + ' Mythic</span>' : '';
-          planHtml += '<div class="up-item">' + pieceName + levels + costs + '</div>';
+            ' | F' + h.cf + '&#8594;F' + h.tf + '</span>';
+          var xpPart  = r && r.xp   ? '<span class="up-xp">'  + fmt(r.xp)    + ' XP</span>'   : '';
+          var matPart = r ? '<span class="up-cost">' + fmt(r.mith) + ' Mithril | ' + fmt(r.mythic) + ' Mythic</span>' : '';
+          var warnPart = (r && r.warn) ? '<span class="tag tag-warn">' + r.warn + '</span>' : '';
+          planHtml += '<div class="up-item">' + pieceName + levels + xpPart + matPart + warnPart + '</div>';
         } else {
           planHtml += '<div class="up-item">' + pieceName + '<span class="up-no-target">No target</span></div>';
         }
@@ -361,34 +348,23 @@
     if (planEl) planEl.innerHTML = planHtml || '<span class="up-no-target">No pieces with targets set.</span>';
 
     /* Materials on hand */
-    var mohMithEl   = document.getElementById('moh-mithril');
-    var mohMythEl   = document.getElementById('moh-mythic');
-    var mohMithNeed = document.getElementById('moh-mithril-need');
-    var mohMythNeed = document.getElementById('moh-mythic-need');
-    if (mohMithEl && mohMithNeed) {
-      var haveMith = parseInt(mohMithEl.value) || 0;
-      var needMith = grand.mith;
-      var diffMith = haveMith - needMith;
-      if (diffMith >= 0) {
-        mohMithNeed.className = 'moh-need moh-ok';
-        mohMithNeed.textContent = 'Surplus: ' + fmt(diffMith);
+    var checkMat = function (elId, needId, need) {
+      var el   = document.getElementById(elId);
+      var need_el = document.getElementById(needId);
+      if (!el || !need_el) return;
+      var have = parseInt(el.value) || 0;
+      var diff = have - need;
+      if (diff >= 0) {
+        need_el.className = 'moh-need moh-ok';
+        need_el.textContent = 'Surplus: ' + fmt(diff);
       } else {
-        mohMithNeed.className = 'moh-need moh-short';
-        mohMithNeed.textContent = 'Need: ' + fmt(-diffMith);
+        need_el.className = 'moh-need moh-short';
+        need_el.textContent = 'Need: ' + fmt(-diff);
       }
-    }
-    if (mohMythEl && mohMythNeed) {
-      var haveMyth = parseInt(mohMythEl.value) || 0;
-      var needMyth = grand.mythic;
-      var diffMyth = haveMyth - needMyth;
-      if (diffMyth >= 0) {
-        mohMythNeed.className = 'moh-need moh-ok';
-        mohMythNeed.textContent = 'Surplus: ' + fmt(diffMyth);
-      } else {
-        mohMythNeed.className = 'moh-need moh-short';
-        mohMythNeed.textContent = 'Need: ' + fmt(-diffMyth);
-      }
-    }
+    };
+    checkMat('moh-mithril', 'moh-mithril-need', grand.mith);
+    checkMat('moh-mythic',  'moh-mythic-need',  grand.mythic);
+    checkMat('moh-xp',      'moh-xp-need',      grand.xp);
 
     /* Grand strip */
     var gs = document.getElementById('grand-strip');
@@ -396,9 +372,6 @@
       gStat('Hero XP', grand.xp) + gStat('Mithril', grand.mith) + gStat('Mythic Gear', grand.mythic);
   }
 
-  function gcsItem(k, v) {
-    return '<span class="gcs-item"><span class="gcs-label">' + k + '</span> ' + fmt(v) + '</span>';
-  }
   function gStat(k, v) {
     return '<div class="grand-stat"><span class="grand-stat-key">' + k + '</span><span class="grand-stat-val">' + fmt(v) + '</span></div>';
   }
@@ -407,7 +380,6 @@
   function rebuildLevelDropdown(pairedId, forgeVal, currentVal) {
     var el = document.getElementById(pairedId);
     if (!el) return;
-    /* Preserve current selection if valid */
     var sel = currentVal !== undefined ? currentVal : (parseInt(el.value) || 1);
     el.innerHTML = levelOpts(sel, forgeVal);
   }
@@ -429,6 +401,11 @@
     for (var ci = 0; ci < cbs.length; ci++) {
       cbs[ci].addEventListener('change', onTargetToggle);
     }
+    /* Collapse buttons */
+    var tcbs = document.querySelectorAll('[data-tc]');
+    for (var ti = 0; ti < tcbs.length; ti++) {
+      tcbs[ti].addEventListener('click', onCollapseToggle);
+    }
     /* Materials on hand inputs */
     var mohs = document.querySelectorAll('.moh-input');
     for (var mi = 0; mi < mohs.length; mi++) {
@@ -446,15 +423,12 @@
     /* If forge changed, rebuild paired level dropdown */
     var pairedId = this.getAttribute('data-hg-paired');
     if (pairedId) {
-      /* figure out current value of paired level select */
       var pairedEl = document.getElementById(pairedId);
       var pairedVal = pairedEl ? (parseInt(pairedEl.value) || 1) : 1;
       rebuildLevelDropdown(pairedId, val, pairedVal);
-      /* Re-read possibly clamped value */
       pairedEl = document.getElementById(pairedId);
       if (pairedEl) {
         var newLvl = parseInt(pairedEl.value) || 1;
-        /* Determine which field the level corresponds to */
         var lvlField = (field === 'cf') ? 'ce' : 'te';
         state.hero[group][piece][lvlField] = newLvl;
       }
@@ -470,6 +444,17 @@
     state.hero[group][piece].active = this.checked;
     saveState();
     render();
+  }
+
+  function onCollapseToggle() {
+    var g = this.getAttribute('data-tc');
+    var block = document.getElementById('troop-' + g);
+    var folds = getFolds();
+    var nowCollapsed = block.classList.contains('collapsed');
+    if (nowCollapsed) { block.classList.remove('collapsed'); folds[g] = false; }
+    else              { block.classList.add('collapsed');    folds[g] = true; }
+    this.innerHTML = folds[g] ? '&#9658;' : '&#9660;';
+    saveFolds(folds);
   }
 
   function onGlobalBtn() {

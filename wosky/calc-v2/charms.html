@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Charms — WOSKY_3169 Calc v2</title>
+  <title>Chief Charms — WOSKY_3169 Calc v2</title>
   <link rel="stylesheet" href="../css/wosky.css">
   <link rel="stylesheet" href="calc-v2.css">
 </head>
@@ -15,7 +15,7 @@
     <span class="wosky-nav-sep">/</span>
     <a href="index.html" class="wosky-nav-home">Calc v2</a>
     <span class="wosky-nav-sep">/</span>
-    <span class="wosky-nav-brand">&#10024; Charms</span>
+    <span class="wosky-nav-brand">&#10024; Chief Charms</span>
   </nav>
   <div id="wosky-char-bar"></div>
   <div class="calc-v2-nav" id="calc-nav"></div>
@@ -30,9 +30,17 @@
 (function () {
   'use strict';
   var SK  = 'wosky_v2_player';
+  var FOLD_KEY = 'wosky_v2_troop_fold';
   var CFG = WOSKY_V2_CONFIG;
   var ML  = CFG.charms.maxLevel;
   var MS  = CFG.charms.maxStep;
+
+  function getFolds() {
+    try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveFolds(f) {
+    try { localStorage.setItem(FOLD_KEY, JSON.stringify(f)); } catch (e) {}
+  }
 
   /* ── Charm tier color bands ───────────────────────────────────────────── */
   var TIERS = [
@@ -49,21 +57,19 @@
     return TIERS[0];
   }
 
-  /* Build all 80 options grouped by color tier */
+  /* Charm options — simplified labels, disabled separator instead of optgroup */
   function charmOpts(selL, selS) {
     var html = '';
     for (var ti = 0; ti < TIERS.length; ti++) {
       var t = TIERS[ti];
-      html += '<optgroup label="' + t.name + '">';
+      html += '<option disabled class="opt-sep">── ' + t.name + ' (Lv' + t.start + '-' + t.end + ') ──</option>';
       for (var l = t.start; l <= t.end; l++) {
-        var sub = l - t.start + 1;
         for (var s = 0; s <= MS; s++) {
           var sel = (l === selL && s === selS) ? ' selected' : '';
           html += '<option value="' + l + ':' + s + '"' + sel + '>' +
-                  t.name + ' T' + sub + ' S' + s + '</option>';
+                  t.name + ' Lv' + l + ' S' + s + '</option>';
         }
       }
-      html += '</optgroup>';
     }
     return html;
   }
@@ -74,13 +80,27 @@
       var raw = localStorage.getItem(SK);
       if (raw) {
         var s = JSON.parse(raw);
-        return {
-          charms:       s.charms       || deepCopy(CFG.defaults.charms),
-          charmTargets: s.charmTargets || deepCopy(CFG.defaults.charmTargets)
-        };
+        var charms       = s.charms       || deepCopy(CFG.defaults.charms);
+        var charmTargets = s.charmTargets || deepCopy(CFG.defaults.charmTargets);
+        var charmActive  = s.charmActive  || {};
+        ensureActive(charmActive);
+        return { charms: charms, charmTargets: charmTargets, charmActive: charmActive };
       }
     } catch (e) {}
-    return { charms: deepCopy(CFG.defaults.charms), charmTargets: deepCopy(CFG.defaults.charmTargets) };
+    var ca = {};
+    ensureActive(ca);
+    return {
+      charms:       deepCopy(CFG.defaults.charms),
+      charmTargets: deepCopy(CFG.defaults.charmTargets),
+      charmActive:  ca
+    };
+  }
+
+  function ensureActive(ca) {
+    var pieces = ['chest','legs','ring','offhand','helm','neck'];
+    for (var i = 0; i < pieces.length; i++) {
+      if (typeof ca[pieces[i]] === 'undefined') ca[pieces[i]] = true;
+    }
   }
 
   function saveState() {
@@ -89,6 +109,7 @@
       var full = raw ? JSON.parse(raw) : {};
       full.charms       = state.charms;
       full.charmTargets = state.charmTargets;
+      full.charmActive  = state.charmActive;
       localStorage.setItem(SK, JSON.stringify(full));
     } catch (e) {}
   }
@@ -101,6 +122,7 @@
   var state = loadState();
 
   function charmCost(piece, slot) {
+    if (!state.charmActive[piece]) return null;
     var cur = state.charms[piece][slot];
     var tgt = state.charmTargets[piece][slot];
     try { return WOSKY_CHARMS_DATA.calcRange(cur.l, cur.s, tgt.l, tgt.s); }
@@ -111,6 +133,7 @@
   function render() {
     var html = '';
     var gi, pi, ci;
+    var folds = getFolds();
 
     html += '<div class="wm-header">' +
       '<div class="wm-logo">W<span>M</span></div>' +
@@ -127,13 +150,13 @@
     /* Tier legend */
     html += '<div class="tier-legend">' +
       '<span class="tier-legend-label">Tier key:</span>' +
-      '<span class="tier-pip tier-green">Green T1–T5</span>' +
-      '<span class="tier-pip tier-blue">Blue T1–T5</span>' +
-      '<span class="tier-pip tier-purple">Purple T1–T5</span>' +
-      '<span class="tier-pip tier-gold">Gold T1–T5</span>' +
+      '<span class="tier-pip tier-green">Green Lv1-5</span>' +
+      '<span class="tier-pip tier-blue">Blue Lv6-10</span>' +
+      '<span class="tier-pip tier-purple">Purple Lv11-15</span>' +
+      '<span class="tier-pip tier-gold">Gold Lv16-20</span>' +
     '</div>';
 
-    /* Quick Select — All Pieces */
+    /* Quick Select — All Pieces (level-only, no tier sub-grouping) */
     html += '<div class="global-controls">' +
       '<div class="global-controls-title">&#9881; Quick Select — All Pieces</div>' +
       '<div class="global-row">' +
@@ -153,11 +176,13 @@
     for (gi = 0; gi < groups.length; gi++) {
       var group  = groups[gi];
       var pieces = CFG.pieces[group];
+      var isCollapsed = folds[group] ? ' collapsed' : '';
 
-      html += '<div class="troop-block ' + group + '">';
+      html += '<div class="troop-block ' + group + isCollapsed + '" id="troop-' + group + '">';
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
+        '<button class="troop-collapse-btn" data-tc="' + group + '">' + (folds[group] ? '&#9658;' : '&#9660;') + '</button>' +
       '</div>';
 
       /* Per-troop setter */
@@ -175,41 +200,51 @@
       /* 2-col piece card grid */
       html += '<div class="piece-grid">';
       for (pi = 0; pi < pieces.length; pi++) {
-        var piece = pieces[pi];
+        var piece  = pieces[pi];
+        var active = !!state.charmActive[piece];
         html += '<div class="piece-card">';
         html += '<div class="piece-card-header">' +
           '<span class="piece-card-name">' + cap(piece) + '</span>' +
           '<span class="troop-badge ' + group + '">' + cap(group) + '</span>' +
+          '<label class="piece-active-toggle">' +
+            '<input type="checkbox" class="piece-active-cb" data-pa="' + piece + '"' + (active ? ' checked' : '') + '>' +
+            '<span class="piece-active-track"></span>' +
+            '<span class="piece-active-label">Target</span>' +
+          '</label>' +
         '</div>';
         html += '<div class="piece-card-body charm-card-body">';
 
-        for (ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
-          var slot = 'c' + ci;
-          var cur  = state.charms[piece][slot];
-          var tgt  = state.charmTargets[piece][slot];
-          var curT = tierFor(cur.l);
-          var tgtT = tierFor(tgt.l);
+        if (!active) {
+          html += '<div class="piece-no-target" style="margin:0.5rem 0">No target — all charm slots excluded</div>';
+        } else {
+          for (ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
+            var slot = 'c' + ci;
+            var cur  = state.charms[piece][slot];
+            var tgt  = state.charmTargets[piece][slot];
+            var curT = tierFor(cur.l);
+            var tgtT = tierFor(tgt.l);
 
-          html += '<div class="charm-slot-row">' +
-            '<span class="slot-pill slot-' + ci + '">' + slot.toUpperCase() + '</span>' +
-            '<div class="charm-select-wrap">' +
-              '<div class="charm-tier-wrap ' + curT.cls + '">' +
-                '<select class="t-select" data-p="' + piece + '" data-c="' + slot + '" data-f="cur">' +
-                charmOpts(cur.l, cur.s) + '</select>' +
+            html += '<div class="charm-slot-row">' +
+              '<span class="slot-pill slot-' + ci + '">' + slot.toUpperCase() + '</span>' +
+              '<div class="charm-select-wrap">' +
+                '<div class="charm-tier-wrap ' + curT.cls + '">' +
+                  '<select class="t-select" data-p="' + piece + '" data-c="' + slot + '" data-f="cur">' +
+                  charmOpts(cur.l, cur.s) + '</select>' +
+                '</div>' +
               '</div>' +
-            '</div>' +
-            '<span class="gear-row-sep">&#8250;</span>' +
-            '<div class="charm-select-wrap">' +
-              '<div class="charm-tier-wrap ' + tgtT.cls + '">' +
-                '<select class="t-select" data-p="' + piece + '" data-c="' + slot + '" data-f="tgt">' +
-                charmOpts(tgt.l, tgt.s) + '</select>' +
+              '<span class="gear-row-sep">&#8250;</span>' +
+              '<div class="charm-select-wrap">' +
+                '<div class="charm-tier-wrap ' + tgtT.cls + '">' +
+                  '<select class="t-select" data-p="' + piece + '" data-c="' + slot + '" data-f="tgt">' +
+                  charmOpts(tgt.l, tgt.s) + '</select>' +
+                '</div>' +
               '</div>' +
-            '</div>' +
-          '</div>';
+            '</div>';
 
-          html += '<div class="charm-slot-costs" id="csc-' + piece + '-' + slot + '">' +
-            '<span class="csc-zero">—</span>' +
-          '</div>';
+            html += '<div class="charm-slot-costs" id="csc-' + piece + '-' + slot + '">' +
+              '<span class="csc-zero">—</span>' +
+            '</div>';
+          }
         }
         html += '</div></div>'; /* piece-card-body + piece-card */
       }
@@ -234,10 +269,14 @@
       var gt     = { d: 0, g: 0, s: 0, pts: 0 };
       for (pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
+        if (!state.charmActive[piece]) continue;
         for (ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
           var slot = 'c' + ci;
           var r    = charmCost(piece, slot);
-          var d = r.d||0, g = r.g||0, sv = r.s||0, pts = r.svs_pts||0;
+          var d = r ? (r.d||0) : 0;
+          var g = r ? (r.g||0) : 0;
+          var sv = r ? (r.s||0) : 0;
+          var pts = r ? (r.svs_pts||0) : 0;
           var strip = document.getElementById('csc-' + piece + '-' + slot);
           if (strip) {
             if (!d && !g && !sv && !pts) {
@@ -278,6 +317,10 @@
     for (var i = 0; i < sels.length; i++) sels[i].addEventListener('change', onCellSelect);
     var btns = document.querySelectorAll('[data-gc]');
     for (var bi = 0; bi < btns.length; bi++) btns[bi].addEventListener('click', onGlobalBtn);
+    var cbs = document.querySelectorAll('[data-pa]');
+    for (var ci = 0; ci < cbs.length; ci++) cbs[ci].addEventListener('change', onActiveToggle);
+    var tcbs = document.querySelectorAll('[data-tc]');
+    for (var ti = 0; ti < tcbs.length; ti++) tcbs[ti].addEventListener('click', onCollapseToggle);
   }
 
   function parseLvl(val) {
@@ -298,6 +341,23 @@
     if (field === 'cur') { state.charms[piece][slot].l = ls.l; state.charms[piece][slot].s = ls.s; }
     else { state.charmTargets[piece][slot].l = ls.l; state.charmTargets[piece][slot].s = ls.s; }
     saveState(); calc();
+  }
+
+  function onActiveToggle() {
+    var piece = this.getAttribute('data-pa');
+    state.charmActive[piece] = this.checked;
+    saveState(); render();
+  }
+
+  function onCollapseToggle() {
+    var g = this.getAttribute('data-tc');
+    var block = document.getElementById('troop-' + g);
+    var folds = getFolds();
+    var nowCollapsed = block.classList.contains('collapsed');
+    if (nowCollapsed) { block.classList.remove('collapsed'); folds[g] = false; }
+    else              { block.classList.add('collapsed');    folds[g] = true; }
+    this.innerHTML = folds[g] ? '&#9658;' : '&#9660;';
+    saveFolds(folds);
   }
 
   function onGlobalBtn() {

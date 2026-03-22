@@ -69,10 +69,10 @@ var WOSKY_HERO_GEAR_DATA = {
          */
         empowerGates: [
             { minE:   1, maxE:  20, requiredF: 10, mithril:  0, mythic:  1, verified: true  },
-            { minE:  21, maxE:  40, requiredF: 11, mithril: 10, mythic:  3, verified: true  },
-            { minE:  41, maxE:  60, requiredF: 12, mithril: 20, mythic:  5, verified: true  },
-            { minE:  61, maxE:  80, requiredF: 13, mithril: 30, mythic:  5, verified: true  },
-            { minE:  81, maxE: 100, requiredF: 14, mithril: 40, mythic: 10, verified: true  },
+            { minE:  21, maxE:  40, requiredF: 11, mithril: 10, mythic:  2, verified: true  },
+            { minE:  41, maxE:  60, requiredF: 12, mithril: 20, mythic:  3, verified: true  },
+            { minE:  61, maxE:  80, requiredF: 13, mithril: 30, mythic:  4, verified: true  },
+            { minE:  81, maxE: 100, requiredF: 14, mithril: 40, mythic:  5, verified: true  },
             { minE: 101, maxE: 200, requiredF: 100, mithril: 50, mythic: 10, verified: false } /* ⚠ F? unverified */
         ]
     },

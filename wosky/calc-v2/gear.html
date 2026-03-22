@@ -30,30 +30,47 @@
 (function () {
   'use strict';
   var SK  = 'wosky_v2_player';
+  var FOLD_KEY = 'wosky_v2_troop_fold';
   var CFG = WOSKY_V2_CONFIG;
-
-  /* Build reverse map: piece → group */
-  var pieceGroup = {};
   var gi, pi;
-  for (gi = 0; gi < CFG.groups.length; gi++) {
-    var grp = CFG.groups[gi];
-    for (pi = 0; pi < CFG.pieces[grp].length; pi++) {
-      pieceGroup[CFG.pieces[grp][pi]] = grp;
-    }
+
+  function getFolds() {
+    try { return JSON.parse(localStorage.getItem(FOLD_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function saveFolds(f) {
+    try { localStorage.setItem(FOLD_KEY, JSON.stringify(f)); } catch (e) {}
   }
 
   /* ── State ────────────────────────────────────────────────────────────── */
   function loadState() {
     try {
       var raw = localStorage.getItem(SK);
-      if (raw) { var s = JSON.parse(raw); return { gear: s.gear || deepCopy(CFG.defaults.gear) }; }
+      if (raw) {
+        var s = JSON.parse(raw);
+        var gear = s.gear || deepCopy(CFG.defaults.gear);
+        var gearActive = s.gearActive || {};
+        ensureActive(gear, gearActive);
+        return { gear: gear, gearActive: gearActive };
+      }
     } catch (e) {}
-    return { gear: deepCopy(CFG.defaults.gear) };
+    var g = deepCopy(CFG.defaults.gear);
+    var ga = {};
+    ensureActive(g, ga);
+    return { gear: g, gearActive: ga };
+  }
+  function ensureActive(gear, gearActive) {
+    var all = ['chest','legs','ring','offhand','helm','neck'];
+    for (var i = 0; i < all.length; i++) {
+      if (typeof gearActive[all[i]] === 'undefined') gearActive[all[i]] = true;
+    }
   }
   function saveState() {
     try {
-      var raw = localStorage.getItem(SK); var full = raw ? JSON.parse(raw) : {};
-      full.gear = state.gear; localStorage.setItem(SK, JSON.stringify(full));
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.gear = state.gear;
+      full.gearActive = state.gearActive;
+      localStorage.setItem(SK, JSON.stringify(full));
     } catch (e) {}
   }
   function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
@@ -62,27 +79,30 @@
 
   var state = loadState();
 
-  function tierOpts(sel) {
-    var html = '';
+  /* Tier options — disabled option separators instead of optgroups (fixes blue triangles) */
+  function tierOpts(sel, includeNoTarget) {
+    var html = includeNoTarget
+      ? '<option value="no-target"' + (sel === 'no-target' ? ' selected' : '') + '>— No Target —</option>'
+      : '';
     var costs = WOSKY_GEAR_DATA.costs;
     var lastColor = null;
     for (var i = 1; i < costs.length; i++) {
       var c = costs[i];
-      var color = c.id.replace(/-.*/, ''); /* "pink-t1-2" → "pink" */
+      var color = c.id.replace(/-.*/, '');
       if (color !== lastColor) {
-        if (lastColor !== null) html += '</optgroup>';
-        html += '<optgroup label="' + color.charAt(0).toUpperCase() + color.slice(1) + '">';
+        html += '<option disabled class="opt-sep">── ' + color.charAt(0).toUpperCase() + color.slice(1) + ' ──</option>';
         lastColor = color;
       }
       var s = (c.id === sel) ? ' selected' : '';
       html += '<option value="' + c.id + '"' + s + '>' + c.label + '</option>';
     }
-    if (lastColor !== null) html += '</optgroup>';
     return html;
   }
 
   function gearCost(piece) {
+    if (!state.gearActive[piece]) return null;
     var g = state.gear[piece];
+    if (g.tgt === 'no-target') return null;
     try {
       return WOSKY_GEAR_DATA.calcRange(WOSKY_GEAR_DATA.getIndexById(g.cur), WOSKY_GEAR_DATA.getIndexById(g.tgt));
     } catch (e) { return { a: 0, s: 0, d: 0, m: 0 }; }
@@ -91,6 +111,7 @@
   /* ── Render ───────────────────────────────────────────────────────────── */
   function render() {
     var html = '';
+    var folds = getFolds();
 
     html += '<div class="wm-header">' +
       '<div class="wm-logo">W<span>M</span></div>' +
@@ -110,37 +131,38 @@
       '<div class="global-row">' +
         '<span class="global-row-label">Set All</span>' +
         '<div class="global-field"><span class="global-field-label">Current</span>' +
-          '<select class="g-select" id="gl-all-cur">' + tierOpts('pink-t1') + '</select></div>' +
+          '<select class="g-select" id="gl-all-cur">' + tierOpts('pink-t1', false) + '</select></div>' +
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select" id="gl-all-tgt">' + tierOpts('pink-t2') + '</select></div>' +
+          '<select class="g-select" id="gl-all-tgt">' + tierOpts('pink-t2', false) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
       '</div>' +
     '</div>';
 
-    /* Troop sections — each with setter + 2-col card grid */
+    /* Troop sections */
     var groups = CFG.groups;
     for (gi = 0; gi < groups.length; gi++) {
       var group  = groups[gi];
       var pieces = CFG.pieces[group];
+      var isCollapsed = folds[group] ? ' collapsed' : '';
 
-      html += '<div class="troop-block ' + group + '">';
+      html += '<div class="troop-block ' + group + isCollapsed + '" id="troop-' + group + '">';
 
-      /* Header with setter controls */
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
         '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
+        '<button class="troop-collapse-btn" data-tc="' + group + '">' + (folds[group] ? '&#9658;' : '&#9660;') + '</button>' +
       '</div>';
 
       html += '<div class="troop-setter">' +
         '<span class="troop-setter-label">Set ' + cap(group) + '</span>' +
         '<div class="global-field"><span class="global-field-label">Current</span>' +
-          '<select class="g-select" id="gl-' + group + '-cur">' + tierOpts('pink-t1') + '</select></div>' +
+          '<select class="g-select" id="gl-' + group + '-cur">' + tierOpts('pink-t1', false) + '</select></div>' +
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select" id="gl-' + group + '-tgt">' + tierOpts('pink-t2') + '</select></div>' +
+          '<select class="g-select" id="gl-' + group + '-tgt">' + tierOpts('pink-t2', false) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
       '</div>';
 
@@ -149,17 +171,27 @@
       for (pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
         var g     = state.gear[piece];
+        var active = !!state.gearActive[piece];
         html += '<div class="piece-card">';
         html += '<div class="piece-card-header">' +
           '<span class="piece-card-name">' + cap(piece) + '</span>' +
           '<span class="troop-badge ' + group + '">' + cap(group) + '</span>' +
+          '<label class="piece-active-toggle">' +
+            '<input type="checkbox" class="piece-active-cb" data-pa="' + piece + '"' + (active ? ' checked' : '') + '>' +
+            '<span class="piece-active-track"></span>' +
+            '<span class="piece-active-label">Target</span>' +
+          '</label>' +
         '</div>';
         html += '<div class="piece-card-body">';
         html += '<div class="gear-row">' +
-          '<div class="gear-select-wrap"><select class="t-select" data-gear="' + piece + '" data-f="cur">' + tierOpts(g.cur) + '</select></div>' +
-          '<span class="gear-row-sep">&#8250;</span>' +
-          '<div class="gear-select-wrap"><select class="t-select" data-gear="' + piece + '" data-f="tgt">' + tierOpts(g.tgt) + '</select></div>' +
-        '</div>';
+          '<div class="gear-select-wrap"><select class="t-select" data-gear="' + piece + '" data-f="cur">' + tierOpts(g.cur, false) + '</select></div>' +
+          '<span class="gear-row-sep">&#8250;</span>';
+        if (active) {
+          html += '<div class="gear-select-wrap"><select class="t-select" data-gear="' + piece + '" data-f="tgt">' + tierOpts(g.tgt, false) + '</select></div>';
+        } else {
+          html += '<div class="gear-select-wrap"><span class="piece-no-target">No target</span></div>';
+        }
+        html += '</div>';
         html += '<div class="gear-cost-strip" id="gcs-' + piece + '"><span class="gcs-zero">—</span></div>';
         html += '</div></div>';
       }
@@ -184,7 +216,10 @@
       for (pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
         var r = gearCost(piece);
-        var a = r.a||0, s = r.s||0, d = r.d||0, m = r.m||0;
+        var a = r ? (r.a||0) : 0;
+        var s = r ? (r.s||0) : 0;
+        var d = r ? (r.d||0) : 0;
+        var m = r ? (r.m||0) : 0;
         var strip = document.getElementById('gcs-' + piece);
         if (strip) {
           if (!a && !s && !d && !m) {
@@ -222,11 +257,32 @@
     for (var i = 0; i < sels.length; i++) sels[i].addEventListener('change', onCellSelect);
     var btns = document.querySelectorAll('[data-gc]');
     for (var bi = 0; bi < btns.length; bi++) btns[bi].addEventListener('click', onGlobalBtn);
+    var cbs = document.querySelectorAll('[data-pa]');
+    for (var ci = 0; ci < cbs.length; ci++) cbs[ci].addEventListener('change', onActiveToggle);
+    var tcbs = document.querySelectorAll('[data-tc]');
+    for (var ti = 0; ti < tcbs.length; ti++) tcbs[ti].addEventListener('click', onCollapseToggle);
   }
 
   function onCellSelect() {
     state.gear[this.getAttribute('data-gear')][this.getAttribute('data-f')] = this.value;
     saveState(); calc();
+  }
+
+  function onActiveToggle() {
+    var piece = this.getAttribute('data-pa');
+    state.gearActive[piece] = this.checked;
+    saveState(); render();
+  }
+
+  function onCollapseToggle() {
+    var g = this.getAttribute('data-tc');
+    var block = document.getElementById('troop-' + g);
+    var folds = getFolds();
+    var nowCollapsed = block.classList.contains('collapsed');
+    if (nowCollapsed) { block.classList.remove('collapsed'); folds[g] = false; }
+    else              { block.classList.add('collapsed');    folds[g] = true; }
+    this.innerHTML = folds[g] ? '&#9658;' : '&#9660;';
+    saveFolds(folds);
   }
 
   function onGlobalBtn() {

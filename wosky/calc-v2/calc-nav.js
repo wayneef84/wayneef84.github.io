@@ -10,7 +10,7 @@
 
   var PAGES = [
     { href: 'index.html',     icon: '&#9745;',        label: 'Hub' },
-    { href: 'charms.html',    icon: '&#10024;',       label: 'Charms' },
+    { href: 'charms.html',    icon: '&#10024;',       label: 'Chief Charms' },
     { href: 'gear.html',      icon: '&#9876;&#65039;', label: 'Chief Gear' },
     { href: 'hero-gear.html', icon: '&#128081;',      label: 'Hero Gear' },
     { href: 'plan.html',      icon: '&#128203;',      label: 'Plan' },

@@ -34,17 +34,14 @@ var WOSKY_V2_CONFIG = {
     maxForge: 20,
     maxEmp:   200,
     /* Empowerment gates: [empMin, empMax, forgeRequired, mithrilCost, mythicCost] */
+    /* [empMin, empMax, forgeRequired, mithrilCost, mythicCost] */
     gates: [
-      [1,   10,  3,  0,  0],
-      [11,  20,  5,  2,  1],
-      [21,  30,  7,  4,  2],
-      [31,  40,  9,  6,  3],
-      [41,  50, 11,  8,  4],
-      [51,  60, 13, 10,  5],
-      [61,  70, 15, 12,  6],
-      [71,  80, 17, 14,  7],
-      [81,  90, 19, 16,  8],
-      [91, 100, 20, 18,  9]
+      [1,  20, 10,  0,  1],   /* E1-E20:   F10, 0 Mithril, 1 Mythic  */
+      [21, 40, 11, 10,  2],   /* E21-E40:  F11, 10 Mithril, 2 Mythic */
+      [41, 60, 12, 20,  3],   /* E41-E60:  F12, 20 Mithril, 3 Mythic */
+      [61, 80, 13, 30,  4],   /* E61-E80:  F13, 30 Mithril, 4 Mythic */
+      [81,100, 14, 40,  5],   /* E81-E100: F14, 40 Mithril, 5 Mythic */
+      [101,200,15, 50, 10]    /* E101-E200: F15, 50 Mithril, 10 Mythic (unverified) */
     ]
   },
 
