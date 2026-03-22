@@ -59,3 +59,16 @@ These failures were caused by **Claude Sonnet 4.6** in **Claude Code** (Anthropi
 9. **When the user says stop and you have uncommitted work — commit it first, then stop.** Leaving work uncommitted compounds the loss.
 
 **Root cause:** LLMs default to a "research first" pattern and an "announce before acting" pattern. Both are wasteful when the task is already fully specified. Treat a detailed task prompt as sufficient context and act immediately.
+
+---
+
+### Incident 2026-03-22c: Silent Planning Loop (Opus)
+
+**Model:** Claude Opus 4.6 via Claude Code
+**Cost:** ~1 full 4-hour session window. Zero deliverables.
+
+**What happened:** User asked for `all.html`. Opus read all source files correctly, identified a real technical blocker (ID conflicts across combined calculator sections), but silently planned the solution internally for the entire session instead of asking one clarifying question or just writing the file. The solution (prefix IDs per section, scope querySelectorAll to container) was trivial. Zero code was written.
+
+**Rule added:**
+
+10. **If you hit a blocker, ask immediately — one sentence.** Do not silently plan through it. A 5-second question saves a 4-hour session. "I see an ID conflict — should I prefix IDs per section?" is always better than an hour of internal deliberation.
