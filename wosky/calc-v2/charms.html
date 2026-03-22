@@ -57,17 +57,17 @@
     return TIERS[0];
   }
 
-  /* Charm options — simplified labels, disabled separator instead of optgroup */
+  /* Charm options — format: "Lv6.3 (Blue)" */
   function charmOpts(selL, selS) {
     var html = '';
     for (var ti = 0; ti < TIERS.length; ti++) {
       var t = TIERS[ti];
-      html += '<option disabled class="opt-sep">── ' + t.name + ' (Lv' + t.start + '-' + t.end + ') ──</option>';
+      html += '<option disabled class="opt-sep">── ' + t.name + ' ──</option>';
       for (var l = t.start; l <= t.end; l++) {
         for (var s = 0; s <= MS; s++) {
           var sel = (l === selL && s === selS) ? ' selected' : '';
           html += '<option value="' + l + ':' + s + '"' + sel + '>' +
-                  t.name + ' Lv' + l + ' S' + s + '</option>';
+                  'Lv' + l + '.' + s + ' (' + t.name + ')</option>';
         }
       }
     }
