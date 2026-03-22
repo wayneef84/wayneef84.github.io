@@ -75,8 +75,8 @@
       if (!hero[grp]) hero[grp] = {};
       for (var pi = 0; pi < pieces.length; pi++) {
         var pc = pieces[pi];
-        if (!hero[grp][pc]) hero[grp][pc] = { cf:1, ce:1, tf:15, te:160, active:true };
-        if (typeof hero[grp][pc].active === 'undefined') hero[grp][pc].active = true;
+        if (!hero[grp][pc]) hero[grp][pc] = { cf:1, ce:1, tf:15, te:160, active:false };
+        if (typeof hero[grp][pc].active === 'undefined') hero[grp][pc].active = false;
       }
     }
   }
@@ -170,6 +170,7 @@
         '<div class="global-field"><span class="global-field-label">Tgt Level</span>' +
           '<select class="g-select" id="' + idPfx + '-te">' + levelOpts(160, 0) + '</select></div>' +
         '<button class="wbtn-xs" data-hg-gc="set-tgt" data-hg-scope="' + scope + '">Set Target</button>' +
+        '<button class="wbtn-xs secondary" data-hg-gc="set-notgt" data-hg-scope="' + scope + '">No Target</button>' +
       '</div>' +
     '</div>';
   }
@@ -478,6 +479,18 @@
   function onGlobalBtn() {
     var action = this.getAttribute('data-hg-gc');
     var scope  = this.getAttribute('data-hg-scope');
+    var groups = (scope === 'all') ? CFG.groups : [scope];
+    var pieces = CFG.heroPieces;
+
+    if (action === 'set-notgt') {
+      for (var gi2 = 0; gi2 < groups.length; gi2++) {
+        for (var pi2 = 0; pi2 < pieces.length; pi2++) {
+          state.hero[groups[gi2]][pieces[pi2]].active = false;
+        }
+      }
+      saveState(); render(); return;
+    }
+
     var prefix = (action === 'set-tgt') ? 't' : 'c';
     var idPfx  = 'hg-gl-' + scope;
     var fVal = parseInt(document.getElementById(idPfx + '-' + prefix + 'f').value) || 1;
@@ -485,12 +498,11 @@
     fVal = Math.max(1, Math.min(MF, fVal));
     eVal = Math.max(1, Math.min(200, eVal));
 
-    var groups = (scope === 'all') ? CFG.groups : [scope];
-    var pieces = CFG.heroPieces;
     for (var gi = 0; gi < groups.length; gi++) {
       for (var pi = 0; pi < pieces.length; pi++) {
         state.hero[groups[gi]][pieces[pi]][prefix + 'f'] = fVal;
         state.hero[groups[gi]][pieces[pi]][prefix + 'e'] = eVal;
+        if (action === 'set-tgt') state.hero[groups[gi]][pieces[pi]].active = true;
       }
     }
     saveState();

@@ -99,7 +99,7 @@
   function ensureActive(ca) {
     var pieces = ['chest','legs','ring','offhand','helm','neck'];
     for (var i = 0; i < pieces.length; i++) {
-      if (typeof ca[pieces[i]] === 'undefined') ca[pieces[i]] = true;
+      if (typeof ca[pieces[i]] === 'undefined') ca[pieces[i]] = false;
     }
   }
 
@@ -166,7 +166,7 @@
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="all">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select charm-select" id="gl-all-tgt">' + charmOpts(11, 0) + '</select></div>' +
+          '<select class="g-select charm-select" id="gl-all-tgt"><option value="no-target" selected>— No Target —</option>' + charmOpts(11, 0) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="all">Set Target</button>' +
       '</div>' +
     '</div>';
@@ -193,7 +193,7 @@
         '<button class="wbtn-xs secondary" data-gc="set-cur" data-scope="' + group + '">Set Current</button>' +
         '<span class="g-divider">&mdash;</span>' +
         '<div class="global-field"><span class="global-field-label">Target</span>' +
-          '<select class="g-select charm-select" id="gl-' + group + '-tgt">' + charmOpts(11, 0) + '</select></div>' +
+          '<select class="g-select charm-select" id="gl-' + group + '-tgt"><option value="no-target" selected>— No Target —</option>' + charmOpts(11, 0) + '</select></div>' +
         '<button class="wbtn-xs" data-gc="set-tgt" data-scope="' + group + '">Set Target</button>' +
       '</div>';
 
@@ -364,16 +364,21 @@
     var action = this.getAttribute('data-gc');
     var scope  = this.getAttribute('data-scope');
     var field  = (action === 'set-tgt') ? 'tgt' : 'cur';
-    var ls     = parseLvl(document.getElementById('gl-' + scope + '-' + field).value);
+    var val    = document.getElementById('gl-' + scope + '-' + field).value;
     var pieces = (scope === 'all')
       ? ['chest','legs','ring','offhand','helm','neck']
       : (CFG.pieces[scope] || []);
-    for (var pi = 0; pi < pieces.length; pi++) {
-      var piece = pieces[pi];
-      for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
-        var slot = 'c' + ci;
-        if (action === 'set-tgt') state.charmTargets[piece][slot] = { l: ls.l, s: ls.s };
-        else                      state.charms[piece][slot]       = { l: ls.l, s: ls.s };
+    if (action === 'set-tgt' && val === 'no-target') {
+      for (var pi = 0; pi < pieces.length; pi++) state.charmActive[pieces[pi]] = false;
+    } else {
+      var ls = parseLvl(val);
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        for (var ci = 1; ci <= CFG.charms.charmsPerPiece; ci++) {
+          var slot = 'c' + ci;
+          if (action === 'set-tgt') { state.charmTargets[piece][slot] = { l: ls.l, s: ls.s }; state.charmActive[piece] = true; }
+          else                        state.charms[piece][slot] = { l: ls.l, s: ls.s };
+        }
       }
     }
     saveState(); render();
