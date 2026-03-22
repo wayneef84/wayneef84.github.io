@@ -1,26 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Anybody:wght@400;600;700;800;900&display=swap');
 
 :root {
-    --bg: #070b12;
-    --s1: #0c1118;
-    --s2: #121a26;
-    --bd: rgba(255,255,255,0.05);
-    --bd2: rgba(255,255,255,0.09);
-    --t1: #c0d0e0;
-    --t2: #6a7a8a;
-    --t3: #3a4a5a;
-    --acc: #ff6838;
-    --grn: #22d3a7;
-    --yel: #f0b429;
-    --red: #ef6461;
-    --blu: #4ea8de;
-    --pur: #a78bfa;
-    --inf-bg: rgba(34, 211, 167, 0.04);
-    --inf-bd: rgba(34, 211, 167, 0.13);
-    --mrk-bg: rgba(240, 180, 41, 0.04);
-    --mrk-bd: rgba(240, 180, 41, 0.13);
-    --lnc-bg: rgba(239, 100, 97, 0.04);
-    --lnc-bd: rgba(239, 100, 97, 0.13);
+    /* Softer Dark Theme */
+    --bg: #121822;
+    --s1: #19202a;
+    --s2: #212833;
+    --bd: rgba(255,255,255,0.08);
+    --bd2: rgba(255,255,255,0.12);
+    --t1: #dbe4ec;
+    --t2: #8a9cae;
+    --t3: #586a7d;
+    --acc: #ff784b;
+    --grn: #2dd8b0;
+    --yel: #f2bc3b;
+    --red: #f07471;
+    --blu: #5fb1df;
+    --pur: #b39bfa;
+
+    --inf-bg: rgba(45, 216, 176, 0.06);
+    --inf-bd: rgba(45, 216, 176, 0.2);
+    --mrk-bg: rgba(242, 188, 59, 0.06);
+    --mrk-bd: rgba(242, 188, 59, 0.2);
+    --lnc-bg: rgba(240, 116, 113, 0.06);
+    --lnc-bd: rgba(240, 116, 113, 0.2);
+
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --input-color: #fff;
+}
+
+[data-theme="light"] {
+    --bg: #f4f6f8;
+    --s1: #ffffff;
+    --s2: #e9ecef;
+    --bd: rgba(0,0,0,0.08);
+    --bd2: rgba(0,0,0,0.15);
+    --t1: #2c3e50;
+    --t2: #5c6c7c;
+    --t3: #8e9dae;
+    --acc: #e65124;
+    --grn: #1ab08b;
+    --yel: #d69818;
+    --red: #d94b48;
+    --blu: #3a8ebd;
+    --pur: #8c6df5;
+
+    --inf-bg: rgba(26, 176, 139, 0.05);
+    --inf-bd: rgba(26, 176, 139, 0.15);
+    --mrk-bg: rgba(214, 152, 24, 0.05);
+    --mrk-bd: rgba(214, 152, 24, 0.15);
+    --lnc-bg: rgba(217, 75, 72, 0.05);
+    --lnc-bd: rgba(217, 75, 72, 0.15);
+
+    --card-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    --input-color: #2c3e50;
 }
 
 * {
@@ -46,8 +78,37 @@ body {
 
 /* Header */
 .app-header {
-    text-align: center;
-    padding: 12px 0 6px;
+    padding: 12px 0 10px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-titles {
+    text-align: left;
+}
+
+.theme-btn {
+    background: var(--s1);
+    border: 1px solid var(--bd);
+    color: var(--t1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: var(--card-shadow);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.theme-btn:active {
+    transform: scale(0.95);
 }
 
 .header-title {
@@ -119,8 +180,9 @@ body {
     background: var(--s1);
     border: 1px solid var(--bd);
     border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: var(--card-shadow);
 }
 
 .materials-grid {
@@ -161,17 +223,18 @@ body {
     outline: none;
 }
 
-input[type=number], select {
+input[type=number], select, input[type=text] {
     background: var(--s2);
     border: 1px solid var(--bd2);
-    color: #fff;
+    color: var(--input-color);
     border-radius: 5px;
-    padding: 5px 6px;
+    padding: 6px 8px;
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     width: 100%;
     text-align: center;
     -webkit-appearance: none;
+    transition: border-color 0.2s;
 }
 
 input:focus, select:focus {
@@ -181,9 +244,10 @@ input:focus, select:focus {
 
 .chest-opener-container {
     margin-top: 8px;
-    background: rgba(255,255,255,0.02);
-    border-radius: 6px;
-    padding: 8px;
+    background: var(--s1);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    padding: 10px;
 }
 
 .global-targets-container {

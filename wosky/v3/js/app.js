@@ -22,7 +22,8 @@
             globalForge: 15,
             pieces: {}
         },
-        expanded: {}
+        expanded: {},
+        theme: 'dark'
     };
 
     // Load from localStorage if available
@@ -37,9 +38,15 @@
             state.charmTargets = parsed.charmTargets || state.charmTargets;
             state.heroGear = parsed.heroGear || state.heroGear;
             state.heroGearTargets = parsed.heroGearTargets || state.heroGearTargets;
+            state.theme = parsed.theme || state.theme;
             // dont save expanded state or tab
         }
     } catch(e) { console.warn("Could not load state", e); }
+
+    // Apply initial theme
+    if (state.theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
 
     function saveState() {
         try {
@@ -50,9 +57,20 @@
                 charms: state.charms,
                 charmTargets: state.charmTargets,
                 heroGear: state.heroGear,
-                heroGearTargets: state.heroGearTargets
+                heroGearTargets: state.heroGearTargets,
+                theme: state.theme
             }));
         } catch(e) { console.warn("Could not save state", e); }
+    }
+
+    function toggleTheme() {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        if (state.theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        saveState();
     }
 
     // -- Utils --
@@ -84,9 +102,13 @@
             opt.textContent = typeof options[i] === 'object' ? options[i].label : options[i];
             sel.appendChild(opt);
         }
-        sel.value = value || "";
+        sel.value = (value !== undefined && value !== null && value !== "") ? value : "";
         sel.addEventListener('change', onChange);
         return sel;
+    }
+
+    function escHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function createInput(type, value, onChange) {
@@ -747,7 +769,7 @@
             '<div><div style="font-family:\'Anybody\';font-size:14px;color:var(--acc);">You</div></div>';
 
         for(var i=0; i<compCount; i++) {
-            headerHTML += '<div><input type="text" id="comp_name_' + i + '" value="' + state.competitors[i].name + '" style="font-family:\'Anybody\';font-size:12px;font-weight:700;text-align:center;padding:4px;border-bottom:1px solid var(--bd2);border-radius:0;background:transparent;" placeholder="Competitor ' + (i+1) + '" /></div>';
+            headerHTML += '<div><input type="text" id="comp_name_' + i + '" value="' + escHtml(state.competitors[i].name) + '" style="font-family:\'Anybody\';font-size:12px;font-weight:700;text-align:center;padding:4px;border-bottom:1px solid var(--bd2);border-radius:0;background:transparent;" placeholder="Competitor ' + (i+1) + '" /></div>';
         }
         headerHTML += '</div>';
         wrapper.innerHTML += headerHTML;
@@ -1136,6 +1158,11 @@
                 state.activeTab = e.target.dataset.tab;
                 renderAll();
             });
+        }
+
+        var themeBtn = el('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', toggleTheme);
         }
     }
 
