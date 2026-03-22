@@ -294,6 +294,43 @@ var WOSKY_HERO_GEAR_DATA = {
         };
     },
 
+    /**
+     * levelXpPerStep(l) — Gear XP cost to advance from L(l-1) to L(l).
+     * Source: verified game table (fox). Milestones (L20/40/60/80/100) cost
+     * Mithril+Mythic, no XP. Full L1→L100 = 502,000 XP per piece.
+     *
+     *   L2–L19  : 2500 + (l-2)×50      (2500 … 3350)
+     *   L21–L39 : 3500 + (l-21)×50     (3500 … 4400)
+     *   L41–L59 : 4450 + (l-41)×50     (4450 … 5350)
+     *   L61–L79 : 5500 + (l-61)×100    (5500 … 7300)
+     *   L81–L99 : 7500 + (l-81)×100    (7500 … 9300)
+     *   Milestones (L1, L20, L40, L60, L80, L100): 0
+     */
+    levelXpPerStep: function (l) {
+        if (l <= 1 || l === 20 || l === 40 || l === 60 || l === 80 || l === 100) return 0;
+        if (l >= 2  && l <= 19)  return 2500 + (l - 2)  * 50;
+        if (l >= 21 && l <= 39)  return 3500 + (l - 21) * 50;
+        if (l >= 41 && l <= 59)  return 4450 + (l - 41) * 50;
+        if (l >= 61 && l <= 79)  return 5500 + (l - 61) * 100;
+        if (l >= 81 && l <= 99)  return 7500 + (l - 81) * 100;
+        return 0;
+    },
+
+    /**
+     * calcLevel(fromL, toL) — total Gear XP to go from level fromL to toL.
+     * fromL / toL are plain level numbers (1–100).
+     */
+    calcLevel: function (fromL, toL) {
+        var maxL = 100;
+        if (toL > maxL) toL = maxL;
+        if (toL <= fromL) return { xp: 0 };
+        var totalXP = 0;
+        for (var l = fromL + 1; l <= toL; l++) {
+            totalXP += this.levelXpPerStep(l);
+        }
+        return { xp: totalXP };
+    },
+
     /** Format XP as "N×XP-100 + M×XP-10 (+ R)" */
     fmtXP: function (xp) {
         if (xp === 0) return '0';

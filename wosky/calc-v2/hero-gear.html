@@ -95,17 +95,24 @@
     var h = state.hero[group][piece];
     if (!h || !h.active) return null;
     try {
+      /* Level portion: plain level 1-100 (values above 100 = empowerment) */
+      var fromL = Math.min(100, h.ce);
+      var toL   = Math.min(100, h.te);
+      /* Empowerment portion: E1-E100 (subtract 100 from stored value) */
       var fromE = Math.max(0, h.ce - 100);
       var toE   = Math.max(0, h.te - 100);
+
+      var lRes = WOSKY_HERO_GEAR_DATA.calcLevel(fromL, toL);
       var fRes = WOSKY_HERO_GEAR_DATA.calcForge(h.cf, h.tf);
       var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(fromE, toE);
       var gRes = WOSKY_HERO_GEAR_DATA.calcGateCosts(fromE, toE);
       var warn = WOSKY_HERO_GEAR_DATA.forgeGateWarning(h.tf, toE);
       return {
-        xp:     (fRes.xp || 0) + (eRes.xp || 0),
-        mith:   gRes.mithril || 0,
-        mythic: (fRes.mythic_gear || 0) + (gRes.mythic || 0),
-        warn:   warn || null
+        xp:      (lRes.xp || 0) + (eRes.xp || 0),   /* Gear XP: levels + empowerment only */
+        essence: fRes.hero_stones || 0,               /* Essence Stones: forge/mastery only */
+        mith:    gRes.mithril || 0,
+        mythic:  (fRes.mythic_gear || 0) + (gRes.mythic || 0),
+        warn:    warn || null
       };
     } catch (e) {
       return { xp: 0, mith: 0, mythic: 0, warn: null };
@@ -289,9 +296,14 @@
           '<span class="moh-need" id="moh-mythic-need"></span>' +
         '</div>' +
         '<div class="moh-item">' +
-          '<span class="moh-label">Hero XP</span>' +
+          '<span class="moh-label">Gear XP</span>' +
           '<input type="number" class="moh-input" id="moh-xp" value="' + (defMats.hero_xp || 0) + '" min="0">' +
           '<span class="moh-need" id="moh-xp-need"></span>' +
+        '</div>' +
+        '<div class="moh-item">' +
+          '<span class="moh-label">Essence Stones</span>' +
+          '<input type="number" class="moh-input" id="moh-essence" value="' + (defMats.essence_stones || 0) + '" min="0">' +
+          '<span class="moh-need" id="moh-essence-need"></span>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -306,14 +318,14 @@
 
   /* ── Calc ─────────────────────────────────────────────────────────────── */
   function calc() {
-    var grand = { xp: 0, mith: 0, mythic: 0 };
+    var grand = { xp: 0, essence: 0, mith: 0, mythic: 0 };
     var groups = CFG.groups;
     var pieces = CFG.heroPieces;
     var planHtml = '';
 
     for (var gi = 0; gi < groups.length; gi++) {
       var group = groups[gi];
-      var gt = { xp: 0, mith: 0, mythic: 0 };
+      var gt = { xp: 0, essence: 0, mith: 0, mythic: 0 };
 
       for (var pi = 0; pi < pieces.length; pi++) {
         var piece = pieces[pi];
@@ -325,22 +337,26 @@
         if (h.active) {
           var levels = '<span class="up-levels">' + levelLabel(h.ce) + '&#8594;' + levelLabel(h.te) +
             ' | F' + h.cf + '&#8594;F' + h.tf + '</span>';
-          var xpPart  = r && r.xp   ? '<span class="up-xp">'  + fmt(r.xp)    + ' XP</span>'   : '';
-          var matPart = r ? '<span class="up-cost">' + fmt(r.mith) + ' Mithril | ' + fmt(r.mythic) + ' Mythic</span>' : '';
-          var warnPart = (r && r.warn) ? '<span class="tag tag-warn">' + r.warn + '</span>' : '';
-          planHtml += '<div class="up-item">' + pieceName + levels + xpPart + matPart + warnPart + '</div>';
+          var parts = [];
+          if (r && r.xp)      parts.push('<span class="up-xp">' + fmt(r.xp) + ' XP</span>');
+          if (r && r.essence) parts.push('<span class="up-essence">' + fmt(r.essence) + ' Essence</span>');
+          if (r) parts.push('<span class="up-cost">' + fmt(r.mith) + ' Mithril | ' + fmt(r.mythic) + ' Mythic</span>');
+          if (r && r.warn) parts.push('<span class="tag tag-warn">' + r.warn + '</span>');
+          planHtml += '<div class="up-item">' + pieceName + levels + parts.join('') + '</div>';
         } else {
           planHtml += '<div class="up-item">' + pieceName + '<span class="up-no-target">No target</span></div>';
         }
 
         if (r) {
-          gt.xp += r.xp; gt.mith += r.mith; gt.mythic += r.mythic;
-          grand.xp += r.xp; grand.mith += r.mith; grand.mythic += r.mythic;
+          gt.xp += r.xp; gt.essence += r.essence; gt.mith += r.mith; gt.mythic += r.mythic;
+          grand.xp += r.xp; grand.essence += r.essence; grand.mith += r.mith; grand.mythic += r.mythic;
         }
       }
 
       var tel = document.getElementById('group-total-' + group);
-      if (tel) tel.innerHTML = 'XP: ' + fmt(gt.xp) + ' &nbsp; Mithril: ' + fmt(gt.mith) + ' &nbsp; Mythic: ' + fmt(gt.mythic);
+      if (tel) tel.innerHTML =
+        'XP: ' + fmt(gt.xp) + ' &nbsp; Essence: ' + fmt(gt.essence) +
+        ' &nbsp; Mithril: ' + fmt(gt.mith) + ' &nbsp; Mythic: ' + fmt(gt.mythic);
     }
 
     /* Upgrade plan */
@@ -349,7 +365,7 @@
 
     /* Materials on hand */
     var checkMat = function (elId, needId, need) {
-      var el   = document.getElementById(elId);
+      var el      = document.getElementById(elId);
       var need_el = document.getElementById(needId);
       if (!el || !need_el) return;
       var have = parseInt(el.value) || 0;
@@ -365,11 +381,13 @@
     checkMat('moh-mithril', 'moh-mithril-need', grand.mith);
     checkMat('moh-mythic',  'moh-mythic-need',  grand.mythic);
     checkMat('moh-xp',      'moh-xp-need',      grand.xp);
+    checkMat('moh-essence', 'moh-essence-need',  grand.essence);
 
     /* Grand strip */
     var gs = document.getElementById('grand-strip');
     if (gs) gs.innerHTML = '<span class="grand-strip-label">&#128081; Grand Total</span>' +
-      gStat('Hero XP', grand.xp) + gStat('Mithril', grand.mith) + gStat('Mythic Gear', grand.mythic);
+      gStat('Gear XP', grand.xp) + gStat('Essence Stones', grand.essence) +
+      gStat('Mithril', grand.mith) + gStat('Mythic Gear', grand.mythic);
   }
 
   function gStat(k, v) {
