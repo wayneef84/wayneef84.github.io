@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Plan v2</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .mat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:20px; }
+    .mat-card { padding:12px; border-radius:6px; background:var(--w-bg2,#1a1a2e); border:1px solid var(--w-border,#333); }
+    .mat-card .lbl { font-size:11px; opacity:0.65; text-transform:uppercase; margin-bottom:6px; }
+    .mat-card input { width:100%; }
+    .svs-day { padding:10px 14px; border-radius:6px; background:var(--w-bg2,#1a1a2e); border-left:3px solid var(--w-accent,#6c63ff); margin-bottom:10px; }
+    .svs-day h4 { margin:0 0 4px; font-size:13px; }
+    .svs-day p  { margin:0; font-size:12px; opacity:0.75; line-height:1.6; }
+    .note { font-size:12px; opacity:0.6; margin-bottom:16px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="index.html" class="wosky-nav-home">Calc v2</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">📋 Plan</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main" id="app"></main>
+
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+  <script src="data/config.js"></script>
+  <script>
+(function() {
+  'use strict';
+  var SK  = 'wosky_v2_player';
+  var CFG = WOSKY_V2_CONFIG;
+
+  function loadMats() {
+    try {
+      var raw = localStorage.getItem(SK);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        return saved.mats || JSON.parse(JSON.stringify(CFG.defaults.mats));
+      }
+    } catch(e) {}
+    return JSON.parse(JSON.stringify(CFG.defaults.mats));
+  }
+
+  function saveMats(mats) {
+    try {
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.mats = mats;
+      localStorage.setItem(SK, JSON.stringify(full));
+    } catch(e) {}
+  }
+
+  function fmt(n) { return (n || 0).toLocaleString(); }
+
+  var mats = loadMats();
+
+  var MAT_LABELS = [
+    ['charm_designs',  'Charm Designs'],
+    ['charm_guides',   'Charm Guides'],
+    ['charm_secrets',  'Charm Secrets'],
+    ['alloy',          'Alloy'],
+    ['polish',         'Polish'],
+    ['plans',          'Plans'],
+    ['amber',          'Amber'],
+    ['gear_chests',    'Gear Chests'],
+    ['hero_xp',        'Hero XP'],
+    ['mithril',        'Mithril'],
+    ['mythic_gear',    'Mythic Gear'],
+    ['essence_stones', 'Essence Stones']
+  ];
+
+  function render() {
+    var app = document.getElementById('app');
+    var html = '';
+
+    html += '<div class="w-card">';
+    html += '<h3 style="margin-top:0">Your Materials</h3>';
+    html += '<p class="note">Update here — shared across all calculators via localStorage.</p>';
+    html += '<div class="mat-grid">';
+    for (var i = 0; i < MAT_LABELS.length; i++) {
+      var key = MAT_LABELS[i][0];
+      var lbl = MAT_LABELS[i][1];
+      html += '<div class="mat-card">';
+      html += '<div class="lbl">' + lbl + '</div>';
+      html += '<input class="w-input" type="number" min="0" data-mat="' + key + '" value="' + (mats[key] || 0) + '">';
+      if (key === 'gear_chests') {
+        html += '<div style="font-size:10px;opacity:0.5;margin-top:3px">Each = 400 Alloy + 4 Polish + 1 Plan</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+
+    /* SvS Day Guide */
+    html += '<div class="w-card"><h3 style="margin-top:0">SvS Day Guide</h3>';
+    var days = CFG.svsDays;
+    for (var d = 0; d < days.length; d++) {
+      html += '<div class="svs-day">';
+      html += '<h4>' + days[d].day + ': ' + days[d].focus + '</h4>';
+      html += '<p>' + days[d].tip + '</p>';
+      html += '</div>';
+    }
+    html += '</div>';
+
+    app.innerHTML = html;
+    attachListeners();
+  }
+
+  function attachListeners() {
+    var inputs = document.querySelectorAll('[data-mat]');
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('change', onMatChange);
+    }
+  }
+
+  function onMatChange() {
+    var key = this.getAttribute('data-mat');
+    mats[key] = parseInt(this.value) || 0;
+    saveMats(mats);
+  }
+
+  render();
+})();
+  </script>
+</body>
+</html>

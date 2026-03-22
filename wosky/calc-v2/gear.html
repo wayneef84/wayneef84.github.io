@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Chief Gear Calc v2</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .global-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; margin-bottom:16px; }
+    .global-bar label { font-size:12px; opacity:0.8; }
+    .group-block { margin-bottom:20px; }
+    .group-header { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; margin-bottom:8px; font-weight:bold; font-size:13px; }
+    .group-infantry .group-header { background:rgba(76,175,80,.15); border-left:3px solid var(--w-infantry,#4CAF50); }
+    .group-marksman .group-header { background:rgba(33,150,243,.15); border-left:3px solid var(--w-marksman,#2196F3); }
+    .group-lancer   .group-header { background:rgba(255,87,34,.15);  border-left:3px solid var(--w-lancer,#FF5722); }
+    .piece-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .piece-table th { font-size:11px; opacity:0.65; text-transform:uppercase; padding:5px 8px; text-align:left; border-bottom:1px solid var(--w-border,#333); }
+    .piece-table td { padding:6px 8px; border-bottom:1px solid var(--w-border,#222); vertical-align:middle; }
+    .piece-table tr:last-child td { border-bottom:none; }
+    select.tier-sel { background:var(--w-bg2,#1a1a2e); color:var(--w-text,#ccc); border:1px solid var(--w-border,#444); border-radius:3px; padding:4px 8px; font-size:12px; }
+    .cost-out { font-size:12px; color:var(--w-info,#29b6f6); }
+    .grand-total { padding:12px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; font-size:13px; margin-top:8px; }
+    .chest-note { font-size:11px; opacity:0.6; margin-top:4px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="index.html" class="wosky-nav-home">Calc v2</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">⚔️ Chief Gear</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main" id="app"></main>
+
+  <script src="../js/data/gear-data.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+  <script src="data/config.js"></script>
+  <script>
+(function() {
+  'use strict';
+  var SK = 'wosky_v2_player';
+  var CFG = WOSKY_V2_CONFIG;
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(SK);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        return { gear: saved.gear || JSON.parse(JSON.stringify(CFG.defaults.gear)) };
+      }
+    } catch(e) {}
+    return { gear: JSON.parse(JSON.stringify(CFG.defaults.gear)) };
+  }
+
+  function saveState(st) {
+    try {
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.gear = st.gear;
+      localStorage.setItem(SK, JSON.stringify(full));
+    } catch(e) {}
+  }
+
+  function fmt(n) { return (n || 0).toLocaleString(); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  var state = loadState();
+
+  function buildTierOptions(selected) {
+    var html = '';
+    var tiers = CFG.gearTiers;
+    for (var i = 0; i < tiers.length; i++) {
+      html += '<option value="' + tiers[i].id + '"' + (tiers[i].id === selected ? ' selected' : '') + '>' + tiers[i].label + '</option>';
+    }
+    return html;
+  }
+
+  /* ── Build UI ─────────────────────────────────────────────────────────── */
+  function render() {
+    var app = document.getElementById('app');
+    var html = '';
+
+    html += '<div class="global-bar">';
+    html += '<strong>Set All Target:</strong>';
+    html += '<select class="tier-sel" id="gt-tier"><option value="">— pick —</option>' + buildTierOptions('pink-t2') + '</select>';
+    html += '<button class="wbtn" id="btn-apply-global">Apply to All</button>';
+    html += '</div>';
+
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      var pieces = CFG.pieces[group];
+      html += '<div class="group-block group-' + group + '">';
+      html += '<div class="group-header"><span>' + cap(group) + '</span><span id="gtotal-' + group + '" style="font-weight:normal;font-size:12px;opacity:0.85"></span></div>';
+      html += '<div class="w-card" style="margin-bottom:10px">';
+      html += '<table class="piece-table">';
+      html += '<thead><tr><th>Piece</th><th>Current</th><th>Target</th><th>Alloy</th><th>Polish</th><th>Plans</th><th>Amber</th></tr></thead>';
+      html += '<tbody>';
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        var g = state.gear[piece];
+        html += '<tr>';
+        html += '<td><strong>' + cap(piece) + '</strong></td>';
+        html += '<td><select class="tier-sel" data-gear="' + piece + '" data-f="cur">' + buildTierOptions(g.cur) + '</select></td>';
+        html += '<td><select class="tier-sel" data-gear="' + piece + '" data-f="tgt">' + buildTierOptions(g.tgt) + '</select></td>';
+        html += '<td class="cost-out" id="ga-' + piece + '">—</td>';
+        html += '<td class="cost-out" id="gs-' + piece + '">—</td>';
+        html += '<td class="cost-out" id="gd-' + piece + '">—</td>';
+        html += '<td class="cost-out" id="gm-' + piece + '">—</td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table></div>';
+      html += '</div>';
+    }
+
+    html += '<div class="grand-total" id="grand-total"></div>';
+    app.innerHTML = html;
+    attachListeners();
+    calc();
+  }
+
+  /* ── Calc ─────────────────────────────────────────────────────────────── */
+  function calc() {
+    var grand = { a:0, s:0, d:0, m:0 };
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      var pieces = CFG.pieces[group];
+      var gt = { a:0, s:0, d:0, m:0 };
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        var g = state.gear[piece];
+        try {
+          var fromIdx = WOSKY_GEAR_DATA.getIndexById(g.cur);
+          var toIdx   = WOSKY_GEAR_DATA.getIndexById(g.tgt);
+          var r = WOSKY_GEAR_DATA.calcRange(fromIdx, toIdx);
+          var fields = ['a','s','d','m'];
+          for (var fi = 0; fi < fields.length; fi++) {
+            var f = fields[fi];
+            var el = document.getElementById('g' + f + '-' + piece);
+            if (el) el.textContent = fmt(r[f] || 0);
+            gt[f] += r[f] || 0;
+            grand[f] += r[f] || 0;
+          }
+        } catch(e) {
+          var flds = ['a','s','d','m'];
+          for (var fi2 = 0; fi2 < flds.length; fi2++) {
+            var el2 = document.getElementById('g' + flds[fi2] + '-' + piece);
+            if (el2) el2.textContent = 'err';
+          }
+        }
+      }
+      var tel = document.getElementById('gtotal-' + group);
+      if (tel) tel.innerHTML = 'A:' + fmt(gt.a) + ' P:' + fmt(gt.s) + ' Pl:' + fmt(gt.d) + ' Am:' + fmt(gt.m);
+    }
+    var gel = document.getElementById('grand-total');
+    if (gel) gel.innerHTML = '<strong>Grand Total —</strong> Alloy: ' + fmt(grand.a) + ' &nbsp; Polish: ' + fmt(grand.s) + ' &nbsp; Plans: ' + fmt(grand.d) + ' &nbsp; Amber: ' + fmt(grand.m);
+  }
+
+  /* ── Listeners ────────────────────────────────────────────────────────── */
+  function attachListeners() {
+    var sels = document.querySelectorAll('[data-gear]');
+    for (var i = 0; i < sels.length; i++) {
+      sels[i].addEventListener('change', onSelect);
+    }
+    document.getElementById('btn-apply-global').addEventListener('click', applyGlobal);
+  }
+
+  function onSelect() {
+    var piece = this.getAttribute('data-gear');
+    var field = this.getAttribute('data-f');
+    state.gear[piece][field] = this.value;
+    saveState(state);
+    calc();
+  }
+
+  function applyGlobal() {
+    var tgt = document.getElementById('gt-tier').value;
+    if (!tgt) return;
+    var pieces = ['chest','legs','ring','offhand','helm','neck'];
+    for (var i = 0; i < pieces.length; i++) {
+      state.gear[pieces[i]].tgt = tgt;
+    }
+    saveState(state);
+    render();
+  }
+
+  render();
+})();
+  </script>
+</body>
+</html>

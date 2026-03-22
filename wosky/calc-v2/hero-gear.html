@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOSKY_3169 — Hero Gear Calc v2</title>
+  <link rel="stylesheet" href="../css/wosky.css">
+  <style>
+    .global-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:10px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; margin-bottom:16px; }
+    .global-bar label { font-size:12px; opacity:0.8; }
+    .group-block { margin-bottom:20px; }
+    .group-header { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:4px; margin-bottom:8px; font-weight:bold; font-size:13px; }
+    .group-infantry .group-header { background:rgba(76,175,80,.15); border-left:3px solid var(--w-infantry,#4CAF50); }
+    .group-marksman .group-header { background:rgba(33,150,243,.15); border-left:3px solid var(--w-marksman,#2196F3); }
+    .group-lancer   .group-header { background:rgba(255,87,34,.15);  border-left:3px solid var(--w-lancer,#FF5722); }
+    .piece-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .piece-table th { font-size:11px; opacity:0.65; text-transform:uppercase; padding:5px 8px; text-align:left; border-bottom:1px solid var(--w-border,#333); }
+    .piece-table td { padding:5px 8px; border-bottom:1px solid var(--w-border,#222); vertical-align:middle; }
+    .piece-table tr:last-child td { border-bottom:none; }
+    input.sm { width:52px; }
+    .cost-out { font-size:12px; color:var(--w-info,#29b6f6); }
+    .tag { display:inline-block; font-size:11px; padding:2px 5px; border-radius:3px; margin:1px; }
+    .tag-warn { background:rgba(255,152,0,.2); color:var(--w-warn,#FF9800); }
+    .tag-info { background:rgba(41,182,246,.15); color:var(--w-info,#29b6f6); }
+    .grand-total { padding:12px 14px; background:var(--w-bg2,#1a1a2e); border-radius:6px; font-size:13px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <nav class="wosky-nav">
+    <a href="../../index.html" class="wosky-nav-home">← Hub</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="../index.html" class="wosky-nav-home">WOSKY_3169</a>
+    <span class="wosky-nav-sep">/</span>
+    <a href="index.html" class="wosky-nav-home">Calc v2</a>
+    <span class="wosky-nav-sep">/</span>
+    <span class="wosky-nav-brand">🦸 Hero Gear</span>
+  </nav>
+  <div id="wosky-char-bar"></div>
+  <main class="wosky-main" id="app"></main>
+
+  <script src="../js/data/hero-gear-data.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/char-bar.js"></script>
+  <script src="data/config.js"></script>
+  <script>
+(function() {
+  'use strict';
+  var SK = 'wosky_v2_player';
+  var CFG = WOSKY_V2_CONFIG;
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(SK);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        return { hero: saved.hero || JSON.parse(JSON.stringify(CFG.defaults.hero)) };
+      }
+    } catch(e) {}
+    return { hero: JSON.parse(JSON.stringify(CFG.defaults.hero)) };
+  }
+
+  function saveState(st) {
+    try {
+      var raw = localStorage.getItem(SK);
+      var full = raw ? JSON.parse(raw) : {};
+      full.hero = st.hero;
+      localStorage.setItem(SK, JSON.stringify(full));
+    } catch(e) {}
+  }
+
+  function fmt(n) { return (n || 0).toLocaleString(); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  var state = loadState();
+
+  /* ── Build UI ─────────────────────────────────────────────────────────── */
+  function render() {
+    var app = document.getElementById('app');
+    var html = '';
+    var mf = CFG.hero.maxForge;
+    var me = CFG.hero.maxEmp;
+
+    html += '<div class="global-bar">';
+    html += '<strong>Global Target:</strong>';
+    html += '<label>Forge <input class="w-input sm" type="number" min="1" max="' + mf + '" id="gt-f" value="15"></label>';
+    html += '<label>Emp <input class="w-input sm" type="number" min="0" max="' + me + '" id="gt-e" value="60"></label>';
+    html += '<button class="wbtn" id="btn-apply-global">Apply to All</button>';
+    html += '</div>';
+
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      html += '<div class="group-block group-' + group + '">';
+      html += '<div class="group-header"><span>' + cap(group) + '</span><span id="gtotal-' + group + '" style="font-weight:normal;font-size:12px;opacity:0.85"></span></div>';
+      html += '<div class="w-card" style="margin-bottom:10px">';
+      html += '<table class="piece-table">';
+      html += '<thead><tr><th>Piece</th><th>Cur Forge</th><th>Tgt Forge</th><th>Cur Emp</th><th>Tgt Emp</th><th>XP</th><th>Mithril</th><th>Mythic</th><th>Notes</th></tr></thead>';
+      html += '<tbody>';
+      var pieces = CFG.heroPieces;
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        var h = state.hero[group][piece];
+        html += '<tr>';
+        html += '<td><strong>' + cap(piece) + '</strong></td>';
+        html += '<td><input class="w-input sm" type="number" min="1" max="' + mf + '" data-g="' + group + '" data-p="' + piece + '" data-f="cf" value="' + h.cf + '"></td>';
+        html += '<td><input class="w-input sm" type="number" min="1" max="' + mf + '" data-g="' + group + '" data-p="' + piece + '" data-f="tf" value="' + h.tf + '"></td>';
+        html += '<td><input class="w-input sm" type="number" min="0" max="' + me + '" data-g="' + group + '" data-p="' + piece + '" data-f="ce" value="' + h.ce + '"></td>';
+        html += '<td><input class="w-input sm" type="number" min="0" max="' + me + '" data-g="' + group + '" data-p="' + piece + '" data-f="te" value="' + h.te + '"></td>';
+        html += '<td class="cost-out" id="hxp-'    + group + '-' + piece + '">—</td>';
+        html += '<td class="cost-out" id="hmith-'  + group + '-' + piece + '">—</td>';
+        html += '<td class="cost-out" id="hmythic-'+ group + '-' + piece + '">—</td>';
+        html += '<td id="hnotes-' + group + '-' + piece + '"></td>';
+        html += '</tr>';
+      }
+      html += '</tbody></table></div></div>';
+    }
+
+    html += '<div class="grand-total" id="grand-total"></div>';
+    app.innerHTML = html;
+    attachListeners();
+    calc();
+  }
+
+  /* ── Calc ─────────────────────────────────────────────────────────────── */
+  function calc() {
+    var grand = { xp:0, mith:0, mythic:0 };
+    var groups = CFG.groups;
+    for (var gi = 0; gi < groups.length; gi++) {
+      var group = groups[gi];
+      var gt = { xp:0, mith:0, mythic:0 };
+      var pieces = CFG.heroPieces;
+      for (var pi = 0; pi < pieces.length; pi++) {
+        var piece = pieces[pi];
+        var h = state.hero[group][piece];
+        var xpEl    = document.getElementById('hxp-'     + group + '-' + piece);
+        var mithEl  = document.getElementById('hmith-'   + group + '-' + piece);
+        var mythicEl= document.getElementById('hmythic-' + group + '-' + piece);
+        var notesEl = document.getElementById('hnotes-'  + group + '-' + piece);
+        if (!xpEl) continue;
+        try {
+          var fRes = WOSKY_HERO_GEAR_DATA.calcForge(h.cf, h.tf);
+          var eRes = WOSKY_HERO_GEAR_DATA.calcEmpower(h.ce, h.te);
+          var gRes = WOSKY_HERO_GEAR_DATA.calcGateCosts(h.ce, h.te);
+          var warn = WOSKY_HERO_GEAR_DATA.forgeGateWarning(h.tf, h.te);
+          var totalXp   = (fRes.xp || 0) + (eRes.xp || 0);
+          var mithril   = gRes.mithril || 0;
+          var mythic    = (fRes.mythic_gear || 0) + (gRes.mythic || 0);
+          xpEl.textContent     = fmt(totalXp);
+          mithEl.textContent   = fmt(mithril);
+          mythicEl.textContent = fmt(mythic);
+          var notes = '';
+          if (warn) notes += '<span class="tag tag-warn">' + warn + '</span>';
+          if (eRes.statFlipsCrossed && eRes.statFlipsCrossed.length) {
+            notes += '<span class="tag tag-info">Flips@' + eRes.statFlipsCrossed.join(',') + '</span>';
+          }
+          notesEl.innerHTML = notes;
+          gt.xp    += totalXp;
+          gt.mith  += mithril;
+          gt.mythic+= mythic;
+          grand.xp    += totalXp;
+          grand.mith  += mithril;
+          grand.mythic+= mythic;
+        } catch(e) { xpEl.textContent = 'err'; }
+      }
+      var tel = document.getElementById('gtotal-' + group);
+      if (tel) tel.innerHTML = 'XP:' + fmt(gt.xp) + ' Mithril:' + fmt(gt.mith) + ' Mythic:' + fmt(gt.mythic);
+    }
+    var gel = document.getElementById('grand-total');
+    if (gel) gel.innerHTML = '<strong>Grand Total —</strong> XP: ' + fmt(grand.xp) + ' &nbsp; Mithril: ' + fmt(grand.mith) + ' &nbsp; Mythic Gear: ' + fmt(grand.mythic);
+  }
+
+  /* ── Listeners ────────────────────────────────────────────────────────── */
+  function attachListeners() {
+    var inputs = document.querySelectorAll('[data-g]');
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('change', onInput);
+    }
+    document.getElementById('btn-apply-global').addEventListener('click', applyGlobal);
+  }
+
+  function onInput() {
+    var group = this.getAttribute('data-g');
+    var piece = this.getAttribute('data-p');
+    var field = this.getAttribute('data-f');
+    var val   = parseInt(this.value) || 0;
+    state.hero[group][piece][field] = val;
+    saveState(state);
+    calc();
+  }
+
+  function applyGlobal() {
+    var f = parseInt(document.getElementById('gt-f').value) || 15;
+    var e = parseInt(document.getElementById('gt-e').value) || 60;
+    var groups = CFG.groups;
+    var pieces = CFG.heroPieces;
+    for (var gi = 0; gi < groups.length; gi++) {
+      for (var pi = 0; pi < pieces.length; pi++) {
+        state.hero[groups[gi]][pieces[pi]].tf = f;
+        state.hero[groups[gi]][pieces[pi]].te = e;
+      }
+    }
+    saveState(state);
+    render();
+  }
+
+  render();
+})();
+  </script>
+</body>
+</html>
