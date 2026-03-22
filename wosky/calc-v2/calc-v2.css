@@ -334,9 +334,14 @@
     gap: 0.55rem;
     flex-wrap: wrap;
     padding: 0.55rem 1rem;
-    background: var(--w-surface2);
+    background: var(--w-surface3);      /* lighter than surface2 so inputs contrast */
     border-top: 1px solid var(--w-border);
     border-bottom: 1px solid var(--w-border);
+}
+/* Inputs inside the setter need to be darker than surface3 to be visible */
+.troop-setter .g-input,
+.troop-setter .g-select {
+    background: var(--w-surface);
 }
 .troop-setter-label {
     font-family: var(--w-mono);
@@ -344,10 +349,18 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--w-text-muted);
+    color: var(--w-text-secondary);     /* stronger than text-muted */
     min-width: 72px;
     flex-shrink: 0;
 }
+/* Color setter label to match its troop type */
+.troop-block.infantry .troop-setter-label { color: var(--w-infantry); }
+.troop-block.marksman .troop-setter-label { color: var(--w-marksman); }
+.troop-block.lancer   .troop-setter-label { color: var(--w-lancer); }
+/* Tinted border to tie visually to the troop color */
+.troop-block.infantry .troop-setter { border-color: var(--w-infantry-dim); }
+.troop-block.marksman .troop-setter { border-color: var(--w-marksman-dim); }
+.troop-block.lancer   .troop-setter { border-color: var(--w-lancer-dim); }
 
 /* ── Calc Tables ─────────────────────────────────────────────────────────── */
 .calc-table {
@@ -650,3 +663,269 @@
     .wm-header { padding: 1rem; }
     .grand-stat-val { font-size: 0.88rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PIECE CARD GRID — mirrors WoSTools card layout
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Troop type badge (on piece card header) ──────────────────────────── */
+.troop-badge {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 9px;
+    border-radius: 99px;
+    flex-shrink: 0;
+}
+.troop-badge.infantry { background: var(--w-infantry);     color: #fff; }
+.troop-badge.marksman { background: var(--w-marksman);     color: #111; }
+.troop-badge.lancer   { background: var(--w-lancer);       color: #111; }
+
+/* ── 2-column piece grid (inside each troop-block) ───────────────────── */
+.piece-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0.75rem;
+}
+@media (max-width: 600px) {
+    .piece-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Individual piece card ────────────────────────────────────────────── */
+.piece-card {
+    background: var(--w-surface);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.piece-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.85rem;
+    background: var(--w-surface3);
+    border-bottom: 1px solid var(--w-border);
+}
+.piece-card-name {
+    font-family: var(--w-display);
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--w-text);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex: 1;
+}
+.piece-card-body {
+    padding: 0.7rem 0.85rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+/* ── Gear current → target row ────────────────────────────────────────── */
+.gear-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.gear-select-wrap {
+    flex: 1;
+    min-width: 0;
+}
+.gear-select-wrap .t-select {
+    width: 100%;
+    min-width: 0;
+}
+.gear-row-sep {
+    color: var(--w-text-muted);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ── Cost strip below gear row ────────────────────────────────────────── */
+.gear-cost-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.85rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--w-border);
+    min-height: 1.35rem;
+}
+.gcs-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-family: var(--w-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--w-info);
+}
+.gcs-label {
+    font-size: 0.57rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--w-text-muted);
+}
+.gcs-zero { font-size: 0.72rem; color: var(--w-text-muted); }
+
+/* ── Charm card body ──────────────────────────────────────────────────── */
+.charm-card-body {
+    padding: 0;
+    gap: 0;
+}
+
+/* ── Charm slot row (current → target) ───────────────────────────────── */
+.charm-slot-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid var(--w-border);
+}
+.charm-select-wrap {
+    flex: 1;
+    min-width: 0;
+}
+.charm-select-wrap .t-select { width: 100%; min-width: 0; }
+
+/* ── Charm tier left-border accent ───────────────────────────────────── */
+.charm-tier-wrap {
+    border-radius: 4px;
+    padding-left: 4px;
+    overflow: hidden;
+}
+.charm-tier-wrap.tier-green  { border-left: 3px solid #4ade80; }
+.charm-tier-wrap.tier-blue   { border-left: 3px solid #60a5fa; }
+.charm-tier-wrap.tier-purple { border-left: 3px solid #a855f7; }
+.charm-tier-wrap.tier-gold   { border-left: 3px solid #fbbf24; }
+
+/* ── Charm slot cost strip ────────────────────────────────────────────── */
+.charm-slot-costs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.75rem;
+    padding: 0.3rem 0.85rem;
+    background: var(--w-surface2);
+    border-bottom: 1px solid var(--w-border);
+    min-height: 1.25rem;
+}
+.charm-slot-costs:last-child { border-bottom: none; }
+.csc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-family: var(--w-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--w-info);
+}
+.csc-label {
+    font-size: 0.55rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--w-text-muted);
+}
+.csc-zero { font-size: 0.68rem; color: var(--w-text-muted); }
+
+/* ── Slot pills (C1 / C2 / C3) ───────────────────────────────────────── */
+.slot-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--w-mono);
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+    min-width: 28px;
+    text-align: center;
+}
+.slot-pill.slot-1 { background: rgba(99,102,241,0.15);  color: #818cf8; border-color: rgba(99,102,241,0.35); }
+.slot-pill.slot-2 { background: rgba(20,184,166,0.15);  color: #2dd4bf; border-color: rgba(20,184,166,0.35); }
+.slot-pill.slot-3 { background: rgba(251,146,60,0.15);  color: #fb923c; border-color: rgba(251,146,60,0.35); }
+
+/* ── Charm tier legend strip ──────────────────────────────────────────── */
+.tier-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 0.45rem 0.9rem;
+    margin-bottom: 1rem;
+    background: var(--w-surface);
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius-sm);
+}
+.tier-legend-label {
+    font-size: 0.6rem;
+    font-family: var(--w-mono);
+    text-transform: uppercase;
+    color: var(--w-text-muted);
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+.tier-pip {
+    font-size: 0.67rem;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 99px;
+    border: 1px solid currentColor;
+}
+.tier-pip.tier-green  { color: #4ade80; }
+.tier-pip.tier-blue   { color: #60a5fa; }
+.tier-pip.tier-purple { color: #a855f7; }
+.tier-pip.tier-gold   { color: #fbbf24; }
+
+/* ── Charm select width ───────────────────────────────────────────────── */
+.charm-select { min-width: 130px; }
+
+/* ── Hero Gear UI ─────────────────────────────────────────────────────── */
+.hg-pair { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.hg-group { flex: 1; min-width: 120px; border: 1px solid var(--w-border); border-radius: var(--w-radius-sm); overflow: hidden; }
+.hg-group-label { display: block; font-family: var(--w-mono); font-size: 0.57rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); padding: 0.25rem 0.5rem; background: var(--w-surface3); border-bottom: 1px solid var(--w-border); }
+.hg-group.target .hg-group-label { color: var(--w-red); border-bottom-color: var(--w-red-dim); background: var(--w-red-subtle); }
+.hg-fields { display: flex; gap: 0.35rem; padding: 0.4rem 0.45rem; flex-wrap: wrap; }
+.hg-field { flex: 1; min-width: 60px; display: flex; flex-direction: column; gap: 2px; }
+.hg-field-label { font-family: var(--w-mono); font-size: 0.55rem; text-transform: uppercase; color: var(--w-text-muted); letter-spacing: 0.3px; }
+.hg-field .t-select { width: 100%; min-width: 0; font-size: 0.68rem; padding-right: 1.2rem; }
+.hg-no-target { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0.75rem; font-size: 0.7rem; color: var(--w-text-muted); font-family: var(--w-mono); font-style: italic; border: 1px dashed var(--w-border); border-radius: var(--w-radius-sm); }
+
+/* Target toggle */
+.target-toggle { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; margin-left: auto; user-select: none; }
+.target-toggle-cb { display: none; }
+.target-toggle-track { width: 26px; height: 14px; background: var(--w-surface3); border: 1px solid var(--w-border); border-radius: 99px; position: relative; transition: background 0.15s, border-color 0.15s; flex-shrink: 0; }
+.target-toggle-track::after { content: ''; position: absolute; width: 10px; height: 10px; top: 1px; left: 1px; background: var(--w-text-muted); border-radius: 50%; transition: left 0.12s, background 0.12s; }
+.target-toggle-cb:checked ~ .target-toggle-track { background: var(--w-red-subtle); border-color: var(--w-red-dim); }
+.target-toggle-cb:checked ~ .target-toggle-track::after { left: 13px; background: var(--w-red); }
+.target-toggle-label { font-family: var(--w-mono); font-size: 0.58rem; text-transform: uppercase; color: var(--w-text-muted); letter-spacing: 0.3px; }
+
+/* Upgrade plan */
+.upgrade-plan { background: var(--w-surface); border: 1px solid var(--w-border); border-radius: var(--w-radius-md); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+.upgrade-plan-title { font-family: var(--w-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); margin-bottom: 0.5rem; }
+.up-item { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.25rem 0; border-bottom: 1px solid var(--w-border); font-size: 0.73rem; }
+.up-item:last-child { border-bottom: none; }
+.up-piece-name { font-family: var(--w-display); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--w-text); min-width: 80px; }
+.up-levels { font-family: var(--w-mono); font-size: 0.7rem; color: var(--w-text-secondary); }
+.up-cost { font-family: var(--w-mono); font-size: 0.68rem; color: var(--w-info); }
+.up-no-target { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-muted); font-style: italic; }
+
+/* Materials on hand */
+.mats-on-hand { background: var(--w-surface); border: 1px solid var(--w-border); border-radius: var(--w-radius-md); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+.moh-title { font-family: var(--w-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--w-text-muted); margin-bottom: 0.5rem; }
+.moh-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.moh-item { display: flex; align-items: center; gap: 0.5rem; }
+.moh-label { font-family: var(--w-mono); font-size: 0.65rem; color: var(--w-text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+.moh-input { width: 72px; padding: 0.25rem 0.4rem; background: var(--w-surface2); border: 1px solid var(--w-border); border-radius: var(--w-radius-sm); color: var(--w-text); font-family: var(--w-mono); font-size: 0.72rem; text-align: right; }
+.moh-need { font-family: var(--w-mono); font-size: 0.65rem; min-width: 90px; }
+.moh-ok { color: var(--w-success); }
+.moh-short { color: var(--w-red); }
