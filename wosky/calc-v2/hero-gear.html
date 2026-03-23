@@ -19,7 +19,7 @@
   </nav>
   <div id="wosky-char-bar"></div>
   <div class="calc-v2-nav" id="calc-nav"></div>
-  <main class="wosky-main" id="app"></main>
+  <main class="wosky-main" id="hg-app"></main>
 
   <script src="../js/data/hero-gear-data.js"></script>
   <script src="../js/character.js"></script>
@@ -32,6 +32,7 @@
   var SK  = 'wosky_v2_player';
   var FOLD_KEY = 'wosky_v2_troop_fold';
   var CFG = WOSKY_V2_CONFIG;
+  var PFX = 'hg-';
   var MF  = CFG.hero.maxForge;  /* 20 */
 
   function getFolds() {
@@ -189,10 +190,10 @@
       h = state.hero[group][piece];
       html += '<div class="troop-piece-row">' +
         '<span class="troop-piece-name">' + cap(piece) + '</span>' +
-        '<select class="t-select" data-hg-f="cf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-cur">' +
+        '<select class="t-select" data-hg-f="cf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="hg-lvl-' + group + '-' + piece + '-cur">' +
           forgeOpts(h.cf) +
         '</select>' +
-        '<select class="t-select" id="lvl-' + group + '-' + piece + '-cur" data-hg-f="ce" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+        '<select class="t-select" id="hg-lvl-' + group + '-' + piece + '-cur" data-hg-f="ce" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
           levelOpts(h.ce, h.cf) +
         '</select>' +
       '</div>';
@@ -210,10 +211,10 @@
         '<span class="troop-piece-name">' + cap(piece) + '</span>';
       if (active) {
         html +=
-          '<select class="t-select" data-hg-f="tf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="lvl-' + group + '-' + piece + '-tgt">' +
+          '<select class="t-select" data-hg-f="tf" data-hg-group="' + group + '" data-hg-piece="' + piece + '" data-hg-paired="hg-lvl-' + group + '-' + piece + '-tgt">' +
             forgeOpts(h.tf) +
           '</select>' +
-          '<select class="t-select" id="lvl-' + group + '-' + piece + '-tgt" data-hg-f="te" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
+          '<select class="t-select" id="hg-lvl-' + group + '-' + piece + '-tgt" data-hg-f="te" data-hg-group="' + group + '" data-hg-piece="' + piece + '">' +
             levelOpts(h.te, h.tf) +
           '</select>';
       } else {
@@ -260,10 +261,10 @@
       var group = groups[gi];
       var isCollapsed = folds[group] ? ' collapsed' : '';
 
-      html += '<div class="troop-block ' + group + isCollapsed + '" id="troop-' + group + '">';
+      html += '<div class="troop-block ' + group + isCollapsed + '" id="' + PFX + 'troop-' + group + '">';
       html += '<div class="troop-block-header">' +
         '<span class="troop-block-title">' + cap(group) + '</span>' +
-        '<span class="troop-block-total" id="group-total-' + group + '"></span>' +
+        '<span class="troop-block-total" id="' + PFX + 'group-total-' + group + '"></span>' +
         '<button class="troop-collapse-btn" data-tc="' + group + '">' + (folds[group] ? '&#9658;' : '&#9660;') + '</button>' +
       '</div>';
 
@@ -278,7 +279,7 @@
     /* Upgrade plan */
     html += '<div class="upgrade-plan">' +
       '<div class="upgrade-plan-title">Upgrade Plan</div>' +
-      '<div id="upgrade-plan-list"></div>' +
+      '<div id="' + PFX + 'upgrade-plan-list"></div>' +
     '</div>';
 
     /* Materials on hand */
@@ -288,31 +289,31 @@
       '<div class="moh-row">' +
         '<div class="moh-item">' +
           '<span class="moh-label">Mithril</span>' +
-          '<input type="number" class="moh-input" id="moh-mithril" value="' + (defMats.mithril || 120) + '" min="0">' +
-          '<span class="moh-need" id="moh-mithril-need"></span>' +
+          '<input type="number" class="moh-input" id="hg-moh-mithril" value="' + (defMats.mithril || 120) + '" min="0">' +
+          '<span class="moh-need" id="hg-moh-mithril-need"></span>' +
         '</div>' +
         '<div class="moh-item">' +
           '<span class="moh-label">Mythic Gear</span>' +
-          '<input type="number" class="moh-input" id="moh-mythic" value="' + (defMats.mythic_gear || 36) + '" min="0">' +
-          '<span class="moh-need" id="moh-mythic-need"></span>' +
+          '<input type="number" class="moh-input" id="hg-moh-mythic" value="' + (defMats.mythic_gear || 36) + '" min="0">' +
+          '<span class="moh-need" id="hg-moh-mythic-need"></span>' +
         '</div>' +
         '<div class="moh-item">' +
           '<span class="moh-label">Gear XP</span>' +
-          '<input type="number" class="moh-input" id="moh-xp" value="' + (defMats.hero_xp || 0) + '" min="0">' +
-          '<span class="moh-need" id="moh-xp-need"></span>' +
+          '<input type="number" class="moh-input" id="hg-moh-xp" value="' + (defMats.hero_xp || 0) + '" min="0">' +
+          '<span class="moh-need" id="hg-moh-xp-need"></span>' +
         '</div>' +
         '<div class="moh-item">' +
           '<span class="moh-label">Essence Stones</span>' +
-          '<input type="number" class="moh-input" id="moh-essence" value="' + (defMats.essence_stones || 0) + '" min="0">' +
-          '<span class="moh-need" id="moh-essence-need"></span>' +
+          '<input type="number" class="moh-input" id="hg-moh-essence" value="' + (defMats.essence_stones || 0) + '" min="0">' +
+          '<span class="moh-need" id="hg-moh-essence-need"></span>' +
         '</div>' +
       '</div>' +
     '</div>';
 
     /* Grand total strip */
-    html += '<div class="grand-strip" id="grand-strip"><span class="grand-strip-label">&#128081; Grand Total</span></div>';
+    html += '<div class="grand-strip" id="' + PFX + 'grand-strip"><span class="grand-strip-label">&#128081; Grand Total</span></div>';
 
-    document.getElementById('app').innerHTML = html;
+    document.getElementById(PFX + 'app').innerHTML = html;
     attachListeners();
     calc();
   }
@@ -354,14 +355,14 @@
         }
       }
 
-      var tel = document.getElementById('group-total-' + group);
+      var tel = document.getElementById(PFX + 'group-total-' + group);
       if (tel) tel.innerHTML =
         'XP: ' + fmt(gt.xp) + ' &nbsp; Essence: ' + fmt(gt.essence) +
         ' &nbsp; Mithril: ' + fmt(gt.mith) + ' &nbsp; Mythic: ' + fmt(gt.mythic);
     }
 
     /* Upgrade plan */
-    var planEl = document.getElementById('upgrade-plan-list');
+    var planEl = document.getElementById(PFX + 'upgrade-plan-list');
     if (planEl) planEl.innerHTML = planHtml || '<span class="up-no-target">No pieces with targets set.</span>';
 
     /* Materials on hand */
@@ -379,13 +380,13 @@
         need_el.textContent = 'Need: ' + fmt(-diff);
       }
     };
-    checkMat('moh-mithril', 'moh-mithril-need', grand.mith);
-    checkMat('moh-mythic',  'moh-mythic-need',  grand.mythic);
-    checkMat('moh-xp',      'moh-xp-need',      grand.xp);
-    checkMat('moh-essence', 'moh-essence-need',  grand.essence);
+    checkMat(PFX + 'moh-mithril', PFX + 'moh-mithril-need', grand.mith);
+    checkMat(PFX + 'moh-mythic',  PFX + 'moh-mythic-need',  grand.mythic);
+    checkMat(PFX + 'moh-xp',      PFX + 'moh-xp-need',      grand.xp);
+    checkMat(PFX + 'moh-essence', PFX + 'moh-essence-need',  grand.essence);
 
     /* Grand strip */
-    var gs = document.getElementById('grand-strip');
+    var gs = document.getElementById(PFX + 'grand-strip');
     if (gs) gs.innerHTML = '<span class="grand-strip-label">&#128081; Grand Total</span>' +
       gStat('Gear XP', grand.xp) + gStat('Essence Stones', grand.essence) +
       gStat('Mithril', grand.mith) + gStat('Mythic Gear', grand.mythic);
@@ -467,7 +468,7 @@
 
   function onCollapseToggle() {
     var g = this.getAttribute('data-tc');
-    var block = document.getElementById('troop-' + g);
+    var block = document.getElementById(PFX + 'troop-' + g);
     var folds = getFolds();
     var nowCollapsed = block.classList.contains('collapsed');
     if (nowCollapsed) { block.classList.remove('collapsed'); folds[g] = false; }
