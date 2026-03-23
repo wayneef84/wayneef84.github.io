@@ -39,3 +39,14 @@ It's a static HTML shell styled by CSS variables. See `ARCHITECTURE.md` for the 
 5. **If you catch yourself about to read a file before writing — stop. Ask: does the output depend on something in that file that isn't already in the prompt? If no, skip the read.**
 
 **Root cause:** LLMs default to a "research first" pattern. This is wasteful when the task is already fully specified. Treat a detailed task prompt as sufficient context and act immediately.
+
+### Incident 2026-03-23: Opus Re-Reading Loop (see `INCIDENT-2026-03-23.md`)
+
+**What happened:** Opus had already read all three calc-v2 files in the session. When asked to write `combined.html`, it re-read CSS in chunks, then re-read `gear.html` twice after being told to stop. User interrupted three times.
+
+**Additional rules:**
+
+6. **If you already read a file in this session, do NOT read it again.** The content is in your context. Use it.
+7. **Claude.ai Opus and Sonnet are not trusted with resource management.** They ignore CLAUDE.md and onboarding constraints. All contributors and future sessions should be aware.
+8. **When the user says "stop" — stop completely.** Do not say "okay stopping" then repeat the behavior. That is lying.
+9. **Three strikes = incident.** Re-reading after being told to stop gets documented immediately.
