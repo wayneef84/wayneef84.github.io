@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;max-width:700px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+textarea{width:100%;min-height:250px;background:#111;border:1px solid #333;border-radius:10px;color:#fff;padding:1rem;font-size:1rem;resize:vertical;font-family:system-ui,sans-serif}
+textarea:focus{outline:none;border-color:#2979ff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;width:100%}
+.stat{background:#111;border:1px solid #222;border-radius:10px;padding:1rem;text-align:center}
+.stat-val{font-size:2rem;font-weight:700;color:#2979ff}
+.stat-label{font-size:.8rem;opacity:.5;margin-top:.25rem}
+.extras{width:100%;display:flex;flex-direction:column;gap:.5rem}
+.extra{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #111;font-size:.9rem}
+.extra span:last-child{opacity:.6;font-variant-numeric:tabular-nums}
+.bar-chart{width:100%;max-width:400px}
+.bar-row{display:flex;align-items:center;gap:.5rem;margin:.2rem 0;font-size:.8rem}
+.bar-label{width:25px;text-align:right;opacity:.6}
+.bar{height:14px;background:#2979ff;border-radius:3px;min-width:2px;transition:width .3s}
+.bar-count{opacity:.5;font-size:.75rem}
+h2{font-size:1.1rem;opacity:.5;margin-top:1rem}
+</style>
+</head>
+<body>
+<h1>Word Counter & Text Analyzer</h1>
+<textarea id="input" oninput="analyze()" placeholder="Paste or type your text here...">The quick brown fox jumps over the lazy dog. The dog barked back at the fox.</textarea>
+<div class="stats" id="stats"></div>
+<div class="extras" id="extras"></div>
+<h2>Top Words</h2>
+<div class="bar-chart" id="topWords"></div>
+<h2>Character Frequency</h2>
+<div class="bar-chart" id="charFreq"></div>
+
+<script>
+function analyze(){
+  var text=document.getElementById("input").value;
+  var chars=text.length;
+  var charsNoSpace=text.replace(/\s/g,"").length;
+  var words=text.trim()?text.trim().split(/\s+/).length:0;
+  var sentences=text.trim()?text.split(/[.!?]+/).filter(function(s){return s.trim();}).length:0;
+  var paragraphs=text.trim()?text.split(/\n\s*\n/).filter(function(s){return s.trim();}).length:0;
+  var lines=text?text.split("\n").length:0;
+  var readTime=Math.max(1,Math.ceil(words/200));
+  var speakTime=Math.max(1,Math.ceil(words/130));
+  var avgWordLen=words>0?(charsNoSpace/words).toFixed(1):0;
+
+  document.getElementById("stats").innerHTML=
+    stat(words,"Words")+stat(chars,"Characters")+stat(charsNoSpace,"No Spaces")+
+    stat(sentences,"Sentences")+stat(paragraphs,"Paragraphs")+stat(lines,"Lines");
+
+  document.getElementById("extras").innerHTML=
+    extra("Reading time",readTime+" min")+extra("Speaking time",speakTime+" min")+
+    extra("Avg word length",avgWordLen+" chars");
+
+  // Top words
+  var wordList=text.toLowerCase().replace(/[^a-z0-9\s'-]/g,"").trim().split(/\s+/).filter(function(w){return w;});
+  var freq={};
+  for(var i=0;i<wordList.length;i++){freq[wordList[i]]=(freq[wordList[i]]||0)+1;}
+  var sorted=Object.keys(freq).sort(function(a,b){return freq[b]-freq[a];}).slice(0,10);
+  var maxFreq=sorted.length?freq[sorted[0]]:1;
+  var html="";
+  for(var i=0;i<sorted.length;i++){
+    var pct=Math.round(freq[sorted[i]]/maxFreq*100);
+    html+='<div class="bar-row"><span class="bar-label">'+sorted[i]+'</span><div class="bar" style="width:'+pct+'%"></div><span class="bar-count">'+freq[sorted[i]]+'</span></div>';
+  }
+  document.getElementById("topWords").innerHTML=html;
+
+  // Char frequency
+  var cf={};
+  var lower=text.toLowerCase();
+  for(var i=0;i<lower.length;i++){var ch=lower[i];if(/[a-z0-9]/.test(ch))cf[ch]=(cf[ch]||0)+1;}
+  var csorted=Object.keys(cf).sort(function(a,b){return cf[b]-cf[a];}).slice(0,15);
+  var cmax=csorted.length?cf[csorted[0]]:1;
+  html="";
+  for(var i=0;i<csorted.length;i++){
+    var pct=Math.round(cf[csorted[i]]/cmax*100);
+    html+='<div class="bar-row"><span class="bar-label">'+csorted[i]+'</span><div class="bar" style="width:'+pct+'%"></div><span class="bar-count">'+cf[csorted[i]]+'</span></div>';
+  }
+  document.getElementById("charFreq").innerHTML=html;
+}
+function stat(v,l){return'<div class="stat"><div class="stat-val">'+v+'</div><div class="stat-label">'+l+'</div></div>';}
+function extra(l,v){return'<div class="extra"><span>'+l+'</span><span>'+v+'</span></div>';}
+analyze();
+</script>
+</body>
+</html>

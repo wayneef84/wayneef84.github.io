@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawing Pad</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem}
+h1{font-size:1.3rem;opacity:.7}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;justify-content:center}
+button{padding:.5rem .8rem;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.8rem}
+.tool{background:#222;color:#fff;border:2px solid #333}
+.tool.active{border-color:#2979ff;background:#1a237e}
+input[type=color]{width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none}
+input[type=range]{width:80px}
+.size-label{font-size:.8rem;opacity:.6;min-width:35px}
+canvas{border-radius:10px;border:2px solid #333;cursor:crosshair;touch-action:none;max-width:100%}
+.actions button{font-size:.8rem}
+.undo{background:#ff9100;color:#000}
+.clear-btn{background:#ff1744;color:#fff}
+.save{background:#00c853;color:#000}
+.fill{background:#9c27b0;color:#fff}
+.colors{display:flex;gap:4px;flex-wrap:wrap}
+.color-swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent}
+.color-swatch:hover,.color-swatch.active{border-color:#fff}
+</style>
+</head>
+<body>
+<h1>Drawing Pad</h1>
+<div class="colors" id="colors"></div>
+<div class="toolbar">
+<input type="color" id="colorPicker" value="#ffffff" oninput="setColor(this.value)">
+<button class="tool active" id="pen" onclick="setTool('pen')">Pen</button>
+<button class="tool" id="eraser" onclick="setTool('eraser')">Eraser</button>
+<button class="tool" id="line" onclick="setTool('line')">Line</button>
+<button class="tool" id="rect" onclick="setTool('rect')">Rect</button>
+<button class="tool" id="circle" onclick="setTool('circle')">Circle</button>
+<span class="size-label" id="sizeLabel">3px</span>
+<input type="range" id="size" min="1" max="40" value="3" oninput="document.getElementById('sizeLabel').textContent=this.value+'px'">
+</div>
+<div class="toolbar actions">
+<button class="undo" onclick="undo()">Undo</button>
+<button class="fill" onclick="fillCanvas()">Fill BG</button>
+<button class="clear-btn" onclick="clearCanvas()">Clear</button>
+<button class="save" onclick="saveCanvas()">Save PNG</button>
+</div>
+<canvas id="canvas" width="800" height="500"></canvas>
+
+<script>
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+var drawing=false,tool="pen",color="#ffffff",history=[];
+var startX,startY,snapshot;
+
+var presetColors=["#ffffff","#ff1744","#ff9100","#ffc107","#00c853","#2979ff","#9c27b0","#ff4081","#00bcd4","#795548","#607d8b","#000000"];
+var colorsDiv=document.getElementById("colors");
+for(var i=0;i<presetColors.length;i++){
+  (function(c){
+    var el=document.createElement("div");
+    el.className="color-swatch"+(c==="#ffffff"?" active":"");
+    el.style.background=c;
+    el.onclick=function(){setColor(c);document.querySelectorAll(".color-swatch").forEach(function(s){s.classList.remove("active");});el.classList.add("active");};
+    colorsDiv.appendChild(el);
+  })(presetColors[i]);
+}
+
+ctx.fillStyle="#0a0a1a";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+saveState();
+
+function setTool(t){
+  tool=t;
+  document.querySelectorAll(".tool").forEach(function(el){el.classList.remove("active");});
+  document.getElementById(t).classList.add("active");
+}
+function setColor(c){color=c;document.getElementById("colorPicker").value=c;}
+function getSize(){return parseInt(document.getElementById("size").value);}
+function getPos(e){
+  var rect=canvas.getBoundingClientRect();
+  var scaleX=canvas.width/rect.width;
+  var scaleY=canvas.height/rect.height;
+  var clientX=e.touches?e.touches[0].clientX:e.clientX;
+  var clientY=e.touches?e.touches[0].clientY:e.clientY;
+  return{x:(clientX-rect.left)*scaleX,y:(clientY-rect.top)*scaleY};
+}
+
+function saveState(){history.push(canvas.toDataURL());}
+function undo(){if(history.length>1){history.pop();var img=new Image();img.onload=function(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0);};img.src=history[history.length-1];}}
+
+canvas.addEventListener("mousedown",startDraw);
+canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mouseup",endDraw);
+canvas.addEventListener("mouseleave",endDraw);
+canvas.addEventListener("touchstart",function(e){e.preventDefault();startDraw(e);});
+canvas.addEventListener("touchmove",function(e){e.preventDefault();draw(e);});
+canvas.addEventListener("touchend",function(e){e.preventDefault();endDraw(e);});
+
+function startDraw(e){
+  drawing=true;
+  var pos=getPos(e);
+  startX=pos.x;startY=pos.y;
+  if(tool==="pen"||tool==="eraser"){
+    ctx.beginPath();ctx.moveTo(pos.x,pos.y);
+  }
+  snapshot=ctx.getImageData(0,0,canvas.width,canvas.height);
+}
+
+function draw(e){
+  if(!drawing)return;
+  var pos=getPos(e);
+  var sz=getSize();
+  if(tool==="pen"){
+    ctx.strokeStyle=color;ctx.lineWidth=sz;ctx.lineCap="round";ctx.lineJoin="round";
+    ctx.lineTo(pos.x,pos.y);ctx.stroke();
+  }else if(tool==="eraser"){
+    ctx.strokeStyle="#0a0a1a";ctx.lineWidth=sz*3;ctx.lineCap="round";ctx.lineJoin="round";
+    ctx.lineTo(pos.x,pos.y);ctx.stroke();
+  }else{
+    ctx.putImageData(snapshot,0,0);
+    ctx.strokeStyle=color;ctx.lineWidth=sz;ctx.lineCap="round";
+    if(tool==="line"){ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(pos.x,pos.y);ctx.stroke();}
+    else if(tool==="rect"){ctx.strokeRect(startX,startY,pos.x-startX,pos.y-startY);}
+    else if(tool==="circle"){var rx=Math.abs(pos.x-startX)/2,ry=Math.abs(pos.y-startY)/2;ctx.beginPath();ctx.ellipse(startX+((pos.x-startX)/2),startY+((pos.y-startY)/2),rx,ry,0,0,Math.PI*2);ctx.stroke();}
+  }
+}
+
+function endDraw(){if(drawing){drawing=false;saveState();}}
+function clearCanvas(){ctx.fillStyle="#0a0a1a";ctx.fillRect(0,0,canvas.width,canvas.height);saveState();}
+function fillCanvas(){ctx.fillStyle=color;ctx.fillRect(0,0,canvas.width,canvas.height);saveState();}
+function saveCanvas(){var a=document.createElement("a");a.download="drawing.png";a.href=canvas.toDataURL();a.click();}
+</script>
+</body>
+</html>

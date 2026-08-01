@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.calc{width:320px;background:#111;border-radius:16px;padding:1.5rem;border:1px solid #222}
+.display{text-align:right;margin-bottom:1rem}
+.expr{font-size:.9rem;color:#888;min-height:1.2rem;word-break:break-all}
+.result{font-size:2.8rem;font-weight:700;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{padding:1rem;border:none;border-radius:10px;font-size:1.2rem;cursor:pointer;font-weight:600;transition:transform .1s,background .1s}
+.btn:active{transform:scale(.93)}
+.num{background:#1a1a2e;color:#fff}
+.num:hover{background:#252545}
+.op{background:#2979ff;color:#fff}
+.op:hover{background:#1565c0}
+.fn{background:#222;color:#aaa}
+.fn:hover{background:#333}
+.eq{background:#00c853;color:#000}
+.eq:hover{background:#00a844}
+.zero{grid-column:span 2}
+.history{margin-top:1rem;max-height:120px;overflow-y:auto;font-size:.8rem;opacity:.5}
+.history div{padding:.2rem 0;border-bottom:1px solid #111;text-align:right}
+</style>
+</head>
+<body>
+<div class="calc">
+<div class="display">
+<div class="expr" id="expr"></div>
+<div class="result" id="display">0</div>
+</div>
+<div class="grid">
+<button class="btn fn" onclick="clearAll()">AC</button>
+<button class="btn fn" onclick="toggleSign()">+/-</button>
+<button class="btn fn" onclick="percent()">%</button>
+<button class="btn op" onclick="op('/')">÷</button>
+<button class="btn num" onclick="num('7')">7</button>
+<button class="btn num" onclick="num('8')">8</button>
+<button class="btn num" onclick="num('9')">9</button>
+<button class="btn op" onclick="op('*')">×</button>
+<button class="btn num" onclick="num('4')">4</button>
+<button class="btn num" onclick="num('5')">5</button>
+<button class="btn num" onclick="num('6')">6</button>
+<button class="btn op" onclick="op('-')">−</button>
+<button class="btn num" onclick="num('1')">1</button>
+<button class="btn num" onclick="num('2')">2</button>
+<button class="btn num" onclick="num('3')">3</button>
+<button class="btn op" onclick="op('+')">+</button>
+<button class="btn num zero" onclick="num('0')">0</button>
+<button class="btn num" onclick="decimal()">.</button>
+<button class="btn eq" onclick="equals()">=</button>
+</div>
+<div class="history" id="history"></div>
+</div>
+
+<script>
+var current="0",prev="",operator="",newNumber=true;
+function updateDisplay(){document.getElementById("display").textContent=current;document.getElementById("expr").textContent=prev+(operator?(" "+{"/":"÷","*":"×","-":"−","+":"+"}[operator]:""):"");}
+function num(n){if(newNumber){current=n;newNumber=false;}else{if(current==="0"&&n!==".")current=n;else current+=n;}updateDisplay();}
+function decimal(){if(current.indexOf(".")===-1)current+=".";newNumber=false;updateDisplay();}
+function op(o){if(prev&&operator&&!newNumber){equals();}prev=current;operator=o;newNumber=true;updateDisplay();}
+function toggleSign(){current=String(-parseFloat(current));updateDisplay();}
+function percent(){current=String(parseFloat(current)/100);updateDisplay();}
+function equals(){
+  if(!operator||!prev)return;
+  var a=parseFloat(prev),b=parseFloat(current),r;
+  if(operator==="+")r=a+b;
+  else if(operator==="-")r=a-b;
+  else if(operator==="*")r=a*b;
+  else if(operator==="/")r=b!==0?a/b:"Error";
+  var expr=prev+" "+{"/":"÷","*":"×","-":"−","+":"+"}[operator]+" "+current+" = "+r;
+  var el=document.createElement("div");el.textContent=expr;document.getElementById("history").prepend(el);
+  current=String(r);prev="";operator="";newNumber=true;updateDisplay();
+}
+function clearAll(){current="0";prev="";operator="";newNumber=true;updateDisplay();}
+document.addEventListener("keydown",function(e){
+  if(e.key>="0"&&e.key<="9")num(e.key);
+  else if(e.key===".")decimal();
+  else if(e.key==="+")op("+");
+  else if(e.key==="-")op("-");
+  else if(e.key==="*")op("*");
+  else if(e.key==="/"){e.preventDefault();op("/");}
+  else if(e.key==="Enter"||e.key==="=")equals();
+  else if(e.key==="Escape")clearAll();
+  else if(e.key==="Backspace"){current=current.slice(0,-1)||"0";updateDisplay();}
+});
+updateDisplay();
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hash Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;max-width:600px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+textarea{width:100%;min-height:100px;background:#111;border:1px solid #333;border-radius:10px;color:#fff;padding:1rem;font-size:1rem;resize:vertical}
+textarea:focus{outline:none;border-color:#2979ff}
+.results{width:100%;display:flex;flex-direction:column;gap:.75rem}
+.hash-row{background:#111;border:1px solid #222;border-radius:10px;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:.75rem}
+.hash-label{font-weight:700;color:#2979ff;min-width:70px;font-size:.9rem}
+.hash-val{font-family:monospace;font-size:.8rem;word-break:break-all;flex:1;opacity:.8}
+button{padding:.4rem .8rem;background:#00c853;color:#000;border:none;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600;white-space:nowrap}
+button:active{opacity:.7}
+.info{font-size:.8rem;opacity:.4}
+</style>
+</head>
+<body>
+<h1>Hash Generator</h1>
+<textarea id="input" oninput="hashAll()" placeholder="Type or paste text to hash...">Hello, World!</textarea>
+<div class="results" id="results"></div>
+<p class="info">Uses Web Crypto API — all hashing runs locally in your browser.</p>
+
+<script>
+var algos=["SHA-1","SHA-256","SHA-384","SHA-512"];
+function buf2hex(buffer){var a=new Uint8Array(buffer);var hex="";for(var i=0;i<a.length;i++)hex+=("00"+a[i].toString(16)).slice(-2);return hex;}
+function hashAll(){
+  var text=document.getElementById("input").value;
+  var encoder=new TextEncoder();
+  var data=encoder.encode(text);
+  var container=document.getElementById("results");
+  container.innerHTML="";
+  for(var i=0;i<algos.length;i++){
+    (function(algo){
+      var row=document.createElement("div");
+      row.className="hash-row";
+      row.innerHTML='<span class="hash-label">'+algo+'</span><span class="hash-val" id="v-'+algo+'">computing...</span><button onclick="copyHash(\''+algo+'\')">Copy</button>';
+      container.appendChild(row);
+      crypto.subtle.digest(algo,data).then(function(hash){
+        document.getElementById("v-"+algo).textContent=buf2hex(hash);
+      });
+    })(algos[i]);
+  }
+}
+function copyHash(algo){navigator.clipboard.writeText(document.getElementById("v-"+algo).textContent);}
+hashAll();
+</script>
+</body>
+</html>

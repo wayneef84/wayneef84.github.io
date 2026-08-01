@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Encoder/Decoder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:700px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+textarea{width:100%;min-height:150px;background:#111;border:1px solid #333;border-radius:10px;color:#fff;padding:1rem;font-family:monospace;font-size:.9rem;resize:vertical}
+textarea:focus{outline:none;border-color:#2979ff}
+.buttons{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+button{padding:.6rem 1.2rem;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.9rem}
+.encode{background:#2979ff;color:#fff}
+.decode{background:#ff9100;color:#000}
+.copy{background:#00c853;color:#000}
+.clear{background:#333;color:#fff}
+.swap{background:#9c27b0;color:#fff}
+label{font-size:.9rem;opacity:.7;align-self:flex-start}
+.error{color:#ff1744;font-size:.85rem;min-height:1.2rem}
+.info{font-size:.8rem;opacity:.4}
+.url-toggle{display:flex;align-items:center;gap:.5rem;font-size:.9rem}
+.url-toggle input{accent-color:#2979ff}
+</style>
+</head>
+<body>
+<h1>Base64 Encoder / Decoder</h1>
+<div class="url-toggle"><input type="checkbox" id="urlSafe"><label for="urlSafe">URL-safe mode</label></div>
+<label>Input (plain text or base64)</label>
+<textarea id="input" placeholder="Enter text to encode or base64 to decode..."></textarea>
+<div class="buttons">
+<button class="encode" onclick="encode()">Encode &rarr; Base64</button>
+<button class="decode" onclick="decode()">Decode &rarr; Text</button>
+<button class="swap" onclick="swap()">&#8645; Swap</button>
+<button class="copy" onclick="copyOut()">Copy Output</button>
+<button class="clear" onclick="clearAll()">Clear</button>
+</div>
+<div class="error" id="error"></div>
+<label>Output</label>
+<textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+<div class="info" id="info"></div>
+
+<script>
+function isUrlSafe(){return document.getElementById("urlSafe").checked;}
+function encode(){
+  var input=document.getElementById("input").value;
+  document.getElementById("error").textContent="";
+  try{
+    var encoded=btoa(unescape(encodeURIComponent(input)));
+    if(isUrlSafe())encoded=encoded.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    document.getElementById("output").value=encoded;
+    document.getElementById("info").textContent="Encoded: "+input.length+" chars → "+encoded.length+" chars ("+Math.round(encoded.length/Math.max(input.length,1)*100)+"% size)";
+  }catch(e){document.getElementById("error").textContent="Encode error: "+e.message;}
+}
+function decode(){
+  var input=document.getElementById("input").value;
+  document.getElementById("error").textContent="";
+  try{
+    var b64=input;
+    if(isUrlSafe()){b64=b64.replace(/-/g,"+").replace(/_/g,"/");while(b64.length%4)b64+="=";}
+    var decoded=decodeURIComponent(escape(atob(b64)));
+    document.getElementById("output").value=decoded;
+    document.getElementById("info").textContent="Decoded: "+input.length+" chars → "+decoded.length+" chars";
+  }catch(e){document.getElementById("error").textContent="Decode error: invalid base64 string";}
+}
+function swap(){
+  var o=document.getElementById("output").value;
+  document.getElementById("input").value=o;
+  document.getElementById("output").value="";
+  document.getElementById("error").textContent="";
+  document.getElementById("info").textContent="";
+}
+function copyOut(){navigator.clipboard.writeText(document.getElementById("output").value);}
+function clearAll(){document.getElementById("input").value="";document.getElementById("output").value="";document.getElementById("error").textContent="";document.getElementById("info").textContent="";}
+</script>
+</body>
+</html>

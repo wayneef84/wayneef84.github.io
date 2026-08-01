@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorem Ipsum Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;max-width:700px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+.controls{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:center}
+.controls label{opacity:.7;font-size:.9rem}
+.controls input{width:60px;padding:.5rem;border-radius:6px;border:1px solid #333;background:#111;color:#fff;text-align:center}
+.controls select{padding:.5rem;border-radius:6px;border:1px solid #333;background:#111;color:#fff}
+button{padding:.6rem 1.5rem;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+.gen{background:#2979ff;color:#fff}
+.copy{background:#00c853;color:#000}
+.output{width:100%;background:#111;border:1px solid #222;border-radius:10px;padding:1.5rem;line-height:1.8;font-size:.95rem;min-height:150px;max-height:400px;overflow-y:auto}
+.output p{margin-bottom:1rem}
+.info{font-size:.8rem;opacity:.4}
+</style>
+</head>
+<body>
+<h1>Lorem Ipsum Generator</h1>
+<div class="controls">
+<label>Amount:</label>
+<input type="number" id="amount" value="3" min="1" max="50">
+<select id="unit">
+<option value="paragraphs">Paragraphs</option>
+<option value="sentences">Sentences</option>
+<option value="words">Words</option>
+</select>
+<button class="gen" onclick="generate()">Generate</button>
+<button class="copy" onclick="copyText()">Copy</button>
+</div>
+<div class="output" id="output"></div>
+<div class="info" id="info"></div>
+
+<script>
+var WORDS=["lorem","ipsum","dolor","sit","amet","consectetur","adipiscing","elit","sed","do","eiusmod","tempor","incididunt","ut","labore","et","dolore","magna","aliqua","enim","ad","minim","veniam","quis","nostrud","exercitation","ullamco","laboris","nisi","aliquip","ex","ea","commodo","consequat","duis","aute","irure","in","reprehenderit","voluptate","velit","esse","cillum","fugiat","nulla","pariatur","excepteur","sint","occaecat","cupidatat","non","proident","sunt","culpa","qui","officia","deserunt","mollit","anim","id","est","laborum","suspendisse","potenti","vivamus","lacinia","justo","nec","ultrices","posuere","cubilia","curae","donec","velit","neque","auctor","tempus","quam","pellentesque","nec","nam","semper","risus","in","hendrerit","gravida","rutrum","quisque","tellus","tortor","vestibulum","ac","facilisis","diam","mauris","elementum","morbi","tristique","senectus","netus","malesuada","fames","turpis","egestas","integer","feugiat","scelerisque","varius","porta","nibh","venenatis","cras","fermentum","odio","eu","orci","faucibus","interdum"];
+
+function randWord(){return WORDS[Math.floor(Math.random()*WORDS.length)];}
+function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+function genSentence(){
+  var len=Math.floor(Math.random()*12)+5;
+  var words=[];
+  for(var i=0;i<len;i++)words.push(randWord());
+  words[0]=capitalize(words[0]);
+  return words.join(" ")+".";
+}
+
+function genParagraph(){
+  var count=Math.floor(Math.random()*4)+3;
+  var sentences=[];
+  for(var i=0;i<count;i++)sentences.push(genSentence());
+  return sentences.join(" ");
+}
+
+function generate(){
+  var amount=parseInt(document.getElementById("amount").value)||1;
+  var unit=document.getElementById("unit").value;
+  var result="";var wordCount=0;
+
+  if(unit==="paragraphs"){
+    var paras=[];
+    for(var i=0;i<amount;i++)paras.push(genParagraph());
+    result=paras.map(function(p){return"<p>"+p+"</p>";}).join("");
+    wordCount=paras.join(" ").split(/\s+/).length;
+  }else if(unit==="sentences"){
+    var sents=[];
+    for(var i=0;i<amount;i++)sents.push(genSentence());
+    result="<p>"+sents.join(" ")+"</p>";
+    wordCount=sents.join(" ").split(/\s+/).length;
+  }else{
+    var words=[];
+    for(var i=0;i<amount;i++)words.push(randWord());
+    words[0]=capitalize(words[0]);
+    result="<p>"+words.join(" ")+".</p>";
+    wordCount=amount;
+  }
+
+  document.getElementById("output").innerHTML=result;
+  document.getElementById("info").textContent=wordCount+" words generated";
+}
+
+function copyText(){navigator.clipboard.writeText(document.getElementById("output").textContent);}
+generate();
+</script>
+</body>
+</html>

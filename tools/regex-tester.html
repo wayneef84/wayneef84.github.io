@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regex Tester</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:700px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+.pattern-row{display:flex;gap:.5rem;width:100%;align-items:center}
+.pattern-row input{flex:1;padding:.75rem;border-radius:8px;border:1px solid #333;background:#111;color:#00c853;font-family:monospace;font-size:1.1rem}
+.pattern-row input:focus{outline:none;border-color:#2979ff}
+.flags{display:flex;gap:.75rem}
+.flags label{display:flex;align-items:center;gap:.3rem;font-size:.9rem;opacity:.7;cursor:pointer}
+.flags input{accent-color:#2979ff}
+textarea{width:100%;min-height:150px;background:#111;border:1px solid #333;border-radius:10px;color:#fff;padding:1rem;font-family:monospace;font-size:.9rem;resize:vertical}
+textarea:focus{outline:none;border-color:#2979ff}
+.error{color:#ff1744;font-size:.85rem;min-height:1.2rem;width:100%;text-align:left}
+.highlighted{width:100%;background:#111;border:1px solid #222;border-radius:10px;padding:1rem;font-family:monospace;font-size:.9rem;line-height:1.7;min-height:80px;white-space:pre-wrap;word-break:break-word}
+mark{background:#2979ff33;color:#2979ff;border-radius:2px;padding:0 1px}
+.matches{width:100%;max-height:200px;overflow-y:auto}
+.match{background:#111;border:1px solid #222;border-radius:6px;padding:.5rem .75rem;margin:.3rem 0;font-family:monospace;font-size:.85rem;display:flex;justify-content:space-between}
+.match-idx{opacity:.4;font-size:.75rem}
+.match-val{color:#00c853}
+.match-groups{color:#ffc107;font-size:.8rem}
+.stats{font-size:.85rem;opacity:.5}
+h2{font-size:1rem;opacity:.5;align-self:flex-start}
+.presets{display:flex;gap:.5rem;flex-wrap:wrap}
+.preset{padding:.3rem .6rem;background:#222;border:1px solid #333;border-radius:6px;cursor:pointer;font-size:.75rem;font-family:monospace;color:#aaa}
+.preset:hover{border-color:#2979ff;color:#2979ff}
+</style>
+</head>
+<body>
+<h1>Regex Tester</h1>
+<div class="pattern-row">
+<span style="font-size:1.5rem;opacity:.4">/</span>
+<input type="text" id="pattern" value="\b\w+@\w+\.\w+\b" placeholder="Enter regex pattern..." oninput="test()">
+<span style="font-size:1.5rem;opacity:.4">/</span>
+</div>
+<div class="flags">
+<label><input type="checkbox" id="fg" checked onchange="test()">g (global)</label>
+<label><input type="checkbox" id="fi" onchange="test()">i (case-insensitive)</label>
+<label><input type="checkbox" id="fm" onchange="test()">m (multiline)</label>
+</div>
+<div class="error" id="error"></div>
+<label style="align-self:flex-start;opacity:.7;font-size:.9rem">Test String</label>
+<textarea id="input" oninput="test()" placeholder="Enter test string...">Contact us at hello@example.com or support@test.org for help.
+Visit user@domain.net for more info.</textarea>
+<div class="stats" id="stats"></div>
+<h2>Highlighted Matches</h2>
+<div class="highlighted" id="highlighted"></div>
+<h2>Match Details</h2>
+<div class="matches" id="matches"></div>
+<h2>Common Patterns</h2>
+<div class="presets">
+<div class="preset" onclick="setPattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')">Email</div>
+<div class="preset" onclick="setPattern('https?://[\\w.-]+(?:\\.[\\w.-]+)+[\\w.,@?^=%&:/~+#-]*')">URL</div>
+<div class="preset" onclick="setPattern('\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b')">IPv4</div>
+<div class="preset" onclick="setPattern('\\(?(\\d{3})\\)?[-.\\s]?(\\d{3})[-.\\s]?(\\d{4})')">Phone</div>
+<div class="preset" onclick="setPattern('#([0-9a-fA-F]{3}){1,2}\\b')">Hex Color</div>
+<div class="preset" onclick="setPattern('\\b\\d{4}-\\d{2}-\\d{2}\\b')">Date (YYYY-MM-DD)</div>
+</div>
+
+<script>
+function setPattern(p){document.getElementById("pattern").value=p;test();}
+function test(){
+  var pattern=document.getElementById("pattern").value;
+  var text=document.getElementById("input").value;
+  var flags="";
+  if(document.getElementById("fg").checked)flags+="g";
+  if(document.getElementById("fi").checked)flags+="i";
+  if(document.getElementById("fm").checked)flags+="m";
+  document.getElementById("error").textContent="";
+  if(!pattern){document.getElementById("highlighted").textContent=text;document.getElementById("matches").innerHTML="";document.getElementById("stats").textContent="";return;}
+  var re;
+  try{re=new RegExp(pattern,flags);}catch(e){document.getElementById("error").textContent=e.message;document.getElementById("highlighted").textContent=text;return;}
+
+  // Find all matches
+  var allMatches=[];
+  if(flags.indexOf("g")>=0){
+    var m;while((m=re.exec(text))!==null){allMatches.push({value:m[0],index:m.index,groups:m.slice(1)});if(!m[0])break;}
+  }else{
+    var m=re.exec(text);
+    if(m)allMatches.push({value:m[0],index:m.index,groups:m.slice(1)});
+  }
+
+  document.getElementById("stats").textContent=allMatches.length+" match"+(allMatches.length!==1?"es":"")+" found";
+
+  // Highlight
+  var html="";var lastIdx=0;
+  for(var i=0;i<allMatches.length;i++){
+    var mi=allMatches[i];
+    html+=escHtml(text.slice(lastIdx,mi.index))+"<mark>"+escHtml(mi.value)+"</mark>";
+    lastIdx=mi.index+mi.value.length;
+  }
+  html+=escHtml(text.slice(lastIdx));
+  document.getElementById("highlighted").innerHTML=html;
+
+  // Match details
+  var mhtml="";
+  for(var i=0;i<allMatches.length;i++){
+    var mi=allMatches[i];
+    mhtml+='<div class="match"><span><span class="match-idx">#'+(i+1)+' @'+mi.index+'</span> <span class="match-val">'+escHtml(mi.value)+'</span></span>';
+    if(mi.groups.length)mhtml+='<span class="match-groups">groups: '+mi.groups.map(function(g){return g||"undefined";}).join(", ")+'</span>';
+    mhtml+='</div>';
+  }
+  document.getElementById("matches").innerHTML=mhtml;
+}
+function escHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+test();
+</script>
+</body>
+</html>

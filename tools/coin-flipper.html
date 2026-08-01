@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coin Flipper</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem}
+h1{font-size:1.5rem;opacity:.7}
+.coin{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:900;cursor:pointer;transition:transform .1s;user-select:none;position:relative;perspective:400px}
+.coin.heads{background:linear-gradient(145deg,#ffd700,#daa520);color:#8b6914;border:4px solid #b8860b}
+.coin.tails{background:linear-gradient(145deg,#c0c0c0,#808080);color:#404040;border:4px solid #696969}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(1800deg)}100%{transform:rotateY(3600deg)}}
+.coin.flipping{animation:flip .8s ease-out}
+button{padding:1rem 3rem;background:#2979ff;color:#fff;border:none;border-radius:12px;font-size:1.3rem;cursor:pointer;font-weight:700}
+button:active{transform:scale(.92)}
+.result{font-size:2rem;font-weight:700;min-height:2.5rem}
+.result.heads{color:#ffd700}
+.result.tails{color:#c0c0c0}
+.stats{display:flex;gap:2rem;font-size:1rem}
+.stat{text-align:center}
+.stat-val{font-size:2rem;font-weight:700}
+.stat-label{font-size:.8rem;opacity:.5}
+.stat-bar{display:flex;width:250px;height:20px;border-radius:10px;overflow:hidden;background:#222}
+.bar-h{background:#ffd700;transition:width .3s}
+.bar-t{background:#808080;transition:width .3s}
+.multi{display:flex;gap:.5rem;align-items:center}
+.multi label{opacity:.7}
+.multi input{width:60px;padding:.4rem;border-radius:6px;border:1px solid #333;background:#111;color:#fff;text-align:center}
+.history{max-height:100px;overflow-y:auto;font-size:.8rem;opacity:.5;width:250px;text-align:center}
+</style>
+</head>
+<body>
+<h1>Coin Flipper</h1>
+<div class="coin heads" id="coin" onclick="flip()">H</div>
+<div class="result" id="result"></div>
+<div class="multi">
+<label>Flip</label>
+<input type="number" id="count" value="1" min="1" max="100">
+<label>time(s)</label>
+</div>
+<button onclick="flip()">Flip!</button>
+<div class="stats">
+<div class="stat"><div class="stat-val heads" id="hCount">0</div><div class="stat-label">Heads</div></div>
+<div class="stat"><div class="stat-val tails" id="tCount">0</div><div class="stat-label">Tails</div></div>
+<div class="stat"><div class="stat-val" id="total" style="color:#2979ff">0</div><div class="stat-label">Total</div></div>
+</div>
+<div class="stat-bar"><div class="bar-h" id="barH" style="width:50%"></div><div class="bar-t" id="barT" style="width:50%"></div></div>
+<button onclick="resetStats()" style="background:#333;font-size:.9rem;padding:.5rem 1.5rem">Reset Stats</button>
+<div class="history" id="history"></div>
+
+<script>
+var heads=0,tails=0;
+function flip(){
+  var count=Math.min(100,Math.max(1,parseInt(document.getElementById("count").value)||1));
+  var coin=document.getElementById("coin");
+  var results=[];
+  for(var i=0;i<count;i++){
+    var isHeads=Math.random()<0.5;
+    if(isHeads)heads++;else tails++;
+    results.push(isHeads?"H":"T");
+  }
+  var last=results[results.length-1]==="H";
+  coin.className="coin "+(last?"heads":"tails")+" flipping";
+  coin.textContent=last?"H":"T";
+  setTimeout(function(){coin.classList.remove("flipping");},800);
+
+  if(count===1){
+    document.getElementById("result").textContent=last?"HEADS!":"TAILS!";
+    document.getElementById("result").className="result "+(last?"heads":"tails");
+  }else{
+    var h=results.filter(function(r){return r==="H";}).length;
+    document.getElementById("result").textContent=h+"H / "+(count-h)+"T";
+    document.getElementById("result").className="result";
+  }
+
+  updateStats();
+  var el=document.createElement("div");
+  el.textContent=(count>1?"["+results.join("")+"]":results[0]);
+  document.getElementById("history").prepend(el);
+}
+function updateStats(){
+  var total=heads+tails;
+  document.getElementById("hCount").textContent=heads;
+  document.getElementById("tCount").textContent=tails;
+  document.getElementById("total").textContent=total;
+  if(total>0){
+    document.getElementById("barH").style.width=(heads/total*100)+"%";
+    document.getElementById("barT").style.width=(tails/total*100)+"%";
+  }
+}
+function resetStats(){heads=0;tails=0;updateStats();document.getElementById("history").innerHTML="";document.getElementById("result").textContent="";}
+</script>
+</body>
+</html>
