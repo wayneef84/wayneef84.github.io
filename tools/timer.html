@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer & Stopwatch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+h1{font-size:1.5rem;opacity:.7}
+.display{font-size:5rem;font-variant-numeric:tabular-nums;letter-spacing:2px}
+.buttons{display:flex;gap:1rem}
+button{padding:.75rem 2rem;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;font-weight:600;transition:transform .1s}
+button:active{transform:scale(.95)}
+.start{background:#00c853;color:#000}.stop{background:#ff1744;color:#fff}.reset{background:#333;color:#fff}.lap{background:#2979ff;color:#fff}
+.laps{margin-top:1rem;max-height:200px;overflow-y:auto;width:300px}
+.laps div{padding:.3rem 0;border-bottom:1px solid #222;font-variant-numeric:tabular-nums;font-size:.9rem;opacity:.8}
+hr{width:80%;border:none;border-top:1px solid #222;margin:1rem 0}
+h2{font-size:1.2rem;opacity:.7}
+.timer-setup{display:flex;gap:.5rem;align-items:center}
+.timer-setup input{width:60px;padding:.5rem;border-radius:6px;border:1px solid #444;background:#111;color:#fff;text-align:center;font-size:1.1rem}
+.timer-display{font-size:3rem;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<h1>Stopwatch</h1>
+<div class="display" id="sw">00:00:00.000</div>
+<div class="buttons">
+<button class="start" onclick="swStart()">Start</button>
+<button class="stop" onclick="swStop()">Stop</button>
+<button class="lap" onclick="swLap()">Lap</button>
+<button class="reset" onclick="swReset()">Reset</button>
+</div>
+<div class="laps" id="laps"></div>
+<hr>
+<h2>Countdown Timer</h2>
+<div class="timer-setup">
+<input id="th" type="number" value="0" min="0" max="99" placeholder="H">:<input id="tm" type="number" value="5" min="0" max="59" placeholder="M">:<input id="ts" type="number" value="0" min="0" max="59" placeholder="S">
+</div>
+<div class="timer-display" id="td">00:05:00</div>
+<div class="buttons">
+<button class="start" onclick="tStart()">Start</button>
+<button class="stop" onclick="tStop()">Stop</button>
+<button class="reset" onclick="tReset()">Reset</button>
+</div>
+<script>
+var swElapsed=0,swRunning=false,swStart0=0,swInterval=null,lapCount=0;
+function swFormat(ms){var h=Math.floor(ms/3600000);var m=Math.floor((ms%3600000)/60000);var s=Math.floor((ms%60000)/1000);var ml=ms%1000;return(h<10?"0":"")+h+":"+(m<10?"0":"")+m+":"+(s<10?"0":"")+s+"."+(ml<100?"0":"")+(ml<10?"0":"")+ml;}
+function swTick(){swElapsed=Date.now()-swStart0;document.getElementById("sw").textContent=swFormat(swElapsed);}
+function swStart(){if(swRunning)return;swRunning=true;swStart0=Date.now()-swElapsed;swInterval=setInterval(swTick,37);}
+function swStop(){if(!swRunning)return;swRunning=false;clearInterval(swInterval);swTick();}
+function swLap(){if(!swRunning)return;lapCount++;var el=document.createElement("div");el.textContent="Lap "+lapCount+": "+swFormat(swElapsed);document.getElementById("laps").prepend(el);}
+function swReset(){swStop();swElapsed=0;lapCount=0;document.getElementById("sw").textContent=swFormat(0);document.getElementById("laps").innerHTML="";}
+var tRemain=0,tRunning=false,tInterval=null;
+function tFormat(s){var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);var sc=s%60;return(h<10?"0":"")+h+":"+(m<10?"0":"")+m+":"+(sc<10?"0":"")+sc;}
+function tGetTotal(){return(parseInt(document.getElementById("th").value)||0)*3600+(parseInt(document.getElementById("tm").value)||0)*60+(parseInt(document.getElementById("ts").value)||0);}
+function tTick(){if(tRemain<=0){tStop();document.getElementById("td").textContent="TIME UP!";document.getElementById("td").style.color="#ff1744";return;}tRemain--;document.getElementById("td").textContent=tFormat(tRemain);}
+function tStart(){if(tRunning)return;if(tRemain<=0)tRemain=tGetTotal();if(tRemain<=0)return;tRunning=true;document.getElementById("td").style.color="#fff";tInterval=setInterval(tTick,1000);}
+function tStop(){tRunning=false;clearInterval(tInterval);}
+function tReset(){tStop();tRemain=tGetTotal();document.getElementById("td").textContent=tFormat(tRemain);document.getElementById("td").style.color="#fff";}
+tReset();
+</script>
+</body>
+</html>

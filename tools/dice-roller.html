@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dice Roller</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem}
+h1{font-size:1.5rem;opacity:.7}
+.dice-types{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+.dt{padding:.75rem 1.25rem;border:2px solid #333;border-radius:10px;background:#111;color:#fff;cursor:pointer;font-weight:700}
+.dt:hover,.dt.active{border-color:#2979ff;background:#1a237e}
+.config{display:flex;gap:1rem;align-items:center}
+.config input{width:60px;padding:.5rem;border-radius:6px;border:1px solid #333;background:#111;color:#fff;text-align:center}
+.results{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;min-height:80px;align-items:center}
+.die{width:70px;height:70px;background:#111;border:2px solid #2979ff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;animation:pop .3s ease-out}
+@keyframes pop{0%{transform:scale(0) rotate(180deg)}100%{transform:scale(1) rotate(0)}}
+.total{font-size:2.5rem;font-weight:700;color:#00c853}
+button.roll{padding:1rem 3rem;background:#ff1744;color:#fff;border:none;border-radius:12px;font-size:1.3rem;cursor:pointer;font-weight:700}
+button.roll:active{transform:scale(.92)}
+.stats{font-size:.9rem;opacity:.6}
+.history{max-height:120px;overflow-y:auto;font-size:.85rem;opacity:.5;width:300px}
+.history div{padding:.2rem 0;border-bottom:1px solid #111}
+</style>
+</head>
+<body>
+<h1>Dice Roller</h1>
+<div class="dice-types">
+<div class="dt active" onclick="setDie(4)">d4</div>
+<div class="dt" onclick="setDie(6)">d6</div>
+<div class="dt" onclick="setDie(8)">d8</div>
+<div class="dt" onclick="setDie(10)">d10</div>
+<div class="dt" onclick="setDie(12)">d12</div>
+<div class="dt" onclick="setDie(20)">d20</div>
+<div class="dt" onclick="setDie(100)">d100</div>
+</div>
+<div class="config"><label>Dice:</label><input type="number" id="count" value="2" min="1" max="20"></div>
+<button class="roll" onclick="roll()">Roll!</button>
+<div class="results" id="results"></div>
+<div class="total" id="total"></div>
+<div class="stats" id="stats"></div>
+<div class="history" id="history"></div>
+<script>
+var sides=4,all=[],totalSum=0,rc=0;
+function setDie(s){sides=s;document.querySelectorAll(".dt").forEach(function(e){e.classList.toggle("active",e.textContent==="d"+s);});}
+function roll(){var n=Math.min(20,Math.max(1,parseInt(document.getElementById("count").value)||1));var c=document.getElementById("results");c.innerHTML="";var sum=0,vals=[];
+for(var i=0;i<n;i++){var v=Math.floor(Math.random()*sides)+1;vals.push(v);sum+=v;var d=document.createElement("div");d.className="die";d.textContent=v;c.appendChild(d);}
+document.getElementById("total").textContent="Total: "+sum;rc++;totalSum+=sum;all.push(sum);
+document.getElementById("stats").textContent="Rolls: "+rc+" | Avg: "+(totalSum/rc).toFixed(1)+" | Min: "+Math.min.apply(null,all)+" | Max: "+Math.max.apply(null,all);
+var h=document.createElement("div");h.textContent=n+"d"+sides+": ["+vals.join(", ")+"] = "+sum;document.getElementById("history").prepend(h);}
+</script>
+</body>
+</html>

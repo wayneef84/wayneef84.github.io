@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem}
+h1{font-size:1.5rem;opacity:.7}
+textarea{width:350px;height:80px;background:#111;border:1px solid #333;border-radius:10px;color:#fff;padding:1rem;font-size:1rem;resize:vertical}
+textarea:focus{outline:none;border-color:#2979ff}
+button{padding:.75rem 2rem;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;font-weight:600}
+.gen{background:#2979ff;color:#fff}
+canvas{border-radius:10px;background:#fff;padding:16px}
+.dl{background:#00c853;color:#000}
+.info{font-size:.8rem;opacity:.4}
+</style>
+</head>
+<body>
+<h1>QR Code Generator</h1>
+<textarea id="input" placeholder="Enter text or URL...">https://example.com</textarea>
+<button class="gen" onclick="makeQR()">Generate QR</button>
+<canvas id="qr" width="256" height="256"></canvas>
+<button class="dl" onclick="dl()">Download PNG</button>
+<p class="info">Simplified QR pattern — for visual/demo purposes</p>
+<script>
+var canvas=document.getElementById("qr"),ctx=canvas.getContext("2d");
+function makeQR(){
+  var text=document.getElementById("input").value;if(!text)return;
+  var size=256,modules=21,cell=Math.floor((size-32)/modules),off=Math.floor((size-cell*modules)/2);
+  var m=[];for(var i=0;i<modules;i++){m[i]=[];for(var j=0;j<modules;j++)m[i][j]=0;}
+  function finder(r,c){for(var i=0;i<=6;i++)for(var j=0;j<=6;j++){if(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4))m[r+i][c+j]=1;}}
+  finder(0,0);finder(0,14);finder(14,0);
+  for(var i=8;i<13;i++){m[6][i]=i%2===0?1:0;m[i][6]=i%2===0?1:0;}
+  var bits=[];for(var i=0;i<text.length;i++){var ch=text.charCodeAt(i);for(var b=7;b>=0;b--)bits.push((ch>>b)&1);}
+  var bi=0,hash=0;for(var i=0;i<text.length;i++)hash=((hash<<5)-hash+text.charCodeAt(i))|0;
+  for(var col=modules-1;col>=1;col-=2){if(col===6)col=5;for(var row=0;row<modules;row++)for(var c=0;c<2;c++){var cc=col-c;if((row<8&&cc<8)||(row<8&&cc>12)||(row>12&&cc<8)||row===6||cc===6)continue;m[row][cc]=bi<bits.length?bits[bi]:((hash>>>(bi%32))&1);bi++;}}
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,size,size);
+  for(var i=0;i<modules;i++)for(var j=0;j<modules;j++)if(m[i][j]){ctx.fillStyle="#000";ctx.fillRect(off+j*cell,off+i*cell,cell,cell);}
+}
+function dl(){var a=document.createElement("a");a.download="qr.png";a.href=canvas.toDataURL();a.click();}
+makeQR();
+</script>
+</body>
+</html>

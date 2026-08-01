@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Preview</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+h1{font-size:1.3rem;opacity:.7;padding:1rem;text-align:center}
+.container{display:flex;flex:1;gap:0}
+.pane{flex:1;padding:1rem;min-height:400px}
+textarea{width:100%;height:100%;min-height:400px;background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:1rem;font-family:monospace;font-size:.9rem;resize:none}
+textarea:focus{outline:none;border-color:#2979ff}
+.preview{background:#111;border:1px solid #333;border-radius:8px;padding:1.5rem;overflow-y:auto;line-height:1.7;min-height:400px}
+.preview h1,.preview h2,.preview h3{color:#2979ff;margin:1rem 0 .5rem}
+.preview h1{font-size:1.8rem;border-bottom:1px solid #333;padding-bottom:.5rem}
+.preview p{margin:.5rem 0}
+.preview code{background:#1a1a2e;padding:.15rem .4rem;border-radius:4px;font-family:monospace;color:#ffc107}
+.preview pre{background:#1a1a2e;padding:1rem;border-radius:8px;overflow-x:auto;margin:.75rem 0}
+.preview pre code{background:none;padding:0}
+.preview blockquote{border-left:3px solid #2979ff;padding-left:1rem;opacity:.8}
+.preview ul,.preview ol{padding-left:1.5rem}
+.preview strong{color:#ff9100}
+.preview a{color:#2979ff}
+.preview hr{border:none;border-top:1px solid #333;margin:1rem 0}
+@media(max-width:768px){.container{flex-direction:column}}
+</style>
+</head>
+<body>
+<h1>Markdown Preview</h1>
+<div class="container">
+<div class="pane"><textarea id="src" oninput="render()" placeholder="Type markdown...">
+# Hello World
+
+This is a **Markdown** preview tool.
+
+## Features
+- **Bold** and *italic*
+- `inline code`
+- [Links](https://example.com)
+- Lists and headings
+
+> Blockquote example
+
+---
+
+```
+function hello() { console.log("Hi!"); }
+```
+</textarea></div>
+<div class="pane"><div class="preview" id="preview"></div></div>
+</div>
+<script>
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function render(){var s=document.getElementById("src").value;var lines=s.split("\n");var h="";var inCode=false,inList=false,lt="";
+for(var i=0;i<lines.length;i++){var l=lines[i];
+if(l.trim().indexOf("```")===0){if(inCode){h+="</code></pre>";inCode=false;}else{h+="<pre><code>";inCode=true;}continue;}
+if(inCode){h+=esc(l)+"\n";continue;}
+if(inList&&!/^[\s]*[-*]\s/.test(l)&&!/^\s*\d+\.\s/.test(l)&&l.trim()!==""){h+="</"+lt+">";inList=false;}
+if(!l.trim()){if(inList){h+="</"+lt+">";inList=false;}continue;}
+if(/^---+$/.test(l.trim())){h+="<hr>";continue;}
+if(/^### /.test(l)){h+="<h3>"+il(l.slice(4))+"</h3>";continue;}
+if(/^## /.test(l)){h+="<h2>"+il(l.slice(3))+"</h2>";continue;}
+if(/^# /.test(l)){h+="<h1>"+il(l.slice(2))+"</h1>";continue;}
+if(/^> /.test(l)){h+="<blockquote>"+il(l.slice(2))+"</blockquote>";continue;}
+if(/^\s*[-*]\s/.test(l)){if(!inList||lt!=="ul"){if(inList)h+="</"+lt+">";h+="<ul>";inList=true;lt="ul";}h+="<li>"+il(l.replace(/^\s*[-*]\s/,""))+"</li>";continue;}
+if(/^\s*\d+\.\s/.test(l)){if(!inList||lt!=="ol"){if(inList)h+="</"+lt+">";h+="<ol>";inList=true;lt="ol";}h+="<li>"+il(l.replace(/^\s*\d+\.\s/,""))+"</li>";continue;}
+h+="<p>"+il(l)+"</p>";}
+if(inCode)h+="</code></pre>";if(inList)h+="</"+lt+">";
+document.getElementById("preview").innerHTML=h;}
+function il(s){s=esc(s);s=s.replace(/`([^`]+)`/g,"<code>$1</code>");s=s.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");s=s.replace(/\*([^*]+)\*/g,"<em>$1</em>");s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>');return s;}
+render();
+</script>
+</body>
+</html>

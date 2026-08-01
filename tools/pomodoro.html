@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#1a0a0a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;transition:background .5s}
+body.brk{background:#0a1a0a}
+h1{font-size:1.5rem;opacity:.7}
+.mode{font-size:1.2rem;font-weight:700;text-transform:uppercase;letter-spacing:2px}
+.mode.work{color:#ff1744}.mode.brk{color:#00c853}
+.ring{position:relative;width:250px;height:250px}
+.ring svg{transform:rotate(-90deg)}
+circle{fill:none;stroke-width:8}
+.bg{stroke:#222}
+.progress{stroke:#ff1744;stroke-linecap:round;transition:stroke-dashoffset .5s}
+.time{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3.5rem;font-variant-numeric:tabular-nums}
+.buttons{display:flex;gap:1rem}
+button{padding:.75rem 2rem;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:600}
+.start{background:#00c853;color:#000}.pause{background:#ffc107;color:#000}.reset{background:#333;color:#fff}.skip{background:#2979ff;color:#fff}
+.settings{display:flex;gap:1.5rem;font-size:.9rem}
+.settings input{width:50px;background:#111;border:1px solid #333;border-radius:4px;color:#fff;padding:.3rem;text-align:center}
+.dots{font-size:.9rem;opacity:.6}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 3px;border:2px solid #333}
+.dot.done{background:#ff1744;border-color:#ff1744}
+</style>
+</head>
+<body>
+<h1>Pomodoro Timer</h1>
+<div class="mode work" id="ml">WORK</div>
+<div class="ring"><svg width="250" height="250"><circle class="bg" cx="125" cy="125" r="110"/><circle class="progress" id="prog" cx="125" cy="125" r="110" stroke-dasharray="691.15" stroke-dashoffset="0"/></svg><div class="time" id="time">25:00</div></div>
+<div class="buttons">
+<button class="start" onclick="go()">Start</button>
+<button class="pause" onclick="pause()">Pause</button>
+<button class="skip" onclick="skip()">Skip</button>
+<button class="reset" onclick="resetAll()">Reset</button>
+</div>
+<div class="settings">
+<div><label>Work</label><br><input type="number" id="wm" value="25" min="1" max="60"> min</div>
+<div><label>Break</label><br><input type="number" id="sm" value="5" min="1" max="30"> min</div>
+<div><label>Long</label><br><input type="number" id="lm" value="15" min="1" max="60"> min</div>
+</div>
+<div class="dots" id="dots"></div>
+<script>
+var isW=true,run=false,iv=null,rem=25*60,tot=25*60,sc=0,circ=691.15;
+function upd(){var m=Math.floor(rem/60),s=rem%60;document.getElementById("time").textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;document.getElementById("prog").style.strokeDashoffset=circ*(rem/tot);}
+function go(){if(run)return;run=true;iv=setInterval(function(){rem--;if(rem<0){clearInterval(iv);run=false;if(isW){sc++;renderDots();}skip();return;}upd();},1000);}
+function pause(){run=false;clearInterval(iv);}
+function skip(){pause();if(isW){isW=false;var m=(sc%4===0&&sc>0)?parseInt(document.getElementById("lm").value):parseInt(document.getElementById("sm").value);tot=m*60;rem=tot;document.getElementById("ml").textContent="BREAK";document.getElementById("ml").className="mode brk";document.getElementById("prog").style.stroke="#00c853";document.body.className="brk";}else{isW=true;tot=parseInt(document.getElementById("wm").value)*60;rem=tot;document.getElementById("ml").textContent="WORK";document.getElementById("ml").className="mode work";document.getElementById("prog").style.stroke="#ff1744";document.body.className="";}upd();}
+function resetAll(){pause();isW=true;sc=0;tot=parseInt(document.getElementById("wm").value)*60;rem=tot;document.getElementById("ml").textContent="WORK";document.getElementById("ml").className="mode work";document.getElementById("prog").style.stroke="#ff1744";document.body.className="";upd();renderDots();}
+function renderDots(){var h="";for(var i=0;i<Math.max(sc,4);i++){h+='<span class="dot'+(i<sc?" done":"")+'"></span>';if((i+1)%4===0)h+=" ";}document.getElementById("dots").innerHTML=h;}
+upd();renderDots();
+</script>
+</body>
+</html>

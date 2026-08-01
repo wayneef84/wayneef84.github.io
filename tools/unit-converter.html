@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+h1{font-size:1.5rem;opacity:.7}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+.tab{padding:.5rem 1rem;border:1px solid #333;border-radius:6px;background:#111;color:#fff;cursor:pointer;font-size:.85rem}
+.tab.active{background:#2979ff;border-color:#2979ff}
+.converter{display:flex;flex-direction:column;align-items:center;gap:1rem;width:350px}
+input[type=number]{width:100%;padding:.75rem;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:1.3rem;text-align:center}
+input:focus{outline:none;border-color:#2979ff}
+select{width:100%;padding:.6rem;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:1rem}
+.arrow{font-size:2rem;opacity:.4}
+.result{font-size:2rem;font-weight:700;color:#00c853}
+</style>
+</head>
+<body>
+<h1>Unit Converter</h1>
+<div class="tabs" id="tabs"></div>
+<div class="converter">
+<input type="number" id="val" value="1" oninput="convert()">
+<select id="from" onchange="convert()"></select>
+<div class="arrow">&#8595;</div>
+<select id="to" onchange="convert()"></select>
+<div class="result" id="result"></div>
+</div>
+<script>
+var cats={Length:{m:1,km:1000,cm:0.01,mm:0.001,mi:1609.344,ft:0.3048,"in":0.0254},Weight:{kg:1,g:0.001,lb:0.453592,oz:0.0283495},Temperature:{C:"t",F:"t",K:"t"},Speed:{"m/s":1,"km/h":0.277778,"mph":0.44704},Volume:{L:1,mL:0.001,gal:3.78541,cup:0.236588},Time:{s:1,min:60,hr:3600,day:86400,week:604800},Data:{B:1,KB:1024,MB:1048576,GB:1073741824}};
+var cur="Length";
+function buildTabs(){var c=document.getElementById("tabs");c.innerHTML="";Object.keys(cats).forEach(function(k){var b=document.createElement("div");b.className="tab"+(k===cur?" active":"");b.textContent=k;b.onclick=function(){cur=k;buildTabs();buildSel();convert();};c.appendChild(b);});}
+function buildSel(){var u=Object.keys(cats[cur]);var f=document.getElementById("from"),t=document.getElementById("to");f.innerHTML="";t.innerHTML="";u.forEach(function(x){var o1=document.createElement("option");o1.value=x;o1.textContent=x;f.appendChild(o1);var o2=document.createElement("option");o2.value=x;o2.textContent=x;t.appendChild(o2);});if(u.length>1)t.selectedIndex=1;}
+function convert(){var v=parseFloat(document.getElementById("val").value),fr=document.getElementById("from").value,to=document.getElementById("to").value,r;if(isNaN(v)){document.getElementById("result").textContent="";return;}if(cur==="Temperature"){var c;if(fr==="C")c=v;else if(fr==="F")c=(v-32)*5/9;else c=v-273.15;if(to==="C")r=c;else if(to==="F")r=c*9/5+32;else r=c+273.15;}else{r=v*cats[cur][fr]/cats[cur][to];}var d=r%1===0?r.toString():r.toPrecision(8).replace(/\.?0+$/,"");document.getElementById("result").textContent=d+" "+to;}
+buildTabs();buildSel();convert();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Formatter</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem}
+h1{font-size:1.5rem;opacity:.7}
+.container{display:flex;gap:1rem;width:100%;max-width:1000px;flex:1}
+textarea{flex:1;min-height:400px;background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:1rem;font-family:monospace;font-size:.85rem;resize:none}
+textarea:focus{outline:none;border-color:#2979ff}
+.output{flex:1;min-height:400px;background:#111;border:1px solid #333;border-radius:8px;padding:1rem;font-family:monospace;font-size:.85rem;overflow:auto;white-space:pre;line-height:1.5}
+.toolbar{display:flex;gap:.5rem}
+button{padding:.5rem 1rem;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem}
+.format{background:#2979ff;color:#fff}.minify{background:#ff9100;color:#000}.copy{background:#00c853;color:#000}
+.error{color:#ff1744;font-size:.9rem}
+.str{color:#00c853}.num{color:#ffc107}.bool{color:#ff5252}.null{color:#888}.key{color:#2979ff}
+@media(max-width:768px){.container{flex-direction:column}}
+</style>
+</head>
+<body>
+<h1>JSON Formatter & Validator</h1>
+<div class="toolbar">
+<button class="format" onclick="format()">Format</button>
+<button class="minify" onclick="minify()">Minify</button>
+<button class="copy" onclick="copyOut()">Copy</button>
+</div>
+<div class="error" id="error"></div>
+<div class="container">
+<textarea id="input" placeholder="Paste JSON here..."></textarea>
+<div class="output" id="output">Formatted output appears here</div>
+</div>
+<script>
+function parse(){var s=document.getElementById("input").value.trim();document.getElementById("error").textContent="";if(!s)return null;try{return JSON.parse(s);}catch(e){document.getElementById("error").textContent="Error: "+e.message;return null;}}
+function highlight(j){j=j.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");return j.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,function(m){var c="num";if(/^"/.test(m)){c=/:$/.test(m)?"key":"str";}else if(/true|false/.test(m))c="bool";else if(/null/.test(m))c="null";return'<span class="'+c+'">'+m+"</span>";});}
+function format(){var o=parse();if(!o)return;var f=JSON.stringify(o,null,2);document.getElementById("output").innerHTML=highlight(f);}
+function minify(){var o=parse();if(!o)return;document.getElementById("output").innerHTML=highlight(JSON.stringify(o));}
+function copyOut(){navigator.clipboard.writeText(document.getElementById("output").textContent);}
+</script>
+</body>
+</html>

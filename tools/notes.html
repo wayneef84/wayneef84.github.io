@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Notes</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh;padding:2rem;display:flex;flex-direction:column;gap:1rem;max-width:700px;margin:0 auto}
+h1{font-size:1.5rem;opacity:.7}
+.toolbar{display:flex;gap:.5rem}
+button{padding:.5rem 1rem;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.9rem}
+.add{background:#00c853;color:#000}.export{background:#2979ff;color:#fff}.clear{background:#ff1744;color:#fff}
+.note{background:#111;border:1px solid #222;border-radius:10px;padding:1rem;margin-top:.5rem}
+.note textarea{width:100%;min-height:80px;background:transparent;border:none;color:#fff;font-size:1rem;resize:vertical;font-family:system-ui,sans-serif}
+.note textarea:focus{outline:none}
+.note-meta{display:flex;justify-content:space-between;margin-top:.5rem;font-size:.75rem;opacity:.5}
+.del{background:#333;color:#ff5252;font-size:.75rem;padding:.3rem .6rem}
+</style>
+</head>
+<body>
+<h1>Quick Notes</h1>
+<div class="toolbar">
+<button class="add" onclick="addNote()">+ New Note</button>
+<button class="export" onclick="exportNotes()">Export</button>
+<button class="clear" onclick="clearAll()">Clear All</button>
+</div>
+<div id="notes"></div>
+<script>
+var KEY="fong_notes";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return[];}}
+function save(n){localStorage.setItem(KEY,JSON.stringify(n));}
+function render(){var notes=load();var c=document.getElementById("notes");c.innerHTML="";for(var i=0;i<notes.length;i++){(function(idx){var d=document.createElement("div");d.className="note";var ta=document.createElement("textarea");ta.value=notes[idx].text;ta.placeholder="Type something...";ta.oninput=function(){notes[idx].text=ta.value;save(notes);};var m=document.createElement("div");m.className="note-meta";var t=document.createElement("span");t.textContent=notes[idx].date;var del=document.createElement("button");del.className="del";del.textContent="Delete";del.onclick=function(){notes.splice(idx,1);save(notes);render();};m.appendChild(t);m.appendChild(del);d.appendChild(ta);d.appendChild(m);c.appendChild(d);})(i);}}
+function addNote(){var n=load();n.unshift({text:"",date:new Date().toLocaleString()});save(n);render();document.querySelector(".note textarea").focus();}
+function exportNotes(){var n=load();var t=n.map(function(x,i){return"--- Note "+(i+1)+" ---\n"+x.text;}).join("\n\n");var b=new Blob([t],{type:"text/plain"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="notes.txt";a.click();}
+function clearAll(){if(confirm("Delete all?")){save([]);render();}}
+render();if(load().length===0)addNote();
+</script>
+</body>
+</html>
