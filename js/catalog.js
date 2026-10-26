@@ -170,6 +170,21 @@ var FONG_CATALOG = [
         theme: 'both'
     },
     {
+        id: 'byte-runner',
+        category: 'arcade',
+        icon: '🤖',
+        title: 'Byte Runner',
+        funTitle: 'BYTE RUNNER 🤖',
+        description: 'Self-playing pixel platformer that doubles as a live progress screen for long file copies (PowerShell monitor included).',
+        funDescription: 'A tiny robot runs your backup! Jump gaps, stomp bugs, grab data chips.',
+        version: 'v1.0.0',
+        href: './games/byte_runner/index.html',
+        hub: 'arcade',
+        featured: false,
+        isNew: true,
+        theme: 'both'
+    },
+    {
         id: 'sky-breakers',
         category: 'arcade',
         icon: '🚀',

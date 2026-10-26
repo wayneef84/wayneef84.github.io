@@ -38,6 +38,7 @@
 | Pong | `/games/pong/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Pong: Classic two-player mechanics, responsive |
 | Space Invaders | `/games/space_invaders/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Space Invaders: Grid-based shooter, score system |
 | Breakout | `/games/breakout/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Breakout: Brick-breaker mechanics, level progression |
+| Byte Runner | `/games/byte_runner/` | Arcade | Production | 85% | ✅ Yes | 2026-10-25 | v1.0.0: Self-playing platformer + live copy monitor (byte-runner.ps1), demo mode on the site |
 | Board Games | `/games/board/` | Arcade | Production | 75% | ✅ Yes | 2026-02-10 | Board Games Arcade collection (Chess, Checkers) |
 | Animal Stack | `/games/animal_stack/` | Arcade | Production | 75% | ✅ Yes | 2026-02-10 | Stacking gameplay, mobile touch controls |
 | XTC Ball | `/games/xtc_ball/` | Puzzle | Production | 75% | ✅ Yes | 2026-02-10 | Magic 8-ball inspired, DOM/SVG rendering, synthesized sound |
@@ -103,7 +104,7 @@ Educational:        4 games (Letter Tracing, J Quiz, J v1, variants)
 Card Games:         6 playable (Blackjack, War, 5-Card Poker, Solitaire)
                     2 stubs (Hold'em, 13-Card)
                     1 ruleset (Euchre)
-Arcade:             9 games (Slots, Sprunki, Snake, Pong, Space Invaders, etc.)
+Arcade:             10 games (Slots, Sprunki, Snake, Pong, Space Invaders, Byte Runner, etc.)
 Puzzle:             7 games (Flow, Sudoku, Minesweeper, Jigsaw, Mahjong, XTC Ball, PuzzLLer)
 Experimental:       3 games (Flash Classics trio, J v1, Snake variant)
 ```
