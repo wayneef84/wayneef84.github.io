@@ -18,6 +18,7 @@
  *   featured      - eligible for daily hero rotation
  *   isNew         - show NEW badge
  *   theme         - 'both' | 'pro' | 'fun'
+ *   spotlight     - optional. true = big "Just added" card at the top of the homepage (use for the 2 to 3 newest)
  *   hub           - 'arcade' | 'cards' | 'puzzle' | 'projects' | 'home'
  *
  * Optional fields (nav remap, all backward compatible; see docs/NAVIGATION.md):
@@ -185,13 +186,14 @@ var FONG_CATALOG = [
         icon: '🤖',
         title: 'Byte Runner',
         funTitle: 'BYTE RUNNER 🤖',
-        description: 'Self-playing pixel platformer that doubles as a live progress screen for long file copies (PowerShell monitor included).',
+        description: 'Self-playing pixel platformer. Jump gaps, stomp bugs and grab data chips, or take over and play it yourself.',
         funDescription: 'A tiny robot runs your backup! Jump gaps, stomp bugs, grab data chips.',
         version: 'v1.0.0',
         href: './games/byte_runner/index.html',
         hub: 'arcade',
         featured: false,
         isNew: true,
+        spotlight: true,
         theme: 'both'
     },
     {
@@ -207,6 +209,7 @@ var FONG_CATALOG = [
         hub: 'arcade',
         featured: true,
         isNew: true,
+        spotlight: true,
         theme: 'both'
     },
     {
@@ -264,6 +267,7 @@ var FONG_CATALOG = [
         hub: 'arcade',
         featured: false,
         isNew: true,
+        spotlight: true,
         theme: 'both'
     },
     {

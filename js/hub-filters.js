@@ -184,6 +184,34 @@
         host.innerHTML = html;
     }
 
+    // ─── JUST ADDED (big cards for spotlight entries) ───────────────────────
+    function renderJustAdded() {
+        var host = document.getElementById('just-added');
+        if (!host) return;
+        var cards = '';
+        for (var i = 0; i < CATALOG.length; i++) {
+            var e = CATALOG[i];
+            if (!e.spotlight || e.parent) continue;
+            var title = MODE === 'fun' ? (e.funTitle || e.title) : e.title;
+            var desc = MODE === 'fun' ? (e.funDescription || e.description) : e.description;
+            cards +=
+                '<a href="' + NAV.escapeHtml(e.href) + '" class="featured-app-card just-added-card">' +
+                    '<div class="featured-app-icon">' + e.icon + '</div>' +
+                    '<div class="featured-app-body">' +
+                        '<div class="featured-app-label"><span class="badge-new">NEW</span></div>' +
+                        '<h2 class="featured-app-title">' + NAV.escapeHtml(title) + '</h2>' +
+                        '<p class="featured-app-desc">' + NAV.escapeHtml(desc) + '</p>' +
+                        '<span class="featured-app-btn">' + (MODE === 'fun' ? '&#9658; PLAY!' : 'Play') + '</span>' +
+                    '</div>' +
+                '</a>';
+        }
+        if (!cards) return;
+        host.innerHTML =
+            '<div class="section-head"><h2 class="nav-section-title">' + (MODE === 'fun' ? 'JUST ADDED!' : 'Just added') + '</h2></div>' +
+            '<div class="just-added-grid">' + cards + '</div>';
+        host.hidden = false;
+    }
+
     // ─── NEW STRIP ──────────────────────────────────────────────────────────
     function renderNewStrip() {
         var host = document.getElementById('new-strip');
@@ -191,7 +219,7 @@
         var html = '';
         for (var i = 0; i < CATALOG.length; i++) {
             var e = CATALOG[i];
-            if (!e.isNew || e.parent) continue;
+            if (!e.isNew || e.spotlight || e.parent) continue;
             html += '<a class="new-chip" href="' + NAV.escapeHtml(e.href) + '">' + e.icon + ' ' +
                 NAV.escapeHtml(MODE === 'fun' ? (e.funTitle || e.title) : e.title) + '</a>';
         }
@@ -244,6 +272,7 @@
 
     // ─── INIT ───────────────────────────────────────────────────────────────
     function init() {
+        renderJustAdded();
         renderFeaturedApps();
         renderGroups();
         renderNewStrip();

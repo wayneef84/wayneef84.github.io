@@ -560,3 +560,12 @@
 .new-label { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; color: var(--accent-secondary); }
 .new-chip { padding: 0.5rem 0.9rem; min-height: 36px; box-sizing: border-box; border: 1px solid var(--card-border); border-radius: 99px; background: var(--bg-surface); color: var(--text-primary); text-decoration: none; font-size: 0.85rem; }
 .new-chip:hover { border-color: var(--accent-primary); }
+
+/* ── Just added (homepage spotlight) ────────────────────────────────────── */
+.just-added { padding: 1.5rem 5% 0; }
+.just-added .section-head { margin-bottom: 0.75rem; }
+.just-added-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 700px) { .just-added-grid { grid-template-columns: repeat(3, 1fr); } }
+.just-added-card { border-color: var(--accent-primary); }
+.just-added-card .featured-app-label { margin-bottom: 0.35rem; }
+.just-added-card .badge-new { margin-left: 0; }
