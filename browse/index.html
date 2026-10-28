@@ -31,6 +31,7 @@
     </main>
 
     <script src="../js/catalog.js"></script>
+    <script src="../js/player-stats.js"></script>
     <script src="../js/hub-nav.js"></script>
     <script>
         (function() {
@@ -98,6 +99,7 @@
                 document.getElementById('hub-count').textContent = shown + ' items';
             }
 
+            if (window.FongStats) { window.FongStats.trackClicks(); }
             renderTabs();
             render('');
             document.getElementById('browse-search').addEventListener('input', function() { render(this.value); });

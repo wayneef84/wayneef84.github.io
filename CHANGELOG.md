@@ -2,6 +2,16 @@
 
 All notable changes to the root hub will be documented in this file.
 
+## [Unreleased]
+### Added
+- **Shared play stats:** `js/player-stats.js` (`FongStats`) keeps plays, last played and best score per catalog id, on-device only. Old `playcount_*` keys migrate once. See `docs/PLAYER_STATS.md`.
+
+### Fixed
+- Header "Plays:" counter showed 0 (nothing wrote the counts it read). It now shows the real total, no 99 cap, large numbers as 1.2k.
+
+### Removed
+- Streak counters and flame from the Daily Command Center, and the `fong_streak_*` keys.
+
 ## [2.1.0] - 2026-02-15
 ### Added
 - **Documentation Rollout:** Generated `README.md` and `AGENT.md` for 23 games across Priority 1, 2, and 3 tiers, completing the documentation requirement for the active game roster.

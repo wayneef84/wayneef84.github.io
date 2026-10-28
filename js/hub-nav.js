@@ -76,7 +76,7 @@
         var desc = mode === 'fun' ? (e.funDescription || e.description) : e.description;
         var href = (rootPrefix || './') + String(e.href).replace(/^\.\//, '');
         var parent = e.parent && BY_ID[e.parent] ? '<div class="card-parent">in ' + escapeHtml(BY_ID[e.parent].title) + '</div>' : '';
-        return '<a href="' + escapeHtml(href) + '" class="game-card" role="listitem" data-category="' + e.category + '">' +
+        return '<a href="' + escapeHtml(href) + '" class="game-card" role="listitem" data-game-id="' + escapeHtml(e.id) + '" data-category="' + e.category + '">' +
             '<div class="card-top"><span class="card-icon">' + e.icon + '</span>' +
             '<span class="category-tag tag-' + e.category + '">' + (CAT_LABEL[e.category] || e.category) + '</span></div>' +
             '<div class="game-title">' + escapeHtml(title) + (e.isNew ? '<span class="badge-new">NEW</span>' : '') + '</div>' +
