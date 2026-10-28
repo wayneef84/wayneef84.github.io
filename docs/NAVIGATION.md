@@ -50,8 +50,8 @@ Orphan count: 10 (plus archive/index_v1.4.html and archive/test-mobile.html, whi
 ### Dead links
 
 - js/catalog.js: 0.
-- wosky/index.html links `./calc-v2/combined.html` which does not exist (1 dead link, outside the catalog; page not edited, entry not added to the catalog).
-- js/projects.js (legacy list, not loaded by any page): `games/solitaire/index.html` does not exist (real path is games/cards/solitaire/). Left alone.
+- Fixed: `wosky/index.html` had a card for `./calc-v2/combined.html`, which was never built. The card was removed. The live Calc v2 Unified Planner (`wosky/calc-v2/index.html`) covers charms, chief gear, hero gear, plan and reference.
+- Fixed: `js/projects.js` (unused legacy list with a dead `games/solitaire/` path) was deleted. It stays in git history.
 
 ### Duplicates and overlaps
 
@@ -63,7 +63,7 @@ Orphan count: 10 (plus archive/index_v1.4.html and archive/test-mobile.html, whi
 | games/snake and games/snake/negen_version | Remaster, linked from Snake only. Listed separately |
 | wosky/charms, gear, hero-gear and wosky/calc-v2/charms, gear, hero-gear | Parallel calculator generations. Both stay listed |
 | games/cards poker-hall catalog entry and games/cards hub | Same href. Poker Hall entry opens the whole card hub |
-| js/catalog.js and js/projects.js | Two catalogs. projects.js is unused legacy |
+| js/catalog.js | The only catalog. The old unused `js/projects.js` was deleted |
 
 ## 2. Structure after the remap
 
@@ -89,6 +89,6 @@ Fun Mode (`?mode=fun`) is carried to the browse pages and sub-hubs. Browse and s
 
 ## 4. Decisions and leftovers
 
-- `wosky/index.html` links to `./calc-v2/combined.html`, which does not exist. Page not edited.
-- `js/projects.js` is an unused second catalog with a dead path. Left alone.
+- Fixed: the dead `combined.html` card on `wosky/index.html` was removed.
+- Fixed: `js/projects.js` was deleted (it is in git history if needed).
 - Untouched, intentionally not linked: `archive/*.html`, `games/cards/euchre/` (ruleset only, no page), `games/cards/test*.html`.
