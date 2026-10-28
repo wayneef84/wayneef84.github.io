@@ -1,5 +1,23 @@
 # Byte Runner Quest: Changelog
 
+## v1.1.0 (2026-10-27)
+Mobile controls, for phones stuck in portrait and for young players.
+
+### Added
+- Settings panel (gear button): Fullscreen, Rotate view, Auto-run and direction, Left-handed, Vibrate on death, Max lives. Saved in `localStorage['fong.byteRunnerQuest.settings.v1']`.
+- Fullscreen button using the Fullscreen API (webkit prefix too). Where it is missing (iPhone Safari) a fixed fill-screen mode with a small note. Same button exits, Esc exits. Landscape lock is tried in fullscreen and any failure is ignored.
+- Rotate view: CSS-rotates the whole game 90 degrees and fits it to a portrait screen, with touch points mapped back. Works with no device rotation at all.
+- Auto-run (right by default, or left): the hero runs by itself, big JUMP button, tap anywhere to jump, TURN button, arrow keys also turn.
+- Lives: max 1, 3 (default), 5 or Unlimited (practice), hearts in the HUD, deaths counted per stage and in total, continues counted. Out of lives overlay with Continue stage (same stage, lives refilled, earlier progress kept) and Level select.
+- Vibrate on death (off by default, disabled with a note where `navigator.vibrate` is missing).
+- Left-handed layout.
+
+### Changed
+- Touch input uses pointer events with `touch-action: none`: jump on pointerdown, multi-touch (hold a direction and jump), pressed state, 64 px minimum buttons, no scrolling, zooming, text selection or long-press menu.
+- Touch devices get a fixed full-viewport layout, landscape puts the buttons over the sides of the screen.
+- New script `js/controls.js` (layout, pointer buttons, settings). Level physics, keyboard play and the solver are unchanged.
+- Save file gains `deaths`, `continues` and per-level `deaths` (additive, no migration).
+
 ## v1.0.0 (2026-10-25)
 First release. Branched off Byte Runner (the self playing backup monitor) into a standalone game.
 

@@ -1,5 +1,5 @@
 /*
- * Byte Runner Quest v1.0.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
+ * Byte Runner Quest v1.1.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
  * Screens: title (attract demo) > level select > play > pause / clear / run over.
  */
 (function () {
@@ -130,6 +130,7 @@ var LEGS = {
 var HERO = {}, lk, hs;
 for (lk in LEGS) if (LEGS.hasOwnProperty(lk)) { hs = sprite(HERO_TOP.concat(LEGS[lk]), HP); HERO[lk] = [hs, flipped(hs)]; }
 
+var HEART = sprite(['.RR.RR.', 'RRRRRRR', 'RRwRRRR', '.RRRRR.', '..RRR..', '...R...'], { R: '#ff5d73', w: '#ffd1da' });
 var BP = { K:'#1b1830', P:'#9b5de5', Q:'#d0a8ff', W:'#ffffff', G:'#7cf27c' };
 var BUG_BODY = ['..G......G..','...G....G...','...KKKKKK...','..KPPPPPPK..','.KPWKPPWKPK.','.KPPPPPPPPK.','.KQPQPPQPQK.','..KKKKKKKK..'];
 var BUG = [sprite(BUG_BODY.concat(['..K.K..K.K..']), BP), sprite(BUG_BODY.concat(['.K..K..K..K.']), BP)];
@@ -186,7 +187,7 @@ var SFX = {
 function sfx(name) { if (SFX[name]) SFX[name](); }
 
 /* ================= save data ================= */
-var save = { v: 1, unlocked: 1, lv: {}, endless: 0, muted: false };
+var save = { v: 1, unlocked: 1, lv: {}, endless: 0, muted: false, deaths: 0, continues: 0 };
 (function () {
   try {
     var raw = window.localStorage && localStorage.getItem(SAVE_KEY), o;
@@ -197,13 +198,15 @@ var save = { v: 1, unlocked: 1, lv: {}, endless: 0, muted: false };
         if (o.lv) save.lv = o.lv;
         if (o.endless) save.endless = o.endless;
         save.muted = !!o.muted;
+        if (o.deaths > 0) save.deaths = o.deaths | 0;
+        if (o.continues > 0) save.continues = o.continues | 0;
       }
     }
   } catch (e) { }
   if (/[?&]unlock\b/.test(location.search)) save.unlocked = NLEV;
 })();
 function writeSave() { try { if (window.localStorage) localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { } }
-function levelSave(id) { if (!save.lv[id]) save.lv[id] = { done: false, best: 0, disks: [false, false, false] }; return save.lv[id]; }
+function levelSave(id) { if (!save.lv[id]) save.lv[id] = { done: false, best: 0, disks: [false, false, false], deaths: 0 }; return save.lv[id]; }
 function totalDisks() {
   var n = 0, k, d, i;
   for (k in save.lv) if (save.lv.hasOwnProperty(k)) { d = save.lv[k].disks || []; for (i = 0; i < 3; i++) if (d[i]) n++; }
@@ -216,38 +219,19 @@ var down = {}, hit = {};
 function keyDown(k) { if (!down[k]) hit[k] = true; down[k] = true; }
 function keyUp(k) { down[k] = false; }
 document.addEventListener('keydown', function (e) {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.ctrlKey || e.metaKey || e.altKey || UI.panelOpen()) return;
   var k = KEYMAP[e.keyCode];
   audioInit();
   if (k) { e.preventDefault(); keyDown(k); }
 });
 document.addEventListener('keyup', function (e) { var k = KEYMAP[e.keyCode]; if (k) keyUp(k); });
-window.addEventListener('blur', function () { var k; for (k in down) if (down.hasOwnProperty(k)) down[k] = false; if (state === 'play') openPause(); });
+window.addEventListener('blur', function () { UI.releaseAll(); var k; for (k in down) if (down.hasOwnProperty(k)) down[k] = false; if (state === 'play') openPause(); });
 
-var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-(function () {
-  var pad = document.getElementById('touch'), btns, i;
-  if (!pad) return;
-  if (TOUCH) pad.className = 'touch on';
-  btns = pad.getElementsByTagName('button');
-  function bind(btn) {
-    var k = btn.getAttribute('data-k');
-    function dn(e) { e.preventDefault(); audioInit(); keyDown(k); }
-    function up(e) { e.preventDefault(); keyUp(k); }
-    btn.addEventListener('touchstart', dn); btn.addEventListener('touchend', up); btn.addEventListener('touchcancel', up);
-    btn.addEventListener('mousedown', dn); btn.addEventListener('mouseup', up); btn.addEventListener('mouseleave', function () { if (down[k]) keyUp(k); });
-  }
-  for (i = 0; i < btns.length; i++) bind(btns[i]);
-})();
+var UI = window.BRQ_UI;
+var TOUCH = UI.touch;
 
-/* taps and clicks on the canvas drive the menus */
+/* taps on the canvas drive the menus (controls.js maps the point, also when the view is rotated) */
 var taps = [];
-function canvasPoint(cx, cy) { var r = cv.getBoundingClientRect(); return { x: (cx - r.left) * W / r.width, y: (cy - r.top) * H / r.height }; }
-cv.addEventListener('mousedown', function (e) { audioInit(); taps.push(canvasPoint(e.clientX, e.clientY)); });
-cv.addEventListener('touchstart', function (e) {
-  audioInit();
-  if (e.changedTouches && e.changedTouches[0]) { taps.push(canvasPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY)); e.preventDefault(); }
-});
 var menuRects = [];
 function tapIn(p, r) { return p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h; }
 
@@ -354,6 +338,8 @@ var banner = null;
 var menuSel = 0, selRow = 0, selCol = 0;
 var lastLevel = 0, allClearShown = false;
 var autoMode = false;                 /* hero driven by the autopilot (title demo) */
+var outT = 0;                         /* frames to ignore input after the Out of lives overlay appears */
+var curDir = 1;                       /* auto-run direction right now (setting is the default, TURN flips it) */
 
 function resetHero(x, y) {
   hero.x = x; hero.y = y; hero.vx = 0; hero.vy = 0; hero.onGround = false; hero.face = 1; hero.hurt = 0;
@@ -374,11 +360,12 @@ function toSelect() {
   state = 'select'; autoMode = false; banner = null;
   if (selRow < 4 && selRow * 3 + selCol >= save.unlocked) { selRow = Math.floor((save.unlocked - 1) / 3); selCol = (save.unlocked - 1) % 3; }
 }
-function startLevel(i) {
-  L = makeStatic(i); lastLevel = i; autoMode = false;
+function livesMax() { return UI.cfg.lives === 0 ? -1 : UI.cfg.lives; }   /* -1 = unlimited (practice) */
+function startLevel(i, carry) {
+  L = makeStatic(i); lastLevel = i; autoMode = false; setRunDir(UI.cfg.autoDir);
   resetHero(L.start.x, L.start.y);
   cp = { x: L.start.x, y: L.start.y };
-  run = { frames: 0, chips: 0, deaths: 0, disks: [false, false, false], stomps: 0 };
+  run = { frames: 0, chips: 0, deaths: carry ? carry.deaths : 0, continues: carry ? carry.continues : 0, lives: livesMax(), disks: [false, false, false], stomps: 0 };
   camX = clamp(hero.x - W * 0.42, 0, L.width * T - W); lf = 0;
   parts = []; floats = []; fwQueue = [];
   updateMovers();
@@ -386,13 +373,14 @@ function startLevel(i) {
   setBanner(L.id + ' ' + L.name, THEMES[L.theme].name, THEMES[L.theme].edge, 150);
 }
 function startEndless() {
-  L = makeProc(Math.floor(Math.random() * 1e9), true); lastLevel = -1; autoMode = false;
+  L = makeProc(Math.floor(Math.random() * 1e9), true); lastLevel = -1; autoMode = false; setRunDir(UI.cfg.autoDir);
   resetHero(48, 9 * T - 14); cp = null;
   run = { frames: 0, chips: 0, deaths: 0, disks: [false, false, false], stomps: 0, dist: 0 };
   camX = 0; lf = 0; parts = []; floats = []; fwQueue = [];
   state = 'play';
   setBanner('ENDLESS RUN', 'HOW FAR CAN YOU GO?', '#5ef2ff', 150);
 }
+function setRunDir(d) { curDir = d; UI.setDir(d); }
 function openPause() { if (state !== 'play') return; state = 'pause'; menuSel = 0; }
 
 /* ================= effects ================= */
@@ -501,6 +489,11 @@ function killHero() {
   if (hero.dead) return;
   if (autoMode) { autoRespawn(); return; }
   hero.dead = 1; run.deaths++; sfx('die');
+  if (!forcedInput) {                                  /* not while the solver searches */
+    save.deaths = (save.deaths | 0) + 1;
+    if (L.kind === 'static') { levelSave(L.id).deaths = (levelSave(L.id).deaths | 0) + 1; if (run.lives > 0) run.lives--; }
+    writeSave(); UI.vibrate();
+  } else if (L.kind === 'static' && run.lives > 0) run.lives--;
   burst(hero.x + 5, Math.min(hero.y + 7, H - 8), ['#eef3f6', '#23b5a5', '#ffd447', '#ff8a3d'], 22, 1.8);
 }
 function autoRespawn() {
@@ -531,6 +524,7 @@ function stepPlay() {
     hero.dead++;
     if (hero.dead > 55) {
       if (L.kind === 'proc' && L.endless) { endRun(); return; }
+      if (run.lives === 0) { outOfLives(); return; }
       respawnAtCheckpoint();
     }
     stepEffects(); updateCam(); return;
@@ -550,6 +544,10 @@ function stepPlay() {
     if (inp.jump && hero.onGround) { hero.vy = inp.v; hero.onGround = false; }
   } else {
     inp = forcedInput || { left: !!down.L, right: !!down.R, jumpPressed: !!(hit.J || hit.U), jumpHeld: !!(down.J || down.U) };
+    if (!forcedInput && UI.cfg.auto) {                 /* auto-run: always running, arrow keys turn around */
+      if (hit.L) setRunDir(-1); else if (hit.R) setRunDir(1);
+      inp.left = curDir < 0; inp.right = curDir > 0;
+    }
     dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
     ice = L.ice && hero.onGround && hero.surface === '#';
     acc = hero.onGround ? (ice ? 0.05 : 0.3) : 0.18;
@@ -699,6 +697,12 @@ function levelClear() {
   sfx('clear');
   for (i = 0; i < 6; i++) fwQueue.push(frame + i * 14);
 }
+function outOfLives() { state = 'out'; menuSel = 0; outT = 30; }
+function continueStage() {
+  var carry = { deaths: run.deaths, continues: (run.continues | 0) + 1 };
+  save.continues = (save.continues | 0) + 1; writeSave(); sfx('ok');
+  startLevel(lastLevel, carry);                        /* same stage, lives refilled, earlier stages untouched */
+}
 function endRun() {
   state = 'over'; menuSel = 0;
   run.newBest = run.dist > (save.endless || 0);
@@ -743,6 +747,11 @@ function stepMenus() {
       else if (items[pick] === 'RETRY') startLevel(lastLevel);
       else toSelect();
     }
+  } else if (state === 'out') {
+    stepEffects();
+    if (outT > 0) outT--;
+    else if (hit.A || hit.J) continueStage();
+    else if (hit.B) { sfx('ok'); toSelect(); }
   } else if (state === 'over') {
     stepEffects();
     pick = navMenu(2);
@@ -957,6 +966,12 @@ function diskIcon(x, y, got, saved) {
   rect(x, y, 5, 5, '#1b1830');
   rect(x + 1, y + 1, 3, 3, got ? '#ffd447' : (saved ? '#8a6412' : '#3b3566'));
 }
+function drawLives(x, y) {
+  var i, rows = ['.XX.XX.', 'X..X..X', '.XX.XX.'];
+  g.drawImage(HEART, x, y);
+  if (run.lives < 0) { for (i = 0; i < 21; i++) if (rows[(i / 7) | 0].charAt(i % 7) === 'X') rect(x + 9 + (i % 7), y + 2 + ((i / 7) | 0), 1, 1, '#ffffff'); }
+  else txt('x' + run.lives, x + 9, y + 1, run.lives === 1 ? '#ff5d73' : '#ffffff');
+}
 function drawPlayHud(TH) {
   var i, s, ls, label;
   g.fillStyle = 'rgba(8,6,20,.62)'; g.fillRect(0, 0, W, 11);
@@ -967,6 +982,7 @@ function drawPlayHud(TH) {
     txt('x' + run.chips + '/' + L.totalChips, 69, 3, '#ffffff');
     ls = save.lv[L.id];
     for (i = 0; i < 3; i++) diskIcon(112 + i * 7, 3, run.disks[i], ls && ls.disks && ls.disks[i]);
+    drawLives(142, 2);
     s = fmtTime(run.frames); txt(s, W - 4 - tw(s), 3, '#ffffff');
   } else {
     txt('RUN', 4, 3, TH.edge);
@@ -1052,6 +1068,7 @@ function renderPlay() {
   drawPlayHud(TH);
   drawBanner();
 }
+function renderOut() { renderPlay(); g.fillStyle = 'rgba(8,6,20,.5)'; g.fillRect(0, 0, W, H); }
 function renderPause() {
   renderPlay();
   g.fillStyle = 'rgba(8,6,20,.7)'; g.fillRect(0, 0, W, H);
@@ -1068,7 +1085,7 @@ function renderClear() {
   txtC(L.id + ' ' + L.name, 40, '#ece9ff');
   s = 'TIME ' + fmtTime(run.frames) + (run.newBest ? '  NEW BEST!' : '  BEST ' + fmtTime(ls.best));
   txtC(s, 54, run.newBest ? '#7cf27c' : '#ffffff');
-  txtC('CHIPS ' + run.chips + '/' + L.totalChips + '   DEATHS ' + run.deaths, 64, '#ffffff');
+  txtC('CHIPS ' + run.chips + '/' + L.totalChips + '   DEATHS ' + run.deaths + (run.continues ? '   CONTINUES ' + run.continues : ''), 64, '#ffffff');
   txt('DISKS', 118, 75, '#ffffff');
   for (i = 0; i < 3; i++) diskIcon(142 + i * 9, 75, run.disks[i], ls.disks[i]);
   drawMenu(clearItems(), 96);
@@ -1089,6 +1106,7 @@ function render() {
   if (state === 'title') renderTitle();
   else if (state === 'select') renderSelect();
   else if (state === 'play') renderPlay();
+  else if (state === 'out') renderOut();
   else if (state === 'pause') renderPause();
   else if (state === 'clear') renderClear();
   else if (state === 'over') renderOver();
@@ -1100,7 +1118,12 @@ function step() {
   frame++;
   stepMenus();
   hit = {}; taps = [];
+  if (uiState !== state) {
+    uiState = state;
+    UI.showOut(state === 'out', run ? run.deaths : 0, run ? run.continues | 0 : 0);
+  }
 }
+var uiState = '';
 var acc = 0, last = now();
 var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (cb) { return setTimeout(function () { cb(now()); }, 16); };
 function loop(t) {
@@ -1111,8 +1134,23 @@ function loop(t) {
   raf(loop);
 }
 var pauseBtn = document.getElementById('pausebtn');
-if (pauseBtn) pauseBtn.addEventListener('click', function () { if (state === 'play') openPause(); else if (state === 'pause') state = 'play'; });
+if (pauseBtn) pauseBtn.addEventListener('click', function () { if (state === 'out') return; if (state === 'play') openPause(); else if (state === 'pause') state = 'play'; });
 
+UI.init({
+  press: function (k) { audioInit(); keyDown(k); },
+  release: function (k) { keyUp(k); },
+  tap: function (p) { audioInit(); taps.push(p); },
+  continueStage: function () { if (state === 'out') continueStage(); },
+  levels: function () { if (state === 'out') { sfx('ok'); toSelect(); } },
+  turn: function () { audioInit(); setRunDir(-curDir); sfx('move'); },
+  getState: function () { return state; },
+  pause: function () { if (state === 'play') { openPause(); return true; } return false; },
+  resume: function () { if (state === 'pause') state = 'play'; },
+  changed: function (name) {
+    if (name === 'autoDir' || name === 'auto') setRunDir(UI.cfg.autoDir);
+    if (name === 'lives' && L && L.kind === 'static' && run && (state === 'play' || state === 'pause')) run.lives = livesMax();   /* refill right away */
+  }
+});
 toTitle();
 raf(loop);
 
@@ -1137,8 +1175,8 @@ function restore(js) {
 window.__brq = {
   state: function () { return state; }, hero: hero, level: function () { return L; }, run: function () { return run; },
   startLevel: startLevel, startEndless: startEndless, toSelect: toSelect, toTitle: toTitle,
-  snapshot: snapshot, restore: restore, save: function () { return save; },
+  snapshot: snapshot, restore: restore, save: function () { return save; }, down: down,
   stepWith: function (inp) { forcedInput = inp; frame++; if (state === 'play') stepPlay(); forcedInput = null; return state; },
-  step: step, render: render, setSel: function (r, c) { selRow = r; selCol = c; }
+  step: step, render: render, livesMax: livesMax, setSel: function (r, c) { selRow = r; selCol = c; }
 };
 })();
