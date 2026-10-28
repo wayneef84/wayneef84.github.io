@@ -342,10 +342,12 @@
         return true;
     }
     function moveItem(list, from, to) {
-        if (to < 0 || to >= list.length) return;
+        if (from < 0 || to < 0 || to >= list.length) return;
         var x = list.splice(from, 1)[0];
         list.splice(to, 0, x);
     }
+    // Move by id so a stale button can never move the wrong row
+    function moveId(list, id, delta) { var at = list.indexOf(id); moveItem(list, at, at + delta); }
     function newGroup(label) {
         var base = slug(label), id = base, n = 1;
         var ids = {}; for (var i = 0; i < CATALOG.length; i++) ids[CATALOG[i].id] = true;
@@ -374,8 +376,8 @@
                 hide.addEventListener('change', function () { commit(function (x) { toggleIn(x.hidden, id, hide.checked, V.LIMITS.hidden); }); say(hide.checked ? 'Group hidden.' : 'Group shown.'); });
                 ol.appendChild(el('li', { cls: 'tp-orderrow' }, [
                     el('span', { cls: 'tp-label', text: t }),
-                    btn('Up', function () { var o = orderList(cfg()); moveItem(o, idx, idx - 1); commit(function (x) { x.order = o; }); renderTab(); }, { label: 'Move ' + t + ' up', disabled: idx === 0, fk: 'up-' + id }),
-                    btn('Down', function () { var o = orderList(cfg()); moveItem(o, idx, idx + 1); commit(function (x) { x.order = o; }); renderTab(); }, { label: 'Move ' + t + ' down', disabled: idx === order.length - 1, fk: 'down-' + id }),
+                    btn('Up', function () { var o = orderList(cfg()); moveId(o, id, -1); commit(function (x) { x.order = o; }); renderTab(); }, { label: 'Move ' + t + ' up', disabled: idx === 0, fk: 'up-' + id }),
+                    btn('Down', function () { var o = orderList(cfg()); moveId(o, id, 1); commit(function (x) { x.order = o; }); renderTab(); }, { label: 'Move ' + t + ' down', disabled: idx === order.length - 1, fk: 'down-' + id }),
                     el('label', { cls: 'tp-check' }, [hide, el('span', { text: 'Hide' })])
                 ]));
             })(order[i], i);
@@ -398,8 +400,8 @@
                 var e = entryFor(id);
                 box.appendChild(el('div', { cls: 'tp-itemrow' }, [
                     el('span', { cls: 'tp-label', text: e ? titleOf(e) : id }),
-                    btn('Up', function () { commit(function (x) { moveItem(x.pinned, idx, idx - 1); }); renderTab(); }, { label: 'Move up', disabled: idx === 0 }),
-                    btn('Down', function () { commit(function (x) { moveItem(x.pinned, idx, idx + 1); }); renderTab(); }, { label: 'Move down', disabled: idx === c.pinned.length - 1 }),
+                    btn('Up', function () { commit(function (x) { moveId(x.pinned, id, -1); }); renderTab(); }, { label: 'Move up', disabled: idx === 0 }),
+                    btn('Down', function () { commit(function (x) { moveId(x.pinned, id, 1); }); renderTab(); }, { label: 'Move down', disabled: idx === c.pinned.length - 1 }),
                     btn('Unpin', function () { commit(function (x) { toggleIn(x.pinned, id, false, 12); }); renderTab(); }, { label: 'Unpin ' + (e ? titleOf(e) : id) })
                 ]));
             })(c.pinned[i], i);
@@ -417,12 +419,12 @@
                     if (q && (e.id + ' ' + e.title).toLowerCase().indexOf(q) === -1) return;
                     n++;
                     var pinOn = cur.pinned.indexOf(e.id) !== -1, hidOn = cur.hidden.indexOf(e.id) !== -1;
-                    var pin = el('input', { type: 'checkbox', 'aria-label': 'Pin ' + titleOf(e) });
+                    var pin = el('input', { type: 'checkbox', 'aria-label': 'Pin ' + titleOf(e), 'data-fk': 'pin-' + e.id });
                     pin.checked = pinOn;
                     pin.addEventListener('change', function () {
                         var ok = true;
                         commit(function (x) { ok = toggleIn(x.pinned, e.id, pin.checked, 12); });
-                        if (!ok) { pin.checked = false; say('You can pin up to 12.'); } else say(pin.checked ? 'Pinned.' : 'Unpinned.');
+                        if (!ok) { pin.checked = false; say('You can pin up to 12.'); } else { say(pin.checked ? 'Pinned.' : 'Unpinned.'); renderTab(); }
                     });
                     var hid = el('input', { type: 'checkbox', 'aria-label': 'Hide ' + titleOf(e) });
                     hid.checked = hidOn;
@@ -480,9 +482,9 @@
                 var e = entryFor(id);
                 box.appendChild(el('div', { cls: 'tp-itemrow' }, [
                     el('span', { cls: 'tp-label', text: e ? titleOf(e) : id }),
-                    btn('Up', function () { commit(function (x) { moveItem(x.groups[idx].items, k, k - 1); }); renderTabKeep(); }, { label: 'Move up', disabled: k === 0 }),
-                    btn('Down', function () { commit(function (x) { moveItem(x.groups[idx].items, k, k + 1); }); renderTabKeep(); }, { label: 'Move down', disabled: k === g.items.length - 1 }),
-                    btn('Remove', function () { commit(function (x) { x.groups[idx].items.splice(k, 1); }); renderTabKeep(); }, { label: 'Remove ' + (e ? titleOf(e) : id) })
+                    btn('Up', function () { commit(function (x) { moveId(x.groups[idx].items, id, -1); }); renderTabKeep(); }, { label: 'Move up', disabled: k === 0 }),
+                    btn('Down', function () { commit(function (x) { moveId(x.groups[idx].items, id, 1); }); renderTabKeep(); }, { label: 'Move down', disabled: k === g.items.length - 1 }),
+                    btn('Remove', function () { commit(function (x) { var at = x.groups[idx].items.indexOf(id); if (at !== -1) x.groups[idx].items.splice(at, 1); }); renderTabKeep(); }, { label: 'Remove ' + (e ? titleOf(e) : id) })
                 ]));
             })(g.items[i], i);
         }

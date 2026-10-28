@@ -107,22 +107,23 @@
         }
         return out;
     }
-    /** Returns a new config with failing text colors nudged until they pass. Does not apply it. */
+    /**
+     * Returns a new config with text colors nudged until they pass on the
+     * background. If the card color still clashes with the text it moves toward
+     * the background. Does not apply it.
+     */
     function fixContrast(cfg) {
-        var next = clone(cfg), pass;
-        for (pass = 0; pass < 2; pass++) {
-            var rep = contrastReport(next);
-            for (var i = 0; i < rep.length; i++) {
-                if (!rep[i].ok) {
-                    // Fix the text color against the worst of its backgrounds.
-                    var tok = rep[i].fixToken;
-                    var fixed = Core.fixText(effectivePalette(next)[tok], effectivePalette(next).bg, 4.5);
-                    fixed = Core.fixText(fixed, effectivePalette(next).surface, 4.5);
-                    fixed = Core.fixText(fixed, effectivePalette(next).bg, 4.5);
-                    next.palette[tok] = fixed;
-                }
-            }
+        var next = clone(cfg), e = effectivePalette(next);
+        var text = Core.fixText(e.text, e.bg, 4.5);
+        var dim = Core.fixText(e.dim, e.bg, 4.5);
+        var surface = e.surface;
+        if (Core.contrast(text, surface) < 4.5 || Core.contrast(dim, surface) < 4.5) {
+            surface = Core.mix(e.bg, Core.onAccent(e.bg) === '#000000' ? '#ffffff' : '#000000', 0.5);
+            if (Core.contrast(text, surface) < 4.5 || Core.contrast(dim, surface) < 4.5) surface = e.bg;
         }
+        if (text !== Core.norm(e.text)) next.palette.text = text;
+        if (dim !== Core.norm(e.dim)) next.palette.dim = dim;
+        if (surface !== Core.norm(e.surface)) next.palette.surface = surface;
         return next;
     }
 
