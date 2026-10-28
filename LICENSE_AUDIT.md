@@ -26,6 +26,19 @@ Code hosted directly in this repository (e.g., in `lib/` folders).
 
 ---
 
+## 🔤 Bundled Fonts (Local)
+
+Fonts hosted in `assets/fonts/`. Latin subset, woff2 only, `font-display: swap`. Used by the homepage theme engine.
+
+| File | Font | License | License Location | Source |
+| :--- | :--- | :--- | :--- | :--- |
+| `assets/fonts/SpaceGrotesk-Medium.woff2` | **Space Grotesk** 500 | SIL OFL 1.1 | `assets/fonts/SpaceGrotesk-OFL.txt` | npm `@fontsource/space-grotesk` 5.3.0 (upstream: github.com/floriankarsten/space-grotesk). Print Shop display font. |
+| `assets/fonts/SpaceGrotesk-Bold.woff2` | **Space Grotesk** 700 | SIL OFL 1.1 | `assets/fonts/SpaceGrotesk-OFL.txt` | Same package. |
+| `assets/fonts/SpaceMono-Regular.woff2` | **Space Mono** 400 | SIL OFL 1.1 | Upstream: github.com/googlefonts/spacemono | Already bundled before the theme engine. Reused for Print Shop labels. |
+| `assets/fonts/Inter-Regular.woff2`, `Inter-Bold.woff2` | **Inter** | SIL OFL 1.1 | Upstream: github.com/rsms/inter | Already bundled before the theme engine. |
+
+---
+
 ## 🌐 Remote Dependencies (CDN)
 
 Libraries loaded via `script src` from external CDNs. These are not distributed in the repo but are required for functionality.

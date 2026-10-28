@@ -361,5 +361,18 @@ legacy();
   }
 }
 
+// 5. The id reference for theme authors is generated from the catalog. Stale or missing: warn only.
+{
+  try {
+    const { buildReference } = await import('./gen-id-reference.mjs');
+    const refPath = path.join(root, 'docs/CUSTOMIZE_IDS.md');
+    const cur = fs.existsSync(refPath) ? fs.readFileSync(refPath, 'utf8') : '';
+    if (cur !== buildReference(root)) warn('docs/CUSTOMIZE_IDS.md is out of date. Run: node scripts/gen-id-reference.mjs');
+    else console.log('ID reference: up to date');
+  } catch (e) {
+    warn(`docs/CUSTOMIZE_IDS.md could not be checked: ${e.message}`);
+  }
+}
+
 console.log(`\n${errors} error(s), ${warnings} warning(s)`);
 process.exit(errors ? 1 : 0);

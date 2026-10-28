@@ -1,0 +1,17 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "palette": {
+  "bg": "url(https://example.com/x.png)",
+  "surface": "expression(alert(1))",
+  "text": "var(--x)",
+  "dim": "rgb(0,0,0)",
+  "accent": "red",
+  "accent2": "#fff;background:url(//evil)",
+  "border": "#12345",
+  "games": "#GGGGGG",
+  "tools": "javascript:alert(1)",
+  "wos": "#abc\n}body{display:none",
+  "more": "#ABCDEF"
+ }
+}

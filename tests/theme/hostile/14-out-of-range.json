@@ -1,0 +1,17 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "shape": {
+  "radius": 9999,
+  "border": -1,
+  "shadow": "inset 0 0 99px red",
+  "density": "huge",
+  "background": "url(x)"
+ },
+ "motion": "spin",
+ "fonts": {
+  "display": "Comic Sans",
+  "ui": "'; src:url(x)"
+ },
+ "skin": "../../evil"
+}

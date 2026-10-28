@@ -1,0 +1,27 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "hidden": [
+  "customize",
+  "home",
+  "search",
+  "site-title"
+ ],
+ "labels": {
+  "search": "gone",
+  "customize": "x",
+  "home": "y"
+ },
+ "groups": [
+  {
+   "id": "customize",
+   "label": "x",
+   "items": []
+  },
+  {
+   "id": "search",
+   "label": "y",
+   "items": []
+  }
+ ]
+}

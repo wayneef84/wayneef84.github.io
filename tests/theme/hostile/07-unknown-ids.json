@@ -1,0 +1,33 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "groups": [
+  {
+   "id": "mine",
+   "label": "Mine",
+   "items": [
+    "memory-match",
+    "not-a-game",
+    "../../etc/passwd",
+    "<script>"
+   ]
+  }
+ ],
+ "pinned": [
+  "nope",
+  "memory-match"
+ ],
+ "hidden": [
+  "fake-id",
+  "memory-match"
+ ],
+ "labels": {
+  "fake-id": "x",
+  "memory-match": "Flip"
+ },
+ "order": [
+  "mine",
+  "ghost",
+  "games"
+ ]
+}

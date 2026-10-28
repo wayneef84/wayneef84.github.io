@@ -4,6 +4,7 @@ All notable changes to the root hub will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Homepage theme engine (Phase 1):** Customize panel on the homepage with two skins (Classic, Print Shop), eight palettes plus Classic, per-color hex edits, shape and type controls, renaming, hide, pin, custom groups by catalog id, behaviors, and JSON export and import with a strict validator and a preview before applying. Recovery links `?theme=default` and `?safe=1`. Custom CSS and scripts are not supported yet. Added Space Grotesk (OFL) to `assets/fonts/`. See `docs/CUSTOMIZE.md`, `docs/CUSTOMIZE_IDS.md` and `docs/THEMING_SPEC.md`.
 - **Shared play stats:** `js/player-stats.js` (`FongStats`) keeps plays, last played and best score per catalog id, on-device only. Old `playcount_*` keys migrate once. See `docs/PLAYER_STATS.md`.
 
 ### Fixed

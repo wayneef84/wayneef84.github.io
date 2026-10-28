@@ -1,0 +1,15 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "name": "Nice\u0000name\u202e\u200b",
+ "labels": {
+  "site-title": "\u202eEvil\u2028Title"
+ },
+ "groups": [
+  {
+   "id": "ok",
+   "label": "A\u0007B",
+   "items": []
+  }
+ ]
+}

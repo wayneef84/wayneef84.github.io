@@ -70,18 +70,20 @@
         return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /** Card HTML. prefix is prepended to catalog hrefs ('' on root, '.' keeps ./ so use '../' style by replace). */
-    function cardHtml(e, mode, rootPrefix) {
+    /** Card HTML. opts (optional): label (custom title), noNew (no NEW badge), plays (number, shows a play count). prefix is prepended to catalog hrefs ('' on root, '.' keeps ./ so use '../' style by replace). */
+    function cardHtml(e, mode, rootPrefix, opts) {
         var title = mode === 'fun' ? (e.funTitle || e.title) : e.title;
+        if (opts && typeof opts.label === 'string' && opts.label) title = opts.label;
         var desc = mode === 'fun' ? (e.funDescription || e.description) : e.description;
         var href = (rootPrefix || './') + String(e.href).replace(/^\.\//, '');
         var parent = e.parent && BY_ID[e.parent] ? '<div class="card-parent">in ' + escapeHtml(BY_ID[e.parent].title) + '</div>' : '';
         return '<a href="' + escapeHtml(href) + '" class="game-card" role="listitem" data-game-id="' + escapeHtml(e.id) + '" data-category="' + e.category + '">' +
             '<div class="card-top"><span class="card-icon">' + e.icon + '</span>' +
             '<span class="category-tag tag-' + e.category + '">' + (CAT_LABEL[e.category] || e.category) + '</span></div>' +
-            '<div class="game-title">' + escapeHtml(title) + (e.isNew ? '<span class="badge-new">NEW</span>' : '') + '</div>' +
+            '<div class="game-title">' + escapeHtml(title) + (e.isNew && !(opts && opts.noNew) ? '<span class="badge-new">NEW</span>' : '') + '</div>' +
             parent +
             '<p class="game-desc">' + escapeHtml(desc) + '</p>' +
+            (opts && typeof opts.plays === 'number' ? '<div class="game-plays">' + opts.plays + (opts.plays === 1 ? ' play' : ' plays') + '</div>' : '') +
             (e.version ? '<div class="game-meta"><span>' + escapeHtml(e.version) + '</span></div>' : '') +
             '</a>';
     }
