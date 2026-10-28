@@ -20,7 +20,7 @@ One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for eve
 
 | Doc | Use |
 |---|---|
-| [reference/DOCUMENTATION_STANDARD.md](reference/DOCUMENTATION_STANDARD.md) | 7-file per-game doc standard (status: needs Wayne) |
+| [reference/DOCUMENTATION_STANDARD.md](reference/DOCUMENTATION_STANDARD.md) | 7-file per-game doc standard (decided: required for new and touched games) |
 | [reference/VISUAL_IDENTITY.md](reference/VISUAL_IDENTITY.md) | Design system, colors, type |
 | [reference/CLOUDFLARE_WORKER_SETUP.md](reference/CLOUDFLARE_WORKER_SETUP.md) | Shipment tracker API proxy |
 | [SITEMAP.md](SITEMAP.md) | Navigation map (may be stale) |
@@ -53,7 +53,7 @@ Each folder under `games/` and `projects/` owns its docs. Do not rewrite them fr
 - `CLAUDE.md` (gotchas) and `AGENT.md` (dev notes for the next agent): per folder, not site-wide.
 - `MANUAL.md` and `TECHNICAL.md`: user and developer guides for the newer NEGEN games.
 - `LL_*.md`: lessons learned for that game.
-- Template for new games: [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md). When you change a game, update its docs in the same commit.
+- Template for new games: [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md). All 7 docs are required per game. When you change a game, update its docs in the same commit.
 
 ## Archive (history, do not treat as rules)
 

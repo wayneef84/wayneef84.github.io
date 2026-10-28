@@ -66,7 +66,7 @@ No build step. Open `index.html` or run any static server (`python3 -m http.serv
 4. Relative paths only (never `/css/...`).
 5. Never push to `main` or `dev`. PR into `dev`.
 6. Do not upgrade shared library versions without asking.
-7. Update the project's docs in the same commit as the code.
+7. Every game or tool needs all 7 docs in its folder (README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT; templates in `admin/DOC_TEMPLATES/`). Update them in the same commit as the code. If you touch a game that lacks some, add them.
 8. Log third-party code in `LICENSE_AUDIT.md`.
 9. Name is "F.O.N.G.". Mobile-first.
 10. Wayne owns `GROUND_RULES.md`. Do not edit it.

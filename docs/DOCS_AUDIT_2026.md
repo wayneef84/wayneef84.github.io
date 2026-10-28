@@ -46,7 +46,7 @@ Dispositions: **keep** (current rules or reference), **merge** (content folded i
 | SPLIT_HANDS_IMPLEMENTATION_PLAN.md, WAR_BATTLE_HISTORY_PLAN.md | archive | `docs/archive/plans/` (features shipped) |
 | IDEAS_020426.md, NEGEN_IDEAS_C.md | archive | `docs/archive/plans/` |
 | project_notes_v0101.md | archive | `docs/archive/plans/` (Dad's Slots post-mortem) |
-| neverhaveiever.md | archive (needs Wayne) | `docs/archive/misc/`. Personal "internal command" note, purpose unclear |
+| neverhaveiever.md | archive | `docs/archive/misc/`. Wayne: a "Never Have I Ever" game he had the agents play. Harmless, kept in the archive |
 | outputdoc.md | keep | Letter Tracing dev guide, moved to `games/tracing/DEV_GUIDE.md` |
 
 ## 2. Other doc folders
@@ -73,10 +73,10 @@ Dispositions: **keep** (current rules or reference), **merge** (content folded i
 | # | Conflict | Kept | Why |
 |---|---|---|---|
 | 1 | Branch flow. AGENTS.md says "all agents commit to dev". GROUND_RULES Rule 5 says feature branches, PR into dev, only Wayne merges to main. JULES.md says branch then merge to main. | Rule 5 plus Wayne's current practice: `claude/` branches, PR into `dev`, nothing direct to `main` | Rule 5 is the owner-approved text and matches recent PR history |
-| 2 | Preview. Docs say `develop` deploys to `/beta/`. Workflows trigger on `develop`. Repo has `dev`. | Live branch is `dev` (per Wayne) | Workflows `deploy-preview.yml` and `verify-beta.yml` target a branch that does not exist. **Needs Wayne**: delete or retarget |
+| 2 | Preview. Docs say `develop` deploys to `/beta/`. Workflows trigger on `develop`. Repo has `dev`. | Live branch is `dev` (per Wayne) | Workflows `deploy-preview.yml` and `verify-beta.yml` target a branch that does not exist. **Wayne (2026-10-27): not sure what they were for, leave as is for now. Open item. |
 | 3 | "9 laws" (AGENTS, GROUND_RULES ack text) vs "10 laws" (ONBOARDING, Rule 10 in file) | 10 rules | Rule 10 exists in the file |
 | 4 | ES5 is "non-negotiable" (Rule 2) but about 73 of 117 JS files under games/ and 24 of 56 under projects/ use const/let/arrow. wosky/ has none. New games (byte_runner) follow ES5. | Rule 2 for all new and touched code | Needs Wayne: whether legacy files get migrated |
-| 5 | Rule 10 demands 7 doc files per game, blocking PRs. Of about 28 games and 20 projects, ARCHITECTURE.md exists in 10 folders, INFO.md in 10, TODO.md in 9, CHANGELOG.md in 7. Many game READMEs link to sibling files that do not exist. Task for this reorg says do not rewrite per-game docs. | Distilled to "update the docs a game already has in the same commit". 7-file suite kept as reference | Needs Wayne: keep or drop the 7-file mandate |
+| 5 | Rule 10 demands 7 doc files per game, blocking PRs. Of about 28 games and 20 projects, ARCHITECTURE.md exists in 10 folders, INFO.md in 10, TODO.md in 9, CHANGELOG.md in 7. Many game READMEs link to sibling files that do not exist. Task for this reorg says do not rewrite per-game docs. | Wayne decided (2026-10-27): the 7-file suite is the standard for new and touched games. Existing games are backfilled when touched |  Decided |
 | 6 | Rule 1 "no CDNs" vs external URLs still present in projects/md-reader, projects/code, wosky/calc-v2 css, wosky/v3 css, games/tracing/chinese, games/slots css | Rule 1. Listed in `admin/COMPLIANCE_FIXES.md` | Not fixed here (code is off limits) |
 | 7 | Rule 9: user-facing name is "F.O.N.G." never "Fong Family Arcade". CLAUDE_AGENT.md and encyclopedia use "Fong Family Arcade". | Rule 9 | Owner-approved |
 | 8 | Ownership. AGENTS.md: Gemini owns html/css, Claude owns js/md, Jules owns root. GEMINI.md: Gemini owns css/. JULES.md: "do not edit another agent's identity file". Wayne now drives Claude, Gemini and Jules (Gemini-powered) from one workflow. | Role table kept in AGENTS.md as guidance only, not a hard file lock | Needs Wayne: confirm the roles still apply |

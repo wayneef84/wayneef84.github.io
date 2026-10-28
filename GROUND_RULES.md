@@ -39,7 +39,7 @@
 
 ### 7. Docs with code
 - Write or update the project's `ARCHITECTURE.md` before a major feature.
-- Update the docs a game or project already has (README, CHANGELOG, TODO, INFO) in the same commit as the code.
+- Update the game or project's 7 docs (see rule 10) in the same commit as the code.
 - Root `AI_FEEDBACK.md` is frozen and no longer required.
 
 ### 8. License and legal
@@ -53,7 +53,8 @@
 
 ### 10. Per-project docs
 - Games and projects carry their own docs in their folder. Standard: [docs/reference/DOCUMENTATION_STANDARD.md](docs/reference/DOCUMENTATION_STANDARD.md) (7-file suite, templates in [admin/DOC_TEMPLATES/](admin/DOC_TEMPLATES)).
-- Needs Wayne: the 7-file mandate is not met by most existing games. Until Wayne decides, follow rule 7 and match what the folder already has.
+- Wayne decided (2026-10-27): the 7-file set is the standard. Every new game or project MUST have all 7: README.md, ARCHITECTURE.md, INFO.md, TODO.md, CHANGELOG.md, CLAUDE.md, AGENT.md. Use the templates in `admin/DOC_TEMPLATES/`.
+- Existing games that are missing files: when you change one, add the missing files in the same PR. Do not mass-backfill untouched games.
 
 ## Self-check before you commit
 
