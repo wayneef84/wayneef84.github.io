@@ -5,6 +5,7 @@ Branch: claude/theme-engine. Work clone: scratchpad/work-theme. Spec: docs/THEMI
 ## Done
 - (a)+(b core) js/theme/loader.js, palettes.js, validate.js, apply.js, css/skins/classic.css, css/theme-overrides.css, index.html wiring, Classic parity (0 pixel diff vs dev at 1280 and 390, Customize button removed for the diff).
 
+- (c) panel js/theme/panel.js + css/theme-panel.css built, smoke tested at 390.
 - (b) hostile samples tests/theme/hostile (22 files), runner is scratchpad/pw/hostile.js (165/165 pass). hub-filters.js and hub-nav.js apply config (d, partial: ID reference still to do).
 
 ## In progress / next
