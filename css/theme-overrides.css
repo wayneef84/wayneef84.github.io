@@ -1,0 +1,49 @@
+/* Theme engine: parts shared by every skin. Fonts, background patterns, motion
+   and the protected controls. Nothing here changes the page until the visitor
+   sets the matching data-* attribute (see js/theme/loader.js). */
+
+/* Bundled fonts (OFL, latin subset, see LICENSE_AUDIT.md). Loaded only when used. */
+@font-face { font-family: 'Space Grotesk'; src: url('../assets/fonts/SpaceGrotesk-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Space Grotesk'; src: url('../assets/fonts/SpaceGrotesk-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+/* Background pattern: CSS gradients only, drawn on a layer behind the page */
+html[data-bg] body::before {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--text-primary);
+  opacity: 0.09;
+  background-image: none;
+}
+html[data-bg="dots"] body::before { background-image: radial-gradient(currentColor 1.2px, transparent 1.7px); background-size: 16px 16px; }
+html[data-bg="grid"] body::before { background-image: linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px); background-size: 24px 24px; }
+html[data-bg="paper"] body::before { background-image: repeating-linear-gradient(0deg, transparent 0, transparent 27px, currentColor 27px, currentColor 28px); opacity: 0.07; }
+html[data-bg="stripes"] body::before { background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 2px, transparent 2px, transparent 14px); opacity: 0.06; }
+
+/* Motion */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-skin="classic"]) *,
+  html:not([data-skin="classic"]) *::before,
+  html:not([data-skin="classic"]) *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Protected controls: theme data cannot hide these */
+.global-nav,
+.global-nav .nav-brand,
+.global-nav #theme-open,
+#home-search {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.global-nav #theme-open { display: inline-flex !important; }
+#home-search { display: block !important; }
+.home-search { display: block !important; visibility: visible !important; }

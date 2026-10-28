@@ -1,0 +1,58 @@
+/* Classic skin: today's homepage look. With the default theme this file changes
+   nothing. Every rule below only applies after the visitor sets a color, shape
+   or group color (data-pal, data-grp, data-bw, data-shadow, data-density). */
+
+/* Group colors replace the per-card accent stripe */
+html[data-skin="classic"][data-grp] .nav-section-games .nav-card { border-left-color: var(--grp-games, #10b981); }
+html[data-skin="classic"][data-grp] .nav-section-tools .nav-card { border-left-color: var(--grp-tools, #64748b); }
+html[data-skin="classic"][data-grp] .nav-section-wos .nav-card   { border-left-color: var(--grp-wos, #e11d48); }
+html[data-skin="classic"][data-grp] .nav-section-more .nav-card  { border-left-color: var(--grp-more, #9ca3af); }
+html[data-skin="classic"][data-grp] .nav-section-games .nav-card:hover { border-color: var(--grp-games, #10b981); }
+html[data-skin="classic"][data-grp] .nav-section-tools .nav-card:hover { border-color: var(--grp-tools, #64748b); }
+html[data-skin="classic"][data-grp] .nav-section-wos .nav-card:hover   { border-color: var(--grp-wos, #e11d48); }
+html[data-skin="classic"][data-grp] .nav-section-more .nav-card:hover  { border-color: var(--grp-more, #9ca3af); }
+
+/* Custom colors: replace hardcoded white tints and small accent text so light palettes stay readable */
+html[data-skin="classic"][data-pal] .theme-toggle-link { border-color: var(--card-border); }
+html[data-skin="classic"][data-pal] .landing-footer { border-top-color: var(--card-border); }
+html[data-skin="classic"][data-pal] .game-meta { border-top-color: var(--card-border); }
+html[data-skin="classic"][data-pal] .stats-container { color: var(--text-secondary); opacity: 1; }
+html[data-skin="classic"][data-pal] .section-all,
+html[data-skin="classic"][data-pal] .featured-app-btn { color: var(--text-primary); text-decoration: underline; }
+html[data-skin="classic"][data-pal] .new-label { color: var(--text-secondary); }
+html[data-skin="classic"][data-pal] .badge-new { background: transparent; color: var(--text-primary); border-color: var(--text-secondary); }
+html[data-skin="classic"][data-pal] .global-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+/* Border width (0 to 4). The left accent stripe keeps its 3px */
+html[data-skin="classic"][data-bw] .nav-card,
+html[data-skin="classic"][data-bw] .featured-app-card,
+html[data-skin="classic"][data-bw] .game-card,
+html[data-skin="classic"][data-bw] .new-chip,
+html[data-skin="classic"][data-bw] .hub-search {
+  border-top-width: var(--t-bw);
+  border-right-width: var(--t-bw);
+  border-bottom-width: var(--t-bw);
+}
+
+/* Shadows */
+html[data-skin="classic"][data-shadow="soft"] .nav-card,
+html[data-skin="classic"][data-shadow="soft"] .featured-app-card,
+html[data-skin="classic"][data-shadow="soft"] .game-card { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22); }
+html[data-skin="classic"][data-shadow="hard"] .nav-card,
+html[data-skin="classic"][data-shadow="hard"] .featured-app-card,
+html[data-skin="classic"][data-shadow="hard"] .game-card { box-shadow: 4px 4px 0 var(--shadow-ink, var(--text-primary)); }
+html[data-skin="classic"][data-shadow="none"] .nav-card,
+html[data-skin="classic"][data-shadow="none"] .featured-app-card,
+html[data-skin="classic"][data-shadow="none"] .game-card,
+html[data-skin="classic"][data-shadow="none"] .nav-card:hover,
+html[data-skin="classic"][data-shadow="none"] .featured-app-card:hover,
+html[data-skin="classic"][data-shadow="none"] .game-card:hover { box-shadow: none; }
+
+/* Density */
+html[data-skin="classic"][data-density] .nav-card { padding: calc(1.125rem * var(--t-density)) calc(1.25rem * var(--t-density)); min-height: calc(80px * var(--t-density)); }
+html[data-skin="classic"][data-density] .featured-app-card { padding: calc(1.5rem * var(--t-density)); }
+html[data-skin="classic"][data-density] .game-card { padding: calc(1.25rem * var(--t-density)); min-height: calc(130px * var(--t-density)); }
+html[data-skin="classic"][data-density] .nav-grid { gap: calc(0.75rem * var(--t-density)); }
+html[data-skin="classic"][data-density] .featured-apps,
+html[data-skin="classic"][data-density] .just-added-grid,
+html[data-skin="classic"][data-density] .game-grid { gap: calc(1rem * var(--t-density)); }

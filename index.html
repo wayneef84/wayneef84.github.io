@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>F.O.N.G. Arcade | Home</title>
+    <script src="./js/theme/loader.js"></script>
     <link rel="stylesheet" href="./css/components/global.css">
     <link rel="stylesheet" href="./css/components/card.css">
+    <link rel="stylesheet" href="./css/skins/classic.css">
+    <link rel="stylesheet" href="./css/skins/print-shop.css">
+    <link rel="stylesheet" href="./css/theme-overrides.css">
+    <link rel="stylesheet" href="./css/theme-panel.css">
 </head>
 <body>
 
@@ -13,6 +18,7 @@
         <a href="./index.html" class="nav-brand">F.O.N.G. ARCADE</a>
         <div class="nav-right">
             <div id="global-play-count" class="stats-container">Plays: 0</div>
+            <button type="button" id="theme-open" class="theme-open" aria-haspopup="dialog" aria-label="Customize this page"><span aria-hidden="true">&#9881;</span><span class="theme-open-label">Customize</span></button>
             <a href="?mode=fun" id="theme-toggle" class="theme-toggle-link">&#127918; Fun Mode</a>
         </div>
     </header>
@@ -54,9 +60,13 @@
 
     <script src="./js/catalog.js"></script>
     <script src="./js/player-stats.js"></script>
+    <script src="./js/theme/palettes.js"></script>
+    <script src="./js/theme/validate.js"></script>
+    <script src="./js/theme/apply.js"></script>
     <script src="./js/hub-data.js"></script>
     <script src="./js/hub-nav.js"></script>
     <script src="./js/hub-filters.js"></script>
+    <script src="./js/theme/panel.js"></script>
     <script>if (window.FongStats) { window.FongStats.trackClicks(); }</script>
 </body>
 </html>

@@ -1,0 +1,25 @@
+/* Customize button, recovery banner and the Customize panel (js/theme/panel.js).
+   Phone first. Targets are 44px or larger. Uses the page's own theme variables. */
+
+.theme-open {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--toggle-color);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  padding: 6px 12px;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+.theme-open:hover { color: var(--toggle-hover); border-color: var(--toggle-hover); }
+html[data-skin="classic"][data-pal] .theme-open { border-color: var(--card-border); }
+.theme-open-label { display: none; }
+@media (min-width: 560px) { .theme-open-label { display: inline; } }
