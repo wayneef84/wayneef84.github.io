@@ -14,7 +14,7 @@ var stage = doc.getElementById('stage'), play = doc.getElementById('play'), scr 
 var cv = doc.getElementById('game'), touch = doc.getElementById('touch');
 var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 var H = null;                         /* hooks from game.js */
-var rotNow = false, releasers = [], noteTimer = 0;
+var rotNow = false, releasers = [], noteTimer = 0, outTimer = 0;
 
 /* ---------- settings (localStorage, always in try/catch; lives: 1, 3, 5 or 0 = unlimited) ---------- */
 (function () {
@@ -154,6 +154,20 @@ function onFsChange() { lockLandscape(!!fsEl()); layout(); setTimeout(layout, 25
 
 function toggleRotate() { cfg.rotate = !cfg.rotate; store(); layout(); }
 
+/* "Out of lives" overlay. Buttons ignore taps for half a second so a mashing finger does not skip it. */
+function showOut(on, deaths, continues) {
+  var o = doc.getElementById('outlives'), m = doc.getElementById('outmsg');
+  if (!o) return;
+  if (on && m) m.textContent = 'Good try! That was ' + deaths + (deaths === 1 ? ' try' : ' tries') + ' on this stage. Ready to go again?';
+  cls(o, 'show', on); cls(o, 'lock', on);
+  clearTimeout(outTimer);
+  if (on) outTimer = setTimeout(function () { cls(o, 'lock', false); }, 500);
+}
+function vibrate() {
+  try { if (cfg.vibrate && vibSupported()) navigator.vibrate([90, 50, 90]); } catch (e) { }
+}
+function vibSupported() { return typeof navigator.vibrate === 'function'; }
+
 function doAct(name) {
   if (name === 'full') toggleFull();
   else if (name === 'rot') toggleRotate();
@@ -205,6 +219,10 @@ function init(hooks) {
   for (i = 0; i < btns.length; i++) (function (b) {
     b.addEventListener('click', function () { doAct(b.getAttribute('data-act')); });
   })(btns[i]);
+  var ob = doc.querySelectorAll('[data-out]');
+  for (i = 0; i < ob.length; i++) (function (b) {
+    b.addEventListener('click', function () { if (b.getAttribute('data-out') === 'continue') H.continueStage(); else H.levels(); });
+  })(ob[i]);
   doc.addEventListener('fullscreenchange', onFsChange);
   doc.addEventListener('webkitfullscreenchange', onFsChange);
   /* Esc leaves the fill-screen fallback (real fullscreen handles Esc itself) */
@@ -231,5 +249,5 @@ function inside(el, cn) {
   return false;
 }
 
-return { setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
+return { showOut: showOut, vibrate: vibrate, vibSupported: vibSupported, setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
 })();

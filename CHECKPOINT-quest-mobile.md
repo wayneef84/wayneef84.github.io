@@ -7,12 +7,13 @@ Branch: claude/quest-mobile. Game: games/byte_runner_quest/. New file js/control
 
 - (b) Fullscreen (API + fill-screen fallback, Esc exits, landscape lock tried) and Rotate view (CSS rotate, touch maths mapped). Header buttons only for now; settings panel comes in (e).
 - (c) Auto-run (cfg.auto and cfg.autoDir, TURN button, tap anywhere jumps, arrow keys turn). No UI toggle until the panel in (e); set it in localStorage key fong.byteRunnerQuest.settings.v1.
+- (d) Lives (cfg.lives 1/3/5/0=unlimited, HUD hearts, per-stage and total deaths in save, continues stat), Out of lives overlay with Continue stage and Level select, vibrate on death (cfg.vibrate). Still no UI toggles for these until (e).
 
 ## In progress
-- (d) Lives, Out of lives overlay, Continue stage, vibration
+- (e) Settings panel + docs
 
 ## Next
-- (e) Settings panel + docs (CHANGELOG v1.1.0, README, INFO, TODO, ARCHITECTURE, CLAUDE, AGENT)
+- (docs in (e): CHANGELOG v1.1.0, README, INFO, TODO, ARCHITECTURE, CLAUDE, AGENT)
 - (f) Optional: Fullscreen + Rotate on games/byte_runner/index.html (separate last commit)
 
 ## Resume

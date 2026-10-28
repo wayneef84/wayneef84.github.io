@@ -58,6 +58,20 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 
 .help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 14px 0 0; letter-spacing: 1px; }
 .touch.on ~ .help, .stage.fill .help { display: none; }
+
+/* overlays and panels (settings, out of lives) sit below the header so EXIT stays visible */
+.overlay { display: none; position: absolute; left: 0; right: 0; top: 56px; bottom: 0; z-index: 20; background: rgba(8, 6, 20, .9); align-items: center; justify-content: center; padding: 8px; }
+.overlay.show { display: flex; }
+.stage.immersive .overlay { top: 46px; }
+.panel { width: 100%; max-width: 520px; max-height: 100%; overflow-y: auto; background: var(--panel); border: 3px solid var(--line); padding: 12px; touch-action: pan-y; }
+.panel h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: 3px; color: var(--gold); }
+.panel p { margin: 0 0 12px; font-size: 13px; line-height: 1.6; color: var(--text); }
+.panel.center { text-align: center; max-width: 440px; border-color: #ff5d73; }
+.panel.center h2 { color: #ff5d73; font-size: 20px; }
+.bigbtn { display: block; width: 100%; min-height: 72px; margin: 0 0 10px; font: 700 18px var(--mono); letter-spacing: 1px; color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 14px; touch-action: none; }
+.bigbtn.alt { color: var(--text); background: var(--panel); border-color: var(--line); }
+.bigbtn:active { transform: scale(.97); }
+.overlay.lock .bigbtn { opacity: .5; pointer-events: none; }
 .note { display: none; position: absolute; left: 50%; top: 6px; transform: translateX(-50%); z-index: 15; background: rgba(22, 19, 43, .95); border: 2px solid var(--line); color: var(--text); font-size: 12px; line-height: 1.5; padding: 6px 10px; text-align: center; max-width: 90%; pointer-events: none; }
 .note.show { display: block; }
 </style>
@@ -88,6 +102,15 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
       </div>
     </div>
     <div class="note" id="note"></div>
+  </div>
+
+  <div class="overlay" id="outlives" role="dialog" aria-label="Out of lives">
+    <div class="panel center">
+      <h2>OUT OF LIVES</h2>
+      <p id="outmsg">Good try! Ready to go again?</p>
+      <button type="button" class="bigbtn" data-out="continue">CONTINUE STAGE</button>
+      <button type="button" class="bigbtn alt" data-out="levels">LEVEL SELECT</button>
+    </div>
   </div>
 
   <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE, Z OR UP JUMPS (HOLD FOR HIGHER)<br>P OR ESC PAUSES &nbsp; M MUTES &nbsp; ENTER PICKS</p>
