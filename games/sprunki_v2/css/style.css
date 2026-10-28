@@ -6,6 +6,7 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { -webkit-text-size-adjust: 100%; }
 body {
+    -webkit-user-select: none; user-select: none;
     margin: 0; min-height: 100vh; display: flex; flex-direction: column; color: var(--text);
     font-family: ui-rounded, "Nunito", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
     background: linear-gradient(160deg, var(--bg1), var(--bg2)) fixed;
@@ -87,7 +88,7 @@ button, a.btn, input { font-family: inherit; }
 .slot-count { min-width: 28px; text-align: center; font-weight: 900; font-size: 1.2rem; }
 
 /* tray */
-.tray { position: sticky; bottom: 0; margin-bottom: 8px; padding-bottom: 10px; z-index: 10; }
+.tray { margin-bottom: 10px; padding-bottom: 10px; }
 .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
 .tab {
     flex: 1; min-height: 56px; border: 0; border-radius: 14px; background: rgba(128, 128, 128, 0.2);
@@ -96,14 +97,14 @@ button, a.btn, input { font-family: inherit; }
 }
 .tab .ico { font-size: 1.4rem; line-height: 1.1; }
 .tab.sel { background: var(--cat); color: #111; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 110px)); gap: 8px; }
+.tiles { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
 .tile {
-    position: relative; min-height: 104px; padding: 6px 4px; border-radius: 16px; cursor: pointer;
+    position: relative; flex: 0 0 92px; min-height: 100px; padding: 6px 4px; border-radius: 16px; cursor: pointer;
     background: var(--slot); color: var(--text); border: 0; border-bottom: 6px solid var(--cat);
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2px;
-    touch-action: none; user-select: none; -webkit-user-select: none;
+    touch-action: pan-x; user-select: none; -webkit-user-select: none;
 }
-.tile img { width: 100%; height: 66px; object-fit: contain; pointer-events: none; }
+.tile img { width: 100%; height: 62px; object-fit: contain; pointer-events: none; }
 .tile .nm { font-size: 0.8rem; font-weight: 800; }
 .tile.used { opacity: 0.45; border-bottom-style: dotted; }
 .tile .key { display: none; position: absolute; top: 4px; left: 6px; font-size: 0.7rem; opacity: 0.6; }
@@ -112,7 +113,7 @@ button, a.btn, input { font-family: inherit; }
 
 /* toast + modal */
 .toast {
-    position: fixed; left: 50%; bottom: 150px; transform: translate(-50%, 20px); max-width: 90vw; z-index: 60;
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); max-width: 90vw; z-index: 60;
     background: #111; color: #fff; padding: 12px 18px; border-radius: 16px; font-weight: 700; opacity: 0; pointer-events: none; transition: all 0.25s; text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -151,7 +152,9 @@ button, a.btn, input { font-family: inherit; }
 @media (max-width: 480px) {
     .top h1 { font-size: 1.2rem; }
     .controls .btn { min-width: 56px; }
-    .toast { bottom: 190px; }
+    .toast { bottom: 20px; }
+    .slot { height: 104px; }
+    .stage { gap: 8px; padding: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .fx .p, .slot img, .fog .eyes, .stage.shake { animation: none; }
