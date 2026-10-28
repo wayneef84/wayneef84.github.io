@@ -1,4 +1,4 @@
-# Sprunki v2: Changelog
+# S4K Mixer v2: Changelog
 
 ## v2.0.0 (2026-10-27)
 First release. A standalone rebuild of Sprunki Mixer (`games/sprunki`, unchanged).
@@ -20,3 +20,6 @@ First release. A standalone rebuild of Sprunki Mixer (`games/sprunki`, unchanged
 
 ### Not changed
 - Original Black (v05) is kept as the ordinary Classic character "Dusk"; Mr. Black is a new shared character.
+
+## Unreleased
+- Display name changed from "Sprunki v2" to "S4K Mixer v2" (the original game's name). Folder, URL, code names and save keys (`sprunkiV2.*`) are unchanged.

@@ -1,4 +1,4 @@
-# Sprunki v2
+# S4K Mixer v2
 
 A kid-friendly music mixer. Tap friends to put them on the stage and their loop starts playing in time with the rest. Pick a season (Classic, Spring, Summer, Autumn, Winter, Halloween) to change the look, the friends and the sounds.
 
