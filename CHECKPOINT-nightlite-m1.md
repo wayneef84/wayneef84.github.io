@@ -9,7 +9,7 @@ Branch: claude/nightlite-m1 (from dev). Folder: games/nightlite_choir/
 - (c) Night Garden: Mossle, Glimmow, Puddlet, Hedgey, sound, tray, drag, undo, reset, mute, volume, save/load, keys 1-4
 
 ## In progress
-- (e) catalog and homepage
+- (e) catalog and homepage: done. Remaining: final rebase onto origin/dev and report
 
 ## Next
 - (e) js/catalog.js entry, remove spotlight from byte-runner, GAME_INVENTORY.md row (LAST commit)
