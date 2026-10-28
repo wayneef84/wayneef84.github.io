@@ -86,6 +86,7 @@ Fun Mode (`?mode=fun`) is carried to the browse pages and sub-hubs. Browse and s
 2. The group comes from `category` (card, arcade, puzzle, edu to Games, project to Tools, wosky to WOS, anything else to More). Set `group: 'tools'` and so on to override. Optional `sub` sets the heading, `parent` marks a child page, `archive: true` files it under More > Archive.
 3. The entry then appears on its browse page (2 clicks), in search, and in the matching sub-hub if the category has one. No other file needs editing.
 4. Use `./` relative paths. Do not move or rename folders.
+5. To showcase a brand-new game on the homepage, set `isNew: true` and `spotlight: true`. Spotlight entries get big "Just added" cards at the very top. Keep it to the 2 or 3 newest and remove `spotlight` when they are no longer new (`isNew` alone only adds a small chip).
 
 ## 4. Decisions and leftovers
 
