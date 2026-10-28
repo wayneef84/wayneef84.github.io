@@ -2,7 +2,7 @@
 (function (w) {
     w.SprunkiV2Packs = w.SprunkiV2Packs || [];
     w.SprunkiV2Packs.push({
-        id: 'classic', order: 0, label: 'Classic', icon: '\uD83C\uDFB5',
+        id: 'classic', order: 0, label: 'Classic', icon: '\uD83C\uDFB5', color: '#f1c40f',
         theme: { bg1: '#1b1740', bg2: '#0f0f1b', panel: '#241f52', text: '#ffffff', accent: '#ffd23f', slot: '#2f2a66' },
         fx: { emoji: '\u266A', count: 10, dir: 'rise' },
         bpm: 100,

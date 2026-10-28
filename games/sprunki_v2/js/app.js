@@ -7,6 +7,7 @@
     var HORROR_RATE = 0.84;        // everything plays a little slower and lower in spooky mode
     var HORROR_VOLUME = 0.55;      // spooky mode is always quieter
     var HORROR_THEME = { bg1: '#0b0b16', bg2: '#020207', panel: '#15152a', text: '#e6e8f5', accent: '#9a8cf0', slot: '#1c1c36' };
+    var CAT_ALL = { id: 'all', label: 'Everyone', icon: '🌈', color: '#5b6cf0' };
     var CATS = [
         { id: 'beats', label: 'Beats', icon: '🥁', color: '#f1c40f' },
         { id: 'effects', label: 'Effects', icon: '✨', color: '#a66bd6' },
@@ -26,10 +27,17 @@
     };
 
     var S = {
-        pack: null, slotCount: 6, slots: [], horror: false, tab: 'beats',
+        pack: null, slotCount: 6, slots: [], horror: false, tab: 'beats', bpm: 100,
         vol: 0.8, muted: false, paused: false
     };
-    var packs = [], packById = {};
+    var packs = [], packById = {}, navPacks = [], charById = {};
+    // The All tab: a virtual pack holding every character. Neutral look, no season theme.
+    var ALL_PACK = {
+        id: 'all', label: 'All', icon: '🌈', color: '#5b6cf0', bpm: 100, chars: [],
+        theme: { bg1: '#e9eefc', bg2: '#d9f1ea', panel: '#ffffff', text: '#25304a', accent: '#5b6cf0', slot: '#eef1fb' },
+        fx: { emoji: '🎶', count: 10, dir: 'rise' }
+    };
+    var BLACK_COLOR = '#555a70';
     var history = [];
     var ctx = null, mix = null, filt = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -61,11 +69,31 @@
     }
     function findChar(id) {
         if (id === MR_BLACK.id) return MR_BLACK;
-        var cs = S.pack.chars, i;
-        for (i = 0; i < cs.length; i++) if (cs[i].id === id) return cs[i];
-        return null;
+        return charById[id] || null;
     }
-    function barLen() { return 8 * 60 / (S.pack.bpm || 100); }
+    function catsFor(p) { return p.id === 'all' ? [CAT_ALL].concat(CATS) : CATS; }
+    function catValid(p, id) {
+        var cs = catsFor(p), i;
+        for (i = 0; i < cs.length; i++) if (cs[i].id === id) return true;
+        return false;
+    }
+    function packColor(ch) {
+        if (ch.id === MR_BLACK.id) return BLACK_COLOR;
+        var p = packById[ch.packId];
+        return (p && p.color) || '#888888';
+    }
+    function packLabel(ch) { return ch.id === MR_BLACK.id ? 'Mr. Black' : (packById[ch.packId] ? packById[ch.packId].label : ''); }
+    // Mixed-pack tempo rule: the stage tempo (S.bpm) is the tempo of the first friend placed on an empty stage.
+    function stageEmpty() {
+        var i;
+        for (i = 0; i < S.slots.length; i++) if (S.slots[i]) return false;
+        return true;
+    }
+    function setStageBpm(b) {
+        S.bpm = b || 100;
+        d.documentElement.style.setProperty('--beat', (60 / S.bpm / rate()) + 's');
+    }
+    function barLen() { return 8 * 60 / (S.bpm || 100); }
     function rate() { return S.horror ? HORROR_RATE : 1; }
 
     // ---------------------------------------------------------------- audio
@@ -104,12 +132,14 @@
         return u.buffer;
     }
     function getBuffer(ch, cb) {
-        if (buffers[ch.id]) { cb(buffers[ch.id]); return; }
+        if (!ch.synth && buffers[ch.id]) { cb(buffers[ch.id]); return; }
         if (ch.synth) {
-            var r = w.SprunkiSynth.render(ch.synth, S.pack.bpm, hashSeed(ch.id));
+            var key = ch.id + '@' + S.bpm;
+            if (buffers[key]) { cb(buffers[key]); return; }
+            var r = w.SprunkiSynth.render(ch.synth, S.bpm, hashSeed(ch.id));
             var b = ctx.createBuffer(1, r.data.length, r.rate);
             b.getChannelData(0).set(r.data);
-            buffers[ch.id] = b;
+            buffers[key] = b;
             cb(b);
             return;
         }
@@ -147,19 +177,22 @@
         getBuffer(ch, function (buf) {
             if (!buf || S.slots[i] !== id) return;
             stopVoice(i);
-            var src = ctx.createBufferSource(), g = ctx.createGain(), bar = barLen();
+            var src = ctx.createBufferSource(), g = ctx.createGain();
+            // Synth loops are rendered at the stage tempo. Fixed loops (Classic) keep their own bar and are
+            // sped up or slowed down a little (stretch) so they stay in time with the stage.
+            var nativeBpm = ch.synth ? S.bpm : (ch.bpm || 100), stretch = S.bpm / nativeBpm, bar = 8 * 60 / nativeBpm;
             var bars = Math.max(1, Math.round(buf.duration / bar));
             src.buffer = buf;
             src.loop = true;
             src.loopStart = 0;
             src.loopEnd = Math.min(buf.duration, bars * bar);
-            src.playbackRate.value = rate();
+            src.playbackRate.value = rate() * stretch;
             src.connect(g); g.connect(mix);
             var when = nextBoundary();
             g.gain.setValueAtTime(0, when);
             g.gain.linearRampToValueAtTime(id === MR_BLACK.id ? 0.8 : 1, when + 0.04);
             src.start(when);
-            voices[i] = { src: src, gain: g };
+            voices[i] = { src: src, gain: g, stretch: stretch };
         });
     }
     function setAllRates() {
@@ -170,7 +203,7 @@
             var frac = (((now - t0) % (L / oldRate)) / (L / oldRate));
             t0 = now - frac * (L / rate());
         }
-        for (k in voices) if (voices.hasOwnProperty(k)) voices[k].src.playbackRate.setTargetAtTime(rate(), now, 0.35);
+        for (k in voices) if (voices.hasOwnProperty(k)) voices[k].src.playbackRate.setTargetAtTime(rate() * (voices[k].stretch || 1), now, 0.35);
     }
 
     // ---------------------------------------------------------------- drawing
@@ -224,7 +257,8 @@
     function renderTabs() {
         var tabs = $('tabs'), i;
         tabs.innerHTML = '';
-        for (i = 0; i < CATS.length; i++) {
+        var cl = catsFor(S.pack);
+        for (i = 0; i < cl.length; i++) {
             (function (c) {
                 var b = el('button', 'tab' + (S.tab === c.id ? ' sel' : ''));
                 b.type = 'button';
@@ -235,30 +269,37 @@
                 b.appendChild(el('span', 'lbl', c.label));
                 b.onclick = function () { S.tab = c.id; renderTabs(); renderTiles(); };
                 tabs.appendChild(b);
-            })(CATS[i]);
+            })(cl[i]);
         }
     }
 
     function renderTiles() {
-        var box = $('tiles'), list = charsOf(S.pack), n = 0, i;
+        var box = $('tiles'), list = charsOf(S.pack), n = 0, i, isAll = S.pack.id === 'all';
         box.innerHTML = '';
-        var color = '#888', c;
-        for (c = 0; c < CATS.length; c++) if (CATS[c].id === S.tab) color = CATS[c].color;
+        box.className = 'tiles' + (isAll ? ' allmode' : '');
+        var color = '#888', c, cl = catsFor(S.pack);
+        for (c = 0; c < cl.length; c++) if (cl[c].id === S.tab) color = cl[c].color;
         for (i = 0; i < list.length; i++) {
-            if (list[i].type !== S.tab) continue;
+            if (S.tab !== 'all' && list[i].type !== S.tab) continue;
             (function (ch, num) {
                 var used = onStageIdx(ch.id) >= 0;
                 var b = el('button', 'tile' + (used ? ' used' : ''));
                 b.type = 'button';
                 b.id = 'tile-' + ch.id;
                 b.style.setProperty('--cat', color);
+                if (isAll) {
+                    var pc = packColor(ch);
+                    b.style.setProperty('--pk', pc);
+                    b.style.setProperty('--pkt', lum(pc) > 0.62 ? '#161616' : '#ffffff');
+                    b.appendChild(el('span', 'pk', packLabel(ch)));
+                }
                 var im = el('img', ch.img ? 'photo' : '');
                 im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
                 b.appendChild(im);
                 b.appendChild(el('span', 'nm', ch.name));
                 if (num <= 9) b.appendChild(el('span', 'key', String(num)));
                 b.setAttribute('aria-pressed', used ? 'true' : 'false');
-                b.setAttribute('aria-label', ch.name + (used ? ', on stage. Tap to remove.' : '. Tap to add.'));
+                b.setAttribute('aria-label', (isAll ? packLabel(ch) + ' ' : '') + ch.name + (used ? ', on stage. Tap to remove.' : '. Tap to add.'));
                 b.onclick = function () {
                     if (suppressClick) return;
                     tileAction(ch);
@@ -276,7 +317,7 @@
     function refreshTray() { renderTiles(); }
 
     // ---------------------------------------------------------------- history / actions
-    function snapshot() { return { pack: S.pack.id, slotCount: S.slotCount, slots: S.slots.slice(0, S.slotCount) }; }
+    function snapshot() { return { pack: S.pack.id, bpm: S.bpm, slotCount: S.slotCount, slots: S.slots.slice(0, S.slotCount) }; }
     function pushHistory() {
         if (S.horror) return;
         history.push(snapshot());
@@ -310,6 +351,7 @@
         ensureCtx();
         pushHistory();
         if (S.slots[idx]) stopVoice(idx);
+        if (stageEmpty()) setStageBpm(ch.bpm);
         S.slots[idx] = ch.id;
         afterChange();
         startVoice(idx);
@@ -336,9 +378,15 @@
         if (snap.pack !== S.pack.id && packById[snap.pack]) setPack(packById[snap.pack], true);
         S.slotCount = snap.slotCount;
         S.slots = snap.slots.slice();
+        setStageBpm(snap.bpm || firstSlotBpm() || S.pack.bpm);
         afterChange();
         var i;
         for (i = 0; i < S.slotCount; i++) if (S.slots[i]) startVoice(i);
+    }
+    function firstSlotBpm() {
+        var i, ch;
+        for (i = 0; i < S.slots.length; i++) if (S.slots[i]) { ch = findChar(S.slots[i]); if (ch && ch.id !== MR_BLACK.id) return ch.bpm; }
+        return 0;
     }
     function undo() {
         if (S.horror) { toast('Exit spooky mode to use Undo.'); return; }
@@ -369,7 +417,7 @@
         r.setProperty('--bg1', t.bg1); r.setProperty('--bg2', t.bg2); r.setProperty('--panel', t.panel);
         r.setProperty('--text', t.text); r.setProperty('--accent', t.accent); r.setProperty('--slot', t.slot);
         r.setProperty('--onaccent', lum(t.accent) > 0.62 ? '#161616' : '#ffffff');
-        r.setProperty('--beat', (60 / (S.pack.bpm || 100) / rate()) + 's');
+        r.setProperty('--beat', (60 / (S.bpm || 100) / rate()) + 's');
         d.body.className = (S.horror ? 'horror ' : '') + 'pack-' + S.pack.id + (S.paused ? ' paused' : '');
         buildFx();
     }
@@ -397,33 +445,52 @@
             fx.appendChild(p);
         }
     }
+    function switchPack(p) {
+        if (p.id === S.pack.id) return;
+        pushHistory();
+        if (S.horror) exitHorror(true);
+        stopAllVoices();
+        S.slots = [];
+        setPack(p);
+        afterChange();
+        store('sprunkiV2.pack', p.id);
+    }
+    // Shift+number / Shift+arrows. delta is -1 or 1 (wraps), or index is a 0-based tab number.
+    function gotoTab(index, delta) {
+        if (S.horror) { toast('Tap Exit spooky mode first.'); return; }
+        var cur = 0, i;
+        for (i = 0; i < navPacks.length; i++) if (navPacks[i].id === S.pack.id) cur = i;
+        var to = delta ? (cur + delta + navPacks.length) % navPacks.length : index;
+        if (to < 0 || to >= navPacks.length) return;
+        switchPack(navPacks[to]);
+    }
     function renderSeasons() {
         var nav = $('seasons'), i;
         nav.innerHTML = '';
-        for (i = 0; i < packs.length; i++) {
-            (function (p) {
+        for (i = 0; i < navPacks.length; i++) {
+            (function (p, pos) {
                 var b = el('button', 'btn season' + (S.pack && S.pack.id === p.id ? ' sel' : ''));
                 b.type = 'button';
                 b.setAttribute('aria-pressed', S.pack && S.pack.id === p.id ? 'true' : 'false');
                 b.appendChild(el('span', 'ico', p.icon));
                 b.appendChild(el('span', 'lbl', p.label));
+                b.style.setProperty('--pk', p.color || p.theme.accent);
+                if (pos < 10) b.appendChild(el('span', 'kbd', '\u21E7' + ((pos + 1) % 10)));
                 b.onclick = function () {
                     if (p.id === S.pack.id) return;
-                    pushHistory();
-                    if (S.horror) exitHorror(true);
-                    stopAllVoices();
-                    S.slots = [];
-                    setPack(p);
-                    afterChange();
-                    store('sprunkiV2.pack', p.id);
+                    switchPack(p);
                 };
                 nav.appendChild(b);
-            })(packs[i]);
+            })(navPacks[i], i);
         }
+        var selb = nav.querySelector('.sel');
+        if (selb && selb.scrollIntoView) { try { selb.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) {} }
     }
     function setPack(p, keepTab) {
         S.pack = p;
-        if (!keepTab && S.tab === 'special') S.tab = 'beats';
+        if (!keepTab) S.tab = (p.id === 'all') ? 'all' : (S.tab === 'special' || S.tab === 'all' ? 'beats' : S.tab);
+        else if (!catValid(p, S.tab)) S.tab = (p.id === 'all') ? 'all' : 'beats';
+        setStageBpm(p.bpm);
         applyTheme();
         renderSeasons();
         renderTabs();
@@ -470,7 +537,7 @@
         applyTheme();
         applyVolume();
         setAllRates();
-        if (S.tab === 'special') S.tab = 'beats';
+        if (S.tab === 'special') S.tab = (S.pack.id === 'all') ? 'all' : 'beats';
         renderTabs();
         afterChange();
         if (!quiet) toast('Back to normal. Phew!');
@@ -565,8 +632,9 @@
     function helpDialog() {
         var ul = el('ul', 'keys'), rows = [
             ['Tap a friend', 'put them on the stage'], ['Tap them again', 'send them home'],
-            ['Drag', 'drop a friend on any spot'], ['1 to 9', 'add that friend in the open tab'],
-            [', and .', 'change tab'], ['Space', 'play or pause'], ['M', 'mute'],
+            ['Drag', 'drop a friend on any spot'], ['1 to 9', 'add that friend in the open list'],
+            [', and .', 'change the list (Beats, Effects...)'],
+            ['Shift + 1 to 9, Shift + 0', 'jump to pack tab 1 to 10 (1 is All)'], ['Shift + Left or Right', 'step through the pack tabs'], ['Space', 'play or pause'], ['M', 'mute'],
             ['Z', 'undo'], ['R', 'reset the stage'], ['S and L', 'save and load'], ['Esc', 'close this or leave spooky mode']
         ], i;
         for (i = 0; i < rows.length; i++) {
@@ -643,7 +711,13 @@
         if ((e.ctrlKey || e.metaKey) && (k === 'z' || k === 'Z')) { e.preventDefault(); undo(); return; }
         if (e.ctrlKey) return;
         if (k === ' ' && tag !== 'BUTTON' && tag !== 'INPUT' && tag !== 'A') { e.preventDefault(); setPaused(!S.paused); return; }
-        if (tag === 'INPUT') return;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (d.activeElement && d.activeElement.isContentEditable)) return;
+        if (e.shiftKey && !e.ctrlKey) {
+            // Shift+1..9 and Shift+0 jump to tab 1..10 (event.code, because Shift changes event.key). Shift+Left/Right step.
+            var m = /^(?:Digit|Numpad)([0-9])$/.exec(e.code || '');
+            if (m) { e.preventDefault(); if (!e.repeat) gotoTab(m[1] === '0' ? 9 : parseInt(m[1], 10) - 1, 0); return; }
+            if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') { e.preventDefault(); if (!e.repeat) gotoTab(0, e.code === 'ArrowRight' ? 1 : -1); return; }
+        }
         var lk = k.toLowerCase(), n;
         if (lk === 'm') setMuted(!S.muted);
         else if (lk === 'z') undo();
@@ -653,9 +727,10 @@
         else if (lk === '?' || lk === 'h') helpDialog();
         else if (k === ',' || k === '.') {
             var i, cur = 0;
-            for (i = 0; i < CATS.length; i++) if (CATS[i].id === S.tab) cur = i;
-            cur = (cur + (k === '.' ? 1 : CATS.length - 1)) % CATS.length;
-            S.tab = CATS[cur].id; renderTabs(); renderTiles();
+            var cl = catsFor(S.pack);
+            for (i = 0; i < cl.length; i++) if (cl[i].id === S.tab) cur = i;
+            cur = (cur + (k === '.' ? 1 : cl.length - 1)) % cl.length;
+            S.tab = cl[cur].id; renderTabs(); renderTiles();
         } else if (k >= '1' && k <= '9') {
             n = parseInt(k, 10) - 1;
             var ts = tilesNow();
@@ -667,7 +742,21 @@
     function init() {
         packs = (w.SprunkiV2Packs || []).slice().sort(function (a, b) { return a.order - b.order; });
         var i;
-        for (i = 0; i < packs.length; i++) packById[packs[i].id] = packs[i];
+        var j, pk, ch2;
+        for (i = 0; i < packs.length; i++) {
+            pk = packs[i];
+            packById[pk.id] = pk;
+            if (!pk.color) pk.color = pk.theme.accent;
+            for (j = 0; j < pk.chars.length; j++) {
+                ch2 = pk.chars[j];
+                ch2.packId = pk.id;
+                ch2.bpm = pk.bpm || 100;
+                charById[ch2.id] = ch2;
+                ALL_PACK.chars.push(ch2);
+            }
+        }
+        packById.all = ALL_PACK;
+        navPacks = [ALL_PACK].concat(packs);
         var n = parseInt(store('sprunkiV2.slots'), 10);
         if (n >= 3 && n <= 12) S.slotCount = n;
         var vol = parseInt(store('sprunkiV2.vol'), 10);

@@ -3,7 +3,7 @@
     var N = null;
     w.SprunkiV2Packs = w.SprunkiV2Packs || [];
     w.SprunkiV2Packs.push({
-        id: 'autumn', order: 3, label: 'Autumn', icon: '🍂',
+        id: 'autumn', order: 3, label: 'Autumn', icon: '🍂', color: '#a8561c',
         theme: { bg1: '#f6b26b', bg2: '#8c4a2f', panel: '#fff0dc', text: '#3d2314', accent: '#c4561a', slot: '#fff8ee' },
         fx: { emoji: '🍂', count: 14, dir: 'fall' },
         bpm: 100,
