@@ -715,6 +715,8 @@ Big2Game.prototype._aiTakeTurn = function () {
  * Returns the card that MUST be included in the first play (e.g., 3♦), or null.
  */
 Big2Game.prototype._getMustIncludeCard = function (player) {
+    player = player || this.currentPlayer();
+    if (!player || !player.hand) return null;
     if (!this.ruleset.firstPlayMustIncludeStartCard) return null;
     if (this.turnHistory.length > 0) return null; // Only on very first play of game
     if (this.ruleset.firstTurnRule !== 'diamond3') return null;
