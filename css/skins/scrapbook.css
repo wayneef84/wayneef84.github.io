@@ -1,1 +1,550 @@
-/* Scrapbook skin (Phase 2 placeholder). Scope every rule to html[data-skin="scrapbook"]. */
+/* Scrapbook skin: a corkboard. Cards are paper notes and photo pieces held on with
+   tape and pins, each tilted and toned a little differently. Group headings are
+   handwritten labels on masking tape. Caveat (handwriting) for headings, a plain
+   system stack for the long text. Cards wobble in on load and lift on hover or focus.
+   Every rule is scoped to html[data-skin="scrapbook"] (specificity beats
+   [data-theme="fun"], so ?mode=fun only changes wording here). Colors default to the
+   Tomato Soup palette and follow any palette or per-color change through the same
+   CSS variables the engine sets inline. Paper tones are mixed from the surface
+   color, never fixed white, so text keeps its contrast on every palette. */
+
+/* Caveat, SIL OFL 1.1, latin subset (see docs/skins/scrapbook.md) */
+@font-face { font-family: 'Caveat'; src: url('../../assets/fonts/Caveat-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Caveat'; src: url('../../assets/fonts/Caveat-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+html[data-skin="scrapbook"] {
+  --bg-base: #fbefdc;
+  --bg-surface: #fff8ec;
+  --bg-surface-hover: #fff8ec;
+  --text-primary: #2b1b14;
+  --text-secondary: #6b5547;
+  --text-muted: #6b5547;
+  --accent-primary: #d8432b;
+  --accent-secondary: #2f6f68;
+  --accent-glow: rgba(216, 67, 43, 0.15);
+  --card-border: #cdc0b0;
+  --card-border-hover: var(--card-border);
+  --card-shadow-hover: none;
+  --line: #cdc0b0;
+  --ink: #2b1b14;
+  --on-accent: #000000;
+  --on-accent2: #ffffff;
+  --btn-color: var(--on-accent);
+  --filter-active-color: var(--on-accent);
+  --grp-games: #d8432b;
+  --grp-tools: #2f6f68;
+  --grp-wos: #84594a;
+  --grp-more: #6b5547;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Caveat', 'Comic Sans MS', 'Bradley Hand', cursive;
+  --font-mono: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --nav-border: 0 solid transparent;
+
+  /* skin-only values (hard-coded colors live here and nowhere else) */
+  --sb-shade: rgba(40, 20, 8, 0.34);
+  --sb-shade-soft: rgba(40, 20, 8, 0.2);
+  --sb-bw: var(--t-bw, 1px);
+  --sb-d: var(--t-density, 1);
+  --sb-p1: var(--bg-surface);
+  --sb-p2: var(--bg-surface);
+  --sb-p3: var(--bg-surface);
+  --sb-p4: var(--bg-surface);
+  --sb-p5: var(--bg-surface);
+  --sb-p6: var(--bg-surface);
+  --sb-tape: var(--accent-secondary);
+  --sb-tape-a: var(--accent-primary);
+  --sb-grain: var(--text-secondary);
+  --sb-frame: var(--text-secondary);
+  --sb-shadow: 0 1px 1px var(--sb-shade), 0 7px 12px -5px var(--sb-shade);
+  --sb-shadow-up: 0 2px 2px var(--sb-shade), 0 16px 22px -8px var(--sb-shade);
+  --sb-gap: max(1.5rem, calc(1.7rem * var(--sb-d)));
+}
+html[data-skin="scrapbook"][data-shadow="soft"] { --sb-shadow: 0 6px 18px var(--sb-shade-soft); --sb-shadow-up: 0 14px 30px var(--sb-shade-soft); }
+html[data-skin="scrapbook"][data-shadow="hard"] { --sb-shadow: 4px 4px 0 var(--shadow-ink, var(--text-primary)); --sb-shadow-up: 7px 7px 0 var(--shadow-ink, var(--text-primary)); }
+html[data-skin="scrapbook"][data-shadow="none"] { --sb-shadow: none; --sb-shadow-up: none; }
+
+/* Paper tones, tape and grain are mixed from the palette variables */
+@supports (background: color-mix(in srgb, red, blue)) {
+  html[data-skin="scrapbook"] {
+    --sb-p1: var(--bg-surface);
+    --sb-p2: color-mix(in srgb, var(--bg-surface) 91%, var(--accent-primary));
+    --sb-p3: color-mix(in srgb, var(--bg-surface) 91%, var(--accent-secondary));
+    --sb-p4: color-mix(in srgb, var(--bg-surface) 92%, var(--bg-base));
+    --sb-p5: color-mix(in srgb, var(--bg-surface) 90%, var(--grp-wos));
+    --sb-p6: color-mix(in srgb, var(--bg-surface) 90%, var(--grp-tools));
+    --sb-tape: color-mix(in srgb, var(--accent-secondary) 62%, transparent);
+    --sb-tape-a: color-mix(in srgb, var(--accent-primary) 62%, transparent);
+    --sb-grain: color-mix(in srgb, var(--text-primary) 17%, transparent);
+    --sb-frame: color-mix(in srgb, var(--text-primary) 62%, var(--bg-base));
+    --card-border: color-mix(in srgb, var(--text-primary) 22%, var(--bg-surface));
+  }
+}
+
+/* ── The board: cork speckle on the page, a frame around the screen ────── */
+html[data-skin="scrapbook"] body {
+  background-color: var(--bg-base);
+  background-image: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+html[data-skin="scrapbook"] body::after {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(var(--sb-grain) 0, var(--sb-grain) 1px, transparent 1.7px),
+    radial-gradient(var(--sb-grain) 0, var(--sb-grain) 1.2px, transparent 2px),
+    radial-gradient(ellipse at center, var(--sb-grain) 0, transparent 70%);
+  background-size: 23px 29px, 41px 37px, 130px 110px;
+  background-position: 0 0, 11px 17px, 40px 60px;
+}
+html[data-skin="scrapbook"]::after {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 99;
+  pointer-events: none;
+  border: 8px solid var(--sb-frame);
+  box-shadow: inset 0 0 0 2px var(--sb-grain), inset 0 6px 14px var(--sb-shade);
+}
+
+/* Tape and pins may poke past a card edge, never past the screen */
+html[data-skin="scrapbook"] main,
+html[data-skin="scrapbook"] .landing-footer { overflow-x: clip; }
+
+/* ── Masthead: a paper strip with a hand-lettered title ─────────────────── */
+html[data-skin="scrapbook"] .global-nav {
+  background: var(--sb-p1);
+  border-bottom: 2px dashed var(--card-border);
+  box-shadow: 0 5px 10px -6px var(--sb-shade);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 5%;
+}
+html[data-skin="scrapbook"] .nav-brand {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 7vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--text-primary);
+  text-shadow: none;
+  transform: rotate(-1.5deg);
+  transform-origin: left center;
+  animation: none;
+  padding-bottom: 0.2rem;
+}
+html[data-skin="scrapbook"] .nav-brand::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 11px;
+  pointer-events: none;
+  background: var(--accent-primary);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M2 7 C12 1 20 11 30 6 S50 2 60 7 S80 11 90 5 S110 3 118 7' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round'/></svg>") 0 0 / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'><path d='M2 7 C12 1 20 11 30 6 S50 2 60 7 S80 11 90 5 S110 3 118 7' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round'/></svg>") 0 0 / 100% 100% no-repeat;
+}
+html[data-skin="scrapbook"] .nav-right { gap: 0.6rem; flex-wrap: wrap; }
+html[data-skin="scrapbook"] .stats-container {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  opacity: 1;
+}
+html[data-skin="scrapbook"] .theme-toggle-link {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--sb-p3);
+  border: var(--sb-bw) dashed var(--text-secondary);
+  border-radius: var(--radius-md);
+  transform: rotate(1.5deg);
+}
+html[data-skin="scrapbook"] .theme-toggle-link:hover { color: var(--text-primary); border-color: var(--text-primary); background: var(--sb-p2); }
+html[data-skin="scrapbook"] .theme-open {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  background: var(--accent-primary);
+  color: var(--on-accent);
+  border: var(--sb-bw) solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: var(--sb-shadow);
+  transform: rotate(-1deg);
+  filter: none;
+}
+html[data-skin="scrapbook"] .theme-open:hover { filter: none; transform: rotate(0deg) translateY(-2px); }
+html[data-skin="scrapbook"] a:focus-visible,
+html[data-skin="scrapbook"] .theme-open:focus-visible,
+html[data-skin="scrapbook"] .hub-search:focus-visible { outline: 3px dashed var(--accent-primary); outline-offset: 4px; }
+
+/* ── Group headings: handwriting on masking tape ───────────────────────── */
+html[data-skin="scrapbook"] #home-groups .nav-section { padding: 2.2rem 5% 1.2rem; }
+html[data-skin="scrapbook"] .section-head { align-items: center; margin-bottom: 1.6rem; flex-wrap: wrap; }
+html[data-skin="scrapbook"] .nav-section-title,
+html[data-skin="scrapbook"] [data-theme="fun"] .nav-section-title {
+  --sb-label: var(--sb-p2);
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0.25rem 1.5rem 0.3rem 1.3rem;
+  background: var(--sb-label);
+  box-shadow: 0 2px 3px var(--sb-shade-soft);
+  clip-path: polygon(0 6%, 2% 0, 4% 8%, 6% 0, 100% 2%, 98% 28%, 100% 50%, 98% 74%, 100% 98%, 6% 100%, 4% 92%, 2% 100%, 0 94%, 2% 70%, 0 50%, 2% 28%);
+  transform: rotate(-1.6deg);
+  transform-origin: left center;
+}
+html[data-skin="scrapbook"] .nav-section:nth-of-type(even) .nav-section-title { transform: rotate(1.2deg); }
+html[data-skin="scrapbook"] .nav-section-games .nav-section-title { --sb-label: color-mix(in srgb, var(--bg-surface) 80%, var(--grp-games)); }
+html[data-skin="scrapbook"] .nav-section-tools .nav-section-title { --sb-label: color-mix(in srgb, var(--bg-surface) 80%, var(--grp-tools)); }
+html[data-skin="scrapbook"] .nav-section-wos .nav-section-title { --sb-label: color-mix(in srgb, var(--bg-surface) 80%, var(--grp-wos)); }
+html[data-skin="scrapbook"] .nav-section-more .nav-section-title { --sb-label: color-mix(in srgb, var(--bg-surface) 80%, var(--grp-more)); }
+/* hand-drawn star in front of every heading */
+html[data-skin="scrapbook"] .nav-section-title::before {
+  content: "";
+  display: inline-block;
+  width: 0.7em; height: 0.7em;
+  margin-right: 0.4em;
+  vertical-align: -0.02em;
+  background: var(--accent-primary);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.5 L14.6 9 L21.6 9.6 L16.2 14 L18 21 L12 17.2 L6 21.1 L7.8 14.1 L2.4 9.5 L9.4 9 Z' fill='black' stroke='black' stroke-width='1.5' stroke-linejoin='round'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.5 L14.6 9 L21.6 9.6 L16.2 14 L18 21 L12 17.2 L6 21.1 L7.8 14.1 L2.4 9.5 L9.4 9 Z' fill='black' stroke='black' stroke-width='1.5' stroke-linejoin='round'/></svg>") center / contain no-repeat;
+}
+/* "See all" is a scribbled arrow link */
+html[data-skin="scrapbook"] .section-all {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  text-decoration: underline wavy;
+  text-decoration-color: var(--accent-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+  transform: rotate(1.5deg);
+}
+html[data-skin="scrapbook"] .section-all:hover { text-decoration: underline wavy; text-decoration-color: var(--accent-secondary); transform: rotate(0deg) translateY(-2px); }
+
+/* ── Paper pieces ──────────────────────────────────────────────────────── */
+html[data-skin="scrapbook"] .nav-card,
+html[data-skin="scrapbook"] .featured-app-card,
+html[data-skin="scrapbook"] .game-card {
+  --sb-tilt: 0deg;
+  --sb-dy: 0px;
+  --sb-paper: var(--sb-p1);
+  position: relative;
+  background-color: var(--sb-paper);
+  background-image: none;
+  color: var(--text-primary);
+  border: var(--sb-bw) solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sb-shadow);
+  padding: calc(1.3rem * var(--sb-d)) calc(1.2rem * var(--sb-d)) calc(1.15rem * var(--sb-d));
+  transform: translateY(var(--sb-dy)) rotate(var(--sb-tilt));
+  transition: transform 0.22s cubic-bezier(.3, 1.5, .5, 1), box-shadow 0.22s ease-out;
+  animation: sb-settle 0.7s cubic-bezier(.25, 1.35, .45, 1) backwards;
+  animation-delay: calc(var(--sb-i, 0) * 70ms);
+}
+html[data-skin="scrapbook"] .nav-card { min-height: calc(92px * var(--sb-d)); }
+html[data-skin="scrapbook"] .nav-card-all { --sb-paper: transparent; border-style: dashed; box-shadow: none; }
+
+@keyframes sb-settle {
+  0%   { opacity: 0; transform: translateY(calc(var(--sb-dy) + 22px)) rotate(calc(var(--sb-tilt) * -5 - 3deg)) scale(0.94); }
+  60%  { opacity: 1; transform: translateY(calc(var(--sb-dy) - 4px)) rotate(calc(var(--sb-tilt) * 1.6)) scale(1.01); }
+  100% { opacity: 1; transform: translateY(var(--sb-dy)) rotate(var(--sb-tilt)); }
+}
+
+/* Every card gets its own tilt, offset, paper and fixing */
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 1) { --sb-tilt: -1.3deg; --sb-dy: 0px;  --sb-paper: var(--sb-p1); --sb-i: 1; }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 2) { --sb-tilt: 1.1deg;  --sb-dy: 6px;  --sb-paper: var(--sb-p2); --sb-i: 2; }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 3) { --sb-tilt: -0.6deg; --sb-dy: 2px;  --sb-paper: var(--sb-p3); --sb-i: 3; }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 4) { --sb-tilt: 1.7deg;  --sb-dy: -3px; --sb-paper: var(--sb-p4); --sb-i: 4; }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 5) { --sb-tilt: -1.8deg; --sb-dy: 5px;  --sb-paper: var(--sb-p5); --sb-i: 5; }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 6) { --sb-tilt: 0.8deg;  --sb-dy: 0px;  --sb-paper: var(--sb-p6); --sb-i: 6; }
+html[data-skin="scrapbook"] .nav-grid > .nav-card-all.nav-card { --sb-paper: transparent; background-image: none; }
+
+/* ruled note paper, graph paper and a sticky-note fold on some pieces */
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid) > :nth-child(6n + 1) {
+  background-image: repeating-linear-gradient(180deg, transparent 0, transparent 25px, var(--sb-grain) 25px, var(--sb-grain) 26px);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid) > :nth-child(6n + 3) {
+  background-image: linear-gradient(var(--sb-grain) 1px, transparent 1px), linear-gradient(90deg, var(--sb-grain) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid) > :nth-child(6n + 6) {
+  border-radius: var(--radius-sm) var(--radius-sm) 18px var(--radius-sm);
+  background-image: linear-gradient(315deg, var(--sb-grain) 0, var(--sb-grain) 14px, transparent 14px);
+}
+
+/* Fixings. ::before is tape, ::after is a pin or a doodle. Both ignore clicks. */
+html[data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card)::before,
+html[data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card)::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  display: none;
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :is(:nth-child(6n + 1), :nth-child(6n + 3), :nth-child(6n + 5))::before {
+  display: block;
+  top: -12px; left: 50%;
+  width: 70px; height: 24px;
+  margin-left: -35px;
+  background: var(--sb-tape);
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent 5px, var(--sb-grain) 5px, var(--sb-grain) 6px);
+  box-shadow: 0 1px 2px var(--sb-shade-soft);
+  clip-path: polygon(0 0, 100% 0, 97% 25%, 100% 50%, 97% 75%, 100% 100%, 0 100%, 3% 75%, 0 50%, 3% 25%);
+  transform: rotate(-3deg);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 3)::before {
+  top: -8px; left: -14px; margin-left: 0;
+  background-color: var(--sb-tape-a);
+  transform: rotate(-38deg);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 3)::after {
+  display: block;
+  bottom: -8px; right: -14px;
+  width: 70px; height: 24px;
+  background: var(--sb-tape);
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent 5px, var(--sb-grain) 5px, var(--sb-grain) 6px);
+  clip-path: polygon(0 0, 100% 0, 97% 25%, 100% 50%, 97% 75%, 100% 100%, 0 100%, 3% 75%, 0 50%, 3% 25%);
+  transform: rotate(-38deg);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 5)::before { background-color: var(--sb-tape-a); transform: rotate(2.5deg); }
+/* push pins */
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :is(:nth-child(6n + 2), :nth-child(6n + 4), :nth-child(6n + 6))::after {
+  display: block;
+  top: -9px; left: 50%;
+  width: 20px; height: 20px;
+  margin-left: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, var(--sb-grain) 0, transparent 22%), radial-gradient(circle at 40% 36%, var(--accent-primary) 0, var(--accent-primary) 60%, var(--text-primary) 130%);
+  box-shadow: 2px 5px 4px var(--sb-shade);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 4)::after { left: 14px; margin-left: 0; top: -8px; background: radial-gradient(circle at 34% 30%, var(--sb-grain) 0, transparent 22%), radial-gradient(circle at 40% 36%, var(--accent-secondary) 0, var(--accent-secondary) 60%, var(--text-primary) 130%); }
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(6n + 6)::after { left: auto; right: 16px; margin-left: 0; }
+/* "All ..." coupons carry no fixings */
+html[data-skin="scrapbook"] .nav-card-all::before,
+html[data-skin="scrapbook"] .nav-card-all::after { display: none !important; }
+
+/* Lift on hover or focus: the piece peels up and straightens */
+html[data-skin="scrapbook"] .nav-card:hover,
+html[data-skin="scrapbook"] .featured-app-card:hover,
+html[data-skin="scrapbook"] .game-card:hover,
+html[data-skin="scrapbook"] .nav-card:focus-visible,
+html[data-skin="scrapbook"] .featured-app-card:focus-visible,
+html[data-skin="scrapbook"] .game-card:focus-visible {
+  transform: translateY(calc(var(--sb-dy) - 7px)) rotate(0deg) scale(1.025);
+  box-shadow: var(--sb-shadow-up);
+  border-color: var(--card-border);
+  background-color: var(--sb-paper);
+  z-index: 3;
+}
+html[data-skin="scrapbook"] .nav-card:focus-visible,
+html[data-skin="scrapbook"] .featured-app-card:focus-visible,
+html[data-skin="scrapbook"] .game-card:focus-visible { outline: 3px dashed var(--accent-primary); outline-offset: 5px; }
+html[data-skin="scrapbook"] .nav-card[class*="nav-card-"],
+html[data-skin="scrapbook"] .featured-card-games,
+html[data-skin="scrapbook"] .featured-md-reader { border-left: var(--sb-bw) solid var(--card-border); }
+html[data-skin="scrapbook"] .nav-card-all[class*="nav-card-"] { border-left: var(--sb-bw) dashed var(--text-secondary); }
+html[data-skin="scrapbook"] .just-added-card { border-color: var(--accent-primary); }
+
+/* Icons are snapshots: a white-bordered photo, a little crooked */
+html[data-skin="scrapbook"] .nav-card-icon,
+html[data-skin="scrapbook"] .featured-app-icon,
+html[data-skin="scrapbook"] .card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 3.5rem;
+  height: 3.9rem;
+  padding-bottom: 0.45rem;
+  font-size: 1.7rem;
+  line-height: 1;
+  background-color: var(--bg-base);
+  border: 4px solid var(--bg-surface);
+  border-bottom-width: 11px;
+  outline: 1px solid var(--card-border);
+  box-shadow: 0 2px 4px var(--sb-shade-soft);
+  transform: rotate(-4deg);
+}
+html[data-skin="scrapbook"] :is(.nav-grid, .game-grid, .just-added-grid, .featured-apps) > :nth-child(even) :is(.nav-card-icon, .featured-app-icon, .card-icon) { transform: rotate(3.5deg); }
+html[data-skin="scrapbook"] .featured-app-icon { width: 4.2rem; height: 4.7rem; font-size: 2.1rem; }
+html[data-skin="scrapbook"] .card-icon { width: 2.9rem; height: 3.2rem; font-size: 1.4rem; }
+
+/* Text: handwriting for titles, plain system type for the long lines */
+html[data-skin="scrapbook"] .nav-card-title,
+html[data-skin="scrapbook"] .featured-app-title,
+html[data-skin="scrapbook"] .game-title,
+html[data-skin="scrapbook"] [data-theme="fun"] .nav-card-title,
+html[data-skin="scrapbook"] [data-theme="fun"] .featured-app-title,
+html[data-skin="scrapbook"] [data-theme="fun"] .game-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.05;
+  color: var(--text-primary);
+}
+html[data-skin="scrapbook"] .nav-card-title { font-size: 1.65rem; }
+html[data-skin="scrapbook"] .game-title { font-size: 1.5rem; }
+html[data-skin="scrapbook"] .featured-app-title { font-size: 2rem; }
+html[data-skin="scrapbook"] .nav-card-count,
+html[data-skin="scrapbook"] .featured-app-label {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+  margin: 0.1rem 0 0.15rem;
+}
+html[data-skin="scrapbook"] .nav-card-desc,
+html[data-skin="scrapbook"] .featured-app-desc,
+html[data-skin="scrapbook"] .game-desc {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+html[data-skin="scrapbook"] .featured-app-btn,
+html[data-skin="scrapbook"] [data-theme="fun"] .featured-app-btn {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: underline wavy;
+  text-decoration-color: var(--accent-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+html[data-skin="scrapbook"] .game-plays { font-family: var(--font-display); font-size: 1.15rem; color: var(--text-primary); }
+html[data-skin="scrapbook"] .card-parent { color: var(--text-primary); font-family: var(--font-display); font-size: 1.1rem; }
+html[data-skin="scrapbook"] .game-meta {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  border-top: 2px dashed var(--card-border);
+}
+
+/* Washi labels and a circled NEW */
+html[data-skin="scrapbook"] .category-tag,
+html[data-skin="scrapbook"] [data-theme="fun"] .category-tag {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+  background: var(--sb-p3);
+  border: 1px dashed var(--text-secondary);
+  border-radius: 2px;
+  padding: 0 8px;
+  transform: rotate(2deg);
+}
+html[data-skin="scrapbook"] .badge-new,
+html[data-skin="scrapbook"] [data-theme="fun"] .badge-new {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  background: var(--accent-secondary);
+  color: var(--on-accent2);
+  border: 0;
+  border-radius: 60% 40% 55% 45% / 50% 55% 45% 50%;
+  padding: 1px 9px;
+  transform: rotate(-6deg);
+}
+html[data-skin="scrapbook"] .just-added-card .featured-app-label { color: var(--text-primary); }
+
+/* ── Search and chips ──────────────────────────────────────────────────── */
+html[data-skin="scrapbook"] .home-search { padding-top: 1.6rem; }
+html[data-skin="scrapbook"] .hub-search {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  min-height: 52px;
+  color: var(--text-primary);
+  background: var(--sb-p1);
+  border: 2px dashed var(--text-secondary);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--sb-shadow);
+  transform: rotate(-0.6deg);
+}
+html[data-skin="scrapbook"] .hub-search::placeholder { color: var(--text-secondary); opacity: 1; }
+html[data-skin="scrapbook"] .hub-search:focus { border-color: var(--accent-primary); outline: 3px dashed var(--accent-primary); outline-offset: 4px; }
+html[data-skin="scrapbook"] .new-strip { gap: 0.6rem; margin-top: 0.4rem; }
+html[data-skin="scrapbook"] .new-label { font-family: var(--font-display); font-size: 1.5rem; text-transform: none; color: var(--text-primary); }
+html[data-skin="scrapbook"] .new-chip {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+  background: var(--sb-p2);
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+  box-shadow: 0 2px 3px var(--sb-shade-soft);
+  transform: rotate(-1.5deg);
+  transition: transform 0.2s cubic-bezier(.3, 1.5, .5, 1);
+}
+html[data-skin="scrapbook"] .new-chip:nth-of-type(even) { transform: rotate(1.4deg); background: var(--sb-p3); }
+html[data-skin="scrapbook"] .new-chip:hover { transform: rotate(0deg) translateY(-3px); border-color: var(--card-border); }
+html[data-skin="scrapbook"] .empty-note { font-family: var(--font-display); font-size: 1.5rem; color: var(--text-primary); }
+
+/* ── Footer: a strip of tape ───────────────────────────────────────────── */
+html[data-skin="scrapbook"] .landing-footer {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  border-top: 2px dashed var(--card-border);
+  margin-top: 1.5rem;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+html[data-skin="scrapbook"] .footer-link { color: var(--text-primary); text-decoration: underline wavy; text-decoration-color: var(--accent-primary); text-underline-offset: 5px; display: inline-block; padding: 0.7rem 0.4rem; }
+html[data-skin="scrapbook"] .footer-link:hover { color: var(--text-primary); text-decoration-color: var(--accent-secondary); }
+html[data-skin="scrapbook"] .footer-sep { opacity: 1; }
+
+/* ── Layout: a loose scatter on the board ──────────────────────────────── */
+html[data-skin="scrapbook"] .nav-grid,
+html[data-skin="scrapbook"] .featured-apps,
+html[data-skin="scrapbook"] .just-added-grid,
+html[data-skin="scrapbook"] .game-grid { gap: var(--sb-gap) calc(1.3rem * var(--sb-d)); }
+html[data-skin="scrapbook"] .featured-apps { padding-top: 2.2rem; padding-bottom: 1rem; }
+html[data-skin="scrapbook"] .just-added { padding-top: 2rem; }
+html[data-skin="scrapbook"] .just-added .section-head,
+html[data-skin="scrapbook"] .search-results .section-head { margin-top: 0.5rem; }
+html[data-skin="scrapbook"] .game-grid-flush { padding-bottom: 1.5rem; }
+@media (min-width: 1100px) {
+  html[data-skin="scrapbook"] #home-groups .nav-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── Motion: settle-in is only for full motion ─────────────────────────── */
+html[data-motion="reduced"][data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card),
+html[data-motion="off"][data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card) { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card) { animation: none; }
+  html[data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card):hover,
+  html[data-skin="scrapbook"] :is(.nav-card, .featured-app-card, .game-card):focus-visible { transform: translateY(var(--sb-dy)) rotate(var(--sb-tilt)); }
+}
