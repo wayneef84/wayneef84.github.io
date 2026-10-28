@@ -469,3 +469,18 @@ html[data-skin="metro-map"] .footer-sep { opacity: 1; }
   html[data-skin="metro-map"] .nav-card::after { left: calc(var(--mm-hx) - 14px); top: calc(var(--mm-hy) - 14px); }
   html[data-skin="metro-map"] .game-grid { margin-left: 0; }
 }
+
+/* Breathing room under the sticky header */
+html[data-skin="metro-map"] .just-added { padding-top: 1.75rem; }
+html[data-skin="metro-map"] .featured-apps { padding-top: 1.75rem; }
+html[data-skin="metro-map"] .home-search { padding-top: 0.5rem; }
+
+/* Motion: the single pulse only runs when motion is allowed */
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin="metro-map"] .nav-card:hover::after,
+  html[data-skin="metro-map"] .nav-card:focus-visible::after,
+  html[data-skin="metro-map"] .game-card:hover::after,
+  html[data-skin="metro-map"] .game-card:focus-visible::after,
+  html[data-skin="metro-map"] .featured-app-card:hover .featured-app-icon,
+  html[data-skin="metro-map"] .featured-app-card:focus-visible .featured-app-icon { animation: none; }
+}
