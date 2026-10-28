@@ -142,6 +142,10 @@ var WarRuleset = {
             return { nextState: 'RESOLUTION' };
         }
         
+        // Ensure piles are initialized even if getDealSequence wasn't called first
+        if (!this._warPot) this._warPot = new Pile();
+        if (!this._graveyard) this._graveyard = new Pile();
+
         // Add to war pot
         this._warPot.receive(card1, -1);
         this._warPot.receive(card2, -1);
