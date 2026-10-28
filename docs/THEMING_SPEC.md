@@ -97,8 +97,8 @@ A "Customize" button in the header opens a full-screen sheet with tabs: Look, Co
 ## 10. Build plan
 | Phase | What | Agents |
 |---|---|---|
-| 1 | Engine (loader, validator, tokens, palettes), panel, JSON export and import, ID reference and docs, Classic and Print Shop skins | 1 (DONE, PR open, waiting for Wayne's review) |
-| 2 | Cabinet of Drawers, Control Panel, Metro Map, Handheld, Scrapbook | up to 3 in parallel, after Phase 1 merges |
+| 1 | Engine (loader, validator, tokens, palettes), panel, JSON export and import, ID reference and docs, Classic and Print Shop skins | 1 (DONE, merged) |
+| 2 | Cabinet of Drawers, Control Panel, Metro Map, Handheld, Scrapbook | 3 in parallel (DONE, merged) |
 | 3 | Safe CSS ingester and the script sandbox, then an independent security review | 1 builder, 1 reviewer |
 Each phase is its own PRs, checked by Playwright (phone and desktop screenshots, no console errors) and the PR check. Nothing merges without Wayne's OK. Every new folder keeps its 7 docs.
 
