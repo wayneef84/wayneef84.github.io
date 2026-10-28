@@ -8,8 +8,11 @@ Branch: claude/docs-reorg (base dev). Draft PR into dev.
 - (c) 31 git mv moves to docs/archive/{incidents,handoffs,assessments,plans,agents,misc} and docs/reference. Links fixed. Banners on pinned files.
 
 ## Next
-- (d) git fetch origin && git rebase origin/dev, rerun link check, update PR body, final push
+
 - Pinned files (AI_FEEDBACK, ROADMAP, TODO, INFO, PROJECTS, QUESTIONS, WIKI-PLAN, CLAUDE_ASSESSMENT, docs/MASTER_MANUAL) stay at root until projects/md-reader/app.js (js, off limits here) is updated, then git mv them to docs/archive/.
 
 ## Resume
 Read docs/DOCS_AUDIT_2026.md. Link check: python3 linkcheck.py style script (every relative md link resolves). Baseline had 140 broken links (templates, per-game READMEs), none new.
+
+## Status
+(d) done: rebased on origin/dev, link check run (138 broken, all pre-existing, none new). Ready for Wayne's review. Delete this file before merge.

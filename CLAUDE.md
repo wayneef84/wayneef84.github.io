@@ -73,7 +73,7 @@ No build step. Open `index.html` or run any static server (`python3 -m http.serv
 
 ## Tooling
 
-Added on branch `chore/tooling` (may not be on your branch yet):
+In the repo (merged from `chore/tooling`):
 - `games-site` agent (`.claude/agents/games-site.md`): adding or changing games and tools.
 - `game-tester` agent (`.claude/agents/game-tester.md`): play-tests pages through the Playwright MCP (`.mcp.json`).
 - PR check Action (`.github/workflows/check.yml`, `scripts/check-site.mjs`): validates the catalog and links on every PR.
