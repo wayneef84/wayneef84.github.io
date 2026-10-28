@@ -7,8 +7,8 @@ var BRQ_UI = (function () {
 'use strict';
 
 var KEY = 'fong.byteRunnerQuest.settings.v1';
-var DEF = { rotate: false, fill: false, auto: false, autoDir: 1, left: false, vibrate: false, lives: 3 };
-var cfg = { rotate: DEF.rotate, fill: DEF.fill, auto: DEF.auto, autoDir: DEF.autoDir, left: DEF.left, vibrate: DEF.vibrate, lives: DEF.lives };
+var DEF = { rotate: false, fill: false, auto: false, autoDir: 1, left: false, vibrate: false, lives: 3, outPick: 'level' };
+var cfg = { rotate: DEF.rotate, fill: DEF.fill, auto: DEF.auto, autoDir: DEF.autoDir, left: DEF.left, vibrate: DEF.vibrate, lives: DEF.lives, outPick: DEF.outPick };
 var doc = document, de = doc.documentElement;
 var stage = doc.getElementById('stage'), play = doc.getElementById('play'), scr = doc.getElementById('screen');
 var cv = doc.getElementById('game'), touch = doc.getElementById('touch');
@@ -25,6 +25,7 @@ var rotNow = false, releasers = [], noteTimer = 0, outTimer = 0;
       if (o && typeof o === 'object') {
         cfg.rotate = o.rotate === true; cfg.fill = o.fill === true; cfg.auto = o.auto === true;
         cfg.autoDir = o.autoDir === -1 ? -1 : 1; cfg.left = o.left === true; cfg.vibrate = o.vibrate === true;
+        cfg.outPick = o.outPick === 'stage' ? 'stage' : 'level';
         cfg.lives = (o.lives === 1 || o.lives === 3 || o.lives === 5 || o.lives === 0) ? o.lives : 3;
       }
     }
@@ -154,13 +155,65 @@ function onFsChange() { lockLandscape(!!fsEl()); layout(); setTimeout(layout, 25
 
 function toggleRotate() { cfg.rotate = !cfg.rotate; store(); layout(); }
 
-/* "Out of lives" overlay. Buttons ignore taps for half a second so a mashing finger does not skip it. */
-function showOut(on, deaths, continues) {
-  var o = doc.getElementById('outlives'), m = doc.getElementById('outmsg');
+/* "Out of lives" overlay. Two big choices (continue the level, or restart the stage) and a smaller
+   Level select. The saved default is highlighted and counts 3, 2, 1 on its button, then starts by itself.
+   Tapping any choice starts it at once. Tapping anything else in the panel stops the countdown.
+   Buttons ignore taps for half a second so a mashing finger does not skip the overlay. */
+var OUT_SECS = 3, outTick = 0, outEnd = 0, outActive = false, outCheck = false;
+function outEl(id) { return doc.getElementById(id); }
+function outShowCount(n) {
+  var els = doc.querySelectorAll('[data-cd]'), i, mine;
+  for (i = 0; i < els.length; i++) {
+    mine = els[i].getAttribute('data-cd') === cfg.outPick;
+    els[i].textContent = mine ? (n > 0 ? 'Starting in ' + n : (n === 0 ? 'Starting' : 'Your choice')) : '';
+  }
+  var h = outEl('outhint');
+  if (h) h.textContent = n > 0 ? 'Want more time? Tap here to wait.' : (n === 0 ? '' : 'Take your time. Tap a choice when ready.');
+}
+function outStop() {
+  if (!outActive || !outTick) return;
+  clearInterval(outTick); outTick = 0; outShowCount(-1);
+}
+function outClear() { clearInterval(outTick); outTick = 0; outActive = false; }
+function outUpdate() {
+  var left = Math.ceil((outEnd - Date.now()) / 1000);
+  if (left > 0) { outShowCount(left); return; }
+  clearInterval(outTick); outTick = 0; outShowCount(0);
+  pickOut(cfg.outPick, true);
+}
+/* mode: 'level', 'stage' or 'levels'. auto = the countdown ran out (nothing new to save). */
+function pickOut(mode, auto) {
+  if (!outActive) return;
+  if (!auto && outCheck && mode !== 'levels') { cfg.outPick = mode; store(); refresh(); }
+  outClear();
+  if (mode === 'levels') H.levels(); else H.continueStage(mode);
+}
+function outKey() { if (outActive) pickOut(cfg.outPick, false); }
+function outRefreshDefault() {
+  var els = doc.querySelectorAll('[data-out]'), i, m;
+  for (i = 0; i < els.length; i++) { m = els[i].getAttribute('data-out'); cls(els[i], 'def', m === cfg.outPick); }
+  els = doc.querySelectorAll('[data-pick]');
+  for (i = 0; i < els.length; i++) { m = els[i].getAttribute('data-pick') === cfg.outPick; cls(els[i], 'sel', m); els[i].setAttribute('aria-pressed', m ? 'true' : 'false'); }
+}
+function setOutCheck(on) {
+  var c = outEl('outalways');
+  outCheck = on;
+  if (c) { cls(c, 'on', on); c.setAttribute('aria-checked', on ? 'true' : 'false'); }
+}
+function showOut(on, deaths, notes) {
+  var o = outEl('outlives'), m = outEl('outmsg'), n = outEl('outnote-level'), n2 = outEl('outnote-stage');
   if (!o) return;
-  if (on && m) m.textContent = 'Good try! That was ' + deaths + (deaths === 1 ? ' try' : ' tries') + ' on this stage. Ready to go again?';
+  clearTimeout(outTimer); outClear();
+  if (on) {
+    if (m) m.textContent = 'Good try! That was ' + deaths + (deaths === 1 ? ' try' : ' tries') + ' on this level. Pick how to go again.';
+    if (n && notes) n.textContent = notes.level;
+    if (n2 && notes) n2.textContent = notes.stage;
+    setOutCheck(false); outRefreshDefault();
+    outActive = true; outEnd = Date.now() + OUT_SECS * 1000;
+    outShowCount(OUT_SECS);
+    outTick = setInterval(outUpdate, 100);
+  }
   cls(o, 'show', on); cls(o, 'lock', on);
-  clearTimeout(outTimer);
   if (on) outTimer = setTimeout(function () { cls(o, 'lock', false); }, 500);
 }
 function vibrate() {
@@ -173,7 +226,7 @@ var panelOpen = false, panelPaused = false;
 function openPanel() {
   var s = doc.getElementById('settings');
   if (!s || panelOpen) return;
-  panelOpen = true; panelPaused = !!H.pause(); cls(s, 'show', true); refresh();
+  outStop(); panelOpen = true; panelPaused = !!H.pause(); cls(s, 'show', true); refresh();
 }
 function closePanel() {
   var s = doc.getElementById('settings');
@@ -220,6 +273,7 @@ function refresh() {
   for (i = 0; i < els.length; i++) cls(els[i], 'sel', +els[i].getAttribute('data-dir') === cfg.autoDir);
   els = doc.querySelectorAll('[data-lives]');
   for (i = 0; i < els.length; i++) { a = +els[i].getAttribute('data-lives') === cfg.lives; cls(els[i], 'sel', a); els[i].setAttribute('aria-pressed', a ? 'true' : 'false'); }
+  outRefreshDefault();
   a = doc.getElementById('vibrow');
   if (a) {
     a.disabled = !vibSupported();
@@ -269,8 +323,23 @@ function init(hooks) {
   if (sp) sp.addEventListener('click', function (e) { if (e.target === sp) closePanel(); });
   var ob = doc.querySelectorAll('[data-out]');
   for (i = 0; i < ob.length; i++) (function (b) {
-    b.addEventListener('click', function () { if (b.getAttribute('data-out') === 'continue') H.continueStage(); else H.levels(); });
+    b.addEventListener('click', function () { pickOut(b.getAttribute('data-out'), false); });
   })(ob[i]);
+  ob = doc.querySelectorAll('[data-pick]');
+  for (i = 0; i < ob.length; i++) (function (b) {
+    b.addEventListener('click', function () { cfg.outPick = b.getAttribute('data-pick') === 'stage' ? 'stage' : 'level'; changed('outPick'); });
+  })(ob[i]);
+  var oc = outEl('outalways'), op = doc.querySelector('#outlives .panel');
+  if (oc) oc.addEventListener('click', function () { setOutCheck(!outCheck); });
+  /* a tap on anything in the panel that is not a choice stops the countdown (the checkbox counts) */
+  if (op) op.addEventListener('click', function (e) {
+    var t = e.target;
+    while (t && t !== op) { if (t.getAttribute && t.getAttribute('data-out')) return; t = t.parentNode; }
+    outStop();
+  });
+  var ov = outEl('outlives');
+  if (ov) ov.addEventListener('click', function (e) { if (e.target === ov) outStop(); });
+  window.addEventListener('blur', outStop);
   doc.addEventListener('fullscreenchange', onFsChange);
   doc.addEventListener('webkitfullscreenchange', onFsChange);
   /* Esc leaves the fill-screen fallback (real fullscreen handles Esc itself) */
@@ -298,5 +367,5 @@ function inside(el, cn) {
   return false;
 }
 
-return { panelOpen: function () { return panelOpen; }, showOut: showOut, vibrate: vibrate, vibSupported: vibSupported, setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
+return { outKey: outKey, panelOpen: function () { return panelOpen; }, showOut: showOut, vibrate: vibrate, vibSupported: vibSupported, setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
 })();

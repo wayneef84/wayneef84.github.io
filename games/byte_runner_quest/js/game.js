@@ -698,10 +698,24 @@ function levelClear() {
   for (i = 0; i < 6; i++) fwQueue.push(frame + i * 14);
 }
 function outOfLives() { state = 'out'; menuSel = 0; outT = 30; }
-function continueStage() {
+/* Stage = world (X), level = X-Y. mode 'level' replays the current level from its start, anything else
+   ('stage') goes back to the first level of the current stage (X-1). Both refill lives, count a continue and
+   keep earlier progress, best times and unlocks. Endless Run has no stage and never gets here. */
+function stageFirstIndex(idx) {
+  var w = LV.LEVELS[idx].world, i = idx;
+  while (i > 0 && LV.LEVELS[i - 1].world === w) i--;
+  return i;
+}
+function continueStage(mode) {
   var carry = { deaths: run.deaths, continues: (run.continues | 0) + 1 };
   save.continues = (save.continues | 0) + 1; writeSave(); sfx('ok');
-  startLevel(lastLevel, carry);                        /* same stage, lives refilled, earlier stages untouched */
+  if (mode === 'stage' && lastLevel >= 0) startLevel(stageFirstIndex(lastLevel), carry);
+  else startLevel(lastLevel, carry);                   /* same level from its start, lives refilled */
+}
+/* small print for the two buttons: which level each one starts */
+function outNotes() {
+  var first = lastLevel >= 0 ? stageFirstIndex(lastLevel) : 0;
+  return { level: 'Replay level ' + L.id + ' from its start', stage: first === lastLevel ? 'Level ' + L.id + ' is the first level, so same as above' : 'Go back to level ' + LV.LEVELS[first].id };
 }
 function endRun() {
   state = 'over'; menuSel = 0;
@@ -750,7 +764,7 @@ function stepMenus() {
   } else if (state === 'out') {
     stepEffects();
     if (outT > 0) outT--;
-    else if (hit.A || hit.J) continueStage();
+    else if (hit.A || hit.J) UI.outKey();
     else if (hit.B) { sfx('ok'); toSelect(); }
   } else if (state === 'over') {
     stepEffects();
@@ -1120,7 +1134,7 @@ function step() {
   hit = {}; taps = [];
   if (uiState !== state) {
     uiState = state;
-    UI.showOut(state === 'out', run ? run.deaths : 0, run ? run.continues | 0 : 0);
+    UI.showOut(state === 'out', run ? run.deaths : 0, outNotes());
   }
 }
 var uiState = '';
@@ -1140,7 +1154,7 @@ UI.init({
   press: function (k) { audioInit(); keyDown(k); },
   release: function (k) { keyUp(k); },
   tap: function (p) { audioInit(); taps.push(p); },
-  continueStage: function () { if (state === 'out') continueStage(); },
+  continueStage: function (mode) { if (state === 'out') continueStage(mode); },
   levels: function () { if (state === 'out') { sfx('ok'); toSelect(); } },
   turn: function () { audioInit(); setRunDir(-curDir); sfx('move'); },
   getState: function () { return state; },
