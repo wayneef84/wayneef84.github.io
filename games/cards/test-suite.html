@@ -1003,7 +1003,7 @@
                     var gs = { players: [p1, p2], piles: WarRuleset.buildPiles() };
                     WarRuleset.neverending = true;
                     WarRuleset.twosHigh = false;
-                    WarRuleset._resolveBattle(gs);
+                    WarRuleset.resolveAction(gs, 'player1', 'flip');
                     WarRuleset.neverending = false;
                     t.assertEqual(p1.hand.count, 2, 'Winner should collect both played cards in endless mode');
                     t.assertEqual(p2.hand.count, 0, 'Loser should have 0 cards');
@@ -1021,7 +1021,7 @@
                     p2.hand.receive(new Card(Suit.HEARTS, Rank.KING, 'war'), -1);
                     p2.hand.receive(new Card(Suit.HEARTS, Rank.THREE, 'war'), -1);
                     var gs = { players: [p1, p2], piles: WarRuleset.buildPiles() };
-                    var res = WarRuleset._resolveBattle(gs);
+                    var res = WarRuleset.resolveAction(gs, 'player1', 'flip');
                     t.assertEqual(res.nextState, 'PLAYER_TURN', 'Game should continue to flip final card');
                     t.assertEqual(p1.hand.count, 1, 'Player 1 should retain 1 card to flip for War');
                     t.assertEqual(p2.hand.count, 1, 'Player 2 should retain 1 card to flip for War');
@@ -1061,7 +1061,8 @@
                         new Card(Suit.SPADES, Rank.TWO, 'b2')
                     ];
                     var ev = Big2Evaluator.evaluate(badStraight, hk);
-                    t.assertEqual(ev.type, Big2HandType.INVALID, 'J-Q-K-A-2 should not be a valid straight when aceWrapsHigh is false');
+                    t.assert(ev.type !== Big2HandType.STRAIGHT, 'J-Q-K-A-2 should not be evaluated as a STRAIGHT when aceWrapsHigh is false');
+                    t.assertEqual(hk.allowedHandTypes.indexOf(ev.type), -1, 'J-Q-K-A-2 (HIGH_CARD) is disallowed in HK ruleset');
                 }
             },
             {
