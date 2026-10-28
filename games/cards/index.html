@@ -225,6 +225,8 @@
         <iframe id="gameFrame" src="" title="Game Area"></iframe>
     </main>
 
+    <script src="../../js/catalog.js"></script>
+    <script src="../../js/player-stats.js"></script>
     <script>
         // --- CONFIGURATION ---
         const GAMES = [
@@ -281,6 +283,8 @@
             
             if (!game.disabled) {
                 btn.onclick = () => {
+                    // Count a play (on-device only). Poker uses the Poker Hall catalog id.
+                    if (window.FongStats) { window.FongStats.recordPlay(game.id === 'poker' ? 'poker-hall' : game.id); }
                     // Update URL and Force Refresh
                     const newUrl = new URL(window.location);
                     newUrl.searchParams.set('game', game.id);

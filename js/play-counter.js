@@ -6,36 +6,32 @@
 (function() {
     'use strict';
 
-    // State Management
+    // State Management. Counts live in FongStats (js/player-stats.js), keyed by catalog id.
+    // Load js/catalog.js and js/player-stats.js before this file.
+    function statsId(gamePath) {
+        return (window.FongStats && window.FongStats.idForPath(gamePath)) || gamePath;
+    }
+
     var PlayCounter = {
         getCount: function(gamePath) {
-            return parseInt(localStorage.getItem('playcount_' + gamePath) || '0', 10);
+            return window.FongStats ? window.FongStats.count(statsId(gamePath)) : 0;
         },
 
         incrementCount: function(gamePath) {
-            var count = this.getCount(gamePath);
-            count = Math.min(count + 1, 99); // Cap at 99
-            localStorage.setItem('playcount_' + gamePath, count);
-            return count;
+            return window.FongStats ? window.FongStats.recordPlay(statsId(gamePath)) : 0;
         },
 
         resetCount: function(gamePath) {
-            localStorage.removeItem('playcount_' + gamePath);
+            // Per-game reset is not supported by FongStats; reset clears everything.
         },
 
         resetAllCounts: function() {
-            var keys = Object.keys(localStorage);
-            keys.forEach(function(key) {
-                if (key.startsWith('playcount_')) {
-                    localStorage.removeItem(key);
-                }
-            });
+            if (window.FongStats) window.FongStats.reset();
         },
 
         formatCount: function(count) {
-            if (count === 0) return '';
-            if (count >= 99) return '99+';
-            return count.toString();
+            if (!count) return '';
+            return window.FongStats ? window.FongStats.format(count) : String(count);
         }
     };
 
