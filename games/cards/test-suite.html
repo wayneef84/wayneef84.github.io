@@ -1146,6 +1146,102 @@
                     t.assertEqual(restored.count, 1, 'Restored pile should have 1 card');
                     t.assertEqual(restored.peek(0).rank, Rank.SEVEN, 'Restored card rank should be SEVEN');
                 }
+            },
+            {
+                id: 'BIG2-04',
+                name: 'Singapore powerWinDoubles doubles opponent penalty when winning on Four of a Kind',
+                group: 'Big 2 Mechanics',
+                run: function(t) {
+                    var g = new Big2Game(Big2Rulesets.singapore);
+                    g.players = [
+                        { id: 'p1', name: 'You', type: 'human', hand: [] },
+                        { id: 'p2', name: 'AI', type: 'ai', hand: [
+                            new Card(Suit.SPADES, Rank.THREE, 'b2'),
+                            new Card(Suit.HEARTS, Rank.FOUR, 'b2'),
+                            new Card(Suit.CLUBS, Rank.FIVE, 'b2'),
+                            new Card(Suit.DIAMONDS, Rank.SIX, 'b2')
+                        ] }
+                    ];
+                    g.scores = { p1: 0, p2: 0 };
+                    var quadCards = [
+                        new Card(Suit.SPADES, Rank.NINE, 'b2'),
+                        new Card(Suit.HEARTS, Rank.NINE, 'b2'),
+                        new Card(Suit.CLUBS, Rank.NINE, 'b2'),
+                        new Card(Suit.DIAMONDS, Rank.NINE, 'b2'),
+                        new Card(Suit.SPADES, Rank.TEN, 'b2')
+                    ];
+                    g.pileHand = { playerId: 'p1', cards: quadCards, evaluated: Big2Evaluator.evaluate(quadCards, Big2Rulesets.singapore) };
+                    g._handleWin('p1');
+                    t.assertEqual(g.scores.p2, 8, '4 cards left * 1 pt * 2 (powerWinDoubles) should equal 8');
+                }
+            },
+            {
+                id: 'BIG2-05',
+                name: 'Big2Game.validatePlay enforces first-turn 3 of Diamonds requirement',
+                group: 'Big 2 Mechanics',
+                run: function(t) {
+                    var g = new Big2Game(Big2Rulesets.hongkong);
+                    var d3 = new Card(Suit.DIAMONDS, Rank.THREE, 'b2');
+                    var s4 = new Card(Suit.SPADES, Rank.FOUR, 'b2');
+                    g.players = [{ id: 'p1', name: 'You', type: 'human', hand: [d3, s4] }];
+                    g.currentPlayerIdx = 0;
+                    g.isFirstTurn = true;
+                    g.pileHand = null;
+                    var badCheck = g.validatePlay([s4]);
+                    var goodCheck = g.validatePlay([d3]);
+                    t.assertEqual(badCheck.valid, false, 'Playing 4♠ on first turn without 3♦ must be invalid');
+                    t.assertEqual(goodCheck.valid, true, 'Playing 3♦ on first turn must be valid');
+                }
+            },
+            {
+                id: 'EUCHRE-02',
+                name: 'Euchre resolveAction plays 4-card trick, awards trick to highest bower, and resolves 5-trick round',
+                group: 'Euchre Mechanics',
+                run: function(t) {
+                    var players = [
+                        new Player({ id: 'p1', name: 'You', type: 'human' }),
+                        new Player({ id: 'p2', name: 'West', type: 'ai' }),
+                        new Player({ id: 'p3', name: 'Partner', type: 'ai' }),
+                        new Player({ id: 'p4', name: 'East', type: 'ai' })
+                    ];
+                    players[0].hand.receive(new Card(Suit.HEARTS, Rank.NINE, 'eu'), -1);
+                    players[1].hand.receive(new Card(Suit.DIAMONDS, Rank.JACK, 'eu'), -1); // Left Bower (Hearts trump)
+                    players[2].hand.receive(new Card(Suit.HEARTS, Rank.JACK, 'eu'), -1);   // Right Bower (wins!)
+                    players[3].hand.receive(new Card(Suit.HEARTS, Rank.ACE, 'eu'), -1);
+                    var gs = { players: players, piles: EuchreRuleset.buildPiles() };
+                    EuchreRuleset._trumpSuit = Suit.HEARTS;
+                    EuchreRuleset._trumpCaller = 'p1';
+                    EuchreRuleset._phase = 'playing';
+                    EuchreRuleset._trickLeader = 'p1';
+                    EuchreRuleset._currentTrick = [];
+                    EuchreRuleset._tricksWon = { team1: 4, team2: 0 };
+                    EuchreRuleset._scores = { team1: 0, team2: 0 };
+
+                    EuchreRuleset.resolveAction(gs, 'p1', 'playCard_0');
+                    EuchreRuleset.resolveAction(gs, 'p2', 'playCard_0');
+                    EuchreRuleset.resolveAction(gs, 'p3', 'playCard_0');
+                    var lastRes = EuchreRuleset.resolveAction(gs, 'p4', 'playCard_0');
+
+                    t.assertEqual(EuchreRuleset._tricksWon.team1, 5, 'Team 1 (p3 Right Bower) wins 5th trick');
+                    t.assertEqual(lastRes.nextState, 'RESOLUTION', '5th trick transitions to RESOLUTION');
+                    var roundSummary = EuchreRuleset.resolveRound(gs);
+                    t.assertEqual(roundSummary.points, 2, '5-trick march awards 2 points');
+                }
+            },
+            {
+                id: 'SOL-02',
+                name: 'KlondikeRuleset moves Ace from Waste to empty Foundation',
+                group: 'Solitaire Mechanics',
+                run: function(t) {
+                    var piles = KlondikeRuleset.buildPiles();
+                    piles.waste.receive(new Card(Suit.SPADES, Rank.ACE, 'sol'), -1);
+                    var gs = { state: 'PLAYER_TURN', piles: piles, players: [new Player({ id: 'player1', type: 'human' })] };
+                    var actions = KlondikeRuleset.getAvailableActions(gs, 'player1');
+                    t.assert(actions.indexOf('move_waste_foundation_1') !== -1, 'Ace of Spades on waste can move to foundation_1');
+                    KlondikeRuleset.resolveAction(gs, 'player1', 'move_waste_foundation_1');
+                    t.assertEqual(piles.foundation_1.count, 1, 'foundation_1 now has 1 card');
+                    t.assertEqual(piles.waste.count, 0, 'waste is now empty');
+                }
             }
         ];
 
