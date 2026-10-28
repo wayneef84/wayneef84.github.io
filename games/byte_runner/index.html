@@ -84,17 +84,7 @@ pre { margin: 0 0 12px; padding: 12px; background: #0b0918; border: 2px solid #2
 
   <section class="about" id="about">
     <h2>WATCH YOUR OWN COPY</h2>
-    <p>The run above is a pretend backup. On Windows, <b>byte-runner.ps1</b> points the same game at a real one. It watches the folder your copy is filling, measures the real speed, reads robocopy logs if you have them, and opens this page with live numbers. Each folder you give it is one stage, so a chained backup (external to PC, then PC to a second drive) gets one level per hop.</p>
-    <a class="dl" href="byte-runner.ps1" download>DOWNLOAD byte-runner.ps1</a>
-    <p class="dim">One stage, size known:</p>
-<pre>Unblock-File "$HOME\Downloads\byte-runner.ps1"
-Set-ExecutionPolicy -Scope Process Bypass
-&amp; "$HOME\Downloads\byte-runner.ps1" -Dest "D:\Backup" -TotalGB 250</pre>
-    <p class="dim">Two stages with robocopy logs:</p>
-<pre>&amp; "$HOME\Downloads\byte-runner.ps1" -Title "Photo backup" -TotalGB 271 `
-    -Dest "D:\Photos","N:\Photos" -Label "E: &gt; D:","D: &gt; N:" `
-    -Log "D:\*stage1*.txt","D:\*stage2*.txt" -GuessMBs 30,120</pre>
-    <p class="dim">Size unknown? Use <b>-Source E:\</b> instead of -TotalGB and it measures the source once first. The script only reads. It never starts, stops or changes a copy.</p>
+    <p>The run above is a pretend backup. The game can also show a real file copy on Windows. That monitor script is kept private and is not part of this site.</p>
   </section>
 
   <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE JUMPS<br>HANDS OFF FOR 8 SECONDS AND IT PLAYS ITSELF</p>

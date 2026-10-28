@@ -31,3 +31,6 @@ node_modules/
 
 # Windows OS files
 Thumbs.db
+
+# Private local utilities (not published)
+*.ps1
