@@ -30,6 +30,7 @@
 | Sprunki Mixer | `/games/sprunki/` | Arcade | Production | 85% | ✅ Yes | 2026-02-10 | Music mixer: 20+ characters, 2 packs, drag-and-drop, requires local server |
 | S4K Mixer v2 | `/games/sprunki_v2/` | Arcade | Draft | 80% | ✅ Yes | 2026-10-27 | v2.1.0: standalone rebuild, All tab, 10 packs (Classic, 4 seasons, Halloween, Aqua, Toxic, Robo, Candy), Shift+number tab shortcuts, Mr. Black spooky mode, touch UI, works from file:// |
 | Nightlite Choir+ | `/games/nightlite_choir/` | Arcade | Draft | 25% | ✅ Yes | 2026-10-27 | v0.1.0 Milestone 1: door screen (3 doors, 2 coming soon), Night Garden with 4 original creatures, C pentatonic synth loops, tap/drag, undo, save/load, works from file:// |
+| Memory Match | `/games/memory_match/` | Puzzle | Production | 95% | ✅ Yes | 2026-10-27 | v1.0.0 pairs game for young children: Easy 3x4, Normal 4x4, Big 4x5, Emoji and 14 original SVG animal sets, synthesized sound, remembered best, keyboard play, works from file:// |
 | J Quiz | `/games/j/` | Educational | Production | 85% | ✅ Yes | 2026-02-15 | v4.x: 1000+ questions, 17+ packs, advanced settings, revamp mode |
 | Sudoku | `/games/sudoku/` | Puzzle | Production | 90% | ✅ Yes | 2026-02-13 | Dual input, notes, undo/redo, customizable zoom, mobile-optimized |
 | Minesweeper | `/games/minesweeper/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-13 | Mini zoom, hold-to-flag, custom settings, F.O.N.G. integrated |

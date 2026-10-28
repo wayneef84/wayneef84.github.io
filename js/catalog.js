@@ -286,6 +286,21 @@ var FONG_CATALOG = [
         theme: 'both'
     },
     {
+        id: 'memory-match',
+        category: 'puzzle',
+        icon: '🃏',
+        title: 'Memory Match',
+        funTitle: 'MEMORY MATCH 🐸',
+        description: 'A gentle flip-the-cards pairs game for young children. Three board sizes, emoji or drawn animal cards, no timer and no losing.',
+        funDescription: 'Flip the cards and find the matching pairs! Cats, frogs, fruit and more.',
+        version: 'v1.0.0',
+        href: './games/memory_match/index.html',
+        hub: 'puzzle',
+        featured: false,
+        isNew: true,
+        theme: 'both'
+    },
+    {
         id: 'j-quiz',
         category: 'arcade',
         icon: '⚡',
