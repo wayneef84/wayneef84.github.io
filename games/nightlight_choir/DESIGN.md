@@ -1,0 +1,65 @@
+# Nightlight Choir: Design (working title)
+
+Status: design only, no code yet. Written 2026-10-28.
+
+## Concept
+A cozy collect-and-arrange music game for a young child. Little creatures hatch from eggs. Each one sings a short loop. Put them on a stage and the loops layer into a song. Standalone web game, no accounts, no network, no ads, no purchases.
+
+It is one game with three worlds you reach from a bedroom at night:
+
+| World | Door | Feel | Tempo | Creatures |
+|---|---|---|---|---|
+| The Night Garden | The window | Sleepy glowing garden beds (moss, pond, hedge, path) | 90 BPM | Mossle (low hum), Glimmow (glow chime), Puddlet (drip beat), Hedgey (rustle shaker) |
+| The Toy Attic | The hatch | Forgotten toys and household things in the rooms of a big house | 100 BPM | Clankin (tin clank beat), Spoolie (string pluck), Buttonbug (click tick), Tinglet (glass ting) |
+| The Star Observatory | The skylight | Cosmic creatures hatch from meteor eggs, constellations are the stage | 80 BPM | Orbi (low pad), Twinklit (high bell), Cometail (whoosh sweep), Moonmo (soft drum) |
+
+All names are working names. Every name goes through the check in IP-GUARDRAILS.md before it ships.
+
+## Version 1 scope
+1. One stage per world with 6 slots. Tap a creature to place it. Its loop starts in time with the others.
+2. 12 original creatures, 4 per world. Art from the S4K art generator, sound from the S4K synth.
+3. Eggs: spend free "sparks" to hatch a new creature. Sparks trickle in while you play. Hatch time is short (about 30 seconds). No streaks, no daily login pressure, no timers that punish.
+4. Combine: pick two creatures to make a blend creature. The recipe table is invented here (see below). Start with 6 blends.
+5. Local save in localStorage (keys start with `nightlight.`). Everything works with storage blocked.
+6. Phone and tablet first: 52 px touch targets, drag or tap, undo, mute, volume.
+
+Later: more worlds, seasons, a spooky night mode (reuse the S4K rules: off by default, no gore, no jump scares, big exit button).
+
+## Sound rules
+- All loops are in C major pentatonic, so any mix of creatures from any world sounds fine together.
+- Stage tempo comes from the first creature placed (same rule as S4K v2): synthesized loops re-render at that tempo.
+- Each creature has one job (bass, chime, beat, texture, pad, sweep) so layers do not fight.
+- Peak volume is capped. Nothing sudden or loud.
+
+## Reuse from S4K Mixer v2 (code only)
+Copy and adapt these files into this folder. Do not import from `games/sprunki_v2/`:
+- `js/synth.js` (synth), `js/art.js` (art generator), the tray, drag and drop, undo, save and load, volume and keyboard code in `js/app.js`, and the pack data format.
+- Do NOT reuse the Classic pack, its images or its loops. Those come from the community Sprunki game. See IP-GUARDRAILS.md.
+
+## Creature data format (target)
+```
+{ id: 'mossle', name: 'Mossle', world: 'garden', role: 'bass',
+  art: { /* art generator spec */ }, synth: { /* synth spec, C pentatonic */ },
+  hatch: { cost: 5 }, blend: null }
+{ id: 'rustlebolt', name: 'Rustlebolt', world: 'attic', role: 'beat',
+  blend: ['mossle', 'clankin'] }   // invented recipe
+```
+
+## Invented blend recipes (samples, ours only)
+| Parents | Blend | Role |
+|---|---|---|
+| Mossle + Clankin | Rustlebolt | Beat |
+| Glimmow + Twinklit | Starbloom | Chime |
+| Puddlet + Tinglet | Dewdrop | Chime |
+
+## Milestones
+1. Fork the S4K engine into this folder, rename, one world, 4 creatures, runs from file:// and Pages.
+2. Add the other two worlds and all 12 creatures.
+3. Eggs, sparks and combine, with 6 blends.
+4. Polish, save and load, tests, docs, catalog entry, PR.
+
+Each milestone ends with a commit and a push. Test with Playwright (play the game, check the console, phone width).
+
+## Open decisions for Wayne
+- Final game title and creature names.
+- Whether a creature may be named after, or look like, anything from the family. Default: no real names in the public repo.
