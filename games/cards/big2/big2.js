@@ -566,6 +566,7 @@ var Big2AI = (function () {
  * @param {Array}  players  - array of { id, name, type: 'human'|'ai'|'remote' }
  */
 function Big2Game(ruleset, players) {
+    players = players || [];
     this.ruleset = ruleset;
     this.players = players; // [{ id, name, type, hand: [] }]
     this.state = 'WAITING'; // WAITING | DEALING | PLAYING | GAME_OVER
