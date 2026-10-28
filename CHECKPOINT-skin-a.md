@@ -4,7 +4,7 @@ Branch: claude/skin-cabinet-control (base claude/theme-phase2)
 - Fonts copied to assets/fonts (8 woff2 + 4 OFL texts, 147 KB)
 - css/skins/cabinet.css base built, screenshots checked
 ## In progress
-- cabinet polish, contrast script, docs/skins/cabinet.md
+- cabinet polish done, docs written
 ## Next
 - control-panel.css base, polish, docs/skins/control-panel.md
 ## Resume

@@ -526,7 +526,7 @@ html[data-skin="cabinet"] .just-added {
   padding-right: 0;
 }
 html[data-skin="cabinet"] .featured-apps { padding-top: calc(2rem * var(--cb-d)); gap: calc(1.6rem * var(--cb-d)); }
-html[data-skin="cabinet"] .just-added { padding-top: calc(2rem * var(--cb-d)); }
+html[data-skin="cabinet"] .just-added { padding-top: calc(2.6rem * var(--cb-d)); }
 html[data-skin="cabinet"] .just-added-grid { gap: calc(1.6rem * var(--cb-d)); padding-top: 0.6rem; }
 
 /* ── Search: a typed request slip ──────────────────────────────────────── */
@@ -587,7 +587,7 @@ html[data-skin="cabinet"] .landing-footer {
   color: var(--text-secondary);
   border-top: 2px dashed var(--card-border);
 }
-html[data-skin="cabinet"] .footer-link { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; display: inline-block; padding: 0.7rem 0.2rem; }
+html[data-skin="cabinet"] .footer-link { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding: 0 0.3rem; }
 html[data-skin="cabinet"] .footer-link:hover { color: var(--accent-primary); }
 html[data-skin="cabinet"] .footer-sep { opacity: 1; }
 
