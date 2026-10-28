@@ -193,7 +193,6 @@ var FONG_CATALOG = [
         hub: 'arcade',
         featured: false,
         isNew: true,
-        spotlight: true,
         theme: 'both'
     },
     {
@@ -264,6 +263,22 @@ var FONG_CATALOG = [
         funDescription: 'Mix music with your crew in every season! Tap, drop and groove!',
         version: 'v2.1.0',
         href: './games/sprunki_v2/index.html',
+        hub: 'arcade',
+        featured: false,
+        isNew: true,
+        spotlight: true,
+        theme: 'both'
+    },
+    {
+        id: 'nightlite-choir',
+        category: 'arcade',
+        icon: '🌙',
+        title: 'Nightlite Choir+',
+        funTitle: 'NIGHTLITE CHOIR+ 🌙',
+        description: 'A cozy bedtime music game. Pick a door, then place little creatures in the Night Garden. Each one sings a loop and together they make a song.',
+        funDescription: 'Little glowing friends sing at night! Tap them to make a lullaby.',
+        version: 'v0.1.0',
+        href: './games/nightlite_choir/index.html',
         hub: 'arcade',
         featured: false,
         isNew: true,

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>F.O.N.G. Nightlite Choir+</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="screen-doors">
+    <div id="fx" class="fx" aria-hidden="true"></div>
+
+    <!-- Screen 1: pick a door -->
+    <section id="screenDoors" class="screen" aria-label="Choose a door">
+        <header class="bar top">
+            <a class="btn" href="../../index.html" id="homeBtn">&#127968; Home</a>
+            <h1>Nightlite Choir+</h1>
+            <span class="top-gap" aria-hidden="true"></span>
+        </header>
+        <main class="doors-wrap">
+            <p class="lead">It is bedtime. Pick a door.</p>
+            <div id="doors" class="doors"></div>
+        </main>
+    </section>
+
+    <!-- Screen 2: the Night Garden -->
+    <section id="screenGarden" class="screen" aria-label="The Night Garden" hidden>
+        <header class="bar top">
+            <a class="btn" href="../../index.html" id="homeBtn2">&#127968; Home</a>
+            <h1>Night Garden</h1>
+            <button class="btn" id="doorsBtn" type="button" aria-label="Back to the doors">&#128682; Doors</button>
+        </header>
+
+        <main class="stage-wrap">
+            <div id="stage" class="stage" aria-label="Stage"></div>
+        </main>
+
+        <section class="bar controls" aria-label="Controls">
+            <button class="btn" id="muteBtn" type="button" aria-pressed="false"><span class="ico">&#128266;</span><span class="lbl">Mute</span></button>
+            <label class="vol"><span class="ico" aria-hidden="true">&#128265;</span>
+                <input type="range" id="volRange" min="0" max="100" value="70" aria-label="Volume"></label>
+            <button class="btn" id="undoBtn" type="button"><span class="ico">&#8630;</span><span class="lbl">Undo</span></button>
+            <button class="btn" id="resetBtn" type="button"><span class="ico">&#128260;</span><span class="lbl">Reset</span></button>
+            <button class="btn" id="saveBtn" type="button"><span class="ico">&#128190;</span><span class="lbl">Save</span></button>
+            <button class="btn" id="loadBtn" type="button"><span class="ico">&#128194;</span><span class="lbl">Load</span></button>
+        </section>
+
+        <section class="bar tray" aria-label="Creatures">
+            <div id="tiles" class="tiles"></div>
+        </section>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="js/synth.js"></script>
+    <script src="js/art.js"></script>
+    <script src="js/worlds/garden.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
