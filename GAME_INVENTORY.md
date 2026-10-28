@@ -28,6 +28,7 @@
 | Slots | `/games/slots/` | Arcade | Production | 95% | ✅ Yes | 2026-02-10 | v3.0: 5-reel, 4-row, 20 themes, bonus features, Dad Mode physics |
 | Letter Tracing | `/games/tracing/` | Educational | Production | 90% | ✅ Yes | 2026-02-10 | v5.1: A-B-C audio, voice speed control, 4 variants (letters/words/sentences/chinese) |
 | Sprunki Mixer | `/games/sprunki/` | Arcade | Production | 85% | ✅ Yes | 2026-02-10 | Music mixer: 20+ characters, 2 packs, drag-and-drop, requires local server |
+| Sprunki v2 | `/games/sprunki_v2/` | Arcade | Draft | 80% | ✅ Yes | 2026-10-27 | v2.0.0: standalone rebuild, 6 packs (Classic + 4 seasons + Halloween), Mr. Black spooky mode, touch UI, works from file:// |
 | J Quiz | `/games/j/` | Educational | Production | 85% | ✅ Yes | 2026-02-15 | v4.x: 1000+ questions, 17+ packs, advanced settings, revamp mode |
 | Sudoku | `/games/sudoku/` | Puzzle | Production | 90% | ✅ Yes | 2026-02-13 | Dual input, notes, undo/redo, customizable zoom, mobile-optimized |
 | Minesweeper | `/games/minesweeper/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-13 | Mini zoom, hold-to-flag, custom settings, F.O.N.G. integrated |
