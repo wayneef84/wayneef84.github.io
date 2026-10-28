@@ -48,6 +48,14 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 .touch button.down { background: var(--gold); color: #1b1830; border-color: #fff; transform: scale(.94); }
 .touch button small { display: block; font-size: 13px; margin-top: 2px; }
 .touch .turn { display: none; font-size: 15px; }
+.touch button.autotg { width: 72px; height: 72px; font-size: 13px; line-height: 1.25; color: var(--dim); border-color: #2c2750; background: rgba(22, 19, 43, .75); order: -1; }
+.touch button.autotg.on { color: #1b1830; background: var(--gold); border-color: #fff; }
+.stage.lefty .touch button.autotg { order: 9; }
+.autotg small { display: block; font-size: 11px; font-weight: 400; }
+.autorow { display: none; }
+.autorow.on { display: flex; justify-content: center; margin: 8px 0 0; flex: none; }
+.autorow button.autotg { width: 168px; height: 64px; min-width: 64px; font: 700 14px var(--mono); color: var(--dim); background: #1d1938; border: 3px solid var(--line); border-radius: 14px; }
+.autorow button.autotg.on { color: #1b1830; background: var(--gold); border-color: #fff; }
 .stage.auto .touch .dir { display: none; }
 .stage.auto .touch .turn { display: block; }
 .stage.auto .touch button.jump { max-width: 240px; }
@@ -86,8 +94,25 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 .segs { display: flex; gap: 6px; flex: 1; justify-content: flex-end; }
 .segs button { flex: 1 1 0; min-height: 44px; min-width: 44px; padding: 0 8px; font: 700 13px var(--mono); color: var(--text); background: #0f0d1e; border: 2px solid var(--line); border-radius: 8px; }
 .segs button.sel { background: var(--gold); color: #1b1830; border-color: #fff; }
-.bigbtn { display: block; width: 100%; min-height: 72px; margin: 0 0 10px; font: 700 18px var(--mono); letter-spacing: 1px; color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 14px; touch-action: none; }
-.bigbtn.alt { color: var(--text); background: var(--panel); border-color: var(--line); }
+.bigbtn { display: block; width: 100%; min-height: 76px; margin: 0 0 10px; padding: 6px 8px; font: 700 16px var(--mono); letter-spacing: 1px; color: var(--text); background: #1d1938; border: 3px solid var(--line); border-radius: 14px; touch-action: none; }
+.bigbtn.def { color: #1b1830; background: var(--gold); border-color: #fff; box-shadow: 0 0 0 3px var(--gold); }
+.bigbtn small { display: block; font-size: 11px; font-weight: 400; letter-spacing: 0; margin-top: 3px; opacity: .85; }
+.bigbtn .cd { display: block; font-size: 15px; margin-top: 3px; min-height: 18px; }
+.outbtns { display: block; }
+.stage.land .outbtns { display: flex; gap: 10px; }
+.stage.land .outbtns .bigbtn { flex: 1 1 0; }
+.panel p.hint { min-height: 34px; margin: 0 0 8px; padding: 8px 4px; font-size: 12px; color: var(--dim); }
+.check { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 60px; margin: 0 0 10px; padding: 6px 10px; font: 700 15px var(--mono); color: var(--text); background: transparent; border: 2px solid var(--line); border-radius: 12px; }
+.check i { flex: none; width: 36px; height: 36px; border: 3px solid var(--dim); border-radius: 8px; background: #0f0d1e; position: relative; }
+.check.on i { background: var(--gold); border-color: #fff; }
+.check.on i:after { content: ''; position: absolute; left: 10px; top: 3px; width: 10px; height: 20px; border: solid #1b1830; border-width: 0 5px 5px 0; transform: rotate(45deg); }
+.smallbtn { min-height: 48px; min-width: 160px; padding: 0 16px; font: 700 13px var(--mono); letter-spacing: 1px; color: var(--dim); background: transparent; border: 2px solid var(--line); border-radius: 10px; }
+.stage.land .panel.center { padding: 8px 12px; }
+.stage.land .panel.center h2 { font-size: 16px; margin-bottom: 4px; }
+.stage.land .panel.center p { margin-bottom: 6px; }
+.stage.land .bigbtn { min-height: 64px; }
+.stage.land .panel p.hint { min-height: 24px; padding: 2px; margin-bottom: 4px; }
+.stage.land .check { min-height: 52px; margin-bottom: 6px; }
 .bigbtn:active { transform: scale(.97); }
 .overlay.lock .bigbtn { opacity: .5; pointer-events: none; }
 .note { display: none; position: absolute; left: 50%; top: 6px; transform: translateX(-50%); z-index: 15; background: rgba(22, 19, 43, .95); border: 2px solid var(--line); color: var(--text); font-size: 12px; line-height: 1.5; padding: 6px 10px; text-align: center; max-width: 90%; pointer-events: none; }
@@ -112,6 +137,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 
     <div class="touch" id="touch">
       <div class="dirs">
+        <button type="button" class="autotg" id="autotg" data-act="auto" aria-label="Auto-run on or off"></button>
         <button type="button" class="dir" data-k="L" aria-label="Move left">&#9664;&#xFE0E;</button>
         <button type="button" class="dir" data-k="R" aria-label="Move right">&#9654;&#xFE0E;</button>
         <button type="button" class="turn" id="turnbtn" aria-label="Turn around">TURN<small>&#9654;&#xFE0E;</small></button>
@@ -120,6 +146,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
         <button type="button" class="jump" data-k="J" aria-label="Jump">JUMP</button>
       </div>
     </div>
+    <div class="autorow" id="autorow"></div>
     <div class="note" id="note"></div>
   </div>
 
@@ -133,6 +160,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
         <div class="row seg"><span>RUN DIRECTION</span><span class="segs"><button type="button" data-dir="1">RIGHT</button><button type="button" data-dir="-1">LEFT</button></span></div>
         <button type="button" class="row" data-act="left"><span>LEFT-HANDED</span><b data-st="left">OFF</b></button>
         <button type="button" class="row" data-act="vib" id="vibrow"><span>VIBRATE ON DEATH<small id="vibnote"></small></span><b data-st="vib">OFF</b></button>
+        <div class="row seg wide"><span>WHEN OUT OF LIVES</span><span class="segs"><button type="button" data-pick="level">CONTINUE LEVEL</button><button type="button" data-pick="stage">RESTART STAGE</button></span></div>
         <div class="row seg wide"><span>MAX LIVES</span><span class="segs"><button type="button" data-lives="1">1</button><button type="button" data-lives="3">3</button><button type="button" data-lives="5">5</button><button type="button" data-lives="0">UNLIMITED</button></span></div>
       </div>
     </div>
@@ -141,9 +169,14 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
   <div class="overlay" id="outlives" role="dialog" aria-label="Out of lives">
     <div class="panel center">
       <h2>OUT OF LIVES</h2>
-      <p id="outmsg">Good try! Ready to go again?</p>
-      <button type="button" class="bigbtn" data-out="continue">CONTINUE STAGE</button>
-      <button type="button" class="bigbtn alt" data-out="levels">LEVEL SELECT</button>
+      <p id="outmsg">Good try! Pick how to go again.</p>
+      <div class="outbtns">
+        <button type="button" class="bigbtn" data-out="level">CONTINUE LEVEL<small id="outnote-level"></small><span class="cd" data-cd="level"></span></button>
+        <button type="button" class="bigbtn" data-out="stage">RESTART STAGE<small id="outnote-stage"></small><span class="cd" data-cd="stage"></span></button>
+      </div>
+      <p class="hint" id="outhint"></p>
+      <button type="button" class="check" id="outalways" role="checkbox" aria-checked="false"><i></i><span>Always use this choice</span></button>
+      <button type="button" class="smallbtn" data-out="levels">LEVEL SELECT</button>
     </div>
   </div>
 

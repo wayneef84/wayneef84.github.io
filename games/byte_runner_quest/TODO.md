@@ -7,7 +7,7 @@
 - [ ] Short chiptune music loop per world (Web Audio sequencer), off by default.
 - [ ] Ghost replay of your best run (record inputs per frame; physics is deterministic so replay is exact).
 - [ ] Rotate view: choose which way to turn (now always clockwise, top of game to the right).
-- [ ] Continue stage from the last checkpoint instead of the stage start (option).
+- [x] Continue choice on Out of lives: Continue level (replay X-Y) or Restart stage (back to X-1), with default and countdown (v1.2.0). Mid-level checkpoint continue was dropped on purpose.
 - [ ] Gamepad support is still open; on-screen buttons could slide between L and R without lifting.
 - [ ] Gamepad support (Gamepad API, polled in `step()`).
 - [ ] Share code: encode best times and disks into a short string to compare with friends.
