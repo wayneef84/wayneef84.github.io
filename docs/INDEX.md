@@ -22,6 +22,7 @@ One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for eve
 |---|---|
 | [reference/DOCUMENTATION_STANDARD.md](reference/DOCUMENTATION_STANDARD.md) | 7-file per-game doc standard (decided: required for new and touched games) |
 | [PLAYER_STATS.md](PLAYER_STATS.md) | `FongStats` on-device play counts, last played and best scores (`js/player-stats.js`) |
+| [THEMING_SPEC.md](THEMING_SPEC.md) | Homepage skins, palettes, JSON themes and the security model (draft, needs Wayne) |
 | [reference/VISUAL_IDENTITY.md](reference/VISUAL_IDENTITY.md) | Design system, colors, type |
 | [reference/CLOUDFLARE_WORKER_SETUP.md](reference/CLOUDFLARE_WORKER_SETUP.md) | Shipment tracker API proxy |
 | [SITEMAP.md](SITEMAP.md) | Navigation map (may be stale) |
