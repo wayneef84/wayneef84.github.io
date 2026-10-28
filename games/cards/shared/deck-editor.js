@@ -269,11 +269,17 @@ DeckEditor.prototype._resetDefault = function () {
 // Add restore method to Pile prototype if missing
 if (!Pile.prototype.restore) {
     Pile.prototype.restore = function (json) {
-        this.template = json.template;
+        if (!json) return;
+        var list = Array.isArray(json) ? json : (json.contents || []);
+        if (json.template !== undefined) {
+            this.template = json.template;
+        }
         this.contents = [];
-        for (var i = 0; i < json.contents.length; i++) {
-            var c = json.contents[i];
-            this.contents.push(new Card(c.suit, c.rank, c.deckId));
+        for (var i = 0; i < list.length; i++) {
+            var c = list[i];
+            if (c && c.suit && c.rank) {
+                this.contents.push(new Card(c.suit, c.rank, c.deckId || 'custom'));
+            }
         }
     };
 }

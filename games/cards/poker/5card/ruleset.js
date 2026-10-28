@@ -42,6 +42,9 @@ var FiveCardDrawRuleset = {
     },
 
     resolveAction: function(gameState, actorId, action, engine) {
+        if (actorId === 'dealer' && action === 'ai_play') {
+            return this.resolveAiAction(gameState, engine.dealer, engine);
+        }
         var result = { actions: [], nextState: null, nextActor: null };
 
         if (action === 'draw_cards') {
@@ -189,33 +192,7 @@ var FiveCardDrawRuleset = {
         };
     },
 
-    // Override resolveAction to handle AI specific flow
-    resolveAction: function(gameState, actorId, action, engine) {
-        if (actorId === 'dealer' && action === 'ai_play') {
-            return this.resolveAiAction(gameState, engine.dealer, engine);
-        }
-
-        // Player Logic (Standard)
-        if (action === 'draw_cards') {
-            var player = engine._getActor(actorId);
-            var needed = 5 - player.hand.count;
-            var actions = [];
-
-            if (needed > 0) {
-                actions.push({
-                    type: ActionType.DEAL,
-                    from: 'deck',
-                    to: actorId,
-                    toPlayer: true,
-                    count: needed,
-                    faceUp: true
-                });
-            }
-            return { actions: actions, nextActor: 'dealer' }; // Pass to Dealer
-        }
-
-        return { nextActor: null };
-    },
+    // Note: resolveAction is unified above; supports dealer 'ai_play' and player 'draw_cards'/'fold'
 
     resolveRound: function(gameState) {
         var player = gameState.players[0];

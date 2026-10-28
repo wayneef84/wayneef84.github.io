@@ -218,10 +218,18 @@
     <script src="shared/deck.js"></script>
     <script src="shared/pile.js"></script>
     <script src="shared/player.js"></script>
+    <script src="shared/card-utils.js"></script>
+    <script src="shared/deck-editor.js"></script>
+    <script src="shared/poker-evaluator.js"></script>
     <script src="shared/engine.js"></script>
 
     <!-- Load rulesets -->
     <script src="blackjack/ruleset.js"></script>
+    <script src="war/ruleset.js"></script>
+    <script src="solitaire/rules/klondike.js"></script>
+    <script src="big2/ruleset.js"></script>
+    <script src="big2/big2.js"></script>
+    <script src="euchre/ruleset.js"></script>
 
     <script>
         // ============================================================================
@@ -945,6 +953,197 @@
 
                     var canAct = BlackjackRuleset._canPlayerAct(player);
                     t.assertEqual(canAct, false, 'Player who stood should not be able to act');
+                }
+            },
+
+            // ===== NEW MECHANICS & REGRESSION TESTS =====
+            {
+                id: 'BJ-27',
+                name: 'Double Down deducts balance only once (no double deduction)',
+                group: 'Double Down',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [{ rank: Rank.FIVE }, { rank: Rank.SIX }],
+                        shoeCards: [{ rank: Rank.TEN }],
+                        bet: 100,
+                        balance: 200
+                    });
+                    t.assertEqual(state.players[0].balance, 100, 'Balance after initial bet should be 100');
+                    var res = BlackjackRuleset.resolveAction(state, 'player1', 'double', null);
+                    t.assertEqual(state.players[0].balance, 100, 'resolveAction should leave deduction to engine DEDUCT action');
+                    t.assertEqual(state.players[0].currentBet, 200, 'currentBet should be doubled to 200');
+                    var deductAction = res.actions.filter(function(a) { return a.type === ActionType.DEDUCT; })[0];
+                    t.assertNotNull(deductAction, 'DEDUCT action emitted');
+                    t.assertEqual(deductAction.amount, 100, 'DEDUCT amount is 100');
+                }
+            },
+            {
+                id: 'BJ-28',
+                name: 'Double Down NOT offered when player cannot afford it',
+                group: 'Double Down',
+                run: function(t) {
+                    var state = createMockGameState({
+                        playerCards: [{ rank: Rank.FIVE }, { rank: Rank.SIX }],
+                        bet: 100,
+                        balance: 100
+                    });
+                    var actions = BlackjackRuleset.getAvailableActions(state, 'player1');
+                    t.assertEqual(actions.indexOf('double'), -1, 'Double should not be available with 0 balance left');
+                }
+            },
+            {
+                id: 'WAR-01',
+                name: 'Endless War gives won pot to the winning player',
+                group: 'War Mechanics',
+                run: function(t) {
+                    var p1 = new Player({ id: 'player1', name: 'You', type: 'human' });
+                    var p2 = new Player({ id: 'player2', name: 'Opponent', type: 'ai' });
+                    p1.hand.receive(new Card(Suit.SPADES, Rank.ACE, 'war'), -1);
+                    p2.hand.receive(new Card(Suit.HEARTS, Rank.TWO, 'war'), -1);
+                    var gs = { players: [p1, p2], piles: WarRuleset.buildPiles() };
+                    WarRuleset.neverending = true;
+                    WarRuleset.twosHigh = false;
+                    WarRuleset._resolveBattle(gs);
+                    WarRuleset.neverending = false;
+                    t.assertEqual(p1.hand.count, 2, 'Winner should collect both played cards in endless mode');
+                    t.assertEqual(p2.hand.count, 0, 'Loser should have 0 cards');
+                }
+            },
+            {
+                id: 'WAR-02',
+                name: 'War tie with 2 cards left keeps 1 card to flip face-up',
+                group: 'War Mechanics',
+                run: function(t) {
+                    var p1 = new Player({ id: 'player1', name: 'You', type: 'human' });
+                    var p2 = new Player({ id: 'player2', name: 'Opponent', type: 'ai' });
+                    p1.hand.receive(new Card(Suit.SPADES, Rank.KING, 'war'), -1);
+                    p1.hand.receive(new Card(Suit.SPADES, Rank.ACE, 'war'), -1);
+                    p2.hand.receive(new Card(Suit.HEARTS, Rank.KING, 'war'), -1);
+                    p2.hand.receive(new Card(Suit.HEARTS, Rank.THREE, 'war'), -1);
+                    var gs = { players: [p1, p2], piles: WarRuleset.buildPiles() };
+                    var res = WarRuleset._resolveBattle(gs);
+                    t.assertEqual(res.nextState, 'PLAYER_TURN', 'Game should continue to flip final card');
+                    t.assertEqual(p1.hand.count, 1, 'Player 1 should retain 1 card to flip for War');
+                    t.assertEqual(p2.hand.count, 1, 'Player 2 should retain 1 card to flip for War');
+                }
+            },
+            {
+                id: 'SOL-01',
+                name: 'Solitaire checkWinCondition triggers immediate skipPlayerTurns on full foundations',
+                group: 'Solitaire Mechanics',
+                run: function(t) {
+                    var piles = KlondikeRuleset.buildPiles();
+                    var suits = [Suit.SPADES, Suit.HEARTS, Suit.CLUBS, Suit.DIAMONDS];
+                    var ranks = [Rank.ACE, Rank.TWO, Rank.THREE, Rank.FOUR, Rank.FIVE, Rank.SIX, Rank.SEVEN, Rank.EIGHT, Rank.NINE, Rank.TEN, Rank.JACK, Rank.QUEEN, Rank.KING];
+                    for (var f = 1; f <= 4; f++) {
+                        for (var r = 0; r < 13; r++) {
+                            piles['foundation_' + f].receive(new Card(suits[f - 1], ranks[r], 'sol'), -1);
+                        }
+                    }
+                    var gs = { state: 'PLAYER_TURN', piles: piles, players: [new Player({ id: 'player1', type: 'human' })] };
+                    var win = KlondikeRuleset.checkWinCondition(gs);
+                    t.assertNotNull(win, 'Win condition should be returned');
+                    t.assertEqual(win.immediate, true, 'Win should be immediate');
+                    t.assertEqual(win.skipPlayerTurns, true, 'Win should skip player turns so engine enters RESOLUTION');
+                }
+            },
+            {
+                id: 'BIG2-01',
+                name: 'J-Q-K-A-2 is rejected as a straight in standard HK rules',
+                group: 'Big 2 Mechanics',
+                run: function(t) {
+                    var hk = Big2Rulesets.hongkong;
+                    var badStraight = [
+                        new Card(Suit.SPADES, Rank.JACK, 'b2'),
+                        new Card(Suit.HEARTS, Rank.QUEEN, 'b2'),
+                        new Card(Suit.CLUBS, Rank.KING, 'b2'),
+                        new Card(Suit.DIAMONDS, Rank.ACE, 'b2'),
+                        new Card(Suit.SPADES, Rank.TWO, 'b2')
+                    ];
+                    var ev = Big2Evaluator.evaluate(badStraight, hk);
+                    t.assertEqual(ev.type, Big2HandType.INVALID, 'J-Q-K-A-2 should not be a valid straight when aceWrapsHigh is false');
+                }
+            },
+            {
+                id: 'BIG2-02',
+                name: 'A-2-3-4-5 wrap-low straight has 5 as primary card and loses to 10-J-Q-K-A',
+                group: 'Big 2 Mechanics',
+                run: function(t) {
+                    var tw = Big2Rulesets.taiwanese;
+                    var lowWrap = [
+                        new Card(Suit.SPADES, Rank.ACE, 'b2'),
+                        new Card(Suit.SPADES, Rank.TWO, 'b2'),
+                        new Card(Suit.HEARTS, Rank.THREE, 'b2'),
+                        new Card(Suit.CLUBS, Rank.FOUR, 'b2'),
+                        new Card(Suit.DIAMONDS, Rank.FIVE, 'b2')
+                    ];
+                    var highStraight = [
+                        new Card(Suit.SPADES, Rank.TEN, 'b2'),
+                        new Card(Suit.HEARTS, Rank.JACK, 'b2'),
+                        new Card(Suit.CLUBS, Rank.QUEEN, 'b2'),
+                        new Card(Suit.DIAMONDS, Rank.KING, 'b2'),
+                        new Card(Suit.SPADES, Rank.ACE, 'b2')
+                    ];
+                    var evLow = Big2Evaluator.evaluate(lowWrap, tw);
+                    var evHigh = Big2Evaluator.evaluate(highStraight, tw);
+                    t.assertEqual(evLow.type, Big2HandType.STRAIGHT, 'A-2-3-4-5 is a valid straight in Taiwanese rules');
+                    t.assertEqual(evLow.primaryCard.rank, Rank.FIVE, 'Primary card of A-2-3-4-5 should be FIVE, not TWO');
+                    t.assertEqual(Big2Evaluator.canBeat(evHigh, evLow, tw), true, '10-J-Q-K-A should beat A-2-3-4-5');
+                    t.assertEqual(Big2Evaluator.canBeat(evLow, evHigh, tw), false, 'A-2-3-4-5 should NOT beat 10-J-Q-K-A');
+                }
+            },
+            {
+                id: 'BIG2-03',
+                name: 'Taiwanese AI finds 5-card bomb/hand to beat 3-card pile when fiveCardBeatsLower is enabled',
+                group: 'Big 2 Mechanics',
+                run: function(t) {
+                    var tw = Big2Rulesets.taiwanese;
+                    var pileCards = [
+                        new Card(Suit.SPADES, Rank.KING, 'b2'),
+                        new Card(Suit.HEARTS, Rank.KING, 'b2'),
+                        new Card(Suit.CLUBS, Rank.KING, 'b2')
+                    ];
+                    var pileHand = { cards: pileCards, evaluated: Big2Evaluator.evaluate(pileCards, tw) };
+                    var aiHand = [
+                        new Card(Suit.DIAMONDS, Rank.THREE, 'b2'),
+                        new Card(Suit.CLUBS, Rank.FOUR, 'b2'),
+                        new Card(Suit.HEARTS, Rank.FIVE, 'b2'),
+                        new Card(Suit.SPADES, Rank.SIX, 'b2'),
+                        new Card(Suit.DIAMONDS, Rank.SEVEN, 'b2')
+                    ];
+                    var plays = Big2AI.findValidPlays(aiHand, pileHand, tw, null);
+                    t.assert(plays.length > 0, 'AI should find 5-card straight to beat 3-card triple under Taiwanese rules');
+                }
+            },
+            {
+                id: 'EUCHRE-01',
+                name: 'Euchre trick resolution handles Left Bower as trump suit and scores 5 tricks',
+                group: 'Euchre Mechanics',
+                run: function(t) {
+                    EuchreRuleset._trumpSuit = Suit.HEARTS;
+                    EuchreRuleset._trumpCaller = 'p1';
+                    var leftBower = new Card(Suit.DIAMONDS, Rank.JACK, 'eu');
+                    var rightBower = new Card(Suit.HEARTS, Rank.JACK, 'eu');
+                    var aceHearts = new Card(Suit.HEARTS, Rank.ACE, 'eu');
+                    t.assertEqual(EuchreRuleset._getEffectiveSuit(leftBower), Suit.HEARTS, 'Left Bower effective suit must be trump (HEARTS)');
+                    t.assert(EuchreRuleset._getCardValue(rightBower) > EuchreRuleset._getCardValue(leftBower), 'Right Bower beats Left Bower');
+                    t.assert(EuchreRuleset._getCardValue(leftBower) > EuchreRuleset._getCardValue(aceHearts), 'Left Bower beats Ace of Trump');
+                }
+            },
+            {
+                id: 'SHARED-01',
+                name: 'CardUtils.renderCardText and Pile.restore handle standard Rank enums and arrays',
+                group: 'Shared Utilities',
+                run: function(t) {
+                    var card = new Card(Suit.HEARTS, Rank.SEVEN, 'test');
+                    t.assertEqual(CardUtils.renderCardText(card), '7♥', 'Rank.SEVEN of HEARTS should render as 7♥');
+                    var pile = new Pile();
+                    pile.receive(card, -1);
+                    var json = pile.toJSON();
+                    var restored = new Pile();
+                    restored.restore(json);
+                    t.assertEqual(restored.count, 1, 'Restored pile should have 1 card');
+                    t.assertEqual(restored.peek(0).rank, Rank.SEVEN, 'Restored card rank should be SEVEN');
                 }
             }
         ];

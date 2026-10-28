@@ -78,6 +78,8 @@ function resizeBoard() {
 }
 
 function startNewGame() {
+    selectedCard = null;
+    window._solitaireWonNotified = false;
     engine.init([{ id: 'player1', type: 'human', name: 'Player' }]);
     engine.startRound();
 
@@ -92,8 +94,11 @@ function handleEngineEvent(event) {
         render(engine.getGameState());
     }
 
-    if (event.type === 'ROUND_WIN') {
-        alert('Congratulations! You won!');
+    if (event.type === 'ROUND_WIN' || (event.type === 'STATE_CHANGE' && event.to === 'GAME_OVER')) {
+        if (!window._solitaireWonNotified) {
+            window._solitaireWonNotified = true;
+            setTimeout(function() { alert('Congratulations! You won!'); }, 50);
+        }
     }
 }
 
@@ -128,11 +133,15 @@ function render(gameState) {
                 cardEl.classList.add('selected');
             }
 
-            // Click Handler
+            // Click & Double-Click Handlers
             (function(pName, idx, c) {
                 cardEl.onclick = function(e) {
                     e.stopPropagation();
                     handleCardClick(pName, idx, c);
+                };
+                cardEl.ondblclick = function(e) {
+                    e.stopPropagation();
+                    handleCardDoubleClick(pName, idx, c);
                 };
             })(pileName, i, card);
 
@@ -282,6 +291,23 @@ function handleCardClick(pileName, index, card) {
         // Target is a card in a pile.
         // So we are moving Source -> Target's Pile.
         attemptMove(selectedCard, pileName);
+    }
+}
+
+function handleCardDoubleClick(pileName, index, card) {
+    var state = engine.getGameState();
+    var pile = state.piles[pileName];
+    if (!pile || index !== pile.count - 1) return;
+    if (pileName !== 'waste' && !pileName.startsWith('tableau_')) return;
+
+    var available = engine.ruleset.getAvailableActions(state, 'player1');
+    for (var f = 1; f <= 4; f++) {
+        var action = 'move_' + pileName + '_foundation_' + f;
+        if (available.indexOf(action) !== -1) {
+            selectedCard = null;
+            engine.submitAction('player1', action);
+            return;
+        }
     }
 }
 

@@ -244,6 +244,7 @@ var KlondikeRuleset = {
             });
         }
 
+        result.nextActor = this.getNextActor(gameState);
         return result;
     },
 
@@ -289,6 +290,7 @@ var KlondikeRuleset = {
         if (allFull) {
             return {
                 immediate: true,
+                skipPlayerTurns: true,
                 reason: 'All Foundations Full',
                 winner: 'player1'
             };

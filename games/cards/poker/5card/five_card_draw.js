@@ -23,12 +23,14 @@ export default class FiveCardDraw extends BasePokerGame {
     }
 
     startRound() {
-        // Collect Ante (Human only for now, based on original logic)
+        // Collect Ante from both Player and Dealer so winning pays 2x ante (+1x profit)
         const p1 = this.players[0];
+        const dealer = this.players[1];
         if (p1.balance < this.ante) return false;
 
         p1.balance -= this.ante;
-        this.pot += this.ante;
+        if (dealer) dealer.balance -= this.ante;
+        this.pot += this.ante * 2;
 
         // Reset Hands
         this._resetHands();
@@ -85,14 +87,22 @@ export default class FiveCardDraw extends BasePokerGame {
 
         let toDiscard = [];
 
-        if (ev.rank >= 2) { // Pair or better
-            // Keep the cards involved in the rank
-            // The Evaluator returns 'cards' sorted.
-            // This is complex without "Kick" info per card logic.
-            // Simplified: If rank >= Pair, Stand (Hold All)
+        if (ev.rank >= 5 && ev.rank !== 8) {
+            // Straight (5), Flush (6), Full House (7), Straight Flush (9), Royal Flush (10): Stand pat
+            toDiscard = [];
+        } else if (ev.rank >= 2) {
+            // One Pair (2), Two Pair (3), Three of a Kind (4), Four of a Kind (8):
+            // Keep matched ranks and discard unmatched kickers
+            const counts = {};
+            dealer.hand.contents.forEach(c => { counts[c.rank] = (counts[c.rank] || 0) + 1; });
+            toDiscard = dealer.hand.contents.filter(c => counts[c.rank] === 1);
         } else {
-            // High Card: Discard anything < 10
-            toDiscard = dealer.hand.contents.filter(c => RankValues[c.rank] < 10);
+            // High Card: Keep cards >= 10 (or at least highest card), discard up to 3 low cards
+            const sortedByVal = [...dealer.hand.contents].sort((a, b) => RankValues[b.rank] - RankValues[a.rank]);
+            toDiscard = sortedByVal.slice(1).filter(c => RankValues[c.rank] < 10).slice(0, 3);
+        }
+
+        if (toDiscard.length > 0) {
             dealer.hand.giveCards(this.discard, toDiscard);
             this._ensureDeck(toDiscard.length);
             this.deck.give(dealer.hand, toDiscard.length);
@@ -117,8 +127,11 @@ export default class FiveCardDraw extends BasePokerGame {
         // Payout
         if (winner === p1) {
             p1.balance += this.pot;
-        } else if (!winner) { // Push
+        } else if (winner === dealer) {
+            dealer.balance += this.pot;
+        } else { // Push
             p1.balance += this.pot / 2;
+            dealer.balance += this.pot / 2;
         }
 
         const potWon = this.pot;
