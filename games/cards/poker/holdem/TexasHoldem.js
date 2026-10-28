@@ -17,21 +17,52 @@ export default class TexasHoldem extends BasePokerGame {
     }
 
     startRound() {
-        if (!this._collectAnte(this.players[0])) return false;
+        const p1 = this.players[0];
+        const opp = this.players[1];
+        if (!p1 || p1.balance < this.ante) return false;
+
+        this._collectAnte(p1);
+        if (opp) this._collectAnte(opp);
 
         this._resetHands();
-        this.community.give(this.discard, this.community.count); // clear community
+        this.community.give(this.discard, this.community.count);
 
-        this._ensureDeck(20); // enough for hands + community + burn
-
-        // Deal 2 hole cards
+        this._ensureDeck(20);
         this.dealToAll(2, true);
 
         this.currentPhaseIndex = 0;
-        this.state = this.phases[0]; // PRE_FLOP
+        this.state = this.phases[0];
         this.emit('STATE_CHANGE', { state: this.state });
-
         return true;
+    }
+
+    betAndAdvance(multiplier = 1) {
+        const p1 = this.players[0];
+        const opp = this.players[1];
+        const amount = this.ante * multiplier;
+        if (p1 && p1.balance >= amount) {
+            p1.balance -= amount;
+            this.pot += amount;
+            if (opp) {
+                opp.balance -= amount;
+                this.pot += amount;
+            }
+        }
+        this.advancePhase();
+    }
+
+    fold() {
+        const opp = this.players[1];
+        const potWon = this.pot;
+        if (opp) opp.balance += this.pot;
+        this.pot = 0;
+        this.state = 'GAME_OVER';
+        this.emit('SHOWDOWN', {
+            winner: opp ? opp.id : 'dealer',
+            folded: true,
+            results: [],
+            pot: potWon
+        });
     }
 
     advancePhase() {
@@ -56,16 +87,14 @@ export default class TexasHoldem extends BasePokerGame {
                 break;
             case 'SHOWDOWN':
                 this._showdown();
-                break;
+                return;
         }
 
         this.emit('STATE_CHANGE', { state: this.state });
     }
 
     _dealCommunity(count) {
-        // Burn one card? Traditional rules burn 1 before each deal.
-        this.deck.give(this.discard, 1);
-
+        this.deck.give(this.discard, 1); // Burn 1 card
         const cards = this.deck.give(this.community, count);
         cards.forEach(c => c.faceUp = true);
         this.emit('COMMUNITY_DEAL', { cards });
@@ -73,26 +102,25 @@ export default class TexasHoldem extends BasePokerGame {
 
     _showdown() {
         const communityCards = this.community.contents;
-
-        // Evaluate each player
         const results = this.players.map(p => {
             const allCards = [...p.hand.contents, ...communityCards];
             const ev = this.Evaluator.evaluate(allCards);
             return { player: p, hand: ev };
         });
 
-        // Determine winner
         results.sort((a, b) => b.hand.score - a.hand.score);
-        const winner = results[0];
+        const bestScore = results[0].hand.score;
+        const winners = results.filter(r => r.hand.score === bestScore);
 
-        // Basic winner logic (ignoring split pots for now)
-        winner.player.balance += this.pot;
+        const share = Math.floor(this.pot / winners.length);
+        winners.forEach(w => { w.player.balance += share; });
         const potWon = this.pot;
         this.pot = 0;
 
+        const winnerId = winners.length > 1 ? 'push' : winners[0].player.id;
         this.state = 'GAME_OVER';
         this.emit('SHOWDOWN', {
-            winner: winner.player.id,
+            winner: winnerId,
             results: results.map(r => ({ playerId: r.player.id, hand: r.hand })),
             pot: potWon
         });

@@ -52,10 +52,10 @@ var ValidTransitions = {};
 ValidTransitions[GameState.IDLE] = [GameState.BETTING, GameState.DEALING];
 ValidTransitions[GameState.BETTING] = [GameState.DEALING, GameState.IDLE];
 ValidTransitions[GameState.DEALING] = [GameState.PLAYER_TURN, GameState.OPPONENT_TURN, GameState.SIMULTANEOUS_ACTION, GameState.RESOLUTION];
-ValidTransitions[GameState.PLAYER_TURN] = [GameState.PLAYER_TURN, GameState.OPPONENT_TURN, GameState.RESOLUTION, GameState.DEALING];
+ValidTransitions[GameState.PLAYER_TURN] = [GameState.PLAYER_TURN, GameState.OPPONENT_TURN, GameState.RESOLUTION, GameState.DEALING, GameState.GAME_OVER];
 ValidTransitions[GameState.SIMULTANEOUS_ACTION] = [GameState.RESOLUTION, GameState.SIMULTANEOUS_ACTION];
-ValidTransitions[GameState.OPPONENT_TURN] = [GameState.OPPONENT_TURN, GameState.PLAYER_TURN, GameState.RESOLUTION];
-ValidTransitions[GameState.RESOLUTION] = [GameState.PAYOUT, GameState.GAME_OVER];
+ValidTransitions[GameState.OPPONENT_TURN] = [GameState.OPPONENT_TURN, GameState.PLAYER_TURN, GameState.RESOLUTION, GameState.GAME_OVER];
+ValidTransitions[GameState.RESOLUTION] = [GameState.PAYOUT, GameState.GAME_OVER, GameState.DEALING, GameState.PLAYER_TURN];
 ValidTransitions[GameState.PAYOUT] = [GameState.GAME_OVER];
 ValidTransitions[GameState.GAME_OVER] = [GameState.IDLE, GameState.BETTING, GameState.DEALING];
 Object.freeze(ValidTransitions);
@@ -245,6 +245,9 @@ GameEngine.prototype._handleDealing = function () {
     }
 
     var nextActor = this.ruleset.getNextActor(this.getGameState());
+    if (nextActor && typeof nextActor === 'object' && nextActor.actorId) {
+        nextActor = nextActor.actorId;
+    }
     this.activeActorId = nextActor;
 
     if (!nextActor) {
@@ -313,8 +316,15 @@ GameEngine.prototype._handleAITurn = function (actor, availableActions) {
         if (self.state === GameState.RESOLUTION || self.state === GameState.GAME_OVER || self.state === GameState.PAYOUT) {
             return;
         }
-        var action = self.ruleset.getAiAction(self.getGameState(), actor);
-        self.submitAction(actor.id, action);
+        var action = null;
+        if (typeof self.ruleset.getAiAction === 'function') {
+            action = self.ruleset.getAiAction(self.getGameState(), actor, availableActions);
+        } else if (typeof self.ruleset.getAIAction === 'function') {
+            action = self.ruleset.getAIAction(self.getGameState(), actor.id || actor, availableActions);
+        }
+        if (action) {
+            self.submitAction(actor.id, action);
+        }
     }, 500);
 };
 
@@ -350,13 +360,17 @@ GameEngine.prototype.submitAction = function (actorId, action) {
     this._checkForImmediateWin();
 
     if (this.state !== GameState.GAME_OVER && this.state !== GameState.RESOLUTION) {
+        var resolvedNextActor = result.nextActor;
+        if (resolvedNextActor && typeof resolvedNextActor === 'object' && resolvedNextActor.actorId) {
+            resolvedNextActor = resolvedNextActor.actorId;
+        }
         if (result.nextState) {
-            if (result.nextActor) this.activeActorId = result.nextActor;
+            if (resolvedNextActor) this.activeActorId = resolvedNextActor;
             this.transitionTo(result.nextState);
-        } else if (result.nextActor) {
-            this.activeActorId = result.nextActor;
+        } else if (resolvedNextActor) {
+            this.activeActorId = resolvedNextActor;
             this._handleTurnStart();
-        } else if (result.nextActor === null) {
+        } else if (resolvedNextActor === null) {
             this.transitionTo(GameState.RESOLUTION);
         }
     }
@@ -371,7 +385,7 @@ GameEngine.prototype._checkForImmediateWin = function () {
 
     if (winResult && winResult.immediate) {
         this._log('Immediate Win Condition Triggered', winResult);
-        if (winResult.skipDealerTurn || winResult.skipPlayerTurns) {
+        if (winResult.skipDealerTurn || winResult.skipPlayerTurns || winResult.winner) {
             this.transitionTo(GameState.RESOLUTION);
         }
     }

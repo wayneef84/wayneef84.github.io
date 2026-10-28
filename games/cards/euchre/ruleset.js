@@ -110,37 +110,56 @@ var EuchreRuleset = {
     // TURN LOGIC
     // ========================================================================
     
+    _ensureCallingPhase: function(gameState) {
+        if (this._phase === 'dealing' && gameState && gameState.piles && gameState.piles.kitty && gameState.piles.kitty.count > 0) {
+            this._turnUpCard = gameState.piles.kitty.peek(0);
+            this._phase = 'calling';
+        }
+    },
+
     getNextActor: function(gameState) {
+        this._ensureCallingPhase(gameState);
         var players = gameState.players;
         
         if (this._phase === 'calling') {
-            // Go around for calling trump
             var dealerIdx = this._dealerIndex;
             for (var i = 1; i <= 4; i++) {
                 var playerIdx = (dealerIdx + i) % 4;
                 if (!players[playerIdx]._hasPassed) {
-                    return { actorId: players[playerIdx].id, type: players[playerIdx].type };
+                    return players[playerIdx].id;
                 }
             }
-            // Everyone passed first round - second round
             for (var j = 1; j <= 4; j++) {
                 var pIdx = (dealerIdx + j) % 4;
                 if (!players[pIdx]._hasPassedSecond) {
-                    return { actorId: players[pIdx].id, type: players[pIdx].type };
+                    return players[pIdx].id;
                 }
             }
         }
         
         if (this._phase === 'playing') {
-            if (this._trickLeader !== null) {
-                return { actorId: this._trickLeader, type: this._getPlayerType(gameState, this._trickLeader) };
+            if (this._tricksWon.team1 + this._tricksWon.team2 >= 5) {
+                return null;
             }
-            // After trick, winner leads
-            var leaderIdx = (this._dealerIndex + 1) % 4;
-            return { actorId: players[leaderIdx].id, type: players[leaderIdx].type };
+            if (this._currentTrick.length === 0) {
+                if (this._trickLeader !== null) {
+                    return this._trickLeader;
+                }
+                var leaderIdx = (this._dealerIndex + 1) % 4;
+                return players[leaderIdx].id;
+            }
+            var leaderPlayerIdx = 0;
+            for (var k = 0; k < players.length; k++) {
+                if (players[k].id === this._trickLeader) {
+                    leaderPlayerIdx = k;
+                    break;
+                }
+            }
+            var nextIdx = (leaderPlayerIdx + this._currentTrick.length) % 4;
+            return players[nextIdx].id;
         }
         
-        return { actorId: players[0].id, type: players[0].type };
+        return players[0].id;
     },
     
     _getPlayerType: function(gameState, playerId) {
@@ -153,6 +172,7 @@ var EuchreRuleset = {
     },
     
     getAvailableActions: function(gameState, actorId) {
+        this._ensureCallingPhase(gameState);
         if (this._phase === 'calling') {
             var turnUpSuit = this._turnUpCard ? this._turnUpCard.suit : null;
             
@@ -172,7 +192,17 @@ var EuchreRuleset = {
         }
         
         if (this._phase === 'playing') {
-            return ['playCard'];
+            var player = this._getPlayer(gameState, actorId);
+            if (!player || player.hand.count === 0) return [];
+            var leadSuit = this._currentTrick.length > 0
+                ? this._getEffectiveSuit(this._currentTrick[0].card)
+                : null;
+            var validIndices = this._getPlayableCardIndices(player.hand.contents, leadSuit);
+            var playActions = ['playCard'];
+            for (var p = 0; p < validIndices.length; p++) {
+                playActions.push('playCard_' + validIndices[p]);
+            }
+            return playActions;
         }
         
         return [];
@@ -248,7 +278,7 @@ var EuchreRuleset = {
             
             return {
                 actions: [{ type: ActionType.MESSAGE, text: player.name + ' passes' }],
-                nextActor: this.getNextActor(gameState).actorId
+                nextActor: this.getNextActor(gameState)
             };
         }
         
@@ -262,6 +292,56 @@ var EuchreRuleset = {
                 actions: [{ type: ActionType.MESSAGE, text: player.name + ' calls ' + this._trumpSuit }],
                 nextState: GameState.PLAYER_TURN,
                 nextActor: this._trickLeader
+            };
+        }
+
+        if (action === 'playCard' || action.indexOf('playCard_') === 0) {
+            var leadSuit = this._currentTrick.length > 0
+                ? this._getEffectiveSuit(this._currentTrick[0].card)
+                : null;
+            var validIndices = this._getPlayableCardIndices(player.hand.contents, leadSuit);
+            var cardIndex = validIndices[0] || 0;
+            if (action.indexOf('playCard_') === 0) {
+                var parsedIdx = parseInt(action.replace('playCard_', ''), 10);
+                if (!isNaN(parsedIdx) && validIndices.indexOf(parsedIdx) !== -1) {
+                    cardIndex = parsedIdx;
+                }
+            }
+            var playedCard = player.hand.give(cardIndex);
+            if (!playedCard) return {};
+            if (gameState.piles && gameState.piles.trick) {
+                gameState.piles.trick.receive(playedCard, -1);
+            }
+            this._currentTrick.push({ playerId: actorId, card: playedCard });
+
+            var msgs = [{ type: ActionType.MESSAGE, text: player.name + ' plays ' + playedCard.rank + ' of ' + playedCard.suit }];
+
+            if (this._currentTrick.length === 4) {
+                var trickWinnerId = this._evaluateTrickWinner();
+                var winningTeam = this._getTeam(gameState, trickWinnerId);
+                this._tricksWon['team' + winningTeam]++;
+                this._currentTrick = [];
+                if (gameState.piles && gameState.piles.trick) {
+                    gameState.piles.trick.clear();
+                }
+                this._trickLeader = trickWinnerId;
+                msgs.push({ type: ActionType.MESSAGE, text: trickWinnerId + ' wins the trick!' });
+
+                if (this._tricksWon.team1 + this._tricksWon.team2 >= 5) {
+                    return {
+                        actions: msgs,
+                        nextState: GameState.RESOLUTION,
+                        nextActor: null
+                    };
+                }
+            }
+
+            var nextAct = this.getNextActor(gameState);
+            var nextType = this._getPlayerType(gameState, nextAct);
+            return {
+                actions: msgs,
+                nextState: nextType === 'human' ? GameState.PLAYER_TURN : GameState.OPPONENT_TURN,
+                nextActor: nextAct
             };
         }
         
@@ -312,26 +392,93 @@ var EuchreRuleset = {
     // AI LOGIC
     // ========================================================================
     
-    getAIAction: function(gameState, actorId, availableActions) {
-        // Simple AI
+    _getEffectiveSuit: function(card) {
+        if (!card) return null;
+        if (this._trumpSuit && this._isBower(card)) {
+            return this._trumpSuit;
+        }
+        return card.suit;
+    },
+
+    _getPlayableCardIndices: function(handCards, leadSuit) {
+        var all = [];
+        var matching = [];
+        for (var i = 0; i < handCards.length; i++) {
+            all.push(i);
+            if (leadSuit && this._getEffectiveSuit(handCards[i]) === leadSuit) {
+                matching.push(i);
+            }
+        }
+        return matching.length > 0 ? matching : all;
+    },
+
+    _evaluateTrickWinner: function() {
+        if (this._currentTrick.length === 0) return null;
+        var leadSuit = this._getEffectiveSuit(this._currentTrick[0].card);
+        var bestEntry = this._currentTrick[0];
+        var bestScore = this._getTrickCardScore(bestEntry.card, leadSuit);
+
+        for (var i = 1; i < this._currentTrick.length; i++) {
+            var entry = this._currentTrick[i];
+            var score = this._getTrickCardScore(entry.card, leadSuit);
+            if (score > bestScore) {
+                bestScore = score;
+                bestEntry = entry;
+            }
+        }
+        return bestEntry.playerId;
+    },
+
+    _getTrickCardScore: function(card, leadSuit) {
+        var effSuit = this._getEffectiveSuit(card);
+        if (effSuit === this._trumpSuit) {
+            return this._getCardValue(card); // 29..100
+        }
+        if (effSuit === leadSuit) {
+            return this._getCardValue(card); // 9..14
+        }
+        return 0; // Off-suit non-trump cannot win trick
+    },
+
+    getAIAction: function(gameState, actorIdOrObj, availableActions) {
+        var actorId = (actorIdOrObj && typeof actorIdOrObj === 'object') ? actorIdOrObj.id : actorIdOrObj;
+        if (!availableActions) {
+            availableActions = this.getAvailableActions(gameState, actorId);
+        }
+        var player = this._getPlayer(gameState, actorId);
+
         if (availableActions.indexOf('orderUp') !== -1) {
-            // Order up if we have good trump
-            var player = this._getPlayer(gameState, actorId);
-            var trumpCount = this._countTrump(player.hand.contents);
+            var previewSuit = this._turnUpCard ? this._turnUpCard.suit : this._trumpSuit;
+            var savedTrump = this._trumpSuit;
+            this._trumpSuit = previewSuit;
+            var trumpCount = player ? this._countTrump(player.hand.contents) : 0;
+            this._trumpSuit = savedTrump;
             if (trumpCount >= 3) {
                 return 'orderUp';
             }
             return 'pass';
         }
         
-        // Second round - call if stuck or have decent cards
         for (var i = 0; i < availableActions.length; i++) {
             if (availableActions[i].indexOf('call_') === 0) {
                 return availableActions[i];
             }
         }
+
+        if (availableActions.indexOf('playCard') !== -1) {
+            for (var j = 0; j < availableActions.length; j++) {
+                if (availableActions[j].indexOf('playCard_') === 0) {
+                    return availableActions[j];
+                }
+            }
+            return 'playCard';
+        }
         
         return 'pass';
+    },
+
+    getAiAction: function(gameState, actor, availableActions) {
+        return this.getAIAction(gameState, actor, availableActions);
     },
     
     _countTrump: function(cards) {

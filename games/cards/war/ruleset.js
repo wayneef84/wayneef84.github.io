@@ -142,6 +142,10 @@ var WarRuleset = {
             return { nextState: 'RESOLUTION' };
         }
         
+        // Ensure piles are initialized even if getDealSequence wasn't called first
+        if (!this._warPot) this._warPot = new Pile();
+        if (!this._graveyard) this._graveyard = new Pile();
+
         // Add to war pot
         this._warPot.receive(card1, -1);
         this._warPot.receive(card2, -1);
@@ -195,9 +199,23 @@ var WarRuleset = {
                 text: 'WAR! Cards tied at ' + value1 + '!'
             });
             
-            // Each player puts 3 cards face down (or all they have)
-            var warCards1 = Math.min(3, player1.hand.count);
-            var warCards2 = Math.min(3, player2.hand.count);
+            // Check if either player already has 0 cards and cannot fight the War
+            if (player1.hand.count === 0 || player2.hand.count === 0) {
+                if (player1.hand.count > 0) {
+                    this._giveWarPotToPlayer(player1, gameState);
+                } else if (player2.hand.count > 0) {
+                    this._giveWarPotToPlayer(player2, gameState);
+                }
+                this._warMode = false;
+                return {
+                    actions: actions,
+                    nextState: 'RESOLUTION'
+                };
+            }
+
+            // Each player puts up to 3 cards face down, keeping 1 card to flip face-up
+            var warCards1 = Math.min(3, Math.max(0, player1.hand.count - 1));
+            var warCards2 = Math.min(3, Math.max(0, player2.hand.count - 1));
             
             for (var i = 0; i < warCards1; i++) {
                 var c = player1.hand.give(0);
@@ -209,20 +227,6 @@ var WarRuleset = {
             }
             
             this._warMode = true;
-            
-            // Check if either player ran out
-            if (player1.hand.count === 0 || player2.hand.count === 0) {
-                // Give pot to player with cards remaining
-                if (player1.hand.count > 0) {
-                    this._giveWarPotToPlayer(player1, gameState);
-                } else {
-                    this._giveWarPotToPlayer(player2, gameState);
-                }
-                return {
-                    actions: actions,
-                    nextState: 'RESOLUTION'
-                };
-            }
 
             return {
                 actions: actions,
@@ -232,35 +236,27 @@ var WarRuleset = {
     },
     
     _giveWarPotToPlayer: function(player, gameState) {
-        var player1 = gameState.players[0];
-        var player2 = gameState.players[1];
+        if (!this._wonPiles) {
+            this._wonPiles = { player1: new Pile(), player2: new Pile() };
+        }
+        var winnerPile = (player && this._wonPiles[player.id]) ? this._wonPiles[player.id] : null;
 
-        // Step 1: Move war pot to graveyard (always happens in both modes)
+        // Shuffle warPot before collecting so card order does not cycle deterministically
+        if (this._warPot.count > 1) {
+            this._warPot.shuffle();
+        }
+
         while (this._warPot.count > 0) {
             var card = this._warPot.give(0);
-            this._graveyard.receive(card, -1);
-        }
-
-        // Step 2: In endless mode, reshuffle graveyard when a player runs out
-        if (this.neverending) {
-            // Check if either player is out of cards
-            if (player1.hand.count === 0 && this._graveyard.count > 0) {
-                this._graveyard.shuffle();
-                while (this._graveyard.count > 0) {
-                    var c1 = this._graveyard.give(0);
-                    player1.hand.receive(c1, -1);
-                }
-            }
-
-            if (player2.hand.count === 0 && this._graveyard.count > 0) {
-                this._graveyard.shuffle();
-                while (this._graveyard.count > 0) {
-                    var c2 = this._graveyard.give(0);
-                    player2.hand.receive(c2, -1);
-                }
+            if (this.neverending && player && player.hand) {
+                // Classic/Endless War: winner collects all won cards at the bottom of their deck
+                player.hand.receive(card, -1);
+            } else {
+                // Quick 26-round mode: track in winner's won pile and shared graveyard
+                if (winnerPile) winnerPile.receive(card, -1);
+                this._graveyard.receive(card, -1);
             }
         }
-        // NON-ENDLESS MODE: Cards stay in graveyard, game ends when both players are empty
     },
     
     _checkGameEnd: function(gameState) {
@@ -274,6 +270,10 @@ var WarRuleset = {
     
     getAIAction: function(gameState, actorId, availableActions) {
         return 'flip'; // Only option in War
+    },
+
+    getAiAction: function(gameState, actor, availableActions) {
+        return 'flip';
     },
     
     // ========================================================================

@@ -2,29 +2,187 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Texas Hold'em - Coming Soon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Texas Hold'em - F.O.N.G. Card Engine</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: system-ui, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            background: radial-gradient(circle at center, #1b4d3e 0%, #091f18 100%);
+            color: #fff; font-family: system-ui, sans-serif;
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
-        h1 { color: #ffd700; margin-bottom: 20px; }
-        p { color: #94a3b8; max-width: 400px; line-height: 1.6; }
-        a { color: #38bdf8; margin-top: 30px; text-decoration: none; }
+        header {
+            height: 50px; background: rgba(0,0,0,0.4);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header-title { font-weight: 800; color: #ffd700; letter-spacing: 1px; }
+        .stats-bar {
+            display: flex; justify-content: center; gap: 20px; padding: 8px;
+            background: rgba(0,0,0,0.25); font-size: 0.85rem; color: #cbd5e1;
+        }
+        .stats-bar span { font-weight: bold; color: #ffd700; }
+        main {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: space-around; align-items: center; padding: 10px;
+        }
+        .hand-area { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .hand-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #cbd5e1; }
+        .card-container { display: flex; gap: 8px; min-height: 98px; align-items: center; justify-content: center; }
+        .card-slot canvas {
+            width: 68px; height: 95px; border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.45);
+        }
+        .status-banner {
+            font-weight: 700; color: #fef08a; background: rgba(0,0,0,0.45);
+            padding: 6px 16px; border-radius: 999px; font-size: 0.9rem;
+        }
+        footer {
+            min-height: 70px; background: rgba(0,0,0,0.55);
+            display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px;
+        }
+        .btn {
+            padding: 10px 18px; border-radius: 8px; border: none;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+        }
+        .btn-primary { background: #ffd700; color: #0f172a; }
+        .btn-secondary { background: #334155; color: #fff; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <h1>Texas Hold'em</h1>
-    <p>This game is currently under construction. Please check back in the March 2026 update.</p>
-    <a href="../index.html">← Back to Poker Hall</a>
+    <header>
+        <button class="btn btn-secondary" onclick="window.location.href='../index.html'">⬅ Back</button>
+        <div class="header-title">TEXAS HOLD'EM</div>
+        <div>Bank: $<span id="balance">1000</span></div>
+    </header>
+    <div class="stats-bar">
+        <div>Phase: <span id="phaseDisplay">IDLE</span></div>
+        <div>Pot: $<span id="potSize">0</span></div>
+        <div>Your Best 5: <span id="handRankDisplay">-</span></div>
+    </div>
+    <main>
+        <div class="hand-area">
+            <div class="hand-label">Opponent</div>
+            <div class="card-container" id="dealerCards"></div>
+        </div>
+        <div class="hand-area">
+            <div class="hand-label">Community Cards</div>
+            <div class="card-container" id="communityCards"></div>
+        </div>
+        <div class="status-banner" id="statusBanner">Press Deal to start a hand</div>
+        <div class="hand-area">
+            <div class="hand-label">Your Hole Cards</div>
+            <div class="card-container" id="playerCards"></div>
+        </div>
+    </main>
+    <footer>
+        <div id="betControls">
+            <button class="btn btn-primary" id="btnDeal">Ante $10 & Deal</button>
+        </div>
+        <div id="playControls" class="hidden" style="display:flex;gap:10px;">
+            <button class="btn btn-secondary" id="btnCheck">Check / Call $0</button>
+            <button class="btn btn-primary" id="btnBet">Bet $10</button>
+            <button class="btn btn-danger" id="btnFold">Fold</button>
+        </div>
+        <div id="endControls" class="hidden">
+            <button class="btn btn-primary" id="btnNewHand">Next Hand</button>
+        </div>
+    </footer>
+
+    <script src="../../shared/card-assets.js"></script>
+    <script type="module">
+        import Engine from '../../../../negen/core/Engine.js';
+        import TexasHoldem from './TexasHoldem.js';
+
+        CardAssets.init();
+        const engine = new Engine({});
+        const game = new TexasHoldem(engine);
+        game.init();
+
+        const el = {
+            balance: document.getElementById('balance'),
+            phase: document.getElementById('phaseDisplay'),
+            pot: document.getElementById('potSize'),
+            rank: document.getElementById('handRankDisplay'),
+            dealerCards: document.getElementById('dealerCards'),
+            communityCards: document.getElementById('communityCards'),
+            playerCards: document.getElementById('playerCards'),
+            banner: document.getElementById('statusBanner'),
+            betControls: document.getElementById('betControls'),
+            playControls: document.getElementById('playControls'),
+            endControls: document.getElementById('endControls')
+        };
+
+        function renderCards(cards, container, faceUp) {
+            container.innerHTML = '';
+            const suitMap = { hearts: 'H', diamonds: 'D', clubs: 'C', spades: 'S' };
+            cards.forEach(card => {
+                const slot = document.createElement('div');
+                slot.className = 'card-slot';
+                const src = faceUp ? CardAssets.getAsset(card.rank, suitMap[card.suit] || card.suit) : CardAssets.getAsset();
+                const c = document.createElement('canvas');
+                c.width = src.width; c.height = src.height;
+                c.getContext('2d').drawImage(src, 0, 0);
+                slot.appendChild(c);
+                container.appendChild(slot);
+            });
+        }
+
+        function updateUI(revealDealer = false) {
+            const p1 = game.players[0];
+            const opp = game.players[1];
+            el.balance.textContent = p1.balance;
+            el.phase.textContent = game.state;
+            el.pot.textContent = game.pot;
+
+            renderCards(p1.hand.contents, el.playerCards, true);
+            renderCards(opp.hand.contents, el.dealerCards, revealDealer);
+            renderCards(game.community.contents, el.communityCards, true);
+
+            const allPlayerCards = [...p1.hand.contents, ...game.community.contents];
+            if (allPlayerCards.length >= 5) {
+                el.rank.textContent = game.Evaluator.evaluate(allPlayerCards).name;
+            } else {
+                el.rank.textContent = '-';
+            }
+        }
+
+        function setControls(mode) {
+            el.betControls.classList.toggle('hidden', mode !== 'bet');
+            el.playControls.classList.toggle('hidden', mode !== 'play');
+            el.endControls.classList.toggle('hidden', mode !== 'end');
+        }
+
+        window.addEventListener('negen-card-event', e => {
+            const data = e.detail;
+            if (data.type === 'STATE_CHANGE' || data.type === 'COMMUNITY_DEAL' || data.type === 'DEAL') {
+                if (game.state !== 'GAME_OVER') {
+                    updateUI(false);
+                    setControls('play');
+                    el.banner.textContent = game.state.replace('_', '-') + ' — Check, Bet $10, or Fold';
+                }
+            } else if (data.type === 'SHOWDOWN') {
+                updateUI(true);
+                setControls('end');
+                if (data.folded) {
+                    el.banner.textContent = 'You folded — Opponent takes $' + data.pot;
+                } else {
+                    const p1Res = data.results.find(r => r.playerId === 'player1');
+                    const oppRes = data.results.find(r => r.playerId === 'dealer');
+                    const prefix = data.winner === 'player1' ? '🎉 YOU WIN $' + data.pot + '! ' :
+                                   (data.winner === 'push' ? 'SPLIT POT! ' : 'Opponent Wins — ');
+                    el.banner.textContent = prefix + (p1Res ? p1Res.hand.name : '') + ' vs ' + (oppRes ? oppRes.hand.name : '');
+                }
+            }
+        });
+
+        document.getElementById('btnDeal').onclick = () => game.startRound();
+        document.getElementById('btnCheck').onclick = () => game.advancePhase();
+        document.getElementById('btnBet').onclick = () => game.betAndAdvance(1);
+        document.getElementById('btnFold').onclick = () => game.fold();
+        document.getElementById('btnNewHand').onclick = () => game.startRound();
+    </script>
 </body>
 </html>
