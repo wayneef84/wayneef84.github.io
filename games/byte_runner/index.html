@@ -54,6 +54,15 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 pre { margin: 0 0 12px; padding: 12px; background: #0b0918; border: 2px solid #2a2550; color: #d8d4ff; font: 12px/1.6 var(--mono); overflow-x: auto; white-space: pre; }
 .help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 16px 0 4px; letter-spacing: 1px; }
 .hidden { display: none !important; }
+.tools { display: flex; gap: 6px; align-items: center; }
+.tb { min-width: 44px; min-height: 44px; padding: 0 10px; font: 12px var(--mono); color: var(--dim); background: transparent; border: 2px solid var(--line); cursor: pointer; }
+.tb:hover, .tb:focus { color: var(--text); border-color: var(--dim); }
+.tb.on { color: var(--gold); border-color: var(--gold); }
+html.fill, html.fill body { height: 100%; overflow: hidden; padding: 0; }
+.wrap.fill { position: fixed; left: 0; top: 0; max-width: none; margin: 0; padding: 8px 10px; overflow: auto; background: var(--bg); }
+.wrap.fill .screen { margin-left: auto; margin-right: auto; }
+.vnote { display: none; position: fixed; left: 50%; top: 8px; transform: translateX(-50%); z-index: 9; max-width: 90%; background: var(--panel); border: 2px solid var(--line); padding: 6px 10px; font-size: 12px; text-align: center; }
+.vnote.show { display: block; }
 @media (max-width: 560px) { .logo { font-size: 17px; } .row, .foot { font-size: 12px; } }
 </style>
 </head>
@@ -64,7 +73,11 @@ pre { margin: 0 0 12px; padding: 12px; background: #0b0918; border: 2px solid #2
       <a href="../../index.html" class="exit" id="exit">&larr; EXIT</a>
       <div><span class="logo">BYTE RUNNER</span><span class="sub" id="sub">BACKUP MONITOR</span></div>
     </div>
-    <span id="pill" class="pill wait">CONNECTING</span>
+    <span class="tools">
+      <button type="button" class="tb" id="rotbtn" aria-label="Rotate view" aria-pressed="false">ROTATE</button>
+      <button type="button" class="tb" id="fsbtn" aria-label="Fullscreen" aria-pressed="false">FULL</button>
+      <span id="pill" class="pill wait">CONNECTING</span>
+    </span>
   </header>
 
   <div class="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner game screen"></canvas></div>
@@ -89,6 +102,7 @@ pre { margin: 0 0 12px; padding: 12px; background: #0b0918; border: 2px solid #2
 
   <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE JUMPS<br>HANDS OFF FOR 8 SECONDS AND IT PLAYS ITSELF</p>
 </main>
+<div class="vnote" id="vnote"></div>
 
 <script>
 /* Byte Runner v1.0.0. Strict ES5 (see GROUND_RULES.md, Rule 2). */
@@ -823,6 +837,49 @@ raf(loop);
 window.__br = { step: step, render: render, stats: stats, hero: hero, applyData: applyData, simData: simData,
   world: function () { return world; }, data: function () { return data; }, source: function () { return source; },
   setSimT: function (t) { simT = t; demoTick(); } };
+})();
+</script>
+<script>
+/* Fullscreen and Rotate view for phones that cannot rotate. Display only, the game script above is untouched.
+   Same idea as Byte Runner Quest: Fullscreen API with a fill-screen fallback, and a CSS 90 degree rotation. */
+(function () {
+'use strict';
+var KEY = 'fong.byteRunner.view.v1', cfg = { rotate: false, fill: false };
+var de = document.documentElement, wrap = document.querySelector('.wrap'), scr = document.querySelector('.screen');
+var rotBtn = document.getElementById('rotbtn'), fsBtn = document.getElementById('fsbtn'), note = document.getElementById('vnote'), timer = 0;
+try { var o = JSON.parse(localStorage.getItem(KEY) || 'null'); if (o) { cfg.rotate = o.rotate === true; cfg.fill = o.fill === true; } } catch (e) { }
+function store() { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) { } }
+function fsEl() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+function say(t) { note.textContent = t; note.className = t ? 'vnote show' : 'vnote'; clearTimeout(timer); if (t) timer = setTimeout(function () { say(''); }, 4500); }
+function layout() {
+  var vw = window.innerWidth, vh = window.innerHeight, rot = cfg.rotate && vh > vw, fill = rot || cfg.fill || !!fsEl(), sw = rot ? vh : vw, sh = rot ? vw : vh, s = wrap.style, c;
+  de.className = fill ? 'fill' : ''; wrap.className = fill ? 'wrap fill' : 'wrap';
+  if (fill) {
+    s.width = sw + 'px'; s.height = sh + 'px'; s.transformOrigin = '0 0'; s.webkitTransformOrigin = '0 0';
+    c = rot ? 'translate(' + vw + 'px,0) rotate(90deg)' : 'none'; s.transform = c; s.webkitTransform = c;
+    scr.style.width = Math.floor(Math.max(160, Math.min(sw - 28, (sh - 120) * 320 / 176))) + 'px';
+  } else { s.width = ''; s.height = ''; s.transform = ''; s.webkitTransform = ''; scr.style.width = ''; }
+  rotBtn.className = 'tb' + (cfg.rotate ? ' on' : ''); rotBtn.setAttribute('aria-pressed', cfg.rotate ? 'true' : 'false');
+  fsBtn.className = 'tb' + (fsEl() || cfg.fill ? ' on' : ''); fsBtn.setAttribute('aria-pressed', fsEl() || cfg.fill ? 'true' : 'false');
+}
+function fill() { cfg.fill = true; store(); layout(); say('Fill screen is on. Tap FULL again, or press Esc, to leave.'); }
+fsBtn.addEventListener('click', function () {
+  var req = de.requestFullscreen || de.webkitRequestFullscreen, p;
+  if (fsEl()) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { } return; }
+  if (cfg.fill) { cfg.fill = false; store(); layout(); say(''); return; }
+  if (!req || document.fullscreenEnabled === false) { fill(); return; }
+  try { p = req.call(de); if (p && p.then) p.then(null, fill); } catch (e) { fill(); }
+});
+rotBtn.addEventListener('click', function () { cfg.rotate = !cfg.rotate; store(); layout(); });
+function fsChange() {
+  try { var so = window.screen && window.screen.orientation, p; if (so && fsEl() && so.lock) { p = so.lock('landscape'); if (p && p.catch) p.catch(function () { }); } else if (so && !fsEl() && so.unlock) so.unlock(); } catch (e) { }
+  layout(); setTimeout(layout, 250);
+}
+document.addEventListener('fullscreenchange', fsChange); document.addEventListener('webkitfullscreenchange', fsChange);
+document.addEventListener('keydown', function (e) { if (e.keyCode === 27 && cfg.fill && !fsEl()) { cfg.fill = false; store(); layout(); say(''); } });
+window.addEventListener('resize', layout);
+window.addEventListener('orientationchange', function () { layout(); setTimeout(layout, 250); });
+layout();
 })();
 </script>
 </body>
