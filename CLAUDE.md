@@ -76,7 +76,7 @@ No build step. Open `index.html` or run any static server (`python3 -m http.serv
 In the repo (merged from `chore/tooling`):
 - `games-site` agent (`.claude/agents/games-site.md`): adding or changing games and tools.
 - `game-tester` agent (`.claude/agents/game-tester.md`): play-tests pages through the Playwright MCP (`.mcp.json`).
-- PR check Action (`.github/workflows/check.yml`, `scripts/check-site.mjs`): validates the catalog and links on every PR.
+- PR check Action (`.github/workflows/check.yml`, `scripts/check-site.mjs`): validates the catalog, links, ES5, relative paths, no CDNs and the 7 docs on every PR. How it works and how to fix a failure: docs/INDEX.md.
 
 ## Tool-specific notes
 

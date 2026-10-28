@@ -56,6 +56,19 @@ Each folder under `games/` and `projects/` owns its docs. Do not rewrite them fr
 - `LL_*.md`: lessons learned for that game.
 - Template for new games: [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md). All 7 docs are required per game. When you change a game, update its docs in the same commit.
 
+## How the check works and how to fix a failure
+
+Every PR runs `node scripts/check-site.mjs` (run it yourself from the repo root before pushing, also `--selftest`). It fails on:
+- Catalog entries that are invalid or point nowhere, JS syntax errors.
+- ES5 violations in `.js` files (const, let, arrow functions, class, template literals, import/export). `negen/`, `archive/` and `docs/` are exempt.
+- Absolute paths in HTML (`href="/..."`, `src="/..."`). Use `./` or `../`.
+- External scripts or stylesheets in HTML (https or `//` URLs). Vendor the file locally. Plain links to web pages are fine.
+- A game or project folder (with an `index.html`) missing any of the 7 docs. Copy from `admin/DOC_TEMPLATES/`.
+
+Old code already breaks many of these. Those are recorded in `scripts/check-baseline.json` (file plus rule plus count) and are only counted. A file in the baseline may keep its old violations but may not add more of the same rule. A new folder with missing docs is an error.
+
+If the check fails: read the `::error file=...,line=...` lines, fix those lines in your code, rerun. Never run `--update-baseline` to get a PR green. Only Wayne regenerates the baseline on purpose (for example after cleaning old code). A touched legacy file may be converted to ES5 fully, which lowers its count.
+
 ## Archive (history, do not treat as rules)
 
 | Folder | Contents |

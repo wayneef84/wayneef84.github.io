@@ -15,5 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Validate catalog, JS syntax and links
+      - name: Self-test the check
+        run: node scripts/check-site.mjs --selftest
+      - name: Validate catalog, JS syntax, links, ES5, paths, CDNs and docs
         run: node scripts/check-site.mjs
