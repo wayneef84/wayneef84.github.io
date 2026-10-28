@@ -2,50 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Byte Runner Quest | F.O.N.G. Arcade</title>
 <style>
 @font-face { font-family: 'Space Mono'; src: url('../../assets/fonts/SpaceMono-Regular.woff2') format('woff2'); font-display: swap; }
 :root { --bg: #0d0b1a; --panel: #16132b; --line: #3b3566; --text: #ece9ff; --dim: #a29dc9; --gold: #ffd447; --mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace; }
 * { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--text); }
-body { font-family: var(--mono); padding: 12px 16px 20px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-.wrap { max-width: 1000px; margin: 0 auto; }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.exit, .pause { color: var(--dim); text-decoration: none; font: 12px var(--mono); border: 2px solid var(--line); padding: 6px 10px; background: transparent; cursor: pointer; }
-.exit:hover, .exit:focus, .pause:hover, .pause:focus { color: var(--text); border-color: var(--dim); }
-.title { font-size: 13px; letter-spacing: 3px; color: var(--gold); font-weight: 700; }
-.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; }
+html, body { margin: 0; background: var(--bg); color: var(--text); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+body { font-family: var(--mono); padding: 12px 16px 20px; min-height: 100vh; }
+html.fill, html.fill body { height: 100%; overflow: hidden; padding: 0; touch-action: none; }
+button { font-family: var(--mono); touch-action: none; }
+
+/* stage: the whole game UI. Rotated or pinned to the viewport by js/controls.js */
+.stage { position: relative; max-width: 1000px; margin: 0 auto; }
+.stage.fill { position: fixed; left: 0; top: 0; max-width: none; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); touch-action: none; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; min-height: 48px; flex: none; }
+.exit, .hb { color: var(--dim); text-decoration: none; font: 12px var(--mono); border: 2px solid var(--line); padding: 0 10px; background: transparent; cursor: pointer; min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.exit:hover, .exit:focus, .hb:hover, .hb:focus { color: var(--text); border-color: var(--dim); }
+.hb.on { color: var(--gold); border-color: var(--gold); }
+.hb svg { width: 22px; height: 22px; display: block; }
+.tools { display: flex; gap: 6px; }
+.title { font-size: 13px; letter-spacing: 3px; color: var(--gold); font-weight: 700; text-align: center; flex: 1; }
+.stage.narrow .title { display: none; }
+.stage.narrow .top { justify-content: space-between; }
+
+.play { position: relative; }
+.stage.fill .play { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; flex: none; }
+.stage.fill .screen { margin: 4px auto; }
+.stage.fill:not(.land) .screen { margin-top: auto; margin-bottom: auto; }
 canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges; touch-action: none; cursor: pointer; }
+
+/* on-screen buttons: 64px minimum, clear pressed state */
 .touch { display: none; gap: 10px; margin: 16px 4px 0; }
-.touch.on { display: flex; }
-.touch button { flex: 1; min-height: 60px; font: 700 18px var(--mono); color: var(--text); background: var(--panel); border: 3px solid var(--line); border-radius: 0; -webkit-user-select: none; user-select: none; touch-action: none; }
-.touch .gap { flex: 0.4; visibility: hidden; }
-.touch button.jump { flex: 1.6; color: var(--gold); }
+.touch.on { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; padding: 0 4px 10px; margin: 0; }
+.stage.lefty .touch.on { flex-direction: row-reverse; }
+.touch .dirs, .touch .acts { display: flex; gap: 10px; align-items: flex-end; }
+.touch .acts { flex: 1; justify-content: flex-end; }
+.stage.lefty .touch .acts { justify-content: flex-start; }
+.touch button { width: 80px; height: 80px; min-width: 64px; min-height: 64px; font: 700 18px var(--mono); color: var(--text); background: rgba(22, 19, 43, .92); border: 3px solid var(--line); border-radius: 14px; -webkit-user-select: none; user-select: none; touch-action: none; pointer-events: auto; padding: 0; }
+.touch button.jump { width: 100%; max-width: 150px; color: var(--gold); border-color: #6d5a1a; }
+.touch button.down { background: var(--gold); color: #1b1830; border-color: #fff; transform: scale(.94); }
+.touch button small { display: block; font-size: 13px; margin-top: 2px; }
+.touch .turn { display: none; font-size: 15px; }
+.stage.auto .touch .dir { display: none; }
+.stage.auto .touch .turn { display: block; }
+.stage.auto .touch button.jump { max-width: 240px; }
+.stage.land .touch.on { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 6px 6px; pointer-events: none; opacity: .88; }
+.stage.land .touch button { width: 72px; height: 72px; }
+.stage.land .touch button.jump { width: 100%; max-width: 130px; }
+.stage.land.auto .touch button.jump { max-width: 200px; }
+
 .help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 14px 0 0; letter-spacing: 1px; }
-.touch.on ~ .help { display: none; }
+.touch.on ~ .help, .stage.fill .help { display: none; }
+.note { display: none; position: absolute; left: 50%; top: 6px; transform: translateX(-50%); z-index: 15; background: rgba(22, 19, 43, .95); border: 2px solid var(--line); color: var(--text); font-size: 12px; line-height: 1.5; padding: 6px 10px; text-align: center; max-width: 90%; pointer-events: none; }
+.note.show { display: block; }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header class="top">
-    <a href="../../index.html" class="exit">&larr; EXIT</a>
+<div class="stage" id="stage">
+  <header class="top" id="head">
+    <a href="../../index.html" class="exit" id="exit">&larr; EXIT</a>
     <span class="title">BYTE RUNNER QUEST</span>
-    <button type="button" class="pause" id="pausebtn" aria-label="Pause">II</button>
+    <span class="tools">
+      <button type="button" class="hb" id="pausebtn" aria-label="Pause">II</button>
+    </span>
   </header>
 
-  <div class="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner Quest game screen"></canvas></div>
+  <div class="play" id="play">
+    <div class="screen" id="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner Quest game screen"></canvas></div>
 
-  <div class="touch" id="touch">
-    <button type="button" data-k="L" aria-label="Move left">&#9664;</button>
-    <button type="button" data-k="R" aria-label="Move right">&#9654;</button>
-    <span class="gap"></span>
-    <button type="button" data-k="J" class="jump" aria-label="Jump">JUMP</button>
+    <div class="touch" id="touch">
+      <div class="dirs">
+        <button type="button" class="dir" data-k="L" aria-label="Move left">&#9664;&#xFE0E;</button>
+        <button type="button" class="dir" data-k="R" aria-label="Move right">&#9654;&#xFE0E;</button>
+      </div>
+      <div class="acts">
+        <button type="button" class="jump" data-k="J" aria-label="Jump">JUMP</button>
+      </div>
+    </div>
+    <div class="note" id="note"></div>
   </div>
 
   <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE, Z OR UP JUMPS (HOLD FOR HIGHER)<br>P OR ESC PAUSES &nbsp; M MUTES &nbsp; ENTER PICKS</p>
-</main>
+</div>
 <script src="js/levels.js"></script>
+<script src="js/controls.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

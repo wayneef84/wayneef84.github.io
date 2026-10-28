@@ -1,0 +1,21 @@
+# CHECKPOINT: quest-mobile (delete before merge)
+
+Branch: claude/quest-mobile. Game: games/byte_runner_quest/. New file js/controls.js (layout, pointer buttons, settings).
+
+## Done
+- (a) Touch response: pointer events, multi-touch, 64px+ buttons, pressed state, no scroll/zoom/select/menu, fixed full-viewport layout on touch devices.
+
+## In progress
+- (b) Fullscreen + Rotate view
+
+## Next
+- (c) Auto-run + turn button
+- (d) Lives, Out of lives overlay, Continue stage, vibration
+- (e) Settings panel + docs (CHANGELOG v1.1.0, README, INFO, TODO, ARCHITECTURE, CLAUDE, AGENT)
+- (f) Optional: Fullscreen + Rotate on games/byte_runner/index.html (separate last commit)
+
+## Resume
+1. cd into the clone, git checkout claude/quest-mobile
+2. Serve: python3 -m http.server <port> from the repo root
+3. Test scripts live in the scratchpad pw/ folder (q_*.js)
+4. Before final push: git fetch origin && git rebase origin/dev; run node scripts/check-site.mjs

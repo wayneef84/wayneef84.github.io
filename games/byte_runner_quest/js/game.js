@@ -1,5 +1,5 @@
 /*
- * Byte Runner Quest v1.0.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
+ * Byte Runner Quest v1.1.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
  * Screens: title (attract demo) > level select > play > pause / clear / run over.
  */
 (function () {
@@ -222,32 +222,13 @@ document.addEventListener('keydown', function (e) {
   if (k) { e.preventDefault(); keyDown(k); }
 });
 document.addEventListener('keyup', function (e) { var k = KEYMAP[e.keyCode]; if (k) keyUp(k); });
-window.addEventListener('blur', function () { var k; for (k in down) if (down.hasOwnProperty(k)) down[k] = false; if (state === 'play') openPause(); });
+window.addEventListener('blur', function () { UI.releaseAll(); var k; for (k in down) if (down.hasOwnProperty(k)) down[k] = false; if (state === 'play') openPause(); });
 
-var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-(function () {
-  var pad = document.getElementById('touch'), btns, i;
-  if (!pad) return;
-  if (TOUCH) pad.className = 'touch on';
-  btns = pad.getElementsByTagName('button');
-  function bind(btn) {
-    var k = btn.getAttribute('data-k');
-    function dn(e) { e.preventDefault(); audioInit(); keyDown(k); }
-    function up(e) { e.preventDefault(); keyUp(k); }
-    btn.addEventListener('touchstart', dn); btn.addEventListener('touchend', up); btn.addEventListener('touchcancel', up);
-    btn.addEventListener('mousedown', dn); btn.addEventListener('mouseup', up); btn.addEventListener('mouseleave', function () { if (down[k]) keyUp(k); });
-  }
-  for (i = 0; i < btns.length; i++) bind(btns[i]);
-})();
+var UI = window.BRQ_UI;
+var TOUCH = UI.touch;
 
-/* taps and clicks on the canvas drive the menus */
+/* taps on the canvas drive the menus (controls.js maps the point, also when the view is rotated) */
 var taps = [];
-function canvasPoint(cx, cy) { var r = cv.getBoundingClientRect(); return { x: (cx - r.left) * W / r.width, y: (cy - r.top) * H / r.height }; }
-cv.addEventListener('mousedown', function (e) { audioInit(); taps.push(canvasPoint(e.clientX, e.clientY)); });
-cv.addEventListener('touchstart', function (e) {
-  audioInit();
-  if (e.changedTouches && e.changedTouches[0]) { taps.push(canvasPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY)); e.preventDefault(); }
-});
 var menuRects = [];
 function tapIn(p, r) { return p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h; }
 
@@ -1113,6 +1094,11 @@ function loop(t) {
 var pauseBtn = document.getElementById('pausebtn');
 if (pauseBtn) pauseBtn.addEventListener('click', function () { if (state === 'play') openPause(); else if (state === 'pause') state = 'play'; });
 
+UI.init({
+  press: function (k) { audioInit(); keyDown(k); },
+  release: function (k) { keyUp(k); },
+  tap: function (p) { audioInit(); taps.push(p); }
+});
 toTitle();
 raf(loop);
 
