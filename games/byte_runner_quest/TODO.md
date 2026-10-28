@@ -6,12 +6,16 @@
 - [ ] Level editor page: paint segments on a grid, test in place, export the recipe for `levels.js`.
 - [ ] Short chiptune music loop per world (Web Audio sequencer), off by default.
 - [ ] Ghost replay of your best run (record inputs per frame; physics is deterministic so replay is exact).
-- [ ] Landscape hint on phones, and an optional full screen button.
+- [ ] Rotate view: choose which way to turn (now always clockwise, top of game to the right).
+- [ ] Continue stage from the last checkpoint instead of the stage start (option).
+- [ ] Gamepad support is still open; on-screen buttons could slide between L and R without lifting.
 - [ ] Gamepad support (Gamepad API, polled in `step()`).
 - [ ] Share code: encode best times and disks into a short string to compare with friends.
 
 ## Known issues
-- On a phone held upright the game view is small; landscape is much better.
+- On a phone held upright the game view is small. Use Rotate view or Fullscreen in the settings.
+- Jump buffer is 7 frames (117 ms) and coyote time 6 frames (100 ms), a touch more generous than the 100 and 80 ms goal. Left as is so keyboard play does not change.
+- Real phones are untested (only emulated touch). Fullscreen, landscape lock and vibration depend on the browser.
 - A moving platform carrying the hero into a wall can push the hero a pixel into it (no current level does this).
 - Spikes deal damage when touched from the side, not only from above. Intended, but worth stating in the help.
 

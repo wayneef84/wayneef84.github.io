@@ -168,9 +168,33 @@ function vibrate() {
 }
 function vibSupported() { return typeof navigator.vibrate === 'function'; }
 
+/* settings panel: opening it pauses a running game, closing it resumes */
+var panelOpen = false, panelPaused = false;
+function openPanel() {
+  var s = doc.getElementById('settings');
+  if (!s || panelOpen) return;
+  panelOpen = true; panelPaused = !!H.pause(); cls(s, 'show', true); refresh();
+}
+function closePanel() {
+  var s = doc.getElementById('settings');
+  if (!s || !panelOpen) return;
+  panelOpen = false; cls(s, 'show', false);
+  if (panelPaused) H.resume();
+  panelPaused = false; refresh();
+}
+function changed(name) { store(); refresh(); if (H && H.changed) H.changed(name); }
 function doAct(name) {
   if (name === 'full') toggleFull();
   else if (name === 'rot') toggleRotate();
+  else if (name === 'gear') { if (panelOpen) closePanel(); else openPanel(); }
+  else if (name === 'close') closePanel();
+  else if (name === 'auto') { cfg.auto = !cfg.auto; changed('auto'); }
+  else if (name === 'left') { cfg.left = !cfg.left; changed('left'); }
+  else if (name === 'vib') {
+    if (!vibSupported()) return;
+    cfg.vibrate = !cfg.vibrate; changed('vibrate');
+    if (cfg.vibrate) { try { navigator.vibrate(40); } catch (e) { } }   /* a little buzz as a preview */
+  }
 }
 var curDir = 1;
 function setDir(d) {
@@ -183,9 +207,23 @@ function refresh() {
   var els = doc.querySelectorAll('[data-act]'), i, a, on;
   for (i = 0; i < els.length; i++) {
     a = els[i].getAttribute('data-act');
-    on = a === 'full' ? (!!fsEl() || cfg.fill) : (a === 'rot' ? cfg.rotate : false);
+    on = a === 'full' ? (!!fsEl() || cfg.fill) : (a === 'rot' ? cfg.rotate : (a === 'auto' ? cfg.auto : (a === 'left' ? cfg.left : (a === 'vib' ? (cfg.vibrate && vibSupported()) : (a === 'gear' ? panelOpen : false)))));
     cls(els[i], 'on', on);
     els[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  els = doc.querySelectorAll('[data-st]');
+  for (i = 0; i < els.length; i++) {
+    a = els[i].parentNode.getAttribute('aria-pressed') === 'true';
+    els[i].textContent = a ? 'ON' : 'OFF';
+  }
+  els = doc.querySelectorAll('[data-dir]');
+  for (i = 0; i < els.length; i++) cls(els[i], 'sel', +els[i].getAttribute('data-dir') === cfg.autoDir);
+  els = doc.querySelectorAll('[data-lives]');
+  for (i = 0; i < els.length; i++) { a = +els[i].getAttribute('data-lives') === cfg.lives; cls(els[i], 'sel', a); els[i].setAttribute('aria-pressed', a ? 'true' : 'false'); }
+  a = doc.getElementById('vibrow');
+  if (a) {
+    a.disabled = !vibSupported();
+    doc.getElementById('vibnote').textContent = vibSupported() ? 'A short buzz when you lose' : 'Not supported on this device';
   }
 }
 
@@ -219,6 +257,16 @@ function init(hooks) {
   for (i = 0; i < btns.length; i++) (function (b) {
     b.addEventListener('click', function () { doAct(b.getAttribute('data-act')); });
   })(btns[i]);
+  btns = doc.querySelectorAll('[data-dir]');
+  for (i = 0; i < btns.length; i++) (function (b) {
+    b.addEventListener('click', function () { cfg.autoDir = +b.getAttribute('data-dir') > 0 ? 1 : -1; changed('autoDir'); });
+  })(btns[i]);
+  btns = doc.querySelectorAll('[data-lives]');
+  for (i = 0; i < btns.length; i++) (function (b) {
+    b.addEventListener('click', function () { cfg.lives = +b.getAttribute('data-lives'); changed('lives'); });
+  })(btns[i]);
+  var sp = doc.getElementById('settings');
+  if (sp) sp.addEventListener('click', function (e) { if (e.target === sp) closePanel(); });
   var ob = doc.querySelectorAll('[data-out]');
   for (i = 0; i < ob.length; i++) (function (b) {
     b.addEventListener('click', function () { if (b.getAttribute('data-out') === 'continue') H.continueStage(); else H.levels(); });
@@ -227,8 +275,9 @@ function init(hooks) {
   doc.addEventListener('webkitfullscreenchange', onFsChange);
   /* Esc leaves the fill-screen fallback (real fullscreen handles Esc itself) */
   doc.addEventListener('keydown', function (e) {
+    if (e.keyCode === 27 && panelOpen) { e.preventDefault(); e.stopImmediatePropagation(); closePanel(); return; }
     if (e.keyCode === 27 && cfg.fill && !fsEl()) { e.preventDefault(); e.stopImmediatePropagation(); leaveFill(); }
-  });
+  }, true);
   /* no zoom, no long-press menu, no text selection */
   doc.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   doc.addEventListener('gesturestart', function (e) { e.preventDefault(); });
@@ -249,5 +298,5 @@ function inside(el, cn) {
   return false;
 }
 
-return { showOut: showOut, vibrate: vibrate, vibSupported: vibSupported, setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
+return { panelOpen: function () { return panelOpen; }, showOut: showOut, vibrate: vibrate, vibSupported: vibSupported, setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
 })();

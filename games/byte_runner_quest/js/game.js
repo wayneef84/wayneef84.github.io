@@ -219,7 +219,7 @@ var down = {}, hit = {};
 function keyDown(k) { if (!down[k]) hit[k] = true; down[k] = true; }
 function keyUp(k) { down[k] = false; }
 document.addEventListener('keydown', function (e) {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.ctrlKey || e.metaKey || e.altKey || UI.panelOpen()) return;
   var k = KEYMAP[e.keyCode];
   audioInit();
   if (k) { e.preventDefault(); keyDown(k); }
@@ -1143,7 +1143,13 @@ UI.init({
   continueStage: function () { if (state === 'out') continueStage(); },
   levels: function () { if (state === 'out') { sfx('ok'); toSelect(); } },
   turn: function () { audioInit(); setRunDir(-curDir); sfx('move'); },
-  getState: function () { return state; }
+  getState: function () { return state; },
+  pause: function () { if (state === 'play') { openPause(); return true; } return false; },
+  resume: function () { if (state === 'pause') state = 'play'; },
+  changed: function (name) {
+    if (name === 'autoDir' || name === 'auto') setRunDir(UI.cfg.autoDir);
+    if (name === 'lives' && L && L.kind === 'static' && run && (state === 'play' || state === 'pause')) run.lives = livesMax();   /* refill right away */
+  }
 });
 toTitle();
 raf(loop);

@@ -68,6 +68,24 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 .panel p { margin: 0 0 12px; font-size: 13px; line-height: 1.6; color: var(--text); }
 .panel.center { text-align: center; max-width: 440px; border-color: #ff5d73; }
 .panel.center h2 { color: #ff5d73; font-size: 20px; }
+.phead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.phead h2 { margin: 0; }
+.done { min-height: 48px; min-width: 96px; font: 700 14px var(--mono); color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 10px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.stage.land .grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+.stage.land .panel { max-width: 780px; padding: 8px 12px; }
+.stage.land .row { min-height: 46px; padding: 3px 10px; }
+.stage.land .phead { margin-bottom: 6px; }
+.row.wide { grid-column: 1 / -1; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 52px; padding: 6px 12px; font: 700 13px var(--mono); letter-spacing: 1px; color: var(--text); background: #1d1938; border: 2px solid var(--line); border-radius: 10px; text-align: left; }
+.row b { min-width: 54px; text-align: center; padding: 6px 8px; border-radius: 8px; background: #0f0d1e; color: var(--dim); font-size: 13px; }
+.row[aria-pressed="true"] b { background: var(--gold); color: #1b1830; }
+.row small { display: block; font-size: 11px; font-weight: 400; color: var(--dim); letter-spacing: 0; margin-top: 2px; }
+.row:disabled { opacity: .55; }
+.row.seg { flex-wrap: wrap; cursor: default; }
+.segs { display: flex; gap: 6px; flex: 1; justify-content: flex-end; }
+.segs button { flex: 1 1 0; min-height: 44px; min-width: 44px; padding: 0 8px; font: 700 13px var(--mono); color: var(--text); background: #0f0d1e; border: 2px solid var(--line); border-radius: 8px; }
+.segs button.sel { background: var(--gold); color: #1b1830; border-color: #fff; }
 .bigbtn { display: block; width: 100%; min-height: 72px; margin: 0 0 10px; font: 700 18px var(--mono); letter-spacing: 1px; color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 14px; touch-action: none; }
 .bigbtn.alt { color: var(--text); background: var(--panel); border-color: var(--line); }
 .bigbtn:active { transform: scale(.97); }
@@ -84,6 +102,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
     <span class="tools">
       <button type="button" class="hb" data-act="rot" aria-label="Rotate view" title="Rotate view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 3v6h-6"/></svg></button>
       <button type="button" class="hb" data-act="full" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M3 9V3h6M15 3h6v6M21 15v6h-6M9 21H3v-6"/></svg></button>
+      <button type="button" class="hb" data-act="gear" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8" stroke-width="4" stroke-dasharray="3.14 3.14"/><circle cx="12" cy="12" r="6" stroke-width="2.4"/></svg></button>
       <button type="button" class="hb" id="pausebtn" aria-label="Pause">II</button>
     </span>
   </header>
@@ -102,6 +121,21 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
       </div>
     </div>
     <div class="note" id="note"></div>
+  </div>
+
+  <div class="overlay" id="settings" role="dialog" aria-label="Settings">
+    <div class="panel">
+      <div class="phead"><h2>SETTINGS</h2><button type="button" class="done" data-act="close">DONE</button></div>
+      <div class="grid">
+        <button type="button" class="row" data-act="full"><span>FULLSCREEN</span><b data-st="full">OFF</b></button>
+        <button type="button" class="row" data-act="rot"><span>ROTATE VIEW</span><b data-st="rot">OFF</b></button>
+        <button type="button" class="row" data-act="auto"><span>AUTO-RUN</span><b data-st="auto">OFF</b></button>
+        <div class="row seg"><span>RUN DIRECTION</span><span class="segs"><button type="button" data-dir="1">RIGHT</button><button type="button" data-dir="-1">LEFT</button></span></div>
+        <button type="button" class="row" data-act="left"><span>LEFT-HANDED</span><b data-st="left">OFF</b></button>
+        <button type="button" class="row" data-act="vib" id="vibrow"><span>VIBRATE ON DEATH<small id="vibnote"></small></span><b data-st="vib">OFF</b></button>
+        <div class="row seg wide"><span>MAX LIVES</span><span class="segs"><button type="button" data-lives="1">1</button><button type="button" data-lives="3">3</button><button type="button" data-lives="5">5</button><button type="button" data-lives="0">UNLIMITED</button></span></div>
+      </div>
+    </div>
   </div>
 
   <div class="overlay" id="outlives" role="dialog" aria-label="Out of lives">
