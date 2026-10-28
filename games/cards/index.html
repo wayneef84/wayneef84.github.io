@@ -225,6 +225,8 @@
         <iframe id="gameFrame" src="" title="Game Area"></iframe>
     </main>
 
+    <script src="../../js/catalog.js"></script>
+    <script src="../../js/player-stats.js"></script>
     <script>
         // --- CONFIGURATION ---
         const GAMES = [
@@ -264,7 +266,9 @@
 
             // Load Game State
             const urlParams = new URLSearchParams(window.location.search);
-            let gameId = urlParams.get('game') || localStorage.getItem('last_card_game') || 'blackjack';
+            let lastGame = '';
+            try { lastGame = localStorage.getItem('last_card_game') || ''; } catch (e) { /* storage blocked */ }
+            let gameId = urlParams.get('game') || lastGame || 'blackjack';
             
             // Handle integer input legacy
             if (gameId === '1') gameId = 'blackjack';
@@ -281,6 +285,8 @@
             
             if (!game.disabled) {
                 btn.onclick = () => {
+                    // Count a play (on-device only). Poker uses the Poker Hall catalog id.
+                    if (window.FongStats) { window.FongStats.recordPlay(game.id === 'poker' ? 'poker-hall' : game.id); }
                     // Update URL and Force Refresh
                     const newUrl = new URL(window.location);
                     newUrl.searchParams.set('game', game.id);
@@ -319,7 +325,7 @@
             document.getElementById('mobile-title').textContent = game.name;
 
             // Persist (Local Storage only, URL handled by reload)
-            localStorage.setItem('last_card_game', gameId);
+            try { localStorage.setItem('last_card_game', gameId); } catch (e) { /* storage blocked */ }
         }
 
         function toggleMenu(forceState) {

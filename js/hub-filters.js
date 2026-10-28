@@ -195,7 +195,7 @@
             var title = MODE === 'fun' ? (e.funTitle || e.title) : e.title;
             var desc = MODE === 'fun' ? (e.funDescription || e.description) : e.description;
             cards +=
-                '<a href="' + NAV.escapeHtml(e.href) + '" class="featured-app-card just-added-card">' +
+                '<a href="' + NAV.escapeHtml(e.href) + '" data-game-id="' + NAV.escapeHtml(e.id) + '" class="featured-app-card just-added-card">' +
                     '<div class="featured-app-icon">' + e.icon + '</div>' +
                     '<div class="featured-app-body">' +
                         '<div class="featured-app-label"><span class="badge-new">NEW</span></div>' +

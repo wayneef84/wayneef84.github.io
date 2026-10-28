@@ -10,6 +10,7 @@
             creditEl.textContent = "Architecture by G. Execution by J.";
         }
 
+        clearOldStreaks();
         loadFeed();
     }
 
@@ -151,31 +152,27 @@
         // Sudoku
         var sudokuSeed = games.sudoku_seed;
         var sudokuPlayed = isPlayed('sudoku', sudokuSeed);
-        var sudokuStreak = getStreak('sudoku');
 
         // PuzzLLer
         var puzzleSeed = games.puzzller_seed;
         var puzzlePlayed = isPlayed('puzzller', puzzleSeed);
-        var puzzleStreak = getStreak('puzzller');
 
         container.appendChild(createGameCard(
             "Sudoku",
             "🧩",
             "../games/sudoku/index.html?daily=" + sudokuSeed,
-            sudokuPlayed,
-            sudokuStreak
+            sudokuPlayed
         ));
 
         container.appendChild(createGameCard(
             "PuzzLLer",
             "🧠",
             "../games/puzzller/index.html?daily=" + puzzleSeed,
-            puzzlePlayed,
-            puzzleStreak
+            puzzlePlayed
         ));
     }
 
-    function createGameCard(title, icon, url, played, streak) {
+    function createGameCard(title, icon, url, played) {
         var a = document.createElement('a');
         a.className = 'game-card-mini' + (played ? ' complete' : '');
         a.href = url;
@@ -190,7 +187,6 @@
                 '<h3 class="game-title-mini">' + title + '</h3>' +
                 '<div class="game-meta">' +
                     statusHtml +
-                    '<span>🔥 ' + streak + '</span>' +
                 '</div>' +
             '</div>';
 
@@ -204,11 +200,12 @@
         } catch(e) { return false; }
     }
 
-    function getStreak(game) {
-        // Mock streak for now, or read from LS
+    // Streaks were removed (no pressure mechanics). Clear any old streak keys.
+    function clearOldStreaks() {
         try {
-            return parseInt(localStorage.getItem('fong_streak_' + game) || '0');
-        } catch(e) { return 0; }
+            var keys = ['fong_streak_sudoku', 'fong_streak_puzzller'];
+            for (var i = 0; i < keys.length; i++) localStorage.removeItem(keys[i]);
+        } catch(e) { /* storage blocked: nothing to clear */ }
     }
 
     if (document.readyState === 'loading') {

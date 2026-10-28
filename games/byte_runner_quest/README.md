@@ -38,9 +38,11 @@ Byte Runner Quest is the full game version of Byte Runner. The little courier ro
 ## How to Play
 | Action | Keyboard | Touch |
 |---|---|---|
-| Move | Arrows or A / D | Left and right buttons |
+| Move | Arrows or A / D | Left and right buttons (or auto-run) |
 | Jump (hold for higher) | Space, Z, K, Up or W | JUMP |
 | Pause | P or Esc | II button |
+| Settings | gear button | gear button |
+| Turn around (auto-run) | Left or Right arrow | TURN button |
 | Mute | M | Pause menu |
 | Menus | Arrows + Enter, Esc to go back | Tap |
 
@@ -51,8 +53,17 @@ Byte Runner Quest is the full game version of Byte Runner. The little courier ro
 - Losing all three batteries also ends the attempt. You restart from the last checkpoint flag you touched.
 - Clearing a level unlocks the next one.
 
+## Phone and tablet options
+Tap the gear for one settings panel:
+- **Fullscreen** (or the corner button). On iPhone it fills the browser window instead.
+- **Rotate view** turns the game sideways when your phone is stuck in portrait.
+- **Auto-run** with a direction: the hero runs by itself. Tap anywhere or press JUMP. TURN flips direction.
+- **Left-handed** swaps the buttons.
+- **Vibrate on death** (off by default, only where the phone supports it).
+- **Max lives**: 1, 3, 5 or Unlimited (practice). Out of lives shows Continue stage (same stage, lives refilled, earlier progress kept) or Level select. Endless Run stays one life.
+
 ## URL parameters
 - `?unlock` opens every level (handy for testing or showing off).
 
 ## Status
-v1.0.0, production. See `TODO.md` for ideas.
+v1.1.0, production. See `TODO.md` for ideas.

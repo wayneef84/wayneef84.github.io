@@ -2,50 +2,155 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Byte Runner Quest | F.O.N.G. Arcade</title>
 <style>
 @font-face { font-family: 'Space Mono'; src: url('../../assets/fonts/SpaceMono-Regular.woff2') format('woff2'); font-display: swap; }
 :root { --bg: #0d0b1a; --panel: #16132b; --line: #3b3566; --text: #ece9ff; --dim: #a29dc9; --gold: #ffd447; --mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace; }
 * { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--text); }
-body { font-family: var(--mono); padding: 12px 16px 20px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-.wrap { max-width: 1000px; margin: 0 auto; }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.exit, .pause { color: var(--dim); text-decoration: none; font: 12px var(--mono); border: 2px solid var(--line); padding: 6px 10px; background: transparent; cursor: pointer; }
-.exit:hover, .exit:focus, .pause:hover, .pause:focus { color: var(--text); border-color: var(--dim); }
-.title { font-size: 13px; letter-spacing: 3px; color: var(--gold); font-weight: 700; }
-.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; }
+html, body { margin: 0; background: var(--bg); color: var(--text); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+body { font-family: var(--mono); padding: 12px 16px 20px; min-height: 100vh; }
+html.fill, html.fill body { height: 100%; overflow: hidden; padding: 0; touch-action: none; }
+button { font-family: var(--mono); touch-action: none; }
+
+/* stage: the whole game UI. Rotated or pinned to the viewport by js/controls.js */
+.stage { position: relative; max-width: 1000px; margin: 0 auto; }
+.stage.fill { position: fixed; left: 0; top: 0; max-width: none; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); touch-action: none; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; min-height: 48px; flex: none; }
+.exit, .hb { color: var(--dim); text-decoration: none; font: 12px var(--mono); border: 2px solid var(--line); padding: 0 10px; background: transparent; cursor: pointer; min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.exit:hover, .exit:focus, .hb:hover, .hb:focus { color: var(--text); border-color: var(--dim); }
+.hb.on { color: var(--gold); border-color: var(--gold); }
+.hb svg { width: 22px; height: 22px; display: block; }
+.tools { display: flex; gap: 6px; }
+.title { font-size: 13px; letter-spacing: 3px; color: var(--gold); font-weight: 700; text-align: center; flex: 1; }
+.stage.narrow .title, .stage.immersive .title { display: none; }
+.stage.immersive .top { min-height: 40px; margin-bottom: 2px; }
+.stage.immersive .exit, .stage.immersive .hb { min-height: 40px; min-width: 40px; }
+.stage.narrow .top { justify-content: space-between; }
+
+.play { position: relative; }
+.stage.fill .play { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; flex: none; }
+.stage.fill .screen { margin: 4px auto; }
+.stage.fill:not(.land) .screen { margin-top: auto; margin-bottom: auto; }
 canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges; touch-action: none; cursor: pointer; }
+
+/* on-screen buttons: 64px minimum, clear pressed state */
 .touch { display: none; gap: 10px; margin: 16px 4px 0; }
-.touch.on { display: flex; }
-.touch button { flex: 1; min-height: 60px; font: 700 18px var(--mono); color: var(--text); background: var(--panel); border: 3px solid var(--line); border-radius: 0; -webkit-user-select: none; user-select: none; touch-action: none; }
-.touch .gap { flex: 0.4; visibility: hidden; }
-.touch button.jump { flex: 1.6; color: var(--gold); }
+.touch.on { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; padding: 0 4px 10px; margin: 0; }
+.stage.lefty .touch.on { flex-direction: row-reverse; }
+.touch .dirs, .touch .acts { display: flex; gap: 10px; align-items: flex-end; }
+.touch .acts { flex: 1; justify-content: flex-end; }
+.stage.lefty .touch .acts { justify-content: flex-start; }
+.touch button { width: 80px; height: 80px; min-width: 64px; min-height: 64px; font: 700 18px var(--mono); color: var(--text); background: rgba(22, 19, 43, .92); border: 3px solid var(--line); border-radius: 14px; -webkit-user-select: none; user-select: none; touch-action: none; pointer-events: auto; padding: 0; }
+.touch button.jump { width: 100%; max-width: 150px; color: var(--gold); border-color: #6d5a1a; }
+.touch button.down { background: var(--gold); color: #1b1830; border-color: #fff; transform: scale(.94); }
+.touch button small { display: block; font-size: 13px; margin-top: 2px; }
+.touch .turn { display: none; font-size: 15px; }
+.stage.auto .touch .dir { display: none; }
+.stage.auto .touch .turn { display: block; }
+.stage.auto .touch button.jump { max-width: 240px; }
+.stage.land .touch.on { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 6px 6px; pointer-events: none; opacity: .88; }
+.stage.land .touch button { width: 72px; height: 72px; }
+.stage.land .touch button.jump { width: 100%; max-width: 130px; }
+.stage.land.auto .touch button.jump { max-width: 200px; }
+
 .help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 14px 0 0; letter-spacing: 1px; }
-.touch.on ~ .help { display: none; }
+.touch.on ~ .help, .stage.fill .help { display: none; }
+
+/* overlays and panels (settings, out of lives) sit below the header so EXIT stays visible */
+.overlay { display: none; position: absolute; left: 0; right: 0; top: 56px; bottom: 0; z-index: 20; background: rgba(8, 6, 20, .9); align-items: center; justify-content: center; padding: 8px; }
+.overlay.show { display: flex; }
+.stage.immersive .overlay { top: 46px; }
+.panel { width: 100%; max-width: 520px; max-height: 100%; overflow-y: auto; background: var(--panel); border: 3px solid var(--line); padding: 12px; touch-action: pan-y; }
+.panel h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: 3px; color: var(--gold); }
+.panel p { margin: 0 0 12px; font-size: 13px; line-height: 1.6; color: var(--text); }
+.panel.center { text-align: center; max-width: 440px; border-color: #ff5d73; }
+.panel.center h2 { color: #ff5d73; font-size: 20px; }
+.phead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.phead h2 { margin: 0; }
+.done { min-height: 48px; min-width: 96px; font: 700 14px var(--mono); color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 10px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.stage.land .grid { grid-template-columns: 1fr 1fr; gap: 5px; }
+.stage.land .panel { max-width: 780px; padding: 8px 12px; }
+.stage.land .row { min-height: 46px; padding: 3px 10px; }
+.stage.land .phead { margin-bottom: 6px; }
+.row.wide { grid-column: 1 / -1; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 52px; padding: 6px 12px; font: 700 13px var(--mono); letter-spacing: 1px; color: var(--text); background: #1d1938; border: 2px solid var(--line); border-radius: 10px; text-align: left; }
+.row b { min-width: 54px; text-align: center; padding: 6px 8px; border-radius: 8px; background: #0f0d1e; color: var(--dim); font-size: 13px; }
+.row[aria-pressed="true"] b { background: var(--gold); color: #1b1830; }
+.row small { display: block; font-size: 11px; font-weight: 400; color: var(--dim); letter-spacing: 0; margin-top: 2px; }
+.row:disabled { opacity: .55; }
+.row.seg { flex-wrap: wrap; cursor: default; }
+.segs { display: flex; gap: 6px; flex: 1; justify-content: flex-end; }
+.segs button { flex: 1 1 0; min-height: 44px; min-width: 44px; padding: 0 8px; font: 700 13px var(--mono); color: var(--text); background: #0f0d1e; border: 2px solid var(--line); border-radius: 8px; }
+.segs button.sel { background: var(--gold); color: #1b1830; border-color: #fff; }
+.bigbtn { display: block; width: 100%; min-height: 72px; margin: 0 0 10px; font: 700 18px var(--mono); letter-spacing: 1px; color: #1b1830; background: var(--gold); border: 3px solid #fff; border-radius: 14px; touch-action: none; }
+.bigbtn.alt { color: var(--text); background: var(--panel); border-color: var(--line); }
+.bigbtn:active { transform: scale(.97); }
+.overlay.lock .bigbtn { opacity: .5; pointer-events: none; }
+.note { display: none; position: absolute; left: 50%; top: 6px; transform: translateX(-50%); z-index: 15; background: rgba(22, 19, 43, .95); border: 2px solid var(--line); color: var(--text); font-size: 12px; line-height: 1.5; padding: 6px 10px; text-align: center; max-width: 90%; pointer-events: none; }
+.note.show { display: block; }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header class="top">
-    <a href="../../index.html" class="exit">&larr; EXIT</a>
+<div class="stage" id="stage">
+  <header class="top" id="head">
+    <a href="../../index.html" class="exit" id="exit">&larr; EXIT</a>
     <span class="title">BYTE RUNNER QUEST</span>
-    <button type="button" class="pause" id="pausebtn" aria-label="Pause">II</button>
+    <span class="tools">
+      <button type="button" class="hb" data-act="rot" aria-label="Rotate view" title="Rotate view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 3v6h-6"/></svg></button>
+      <button type="button" class="hb" data-act="full" aria-label="Fullscreen" title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M3 9V3h6M15 3h6v6M21 15v6h-6M9 21H3v-6"/></svg></button>
+      <button type="button" class="hb" data-act="gear" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8" stroke-width="4" stroke-dasharray="3.14 3.14"/><circle cx="12" cy="12" r="6" stroke-width="2.4"/></svg></button>
+      <button type="button" class="hb" id="pausebtn" aria-label="Pause">II</button>
+    </span>
   </header>
 
-  <div class="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner Quest game screen"></canvas></div>
+  <div class="play" id="play">
+    <div class="screen" id="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner Quest game screen"></canvas></div>
 
-  <div class="touch" id="touch">
-    <button type="button" data-k="L" aria-label="Move left">&#9664;</button>
-    <button type="button" data-k="R" aria-label="Move right">&#9654;</button>
-    <span class="gap"></span>
-    <button type="button" data-k="J" class="jump" aria-label="Jump">JUMP</button>
+    <div class="touch" id="touch">
+      <div class="dirs">
+        <button type="button" class="dir" data-k="L" aria-label="Move left">&#9664;&#xFE0E;</button>
+        <button type="button" class="dir" data-k="R" aria-label="Move right">&#9654;&#xFE0E;</button>
+        <button type="button" class="turn" id="turnbtn" aria-label="Turn around">TURN<small>&#9654;&#xFE0E;</small></button>
+      </div>
+      <div class="acts">
+        <button type="button" class="jump" data-k="J" aria-label="Jump">JUMP</button>
+      </div>
+    </div>
+    <div class="note" id="note"></div>
+  </div>
+
+  <div class="overlay" id="settings" role="dialog" aria-label="Settings">
+    <div class="panel">
+      <div class="phead"><h2>SETTINGS</h2><button type="button" class="done" data-act="close">DONE</button></div>
+      <div class="grid">
+        <button type="button" class="row" data-act="full"><span>FULLSCREEN</span><b data-st="full">OFF</b></button>
+        <button type="button" class="row" data-act="rot"><span>ROTATE VIEW</span><b data-st="rot">OFF</b></button>
+        <button type="button" class="row" data-act="auto"><span>AUTO-RUN</span><b data-st="auto">OFF</b></button>
+        <div class="row seg"><span>RUN DIRECTION</span><span class="segs"><button type="button" data-dir="1">RIGHT</button><button type="button" data-dir="-1">LEFT</button></span></div>
+        <button type="button" class="row" data-act="left"><span>LEFT-HANDED</span><b data-st="left">OFF</b></button>
+        <button type="button" class="row" data-act="vib" id="vibrow"><span>VIBRATE ON DEATH<small id="vibnote"></small></span><b data-st="vib">OFF</b></button>
+        <div class="row seg wide"><span>MAX LIVES</span><span class="segs"><button type="button" data-lives="1">1</button><button type="button" data-lives="3">3</button><button type="button" data-lives="5">5</button><button type="button" data-lives="0">UNLIMITED</button></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="outlives" role="dialog" aria-label="Out of lives">
+    <div class="panel center">
+      <h2>OUT OF LIVES</h2>
+      <p id="outmsg">Good try! Ready to go again?</p>
+      <button type="button" class="bigbtn" data-out="continue">CONTINUE STAGE</button>
+      <button type="button" class="bigbtn alt" data-out="levels">LEVEL SELECT</button>
+    </div>
   </div>
 
   <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE, Z OR UP JUMPS (HOLD FOR HIGHER)<br>P OR ESC PAUSES &nbsp; M MUTES &nbsp; ENTER PICKS</p>
-</main>
+</div>
 <script src="js/levels.js"></script>
+<script src="js/controls.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>
