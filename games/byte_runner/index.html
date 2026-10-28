@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byte Runner | F.O.N.G. Arcade</title>
+<style>
+@font-face { font-family: 'Space Mono'; src: url('../../assets/fonts/SpaceMono-Regular.woff2') format('woff2'); font-display: swap; }
+:root {
+  --bg: #0d0b1a; --panel: #16132b; --panel2: #1d1938; --line: #3b3566; --text: #ece9ff; --dim: #a29dc9;
+  --gold: #ffd447; --ok: #7cf27c; --bad: #ff5d73; --cyan: #5ef2ff;
+  --mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body { font-family: var(--mono); padding: 16px; min-height: 100vh; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.exit { color: var(--dim); text-decoration: none; font-size: 12px; border: 2px solid var(--line); padding: 6px 10px; }
+.exit:hover, .exit:focus { color: var(--text); border-color: var(--dim); }
+.logo { font-size: 22px; font-weight: 700; letter-spacing: 3px; color: var(--gold); text-shadow: 3px 3px 0 #6b1d78; }
+.sub { display: block; font-size: 11px; color: var(--dim); margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
+.pill { font-size: 11px; padding: 6px 10px; border: 2px solid currentColor; color: var(--dim); white-space: nowrap; letter-spacing: 1px; }
+.pill.live { color: var(--ok); } .pill.demo, .pill.wait { color: var(--gold); } .pill.bad { color: var(--bad); } .pill.done { color: var(--gold); }
+.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; }
+canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+.touch { display: none; justify-content: space-between; gap: 10px; margin: 16px 4px 0; }
+.touch.on { display: flex; }
+.touch button { flex: 1; min-height: 56px; font: 700 16px var(--mono); color: var(--text); background: var(--panel2); border: 3px solid var(--line); border-radius: 0; -webkit-user-select: none; user-select: none; touch-action: none; }
+.touch button.jump { flex: 1.6; color: var(--gold); }
+.panel { margin-top: 18px; background: var(--panel); border: 4px solid var(--line); padding: 14px; }
+.stage { background: var(--panel2); border: 2px solid #000; box-shadow: inset 0 0 0 2px #2a2550; padding: 12px; margin-bottom: 14px; }
+.stage.idle { opacity: .72; }
+.row { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; margin-bottom: 10px; }
+.lbl { font-weight: 700; letter-spacing: 1px; }
+.lbl em { font-style: normal; font-weight: 400; color: var(--dim); margin-left: 8px; }
+.bar { height: 18px; background: #0b0918; border: 2px solid #000; box-shadow: 0 0 0 2px #2a2550; position: relative; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; transition: width .8s steps(12); }
+.bar:after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: repeating-linear-gradient(90deg, transparent 0, transparent 10px, rgba(0,0,0,.45) 10px, rgba(0,0,0,.45) 12px); }
+.meta { font-size: 12px; color: var(--dim); margin-top: 10px; letter-spacing: 1px; }
+.stage.done .meta { color: var(--ok); }
+.stage.bad .meta { color: var(--bad); }
+.foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--gold); padding-top: 12px; border-top: 2px dashed var(--line); letter-spacing: 1px; }
+.cur { font-size: 12px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; min-height: 1.3em; }
+.note { font-size: 12px; color: var(--gold); margin-top: 10px; }
+.note:empty { display: none; }
+.about { margin-top: 18px; background: var(--panel); border: 4px solid var(--line); padding: 18px; font-size: 14px; line-height: 1.65; }
+.about h2 { margin: 0 0 10px; font-size: 16px; letter-spacing: 2px; color: var(--cyan); }
+.about p { margin: 0 0 12px; color: var(--text); }
+.about .dim { color: var(--dim); font-size: 13px; }
+.dl { display: inline-block; margin: 4px 0 14px; padding: 10px 14px; font: 700 13px var(--mono); letter-spacing: 1px; color: #0d0b1a; background: var(--gold); text-decoration: none; border: 3px solid #000; box-shadow: 4px 4px 0 #6b1d78; }
+.dl:hover, .dl:focus { background: #fff6c2; }
+pre { margin: 0 0 12px; padding: 12px; background: #0b0918; border: 2px solid #2a2550; color: #d8d4ff; font: 12px/1.6 var(--mono); overflow-x: auto; white-space: pre; }
+.help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 16px 0 4px; letter-spacing: 1px; }
+.hidden { display: none !important; }
+@media (max-width: 560px) { .logo { font-size: 17px; } .row, .foot { font-size: 12px; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="brand">
+      <a href="../../index.html" class="exit" id="exit">&larr; EXIT</a>
+      <div><span class="logo">BYTE RUNNER</span><span class="sub" id="sub">BACKUP MONITOR</span></div>
+    </div>
+    <span id="pill" class="pill wait">CONNECTING</span>
+  </header>
+
+  <div class="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner game screen"></canvas></div>
+
+  <div class="touch" id="touch">
+    <button type="button" data-k="L" aria-label="Move left">&#9664;</button>
+    <button type="button" data-k="R" aria-label="Move right">&#9654;</button>
+    <button type="button" data-k="J" class="jump" aria-label="Jump">JUMP</button>
+  </div>
+
+  <section class="panel" aria-live="polite">
+    <div id="stages"></div>
+    <div class="foot"><span id="left">TOTAL LEFT --</span><span id="fin"></span><span id="upd">UPDATED --</span></div>
+    <div class="cur" id="cur"></div>
+    <div class="note" id="note"></div>
+  </section>
+
+  <section class="about" id="about">
+    <h2>WATCH YOUR OWN COPY</h2>
+    <p>The run above is a pretend backup. On Windows, <b>byte-runner.ps1</b> points the same game at a real one. It watches the folder your copy is filling, measures the real speed, reads robocopy logs if you have them, and opens this page with live numbers. Each folder you give it is one stage, so a chained backup (external to PC, then PC to a second drive) gets one level per hop.</p>
+    <a class="dl" href="byte-runner.ps1" download>DOWNLOAD byte-runner.ps1</a>
+    <p class="dim">One stage, size known:</p>
+<pre>Unblock-File "$HOME\Downloads\byte-runner.ps1"
+Set-ExecutionPolicy -Scope Process Bypass
+&amp; "$HOME\Downloads\byte-runner.ps1" -Dest "D:\Backup" -TotalGB 250</pre>
+    <p class="dim">Two stages with robocopy logs:</p>
+<pre>&amp; "$HOME\Downloads\byte-runner.ps1" -Title "Photo backup" -TotalGB 271 `
+    -Dest "D:\Photos","N:\Photos" -Label "E: &gt; D:","D: &gt; N:" `
+    -Log "D:\*stage1*.txt","D:\*stage2*.txt" -GuessMBs 30,120</pre>
+    <p class="dim">Size unknown? Use <b>-Source E:\</b> instead of -TotalGB and it measures the source once first. The script only reads. It never starts, stops or changes a copy.</p>
+  </section>
+
+  <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE JUMPS<br>HANDS OFF FOR 8 SECONDS AND IT PLAYS ITSELF</p>
+</main>
+
+<script>
+/* Byte Runner v1.0.0. Strict ES5 (see GROUND_RULES.md, Rule 2). */
+(function () {
+'use strict';
+
+/* ================= constants ================= */
+var W = 320, H = 176, T = 16, ROWS = 11;
+var GRAV = 0.22, MAXF = 4.6, J_FULL = -4.8, J_MID = -4.1, J_HOP = -3.5;
+var cv = document.getElementById('game');
+var g = cv.getContext('2d');
+g.imageSmoothingEnabled = false;
+
+/* ================= rng + hash ================= */
+var seed = 20261025;
+function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+function ri(a, b) { return a + Math.floor(rnd() * (b - a + 1)); }
+function hsh(n) { var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+function clamp01(p) { return p < 0 ? 0 : (p > 1 ? 1 : p); }
+
+/* ================= themes: one per stage, cycling, plus the victory world ================= */
+var THEMES = [
+  { id: 'dusk', sky: ['#140b2e','#1f0f42','#331457','#4c1a69','#6c2073','#93306f','#bb4a68','#e2705f'],
+    far: '#2a1747', lit: '#ffcf6b', hill: '#22183f', hillTop: '#3a2a63',
+    gnd: '#2b2a4a', gndD: '#211f3b', edge: '#5ef2ff', edgeD: '#2d8fa0', grid: '#3d3b66',
+    crate: '#f0a33a', crateD: '#8a4b12', crateL: '#ffd27a', plat: '#3d3b66', bar: '#ffd447', stars: true },
+  { id: 'glacier', sky: ['#050f24','#08193a','#0d2550','#133466','#1a457b','#24598f','#336fa2','#4a88b3'],
+    far: '#0c2140', lit: '#9ff3ff', hill: '#0f2d4d', hillTop: '#1d4a73',
+    gnd: '#cfe6f3', gndD: '#a9cbe0', edge: '#ffffff', edgeD: '#7fb3d1', grid: '#9cc3dc',
+    crate: '#b48cff', crateD: '#4e3391', crateL: '#e6d8ff', plat: '#4a88b3', bar: '#5ef2ff', aurora: true, ice: true },
+  { id: 'ember', sky: ['#1a0608','#2b0a0c','#43100f','#5e1a12','#7d2a14','#a03e16','#c45a1a','#e57f24'],
+    far: '#2a0c0c', lit: '#ffb347', hill: '#2a0e10', hillTop: '#4a1a18',
+    gnd: '#3a2422', gndD: '#2a1918', edge: '#ff8a3d', edgeD: '#a3461c', grid: '#4e3330',
+    crate: '#3fc1b0', crateD: '#1c5f57', crateL: '#b6fff4', plat: '#5e1a12', bar: '#ff8a3d' },
+  { id: 'jade', sky: ['#04140f','#062019','#082c22','#0b3a2c','#0f4a36','#155c41','#1d704c','#2a8758'],
+    far: '#06231a', lit: '#c8ff7a', hill: '#08291f', hillTop: '#124535',
+    gnd: '#20382f', gndD: '#172a23', edge: '#a6ff4d', edgeD: '#4f8a2a', grid: '#2c4a3e',
+    crate: '#ff7eb6', crateD: '#8c2f5c', crateL: '#ffd1e6', plat: '#155c41', bar: '#a6ff4d', stars: true }
+];
+var VICTORY = { id: 'victory', sky: ['#0a0520','#120a32','#1b1046','#25175a','#301f6e','#3c2882','#4a3296','#5b3ea8'],
+    far: '#1a0f3a', lit: '#ffd447', hill: '#1c1442', hillTop: '#33266a',
+    gnd: '#2b2a4a', gndD: '#211f3b', edge: '#ffd447', edgeD: '#b8862a', grid: '#3d3b66',
+    crate: '#ffd447', crateD: '#8a6412', crateL: '#fff2b0', plat: '#5b3ea8', bar: '#ffd447', stars: true };
+var BAR_GRAD = ['linear-gradient(#ffd447,#ff8a3d)', 'linear-gradient(#5ef2ff,#b48cff)', 'linear-gradient(#ffb347,#c45a1a)', 'linear-gradient(#c8ff7a,#2a8758)'];
+
+function nStages() { return data && data.stages ? data.stages.length : 2; }
+function palFor(w) { return w > nStages() ? VICTORY : THEMES[(w - 1) % THEMES.length]; }
+
+var skyCache = {};
+function skyFor(P) {
+  if (skyCache[P.id]) return skyCache[P.id];
+  var c = document.createElement('canvas'); c.width = W; c.height = H;
+  var x = c.getContext('2d'), s = P.sky, bh = 18, i, yy, xx;
+  for (i = 0; i < s.length; i++) {
+    x.fillStyle = s[i]; x.fillRect(0, i * bh, W, i === s.length - 1 ? H : bh);
+    if (i < s.length - 1) {
+      x.fillStyle = s[i + 1];
+      for (yy = 0; yy < 2; yy++) for (xx = (yy & 1); xx < W; xx += 2) x.fillRect(xx, i * bh + bh - 2 + yy, 1, 1);
+    }
+  }
+  skyCache[P.id] = c;
+  return c;
+}
+
+/* ================= 3x5 bitmap font ================= */
+var F = {
+'0':'111101101101111','1':'010110010010111','2':'111001111100111','3':'111001111001111','4':'101101111001001',
+'5':'111100111001111','6':'111100111101111','7':'111001010010010','8':'111101111101111','9':'111101111001111',
+'A':'010101111101101','B':'110101110101110','C':'011100100100011','D':'110101101101110','E':'111100110100111',
+'F':'111100110100100','G':'011100101101011','H':'101101111101101','I':'111010010010111','J':'001001001101010',
+'K':'101101110101101','L':'100100100100111','M':'101111111101101','N':'110101101101101','O':'010101101101010',
+'P':'110101110100100','Q':'010101101110011','R':'110101110101101','S':'011100010001110','T':'111010010010010',
+'U':'101101101101111','V':'101101101101010','W':'101101111111101','X':'101101010101101','Y':'101101010010010',
+'Z':'111001010100111',' ':'000000000000000',':':'000010000010000','.':'000000000000010','%':'101001010100101',
+'/':'001001010100100','-':'000000111000000','>':'100010001010100','!':'010010010000010','+':'000010111010000',
+',':'000000000010100','?':'111001010000010'
+};
+function txt(s, x, y, col, sc, shadow) {
+  sc = sc || 1; s = String(s).toUpperCase();
+  if (shadow) txt(s, x + sc, y + sc, shadow, sc);
+  g.fillStyle = col;
+  var cx = x, k, i, gl;
+  for (k = 0; k < s.length; k++) {
+    gl = F[s.charAt(k)] || F['?'];
+    for (i = 0; i < 15; i++) if (gl.charCodeAt(i) === 49) g.fillRect(cx + (i % 3) * sc, y + ((i / 3) | 0) * sc, sc, sc);
+    cx += 4 * sc;
+  }
+}
+function tw(s, sc) { sc = sc || 1; return String(s).length * 4 * sc - sc; }
+
+/* ================= sprites ================= */
+function sprite(rows, pal) {
+  var c = document.createElement('canvas'); c.width = rows[0].length; c.height = rows.length;
+  var x = c.getContext('2d'), j, i, p;
+  for (j = 0; j < rows.length; j++) for (i = 0; i < rows[j].length; i++) {
+    p = pal[rows[j].charAt(i)];
+    if (p) { x.fillStyle = p; x.fillRect(i, j, 1, 1); }
+  }
+  return c;
+}
+function flipped(src) {
+  var c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
+  var x = c.getContext('2d'); x.translate(src.width, 0); x.scale(-1, 1); x.drawImage(src, 0, 0);
+  return c;
+}
+var HP = { K:'#1b1830', W:'#eef3f6', w:'#b9c7d6', Y:'#ffd447', y:'#fff6c2', T:'#23b5a5', t:'#157a72', L:'#9df5e3', O:'#ff8a3d', o:'#c4561c', A:'#ff5d73', G:'#8a93a8' };
+var HERO_TOP = [
+  '........A.....',
+  '........G.....',
+  '.....KKKKKK...',
+  '....KWWWWWWK..',
+  '....KWKKKKKK..',
+  '....KWKYYYyK..',
+  '....KwKKKKKK..',
+  '.....KwwwwK...',
+  '..KK.KKKKKK...',
+  '.KOoKTTTTTTK..',
+  '.KOoKTLLTTTK..',
+  '.KooKTTTTttK..',
+  '..KK.KKKKKK...'
+];
+var LEGS = {
+  stand: ['......G..G....', '.....KK..KK...'],
+  runA:  ['.....G....G...', '....KK....KK..'],
+  runB:  ['.......GG.....', '......KKKK....'],
+  jump:  ['......G...G...', '.....KK....KK.']
+};
+var HERO = {}, lk, hs;
+for (lk in LEGS) if (LEGS.hasOwnProperty(lk)) { hs = sprite(HERO_TOP.concat(LEGS[lk]), HP); HERO[lk] = [hs, flipped(hs)]; }
+
+var BP = { K:'#1b1830', P:'#9b5de5', Q:'#d0a8ff', W:'#ffffff', G:'#7cf27c' };
+var BUG_BODY = ['..G......G..','...G....G...','...KKKKKK...','..KPPPPPPK..','.KPWKPPWKPK.','.KPPPPPPPPK.','.KQPQPPQPQK.','..KKKKKKKK..'];
+var BUG = [sprite(BUG_BODY.concat(['..K.K..K.K..']), BP), sprite(BUG_BODY.concat(['.K..K..K..K.']), BP)];
+var BUG_FLAT = sprite(['............','..KKKKKKKK..','.KPWKPPWKPK.','KKQKQKKQKQKK'], BP);
+var CHIP = sprite(['..Y.Y.Y..','.KKKKKKK.','YKGgGGGKY','.KGKKKGK.','YKGKDKGKY','.KGKKKGK.','YKGGGGGKY','.KKKKKKK.','..Y.Y.Y..'],
+                  { K:'#0b2a1a', G:'#36d27a', g:'#a7f7c6', Y:'#ffd447', D:'#5ef2ff' });
+
+/* ================= level (generated in chunks as the camera moves) ================= */
+var level = { cols: {}, genC: 0, lvl: 9, pendingGate: false };
+var DEFAULT_COL = { g: 9, b: {} };
+var bugs = [], chips = [], gates = [], parts = [], floats = [];
+function setCol(c, gr) { var o = { g: gr, b: {} }; level.cols[c] = o; return o; }
+function getCol(c) { while (c >= level.genC) genChunk(); return level.cols[c] || DEFAULT_COL; }
+function isSolid(c, r) { if (r < 0 || r >= ROWS) return false; var col = getCol(c); return r >= col.g || !!col.b[r]; }
+function solidAt(px, py) { return isSolid(Math.floor(px / T), Math.floor(py / T)); }
+function flat(n) { for (var i = 0; i < n; i++) setCol(level.genC++, level.lvl); }
+function spawnChip(x, y) { chips.push({ x: x, y: y, w: 9, h: 9, got: false, ph: rnd() * 6 }); }
+function spawnBug(x, y) { bugs.push({ x: x, y: y, w: 12, h: 9, vx: -0.35, vy: 0, onGround: false, hitWall: false, dead: 0, gone: false, anim: 0 }); }
+
+function genChunk() {
+  var L = level, c, lv, roll, w, i, k, o, o2, h1, h2, pc, pw, n, gc;
+  if (L.genC === 0) { flat(22); return; }
+  if (L.pendingGate) {
+    flat(4); gc = L.genC; flat(4);
+    gates.push({ x: gc * T, lvl: L.lvl, stage: world, passed: false });
+    flat(8); L.pendingGate = false; return;
+  }
+  flat(ri(3, 5));
+  c = L.genC; lv = L.lvl; roll = rnd();
+  if (roll < 0.22) {                                   /* gap with a chip arc over it */
+    w = rnd() < 0.7 ? 2 : 3;
+    for (i = 0; i < w; i++) { setCol(L.genC++, ROWS); spawnChip((c + i) * T + 4, (lv - 3) * T + 4); }
+    flat(3);
+  } else if (roll < 0.42) {                            /* data crates, sometimes a small staircase */
+    h1 = ri(1, 2);
+    o = setCol(L.genC++, lv); for (k = 1; k <= h1; k++) o.b[lv - k] = 1;
+    spawnChip(c * T + 4, (lv - h1 - 1) * T + 4);
+    if (rnd() < 0.4) { h2 = Math.min(2, h1 + (rnd() < 0.5 ? 1 : 0)); o2 = setCol(L.genC++, lv); for (k = 1; k <= h2; k++) o2.b[lv - k] = 1; }
+    flat(3);
+  } else if (roll < 0.56) {                            /* floating platform with chips on top */
+    flat(1); pc = L.genC; pw = ri(3, 4);
+    for (i = 0; i < pw; i++) { o = setCol(L.genC++, lv); o.b[lv - 3] = 2; spawnChip((pc + i) * T + 4, (lv - 4) * T + 5); }
+    flat(2);
+  } else if (roll < 0.74) {                            /* a glitch bug */
+    flat(2); spawnBug(L.genC * T, lv * T - 9); flat(6);
+  } else if (roll < 0.86) {                            /* step up or down */
+    L.lvl = lv === 9 ? 8 : (lv === 7 ? 8 : (rnd() < 0.5 ? 7 : 9));
+    flat(ri(4, 7));
+  } else {                                             /* a row of chips at hop height */
+    n = ri(3, 5);
+    for (i = 0; i < n; i++) { spawnChip(L.genC * T + 4, (lv - 2) * T + 4); flat(1); }
+    flat(1);
+  }
+}
+
+/* ================= physics ================= */
+function moveBody(b) {
+  var r, c, r0, r1, c0, c1;
+  b.hitWall = false; b.bonk = false;
+  b.x += b.vx;
+  r0 = Math.floor(b.y / T); r1 = Math.floor((b.y + b.h - 0.01) / T);
+  if (b.vx > 0) {
+    c = Math.floor((b.x + b.w - 0.01) / T);
+    for (r = r0; r <= r1; r++) if (isSolid(c, r)) { b.x = c * T - b.w; b.vx = 0; b.hitWall = true; break; }
+  } else if (b.vx < 0) {
+    c = Math.floor(b.x / T);
+    for (r = r0; r <= r1; r++) if (isSolid(c, r)) { b.x = (c + 1) * T; b.vx = 0; b.hitWall = true; break; }
+  }
+  b.vy = Math.min(b.vy + GRAV, MAXF);
+  b.y += b.vy; b.onGround = false;
+  c0 = Math.floor(b.x / T); c1 = Math.floor((b.x + b.w - 0.01) / T);
+  if (b.vy > 0) {
+    r = Math.floor((b.y + b.h - 0.01) / T);
+    for (c = c0; c <= c1; c++) if (isSolid(c, r)) { b.y = r * T - b.h; b.vy = 0; b.onGround = true; break; }
+  } else if (b.vy < 0) {
+    r = Math.floor(b.y / T);
+    for (c = c0; c <= c1; c++) if (isSolid(c, r)) { b.y = (r + 1) * T; b.vy = 0; b.bonk = true; break; }
+  }
+}
+function overlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+
+/* ================= game state ================= */
+var hero = { x: 48, y: 9 * T - 14, w: 10, h: 14, vx: 0, vy: 0, onGround: false, face: 1, anim: 0, hurt: 0, coyote: 0 };
+var camX = 0, frame = 0, world = 1, worldSet = false, banner = null;
+var mode = 'auto', lastInput = -1e9, jumpBuf = 0;
+var keys = { L: false, R: false, J: false, D: false };
+var stats = { falls: 0, hits: 0, stomps: 0, chips: 0, gates: 0 };
+var data = null;
+
+function curStage() { return data && data.stages && world <= data.stages.length ? data.stages[world - 1] : null; }
+function autoSpeed() {
+  var s = curStage(), mb = s ? s.mbs : 30;
+  return Math.max(1.4, Math.min(1.9, 1.4 + (mb || 0) / 250));
+}
+function targetWorld() {
+  if (!data || !data.stages) return 1;
+  for (var i = 0; i < data.stages.length; i++) if (!data.stages[i].done) return i + 1;
+  return data.stages.length + 1;
+}
+function openGate() { for (var i = 0; i < gates.length; i++) if (!gates[i].passed) return true; return false; }
+
+/* autoplay: look ahead for gaps, walls, bugs and chips */
+function think(spd) {
+  var inp = { left: false, right: true, jump: false, v: J_FULL, hold: true };
+  if (!hero.onGround) return inp;
+  var feetRow = Math.floor((hero.y + hero.h + 1) / T);
+  var front = hero.x + hero.w, i, r, cc, h, wh = 0, b, d, closing, ch;
+  var gcol = getCol(Math.floor((front + 2 + spd * 2) / T));
+  if (gcol.g >= ROWS && !gcol.b[feetRow]) { inp.jump = true; inp.v = J_FULL; return inp; }
+  var wc = Math.floor((front + 6 + spd * 8) / T);
+  for (cc = wc; cc <= wc + 1; cc++) {
+    h = 0; for (r = feetRow - 1; r >= feetRow - 4 && isSolid(cc, r); r--) h++;
+    if (h > wh) wh = h;
+  }
+  if (wh > 0) { inp.jump = true; inp.v = wh === 1 ? J_MID : J_FULL; return inp; }
+  for (i = 0; i < bugs.length; i++) {
+    b = bugs[i]; if (b.dead || b.gone) continue;
+    /* time the hop so the hero comes down on top of the bug (about 29 frames until feet reach bug height) */
+    d = b.x - front; closing = spd - b.vx;
+    if (d > -2 && d < closing * 29 - 11 && Math.abs((b.y + b.h) - (hero.y + hero.h)) < 8) { inp.jump = true; inp.v = J_HOP; return inp; }
+  }
+  for (i = 0; i < chips.length; i++) {
+    ch = chips[i]; if (ch.got) continue;
+    d = ch.x - front;
+    if (d > 4 && d < 14 && ch.y < hero.y - 4 && ch.y > hero.y - 26) { inp.jump = true; inp.v = J_HOP; return inp; }
+  }
+  if (hero.hitWall) { inp.jump = true; inp.v = J_FULL; }
+  return inp;
+}
+function playerInput() {
+  var inp = { left: keys.L, right: keys.R, jump: jumpBuf > 0, v: J_FULL, hold: keys.J };
+  if (jumpBuf > 0) jumpBuf--;
+  return inp;
+}
+function anyKeyDown() { return keys.L || keys.R || keys.J || keys.D; }
+
+/* ================= effects ================= */
+function burst(x, y, cols, n, sp) {
+  n = n || 10; sp = sp || 1.6;
+  for (var i = 0; i < n; i++) {
+    var a = rnd() * Math.PI * 2, v = sp * (0.4 + rnd());
+    parts.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.6, life: 30 + ri(0, 20), col: cols[i % cols.length], gr: 0.06 });
+  }
+}
+var FW = [['#ffd447','#fff6c2'], ['#5ef2ff','#ffffff'], ['#ff5d73','#ffb3c0'], ['#7cf27c','#d8ffd8'], ['#b48cff','#efe3ff']];
+function firework() {
+  var x = camX + 40 + rnd() * (W - 80), y = 20 + rnd() * 50, set = FW[ri(0, 4)], i, a, v;
+  for (i = 0; i < 28; i++) {
+    a = (i / 28) * Math.PI * 2; v = 1.3 + rnd() * 0.4;
+    parts.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 50 + ri(0, 15), col: set[i % 2], gr: 0.025 });
+  }
+}
+var fwQueue = [];
+function floatText(s, x, y, col) { floats.push({ s: s, x: x, y: y, col: col, life: 45 }); }
+function setBanner(text, sub, col, t) { banner = { text: text, sub: sub, col: col, t: t || 330 }; }
+
+function respawn() {
+  stats.falls++;
+  var c = Math.floor((camX + 90) / T), k, a, b, col;
+  for (k = 0; k < 60; k++, c++) {
+    a = getCol(c); b = getCol(c + 1);
+    if (a.g < ROWS && a.g === b.g && !a.b[a.g - 1] && !b.b[a.g - 1] && !a.b[a.g - 2]) break;
+  }
+  col = getCol(c);
+  hero.x = c * T + 3; hero.y = col.g * T - hero.h - 20; hero.vy = 0;
+  hero.vx = mode === 'auto' ? autoSpeed() : 0; hero.hurt = 60;
+  burst(hero.x + 5, hero.y + 7, ['#5ef2ff', '#ffffff', '#ffd447'], 16, 1.2);
+}
+
+/* ================= update ================= */
+function step() {
+  var i, b, ch, gt, p, f, pv, P, s, failed, sub, k, cut, dir, tw_, inp, spd;
+  frame++;
+  if (source === 'demo') simT += SIMX / 60;
+  if (mode === 'p1' && now() - lastInput > 8000 && !anyKeyDown()) mode = 'auto';
+
+  tw_ = targetWorld();
+  if (data && !worldSet) { world = tw_; worldSet = true; gates = []; level.pendingGate = false; }
+  else if (worldSet && tw_ < world) {             /* a new run started (demo loop or a fresh copy) */
+    world = tw_; gates = []; level.pendingGate = false; setBanner('NEW RUN', '', '#5ef2ff', 200);
+  }
+  if (worldSet && data.phase !== 'halted' && tw_ > world && !level.pendingGate && !openGate()) level.pendingGate = true;
+
+  spd = autoSpeed();
+  inp = mode === 'auto' ? think(spd) : playerInput();
+  if (mode === 'auto') hero.vx += (spd - hero.vx) * 0.1;
+  else {
+    dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
+    hero.vx += (dir * 2.0 - hero.vx) * 0.16;
+    if (Math.abs(hero.vx) < 0.05) hero.vx = 0;
+  }
+  if (hero.vx > 0.1) hero.face = 1; else if (hero.vx < -0.1) hero.face = -1;
+
+  if (hero.onGround) hero.coyote = 6; else if (hero.coyote > 0) hero.coyote--;
+  P = palFor(world);
+  if (inp.jump && hero.coyote > 0) {
+    hero.vy = inp.v; hero.coyote = 0; jumpBuf = 0;
+    for (i = 0; i < 4; i++) parts.push({ x: hero.x + 2 + i * 2, y: hero.y + hero.h, vx: (i - 1.5) * 0.3, vy: -0.2, life: 14, col: P.edge, gr: 0 });
+  }
+  if (mode === 'p1' && !inp.hold && hero.vy < -2.2) hero.vy = -2.2;
+
+  moveBody(hero);
+  if (hero.x < camX + 2) { hero.x = camX + 2; if (hero.vx < 0) hero.vx = 0; }
+  if (hero.y > H + 40) respawn();
+  if (hero.hurt > 0) hero.hurt--;
+  hero.anim += Math.abs(hero.vx);
+
+  for (i = 0; i < bugs.length; i++) {
+    b = bugs[i];
+    if (b.gone) continue;
+    if (b.dead) { if (--b.dead === 0) b.gone = true; continue; }
+    if (b.x > camX + W + 24) continue;
+    pv = b.vx;
+    moveBody(b);
+    if (b.hitWall) b.vx = -pv;
+    else if (b.onGround && !solidAt(pv < 0 ? b.x - 1 : b.x + b.w + 1, b.y + b.h + 2)) b.vx = -pv;
+    else if (b.vx === 0) b.vx = pv;
+    if (b.y > H + 40) b.gone = true;
+    b.anim++;
+    if (overlap(hero, b)) {
+      if (hero.vy > 0.3 && hero.y + hero.h - b.y < 9) {
+        b.dead = 40; hero.vy = J_HOP * 0.9; stats.stomps++;
+        burst(b.x + 6, b.y + 4, ['#9b5de5', '#d0a8ff', '#ffffff'], 12, 1.4); floatText('+1', b.x, b.y - 6, '#d0a8ff');
+      } else if (!hero.hurt) { hero.hurt = 60; stats.hits++; hero.vy = -2.4; }
+    }
+  }
+  for (i = 0; i < chips.length; i++) {
+    ch = chips[i];
+    if (!ch.got && overlap(hero, ch)) { ch.got = true; stats.chips++; burst(ch.x + 4, ch.y + 4, ['#ffd447', '#36d27a', '#fff6c2'], 8, 1.1); }
+  }
+  for (i = 0; i < gates.length; i++) {
+    gt = gates[i];
+    if (!gt.passed && hero.x > gt.x + 20) {
+      gt.passed = true; stats.gates++;
+      s = data && data.stages ? data.stages[world - 1] : null;
+      failed = s ? s.failed : -1;
+      world = Math.min(nStages() + 1, world + 1);
+      if (world <= nStages()) {
+        sub = failed > 0 ? failed + ' FILES FAILED' : 'COPY COMPLETE';
+        setBanner('STAGE ' + (world - 1) + ' CLEAR!', sub, '#ffd447');
+      } else setBanner('ALL CLEAR!', 'BACKUP COMPLETE', '#ffd447', 900);
+      for (k = 0; k < 5; k++) fwQueue.push(frame + k * 16);
+    }
+  }
+  while (fwQueue.length && fwQueue[0] <= frame) { fwQueue.shift(); firework(); }
+  if (world > nStages() && frame % 70 === 0) firework();
+
+  for (i = 0; i < parts.length; i++) { p = parts[i]; p.x += p.vx; p.y += p.vy; p.vy += p.gr; p.life--; }
+  parts = parts.filter(function (q) { return q.life > 0; });
+  for (i = 0; i < floats.length; i++) { f = floats[i]; f.y -= 0.5; f.life--; }
+  floats = floats.filter(function (q) { return q.life > 0; });
+  if (banner && --banner.t <= 0) banner = null;
+
+  camX = Math.max(camX, hero.x - 110);
+  if (frame % 60 === 0) {
+    cut = camX - 64;
+    for (k in level.cols) if (level.cols.hasOwnProperty(k) && k * T < cut) delete level.cols[k];
+    bugs = bugs.filter(function (q) { return !q.gone && q.x > cut; });
+    chips = chips.filter(function (q) { return !q.got && q.x > cut; });
+    gates = gates.filter(function (q) { return q.x > cut || !q.passed; });
+  }
+}
+
+/* ================= render ================= */
+var STARS = [];
+for (var si = 0; si < 48; si++) STARS.push({ x: hsh(si * 3 + 1) * 640, y: 4 + hsh(si * 3 + 2) * 86, b: hsh(si * 3 + 3) });
+function rect(x, y, w, h, c) { g.fillStyle = c; g.fillRect(x, y, w, h); }
+
+function drawBackground(P, cx) {
+  var i, s, x, y, wx, on, fx, base, i0, h, w, wy, wxx;
+  g.drawImage(skyFor(P), 0, 0);
+  if (P.stars) for (i = 0; i < STARS.length; i++) {
+    s = STARS[i];
+    x = ((s.x - cx * 0.05) % 640 + 640) % 640;
+    if (x > W) continue;
+    on = ((frame + s.b * 200) % 200) > 20;
+    rect(x | 0, s.y | 0, 1, 1, on ? '#ffffff' : '#8f86c9');
+    if (s.b > 0.85 && on) { rect((x | 0) - 1, s.y | 0, 3, 1, 'rgba(255,255,255,.35)'); rect(x | 0, (s.y | 0) - 1, 1, 3, 'rgba(255,255,255,.35)'); }
+  }
+  if (P.aurora) for (x = 0; x < W; x += 2) {
+    wx = x + cx * 0.08;
+    y = 26 + Math.sin(wx * 0.021 + frame * 0.01) * 9 + Math.sin(wx * 0.053) * 4;
+    g.fillStyle = 'rgba(124,242,124,.18)'; g.fillRect(x, y | 0, 2, 14);
+    g.fillStyle = 'rgba(94,242,255,.14)'; g.fillRect(x, (y + 12) | 0, 2, 10);
+  }
+  /* far server towers */
+  fx = cx * 0.2; base = 132; i0 = Math.floor(fx / 26) - 1;
+  for (i = i0; i < i0 + 16; i++) {
+    h = (26 + hsh(i) * 62) | 0; w = (14 + hsh(i + 77) * 8) | 0; x = (i * 26 - fx) | 0;
+    rect(x, base - h, w, h, P.far);
+    rect(x + (w >> 1) - 1, base - h - 4, 2, 4, P.far);
+    for (wy = base - h + 4; wy < base - 4; wy += 6)
+      for (wxx = x + 3; wxx < x + w - 2; wxx += 4)
+        if (hsh(i * 131 + wy * 7 + (wxx - x)) > 0.55 && ((frame >> 5) + wy + wxx) % 9) rect(wxx, wy, 2, 2, P.lit);
+  }
+  /* rolling hills */
+  for (x = 0; x < W; x += 2) {
+    wx = x + cx * 0.45;
+    y = (128 + Math.sin(wx * 0.018) * 9 + Math.sin(wx * 0.043) * 5) | 0;
+    rect(x, y, 2, H - y, P.hill); rect(x, y, 2, 2, P.hillTop);
+  }
+}
+
+function drawGround(P, x, y, top, leftOpen, rightOpen, c, r) {
+  rect(x, y, T, T, top ? P.gnd : P.gndD);
+  rect(x + 15, y, 1, T, P.grid);
+  rect(x, y + 15, T, 1, P.grid);
+  if (hsh(c * 17 + r * 3) > 0.5) rect(x + 4, y + 7, 2, 2, P.grid);
+  if (top) {
+    rect(x, y, T, 2, P.edge); rect(x, y + 2, T, 1, P.edgeD);
+    if (hsh(c * 5 + 1) > 0.4) { rect(x + 6, y + 3, 1, 4, P.edgeD); rect(x + 5, y + 7, 3, 2, P.edgeD); }
+    if (P.ice && hsh(c * 9) > 0.5) rect(x + 10, y + 3, 2, 3, '#ffffff');
+  }
+  if (leftOpen) rect(x, y, 1, T, P.edgeD);
+  if (rightOpen) rect(x + 15, y, 1, T, P.edgeD);
+}
+function drawCrate(P, x, y) {
+  rect(x, y, T, T, '#1b1830');
+  rect(x + 1, y + 1, 14, 14, P.crateD);
+  rect(x + 2, y + 2, 12, 11, P.crate);
+  rect(x + 2, y + 2, 12, 1, P.crateL);
+  rect(x + 3, y + 6, 6, 1, P.crateL); rect(x + 8, y + 6, 1, 5, P.crateL); rect(x + 7, y + 10, 3, 2, P.crateL);
+  rect(x + 11, y + 4, 2, 2, P.crateD);
+}
+function drawPlat(P, x, y) {
+  rect(x, y, T, 7, '#1b1830');
+  rect(x + 1, y + 1, 14, 5, P.plat);
+  rect(x + 1, y + 1, 14, 1, P.edge);
+  rect(x + 3 + ((frame >> 4) % 3) * 4, y + 3, 2, 2, P.edge);
+}
+var PORTAL = ['#5ef2ff', '#b48cff', '#ffd447', '#ff5d73'];
+function drawGate(gt, cx) {
+  var x = (gt.x - cx) | 0, gy = gt.lvl * T, ph = 52, k, px, y;
+  for (k = 0; k < 2; k++) {
+    px = x + k * 30;
+    rect(px, gy - ph, 6, ph, '#1b1830'); rect(px + 1, gy - ph + 1, 4, ph - 1, '#6f74a8'); rect(px + 1, gy - ph + 1, 1, ph - 1, '#b9bfe8');
+  }
+  rect(x - 2, gy - ph - 6, 40, 7, '#1b1830'); rect(x - 1, gy - ph - 5, 38, 5, '#8a93c8');
+  g.globalAlpha = 0.55;
+  for (y = gy - ph + 1; y < gy; y += 2) { g.fillStyle = PORTAL[((y + frame) >> 2) & 3]; g.fillRect(x + 6, y, 24, 2); }
+  g.globalAlpha = 1;
+  rect(x + 17, gy - ph - 20, 2, 14, '#1b1830');
+  rect(x + 19, gy - ph - 20, 12, 8, '#ff5d73');
+  txt(String(gt.stage % 10), x + 23, gy - ph - 19, '#ffffff');
+}
+
+function render() {
+  var cx = Math.floor(camX), P = palFor(world), c0 = Math.floor(cx / T), ox = c0 * T - cx;
+  var i, c, col, x, Lc, Rc, r, k, ch, b, key, p, f;
+  drawBackground(P, cx);
+  for (i = 0; i <= 21; i++) {
+    c = c0 + i; col = getCol(c); x = ox + i * T; Lc = getCol(c - 1); Rc = getCol(c + 1);
+    for (r = col.g; r < ROWS; r++) drawGround(P, x, r * T, r === col.g, Lc.g > r, Rc.g > r, c, r);
+    for (k in col.b) if (col.b.hasOwnProperty(k)) { if (col.b[k] === 1) drawCrate(P, x, +k * T); else drawPlat(P, x, +k * T); }
+  }
+  for (i = 0; i < gates.length; i++) drawGate(gates[i], cx);
+  for (i = 0; i < chips.length; i++) {
+    ch = chips[i]; if (ch.got) continue;
+    x = (ch.x - cx) | 0; if (x < -10 || x > W) continue;
+    g.drawImage(CHIP, x, (ch.y + Math.sin(frame * 0.09 + ch.ph) * 1.5) | 0);
+  }
+  for (i = 0; i < bugs.length; i++) {
+    b = bugs[i]; if (b.gone) continue;
+    x = (b.x - cx) | 0; if (x < -14 || x > W) continue;
+    if (b.dead) g.drawImage(BUG_FLAT, x, (b.y + b.h - 4) | 0);
+    else g.drawImage(BUG[(b.anim >> 3) & 1], x, b.y | 0);
+  }
+  if (!(hero.hurt && ((frame >> 2) & 1))) {
+    key = 'stand';
+    if (!hero.onGround) key = 'jump';
+    else if (Math.abs(hero.vx) > 0.2) key = ['runA', 'stand', 'runB', 'stand'][((hero.anim / 6) | 0) & 3];
+    g.drawImage(HERO[key][hero.face > 0 ? 0 : 1], (hero.x - cx - 2) | 0, (hero.y - 1) | 0);
+  }
+  for (i = 0; i < parts.length; i++) { p = parts[i]; rect((p.x - cx) | 0, p.y | 0, p.life > 8 ? 2 : 1, p.life > 8 ? 2 : 1, p.col); }
+  for (i = 0; i < floats.length; i++) { f = floats[i]; txt(f.s, (f.x - cx) | 0, f.y | 0, f.col, 1, '#1b1830'); }
+  drawHud(P);
+}
+
+function drawHud(P) {
+  var s = curStage(), done = world > nStages(), p = 0, gb = '--', pct, tx, tW, hx, label, m, bw, bh, bx, by, last;
+  g.fillStyle = 'rgba(8,6,20,.62)'; g.fillRect(0, 0, W, 11);
+  label = done ? 'DONE' : 'STG' + world;
+  txt(label, 4, 3, done ? '#ffd447' : P.edge);
+  if (s) { p = s.pct / 100; gb = s.gb.toFixed(1) + 'GB'; }
+  else if (done && data) { last = data.stages[data.stages.length - 1]; p = 1; gb = last.gb.toFixed(1) + 'GB'; }
+  pct = Math.round(p * 100) + '%';
+  tx = 30; tW = W - tx - 8 - tw(gb) - 6 - tw(pct) - 6;
+  rect(tx, 5, tW, 1, '#3b3566');
+  rect(tx, 5, Math.round(tW * clamp01(p)), 1, P.bar);
+  rect(tx + tW, 1, 1, 8, '#ffffff'); rect(tx + tW + 1, 1, 4, 3, '#ff5d73');
+  hx = tx + Math.round(tW * clamp01(p)) - 2;
+  rect(hx, 2, 5, 4, '#eef3f6'); rect(hx + 2, 3, 3, 1, '#ffd447'); rect(hx + 1, 6, 3, 2, '#23b5a5');
+  txt(pct, tx + tW + 8, 3, '#ffffff');
+  txt(gb, W - 4 - tw(gb), 3, '#a29dc9');
+
+  if (banner) {
+    bw = Math.max(tw(banner.text, 2), tw(banner.sub || '')) + 20; bh = banner.sub ? 32 : 22;
+    bx = ((W - bw) / 2) | 0; by = 40;
+    rect(bx - 2, by - 2, bw + 4, bh + 4, '#000000'); rect(bx, by, bw, bh, 'rgba(22,19,43,.92)');
+    rect(bx, by, bw, 1, banner.col);
+    txt(banner.text, ((W - tw(banner.text, 2)) / 2) | 0, by + 6, banner.col, 2, '#6b1d78');
+    if (banner.sub) txt(banner.sub, ((W - tw(banner.sub)) / 2) | 0, by + 22, '#ece9ff');
+  }
+  if (mode === 'auto') {
+    if ((frame >> 5) & 1) {
+      m = TOUCH ? 'AUTO  TAP A BUTTON TO PLAY' : 'AUTO  PRESS ANY KEY';
+      rect(((W - tw(m)) / 2 | 0) - 4, H - 12, tw(m) + 8, 11, 'rgba(8,6,20,.7)');
+      txt(m, ((W - tw(m)) / 2) | 0, H - 9, '#ffffff', 1, '#1b1830');
+    }
+  } else { rect(1, H - 12, 14, 11, 'rgba(8,6,20,.7)'); txt('P1', 4, H - 9, '#ffd447', 1, '#1b1830'); }
+}
+
+/* ================= input ================= */
+var KEYMAP = { 37: 'L', 65: 'L', 39: 'R', 68: 'R', 38: 'J', 87: 'J', 90: 'J', 32: 'J', 40: 'D', 83: 'D' };
+function now() { return window.performance && performance.now ? performance.now() : Date.now(); }
+function press(k) {
+  if (k === 'J' && !keys.J) jumpBuf = 8;
+  keys[k] = true; lastInput = now();
+  if (mode !== 'p1') { mode = 'p1'; hero.vx *= 0.5; }
+}
+function release(k) { keys[k] = false; lastInput = now(); }
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var k = KEYMAP[e.keyCode];
+  if (k) { e.preventDefault(); press(k); }
+  else if (e.keyCode !== 9 && e.keyCode !== 16) { lastInput = now(); if (mode !== 'p1') mode = 'p1'; }
+});
+document.addEventListener('keyup', function (e) { var k = KEYMAP[e.keyCode]; if (k) release(k); });
+window.addEventListener('blur', function () { keys.L = keys.R = keys.J = keys.D = false; });
+
+var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+(function () {
+  var pad = document.getElementById('touch'), btns = pad.getElementsByTagName('button'), i;
+  if (TOUCH) pad.className = 'touch on';
+  function bind(btn) {
+    var k = btn.getAttribute('data-k');
+    function down(e) { e.preventDefault(); press(k); }
+    function up(e) { e.preventDefault(); release(k); }
+    btn.addEventListener('touchstart', down); btn.addEventListener('touchend', up); btn.addEventListener('touchcancel', up);
+    btn.addEventListener('mousedown', down); btn.addEventListener('mouseup', up); btn.addEventListener('mouseleave', function () { if (keys[k]) release(k); });
+  }
+  for (i = 0; i < btns.length; i++) bind(btns[i]);
+})();
+
+/* ================= data: live (status.js from byte-runner.ps1) or demo ================= */
+function $(id) { return document.getElementById(id); }
+var q = location.search;
+var IS_FILE = location.protocol === 'file:';
+var SIMX = (function () { var m = /[?&]sim=([\d.]+)/.exec(q); return m ? parseFloat(m[1]) : 25; })();
+var FORCE_DEMO = /[?&](demo|sim)\b/.test(q);
+var CAN_LIVE = (IS_FILE || /[?&]live\b/.test(q)) && !FORCE_DEMO;
+var source = 'wait', gotLive = false, loadFails = 0, simT = 0, simDoneFrame = -1;
+
+if (IS_FILE) { $('exit').className += ' hidden'; $('about').className += ' hidden'; }
+
+var DEMO = { title: 'Demo backup', startGB: 22, gap: 8, stages: [
+  { label: 'SOURCE > BACKUP', total: 120, mbs: 32 },
+  { label: 'BACKUP > MIRROR', total: 120, mbs: 115 } ] };
+var DEMO_CLOCK = new Date(2026, 9, 25, 19, 0, 0).getTime();
+function clockStr(ms, secs) {
+  var d = new Date(ms), h = d.getHours(), m = d.getMinutes(), s = d.getSeconds(), ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + (m < 10 ? '0' : '') + m + (secs ? ':' + (s < 10 ? '0' : '') + s : '') + ' ' + ap;
+}
+function simData() {
+  var st = [], t = simT + DEMO.startGB * 1024 / DEMO.stages[0].mbs, left = 0, allDone = true, active = -1, i, s, dur, gb, done, started, eta;
+  for (i = 0; i < DEMO.stages.length; i++) {
+    s = DEMO.stages[i]; dur = s.total * 1024 / s.mbs;
+    started = t > 0; done = t >= dur;
+    gb = Math.max(0, Math.min(s.total, t * s.mbs / 1024));
+    eta = done ? 0 : Math.round((s.total - gb) * 1024 / s.mbs / 60);
+    if (!done) { allDone = false; left += eta; if (active < 0 && started) active = i; }
+    st.push({ label: s.label, gb: gb, total: s.total, pct: done ? 100 : Math.min(99.9, gb / s.total * 100), mbs: s.mbs,
+              est: !started, eta: eta, started: started, done: done, failed: done ? 0 : -1 });
+    t -= dur + DEMO.gap;
+  }
+  var clock = DEMO_CLOCK + simT * 1000;
+  return { v: 2, title: DEMO.title, te: Date.now(), ts: clockStr(clock, true), phase: allDone ? 'done' : 'run',
+           left: left, fin: clockStr(clock + left * 60000), stages: st,
+           cur: active >= 0 ? 'photos/IMG_' + (1000 + Math.floor(simT / 2)) + '.JPG' : '' };
+}
+
+/* v1 status files (flat fields) still work */
+function normalize(h) {
+  if (h.stages) return h;
+  return { v: 1, title: '', te: h.te, ts: h.ts, phase: h.phase === 'done' || h.phase === 'halted' ? h.phase : 'run',
+    fin: h.fin, left: (h.r1 || 0) + (h.r2 || 0), cur: h.cur,
+    stages: [
+      { label: 'STAGE 1', gb: h.d, total: h.total, pct: h.p1, mbs: h.mb1, est: h.est1, eta: h.r1, started: true, done: h.s1done, failed: h.f1 },
+      { label: 'STAGE 2', gb: h.n, total: h.total2 || h.total, pct: h.p2, mbs: h.mb2, est: h.est2, eta: h.r2, started: h.s2start, done: h.s2done, failed: h.f2 } ] };
+}
+
+function ensureRows(n) {
+  var box = $('stages'), i, d;
+  if (box.children.length === n) return;
+  box.innerHTML = '';
+  for (i = 0; i < n; i++) {
+    d = document.createElement('div'); d.className = 'stage';
+    d.innerHTML = '<div class="row"><span class="lbl"></span><span class="val"></span></div><div class="bar"><i></i></div><div class="meta"></div>';
+    d.getElementsByTagName('i')[0].style.background = BAR_GRAD[i % BAR_GRAD.length];
+    box.appendChild(d);
+  }
+}
+function fmtTotal(x) { return Math.abs(x - Math.round(x)) < 0.005 ? String(Math.round(x)) : x.toFixed(2); }
+
+function applyData(raw) {
+  var h = normalize(raw), n = h.stages.length, rows, i, s, row, lbl, em, meta, prev, cls, done, halted, pct, active;
+  data = h;
+  ensureRows(n);
+  rows = $('stages').children;
+  done = h.phase === 'done'; halted = h.phase === 'halted';
+  for (i = 0; i < n; i++) {
+    s = h.stages[i]; row = rows[i]; prev = i > 0 ? h.stages[i - 1] : null;
+    lbl = row.getElementsByTagName('span')[0];
+    lbl.textContent = 'STAGE ' + (i + 1);
+    em = document.createElement('em'); em.textContent = s.label || ''; lbl.appendChild(em);
+    row.getElementsByTagName('span')[1].textContent = s.gb.toFixed(2) + ' / ' + fmtTotal(+s.total) + ' GB';
+    row.getElementsByTagName('i')[0].style.width = Math.min(100, s.pct) + '%';
+    if (s.done) meta = s.failed > 0 ? 'FINISHED WITH ' + s.failed + ' FAILED FILES. CHECK THE LOG' : 'CLEAR' + (s.failed === 0 ? '  0 FAILED' : '');
+    else if (halted && prev && prev.done && prev.failed > 0 && !s.started) meta = 'SKIPPED: STAGE ' + i + ' HAD FAILURES';
+    else if (s.started) meta = s.pct.toFixed(1) + '%   ' + s.mbs.toFixed(1) + ' MB/S' + (s.est ? ' (EST)' : '') + '   ' + s.eta + ' MIN LEFT';
+    else meta = (i === 0 ? 'WAITING FOR THE COPY TO START' : 'STARTS AFTER STAGE ' + i) + '   ABOUT ' + s.eta + ' MIN ONCE IT RUNS';
+    row.getElementsByTagName('div')[row.getElementsByTagName('div').length - 1].textContent = meta;
+    cls = 'stage';
+    if (s.done) cls += s.failed > 0 ? ' done bad' : ' done';
+    else if (!s.started) cls += ' idle';
+    if (halted && !s.started) cls += ' bad';
+    row.className = cls;
+  }
+  $('sub').textContent = h.title ? h.title : 'BACKUP MONITOR';
+  $('left').textContent = done ? 'ALL DONE' : halted ? 'STOPPED: A STAGE HAD FAILURES' : 'TOTAL LEFT ~' + h.left + ' MIN';
+  $('fin').textContent = done || halted || !h.fin ? '' : 'FINISH ~' + h.fin;
+  $('upd').textContent = 'UPDATED ' + h.ts;
+  $('cur').textContent = h.cur && !done ? 'NOW COPYING  ' + h.cur : '';
+  active = targetWorld();
+  pct = active <= n ? Math.round(h.stages[active - 1].pct) : 100;
+  document.title = (done ? 'DONE' : 'S' + active + ' ' + pct + '%') + ' | Byte Runner';
+  refreshPill();
+}
+
+function setPill(cls, label) { var p = $('pill'); p.className = 'pill ' + cls; p.textContent = label; }
+function refreshPill() {
+  if (source === 'demo') return setPill('demo', CAN_LIVE ? 'DEMO, NO DATA' : 'DEMO');
+  if (!data) return setPill(loadFails > 2 ? 'bad' : 'wait', loadFails > 2 ? 'NO SIGNAL' : 'CONNECTING');
+  if (data.phase === 'done') return setPill('done', 'DONE');
+  if (data.phase === 'halted') return setPill('bad', 'HALTED');
+  var age = (Date.now() - data.te) / 1000;
+  if (age > 90) return setPill('bad', 'STALE ' + Math.max(1, Math.round(age / 60)) + ' MIN');
+  setPill('live', 'LIVE');
+}
+
+function startDemo() {
+  source = 'demo'; simT = 0; simDoneFrame = -1;
+  $('note').textContent = CAN_LIVE ? 'No status.js next to this page yet, so this is a demo run. Start byte-runner.ps1 and it switches to live numbers on its own.' : '';
+  applyData(simData());
+}
+function demoTick() {
+  if (source !== 'demo') return;
+  var d = simData();
+  if (d.phase === 'done') {
+    if (simDoneFrame < 0) simDoneFrame = frame;
+    else if (frame - simDoneFrame > 60 * 30) { simT = 0; simDoneFrame = -1; d = simData(); }
+  }
+  applyData(d);
+}
+function poll() {
+  var s = document.createElement('script');
+  s.src = 'status.js?t=' + Date.now();
+  s.onload = function () {
+    if (window.hudData) {
+      loadFails = 0;
+      if (source !== 'live') { source = 'live'; gotLive = true; worldSet = false; $('note').textContent = ''; }
+      applyData(window.hudData);
+    }
+    if (s.parentNode) s.parentNode.removeChild(s);
+  };
+  s.onerror = function () { loadFails++; refreshPill(); if (s.parentNode) s.parentNode.removeChild(s); };
+  document.getElementsByTagName('head')[0].appendChild(s);
+}
+
+if (CAN_LIVE) {
+  poll();
+  setInterval(poll, 3000);
+  setTimeout(function () { if (!gotLive && source !== 'live') startDemo(); }, 6000);
+} else startDemo();
+setInterval(demoTick, 500);
+setInterval(refreshPill, 5000);
+
+/* ================= main loop (fixed 60 Hz step) ================= */
+var acc = 0, last = now();
+var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (cb) { return setTimeout(function () { cb(now()); }, 16); };
+function loop(t) {
+  acc += Math.min(0.1, (t - last) / 1000); last = t;
+  var n = 0;
+  while (acc >= 1 / 60 && n < 6) { step(); acc -= 1 / 60; n++; }
+  render();
+  raf(loop);
+}
+raf(loop);
+
+/* test hooks */
+window.__br = { step: step, render: render, stats: stats, hero: hero, applyData: applyData, simData: simData,
+  world: function () { return world; }, data: function () { return data; }, source: function () { return source; },
+  setSimT: function (t) { simT = t; demoTick(); } };
+})();
+</script>
+</body>
+</html>

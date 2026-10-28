@@ -15,4 +15,4 @@ For details on data usage, privacy, and terms of service, please refer to the ce
 *   **Slots**: Classic slot machine simulation.
 *   **Card Games**: Blackjack, War, Euchre (in progress).
 *   **Board Games**: Xiangqi, Connect4, TicTacToe.
-*   **Arcade**: Snake, Pong, Space Invaders.
+*   **Arcade**: Snake, Pong, Space Invaders, Byte Runner, Byte Runner Quest.
