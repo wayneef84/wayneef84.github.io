@@ -4,13 +4,13 @@ Branch: claude/memory-match. Work only in games/memory_match/, plus js/catalog.j
 
 ## Done
 - Step 1: board, flip logic, settings panel, win screen, confetti (index.html, css/style.css, js/app.js), emoji set
+- Step 2: 14 hand-drawn SVG animals (js/cards.js)
+- Step 3: Web Audio blips (js/sound.js), mute button, persistence
 
 ## In progress
-- Step 2: animal SVG set (js/cards.js)
+- Step 4: docs
 
 ## Next
-- Step 3: sound (js/sound.js), mute persistence
-- Step 4: 7 docs + ASSET_LOG.md
 - Step 5: catalog entry + GAME_INVENTORY row (last commit)
 - Tests (Playwright in scratchpad/pw), rebase on origin/dev, final push
 
