@@ -1,5 +1,16 @@
 # Byte Runner Quest: Agent Notes
 
+## Session 2026-10-27 (Claude, branch claude/quest-continue-autorun)
+**Done**
+- v1.2.0: Out of lives choice (Continue level or Restart stage = X-1, 3 s countdown to the saved default, "Always use this choice", setting in the panel) and a quick AUTO ON/OFF button plus R key. Wayne first said "checkpoint"; the final meaning is replay the level or go back to level 1 of the stage, so no checkpoints were added.
+
+**Verified**
+- Emulated phone 390x844, normal and Rotate view, left-handed: overlay with countdown, countdown starts the default, tap picks at once, hint tap stops the countdown, checkbox saves the default and survives reload and shows in settings, Restart stage returns to X-1, first level handled, Endless unchanged, auto toggle runs and stops the hero, agrees with settings, TURN only when on, R key, desktop layout. All 12 goals by the solver. `node scripts/check-site.mjs` 0 errors.
+
+**Not verified**
+- Real phones. The 36 disk searches were not rerun (physics untouched).
+
+
 ## Session 2026-10-27 (Claude, branch claude/quest-mobile)
 **Done**
 - v1.1.0 mobile controls: pointer events, fullscreen with fill-screen fallback, Rotate view, auto-run, left-handed, lives with Out of lives overlay and Continue stage, vibrate on death, settings panel. New file `js/controls.js`.
