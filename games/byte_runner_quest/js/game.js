@@ -335,6 +335,7 @@ var banner = null;
 var menuSel = 0, selRow = 0, selCol = 0;
 var lastLevel = 0, allClearShown = false;
 var autoMode = false;                 /* hero driven by the autopilot (title demo) */
+var curDir = 1;                       /* auto-run direction right now (setting is the default, TURN flips it) */
 
 function resetHero(x, y) {
   hero.x = x; hero.y = y; hero.vx = 0; hero.vy = 0; hero.onGround = false; hero.face = 1; hero.hurt = 0;
@@ -356,7 +357,7 @@ function toSelect() {
   if (selRow < 4 && selRow * 3 + selCol >= save.unlocked) { selRow = Math.floor((save.unlocked - 1) / 3); selCol = (save.unlocked - 1) % 3; }
 }
 function startLevel(i) {
-  L = makeStatic(i); lastLevel = i; autoMode = false;
+  L = makeStatic(i); lastLevel = i; autoMode = false; setRunDir(UI.cfg.autoDir);
   resetHero(L.start.x, L.start.y);
   cp = { x: L.start.x, y: L.start.y };
   run = { frames: 0, chips: 0, deaths: 0, disks: [false, false, false], stomps: 0 };
@@ -367,13 +368,14 @@ function startLevel(i) {
   setBanner(L.id + ' ' + L.name, THEMES[L.theme].name, THEMES[L.theme].edge, 150);
 }
 function startEndless() {
-  L = makeProc(Math.floor(Math.random() * 1e9), true); lastLevel = -1; autoMode = false;
+  L = makeProc(Math.floor(Math.random() * 1e9), true); lastLevel = -1; autoMode = false; setRunDir(UI.cfg.autoDir);
   resetHero(48, 9 * T - 14); cp = null;
   run = { frames: 0, chips: 0, deaths: 0, disks: [false, false, false], stomps: 0, dist: 0 };
   camX = 0; lf = 0; parts = []; floats = []; fwQueue = [];
   state = 'play';
   setBanner('ENDLESS RUN', 'HOW FAR CAN YOU GO?', '#5ef2ff', 150);
 }
+function setRunDir(d) { curDir = d; UI.setDir(d); }
 function openPause() { if (state !== 'play') return; state = 'pause'; menuSel = 0; }
 
 /* ================= effects ================= */
@@ -531,6 +533,10 @@ function stepPlay() {
     if (inp.jump && hero.onGround) { hero.vy = inp.v; hero.onGround = false; }
   } else {
     inp = forcedInput || { left: !!down.L, right: !!down.R, jumpPressed: !!(hit.J || hit.U), jumpHeld: !!(down.J || down.U) };
+    if (!forcedInput && UI.cfg.auto) {                 /* auto-run: always running, arrow keys turn around */
+      if (hit.L) setRunDir(-1); else if (hit.R) setRunDir(1);
+      inp.left = curDir < 0; inp.right = curDir > 0;
+    }
     dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
     ice = L.ice && hero.onGround && hero.surface === '#';
     acc = hero.onGround ? (ice ? 0.05 : 0.3) : 0.18;
@@ -1097,7 +1103,9 @@ if (pauseBtn) pauseBtn.addEventListener('click', function () { if (state === 'pl
 UI.init({
   press: function (k) { audioInit(); keyDown(k); },
   release: function (k) { keyUp(k); },
-  tap: function (p) { audioInit(); taps.push(p); }
+  tap: function (p) { audioInit(); taps.push(p); },
+  turn: function () { audioInit(); setRunDir(-curDir); sfx('move'); },
+  getState: function () { return state; }
 });
 toTitle();
 raf(loop);

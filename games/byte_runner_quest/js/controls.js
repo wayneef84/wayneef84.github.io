@@ -158,7 +158,14 @@ function doAct(name) {
   if (name === 'full') toggleFull();
   else if (name === 'rot') toggleRotate();
 }
+var curDir = 1;
+function setDir(d) {
+  var b = doc.getElementById('turnbtn');
+  curDir = d;
+  if (b) b.innerHTML = 'TURN<small>' + (d > 0 ? '&#9654;' : '&#9664;') + '&#xFE0E;</small>';
+}
 function refresh() {
+  cls(stage, 'auto', cfg.auto); cls(stage, 'lefty', cfg.left);
   var els = doc.querySelectorAll('[data-act]'), i, a, on;
   for (i = 0; i < els.length; i++) {
     a = els[i].getAttribute('data-act');
@@ -178,6 +185,18 @@ function init(hooks) {
     var k = b.getAttribute('data-k');
     if (k) bindHold(b, function () { H.press(k); }, function () { H.release(k); });
   })(btns[i]);
+  var tb = doc.getElementById('turnbtn');
+  if (tb) bindHold(tb, function () { H.turn(); }, null);
+  /* auto-run: a tap anywhere outside the buttons and panels is a jump (held finger = held jump) */
+  var jumpPid = null;
+  bindPointer(stage, function (p, e) {
+    if (!cfg.auto || jumpPid !== null || H.getState() !== 'play' || inside(e.target, 'overlay') || isControl(e.target)) return;
+    jumpPid = p.id; H.press('J');
+  }, null);
+  function jumpUp(p) { if (jumpPid !== null && p.id === jumpPid) { jumpPid = null; H.release('J'); } }
+  if (window.PointerEvent) { doc.addEventListener('pointerup', function (e) { jumpUp(ptr(e)); }); doc.addEventListener('pointercancel', function (e) { jumpUp(ptr(e)); }); }
+  else { doc.addEventListener('touchend', function (e) { jumpUp(ptr(e)); }); doc.addEventListener('touchcancel', function (e) { jumpUp(ptr(e)); }); doc.addEventListener('mouseup', function (e) { jumpUp(ptr(e)); }); }
+  releasers.push(function () { jumpUp({ id: jumpPid }); });
   bindPointer(cv, function (p, e) {
     if (e.preventDefault) e.preventDefault();
     H.tap(canvasPoint(p.x, p.y));
@@ -203,10 +222,14 @@ function init(hooks) {
   layout();
   setTimeout(layout, 300);
 }
+function isControl(el) {
+  while (el && el !== doc) { if (el.tagName === 'BUTTON' || el.tagName === 'A') return true; el = el.parentNode; }
+  return false;
+}
 function inside(el, cn) {
   while (el && el !== doc) { if (el.className && typeof el.className === 'string' && (' ' + el.className + ' ').indexOf(' ' + cn + ' ') >= 0) return true; el = el.parentNode; }
   return false;
 }
 
-return { cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
+return { setDir: setDir, dir: function () { return curDir; }, cfg: cfg, init: init, layout: layout, store: store, canvasPoint: canvasPoint, releaseAll: releaseAll, touch: TOUCH };
 })();

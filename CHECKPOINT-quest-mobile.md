@@ -6,12 +6,12 @@ Branch: claude/quest-mobile. Game: games/byte_runner_quest/. New file js/control
 - (a) Touch response: pointer events, multi-touch, 64px+ buttons, pressed state, no scroll/zoom/select/menu, fixed full-viewport layout on touch devices.
 
 - (b) Fullscreen (API + fill-screen fallback, Esc exits, landscape lock tried) and Rotate view (CSS rotate, touch maths mapped). Header buttons only for now; settings panel comes in (e).
+- (c) Auto-run (cfg.auto and cfg.autoDir, TURN button, tap anywhere jumps, arrow keys turn). No UI toggle until the panel in (e); set it in localStorage key fong.byteRunnerQuest.settings.v1.
 
 ## In progress
-- (c) Auto-run
+- (d) Lives, Out of lives overlay, Continue stage, vibration
 
 ## Next
-- (d) Lives, Out of lives overlay, Continue stage, vibration
 - (e) Settings panel + docs (CHANGELOG v1.1.0, README, INFO, TODO, ARCHITECTURE, CLAUDE, AGENT)
 - (f) Optional: Fullscreen + Rotate on games/byte_runner/index.html (separate last commit)
 
