@@ -43,7 +43,7 @@ Byte Runner Quest is the full game version of Byte Runner. The little courier ro
 | Pause | P or Esc | II button |
 | Settings | gear button | gear button |
 | Turn around (auto-run) | Left or Right arrow | TURN button |
-| Auto-run on or off | R | AUTO button |
+| Auto-run on or off | R | AUTO button in the top bar (rainbow border while on) |
 | Mute | M | Pause menu |
 | Menus | Arrows + Enter, Esc to go back | Tap |
 
