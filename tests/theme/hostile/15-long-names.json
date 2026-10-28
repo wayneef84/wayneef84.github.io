@@ -1,0 +1,31 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+ "labels": {
+  "site-title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+  "games": "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+ },
+ "groups": [
+  {
+   "id": "xxxxxxxxxxxxxxxxxxxxxxxxx",
+   "label": "ok"
+  },
+  {
+   "id": "UPPER",
+   "label": "ok"
+  },
+  {
+   "id": "games",
+   "label": "clash"
+  },
+  {
+   "id": "memory-match",
+   "label": "clash2"
+  },
+  {
+   "id": "hub-arcade",
+   "label": "clash3"
+  }
+ ]
+}

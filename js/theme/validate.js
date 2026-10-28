@@ -76,6 +76,7 @@
         if (typeof s !== 'string') return '';
         var out = '';
         for (var c = 0; c < s.length; c++) { if (!invisible(s.charCodeAt(c))) out += s.charAt(c); }
+        if (out.length !== s.length && notes) notes.push(where + ': removed hidden or control characters');
         if (/[<>]/.test(out)) { out = out.replace(/[<>]/g, ''); if (notes) notes.push(where + ': removed < and > characters'); }
         return out.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
     }
@@ -200,6 +201,7 @@
                     var gid = g.id;
                     if (typeof gid !== 'string' || !ID_RE.test(gid)) { report.dropped.push('groups[' + i + ']: id must be 1 to 24 characters of a-z, 0-9 and "-".'); continue; }
                     if (RESERVED.indexOf(gid) !== -1) { report.dropped.push('groups[' + i + ']: id "' + gid + '" is reserved.'); continue; }
+                    if (ids[gid] === true || gid.indexOf('hub-') === 0) { report.dropped.push('groups[' + i + ']: id "' + gid + '" is already used by an app, pick another.'); continue; }
                     if (groupIds[gid]) { report.dropped.push('groups[' + i + ']: id "' + gid + '" is used twice.'); continue; }
                     var glabel = cleanName(g.label, report.notes, 'groups[' + i + '].label');
                     if (glabel.length > LIMITS.name) { report.dropped.push('groups[' + i + '].label: longer than 40 characters, using the id.'); glabel = ''; }

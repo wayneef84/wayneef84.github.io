@@ -1,0 +1,19 @@
+{
+ "format": "fong-theme",
+ "version": 1,
+ "name": "<script>window.__pwned=1</script>",
+ "labels": {
+  "site-title": "<img src=x onerror=\"window.__pwned=1\">Pwn",
+  "games": "<b>Bold</b> & co",
+  "memory-match": "\"><svg onload=window.__pwned=1>"
+ },
+ "groups": [
+  {
+   "id": "evil",
+   "label": "</section><script>window.__pwned=1</script>",
+   "items": [
+    "memory-match"
+   ]
+  }
+ ]
+}
