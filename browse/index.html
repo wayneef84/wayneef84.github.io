@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="pro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Browse - F.O.N.G. Arcade</title>
+    <link rel="stylesheet" href="../css/components/global.css">
+    <link rel="stylesheet" href="../css/components/card.css">
+</head>
+<body>
+
+    <header class="global-nav">
+        <a href="../index.html" class="nav-brand">F.O.N.G. ARCADE</a>
+        <div class="nav-right">
+            <a href="../index.html" class="theme-toggle-link" id="back-link">&larr; Home</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="hub-page-header">
+            <div class="library-header">
+                <h2 class="library-title" id="browse-title">Browse</h2>
+                <span id="hub-count" class="library-count"></span>
+            </div>
+            <nav class="group-tabs" id="group-tabs" aria-label="Groups"></nav>
+            <input type="search" id="browse-search" class="hub-search" placeholder="Filter this group" aria-label="Filter this group" autocomplete="off">
+        </div>
+
+        <section class="hub-grid-section" id="browse-body" aria-live="polite"></section>
+        <noscript><p class="hub-page-header">JavaScript is needed to list this page. Go back to the <a href="../index.html">homepage</a>.</p></noscript>
+    </main>
+
+    <script src="../js/catalog.js"></script>
+    <script src="../js/hub-nav.js"></script>
+    <script>
+        (function() {
+            'use strict';
+            var NAV = window.FONG_NAV;
+            var params = (window.location.search || '').replace(/^\?/, '').split('&');
+            var qs = {};
+            for (var i = 0; i < params.length; i++) {
+                var kv = params[i].split('=');
+                if (kv[0]) qs[decodeURIComponent(kv[0]).toLowerCase()] = decodeURIComponent((kv[1] || '').replace(/\+/g, ' '));
+            }
+            var MODE = String(qs.mode || '').toLowerCase() === 'fun' ? 'fun' : 'pro';
+            document.documentElement.setAttribute('data-theme', MODE);
+            var modeQ = MODE === 'fun' ? '&mode=fun' : '';
+
+            var group = 'games';
+            for (var g = 0; g < NAV.groups.length; g++) {
+                if (NAV.groups[g].id === (qs.group || '').toLowerCase()) group = NAV.groups[g].id;
+            }
+
+            var back = document.getElementById('back-link');
+            if (back && MODE === 'fun') back.href = '../index.html?mode=fun';
+
+            function groupInfo(id) {
+                for (var k = 0; k < NAV.groups.length; k++) if (NAV.groups[k].id === id) return NAV.groups[k];
+            }
+
+            function renderTabs() {
+                var html = '';
+                for (var k = 0; k < NAV.groups.length; k++) {
+                    var gi = NAV.groups[k];
+                    var cls = 'group-tab' + (gi.id === group ? ' active' : '');
+                    html += '<a class="' + cls + '" href="./index.html?group=' + gi.id + modeQ + '">' +
+                        gi.title + ' <span class="tab-count">' + NAV.itemsIn(gi.id).length + '</span></a>';
+                }
+                document.getElementById('group-tabs').innerHTML = html;
+            }
+
+            function render(query) {
+                var gi = groupInfo(group);
+                document.getElementById('browse-title').textContent = MODE === 'fun' ? gi.funTitle : gi.title;
+                document.title = gi.title + ' - F.O.N.G. Arcade';
+                var items = NAV.itemsIn(group);
+                var subs = [], bySub = {}, shown = 0;
+                for (var k = 0; k < items.length; k++) {
+                    var e = items[k];
+                    if (query && !NAV.matches(e, query)) continue;
+                    var s = NAV.subOf(e);
+                    if (!bySub[s]) { bySub[s] = []; subs.push(s); }
+                    bySub[s].push(e);
+                    shown++;
+                }
+                var html = '';
+                for (var m = 0; m < subs.length; m++) {
+                    html += '<h3 class="sub-title">' + NAV.escapeHtml(subs[m]) +
+                        ' <span class="tab-count">' + bySub[subs[m]].length + '</span></h3>' +
+                        '<div class="game-grid game-grid-flush" role="list">';
+                    for (var n = 0; n < bySub[subs[m]].length; n++) {
+                        html += NAV.cardHtml(bySub[subs[m]][n], MODE, '../');
+                    }
+                    html += '</div>';
+                }
+                if (!shown) html = '<p class="empty-note">Nothing matches.</p>';
+                document.getElementById('browse-body').innerHTML = html;
+                document.getElementById('hub-count').textContent = shown + ' items';
+            }
+
+            renderTabs();
+            render('');
+            document.getElementById('browse-search').addEventListener('input', function() { render(this.value); });
+        })();
+    </script>
+</body>
+</html>
