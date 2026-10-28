@@ -1,6 +1,6 @@
 # Site Navigation Map
 
-Status: milestone (a). Inventory of the site BEFORE the remap. Sections for the new structure are added in later commits.
+Sections 1 is the inventory before the remap. Sections 2 to 4 describe the structure after the remap.
 
 Click depth = pages the visitor must click through starting at `index.html` (the card or link on the homepage is click 1).
 
@@ -64,3 +64,31 @@ Orphan count: 10 (plus archive/index_v1.4.html and archive/test-mobile.html, whi
 | wosky/charms, gear, hero-gear and wosky/calc-v2/charms, gear, hero-gear | Parallel calculator generations. Both stay listed |
 | games/cards poker-hall catalog entry and games/cards hub | Same href. Poker Hall entry opens the whole card hub |
 | js/catalog.js and js/projects.js | Two catalogs. projects.js is unused legacy |
+
+## 2. Structure after the remap
+
+Homepage (`index.html`) shows Featured, a search box, a New strip, then four groups. Each group has a "See all" link to `browse/index.html?group=<id>`, which lists every catalog item in that group by sub-heading with a filter box and tabs to the other groups.
+
+| Group (`group` id) | Homepage cards | Contains | Depth |
+|---|---|---|---|
+| Games (`games`) | Arcade, Card Games, Puzzle, Educational, All games | card, arcade, puzzle, edu entries, plus Name That Tune and C.o.D.E. | sub-hub item 2, browse item 2, poker variants and tracing modes 2 via browse (3 via sub-hubs) |
+| Tools (`tools`) | Projects & Tools, All tools | project entries, Daily Command Center, Test Portal | 2 |
+| Whiteout Survival (`wos`) | WOSKY_3169, All WOS tools | WOSKY hub, 11 tools, 5 calc-v2 pages | 2 (calc v2 pages 3 via WOSKY hub) |
+| More (`more`) | Guides, Labs and Archive, Developer Profile | Profile, About, Survival guides, Archive (J v1, Input A11y v1 and v2) | 2 (Profile 1) |
+
+Deepest catalog item: 2 clicks. Deepest page found by a crawl of all app folders: 3 clicks.
+
+Fun Mode (`?mode=fun`) is carried to the browse pages and sub-hubs. Browse and search list every item in both modes, including entries marked `theme: 'pro'`.
+
+## 3. Adding a new item so it is reachable
+
+1. Add an entry to `js/catalog.js` with the existing fields (id, category, icon, title, funTitle, description, funDescription, version, href, hub, featured, theme).
+2. The group comes from `category` (card, arcade, puzzle, edu to Games, project to Tools, wosky to WOS, anything else to More). Set `group: 'tools'` and so on to override. Optional `sub` sets the heading, `parent` marks a child page, `archive: true` files it under More > Archive.
+3. The entry then appears on its browse page (2 clicks), in search, and in the matching sub-hub if the category has one. No other file needs editing.
+4. Use `./` relative paths. Do not move or rename folders.
+
+## 4. Decisions and leftovers
+
+- `wosky/index.html` links to `./calc-v2/combined.html`, which does not exist. Page not edited.
+- `js/projects.js` is an unused second catalog with a dead path. Left alone.
+- Untouched, intentionally not linked: `archive/*.html`, `games/cards/euchre/` (ruleset only, no page), `games/cards/test*.html`.

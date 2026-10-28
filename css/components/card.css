@@ -555,3 +555,8 @@
 }
 .card-parent { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); }
 .empty-note { color: var(--text-secondary); }
+
+.new-strip { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+.new-label { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; color: var(--accent-secondary); }
+.new-chip { padding: 0.5rem 0.9rem; min-height: 36px; box-sizing: border-box; border: 1px solid var(--card-border); border-radius: 99px; background: var(--bg-surface); color: var(--text-primary); text-decoration: none; font-size: 0.85rem; }
+.new-chip:hover { border-color: var(--accent-primary); }

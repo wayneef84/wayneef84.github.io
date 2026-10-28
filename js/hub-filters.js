@@ -184,6 +184,20 @@
         host.innerHTML = html;
     }
 
+    // ─── NEW STRIP ──────────────────────────────────────────────────────────
+    function renderNewStrip() {
+        var host = document.getElementById('new-strip');
+        if (!host) return;
+        var html = '';
+        for (var i = 0; i < CATALOG.length; i++) {
+            var e = CATALOG[i];
+            if (!e.isNew || e.parent) continue;
+            html += '<a class="new-chip" href="' + NAV.escapeHtml(e.href) + '">' + e.icon + ' ' +
+                NAV.escapeHtml(MODE === 'fun' ? (e.funTitle || e.title) : e.title) + '</a>';
+        }
+        host.innerHTML = html ? '<span class="new-label">New</span>' + html : '';
+    }
+
     // ─── SEARCH ─────────────────────────────────────────────────────────────
     function initSearch() {
         var input = document.getElementById('home-search');
@@ -232,6 +246,7 @@
     function init() {
         renderFeaturedApps();
         renderGroups();
+        renderNewStrip();
         initSearch();
         renderThemeToggle();
     }
