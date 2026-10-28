@@ -1,5 +1,5 @@
 /*
- * Byte Runner Quest v1.1.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
+ * Byte Runner Quest v1.2.0. Strict ES5 (see GROUND_RULES.md, Rule 2).
  * Screens: title (attract demo) > level select > play > pause / clear / run over.
  */
 (function () {

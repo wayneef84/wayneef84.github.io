@@ -17,6 +17,8 @@ Standalone platformer spun off from `games/byte_runner/` (the backup monitor). H
 - **Solver safety:** anything that writes saves or vibrates on death must check `forcedInput` is null, or the solver will pollute saves.
 - **Keyboard feel:** do not change coyote, buffer, gravity or jump values for touch. Touch rides on the same physics.
 - **Save format:** bump `SAVE_KEY` only with a migration; players lose progress otherwise.
+- **Words:** stage = world X, level = X-Y (the HUD label). Use them in UI text, docs and comments.
+- **Out of lives and auto-run:** choices are `level` and `stage` (`cfg.outPick`). Do not add mid-level checkpoint continues. The AUTO button and the settings row share `cfg.auto`; route changes through `doAct('auto')`. R is the auto-run key.
 - **Keep it original.** No characters, sprites, sounds, HUD layouts or names from commercial games.
 
 ## Test hooks
