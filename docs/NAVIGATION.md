@@ -50,6 +50,7 @@ Orphan count: 10 (plus archive/index_v1.4.html and archive/test-mobile.html, whi
 ### Dead links
 
 - js/catalog.js: 0.
+- wosky/index.html links `./calc-v2/combined.html` which does not exist (1 dead link, outside the catalog; page not edited, entry not added to the catalog).
 - js/projects.js (legacy list, not loaded by any page): `games/solitaire/index.html` does not exist (real path is games/cards/solitaire/). Left alone.
 
 ### Duplicates and overlaps
@@ -57,7 +58,7 @@ Orphan count: 10 (plus archive/index_v1.4.html and archive/test-mobile.html, whi
 | Pair | Verdict |
 |---|---|
 | games/j and games/j_v1 | Same title, v1 is legacy. Keep both, v1 goes to Archive |
-| games/input-a11y, _v1, _v2 | Three builds of one tool. Current one is projects/input-a11y. v1 and v2 go to Archive |
+| projects/input-a11y, _v1, _v2 | Three builds of one tool. Current one is projects/input-a11y. v1 and v2 go to Archive |
 | games/sprunki (mixer game) and projects/sprunki-survival (guide) | Different things, same theme. Keep both, cross-listed |
 | games/snake and games/snake/negen_version | Remaster, linked from Snake only. Listed separately |
 | wosky/charms, gear, hero-gear and wosky/calc-v2/charms, gear, hero-gear | Parallel calculator generations. Both stay listed |
