@@ -1250,6 +1250,9 @@
                 // Store and render cards BEFORE they move to war pot
                 var card1 = player1.hand.contents[0];
                 var card2 = player2.hand.contents[0];
+                this.currentPlayer1Card = card1;
+                this.currentPlayer2Card = card2;
+                this.currentRoundWasWar = Boolean(WarRuleset._warMode);
 
                 // Play card flip sound
                 GameSounds.flip();
@@ -1298,7 +1301,7 @@
                             rank: this.currentPlayer2Card.rank
                         },
                         winner: event.winner === 'player1' ? 'you' : 'opponent',
-                        isWar: false
+                        isWar: Boolean(this.currentRoundWasWar)
                     });
                 }
 

@@ -65,43 +65,73 @@ var Big2Evaluator = (function () {
     // Check if 5 cards are a straight (consecutive ranks)
     // Returns the sorted rank values array if straight, else null
     function getStraightValues(cards, ruleset) {
+        ruleset = ruleset || {};
         var vals = cards.map(function (c) { return Big2RankValues[c.rank]; });
         vals.sort(function (a, b) { return a - b; });
+        var n = vals.length;
+        if (n !== 3 && n !== 5) return null;
 
-        // Check normal consecutive
-        var isConsecutive = true;
-        for (var i = 1; i < vals.length; i++) {
-            if (vals[i] !== vals[i - 1] + 1) {
-                isConsecutive = false;
-                break;
+        // Check normal consecutive (3..A only; TWO=13 cannot be part of a non-wrapping straight)
+        var isConsecutive = (vals[n - 1] <= 12);
+        if (isConsecutive) {
+            for (var i = 1; i < n; i++) {
+                if (vals[i] !== vals[i - 1] + 1) {
+                    isConsecutive = false;
+                    break;
+                }
             }
+            if (isConsecutive) return vals;
         }
-        if (isConsecutive) return vals;
 
-        // Check A-2-3-4-5 wrap (ace wraps low: TWO=13, ACE=12, KING=11 → A=12, 2=13)
-        // In Big 2 terms: ranks 3,4,5,6,7 = vals 1,2,3,4,5 up to A=12, 2=13
-        // Wrap low: A-2-3-4-5 → treat as 3,4,5,6,7? No - in Big2 ace-low wrap is:
-        // 3,4,5,6,7...J,Q,K,A are consecutive. A,2 are not normally consecutive.
-        // aceWrapsLow = true means: ...,K,A,2,3 is a valid straight? Unusual.
-        // More common wrap: A,2,3,4,5 treated as high straight (A=high, 2=highest)
-        // Let's implement: A-2-3-4-5 as wrap where A=12, 2=13, 3=1, 4=2, 5=3
-        // That means vals would be [1,2,3,12,13] → check if [1,2,3] + [12,13] consecutive
-        if (ruleset.aceWrapsLow) {
-            // A(12), 2(13), 3(1), 4(2), 5(3) sorted: [1,2,3,12,13]
-            if (vals[0] === 1 && vals[1] === 2 && vals[2] === 3 &&
-                vals[3] === 12 && vals[4] === 13) {
-                return vals; // valid wrap-low straight
+        if (n === 5) {
+            if (ruleset.aceWrapsLow) {
+                // A-2-3-4-5 ([1,2,3,12,13]) or 2-3-4-5-6 ([1,2,3,4,13])
+                if ((vals[0] === 1 && vals[1] === 2 && vals[2] === 3 && vals[3] === 12 && vals[4] === 13) ||
+                    (vals[0] === 1 && vals[1] === 2 && vals[2] === 3 && vals[3] === 4 && vals[4] === 13)) {
+                    return vals;
+                }
             }
-        }
-        if (ruleset.aceWrapsHigh) {
-            // Q(10),K(11),A(12),2(13),3(1) sorted: [1,10,11,12,13]
-            if (vals[0] === 1 && vals[1] === 10 && vals[2] === 11 &&
-                vals[3] === 12 && vals[4] === 13) {
-                return vals;
+            if (ruleset.aceWrapsHigh) {
+                // J-Q-K-A-2 ([9,10,11,12,13]) or Q-K-A-2-3 ([1,10,11,12,13])
+                if ((vals[0] === 9 && vals[1] === 10 && vals[2] === 11 && vals[3] === 12 && vals[4] === 13) ||
+                    (vals[0] === 1 && vals[1] === 10 && vals[2] === 11 && vals[3] === 12 && vals[4] === 13)) {
+                    return vals;
+                }
+            }
+        } else if (n === 3) {
+            if (ruleset.aceWrapsLow) {
+                // A-2-3 ([1,12,13]) or 2-3-4 ([1,2,13])
+                if ((vals[0] === 1 && vals[1] === 12 && vals[2] === 13) ||
+                    (vals[0] === 1 && vals[1] === 2 && vals[2] === 13)) {
+                    return vals;
+                }
+            }
+            if (ruleset.aceWrapsHigh) {
+                // K-A-2 ([11,12,13])
+                if (vals[0] === 11 && vals[1] === 12 && vals[2] === 13) {
+                    return vals;
+                }
             }
         }
 
         return null;
+    }
+
+    function getStraightPrimaryCard(sortedCards, ruleset) {
+        // For wrap-low straights (e.g. A-2-3-4-5, 2-3-4-5-6, A-2-3, 2-3-4),
+        // Ace and 2 act as low cards (1 and 2), so the highest card of the sequence
+        // is the highest card that is NOT a 2 or Ace (e.g. 5 in A-2-3-4-5, 6 in 2-3-4-5-6).
+        var hasThree = false;
+        for (var i = 0; i < sortedCards.length; i++) {
+            if (Big2RankValues[sortedCards[i].rank] === 1) { hasThree = true; break; }
+        }
+        if (hasThree && Big2RankValues[sortedCards[0].rank] === 13) {
+            for (var j = 0; j < sortedCards.length; j++) {
+                var rVal = Big2RankValues[sortedCards[j].rank];
+                if (rVal < 12) return sortedCards[j];
+            }
+        }
+        return sortedCards[0];
     }
 
     /**
@@ -161,12 +191,14 @@ var Big2Evaluator = (function () {
                 };
             }
 
+            var straightPrimary3 = isStraight3 ? getStraightPrimaryCard(sorted, ruleset) : sorted[0];
+
             // Three Straight Flush
             if (isStraight3 && isFlush3) {
                 return {
                     type: Big2HandType.THREE_STRAIGHT_FLUSH,
-                    primaryCard: sorted[0],
-                    score: Big2HandType.THREE_STRAIGHT_FLUSH * 100000 + getCardValue(sorted[0], ruleset),
+                    primaryCard: straightPrimary3,
+                    score: Big2HandType.THREE_STRAIGHT_FLUSH * 100000 + getCardValue(straightPrimary3, ruleset),
                     size: 3
                 };
             }
@@ -185,8 +217,8 @@ var Big2Evaluator = (function () {
             if (isStraight3) {
                 return {
                     type: Big2HandType.THREE_STRAIGHT,
-                    primaryCard: sorted[0],
-                    score: Big2HandType.THREE_STRAIGHT * 100000 + getCardValue(sorted[0], ruleset),
+                    primaryCard: straightPrimary3,
+                    score: Big2HandType.THREE_STRAIGHT * 100000 + getCardValue(straightPrimary3, ruleset),
                     size: 3
                 };
             }
@@ -202,12 +234,14 @@ var Big2Evaluator = (function () {
             var straightVals5 = getStraightValues(cards, ruleset);
             var isStraight5 = (straightVals5 !== null);
 
+            var straightPrimary5 = isStraight5 ? getStraightPrimaryCard(sorted, ruleset) : sorted[0];
+
             // Straight Flush (strongest 5-card)
             if (isStraight5 && isFlush5) {
                 return {
                     type: Big2HandType.STRAIGHT_FLUSH,
-                    primaryCard: sorted[0],
-                    score: Big2HandType.STRAIGHT_FLUSH * 100000 + getCardValue(sorted[0], ruleset),
+                    primaryCard: straightPrimary5,
+                    score: Big2HandType.STRAIGHT_FLUSH * 100000 + getCardValue(straightPrimary5, ruleset),
                     size: 5
                 };
             }
@@ -256,8 +290,8 @@ var Big2Evaluator = (function () {
             if (isStraight5) {
                 return {
                     type: Big2HandType.STRAIGHT,
-                    primaryCard: sorted[0],
-                    score: Big2HandType.STRAIGHT * 100000 + getCardValue(sorted[0], ruleset),
+                    primaryCard: straightPrimary5,
+                    score: Big2HandType.STRAIGHT * 100000 + getCardValue(straightPrimary5, ruleset),
                     size: 5
                 };
             }
@@ -409,6 +443,10 @@ var Big2AI = (function () {
         var defaultSizes;
         if (currentPileHand) {
             defaultSizes = [currentPileHand.cards.length];
+            var minSize = (ruleset.fiveCardBeatsMinSize !== undefined) ? ruleset.fiveCardBeatsMinSize : 1;
+            if (ruleset.fiveCardBeatsLower && currentPileHand.cards.length < 5 && currentPileHand.cards.length >= minSize) {
+                defaultSizes.push(5);
+            }
         } else {
             // When leading (empty pile), try all sizes the ruleset allows
             var allowed = ruleset.allowedHandTypes || [];
@@ -528,6 +566,7 @@ var Big2AI = (function () {
  * @param {Array}  players  - array of { id, name, type: 'human'|'ai'|'remote' }
  */
 function Big2Game(ruleset, players) {
+    players = players || [];
     this.ruleset = ruleset;
     this.players = players; // [{ id, name, type, hand: [] }]
     this.state = 'WAITING'; // WAITING | DEALING | PLAYING | GAME_OVER
@@ -676,6 +715,8 @@ Big2Game.prototype._aiTakeTurn = function () {
  * Returns the card that MUST be included in the first play (e.g., 3♦), or null.
  */
 Big2Game.prototype._getMustIncludeCard = function (player) {
+    player = player || this.currentPlayer();
+    if (!player || !player.hand) return null;
     if (!this.ruleset.firstPlayMustIncludeStartCard) return null;
     if (this.turnHistory.length > 0) return null; // Only on very first play of game
     if (this.ruleset.firstTurnRule !== 'diamond3') return null;
@@ -842,6 +883,10 @@ Big2Game.prototype._handleWin = function (playerId) {
 
     // Calculate penalties
     var rs = this.ruleset;
+    var winningType = (this.pileHand && this.pileHand.evaluated) ? this.pileHand.evaluated.type : null;
+    var isPowerWin = rs.powerWinDoubles &&
+        (winningType === Big2HandType.FOUR_OF_A_KIND || winningType === Big2HandType.STRAIGHT_FLUSH);
+
     for (var pi = 0; pi < this.players.length; pi++) {
         var p = this.players[pi];
         if (p.id === playerId) { this.scores[p.id] = 0; continue; }
@@ -849,6 +894,7 @@ Big2Game.prototype._handleWin = function (playerId) {
         var penalty = cardCount * rs.penaltyPerCard;
         if (rs.tripleIfThirteen && cardCount === 13) penalty *= 3;
         else if (rs.doubleIfTenOrMore && cardCount >= 10) penalty *= 2;
+        if (isPowerWin) penalty *= 2;
         this.scores[p.id] = penalty;
     }
 
@@ -895,6 +941,22 @@ Big2Game.prototype.validatePlay = function (cards) {
     if (!cards || cards.length === 0) return { valid: false, type: Big2HandType.INVALID };
     var evaluated = Big2Evaluator.evaluate(cards, this.ruleset);
     if (evaluated.type === Big2HandType.INVALID) return { valid: false, type: Big2HandType.INVALID };
+    if (this.ruleset.allowedHandTypes && this.ruleset.allowedHandTypes.indexOf(evaluated.type) === -1) {
+        return { valid: false, type: evaluated.type, evaluated: evaluated, reason: 'Hand type not allowed' };
+    }
+    var mustInclude = this._getMustIncludeCard();
+    if (mustInclude) {
+        var hasRequired = false;
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].uuid === mustInclude.uuid || (cards[i].rank === mustInclude.rank && cards[i].suit === mustInclude.suit)) {
+                hasRequired = true;
+                break;
+            }
+        }
+        if (!hasRequired) {
+            return { valid: false, type: evaluated.type, evaluated: evaluated, reason: 'Must include starting card' };
+        }
+    }
     var beats = Big2Evaluator.canBeat(evaluated, this.pileHand ? this.pileHand.evaluated : null, this.ruleset);
     return { valid: beats, type: evaluated.type, evaluated: evaluated };
 };

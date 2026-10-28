@@ -102,6 +102,16 @@ var BlackjackRuleset = {
     // TURN LOGIC (Actor Resolution)
     // ========================================================================
 
+    _findPlayer: function(gameState, actorId) {
+        if (!gameState || !gameState.players) return null;
+        for (var i = 0; i < gameState.players.length; i++) {
+            if (gameState.players[i].id === actorId) {
+                return gameState.players[i];
+            }
+        }
+        return null;
+    },
+
     getAvailableActions: function(gameState, actorId) {
         var actions = [];
         // Basic Blackjack Actions
@@ -109,18 +119,22 @@ var BlackjackRuleset = {
         actions.push('stand');
         
         // Double Down? (Only on 2 cards, sufficient funds)
-        var actor = (actorId === 'dealer') ? gameState.dealer : gameState.players.find(function(p){return p.id === actorId});
+        var actor = (actorId === 'dealer') ? gameState.dealer : this._findPlayer(gameState, actorId);
         
         if (actor && actor.hand.count === 2 && actorId !== 'dealer') {
-             // Check funds logic handled by engine or UI, here we just say rule allows it
-             actions.push('double');
+            var canAffordDouble = typeof actor.canAfford === 'function'
+                ? actor.canAfford(actor.currentBet)
+                : (actor.balance === undefined || actor.balance >= (actor.currentBet || 0));
+            if (canAffordDouble) {
+                actions.push('double');
+            }
         }
         
         return actions;
     },
 
     resolveAction: function(gameState, actorId, action, engine) {
-        var actor = (actorId === 'dealer') ? gameState.dealer : gameState.players.find(function(p){return p.id === actorId});
+        var actor = (actorId === 'dealer') ? gameState.dealer : this._findPlayer(gameState, actorId);
         var result = { actions: [], nextState: null, nextActor: null };
 
         if (action === 'hit') {
@@ -133,11 +147,6 @@ var BlackjackRuleset = {
                 faceUp: true
             });
             
-            // Check bust after deal (must use engine state after update, or predict)
-            // Since we can't see the card yet, we let the Engine apply it.
-            // But we must return control.
-            // In a async/event system, the engine would re-eval. 
-            // Here we assume player keeps turn unless they bust (checked in getNextActor)
             result.nextActor = actorId; 
         } 
         else if (action === 'stand') {
@@ -152,19 +161,23 @@ var BlackjackRuleset = {
             }
         }
         else if (action === 'double') {
-             // Deduct bet (handled by engine usually, or we trigger DEDUCT)
-             // Then Deal 1 card
-             // Then Force Stand
-             var bet = actor.currentBet;
-             result.actions.push({
-                 type: ActionType.DEDUCT,
-                 playerId: actorId,
-                 amount: bet
-             });
-             // We need to update player's bet tracking too, simplified here
-             actor.placeBet(bet); // Add to pot/bet
-             
-             result.actions.push({
+            // Deduct additional bet via engine ActionType.DEDUCT and double actor.currentBet
+            // without calling actor.placeBet(bet) directly (which would double-deduct balance!)
+            var bet = actor.currentBet || 0;
+            var canAffordDouble = typeof actor.canAfford === 'function'
+                ? actor.canAfford(bet)
+                : (actor.balance === undefined || actor.balance >= bet);
+
+            if (canAffordDouble) {
+                result.actions.push({
+                    type: ActionType.DEDUCT,
+                    playerId: actorId,
+                    amount: bet
+                });
+                actor.currentBet = bet * 2;
+            }
+
+            result.actions.push({
                 type: ActionType.DEAL,
                 from: 'shoe',
                 to: actorId,
@@ -176,10 +189,6 @@ var BlackjackRuleset = {
             result.nextActor = this.getNextActor(gameState);
         }
 
-        // Special Check: If the Hit caused a bust, we need to move on.
-        // We can't check 'future' state here easily. 
-        // Logic moved to getNextActor: it checks valid moves.
-        
         return result;
     },
 
@@ -204,7 +213,13 @@ var BlackjackRuleset = {
         }
 
         // 2. Player Turn
-        var playerIndex = activePlayers.findIndex(function(p) { return p.id === current; });
+        var playerIndex = -1;
+        for (var idx = 0; idx < activePlayers.length; idx++) {
+            if (activePlayers[idx].id === current) {
+                playerIndex = idx;
+                break;
+            }
+        }
 
         if (playerIndex !== -1) {
             var player = activePlayers[playerIndex];
@@ -288,7 +303,7 @@ var BlackjackRuleset = {
     
     _getCardValue: function(card) {
         if (card.rank === Rank.ACE) return 11;
-        if ([Rank.JACK, Rank.QUEEN, Rank.KING].includes(card.rank)) return 10;
+        if (card.rank === Rank.JACK || card.rank === Rank.QUEEN || card.rank === Rank.KING) return 10;
         
         var val = 0;
         switch(card.rank) {

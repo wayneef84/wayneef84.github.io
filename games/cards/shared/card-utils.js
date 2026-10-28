@@ -7,12 +7,21 @@
 var CardUtils = (function() {
     'use strict';
 
-    // Rank symbols for display
+    // Rank symbols for display (supports both Rank enum values and numeric strings)
     var rankSymbols = {
         'ACE': 'A',
         'KING': 'K',
         'QUEEN': 'Q',
         'JACK': 'J',
+        'TEN': '10',
+        'NINE': '9',
+        'EIGHT': '8',
+        'SEVEN': '7',
+        'SIX': '6',
+        'FIVE': '5',
+        'FOUR': '4',
+        'THREE': '3',
+        'TWO': '2',
         '10': '10',
         '9': '9',
         '8': '8',

@@ -1758,8 +1758,8 @@
                             this.el.btnDouble.disabled = true;
                         }
 
-                        // FIX: Double Down only available on first move (2 cards)
-                        if (player.hand.count > 2) {
+                        // FIX: Double Down only available on first move (2 cards) and when player can afford it
+                        if (player.hand.count > 2 || player.balance < (player.currentBet || this.wager)) {
                             this.el.btnDouble.disabled = true;
                         }
                         this.el.playerValue.className = cls;
@@ -1841,6 +1841,7 @@
 
                 // Deduct second bet
                 player.balance -= this.wager;
+                this.hand0Bet = this.wager;
                 this.splitBet = this.wager;
                 this._updateBalance();
 
@@ -1905,6 +1906,7 @@
                         if (hand0Val.best >= BlackjackRuleset.targetScore) {
                             self.el.btnHit.disabled = true;
                         }
+                        self.el.btnDouble.disabled = (player.hand.count !== 2 || player.balance < self.wager);
                     }, 600);
                 }, 400);
             }
@@ -1939,6 +1941,7 @@
                     } else if (action === 'double') {
                         if (player.balance >= this.wager) {
                             player.balance -= this.wager;
+                            this.hand0Bet = (this.hand0Bet || this.wager) + this.wager;
                             this._updateBalance();
                         }
                         var shoe = this.engine.piles.shoe;
@@ -1975,6 +1978,7 @@
                     } else if (action === 'double') {
                         if (player.balance >= this.wager) {
                             player.balance -= this.wager;
+                            this.splitBet = (this.splitBet || this.wager) + this.wager;
                             this._updateBalance();
                         }
                         var shoe = this.engine.piles.shoe;
@@ -2005,7 +2009,8 @@
                 if (hv.best >= target) {
                     this.el.btnHit.disabled = true;
                 }
-                this.el.btnDouble.disabled = this.splitCards.length !== 2;
+                var player = this.engine.players[0];
+                this.el.btnDouble.disabled = (this.splitCards.length !== 2 || !player || player.balance < this.wager);
                 this._updateValues();
             }
 
@@ -2063,14 +2068,14 @@
                 var dv = BlackjackRuleset.evaluateHand(dealerCards);
                 var dealerBust = dv.best > target;
 
-                // Evaluate hand 0
+                // Evaluate hand 0 (using hand0Bet in case Hand 1 was doubled)
                 var h0cards = player.hand.contents;
                 var h0v = BlackjackRuleset.evaluateHand(h0cards);
-                var r0 = this._evaluateSplitOutcome(h0v, dv, this.wager);
+                var r0 = this._evaluateSplitOutcome(h0v, dv, this.hand0Bet || this.wager);
 
-                // Evaluate hand 1
+                // Evaluate hand 1 (using splitBet in case Hand 2 was doubled)
                 var h1v = BlackjackRuleset.evaluateHand(this.splitCards);
-                var r1 = this._evaluateSplitOutcome(h1v, dv, this.splitBet);
+                var r1 = this._evaluateSplitOutcome(h1v, dv, this.splitBet || this.wager);
 
                 // Apply payouts
                 player.balance += r0.payout;
@@ -2495,19 +2500,19 @@
 
             _resetDeck() {
                 if (confirm('Reset Deck? This will create a new deck and reset card count history.')) {
-                    // Reset the shoe (creates new deck from template)
-                    this.engine.shoe.reset();
-                    this.engine.shoe.shuffle();
+                    const shoe = (this.engine.piles && this.engine.piles.shoe) || this.engine.shoe;
+                    if (shoe) {
+                        shoe.reset();
+                        shoe.shuffle();
+                    }
 
-                    // Reset card count history only (not hand history)
-                    this.cardCounts = {
-                        [Rank.ACE]: 0, [Rank.TWO]: 0, [Rank.THREE]: 0, [Rank.FOUR]: 0,
-                        [Rank.FIVE]: 0, [Rank.SIX]: 0, [Rank.SEVEN]: 0, [Rank.EIGHT]: 0,
-                        [Rank.NINE]: 0, [Rank.TEN]: 0, [Rank.JACK]: 0, [Rank.QUEEN]: 0, [Rank.KING]: 0
-                    };
+                    // Reset card count history using RankToAsset keys ('A', '2', ..., 'K')
+                    this.cardCounts = this._initCardCounts();
 
                     // Update the display
-                    this._updateCardCountDisplay();
+                    if (typeof this._updateProbabilityDisplay === 'function') {
+                        this._updateProbabilityDisplay();
+                    }
                     this._showMessage('🔄 Deck reset!', 'push');
                     console.log('[SETTINGS] Deck reset - new deck created and card count cleared');
                 }
@@ -2515,8 +2520,10 @@
 
             _reshuffle() {
                 if (confirm('Re-shuffle current cards? This will shuffle the remaining cards in the shoe without resetting card counts.')) {
-                    // Shuffle current cards without resetting
-                    this.engine.shoe.shuffle();
+                    const shoe = (this.engine.piles && this.engine.piles.shoe) || this.engine.shoe;
+                    if (shoe) {
+                        shoe.shuffle();
+                    }
                     this._showMessage('🔀 Shoe re-shuffled!', 'push');
                     console.log('[SETTINGS] Re-shuffle - current shoe shuffled without reset');
                 }

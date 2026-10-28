@@ -1369,7 +1369,8 @@ var UI = (function () {
         var rows = [
             ['First Turn', rs.firstTurnRule === 'diamond3' ? 'Player with 3♦' : 'Lowest card'],
             ['Must play start card', rs.firstPlayMustIncludeStartCard ? 'Yes' : 'No'],
-            ['Valid plays', '3-card or 5-card hands'],
+            ['Valid plays', rs.id === 'pokerhands' ? '5-card hands only' : '1, 2, 3, or 5-card hands'],
+            ['Power win doubles', rs.powerWinDoubles ? 'Yes (Quads / Str. Flush)' : 'No'],
             ['3-card hands', 'Straight, Flush, Str. Flush, Triple'],
             ['5-card hands', 'Straight, Flush, Full House, Quads, Str. Flush'],
             ['5-card beats 3-card', rs.fiveCardBeatsLower ? 'Yes' : 'No'],

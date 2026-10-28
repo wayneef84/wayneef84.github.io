@@ -2,29 +2,193 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>13 Card Poker - Coming Soon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>13 Card Poker (Pusoy) - F.O.N.G. Card Engine</title>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: system-ui, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            background: radial-gradient(circle at center, #3b0764 0%, #0f172a 100%);
+            color: #f8fafc; font-family: system-ui, sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column;
         }
-        h1 { color: #ffd700; margin-bottom: 20px; }
-        p { color: #94a3b8; max-width: 400px; line-height: 1.6; }
-        a { color: #38bdf8; margin-top: 30px; text-decoration: none; }
+        header {
+            height: 50px; background: rgba(0,0,0,0.45);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header-title { font-weight: 800; color: #ffd700; }
+        main {
+            flex: 1; max-width: 900px; width: 100%; margin: 0 auto;
+            padding: 12px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .status-banner {
+            text-align: center; padding: 8px 14px; background: rgba(0,0,0,0.4);
+            border-radius: 8px; color: #fef08a; font-weight: 700; font-size: 0.9rem;
+        }
+        .rows-grid {
+            display: grid; grid-template-columns: 1fr; gap: 8px;
+        }
+        .row-box {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; padding: 8px 12px; display: flex; align-items: center;
+            justify-content: space-between; gap: 10px; flex-wrap: wrap;
+        }
+        .row-label { font-weight: 700; font-size: 0.85rem; min-width: 120px; color: #cbd5e1; }
+        .row-cards { display: flex; gap: 6px; min-height: 76px; align-items: center; flex-wrap: wrap; }
+        .row-cards canvas, .pool-cards canvas {
+            width: 52px; height: 73px; border-radius: 5px; cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+        }
+        footer {
+            background: rgba(0,0,0,0.55); padding: 10px;
+            display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+        }
+        .btn {
+            padding: 9px 16px; border-radius: 8px; border: none;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer;
+        }
+        .btn-primary { background: #ffd700; color: #0f172a; }
+        .btn-secondary { background: #334155; color: #fff; }
     </style>
 </head>
 <body>
-    <h1>13 Card Poker</h1>
-    <p>This game (also known as Chinese Poker or Pusoy) is currently under construction. Please check back in the March 2026 update.</p>
-    <a href="../index.html">← Back to Poker Hall</a>
+    <header>
+        <button class="btn btn-secondary" onclick="window.location.href='../index.html'">⬅ Back</button>
+        <div class="header-title">13 CARD POKER (PUSOY)</div>
+        <div>Bank: $<span id="balance">1000</span></div>
+    </header>
+    <main>
+        <div class="status-banner" id="statusBanner">Click "Ante $10 & Deal" to receive 13 cards</div>
+        <div class="rows-grid">
+            <div class="row-box">
+                <div class="row-label">Front (3 Cards)<br><small id="topEval">-</small></div>
+                <div class="row-cards" id="topRow"></div>
+            </div>
+            <div class="row-box">
+                <div class="row-label">Middle (5 Cards)<br><small id="midEval">-</small></div>
+                <div class="row-cards" id="midRow"></div>
+            </div>
+            <div class="row-box">
+                <div class="row-label">Back (5 Cards)<br><small id="botEval">-</small></div>
+                <div class="row-cards" id="botRow"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <button class="btn btn-primary" id="btnDeal">Ante $10 & Deal</button>
+        <button class="btn btn-secondary" id="btnAuto" style="display:none;">✨ Auto-Arrange</button>
+        <button class="btn btn-primary" id="btnSubmit" style="display:none;">Submit Hand</button>
+    </footer>
+
+    <script src="../../shared/card-assets.js"></script>
+    <script type="module">
+        import Engine from '../../../../negen/core/Engine.js';
+        import ThirteenCard from './ThirteenCard.js';
+
+        CardAssets.init();
+        const engine = new Engine({});
+        const game = new ThirteenCard(engine);
+        game.init();
+
+        let arrangement = { topIndices: [], middleIndices: [], bottomIndices: [] };
+        let selectedRow = null;
+        let selectedPos = null;
+
+        const suitMap = { hearts: 'H', diamonds: 'D', clubs: 'C', spades: 'S' };
+
+        function makeCanvas(card) {
+            const src = CardAssets.getAsset(card.rank, suitMap[card.suit] || card.suit);
+            const c = document.createElement('canvas');
+            c.width = src.width; c.height = src.height;
+            c.getContext('2d').drawImage(src, 0, 0);
+            return c;
+        }
+
+        function renderArrangement() {
+            const p1 = game.players[0];
+            document.getElementById('balance').textContent = p1.balance;
+            const cards = p1.hand.contents;
+            if (cards.length !== 13) return;
+
+            const rows = [
+                { key: 'topIndices', el: document.getElementById('topRow'), evalEl: document.getElementById('topEval') },
+                { key: 'middleIndices', el: document.getElementById('midRow'), evalEl: document.getElementById('midEval') },
+                { key: 'bottomIndices', el: document.getElementById('botRow'), evalEl: document.getElementById('botEval') }
+            ];
+
+            rows.forEach(r => {
+                r.el.innerHTML = '';
+                const rowCards = arrangement[r.key].map(i => cards[i]);
+                rowCards.forEach((card, pos) => {
+                    const c = makeCanvas(card);
+                    if (selectedRow === r.key && selectedPos === pos) {
+                        c.style.outline = '3px solid #ffd700';
+                    }
+                    c.onclick = () => {
+                        if (!selectedRow) {
+                            selectedRow = r.key;
+                            selectedPos = pos;
+                        } else {
+                            const temp = arrangement[selectedRow][selectedPos];
+                            arrangement[selectedRow][selectedPos] = arrangement[r.key][pos];
+                            arrangement[r.key][pos] = temp;
+                            selectedRow = null;
+                            selectedPos = null;
+                        }
+                        renderArrangement();
+                    };
+                    r.el.appendChild(c);
+                });
+                const ev = game.Evaluator.evaluate(rowCards);
+                r.evalEl.textContent = ev.name;
+            });
+
+            const valid = game.validateRowStrength(
+                arrangement.topIndices.map(i => cards[i]),
+                arrangement.middleIndices.map(i => cards[i]),
+                arrangement.bottomIndices.map(i => cards[i])
+            );
+            document.getElementById('statusBanner').textContent = valid
+                ? 'Tap any two cards to swap between rows, or click Submit Hand!'
+                : '⚠️ Foul Warning: Back (5) must be stronger than Middle (5), and Middle >= Front (3)';
+        }
+
+        document.getElementById('btnDeal').onclick = () => {
+            if (game.startRound()) {
+                arrangement = game.autoArrangeIndices(game.players[0].hand.contents);
+                document.getElementById('btnDeal').style.display = 'none';
+                document.getElementById('btnAuto').style.display = 'inline-block';
+                document.getElementById('btnSubmit').style.display = 'inline-block';
+                renderArrangement();
+            }
+        };
+
+        document.getElementById('btnAuto').onclick = () => {
+            arrangement = game.autoArrangeIndices(game.players[0].hand.contents);
+            renderArrangement();
+        };
+
+        document.getElementById('btnSubmit').onclick = () => {
+            game.submitArrangement(arrangement.topIndices, arrangement.middleIndices, arrangement.bottomIndices);
+        };
+
+        window.addEventListener('negen-card-event', e => {
+            const data = e.detail;
+            if (data.type === 'SHOWDOWN') {
+                document.getElementById('balance').textContent = game.players[0].balance;
+                document.getElementById('btnDeal').textContent = 'Play Next Hand ($10)';
+                document.getElementById('btnDeal').style.display = 'inline-block';
+                document.getElementById('btnAuto').style.display = 'none';
+                document.getElementById('btnSubmit').style.display = 'none';
+
+                const rr = data.rowResults;
+                const fmt = v => (v > 0 ? 'WIN' : (v < 0 ? 'LOSE' : 'TIE'));
+                const title = data.winner === 'player1' ? '🎉 YOU WIN $' + data.pot + '!' :
+                              (data.winner === 'push' ? 'PUSH!' : 'Opponent Wins!');
+                document.getElementById('statusBanner').textContent =
+                    title + ' [Front: ' + fmt(rr.top) + ' | Mid: ' + fmt(rr.middle) + ' | Back: ' + fmt(rr.bottom) + ']';
+            }
+        });
+    </script>
 </body>
 </html>

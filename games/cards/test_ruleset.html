@@ -384,16 +384,17 @@
                                 },
                                 expect: (engine) => {
                                     const gameState = engine.getGameState();
-                                    const winCondition = engine.ruleset.checkWinCondition(gameState);
-
-                                    const isImmediate = winCondition && winCondition.immediate === true;
-                                    const skipPlayers = winCondition && winCondition.skipPlayerTurns === true;
+                                    // Per v1.0.5-C, checkWinCondition defers Dealer BJ so Insurance can be offered,
+                                    // and resolveRound detects dealerBlackjack: true and resolves player 20 as lose.
+                                    const resolution = engine.ruleset.resolveRound(gameState);
+                                    const isDealerBJ = resolution && resolution.dealerBlackjack === true;
+                                    const playerLost = resolution && resolution.playerResults[0] && resolution.playerResults[0].outcome === 'lose';
 
                                     return {
-                                        pass: isImmediate && skipPlayers,
-                                        expected: '{immediate: true, skipPlayerTurns: true}',
-                                        actual: JSON.stringify(winCondition),
-                                        reason: 'Dealer blackjack should end round immediately'
+                                        pass: isDealerBJ && playerLost,
+                                        expected: '{dealerBlackjack: true, outcome: "lose"}',
+                                        actual: JSON.stringify(resolution),
+                                        reason: 'Dealer blackjack resolves as dealerBlackjack with player loss'
                                     };
                                 }
                             }
