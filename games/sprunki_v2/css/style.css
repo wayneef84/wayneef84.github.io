@@ -41,6 +41,9 @@ button, a.btn, input { font-family: inherit; }
 .seasons { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .season { flex: 1 0 auto; flex-direction: column; gap: 0; min-height: 62px; padding: 4px 12px; font-size: 0.85rem; }
 .season .ico { font-size: 1.6rem; }
+.season { position: relative; border-color: var(--pk, var(--accent)); }
+.season .kbd { display: none; position: absolute; top: 2px; right: 4px; font-size: 0.62rem; font-weight: 800; opacity: 0.7; }
+@media (hover: hover) and (pointer: fine) { .season .kbd { display: block; } }
 
 .exit-horror {
     position: sticky; top: 8px; z-index: 20; align-self: center; margin-top: 10px;
@@ -106,6 +109,11 @@ button, a.btn, input { font-family: inherit; }
 }
 .tile img { width: 100%; height: 62px; object-fit: contain; pointer-events: none; }
 .tile .nm { font-size: 0.8rem; font-weight: 800; }
+/* All tab: two rows, each friend in a box labelled and edged in its pack color */
+.tiles.allmode { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); grid-auto-columns: 92px; }
+.tiles.allmode .tile { flex: none; min-height: 124px; border: 3px solid var(--pk); border-bottom-width: 6px; justify-content: space-between; padding-top: 3px; }
+.tile .pk { align-self: stretch; background: var(--pk); color: var(--pkt); border-radius: 8px; font-size: 0.66rem; font-weight: 800; line-height: 1.5; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
+.tiles.allmode .tile .key { top: 26px; }
 .tile.used { opacity: 0.45; border-bottom-style: dotted; }
 .tile .key { display: none; position: absolute; top: 4px; left: 6px; font-size: 0.7rem; opacity: 0.6; }
 @media (hover: hover) and (pointer: fine) { .tile .key { display: block; } }

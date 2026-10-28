@@ -3,7 +3,7 @@
     var N = null;
     w.SprunkiV2Packs = w.SprunkiV2Packs || [];
     w.SprunkiV2Packs.push({
-        id: 'halloween', order: 5, label: 'Halloween', icon: '🎃',
+        id: 'halloween', order: 5, label: 'Halloween', icon: '🎃', color: '#8a4bd6',
         theme: { bg1: '#4b2a7a', bg2: '#1a0f2e', panel: '#2d1a4d', text: '#fff3e0', accent: '#ff9a1f', slot: '#3b2563' },
         fx: { emoji: '🦇', count: 8, dir: 'drift' },
         bpm: 100,

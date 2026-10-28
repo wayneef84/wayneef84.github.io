@@ -3,7 +3,7 @@
     var N = null;
     w.SprunkiV2Packs = w.SprunkiV2Packs || [];
     w.SprunkiV2Packs.push({
-        id: 'summer', order: 2, label: 'Summer', icon: '☀️',
+        id: 'summer', order: 2, label: 'Summer', icon: '☀️', color: '#ff8c1a',
         theme: { bg1: '#7fdcff', bg2: '#ffe9a0', panel: '#fffbe8', text: '#0f3b5a', accent: '#ff7a1a', slot: '#ffffff' },
         fx: { emoji: '✨', count: 12, dir: 'drift' },
         bpm: 100,

@@ -3,7 +3,7 @@
     var N = null;
     w.SprunkiV2Packs = w.SprunkiV2Packs || [];
     w.SprunkiV2Packs.push({
-        id: 'spring', order: 1, label: 'Spring', icon: '🌸',
+        id: 'spring', order: 1, label: 'Spring', icon: '🌸', color: '#ec5fa6',
         theme: { bg1: '#ffd6e8', bg2: '#bff0d0', panel: '#fff4f9', text: '#3a2a3f', accent: '#e0559a', slot: '#ffffff' },
         fx: { emoji: '🌸', count: 14, dir: 'fall' },
         bpm: 100,
