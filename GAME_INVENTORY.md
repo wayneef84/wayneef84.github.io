@@ -281,7 +281,7 @@ Experimental:   <50% complete (stubs or legacy variants)
 ## APPENDIX: File Reference
 
 ### Related Documentation
-- **Master Strategy:** `/REVAMP_MASTER_STRATEGY.md` (high-level roadmap)
+- **Master Strategy:** `docs/archive/plans/REVAMP_MASTER_STRATEGY.md` (high-level roadmap)
 - **Quality Standards (In Progress):** `/admin/QUALITY_STANDARDS.md` (Phase 1b)
 - **Game-Specific Metadata:** Each game's `/INFO.md` file
 - **Root Registry:** `/INFO.md` (dependency versions)

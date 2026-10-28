@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Stale (Feb 2026). Current work is tracked in PRs and `js/catalog.js`. Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # F.O.N.G. - Roadmap
 
 **Last Updated:** 2026-02-05 by Claude (C)

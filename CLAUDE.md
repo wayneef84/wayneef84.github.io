@@ -1,74 +1,105 @@
-# F.O.N.G. Root Hub - Developer Notes
+# CLAUDE.md - Start here (all LLMs)
 
-## Purpose & Philosophy
-The root hub is the front door. It must load instantly and never break. Therefore, we rely on minimal CSS and strictly native HTML to route users to the complex applications inside the `/games/` folder.
+Single entry point for Claude (browser and CLI), Gemini, Jules, Codex and any other LLM. `AGENTS.md`, `AGENT.md`, `GEMINI.md`, `JULES.md` and `ONBOARDING.md` point here. Index of every doc: [docs/INDEX.md](docs/INDEX.md).
 
-## Architecture Summary
-It's a static HTML shell styled by CSS variables. See `ARCHITECTURE.md` for the folder structure.
+## What this site is
 
-## Critical Fixes / Gotchas
-- ⚠️ **Relative Paths:** Do not use `/games/...`. You must use `./games/...` or navigation will break when deployed to GitHub Pages `develop` branch (`/beta` folder).
-- ⚠️ **ES5 JS:** When we add the `hub-data.js` script to handle the play counter, it must be strict ES5. Do not use `fetch()`, `const`, or arrow functions here.
+F.O.N.G. Arcade, Wayne Fong's public site at https://wayneef84.github.io. Static HTML/CSS/JS on GitHub Pages, served from the **`dev`** branch. It is not only games. It holds:
+- Games (cards, arcade, puzzle, educational) in `games/`
+- Tools and utilities in `projects/` (markdown reader, shipment tracker, regex builder, dev utils, encyclopedia, and more)
+- Whiteout Survival (WOS) calculators and planners in `wosky/`
+- Hub, profile, admin and about pages
 
-## Last Session Notes
-**Session 2026-02-28 (Claude)**
-- Committed Big 2 game (`games/cards/big2/`) + hub wiring — was sitting uncommitted.
-- Homepage polish pass: featured hero two-column on desktop (glowing visual panel), filter counts on pills, `minmax(200px)` grid (3–5 cols), NEW badges on Big 2 + Space Invaders, "26 games" count in library header.
-- Added Quick Play horizontal scroll carousel between hero and library (all 26 games, arrow buttons).
-- Mobile filter: replaced scrolling pills with a single "All (26) ▼" button that opens a bottom-sheet popup.
-- Commits: `7a3cab7` (polish), `ddf2a5b` (carousel + popup).
+No build step. Open `index.html` or run any static server (`python3 -m http.server`).
 
-**Known minor bug:** `.filter-popup-overlay.open .filter-mobile-arrow` selector doesn't rotate the arrow — the arrow element is inside `.filter-mobile-btn`, not inside the overlay. Fix: move the arrow rotation selector or toggle a class on the button directly.
+## Repo map
 
-**Next up:** TBD — user moving to another project.
+| Path | Purpose |
+|---|---|
+| `index.html`, `arcade/`, `puzzle/`, `games/cards/index.html`, `projects/index.html` | Hub pages |
+| `js/catalog.js` | `FONG_CATALOG`: single source of truth for every game and tool entry. Hubs read it |
+| `games/<name>/` | One folder per game |
+| `projects/<name>/` | One folder per tool or utility |
+| `wosky/` | WOS calculators. Read `wosky/TOOLKIT.md` before adding a tool |
+| `negen/`, `shared/`, `storage/` | Homegrown engine, shared JS, persistence drivers |
+| `css/`, `assets/` | Shared styles, local fonts and images |
+| `profile/`, `daily/`, `about.html` | Profile, daily feed, about |
+| `admin/` | Checklists, policies, doc templates |
+| `docs/` | All other docs. See `docs/INDEX.md`. Old material in `docs/archive/` |
+| `tests/` | Playwright smoke test |
+| `LL/` | Lessons learned by topic (card engine, ES5/Safari, collaboration) |
 
----
+## Branch and PR workflow
 
-## Lessons Learned — For All LLMs Reading This
+1. Branch from `dev`: `claude/<topic>` (Claude), `feat/...` or `fix/...` (others). Jules or Gemini working from a GitHub comment: use the branch they open.
+2. Commit small. Messages: `feat:`, `fix:`, `docs:`, `refactor:`, `license:`.
+3. Push the branch. Open a PR into `dev`. Never push or force-push to `dev` or `main`.
+4. Wayne reviews and merges. Only Wayne merges `dev` to `main`.
+5. Delete the branch after merge.
 
-### Incident 2026-03-22a: Agent Resource Waste (see `INCIDENT-2026-03-22.md`)
+## Add a game or tool
 
-**Model:** Claude Sonnet 4.6 via Claude Code
-**Cost:** ~80% of weekly API budget. Zero deliverables.
+1. Create `games/<slug>/` (or `projects/<slug>/`, or `wosky/<slug>/` for WOS tools). Lowercase, underscores or hyphens like its neighbors.
+2. Add `index.html`. Relative paths only, mobile-first, title uses "F.O.N.G.", link back to the hub.
+3. Put code in the folder (`js/`, `css/`). ES5, no CDNs. Reuse `negen/` or `shared/js/` when it fits.
+4. Register it in `js/catalog.js` (fields documented at the top of that file). Wrong or missing entries mean the hub will not show it.
+5. Add a row to `GAME_INVENTORY.md` (games) and a line to `CHANGELOG.md` if it is a release.
+6. Add a short `README.md` in the folder. See `admin/DOC_TEMPLATES/` for the full set.
+7. Test: load the page, play it on a narrow viewport, check the console for errors. Run `tests/verification.spec.js` with Playwright if you touched the hub.
+8. If you add a third-party asset, log it in `LICENSE_AUDIT.md`.
 
-**What happened:** A request to write one HTML file. A background agent ran for 60 minutes reading files, then timed out.
+## Coding conventions
 
----
+- ES5 only: `var`, `function`, IIFEs or prototypes. No `const`, `let`, arrows, template literals, `class`, `async/await`.
+- No CDNs. No build tools. Relative paths only.
+- Mobile-first CSS. 44px touch targets. `env(safe-area-inset-bottom)`.
+- Save state with `localStorage` or the `storage/` drivers.
+- Match the surrounding style. Keep files small. Prefer inline SVG over image files.
+- WOS tools: all character bonuses are additive.
+- Do not edit another game's files to fix your own.
 
-### Incident 2026-03-22b: Announcement Loop Without Delivery
+## Hard rules (short form of [GROUND_RULES.md](GROUND_RULES.md))
 
-**Model:** Claude Sonnet 4.6 via Claude Code
-**Cost:** ~30% of weekly API budget. Zero deliverables.
+1. Local-only assets, no CDNs.
+2. Strict ES5 for new and touched code.
+3. Zero build tools.
+4. Relative paths only (never `/css/...`).
+5. Never push to `main` or `dev`. PR into `dev`.
+6. Do not upgrade shared library versions without asking.
+7. Every game or tool needs all 7 docs in its folder (README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT; templates in `admin/DOC_TEMPLATES/`). Update them in the same commit as the code. If you touch a game that lacks some, add them.
+8. Log third-party code in `LICENSE_AUDIT.md`.
+9. Name is "F.O.N.G.". Mobile-first.
+10. Wayne owns `GROUND_RULES.md`. Do not edit it.
 
-**What happened:** User asked for `all.html` (combined single-page calculator). Claude read all necessary files, had a complete plan, then spent the budget repeatedly saying "writing now" and "here it goes" without ever calling the Write tool. User had to forcibly stop the session multiple times.
+## Tooling
 
----
+In the repo (merged from `chore/tooling`):
+- `games-site` agent (`.claude/agents/games-site.md`): adding or changing games and tools.
+- `game-tester` agent (`.claude/agents/game-tester.md`): play-tests pages through the Playwright MCP (`.mcp.json`).
+- PR check Action (`.github/workflows/check.yml`, `scripts/check-site.mjs`): validates the catalog and links on every PR.
 
-### Combined Rules from Both Incidents — For ALL LLMs (Claude, GPT, Gemini, etc.)
+## Tool-specific notes
 
-These failures were caused by **Claude Sonnet 4.6** in **Claude Code** (Anthropic CLI). Any model can fall into the same traps. Follow these rules without exception:
+| Tool | Note |
+|---|---|
+| Claude (browser or CLI) | Reads this file. Subagents only for broad research, never to write one file |
+| Gemini | Visual design, CSS, flavor text, SVG assets. See `GEMINI.md` |
+| Jules | Runs from GitHub comments. Git ops, refactors, structure. See `AGENTS.md` |
+| Codex and others | Follow this file. Same rules |
 
-1. **Write first, read never (unless truly necessary).** If the task prompt contains API signatures, defaults, and structure — that is enough. Do NOT read source files "just to be safe."
-2. **Never launch an agent to write a single file.** Use the `Write` tool directly.
-3. **Act on "stop" immediately.** When the user says "stop", "pause", or any variant — drop everything, make zero tool calls, and say only one short sentence confirming you've stopped. Do not narrate. Do not explain. Do not promise future actions. Just stop.
-4. **No agents for write tasks.** Agents are for exploration and research across many unknown files — not for code generation tasks with a clear spec.
-5. **If you catch yourself about to read a file before writing — stop. Ask: does the output depend on something in that file that isn't already in the prompt? If no, skip the read.**
-6. **Saying "writing now" is not writing.** The only valid action is calling the Write tool. Any text output that is not a tool call is wasted budget.
-7. **If you have the context, write immediately.** Do not re-read files. Do not announce. Do not plan in text. Call Write.
-8. **"Writing now" + no Write tool call = the same failure as the agent loop.** Both waste budget and produce nothing.
-9. **When the user says stop and you have uncommitted work — commit it first, then stop.** Leaving work uncommitted compounds the loss.
+## Lessons for future LLMs
 
-**Root cause:** LLMs default to a "research first" pattern and an "announce before acting" pattern. Both are wasteful when the task is already fully specified. Treat a detailed task prompt as sufficient context and act immediately.
+From the 2026-03-22 incidents (details in [docs/archive/incidents/](docs/archive/incidents)). Three sessions produced zero code and used most of a weekly budget.
 
----
+- If the prompt already has the spec, write the file now. Do not read source "to be safe".
+- Never start an agent to write one file. Agents are for searching many unknown files.
+- "Writing now" is not writing. Make the Write call.
+- Hit a blocker? Ask one sentence immediately. Do not plan silently for an hour.
+- When Wayne says "stop", stop. No tool calls, one short sentence. Commit uncommitted work first.
+- Pick one of two reasonable approaches in 30 seconds and say which.
+- Push work in small checkpoints so a usage limit does not lose it.
+- Do not read ceremony docs (acknowledgments, feedback logs). They are retired.
 
-### Incident 2026-03-22c: Silent Planning Loop (Opus)
+## More docs
 
-**Model:** Claude Opus 4.6 via Claude Code
-**Cost:** ~1 full 4-hour session window. Zero deliverables.
-
-**What happened:** User asked for `all.html`. Opus read all source files correctly, identified a real technical blocker (ID conflicts across combined calculator sections), but silently planned the solution internally for the entire session instead of asking one clarifying question or just writing the file. The solution (prefix IDs per section, scope querySelectorAll to container) was trivial. Zero code was written.
-
-**Rule added:**
-
-10. **If you hit a blocker, ask immediately — one sentence.** Do not silently plan through it. A 5-second question saves a 4-hour session. "I see an ID conflict — should I prefix IDs per section?" is always better than an hour of internal deliberation.
+[docs/INDEX.md](docs/INDEX.md) | [GROUND_RULES.md](GROUND_RULES.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [GAME_INVENTORY.md](GAME_INVENTORY.md) | [CHANGELOG.md](CHANGELOG.md) | [LL/README.md](LL/README.md) | [wosky/TOOLKIT.md](wosky/TOOLKIT.md) | [admin/GROUND_RULES_CHECKLIST.md](admin/GROUND_RULES_CHECKLIST.md)

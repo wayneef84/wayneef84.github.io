@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Frozen log. No longer required each session. Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # AI Feedback & Journey Log
 
 **Preface for AI Agents:**

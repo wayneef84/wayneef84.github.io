@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Historical (Jan 2026). Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # Claude's Assessment of Wayne
 
 **Date:** January 14, 2026

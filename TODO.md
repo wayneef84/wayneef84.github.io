@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Stale (Feb 2026). Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # F.O.N.G. Root Hub - Roadmap & Issues
 
 ## Roadmap (Prioritized)
