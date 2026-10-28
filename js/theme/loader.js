@@ -12,7 +12,7 @@
 
     var KEY = 'fong_theme_v1';
     var MAX_BYTES = 65536;
-    var SKINS = ['classic', 'print-shop'];
+    var SKINS = ['classic', 'print-shop', 'cabinet', 'control-panel', 'metro-map', 'handheld', 'scrapbook'];
     var TOKENS = ['bg', 'surface', 'text', 'dim', 'accent', 'accent2', 'border', 'games', 'tools', 'wos', 'more'];
     var GROUP_TOKENS = ['games', 'tools', 'wos', 'more'];
     var HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -21,7 +21,14 @@
         inter: "'Inter', sans-serif",
         grotesk: "'Space Grotesk', 'Helvetica Neue', Arial, sans-serif",
         mono: "'Space Mono', ui-monospace, Menlo, monospace",
-        serif: "Georgia, 'Times New Roman', serif"
+        serif: "Georgia, 'Times New Roman', serif",
+        fraunces: "'Fraunces', Georgia, 'Times New Roman', serif",
+        'courier-prime': "'Courier Prime', 'Courier New', ui-monospace, monospace",
+        'barlow-condensed': "'Barlow Condensed', 'Arial Narrow', Arial, sans-serif",
+        'plex-mono': "'IBM Plex Mono', ui-monospace, Menlo, monospace",
+        nunito: "'Nunito', 'Trebuchet MS', Arial, sans-serif",
+        silkscreen: "'Silkscreen', 'Courier New', ui-monospace, monospace",
+        caveat: "'Caveat', 'Comic Sans MS', cursive"
     };
     var SHADOWS = ['none', 'soft', 'hard'];
     var DENSITIES = { compact: 0.78, cozy: 1, roomy: 1.3 };
