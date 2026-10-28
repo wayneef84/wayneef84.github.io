@@ -252,6 +252,21 @@ var FONG_CATALOG = [
         theme: 'both'
     },
     {
+        id: 'sprunki-v2',
+        category: 'arcade',
+        icon: '🎶',
+        title: 'Sprunki v2',
+        funTitle: 'SPRUNKI v2 🎶',
+        description: 'Standalone music mixer rebuild. Classic plus Spring, Summer, Autumn, Winter and Halloween packs, spooky mode, touch UI, undo, save/load.',
+        funDescription: 'Mix music with the Sprunkis in every season! Tap, drop and groove!',
+        version: 'v2.0.0',
+        href: './games/sprunki_v2/index.html',
+        hub: 'arcade',
+        featured: false,
+        isNew: true,
+        theme: 'both'
+    },
+    {
         id: 'j-quiz',
         category: 'arcade',
         icon: '⚡',
