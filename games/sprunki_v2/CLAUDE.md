@@ -1,0 +1,2 @@
+# S4K Mixer v2: notes for Claude
+Read `INFO.md` first (data format, tempo rule, shortcuts, spooky mode rules). Strict ES5, no libraries, must work from file://. Keep internal names (`SprunkiV2*`, `sprunkiV2.*` keys). Do not edit `games/sprunki` (the original). Do not use Chisgule as a source. Spooky mode rules (Black refused until all spots full, yes/no check, big exit button, no red or gore) must stay. New pack: one file in `js/packs/` plus one script tag, ids unique across packs. Test with a static server and Playwright, 375px wide too.

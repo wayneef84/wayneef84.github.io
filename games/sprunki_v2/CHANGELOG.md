@@ -1,5 +1,17 @@
 # S4K Mixer v2: Changelog
 
+## v2.1.0 (2026-10-27)
+### Added
+- All tab (first tab): every friend from every pack in the tray, each in a box labelled with its pack name and edged in the pack color. Neutral look. Tap, drag, undo, save and load work as elsewhere, and Mr. Black still works from it.
+- Mixed stages: the stage tempo comes from the first friend placed, synthesized friends re-render at that tempo, fixed Classic loops are stretched by a few percent to stay in time (rule in INFO.md).
+- Shortcuts: Shift+1 to 9 and Shift+0 (also numpad) jump to pack tab 1 to 10, Shift+Left and Shift+Right step through tabs and wrap. Badges on the tabs (mouse devices) and help dialog rows.
+- Four new packs of 8 original friends each: Aqua (ocean), Toxic (silly slime), Robo (friendly robots), Candy (sweets). Pack research is in INFO.md.
+- Docs: ARCHITECTURE, TODO (including a "singing monster game" idea), CLAUDE, AGENT.
+
+### Changed
+- Pack tabs scroll sideways when they do not fit. The list tabs under the stage do too.
+- Packs carry a `color` field (tab edge and All tab label).
+
 ## v2.0.0 (2026-10-27)
 First release. A standalone rebuild of Sprunki Mixer (`games/sprunki`, unchanged).
 
