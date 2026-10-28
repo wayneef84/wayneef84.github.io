@@ -1,6 +1,6 @@
 # Homepage theming: spec (draft for Wayne's approval)
 
-Status: design only, no code. Written 2026-10-28. Scope: the HOMEPAGE (`index.html`) only. Games keep their own looks. Hubs (browse, arcade, puzzle, projects) come later.
+Status: approved. Phase 1 built (see section 10). Phases 2 and 3 not started. Written 2026-10-28. Scope: the HOMEPAGE (`index.html`) only. Games keep their own looks. Hubs (browse, arcade, puzzle, projects) come later.
 
 ## 1. Goal
 The same homepage content can look completely different. Visitors switch skins and palettes, and can build their own theme, rename boxes, make their own groups by game id, and export or import it all as a JSON file. Power users may add custom CSS and, as an opt-in, custom JavaScript, without putting the site or a child's saved data at risk.
@@ -97,7 +97,7 @@ A "Customize" button in the header opens a full-screen sheet with tabs: Look, Co
 ## 10. Build plan
 | Phase | What | Agents |
 |---|---|---|
-| 1 | Engine (loader, validator, tokens, palettes), panel, JSON export and import, ID reference and docs, Classic and Print Shop skins | 1 |
+| 1 | Engine (loader, validator, tokens, palettes), panel, JSON export and import, ID reference and docs, Classic and Print Shop skins | 1 (DONE, PR open, waiting for Wayne's review) |
 | 2 | Cabinet of Drawers, Control Panel, Metro Map, Handheld, Scrapbook | up to 3 in parallel, after Phase 1 merges |
 | 3 | Safe CSS ingester and the script sandbox, then an independent security review | 1 builder, 1 reviewer |
 Each phase is its own PRs, checked by Playwright (phone and desktop screenshots, no console errors) and the PR check. Nothing merges without Wayne's OK. Every new folder keeps its 7 docs.
