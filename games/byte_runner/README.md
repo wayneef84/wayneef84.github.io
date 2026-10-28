@@ -26,6 +26,7 @@ Byte Runner is a small pixel platformer that plays itself, and it doubles as a p
 ## Features
 - **Self playing:** a look ahead autopilot handles gaps, walls, steps and bugs (60,000 frame soak test: zero falls, zero hits).
 - **Take over any time:** arrows or A/D to move, Space, Up, W or Z to jump. On touch screens, big on screen buttons.
+- **Phone stuck in portrait:** FULL (fullscreen, or fill screen on iPhone) and ROTATE (turns the view sideways) buttons in the header.
 - **Any number of stages:** one world per stage (Dusk, Glacier, Ember, Jade, then repeat), plus a victory world.
 - **Real numbers:** GB copied, percent, MB/s measured over the last 5 minutes, ETA per stage, total time left and finish time.
 - **robocopy aware:** with a log per stage it shows the file being copied, knows exactly when a stage ends and reports the FAILED count.
