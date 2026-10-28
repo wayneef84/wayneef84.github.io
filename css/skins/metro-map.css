@@ -1,1 +1,471 @@
-/* Metro Map skin (Phase 2 placeholder). Scope every rule to html[data-skin="metro-map"]. */
+/* Metro Map skin: a transit map. Every group is a thick rounded LINE in its group
+   color, every card is a STATION with a round stop marker on that line, and the
+   group heading is a line badge. Flat signage, generic shapes only. Phones read
+   top to bottom (vertical lines), wide screens run the lines left to right.
+   Every rule is scoped to html[data-skin="metro-map"], which out-ranks
+   [data-theme="fun"], so ?mode=fun only changes wording. Colors default to the
+   Laundromat palette and follow any palette or per-color change through the CSS
+   variables the engine sets inline. Nunito is bundled (OFL, see docs/skins/metro-map.md). */
+
+@font-face { font-family: 'Nunito'; src: url('../../assets/fonts/Nunito-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Nunito'; src: url('../../assets/fonts/Nunito-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+html[data-skin="metro-map"] {
+  --bg-base: #eaf3f5;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #ffffff;
+  --text-primary: #12303a;
+  --text-secondary: #4f6b75;
+  --text-muted: #4f6b75;
+  --accent-primary: #1b7f9e;
+  --accent-secondary: #c23b73;
+  --accent-glow: rgba(27, 127, 158, 0.15);
+  --card-border: #c4d6db;
+  --card-border-hover: var(--text-primary);
+  --ink: #12303a;
+  --line: #c4d6db;
+  --on-accent: #ffffff;
+  --on-accent2: #ffffff;
+  --btn-bg: var(--accent-primary);
+  --btn-color: var(--on-accent);
+  --filter-active-color: var(--on-accent);
+  --grp-games: #1b7f9e;
+  --grp-tools: #c23b73;
+  --grp-wos: #7a6a87;
+  --grp-more: #4f6b75;
+  --font-ui: 'Nunito', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Nunito', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Nunito', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 999px;
+  --nav-border: 0;
+  --card-shadow-hover: none;
+  --mm-d: var(--t-density, 1);
+  --mm-bw: var(--t-bw, 3px);
+  --mm-sh: none;
+  --mm-lc: var(--accent-primary);
+  --mm-lx: 25px;   /* line center, measured from the left edge of the group */
+  --mm-my: 1.7rem; /* marker center, measured from the top of a station */
+}
+html[data-skin="metro-map"][data-shadow="soft"] { --mm-sh: 0 4px 14px rgba(0, 0, 0, 0.18); }
+html[data-skin="metro-map"][data-shadow="hard"] { --mm-sh: 4px 4px 0 var(--text-primary); }
+
+/* Each group is a line with its own color */
+html[data-skin="metro-map"] .nav-section-games { --mm-lc: var(--grp-games); }
+html[data-skin="metro-map"] .nav-section-tools { --mm-lc: var(--grp-tools); }
+html[data-skin="metro-map"] .nav-section-wos { --mm-lc: var(--grp-wos); }
+html[data-skin="metro-map"] .nav-section-more { --mm-lc: var(--grp-more); }
+html[data-skin="metro-map"] .nav-section-custom { --mm-lc: var(--accent-secondary); }
+html[data-skin="metro-map"] .featured-card-games { --mm-lc: var(--grp-games); }
+html[data-skin="metro-map"] .featured-md-reader { --mm-lc: var(--grp-tools); }
+html[data-skin="metro-map"] .just-added-card { --mm-lc: var(--grp-wos); }
+html[data-skin="metro-map"] .search-results { --mm-lc: var(--accent-secondary); }
+
+html[data-skin="metro-map"] body {
+  background-color: var(--bg-base);
+  background-image: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+
+/* ── Header: a signage bar with the four lines running under it ───────────── */
+html[data-skin="metro-map"] .global-nav {
+  background: var(--bg-surface);
+  border-bottom: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: sticky;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding-bottom: 14px;
+}
+html[data-skin="metro-map"] .global-nav::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 8px;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    var(--grp-games) 0, var(--grp-games) 25%,
+    var(--grp-tools) 25%, var(--grp-tools) 50%,
+    var(--grp-wos) 50%, var(--grp-wos) 75%,
+    var(--grp-more) 75%, var(--grp-more) 100%);
+}
+/* Station name plate */
+html[data-skin="metro-map"] .nav-brand {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--bg-surface);
+  background: var(--text-primary);
+  padding: 0.2rem 1rem;
+  border-radius: min(var(--radius-lg), 999px);
+  text-shadow: none;
+  animation: none;
+}
+html[data-skin="metro-map"] .nav-right { flex-wrap: wrap; gap: 0.4rem 0.75rem; }
+html[data-skin="metro-map"] .stats-container {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  opacity: 1;
+}
+html[data-skin="metro-map"] .theme-toggle-link {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: var(--mm-bw) solid var(--text-primary);
+  border-radius: min(var(--radius-lg), 999px);
+}
+html[data-skin="metro-map"] .theme-toggle-link:hover { color: var(--bg-surface); background: var(--text-primary); border-color: var(--text-primary); }
+html[data-skin="metro-map"] .theme-open {
+  font-family: var(--font-ui);
+  color: var(--btn-color);
+  background: var(--btn-bg);
+  border: var(--mm-bw) solid var(--text-primary);
+  border-radius: min(var(--radius-lg), 999px);
+  box-shadow: none;
+  filter: none;
+}
+html[data-skin="metro-map"] .theme-open:hover { filter: none; background: var(--accent-hover, var(--btn-bg)); }
+html[data-skin="metro-map"] a:focus-visible,
+html[data-skin="metro-map"] button:focus-visible,
+html[data-skin="metro-map"] .hub-search:focus-visible { outline: 3px solid var(--text-primary); outline-offset: 3px; }
+
+/* ── Group heading: the line badge, a pill with a terminus disc ───────────── */
+html[data-skin="metro-map"] #home-groups .nav-section,
+html[data-skin="metro-map"] .nav-section { padding: calc(1.5rem * var(--mm-d)) 5% calc(1rem * var(--mm-d)); }
+html[data-skin="metro-map"] .section-head { align-items: center; margin: 0 0 1rem; }
+html[data-skin="metro-map"] .nav-section-title,
+html[data-skin="metro-map"] [data-theme="fun"] .nav-section-title {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 4px 18px 4px 4px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  line-height: 1.2;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 5px solid var(--mm-lc);
+  border-radius: min(var(--radius-lg), 999px);
+  box-shadow: var(--mm-sh);
+}
+html[data-skin="metro-map"] .nav-section-title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--bg-surface) 0, var(--bg-surface) 6px, transparent 7px), var(--mm-lc);
+}
+html[data-skin="metro-map"] .section-all {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 2px solid var(--text-primary);
+  border-radius: min(var(--radius-lg), 999px);
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+html[data-skin="metro-map"] .section-all:hover { text-decoration: none; color: var(--bg-surface); background: var(--text-primary); }
+
+/* ── Stations: vertical layout (phones and tablets) ──────────────────────── */
+html[data-skin="metro-map"] .nav-grid,
+html[data-skin="metro-map"] .game-grid {
+  display: block;
+  position: relative;
+  padding: 0;
+  gap: 0;
+}
+html[data-skin="metro-map"] .game-grid { max-width: 720px; }
+html[data-skin="metro-map"] .nav-card,
+html[data-skin="metro-map"] .game-card {
+  position: relative;
+  display: block;
+  min-height: 64px;
+  margin: 0;
+  padding: calc(1rem * var(--mm-d)) 0.75rem calc(1.15rem * var(--mm-d)) 3.5rem;
+  background: transparent;
+  background-image: none;
+  color: var(--text-primary);
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  transform: none;
+  transition: background-color 0.15s ease-out;
+}
+html[data-skin="metro-map"] .nav-card:hover,
+html[data-skin="metro-map"] .nav-card:focus-visible,
+html[data-skin="metro-map"] .game-card:hover,
+html[data-skin="metro-map"] .game-card:focus-visible {
+  background: var(--bg-surface);
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+/* The line segment behind the station */
+html[data-skin="metro-map"] .nav-card::before,
+html[data-skin="metro-map"] .game-card::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--mm-lx) - 6px);
+  width: 12px;
+  top: 0; bottom: 0;
+  background: var(--mm-lc);
+  pointer-events: none;
+}
+html[data-skin="metro-map"] .nav-card:first-child::before,
+html[data-skin="metro-map"] .game-card:first-child::before { top: -1.2rem; border-radius: 6px 6px 0 0; }
+html[data-skin="metro-map"] .nav-card:last-child::before,
+html[data-skin="metro-map"] .game-card:last-child::before { bottom: calc(100% - var(--mm-my)); border-radius: 0 0 6px 6px; }
+html[data-skin="metro-map"] .nav-card:only-child::before,
+html[data-skin="metro-map"] .game-card:only-child::before { border-radius: 6px; }
+/* The stop marker */
+html[data-skin="metro-map"] .nav-card::after,
+html[data-skin="metro-map"] .game-card::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--mm-lx) - 14px);
+  top: calc(var(--mm-my) - 14px);
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border: 5px solid var(--text-primary);
+  border-radius: 50%;
+  background: var(--bg-surface);
+  pointer-events: none;
+}
+/* "All ..." cards are the end of the line: a square terminus marker */
+html[data-skin="metro-map"] .nav-card-all::after { border-radius: 8px; }
+/* One pulse when you hover or focus a station */
+@keyframes mm-pulse {
+  0% { box-shadow: 0 0 0 0 var(--mm-lc); }
+  100% { box-shadow: 0 0 0 16px transparent; }
+}
+html[data-skin="metro-map"] .nav-card:hover::after,
+html[data-skin="metro-map"] .nav-card:focus-visible::after,
+html[data-skin="metro-map"] .game-card:hover::after,
+html[data-skin="metro-map"] .game-card:focus-visible::after {
+  background: var(--mm-lc);
+  animation: mm-pulse 0.7s ease-out 1;
+}
+/* Per-card accent stripes from Classic do not belong on a map */
+html[data-skin="metro-map"] .nav-card[class*="nav-card-"] { border: 0; }
+
+html[data-skin="metro-map"] .nav-card-icon,
+html[data-skin="metro-map"] .game-card .card-icon { display: none; }
+html[data-skin="metro-map"] .nav-card-title,
+html[data-skin="metro-map"] .game-title,
+html[data-skin="metro-map"] [data-theme="fun"] .nav-card-title,
+html[data-skin="metro-map"] [data-theme="fun"] .game-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+html[data-skin="metro-map"] .nav-card-count {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0 0.6rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border: 2px solid var(--mm-lc);
+  border-radius: min(var(--radius-lg), 999px);
+}
+html[data-skin="metro-map"] .nav-card-desc,
+html[data-skin="metro-map"] .game-desc,
+html[data-skin="metro-map"] [data-theme="fun"] .game-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 0.4rem;
+}
+html[data-skin="metro-map"] .game-card .card-top { justify-content: flex-start; margin-bottom: 0.2rem; }
+html[data-skin="metro-map"] .category-tag,
+html[data-skin="metro-map"] [data-theme="fun"] .category-tag {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  background: transparent;
+  border: 2px solid var(--mm-lc);
+  border-radius: min(var(--radius-lg), 999px);
+  padding: 0 0.6rem;
+}
+html[data-skin="metro-map"] .badge-new,
+html[data-skin="metro-map"] [data-theme="fun"] .badge-new {
+  background: var(--accent-secondary);
+  color: var(--on-accent2);
+  border: 0;
+  border-radius: min(var(--radius-lg), 999px);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  padding: 1px 8px;
+}
+html[data-skin="metro-map"] .game-plays { font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+html[data-skin="metro-map"] .game-meta,
+html[data-skin="metro-map"] [data-theme="fun"] .game-meta { border-top: 0; padding-top: 0.2rem; font-family: var(--font-ui); color: var(--text-secondary); }
+html[data-skin="metro-map"] .card-parent { font-family: var(--font-ui); color: var(--text-secondary); }
+
+/* ── Featured and Just added: interchange boards ─────────────────────────── */
+html[data-skin="metro-map"] .featured-apps,
+html[data-skin="metro-map"] .just-added-grid { gap: calc(1.25rem * var(--mm-d)); }
+html[data-skin="metro-map"] .featured-app-card,
+html[data-skin="metro-map"] [data-theme="fun"] .featured-app-card {
+  background: var(--bg-surface);
+  background-image: none;
+  color: var(--text-primary);
+  border: var(--mm-bw) solid var(--text-primary);
+  border-left: var(--mm-bw) solid var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: calc(1.25rem * var(--mm-d)) calc(1.25rem * var(--mm-d)) calc(1.25rem * var(--mm-d) + 12px);
+  box-shadow: inset 0 -12px 0 var(--mm-lc), var(--mm-sh);
+  transform: none;
+  transition: background-color 0.15s ease-out;
+}
+html[data-skin="metro-map"] .featured-app-card:hover,
+html[data-skin="metro-map"] .featured-app-card:focus-visible { transform: none; background: var(--bg-base); box-shadow: inset 0 -12px 0 var(--mm-lc), var(--mm-sh); border-color: var(--text-primary); }
+html[data-skin="metro-map"] .featured-app-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 3.4rem; height: 3.4rem; flex: 0 0 auto;
+  font-size: 1.7rem;
+  border: 5px solid var(--text-primary);
+  border-radius: 50%;
+  background: var(--bg-base);
+}
+html[data-skin="metro-map"] .featured-app-card:hover .featured-app-icon,
+html[data-skin="metro-map"] .featured-app-card:focus-visible .featured-app-icon { animation: mm-pulse 0.7s ease-out 1; }
+html[data-skin="metro-map"] .featured-app-title,
+html[data-skin="metro-map"] [data-theme="fun"] .featured-app-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+html[data-skin="metro-map"] .featured-app-label {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  border: 2px solid var(--mm-lc);
+  border-radius: min(var(--radius-lg), 999px);
+  padding: 0 0.6rem;
+}
+html[data-skin="metro-map"] .featured-app-desc { font-size: 0.85rem; color: var(--text-secondary); }
+html[data-skin="metro-map"] .featured-app-btn,
+html[data-skin="metro-map"] [data-theme="fun"] .featured-app-btn {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--mm-lc);
+  text-underline-offset: 4px;
+}
+html[data-skin="metro-map"] .just-added .section-head { margin-bottom: 1rem; }
+
+/* ── Search ───────────────────────────────────────────────────────────────── */
+html[data-skin="metro-map"] .hub-search {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: var(--mm-bw) solid var(--text-primary);
+  border-radius: min(var(--radius-lg), 999px);
+  padding: 0.7rem 1.2rem;
+  min-height: 48px;
+  box-shadow: var(--mm-sh);
+}
+html[data-skin="metro-map"] .hub-search::placeholder { color: var(--text-secondary); opacity: 1; }
+html[data-skin="metro-map"] .hub-search:focus { outline: 3px solid var(--accent-primary); outline-offset: 3px; border-color: var(--text-primary); }
+html[data-skin="metro-map"] .new-label { font-family: var(--font-ui); font-weight: 700; color: var(--text-primary); }
+html[data-skin="metro-map"] .new-chip {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 2px solid var(--text-primary);
+  border-radius: min(var(--radius-lg), 999px);
+}
+html[data-skin="metro-map"] .new-chip:hover { border-color: var(--text-primary); color: var(--bg-surface); background: var(--text-primary); }
+html[data-skin="metro-map"] .empty-note { color: var(--text-secondary); }
+html[data-skin="metro-map"] .search-results .section-head { margin-top: 0.5rem; }
+
+/* ── Footer: end of the line ─────────────────────────────────────────────── */
+html[data-skin="metro-map"] .landing-footer {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  border-top: 0;
+  position: relative;
+  color: var(--text-secondary);
+  padding-top: 2.25rem;
+}
+html[data-skin="metro-map"] .landing-footer::before {
+  content: "";
+  position: absolute; top: 0.9rem; left: 5%; right: 5%;
+  height: 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, var(--text-secondary) 0, var(--text-secondary) 18px, transparent 18px, transparent 30px);
+  opacity: 0.45;
+}
+html[data-skin="metro-map"] .footer-link { color: var(--text-primary); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 0.3rem; }
+html[data-skin="metro-map"] .footer-link:hover { color: var(--accent-primary); }
+html[data-skin="metro-map"] .footer-sep { opacity: 1; }
+
+/* ── Wide screens: lines run left to right with stations hanging below ───── */
+@media (min-width: 1000px) {
+  html[data-skin="metro-map"] .nav-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: minmax(0, 250px);
+    justify-content: start;
+    --mm-hx: 20px; /* marker center from the left of a station */
+    --mm-hy: 1.2rem;
+  }
+  html[data-skin="metro-map"] .nav-card { padding: calc(3.1rem * var(--mm-d)) 1rem calc(1.2rem * var(--mm-d)) 0.4rem; border-radius: var(--radius-md); }
+  html[data-skin="metro-map"] .nav-card::before,
+  html[data-skin="metro-map"] .nav-card:first-child::before,
+  html[data-skin="metro-map"] .nav-card:last-child::before,
+  html[data-skin="metro-map"] .nav-card:only-child::before {
+    top: calc(var(--mm-hy) - 6px);
+    bottom: auto;
+    width: auto;
+    height: 12px;
+    left: 0; right: 0;
+    border-radius: 0;
+  }
+  html[data-skin="metro-map"] .nav-card:first-child::before { left: var(--mm-hx); border-radius: 6px 0 0 6px; }
+  html[data-skin="metro-map"] .nav-card:last-child::before { right: calc(100% - var(--mm-hx)); border-radius: 0 6px 6px 0; }
+  html[data-skin="metro-map"] .nav-card:only-child::before { left: var(--mm-hx); right: calc(100% - var(--mm-hx)); border-radius: 6px; }
+  html[data-skin="metro-map"] .nav-card::after { left: calc(var(--mm-hx) - 14px); top: calc(var(--mm-hy) - 14px); }
+  html[data-skin="metro-map"] .game-grid { margin-left: 0; }
+}
