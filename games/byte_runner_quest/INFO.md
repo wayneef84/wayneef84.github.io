@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Version | v1.1.0 |
+| Version | v1.2.0 |
 | Status | Production |
 | Category | Arcade |
 | Created | 2026-10-25 |

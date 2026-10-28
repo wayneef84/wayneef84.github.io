@@ -43,6 +43,7 @@ Byte Runner Quest is the full game version of Byte Runner. The little courier ro
 | Pause | P or Esc | II button |
 | Settings | gear button | gear button |
 | Turn around (auto-run) | Left or Right arrow | TURN button |
+| Auto-run on or off | R | AUTO button in the top bar (rainbow border while on) |
 | Mute | M | Pause menu |
 | Menus | Arrows + Enter, Esc to go back | Tap |
 
@@ -60,10 +61,11 @@ Tap the gear for one settings panel:
 - **Auto-run** with a direction: the hero runs by itself. Tap anywhere or press JUMP. TURN flips direction.
 - **Left-handed** swaps the buttons.
 - **Vibrate on death** (off by default, only where the phone supports it).
-- **Max lives**: 1, 3, 5 or Unlimited (practice). Out of lives shows Continue stage (same stage, lives refilled, earlier progress kept) or Level select. Endless Run stays one life.
+- **Max lives**: 1, 3, 5 or Unlimited (practice). Out of lives offers **Continue level** (replay this level X-Y from its start) or **Restart stage** (back to level X-1 of this stage), plus Level select. Lives refill and earlier progress is kept. The saved default is highlighted and starts after a 3, 2, 1 countdown. Tap the hint to wait, tap a choice to start now, tick "Always use this choice" to save it. Change it later under "When out of lives". Endless Run stays one life.
+- **AUTO ON / OFF button** on the play screen switches auto-run at any time without pausing.
 
 ## URL parameters
 - `?unlock` opens every level (handy for testing or showing off).
 
 ## Status
-v1.1.0, production. See `TODO.md` for ideas.
+v1.2.0, production. See `TODO.md` for ideas.
