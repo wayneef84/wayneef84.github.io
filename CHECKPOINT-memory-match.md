@@ -1,18 +1,17 @@
 # CHECKPOINT: memory-match (delete before merge)
 
-Branch: claude/memory-match. Work only in games/memory_match/, plus js/catalog.js (one entry, last commit) and GAME_INVENTORY.md (one row).
+Branch: claude/memory-match. PR #280 (draft).
 
 ## Done
-- Step 1: board, flip logic, settings panel, win screen, confetti (index.html, css/style.css, js/app.js), emoji set
-- Step 2: 14 hand-drawn SVG animals (js/cards.js)
-- Step 3: Web Audio blips (js/sound.js), mute button, persistence
-
-## In progress
-- Step 4: docs (written this commit)
+- Board, flip logic, settings, win screen, confetti
+- Card sets: Emoji (21) and 14 hand-drawn SVG animals
+- Web Audio sound, mute persistence
+- 7 docs plus ASSET_LOG.md
+- Catalog entry and GAME_INVENTORY row (last commit)
+- Playwright tests (210 checks pass), check-site 0 errors, rebased on origin/dev
 
 ## Next
-- Step 5: catalog entry + GAME_INVENTORY row (last commit)
-- Tests already run in scratchpad/pw (mm_test.js, 210 checks pass), rebase on origin/dev, final push
+- Wayne reviews. Delete this file before merge.
 
 ## Resume
-cd the clone, `git checkout claude/memory-match`, serve with python3 -m http.server <port>, open games/memory_match/index.html.
+git checkout claude/memory-match, serve with python3 -m http.server <port>, open games/memory_match/index.html.
