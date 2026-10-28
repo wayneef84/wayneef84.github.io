@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byte Runner Quest | F.O.N.G. Arcade</title>
+<style>
+@font-face { font-family: 'Space Mono'; src: url('../../assets/fonts/SpaceMono-Regular.woff2') format('woff2'); font-display: swap; }
+:root { --bg: #0d0b1a; --panel: #16132b; --line: #3b3566; --text: #ece9ff; --dim: #a29dc9; --gold: #ffd447; --mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body { font-family: var(--mono); padding: 12px 16px 20px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+.wrap { max-width: 1000px; margin: 0 auto; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.exit, .pause { color: var(--dim); text-decoration: none; font: 12px var(--mono); border: 2px solid var(--line); padding: 6px 10px; background: transparent; cursor: pointer; }
+.exit:hover, .exit:focus, .pause:hover, .pause:focus { color: var(--text); border-color: var(--dim); }
+.title { font-size: 13px; letter-spacing: 3px; color: var(--gold); font-weight: 700; }
+.screen { border: 4px solid #000; outline: 4px solid var(--line); background: #000; line-height: 0; margin: 4px; }
+canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; image-rendering: crisp-edges; touch-action: none; cursor: pointer; }
+.touch { display: none; gap: 10px; margin: 16px 4px 0; }
+.touch.on { display: flex; }
+.touch button { flex: 1; min-height: 60px; font: 700 18px var(--mono); color: var(--text); background: var(--panel); border: 3px solid var(--line); border-radius: 0; -webkit-user-select: none; user-select: none; touch-action: none; }
+.touch .gap { flex: 0.4; visibility: hidden; }
+.touch button.jump { flex: 1.6; color: var(--gold); }
+.help { font-size: 12px; color: var(--dim); text-align: center; line-height: 1.8; margin: 14px 0 0; letter-spacing: 1px; }
+.touch.on ~ .help { display: none; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a href="../../index.html" class="exit">&larr; EXIT</a>
+    <span class="title">BYTE RUNNER QUEST</span>
+    <button type="button" class="pause" id="pausebtn" aria-label="Pause">II</button>
+  </header>
+
+  <div class="screen"><canvas id="game" width="320" height="176" aria-label="Byte Runner Quest game screen"></canvas></div>
+
+  <div class="touch" id="touch">
+    <button type="button" data-k="L" aria-label="Move left">&#9664;</button>
+    <button type="button" data-k="R" aria-label="Move right">&#9654;</button>
+    <span class="gap"></span>
+    <button type="button" data-k="J" class="jump" aria-label="Jump">JUMP</button>
+  </div>
+
+  <p class="help">ARROWS OR A/D MOVE &nbsp; SPACE, Z OR UP JUMPS (HOLD FOR HIGHER)<br>P OR ESC PAUSES &nbsp; M MUTES &nbsp; ENTER PICKS</p>
+</main>
+<script src="js/levels.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
