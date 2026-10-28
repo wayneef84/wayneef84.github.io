@@ -1,5 +1,8 @@
 # Byte Runner Quest: Changelog
 
+## Unreleased
+- The AUTO ON/OFF button moved from the thumb area to the top bar (first tool button), so it is hard to hit by accident. While auto-run is ON its border is a moving rainbow (static when the device asks for reduced motion). On devices without touch it still sits under the screen (press R).
+
 ## v1.1.0 (2026-10-27)
 Mobile controls, for phones stuck in portrait and for young players.
 
