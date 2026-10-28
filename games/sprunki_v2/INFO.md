@@ -1,4 +1,4 @@
-# Sprunki v2: Info
+# S4K Mixer v2: Info
 
 | Field | Value |
 |---|---|
