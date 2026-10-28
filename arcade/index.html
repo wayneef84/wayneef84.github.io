@@ -48,6 +48,7 @@
     </main>
 
     <script src="../js/catalog.js"></script>
+    <script src="../js/player-stats.js"></script>
     <script>
         (function() {
             'use strict';
@@ -99,6 +100,7 @@
                     var card = document.createElement('a');
                     card.href = href;
                     card.className = 'game-card';
+                    card.setAttribute('data-game-id', game.id);
                     card.setAttribute('data-category', game.category);
 
                     card.innerHTML =
@@ -116,6 +118,8 @@
 
                 if (countEl) countEl.textContent = count + ' games';
             }
+
+            if (window.FongStats) { window.FongStats.trackClicks(); }
 
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', render);

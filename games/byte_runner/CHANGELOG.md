@@ -1,5 +1,8 @@
 # Byte Runner: Changelog
 
+## Unreleased (2026-10-27)
+- FULL and ROTATE buttons in the header: Fullscreen API with a fill-screen fallback, and a CSS 90 degree rotate for phones stuck in portrait. Display only, gameplay untouched. Saved in `localStorage['fong.byteRunner.view.v1']`.
+
 ## v1.0.0 (2026-10-25)
 First arcade release.
 
