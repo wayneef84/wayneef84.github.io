@@ -10,7 +10,7 @@ All notable changes to the root hub will be documented in this file.
 
 ### Verified
 - **Falldown:** Game loads and displays the main menu successfully after storage engine migration.
-![Falldown Verification](../verification/falldown_menu.png)
+![Falldown Verification](verification/falldown_menu.png)
 
 ## [2.0.0] - 2026-02-15
 ### Added

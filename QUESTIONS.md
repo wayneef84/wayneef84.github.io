@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Historical (early NEGEN questions). Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # Questions for the Architect
 
 1.  **Module System**: Should NEGEN strictly use ES6 Modules (`import/export`) for modern standards, or should it support a global namespace approach for easier integration with older legacy scripts (like the current `snake` implementation)?

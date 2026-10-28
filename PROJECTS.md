@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Superseded by `js/catalog.js` (single source of truth). Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # F.O.N.G. Project Registry
 **Last Updated:** 2026-02-06
 

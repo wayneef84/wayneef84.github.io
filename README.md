@@ -1,24 +1,22 @@
-# F.O.N.G. Arcade Platform
+# F.O.N.G. Arcade
 
-## What is this?
-The centralized, unified hub for the F.O.N.G. family arcade platform. This root directory serves as the master navigation layer connecting 28+ independent browser-based games and 15+ utilities.
+Wayne Fong's public site: https://wayneef84.github.io. Games, tools and utilities in plain HTML, CSS and JavaScript. No build step, no CDNs, works offline once loaded.
 
-## Quick Start
-1. Open `index.html` in any modern browser.
-2. Browse the 18 Production-tier games grouped by category.
-3. Tap any game card to play instantly. 100% offline capable.
+## What is here
 
-## Features
-- **Unified Navigation:** Access all production games from a single, responsive grid.
-- **Mobile-First Design:** Optimized for touch devices with 44px minimum touch targets and safe-area insets.
-- **Local Architecture:** Zero external dependencies, ensuring complete offline playability and long-term archival stability.
+- **Games** (`games/`): cards (Blackjack, War, Euchre, Poker), arcade (Snake, Slots, Pong, Breakout), puzzle (Sudoku, Minesweeper, Mahjong, Jigsaw), educational (Letter Tracing, J Quiz).
+- **Tools** (`projects/`): markdown reader, shipment tracker, regex builder, dev utils, encyclopedia, and more.
+- **Whiteout Survival calculators** (`wosky/`): gear, charms, troops and upgrade planners.
+- Hub, profile, daily feed and about pages.
 
-## Status
-- **Status:** Production
-- **Version:** 2.0.0 (Master Hub Revamp)
-- **Last Updated:** 2026-02-15
+The full list lives in `js/catalog.js`. Games table: [GAME_INVENTORY.md](GAME_INVENTORY.md).
 
-## Links
-- [ARCHITECTURE.md](ARCHITECTURE.md) - System design and styling logic
-- [TODO.md](TODO.md) - Upcoming features
-- [CHANGELOG.md](CHANGELOG.md) - Release history
+## Run it
+
+Open `index.html`, or serve the folder: `python3 -m http.server 8000`.
+
+## For contributors and LLMs
+
+Read [CLAUDE.md](CLAUDE.md). Everything else is indexed in [docs/INDEX.md](docs/INDEX.md).
+
+[ARCHITECTURE.md](ARCHITECTURE.md) | [CHANGELOG.md](CHANGELOG.md) | [GROUND_RULES.md](GROUND_RULES.md) | [LICENSE](LICENSE)

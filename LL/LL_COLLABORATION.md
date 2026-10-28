@@ -174,8 +174,8 @@ Persistent memory across session resets.
 | Document | Purpose | Update Frequency |
 |----------|---------|------------------|
 | AGENTS.md | Roles, protocols | Rarely |
-| AI_FEEDBACK.md | Session journal | Every session |
-| IDEAS_020426.md | Brainstorming | As ideas emerge |
+| AI_FEEDBACK.md | Session journal (frozen, no longer required) | Retired |
+| docs/archive/plans/IDEAS_020426.md | Brainstorming (archived) | Retired |
 | CHANGELOG.md | Release notes | Major releases only |
 | LL/*.md | Deep technical lessons | When bugs found |
 

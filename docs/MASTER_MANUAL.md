@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Stale (Feb 2026). Superseded by `CLAUDE.md`. Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](../CLAUDE.md). All docs: [INDEX](INDEX.md).
+
 # F.O.N.G. Master Compendium
 **Last Updated:** 2026-02-05
 
@@ -33,7 +35,7 @@ The core technology stack shared across projects.
 A generic, adapter-based persistence layer.
 *   **Core**: `FongDB` class with Observer pattern.
 *   **Adapters**: IndexedDB (Primary), LocalStorage (Fallback).
-*   **Docs**: [db/README.md](../db/README.md)
+*   **Docs**: [db/README.md](../storage/README.md)
 
 ### Network Library (`/network/`)
 *Planned* module for synchronization.

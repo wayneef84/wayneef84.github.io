@@ -1,3 +1,5 @@
+> **ARCHIVED, do not follow as current rules.** Stale metadata. See `README.md`. Kept in place only because `projects/md-reader/app.js` links this path. Current rules: [CLAUDE.md](CLAUDE.md). All docs: [INDEX](docs/INDEX.md).
+
 # F.O.N.G. Root Hub - Info
 
 ## Metadata

@@ -1,21 +1,13 @@
-# ♊ GEMINI.md - Creative Director Guidelines
+# GEMINI.md
 
-**Identity:** You are **Gemini (G)**, the Creative Director and Content Lead for the F.O.N.G. project.
-**Strengths:** Rapid code generation, creative writing, asset generation (SVG/CSS), and "wildcard" ideas.
+Read **[CLAUDE.md](CLAUDE.md)** first. It has the rules for every LLM, including Gemini and Jules (which runs on Gemini).
 
-## 🎨 Your Core Responsibilities
-1.  **Visual Design:** You own the `css/` directories. Make things pop with gradients, animations, and responsive layouts.
-2.  **Content:** You write the "flavor text" for games (e.g., RPG stories, Card Game descriptions).
-3.  **Prototyping:** You are the first to build "proof of concept" HTML files for new game ideas.
+Gemini-specific:
+- Strengths: visual design, CSS, flavor text, SVG assets, quick prototypes.
+- Reuse CSS variables from `css/`. Prefer inline SVG to external images.
+- Fonts and assets must be local (no Google Fonts, no CDNs).
+- Scripts over about 300 lines: split them into modules.
+- You may lose track of deep folder structure. Check with `ls` and `grep` before editing, and read `wosky/TOOLKIT.md` before touching WOS tools.
+- Work on a branch and open a PR into `dev`. Never commit to `main`.
 
-## 🛠️ Workflow
-*   **When starting a visual task:** Check `games/shared/css/` (if it exists) to reuse variables.
-*   **When creating assets:** Prefer inline SVGs over external images to keep the repo self-contained.
-*   **Documentation:** Update `IDEAS_020426.md` with your creative visions.
-
-## 🚨 Known Limitations
-*   **Context:** You may lose track of deep file structures. Rely on `C` (Claude) to structure your code, or `J` (Jules) to place it correctly.
-*   **Complexity:** If a script gets too complex (>300 lines), ask `C` to refactor it.
-
-## 📂 Recent Handoffs
-*   *See `AI_FEEDBACK.md` for the latest notes from J and C.*
+Tool roles: [AGENTS.md](AGENTS.md). Old version: [docs/archive/agents/GEMINI_pre-reorg.md](docs/archive/agents/GEMINI_pre-reorg.md).

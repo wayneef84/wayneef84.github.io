@@ -91,9 +91,9 @@ Every game/project MUST have these files:
 - FAQ
 
 ## Links
-- [ARCHITECTURE.md](ARCHITECTURE.md) - How it works
-- [TODO.md](TODO.md) - What's next
-- [CHANGELOG.md](CHANGELOG.md) - History
+- [ARCHITECTURE.md](../../ARCHITECTURE.md) - How it works
+- [TODO.md](../../TODO.md) - What's next
+- [CHANGELOG.md](../../CHANGELOG.md) - History
 ```
 
 ---
@@ -208,10 +208,10 @@ One-line summary of what this is
 - Known issues: None currently
 
 ## Related Files
-- [README.md](README.md) - User guide
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical design
-- [TODO.md](TODO.md) - Roadmap
-- [CHANGELOG.md](CHANGELOG.md) - History
+- [README.md](../../README.md) - User guide
+- [ARCHITECTURE.md](../../ARCHITECTURE.md) - Technical design
+- [TODO.md](../../TODO.md) - Roadmap
+- [CHANGELOG.md](../../CHANGELOG.md) - History
 ```
 
 ---

@@ -19,7 +19,7 @@ The F.O.N.G. repository is **mature and well-structured** but needs **strategic 
 
 ## ⚠️ GROUND RULES CONSTRAINT ALIGNMENT
 
-**Foundational Context:** This strategy must operate **within** the 9 immutable ground rules defined in [`GROUND_RULES.md`](GROUND_RULES.md). Every pillar, initiative, and deliverable must respect these constraints.
+**Foundational Context:** This strategy must operate **within** the 9 immutable ground rules defined in [`GROUND_RULES.md`](../../../GROUND_RULES.md). Every pillar, initiative, and deliverable must respect these constraints.
 
 ### How Each Pillar Aligns With Ground Rules
 

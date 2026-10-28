@@ -1,0 +1,69 @@
+# Docs Index
+
+One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for every LLM (Claude, Gemini, Jules, Codex, others).
+
+## Rules and entry points (repo root)
+
+| Doc | Use |
+|---|---|
+| [CLAUDE.md](../CLAUDE.md) | What the site is, repo map, workflow, how to add a game or tool, lessons |
+| [GROUND_RULES.md](../GROUND_RULES.md) | The 10 rules (owned by Wayne) |
+| [AGENTS.md](../AGENTS.md), [AGENT.md](../AGENT.md), [GEMINI.md](../GEMINI.md), [JULES.md](../JULES.md), [ONBOARDING.md](../ONBOARDING.md) | Pointers to CLAUDE.md plus per-tool notes |
+| [ARCHITECTURE.md](../ARCHITECTURE.md) | Hub shell structure |
+| [GAME_INVENTORY.md](../GAME_INVENTORY.md) | Games by tier |
+| [CHANGELOG.md](../CHANGELOG.md) | Release history |
+| [README.md](../README.md) | Public summary |
+| [LICENSE_AUDIT.md](../LICENSE_AUDIT.md) | Third-party code and assets log |
+| [URL_PARAMETERS.md](../URL_PARAMETERS.md) | URL parameters for the tracing games |
+
+## Reference (docs/)
+
+| Doc | Use |
+|---|---|
+| [reference/DOCUMENTATION_STANDARD.md](reference/DOCUMENTATION_STANDARD.md) | 7-file per-game doc standard (status: needs Wayne) |
+| [reference/VISUAL_IDENTITY.md](reference/VISUAL_IDENTITY.md) | Design system, colors, type |
+| [reference/CLOUDFLARE_WORKER_SETUP.md](reference/CLOUDFLARE_WORKER_SETUP.md) | Shipment tracker API proxy |
+| [SITEMAP.md](SITEMAP.md) | Navigation map (may be stale) |
+| [L10N_STRATEGY.md](L10N_STRATEGY.md) | Localization proposal |
+| [README.md](README.md) | Older docs library page |
+| [negen/](negen/USER_MANUAL.md) | NEGEN engine: [user manual](negen/USER_MANUAL.md), [technical reference](negen/TECHNICAL_REFERENCE.md), [history](negen/HISTORY.md) |
+| [projects/](projects/SNAKE.md) | Project specs: [Snake](projects/SNAKE.md), [Flow](projects/FLOW.md), [Cards](projects/CARDS.md), [Slots](projects/SLOTS.md), [Sprunki](projects/SPRUNKI.md), [XTC Ball](projects/XTC_BALL.md), [Shared](projects/SHARED.md) |
+| [DOCS_AUDIT_2026.md](DOCS_AUDIT_2026.md) | What was kept, merged or archived, and contradictions found |
+
+## Other doc folders
+
+| Path | Use |
+|---|---|
+| [../admin/GROUND_RULES_CHECKLIST.md](../admin/GROUND_RULES_CHECKLIST.md) | Pre-commit self check |
+| [../admin/DEPENDENCY_POLICY.md](../admin/DEPENDENCY_POLICY.md), [../admin/UPGRADE_CHECKLIST.md](../admin/UPGRADE_CHECKLIST.md) | Shared library versions |
+| [../admin/COMPLIANCE_FIXES.md](../admin/COMPLIANCE_FIXES.md) | Known rule violations backlog |
+| [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md) | Doc templates |
+| [../LL/README.md](../LL/README.md) | Lessons learned (card engine, ES5 and Safari, collaboration) |
+| [../legal/README.md](../legal/README.md) | Privacy, terms, data policy |
+| [../negen/README.md](../negen/README.md) | Engine plans and progress |
+| [../wosky/TOOLKIT.md](../wosky/TOOLKIT.md) | How to add a WOS tool |
+| [../wosky/docs/](../wosky/docs/tech-doc-v2.md) | WOS calculator v2 docs |
+
+## Per-game and per-project docs
+
+Each folder under `games/` and `projects/` owns its docs. Do not rewrite them from outside the folder. Conventions seen in the repo:
+
+- `README.md` (most folders): what it is and how to play or use it.
+- `ARCHITECTURE.md`, `INFO.md` (version and dependencies), `TODO.md`, `CHANGELOG.md`: present in about a third of folders.
+- `CLAUDE.md` (gotchas) and `AGENT.md` (dev notes for the next agent): per folder, not site-wide.
+- `MANUAL.md` and `TECHNICAL.md`: user and developer guides for the newer NEGEN games.
+- `LL_*.md`: lessons learned for that game.
+- Template for new games: [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md). When you change a game, update its docs in the same commit.
+
+## Archive (history, do not treat as rules)
+
+| Folder | Contents |
+|---|---|
+| [archive/incidents/](archive/incidents/INCIDENT-2026-03-22.md) | 2026-03-22 incident reports (wasted sessions) |
+| [archive/handoffs/](archive/handoffs/HANDOFF_INDEX.md) | Handoffs, session summaries, continuation notes, one-off fix lists |
+| [archive/assessments/](archive/assessments/COMPENDIUM.md) | Retrospectives, audits, implementation summaries, old compendium |
+| [archive/plans/](archive/plans/REVAMP_MASTER_STRATEGY.md) | Old plans and brainstorms |
+| [archive/agents/](archive/agents/CLAUDE_pre-reorg.md) | Pre-reorg versions of CLAUDE, AGENTS, GEMINI, JULES, ONBOARDING, GROUND_RULES |
+| [archive/misc/](archive/misc/REQUIRED_ROOT_FILES.md) | Everything else |
+
+Files marked ARCHIVED but still at the repo root (AI_FEEDBACK, ROADMAP, TODO, INFO, PROJECTS, QUESTIONS, WIKI-PLAN, CLAUDE_ASSESSMENT, docs/MASTER_MANUAL) stay only because `projects/md-reader/app.js` links them.
