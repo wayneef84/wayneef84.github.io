@@ -612,6 +612,11 @@
    "count": 1
   },
   {
+   "file": "games/cards/CHANGELOG.md",
+   "rule": "missing-doc",
+   "count": 1
+  },
+  {
    "file": "games/cards/CLAUDE.md",
    "rule": "missing-doc",
    "count": 1

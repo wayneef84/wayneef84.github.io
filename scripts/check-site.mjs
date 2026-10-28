@@ -149,9 +149,12 @@ export function scanTree(rootDir) {
     if (!fs.existsSync(pdir)) continue;
     for (const e of fs.readdirSync(pdir, { withFileTypes: true })) {
       if (!e.isDirectory() || !fs.existsSync(path.join(pdir, e.name, 'index.html'))) continue;
+      // Exact-case match: macOS ignores case but Linux (GitHub Actions) does not, so a file
+      // named changelog.md must count as missing CHANGELOG.md on every machine.
+      const present = new Set(fs.readdirSync(path.join(pdir, e.name)));
       for (const doc of DOCS) {
         const rel = `${parent}/${e.name}/${doc}.md`;
-        if (!fs.existsSync(path.join(rootDir, rel))) found.push({ file: rel, rule: 'missing-doc', line: 0 });
+        if (!present.has(`${doc}.md`)) found.push({ file: rel, rule: 'missing-doc', line: 0 });
       }
     }
   }
