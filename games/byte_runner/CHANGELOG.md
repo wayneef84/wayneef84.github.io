@@ -21,3 +21,6 @@ First arcade release.
 
 ### Origin
 - Grew out of a one off progress screen for a two stage drive backup (external to PC to game drive), rebuilt as an original game and generalized.
+
+## Unreleased
+- `byte-runner.ps1` is no longer published. It is git-ignored and kept as a private local utility. The "Watch your own copy" section on the page was reduced to a short note.
