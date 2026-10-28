@@ -5,10 +5,11 @@ Branch: claude/nightlite-m1 (from dev). Folder: games/nightlite_choir/
 ## Done
 - (a) engine forked (synth.js, art.js, app.js, style.css), runs from file:// and http
 - (b) door screen with 3 doors, only Night Garden opens
+- (d) docs and name checks done
 - (c) Night Garden: Mossle, Glimmow, Puddlet, Hedgey, sound, tray, drag, undo, reset, mute, volume, save/load, keys 1-4
 
 ## In progress
-- (d) docs (7 files), name checks in ASSET_LOG.md
+- (e) catalog and homepage
 
 ## Next
 - (e) js/catalog.js entry, remove spotlight from byte-runner, GAME_INVENTORY.md row (LAST commit)
