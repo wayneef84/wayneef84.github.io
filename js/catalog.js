@@ -734,7 +734,7 @@ var FONG_CATALOG = [
     {
         id: 'daily',
         category: 'info',
-        group: 'more',
+        group: 'tools',
         icon: '📅',
         title: 'Daily Command Center',
         funTitle: 'Daily Command Center',

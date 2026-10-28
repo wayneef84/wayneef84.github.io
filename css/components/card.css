@@ -469,3 +469,89 @@
   border-top-color: rgba(255, 44, 237, 0.1);
   color: var(--text-muted);
 }
+
+
+/* ── Navigation remap: group sections, search, browse page ─────────────── */
+.tag-wosky   { background: rgba(225, 29, 72, 0.12);  color: var(--cat-wosky); }
+.tag-info, .tag-guide, .tag-archive { background: rgba(100, 116, 139, 0.12); color: var(--text-secondary); }
+[data-theme="fun"] .tag-wosky { background: rgba(255, 44, 100, 0.2); }
+
+.hub-page-header { padding: 1.5rem 5% 0; }
+.hub-grid-section { padding: 0 5% 3rem; }
+.game-grid-flush { padding-left: 0; padding-right: 0; }
+
+.hub-search {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+  margin: 0.75rem 0 1.25rem;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+}
+.hub-search:focus { outline: none; border-color: var(--accent-primary); }
+.home-search { padding: 0 5%; }
+.home-search .hub-search { margin: 0.25rem 0 1rem; }
+.search-results { padding: 0 5%; }
+.search-results .game-grid { padding-left: 0; padding-right: 0; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+}
+.section-head .nav-section-title { margin: 0; }
+.section-all {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.5rem 0;
+}
+.section-all:hover { text-decoration: underline; }
+#home-groups .nav-section { padding: 1rem 5% 1rem; }
+
+.nav-card-more     { border-left: 3px solid var(--text-secondary); }
+.nav-card-tools    { border-left: 3px solid var(--cat-project); }
+.nav-card-all      { border-left: 3px dashed var(--accent-primary); }
+
+.group-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.25rem;
+}
+.group-tab {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid var(--card-border);
+  border-radius: 99px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.group-tab.active, .group-tab:hover {
+  background: var(--filter-active-bg);
+  color: var(--filter-active-color);
+  border-color: transparent;
+}
+.tab-count { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7; }
+.sub-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 1.25rem 0 0.5rem;
+}
+.card-parent { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); }
+.empty-note { color: var(--text-secondary); }
