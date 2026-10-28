@@ -1,0 +1,378 @@
+/* Print Shop skin: a zine printed on a risograph. Sticker cards tilted on paper,
+   halftone dots, hard offset shadows, a bold grotesk with mono labels. Cards
+   "stick" to the page on hover. Every rule is scoped to html[data-skin="print-shop"]
+   (specificity beats [data-theme="fun"], so ?mode=fun only changes wording here).
+   Colors default to the Tomato Soup palette and follow any palette or per-color
+   change through the same CSS variables the engine sets inline. */
+
+html[data-skin="print-shop"] {
+  --bg-base: #fbefdc;
+  --bg-surface: #fff8ec;
+  --bg-surface-hover: #fff8ec;
+  --text-primary: #2b1b14;
+  --text-secondary: #6b5547;
+  --text-muted: #6b5547;
+  --accent-primary: #d8432b;
+  --accent-secondary: #2f6f68;
+  --accent-glow: rgba(216, 67, 43, 0.15);
+  --card-border: #cdc0b0;
+  --card-border-hover: var(--text-primary);
+  --ink: #2b1b14;
+  --line: #cdc0b0;
+  --on-accent: #000000;
+  --on-accent2: #ffffff;
+  --btn-color: var(--on-accent);
+  --filter-active-color: var(--on-accent);
+  --grp-games: #d8432b;
+  --grp-tools: #2f6f68;
+  --grp-wos: #84594a;
+  --grp-more: #6b5547;
+  --font-ui: 'Space Mono', ui-monospace, Menlo, monospace;
+  --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --nav-border: 3px solid var(--ink);
+  --card-shadow-hover: none;
+  --ps-bw: var(--t-bw, 2px);
+  --ps-d: var(--t-density, 1);
+  --ps-shadow: 5px 5px 0 var(--ink);
+  --ps-shadow-down: 1px 1px 0 var(--ink);
+}
+html[data-skin="print-shop"][data-shadow="soft"] { --ps-shadow: 0 6px 16px rgba(0, 0, 0, 0.22); --ps-shadow-down: 0 2px 5px rgba(0, 0, 0, 0.22); }
+html[data-skin="print-shop"][data-shadow="none"] { --ps-shadow: none; --ps-shadow-down: none; }
+
+/* ── Paper and halftone ─────────────────────────────────────────────────── */
+html[data-skin="print-shop"] body {
+  background-color: var(--bg-base);
+  background-image: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+/* Riso halftone that fades out from the top right corner */
+html[data-skin="print-shop"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--accent-primary) 1.6px, transparent 2.1px);
+  background-size: 11px 11px;
+  opacity: 0.2;
+  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 100% 0%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse 70% 55% at 100% 0%, #000 0%, transparent 70%);
+}
+html[data-skin="print-shop"][data-bg] body::before { -webkit-mask-image: none; mask-image: none; }
+
+/* ── Masthead ───────────────────────────────────────────────────────────── */
+html[data-skin="print-shop"] .global-nav {
+  background: var(--bg-base);
+  border-bottom: 3px solid var(--ink);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  position: relative;
+}
+html[data-skin="print-shop"] .global-nav::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -9px;
+  border-top: 2px dashed var(--ink);
+  pointer-events: none;
+}
+html[data-skin="print-shop"] .nav-brand {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 5.2vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  color: var(--ink);
+  text-shadow: 3px 3px 0 var(--accent-primary);
+  transform: rotate(-1.5deg);
+  transform-origin: left center;
+  animation: none;
+}
+html[data-skin="print-shop"] .stats-container {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink);
+  opacity: 1;
+  border: var(--ps-bw) solid var(--ink);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  transform: rotate(1.5deg);
+}
+html[data-skin="print-shop"] .theme-toggle-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+html[data-skin="print-shop"] .theme-toggle-link:hover { color: var(--ink); background: var(--bg-base); border-color: var(--ink); }
+html[data-skin="print-shop"] .theme-open {
+  background: var(--accent-primary);
+  color: var(--on-accent);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 3px 3px 0 var(--ink);
+  filter: none;
+}
+html[data-skin="print-shop"] .theme-open:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+/* ── Issue numbers and section titles ──────────────────────────────────── */
+html[data-skin="print-shop"] #home-groups { counter-reset: ps-issue; }
+html[data-skin="print-shop"] .nav-section { counter-increment: ps-issue; }
+html[data-skin="print-shop"] #home-groups .nav-section { padding: 2rem 5% 1.5rem; }
+html[data-skin="print-shop"] #home-groups .nav-section + .nav-section { border-top: 2px dashed var(--line); }
+html[data-skin="print-shop"] .nav-section-title,
+html[data-skin="print-shop"] [data-theme="fun"] .nav-section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--ink);
+  margin: 0;
+  display: inline-block;
+}
+html[data-skin="print-shop"] #home-groups .nav-section-title::before {
+  content: "No." counter(ps-issue, decimal-leading-zero);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+html[data-skin="print-shop"] .nav-section-title::after {
+  content: "";
+  display: block;
+  height: 6px;
+  margin-top: 0.35rem;
+  background: var(--accent-primary);
+  transform: rotate(-0.8deg);
+}
+html[data-skin="print-shop"] .nav-section-games .nav-section-title::after { background: var(--grp-games); }
+html[data-skin="print-shop"] .nav-section-tools .nav-section-title::after { background: var(--grp-tools); }
+html[data-skin="print-shop"] .nav-section-wos .nav-section-title::after { background: var(--grp-wos); }
+html[data-skin="print-shop"] .nav-section-more .nav-section-title::after { background: var(--grp-more); }
+html[data-skin="print-shop"] .section-head { margin-bottom: 1.4rem; align-items: flex-end; }
+html[data-skin="print-shop"] .section-all {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface);
+  transform: rotate(1.2deg);
+}
+html[data-skin="print-shop"] .section-all:hover { text-decoration: none; background: var(--accent-primary); color: var(--on-accent); }
+
+/* ── Sticker cards ─────────────────────────────────────────────────────── */
+html[data-skin="print-shop"] .nav-card,
+html[data-skin="print-shop"] .featured-app-card,
+html[data-skin="print-shop"] .game-card {
+  position: relative;
+  background: var(--bg-surface);
+  background-image: none;
+  color: var(--text-primary);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ps-shadow);
+  padding: calc(1.2rem * var(--ps-d)) calc(1.3rem * var(--ps-d));
+  transform: rotate(var(--ps-tilt, 0deg));
+  transition: transform 0.14s ease-out, box-shadow 0.14s ease-out, background-color 0.14s;
+}
+html[data-skin="print-shop"] .nav-card { min-height: calc(92px * var(--ps-d)); }
+/* Different tilt for each sticker, so no row looks machine-made */
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 1),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 1) { --ps-tilt: -1.2deg; }
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 2),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 2) { --ps-tilt: 0.9deg; }
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 3),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 3) { --ps-tilt: -0.5deg; }
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 4),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 4) { --ps-tilt: 1.3deg; }
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 5),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 5) { --ps-tilt: -0.9deg; }
+html[data-skin="print-shop"] .nav-grid > :nth-child(6n + 6),
+html[data-skin="print-shop"] .game-grid > :nth-child(6n + 6) { --ps-tilt: 0.6deg; }
+html[data-skin="print-shop"] .featured-apps > :nth-child(1) { --ps-tilt: -0.4deg; }
+html[data-skin="print-shop"] .featured-apps > :nth-child(2) { --ps-tilt: 0.4deg; }
+html[data-skin="print-shop"] .just-added-grid > :nth-child(3n + 1) { --ps-tilt: -0.5deg; }
+html[data-skin="print-shop"] .just-added-grid > :nth-child(3n + 2) { --ps-tilt: 0.4deg; }
+html[data-skin="print-shop"] .just-added-grid > :nth-child(3n + 3) { --ps-tilt: -0.3deg; }
+
+/* Stick: the sticker flattens and presses onto the paper */
+html[data-skin="print-shop"] .nav-card:hover,
+html[data-skin="print-shop"] .featured-app-card:hover,
+html[data-skin="print-shop"] .game-card:hover,
+html[data-skin="print-shop"] .nav-card:focus-visible,
+html[data-skin="print-shop"] .featured-app-card:focus-visible,
+html[data-skin="print-shop"] .game-card:focus-visible {
+  transform: rotate(0deg) translate(4px, 4px);
+  box-shadow: var(--ps-shadow-down);
+  border-color: var(--ink);
+  background-color: var(--bg-surface);
+}
+html[data-skin="print-shop"] a:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 3px; }
+
+/* Bookmark ribbon in the group color */
+html[data-skin="print-shop"] .nav-card::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--ps-bw));
+  right: 16px;
+  width: 16px;
+  height: 26px;
+  background: var(--accent-primary);
+  border: var(--ps-bw) solid var(--ink);
+  border-top: 0;
+}
+html[data-skin="print-shop"] .nav-section-games .nav-card::before { background: var(--grp-games); }
+html[data-skin="print-shop"] .nav-section-tools .nav-card::before { background: var(--grp-tools); }
+html[data-skin="print-shop"] .nav-section-wos .nav-card::before { background: var(--grp-wos); }
+html[data-skin="print-shop"] .nav-section-more .nav-card::before { background: var(--grp-more); }
+/* The "All ..." cards are coupons: dashed cut line, no fill */
+html[data-skin="print-shop"] .nav-card-all { border-style: dashed; background: transparent; box-shadow: none; }
+html[data-skin="print-shop"] .nav-card-all::before { display: none; }
+html[data-skin="print-shop"] .nav-card-all:hover { background: var(--bg-surface); box-shadow: var(--ps-shadow-down); }
+/* Per-card accent stripes from Classic are replaced by the ribbon */
+html[data-skin="print-shop"] .nav-card[class*="nav-card-"] { border-left: var(--ps-bw) solid var(--ink); }
+html[data-skin="print-shop"] .nav-card-all[class*="nav-card-"] { border-left: var(--ps-bw) dashed var(--ink); }
+html[data-skin="print-shop"] .featured-card-games,
+html[data-skin="print-shop"] .featured-md-reader { border-left: var(--ps-bw) solid var(--ink); }
+
+/* Icon sits on a halftone disc */
+html[data-skin="print-shop"] .nav-card-icon,
+html[data-skin="print-shop"] .featured-app-icon,
+html[data-skin="print-shop"] .card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  flex: 0 0 auto;
+  font-size: 1.6rem;
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: 50%;
+  background-color: var(--bg-base);
+  background-image: radial-gradient(var(--accent-primary) 1.1px, transparent 1.6px);
+  background-size: 6px 6px;
+}
+html[data-skin="print-shop"] .featured-app-icon { width: 3.8rem; height: 3.8rem; font-size: 2rem; }
+html[data-skin="print-shop"] .card-icon { width: 2.6rem; height: 2.6rem; font-size: 1.35rem; }
+
+html[data-skin="print-shop"] .nav-card-title,
+html[data-skin="print-shop"] .featured-app-title,
+html[data-skin="print-shop"] .game-title,
+html[data-skin="print-shop"] [data-theme="fun"] .nav-card-title,
+html[data-skin="print-shop"] [data-theme="fun"] .featured-app-title,
+html[data-skin="print-shop"] [data-theme="fun"] .game-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+html[data-skin="print-shop"] .nav-card-title { font-size: 1.15rem; }
+html[data-skin="print-shop"] .featured-app-title { font-size: 1.5rem; line-height: 1.05; }
+html[data-skin="print-shop"] .nav-card-count,
+html[data-skin="print-shop"] .featured-app-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--bg-base);
+  background: var(--ink);
+  padding: 1px 7px;
+  margin-top: 0.3rem;
+}
+html[data-skin="print-shop"] .nav-card-desc,
+html[data-skin="print-shop"] .featured-app-desc,
+html[data-skin="print-shop"] .game-desc { color: var(--text-secondary); font-size: 0.8rem; }
+html[data-skin="print-shop"] .featured-app-btn,
+html[data-skin="print-shop"] [data-theme="fun"] .featured-app-btn {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  border-bottom: 3px solid var(--accent-primary);
+  padding-bottom: 1px;
+}
+html[data-skin="print-shop"] .game-plays { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); }
+
+/* Stamps */
+html[data-skin="print-shop"] .badge-new,
+html[data-skin="print-shop"] [data-theme="fun"] .badge-new {
+  background: var(--accent-secondary);
+  color: var(--on-accent2);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  transform: rotate(-4deg);
+  padding: 1px 6px;
+}
+html[data-skin="print-shop"] .category-tag,
+html[data-skin="print-shop"] [data-theme="fun"] .category-tag {
+  background: var(--bg-base);
+  color: var(--ink);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: 0;
+}
+html[data-skin="print-shop"] .game-meta { border-top: 2px dashed var(--line); color: var(--text-secondary); }
+html[data-skin="print-shop"] .just-added-card { background: var(--bg-surface); border-color: var(--ink); }
+html[data-skin="print-shop"] .just-added .section-head,
+html[data-skin="print-shop"] .search-results .section-head { margin-top: 0.5rem; }
+
+/* ── Search and chips ──────────────────────────────────────────────────── */
+html[data-skin="print-shop"] .hub-search {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--bg-surface);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-md);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+html[data-skin="print-shop"] .hub-search:focus { outline: 3px solid var(--accent-primary); outline-offset: 2px; border-color: var(--ink); }
+html[data-skin="print-shop"] .new-chip {
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: var(--bg-surface);
+  border: var(--ps-bw) solid var(--ink);
+  border-radius: var(--radius-sm);
+}
+html[data-skin="print-shop"] .new-chip:hover { border-color: var(--ink); background: var(--accent-primary); color: var(--on-accent); }
+html[data-skin="print-shop"] .new-label { color: var(--ink); font-weight: 700; }
+html[data-skin="print-shop"] .empty-note { color: var(--text-secondary); }
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+html[data-skin="print-shop"] .landing-footer { border-top: 3px solid var(--ink); color: var(--text-secondary); }
+html[data-skin="print-shop"] .footer-link { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; }
+html[data-skin="print-shop"] .footer-link:hover { color: var(--accent-primary); }
+html[data-skin="print-shop"] .footer-sep { opacity: 1; }
+
+/* ── Layout: pasted collage. The first sticker in every group runs wide ── */
+@media (min-width: 768px) {
+  html[data-skin="print-shop"] .nav-grid { grid-template-columns: repeat(6, 1fr); gap: calc(1.5rem * var(--ps-d)); }
+  html[data-skin="print-shop"] .nav-grid > .nav-card { grid-column: span 2; }
+  html[data-skin="print-shop"] .nav-grid > .nav-card:first-child { grid-column: span 4; }
+  html[data-skin="print-shop"] .nav-grid > .nav-card:first-child .nav-card-title { font-size: 1.6rem; }
+}
+@media (max-width: 767px) {
+  html[data-skin="print-shop"] .nav-grid { gap: calc(1.2rem * var(--ps-d)); }
+  html[data-skin="print-shop"] .featured-apps, html[data-skin="print-shop"] .just-added-grid { gap: calc(1.2rem * var(--ps-d)); }
+}
+html[data-skin="print-shop"] .featured-apps,
+html[data-skin="print-shop"] .just-added-grid { gap: calc(1.5rem * var(--ps-d)); }
+html[data-skin="print-shop"] .game-grid { gap: calc(1.4rem * var(--ps-d)); }
+html[data-skin="print-shop"] .just-added { padding-top: 2rem; }
+html[data-skin="print-shop"] .featured-apps { padding-top: 2rem; padding-bottom: 1.5rem; }

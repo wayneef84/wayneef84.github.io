@@ -5,6 +5,8 @@ Branch: claude/theme-engine. Work clone: scratchpad/work-theme. Spec: docs/THEMI
 ## Done
 - (a)+(b core) js/theme/loader.js, palettes.js, validate.js, apply.js, css/skins/classic.css, css/theme-overrides.css, index.html wiring, Classic parity (0 pixel diff vs dev at 1280 and 390, Customize button removed for the diff).
 
+- (d) ID reference: scripts/gen-id-reference.mjs, docs/CUSTOMIZE_IDS.md, check-site warns when stale.
+- (e) Print Shop skin css/skins/print-shop.css, fonts Space Grotesk 500/700 in assets/fonts (LICENSE_AUDIT.md entry still TODO).
 - (c) panel js/theme/panel.js + css/theme-panel.css built, smoke tested at 390.
 - (b) hostile samples tests/theme/hostile (22 files), runner is scratchpad/pw/hostile.js (165/165 pass). hub-filters.js and hub-nav.js apply config (d, partial: ID reference still to do).
 
