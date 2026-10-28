@@ -1123,7 +1123,7 @@ function restore(js) {
 window.__brq = {
   state: function () { return state; }, hero: hero, level: function () { return L; }, run: function () { return run; },
   startLevel: startLevel, startEndless: startEndless, toSelect: toSelect, toTitle: toTitle,
-  snapshot: snapshot, restore: restore, save: function () { return save; },
+  snapshot: snapshot, restore: restore, save: function () { return save; }, down: down,
   stepWith: function (inp) { forcedInput = inp; frame++; if (state === 'play') stepPlay(); forcedInput = null; return state; },
   step: step, render: render, setSel: function (r, c) { selRow = r; selCol = c; }
 };

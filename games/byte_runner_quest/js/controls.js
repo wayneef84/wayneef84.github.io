@@ -14,7 +14,7 @@ var stage = doc.getElementById('stage'), play = doc.getElementById('play'), scr 
 var cv = doc.getElementById('game'), touch = doc.getElementById('touch');
 var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 var H = null;                         /* hooks from game.js */
-var rotNow = false, releasers = [];
+var rotNow = false, releasers = [], noteTimer = 0;
 
 /* ---------- settings (localStorage, always in try/catch; lives: 1, 3, 5 or 0 = unlimited) ---------- */
 (function () {
@@ -40,16 +40,18 @@ function cls(el, name, on) {
 /* ---------- layout: pin to the viewport on touch devices, size the canvas to fit ---------- */
 function layout() {
   var vw = window.innerWidth, vh = window.innerHeight, fill, sw, sh, land, st = stage.style, pw, ph, availH, c;
-  rotNow = false;
-  fill = TOUCH;
-  sw = vw; sh = vh;
+  rotNow = cfg.rotate && vh > vw;      /* only rotate a portrait screen; a phone that turns by itself needs no help */
+  fill = TOUCH || !!fsEl() || cfg.fill || rotNow;
+  sw = rotNow ? vh : vw; sh = rotNow ? vw : vh;
   cls(stage, 'rot', rotNow);
+  cls(stage, 'immersive', !!fsEl() || cfg.fill);
   cls(stage, 'fill', fill);
   de.className = fill ? 'fill' : '';
   if (fill) {
     st.width = sw + 'px'; st.height = sh + 'px';
     st.transformOrigin = '0 0'; st.webkitTransformOrigin = '0 0';
-    st.transform = 'none'; st.webkitTransform = 'none';
+    c = rotNow ? 'translate(' + vw + 'px,0) rotate(90deg)' : 'none';
+    st.transform = c; st.webkitTransform = c;
   } else {
     st.width = ''; st.height = ''; st.transform = ''; st.webkitTransform = '';
   }
@@ -63,6 +65,7 @@ function layout() {
     if (c < 120) c = 120;
     scr.style.width = Math.floor(c + 8) + 'px';
   } else scr.style.width = '';
+  refresh();
 }
 
 /* screen point to canvas pixel (320x176). The rotated stage maps screen y to canvas x and screen x to canvas y. */
@@ -109,19 +112,85 @@ function bindHold(btn, onDown, onUp) {
 }
 function releaseAll() { for (var i = 0; i < releasers.length; i++) releasers[i](); }
 
+
+/* ---------- fullscreen (Fullscreen API with webkit prefix, else a fixed "fill screen" mode) ---------- */
+function fsEl() { return doc.fullscreenElement || doc.webkitFullscreenElement || null; }
+function fsSupported() { return !!((de.requestFullscreen || de.webkitRequestFullscreen) && doc.fullscreenEnabled !== false); }
+function showNote(text, ms) {
+  var n = doc.getElementById('note');
+  if (!n) return;
+  n.textContent = text; cls(n, 'show', !!text);
+  clearTimeout(noteTimer); noteTimer = setTimeout(function () { cls(n, 'show', false); }, ms || 4500);
+}
+function enterFill() {
+  cfg.fill = true; store(); layout();
+  showNote('Fill screen is on. Tap the fullscreen button again, or press Esc, to leave.');
+}
+function leaveFill() { cfg.fill = false; store(); layout(); showNote('', 1); }
+function exitFS() {
+  try { (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc); } catch (e) { }
+}
+function toggleFull() {
+  var req, p;
+  if (fsEl()) { exitFS(); return; }
+  if (cfg.fill) { leaveFill(); return; }
+  if (!fsSupported()) { enterFill(); return; }
+  try {
+    req = de.requestFullscreen || de.webkitRequestFullscreen;
+    p = req.call(de);
+    if (p && p.then) p.then(null, function () { enterFill(); });
+  } catch (e) { enterFill(); }
+}
+/* landscape lock only works in fullscreen and not on every device, so failure is ignored */
+function lockLandscape(on) {
+  try {
+    var o = window.screen && window.screen.orientation, p;
+    if (!o) return;
+    if (on && o.lock) { p = o.lock('landscape'); if (p && p.catch) p.catch(function () { }); }
+    else if (!on && o.unlock) o.unlock();
+  } catch (e) { }
+}
+function onFsChange() { lockLandscape(!!fsEl()); layout(); setTimeout(layout, 250); }
+
+function toggleRotate() { cfg.rotate = !cfg.rotate; store(); layout(); }
+
+function doAct(name) {
+  if (name === 'full') toggleFull();
+  else if (name === 'rot') toggleRotate();
+}
+function refresh() {
+  var els = doc.querySelectorAll('[data-act]'), i, a, on;
+  for (i = 0; i < els.length; i++) {
+    a = els[i].getAttribute('data-act');
+    on = a === 'full' ? (!!fsEl() || cfg.fill) : (a === 'rot' ? cfg.rotate : false);
+    cls(els[i], 'on', on);
+    els[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+
 /* ---------- start ---------- */
 function init(hooks) {
-  var btns, i, k;
+  var btns, i;
   H = hooks;
   cls(touch, 'on', TOUCH);
   btns = touch.getElementsByTagName('button');
   for (i = 0; i < btns.length; i++) (function (b) {
-    k = b.getAttribute('data-k');
+    var k = b.getAttribute('data-k');
     if (k) bindHold(b, function () { H.press(k); }, function () { H.release(k); });
   })(btns[i]);
   bindPointer(cv, function (p, e) {
     if (e.preventDefault) e.preventDefault();
     H.tap(canvasPoint(p.x, p.y));
+  });
+  btns = doc.querySelectorAll('[data-act]');
+  for (i = 0; i < btns.length; i++) (function (b) {
+    b.addEventListener('click', function () { doAct(b.getAttribute('data-act')); });
+  })(btns[i]);
+  doc.addEventListener('fullscreenchange', onFsChange);
+  doc.addEventListener('webkitfullscreenchange', onFsChange);
+  /* Esc leaves the fill-screen fallback (real fullscreen handles Esc itself) */
+  doc.addEventListener('keydown', function (e) {
+    if (e.keyCode === 27 && cfg.fill && !fsEl()) { e.preventDefault(); e.stopImmediatePropagation(); leaveFill(); }
   });
   /* no zoom, no long-press menu, no text selection */
   doc.addEventListener('contextmenu', function (e) { e.preventDefault(); });
