@@ -1,4 +1,4 @@
-# Nightlight Choir: Info
+# Nightlite Choir+: Info
 
 | Field | Value |
 |---|---|
