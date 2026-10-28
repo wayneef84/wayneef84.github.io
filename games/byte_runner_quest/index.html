@@ -48,6 +48,14 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 .touch button.down { background: var(--gold); color: #1b1830; border-color: #fff; transform: scale(.94); }
 .touch button small { display: block; font-size: 13px; margin-top: 2px; }
 .touch .turn { display: none; font-size: 15px; }
+.touch button.autotg { width: 72px; height: 72px; font-size: 13px; line-height: 1.25; color: var(--dim); border-color: #2c2750; background: rgba(22, 19, 43, .75); order: -1; }
+.touch button.autotg.on { color: #1b1830; background: var(--gold); border-color: #fff; }
+.stage.lefty .touch button.autotg { order: 9; }
+.autotg small { display: block; font-size: 11px; font-weight: 400; }
+.autorow { display: none; }
+.autorow.on { display: flex; justify-content: center; margin: 8px 0 0; flex: none; }
+.autorow button.autotg { width: 168px; height: 64px; min-width: 64px; font: 700 14px var(--mono); color: var(--dim); background: #1d1938; border: 3px solid var(--line); border-radius: 14px; }
+.autorow button.autotg.on { color: #1b1830; background: var(--gold); border-color: #fff; }
 .stage.auto .touch .dir { display: none; }
 .stage.auto .touch .turn { display: block; }
 .stage.auto .touch button.jump { max-width: 240px; }
@@ -129,6 +137,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
 
     <div class="touch" id="touch">
       <div class="dirs">
+        <button type="button" class="autotg" id="autotg" data-act="auto" aria-label="Auto-run on or off"></button>
         <button type="button" class="dir" data-k="L" aria-label="Move left">&#9664;&#xFE0E;</button>
         <button type="button" class="dir" data-k="R" aria-label="Move right">&#9654;&#xFE0E;</button>
         <button type="button" class="turn" id="turnbtn" aria-label="Turn around">TURN<small>&#9654;&#xFE0E;</small></button>
@@ -137,6 +146,7 @@ canvas { width: 100%; height: auto; display: block; image-rendering: pixelated; 
         <button type="button" class="jump" data-k="J" aria-label="Jump">JUMP</button>
       </div>
     </div>
+    <div class="autorow" id="autorow"></div>
     <div class="note" id="note"></div>
   </div>
 

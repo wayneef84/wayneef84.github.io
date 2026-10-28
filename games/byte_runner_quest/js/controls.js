@@ -11,7 +11,7 @@ var DEF = { rotate: false, fill: false, auto: false, autoDir: 1, left: false, vi
 var cfg = { rotate: DEF.rotate, fill: DEF.fill, auto: DEF.auto, autoDir: DEF.autoDir, left: DEF.left, vibrate: DEF.vibrate, lives: DEF.lives, outPick: DEF.outPick };
 var doc = document, de = doc.documentElement;
 var stage = doc.getElementById('stage'), play = doc.getElementById('play'), scr = doc.getElementById('screen');
-var cv = doc.getElementById('game'), touch = doc.getElementById('touch');
+var cv = doc.getElementById('game'), touch = doc.getElementById('touch'), autorow = doc.getElementById('autorow'), autotg = doc.getElementById('autotg');
 var TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 var H = null;                         /* hooks from game.js */
 var rotNow = false, releasers = [], noteTimer = 0, outTimer = 0;
@@ -61,7 +61,7 @@ function layout() {
   cls(stage, 'narrow', sw < 520);
   if (fill) {
     pw = play.clientWidth; ph = play.clientHeight;
-    availH = land ? ph : ph - touch.offsetHeight;
+    availH = (land ? ph : ph - touch.offsetHeight) - autorow.offsetHeight - (autorow.offsetHeight ? 8 : 0);
     c = Math.min(pw - 16, (availH - 16) * 320 / 176);
     if (c < 120) c = 120;
     scr.style.width = Math.floor(c + 8) + 'px';
@@ -264,6 +264,7 @@ function refresh() {
     cls(els[i], 'on', on);
     els[i].setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  if (autotg) autotg.innerHTML = 'AUTO ' + (cfg.auto ? 'ON' : 'OFF') + (TOUCH ? '' : '<small>press R</small>');
   els = doc.querySelectorAll('[data-st]');
   for (i = 0; i < els.length; i++) {
     a = els[i].parentNode.getAttribute('aria-pressed') === 'true';
@@ -286,6 +287,7 @@ function init(hooks) {
   var btns, i;
   H = hooks;
   cls(touch, 'on', TOUCH);
+  if (!TOUCH && autorow && autotg) { autorow.appendChild(autotg); cls(autorow, 'on', true); }   /* no touch bar: the button sits under the screen */
   btns = touch.getElementsByTagName('button');
   for (i = 0; i < btns.length; i++) (function (b) {
     var k = b.getAttribute('data-k');
@@ -344,6 +346,7 @@ function init(hooks) {
   doc.addEventListener('webkitfullscreenchange', onFsChange);
   /* Esc leaves the fill-screen fallback (real fullscreen handles Esc itself) */
   doc.addEventListener('keydown', function (e) {
+    if (e.keyCode === 82 && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat && !panelOpen && H.getState() === 'play') { e.preventDefault(); doAct('auto'); return; }
     if (e.keyCode === 27 && panelOpen) { e.preventDefault(); e.stopImmediatePropagation(); closePanel(); return; }
     if (e.keyCode === 27 && cfg.fill && !fsEl()) { e.preventDefault(); e.stopImmediatePropagation(); leaveFill(); }
   }, true);
