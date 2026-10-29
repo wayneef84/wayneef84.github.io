@@ -761,23 +761,15 @@
     </style>
 </head>
 <body>
+<script src="../shared/card-nav.js"></script>
+<script>CardNav.mount();</script>
     <header class="header">
         <h1>
-            <a id="btnBackArcade" href="../../../index.html" target="_top" class="settings-btn" title="Back to Arcade" style="text-decoration:none;font-size:0.95rem;">🏠</a>
-            <a id="btnBackCards" href="../index.html?game=blackjack" target="_top" class="settings-btn" title="Card Games Hub" style="text-decoration:none;font-size:0.95rem;">🃏</a>
             <button id="btnRules" class="settings-btn">📖</button>
             <button id="btnHistory" class="settings-btn">📊</button>
             <button id="btnSettings" class="settings-btn">⚙️</button>
             Blackjack
         </h1>
-        <script>
-            if (window.self !== window.top) {
-                var ba = document.getElementById('btnBackArcade');
-                var bc = document.getElementById('btnBackCards');
-                if (ba) ba.style.display = 'none';
-                if (bc) bc.style.display = 'none';
-            }
-        </script>
         <div class="balance">$<span id="balance">1000</span></div>
     </header>
 

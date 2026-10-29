@@ -14,6 +14,12 @@
 
 ## Version History
 
+### v1.0.7-C (Claude) - 2026-10-28 UTC
+**Reasoning:** Card games linked to nothing sideways and several had no way back to the homepage.
+* **[ADDED] games/cards/shared/card-nav.js:** Shared ES5 `CardNav.mount()`. One 44 px strip with Home, Cards and the sibling games, current game marked. Phones fold the games into a "Games" menu. Draws nothing when the page is framed by the hub (the hub already has Home, Cards and the game list).
+* **[CHANGED] blackjack, war, solitaire, big2, euchre, poker/5card, poker/holdem, poker/13card (index.html):** Mount the strip. The old per-page Home and Cards buttons (and their hide-in-frame scripts) on blackjack, war, solitaire, big2 and euchre were replaced by it. Poker variants keep their back-to-poker-menu button. Solitaire, Euchre and Big 2 got a small height rule so the strip does not push the layout.
+* **[CHANGED] games/cards/index.html:** Hub lists 5-Card, Hold'em and 13-Card directly (Poker Menu stays). Active button is matched by game id (was text match, which would highlight two Poker buttons). Mobile menu scrolls. Poker variants count as Poker Hall plays.
+
 ### v1.0.6-C (Claude) - 2026-10-28 UTC
 **Reasoning:** Repair a regression from an earlier merge and wire the Ante buttons.
 * **[FIXED] games/cards/poker/5card/index.html:** The page did not load: an earlier edit had inserted 233 duplicated lines and cut a string in half. Restored the last good version.

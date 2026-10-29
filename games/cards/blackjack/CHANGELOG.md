@@ -5,6 +5,13 @@ Format: [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH)
 
 ---
 
+## [1.0.7] - 2026-10-28
+
+### Changed
+- Navigation: the 🏠 and 🃏 header buttons were replaced by the shared card nav strip (`../shared/card-nav.js`) with Home, Cards and links to the other card games. Nothing is drawn when the hub frames the page.
+
+---
+
 ## [1.0.6] - 2026-01-31
 
 ### Fixed

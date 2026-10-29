@@ -19,26 +19,18 @@
     <script src="rules/klondike.js"></script>
 </head>
 <body>
+<script src="../shared/card-nav.js"></script>
+<script>CardNav.mount();</script>
 
     <div id="game-container">
         <div id="header">
             <div style="display:flex;align-items:center;gap:8px;">
-                <a id="btn-arcade" href="../../../index.html" target="_top" style="color:#fff;text-decoration:none;background:rgba(0,0,0,0.35);padding:6px 10px;border-radius:6px;font-size:0.85rem;font-weight:bold;">🏠 Arcade</a>
-                <a id="btn-cards" href="../index.html?game=solitaire" target="_top" style="color:#fff;text-decoration:none;background:rgba(0,0,0,0.35);padding:6px 10px;border-radius:6px;font-size:0.85rem;font-weight:bold;">🃏 Cards</a>
                 <h1>Solitaire</h1>
             </div>
             <div id="controls">
                 <button id="btn-restart">New Game</button>
             </div>
         </div>
-        <script>
-            if (window.self !== window.top) {
-                var ba = document.getElementById('btn-arcade');
-                var bc = document.getElementById('btn-cards');
-                if (ba) ba.style.display = 'none';
-                if (bc) bc.style.display = 'none';
-            }
-        </script>
 
         <div id="board">
             <div id="top-row">

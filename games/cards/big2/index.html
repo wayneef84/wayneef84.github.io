@@ -46,6 +46,8 @@
             overflow-x: hidden;
             padding-bottom: env(safe-area-inset-bottom);
         }
+        /* Leave room for the shared card nav strip (shared/card-nav.js) */
+        html.has-cardnav body { min-height: calc(100vh - var(--cardnav-h, 0px)); }
 
         /* ================================================================
            HEADER
@@ -646,19 +648,11 @@
     </style>
 </head>
 <body>
+<script src="../shared/card-nav.js"></script>
+<script>CardNav.mount();</script>
 
 <!-- HEADER -->
 <div id="header">
-    <a id="back-btn" href="../../../index.html" target="_top">← Arcade</a>
-    <a id="hub-btn" href="../index.html?game=big2" target="_top" style="color:var(--text-dim);text-decoration:none;font-size:0.85rem;padding:6px 10px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;white-space:nowrap;">🃏 Cards</a>
-    <script>
-        if (window.self !== window.top) {
-            var bb = document.getElementById('back-btn');
-            var hb = document.getElementById('hub-btn');
-            if (bb) bb.style.display = 'none';
-            if (hb) hb.style.display = 'none';
-        }
-    </script>
     <h1>大老二 Big 2</h1>
     <div id="ruleset-badge" onclick="UI.showRulesetModal()">HK Rules</div>
     <button id="settings-btn" onclick="UI.openSettings()" title="Settings">⚙</button>

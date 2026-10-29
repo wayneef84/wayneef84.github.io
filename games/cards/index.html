@@ -122,6 +122,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            max-height: calc(100dvh - 80px);
+            overflow-y: auto;
         }
 
         .menu-close {
@@ -232,10 +234,13 @@
         const GAMES = [
             { id: 'blackjack', name: 'Blackjack', icon: '🃏', path: 'blackjack/index.html' },
             { id: 'war', name: 'War', icon: '⚔️', path: 'war/index.html' },
-            { id: 'poker', name: 'Poker', icon: '♣️', path: 'poker/index.html' },
             { id: 'solitaire', name: 'Solitaire', icon: '♠️', path: 'solitaire/index.html' },
+            { id: 'big2', name: 'Big 2', icon: '🂢', path: 'big2/index.html' },
             { id: 'euchre', name: 'Euchre', icon: '🃏', path: 'euchre/index.html' },
-            { id: 'big2', name: 'Big 2', icon: '🂢', path: 'big2/index.html' }
+            { id: 'poker', name: 'Poker Menu', icon: '♣️', path: 'poker/index.html' },
+            { id: '5card', name: 'Poker 5-Card', icon: '♣️', path: 'poker/5card/index.html' },
+            { id: 'holdem', name: "Hold'em", icon: '♦️', path: 'poker/holdem/index.html' },
+            { id: '13card', name: '13-Card', icon: '♥️', path: 'poker/13card/index.html' }
         ];
 
         let currentGameId = '';
@@ -280,13 +285,14 @@
         function createGameButton(game) {
             const btn = document.createElement('button');
             btn.className = `game-btn ${game.disabled ? 'disabled' : ''}`;
+            btn.setAttribute('data-game', game.id);
             btn.innerHTML = `<span class="game-icon" role="img" aria-label="${game.name} Icon">${game.icon}</span> ${game.name}`;
             // Remove unique ID assignment to allow multiple buttons for same game (desktop/mobile)
             
             if (!game.disabled) {
                 btn.onclick = () => {
                     // Count a play (on-device only). Poker uses the Poker Hall catalog id.
-                    if (window.FongStats) { window.FongStats.recordPlay(game.id === 'poker' ? 'poker-hall' : game.id); }
+                    if (window.FongStats) { window.FongStats.recordPlay(['poker', '5card', 'holdem', '13card'].indexOf(game.id) !== -1 ? 'poker-hall' : game.id); }
                     // Update URL and Force Refresh
                     const newUrl = new URL(window.location);
                     newUrl.searchParams.set('game', game.id);
@@ -316,9 +322,9 @@
             document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
             
             // Highlight active in both lists by matching text content
-            const allButtons = document.querySelectorAll('button');
+            const allButtons = document.querySelectorAll('button[data-game]');
             allButtons.forEach(btn => {
-                if (btn.innerText.includes(game.name)) btn.classList.add('active');
+                if (btn.getAttribute('data-game') === game.id) btn.classList.add('active');
             });
 
             // Update Title
