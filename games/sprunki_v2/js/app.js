@@ -634,7 +634,7 @@
             ['Tap a friend', 'put them on the stage'], ['Tap them again', 'send them home'],
             ['Drag', 'drop a friend on any spot'], ['1 to 9', 'add that friend in the open list'],
             [', and .', 'change the list (Beats, Effects...)'],
-            ['Shift + 1 to 9, Shift + 0', 'jump to pack tab 1 to 10 (1 is All)'], ['Shift + Left or Right', 'step through the pack tabs'], ['Space', 'play or pause'], ['M', 'mute'],
+            ['Shift + 1 to 9, Shift + 0', 'jump to pack tab 1 to 10 (1 is All)'], ['Shift + Left or Right', 'step through all 12 pack tabs (Candy and Bubblegum Pop too)'], ['Space', 'play or pause'], ['M', 'mute'],
             ['Z', 'undo'], ['R', 'reset the stage'], ['S and L', 'save and load'], ['Esc', 'close this or leave spooky mode']
         ], i;
         for (i = 0; i < rows.length; i++) {

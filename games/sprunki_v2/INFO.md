@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | v2.1.0 |
+| Version | v2.2.0 |
 | Status | Draft |
 | Category | Arcade |
 | Created | 2026-10-27 |
 | Entry point | `index.html` |
-| Scripts | `js/synth.js`, `js/art.js`, `js/audio-classic.js`, `js/packs/*.js` (10 packs), `js/app.js` |
+| Scripts | `js/synth.js`, `js/art.js`, `js/audio-classic.js`, `js/packs/*.js` (11 packs), `js/app.js` |
 | JS standard | Strict ES5 |
 | Shared libraries | None |
 | External requests | None |
@@ -34,12 +34,12 @@ What v2 changes for a young child:
 - Audio is slower and lower (rate 0.84, low-pass 1.8 kHz) instead of faster, with the master volume capped at 55 percent of the normal level and a compressor in the chain.
 
 ## Tabs, the All tab and shortcuts
-- The top row holds the pack tabs in this order: All, Classic, Spring, Summer, Autumn, Winter, Halloween, Aqua, Toxic, Robo, Candy. The row under the stage holds the list tabs inside a pack (Beats, Effects, Melodies, Voices, Mr. Black). The All tab adds one more list tab, "Everyone", which is its default.
+- The top row holds the pack tabs in this order: All, Classic, Spring, Summer, Autumn, Winter, Halloween, Aqua, Toxic, Robo, Candy, Bubblegum Pop. The row under the stage holds the list tabs inside a pack (Beats, Effects, Melodies, Voices, Mr. Black). The All tab adds one more list tab, "Everyone", which is its default.
 - All is a virtual pack built at start-up from every real pack (`id: 'all'`). It has a neutral light look of its own (it does not copy the last season). Every friend in the tray has a label box with its pack name (its TYPE) and a border in the pack color (`color` field of the pack). Mr. Black is labelled "Mr. Black" in grey and is reachable from the Everyone and Mr. Black list tabs. Tapping, dragging, undo, save and load work as in any pack. A saved mix made in All has `pack: 'all'` and restores a mixed stage.
-- Shift + 1 to 9 and Shift + 0 jump to pack tab 1 to 10 (1 is All). Shift + Left and Shift + Right step through the pack tabs and wrap. The code uses `event.code` (`Digit1`..`Digit0`, `Numpad0`..`Numpad9`) because Shift changes `event.key`. Tab 11 and later (Candy) are reached with the arrows or a tap. The shortcuts are ignored in inputs and while a dialog is open. During spooky mode they only show "Tap Exit spooky mode first" (a stray key must not end it). Plain keys are unchanged: 1 to 9 add the nth friend of the open list (Shift is not held, so there is no clash), `,` and `.` change the list tab, Space, M, Z, R, S, L, ? and Esc as before. The small badge (for example "⇧3") on each pack tab shows only on devices with a mouse.
+- Shift + 1 to 9 and Shift + 0 jump to pack tab 1 to 10 (1 is All). Shift + Left and Shift + Right step through the pack tabs and wrap. The code uses `event.code` (`Digit1`..`Digit0`, `Numpad0`..`Numpad9`) because Shift changes `event.key`. Tabs 11 and 12 (Candy, Bubblegum Pop) are reached with the arrows or a tap. The shortcuts are ignored in inputs and while a dialog is open. During spooky mode they only show "Tap Exit spooky mode first" (a stray key must not end it). Plain keys are unchanged: 1 to 9 add the nth friend of the open list (Shift is not held, so there is no clash), `,` and `.` change the list tab, Space, M, Z, R, S, L, ? and Esc as before. The small badge (for example "⇧3") on each pack tab shows only on devices with a mouse.
 
 ## Mixed-pack tempo rule
-Packs have different tempos (Classic 100, Spring to Halloween 100, Aqua 92, Toxic 108, Robo 104, Candy 96 BPM). One stage has one tempo, `state.bpm`:
+Packs have different tempos (Classic 100, Spring to Halloween 100, Aqua 92, Toxic 108, Robo 104, Candy 96, Bubblegum Pop 104 BPM). One stage has one tempo, `state.bpm`:
 1. When a friend is placed on an empty stage, the stage tempo becomes that friend's pack tempo. The tempo stays until the stage is empty again (Reset, removing everyone, a pack tab change, undo or load set it again from the saved mix).
 2. Synthesized friends are rendered at the stage tempo (the buffer is cached per friend and tempo), so their loops always fill an exact number of bars.
 3. Fixed loops (Classic AAC files) keep their own 100 BPM bar. When the stage tempo differs they are sped up or slowed down by `stageBpm / 100` (at most 8 percent with the current packs, a very small pitch change) so the bar lines still match. At 100 BPM they play unchanged.
@@ -62,7 +62,7 @@ A character:
       synth: { kind, ... } }                                   // played by js/synth.js (see header of that file)
       // Classic style instead: img: 'path.svg', audio: 'key in SprunkiV2Audio'
 
-`id` must be unique across all packs (the All tab and saved mixes look characters up by id). `art` options: body round, tall, drop, wide, square, ghost. Eyes big, happy, sleepy, dots. Mouth open, o, grin, smile. Accessories flower, sprout, leaf, shades, beanie, scarf, witchhat, pumpkin, bow, antenna, ears, wings, sun, snowcap, tophat. Synth kinds drum, tone, voice, noise, layers; loops are 8 beats (16 steps). At start-up the app adds `packId` and `bpm` to every character. Nothing in a pack touches the DOM or audio, so it can be reused by another game.
+`id` must be unique across all packs (the All tab and saved mixes look characters up by id). `art` options: body round, tall, drop, wide, square, ghost, heart. Eyes big, happy, sleepy, dots. Mouth open, o, grin, smile. Accessories flower, sprout, leaf, shades, beanie, scarf, witchhat, pumpkin, bow, antenna, ears, wings, sun, snowcap, tophat, lightstick, horn, gumball, sparkle. Synth kinds drum, tone, voice, noise, layers; loops are 8 beats (16 steps). At start-up the app adds `packId` and `bpm` to every character. Nothing in a pack touches the DOM or audio, so it can be reused by another game.
 
 ## Research: later generations of the Sprunki fan game
 Question: what are the later phases called and what themes do they use (fan wikis and fan sites only, not Chisgule).
@@ -82,4 +82,18 @@ What I chose (all original characters, no art or sounds copied):
 | Toxic | Requested. Silly lime slime and lab goo, only squelches and fizzes, no skulls, hazard signs or violence. 108 BPM |
 | Robo | Based on the documented Robot mod idea, redrawn as friendly beeping robots. 104 BPM |
 | Candy | From the bright and cute fan mods (Cute Time, Happy Friends). Sweet treats. 96 BPM |
+| Bubblegum Pop | Requested for a young player who loves pink, unicorns and pop performers with glowing lightsticks. Everything is a generic idea: a pink trio in matching outfits with glow lightsticks, a unicorn, a bubblegum-machine robot, a heart drummer, a glitter cat. No real group, character or show was used as a model. 104 BPM, loops on C major pentatonic so they blend with the other packs |
 Left out: every horror, corrupted or infection generation.
+
+### Bubblegum Pop friends
+| Friend | List | Look | Sound |
+|---|---|---|---|
+| Lubby | Beats | pink heart with sparkles | kick plus clap backbeat |
+| Glittens | Beats | glitter cat with pink ears | offbeat hats and a few bright plucks |
+| Starlie | Effects | trio member, lilac lightstick | high bell notes with tiny twinkles (glow-stick sparkle) |
+| Swooshie | Effects | pale pink bubble with stars | airy swell with bubble pops |
+| Gumzy | Melodies | bubblegum-machine robot | round bouncy bass |
+| Lilacorn | Melodies | lilac unicorn, gold horn, pastel mane | flowing bell tune |
+| Dazzi | Voices | trio member, mint lightstick | sung pop hook (eh, ah) |
+| Honeyoo | Voices | trio member, butter-yellow lightstick | three-part "ooh" pad, C then A minor |
+Name checks and how each asset was made: `ASSET_LOG.md`.
