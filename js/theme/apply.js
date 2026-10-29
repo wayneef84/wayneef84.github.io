@@ -22,7 +22,12 @@
 
     var SKINS = [
         { id: 'classic', name: 'Classic', blurb: 'The F.O.N.G. look you know.' },
-        { id: 'print-shop', name: 'Print Shop', blurb: 'Zine and risograph. Sticker cards on paper.' }
+        { id: 'print-shop', name: 'Print Shop', blurb: 'Zine and risograph. Sticker cards on paper.' },
+        { id: 'cabinet', name: 'Cabinet of Drawers', blurb: 'Index-card cabinet. Drawers, tabs and labelled cards.' },
+        { id: 'control-panel', name: 'Control Panel', blurb: 'Hardware panel. Modules, LED dots and knob toggles.' },
+        { id: 'metro-map', name: 'Metro Map', blurb: 'Transit map. Each group is a colored line, each game a station.' },
+        { id: 'handheld', name: 'Handheld', blurb: 'Retro handheld LCD. Pixel type and a little blip.' },
+        { id: 'scrapbook', name: 'Scrapbook', blurb: 'Corkboard. Taped cards, notes and doodles.' }
     ];
 
     var persistent = true;

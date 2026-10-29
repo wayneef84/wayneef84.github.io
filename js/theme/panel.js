@@ -30,7 +30,9 @@
         ['accent', 'Accent'], ['accent2', 'Accent 2'], ['border', 'Borders'], ['games', 'Games group'],
         ['tools', 'Tools group'], ['wos', 'Whiteout Survival group'], ['more', 'More group']];
     var FONT_CHOICES = [['', 'Skin default'], ['system', 'System'], ['inter', 'Inter'], ['grotesk', 'Space Grotesk'],
-        ['mono', 'Space Mono'], ['serif', 'Serif (system)']];
+        ['mono', 'Space Mono'], ['serif', 'Serif (system)'],
+        ['fraunces', 'Fraunces'], ['courier-prime', 'Courier Prime'], ['barlow-condensed', 'Barlow Condensed'],
+        ['plex-mono', 'IBM Plex Mono'], ['nunito', 'Nunito'], ['silkscreen', 'Silkscreen'], ['caveat', 'Caveat']];
     var BEHAVIOR_LABELS = [
         ['sortMostPlayed', 'Sort most played first', 'In Pinned and your own groups, the games you play most come first.'],
         ['showPlayCounts', 'Show play counts', 'Adds "12 plays" to cards in Pinned, your groups and search.'],

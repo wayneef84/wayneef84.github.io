@@ -48,7 +48,7 @@
     for (var i = 0; i < RAW.length; i++) LIST.push({ id: RAW[i].id, name: RAW[i].name, tokens: complete(RAW[i]) });
 
     /** Palette used by each skin when the config sets no colors. */
-    var SKIN_DEFAULT = { 'classic': 'classic', 'print-shop': 'tomato-soup' };
+    var SKIN_DEFAULT = { 'classic': 'classic', 'print-shop': 'tomato-soup', 'cabinet': 'sunday-paper', 'control-panel': 'night-shift', 'metro-map': 'laundromat', 'handheld': 'mint-chip', 'scrapbook': 'pond-light' };
 
     function get(id) {
         for (var k = 0; k < LIST.length; k++) if (LIST[k].id === id) return LIST[k];

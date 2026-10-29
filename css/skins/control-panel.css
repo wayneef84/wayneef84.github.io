@@ -1,0 +1,653 @@
+/* Control Panel skin: a hardware or synth rack. Every group is a module with a
+   bevelled inset border and four screws. Cards are flat panel keys with a small
+   LED that glows on hover, focus and for NEW items. The Customize button is a
+   knurled knob, Fun Mode and See all are flat switches. Silkscreen labels in
+   uppercase. Type: Barlow Condensed (labels, titles) and IBM Plex Mono (text).
+   Every rule is scoped to html[data-skin="control-panel"] (specificity beats
+   [data-theme="fun"], so ?mode=fun only changes wording here). Colors default to
+   the Night Shift palette and follow any palette or per-color change through the
+   same CSS variables the engine sets inline. */
+
+@font-face { font-family: 'Barlow Condensed'; src: url('../../assets/fonts/BarlowCondensed-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Barlow Condensed'; src: url('../../assets/fonts/BarlowCondensed-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('../../assets/fonts/IBMPlexMono-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('../../assets/fonts/IBMPlexMono-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+html[data-skin="control-panel"] {
+  --bg-base: #14110f;
+  --bg-surface: #201b18;
+  --bg-surface-hover: #201b18;
+  --bg-featured: transparent;
+  --text-primary: #f0e6d8;
+  --text-secondary: #a3968a;
+  --text-muted: #a3968a;
+  --accent-primary: #ff8a3d;
+  --accent-secondary: #8fd694;
+  --accent-glow: rgba(255, 138, 61, 0.15);
+  --card-border: #44403b;
+  --card-border-hover: var(--text-secondary);
+  --card-shadow-hover: none;
+  --ink: #f0e6d8;
+  --line: #44403b;
+  --on-accent: #000000;
+  --on-accent2: #000000;
+  --btn-bg: var(--accent-primary);
+  --btn-color: var(--on-accent);
+  --btn-shadow: none;
+  --filter-active-bg: var(--accent-primary);
+  --filter-active-color: var(--on-accent);
+  --toggle-color: var(--text-primary);
+  --toggle-hover: var(--accent-primary);
+  --grp-games: #ff8a3d;
+  --grp-tools: #8fd694;
+  --grp-wos: #c7b068;
+  --grp-more: #a3968a;
+  --font-ui: 'IBM Plex Mono', ui-monospace, Menlo, 'Courier New', monospace;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, 'Courier New', monospace;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --nav-border: 0;
+  --featured-border: 0;
+  /* The panel's own tones. Fallbacks here, palette-mixed values in @supports below. */
+  --cp-face: var(--bg-surface);
+  --cp-hi: rgba(255, 255, 255, 0.2);
+  --cp-shade: rgba(0, 0, 0, 0.4);
+  --cp-deep: rgba(0, 0, 0, 0.6);
+  --cp-grain: rgba(255, 255, 255, 0.03);
+  --cp-led: var(--accent-primary);
+  --cp-led-off: #3b2a1d;
+  --cp-mod: var(--accent-primary);
+  --cp-d: var(--t-density, 1);
+  --cp-bw: var(--t-bw, 1px);
+  --cp-key-sh: 0 3px 0 var(--cp-deep);
+  --cp-key-sh-down: inset 0 3px 6px var(--cp-deep);
+}
+@supports (color: color-mix(in srgb, red, blue)) {
+  html[data-skin="control-panel"] {
+    --cp-face: color-mix(in srgb, var(--bg-base) 55%, var(--bg-surface));
+    --cp-led-off: color-mix(in srgb, var(--accent-primary) 20%, var(--bg-base));
+  }
+}
+html[data-skin="control-panel"][data-shadow="soft"] { --cp-key-sh: 0 5px 10px -3px var(--cp-deep); }
+html[data-skin="control-panel"][data-shadow="hard"] { --cp-key-sh: 3px 3px 0 var(--ink); }
+html[data-skin="control-panel"][data-shadow="none"] { --cp-key-sh: none; }
+
+/* ── Rack: brushed grain, mounting rails with holes on wide screens ────── */
+html[data-skin="control-panel"] body {
+  background-color: var(--bg-base);
+  background-image: repeating-linear-gradient(0deg, var(--cp-grain) 0 1px, transparent 1px 3px);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+@media (min-width: 900px) {
+  html[data-skin="control-panel"] body {
+    background-image:
+      radial-gradient(circle at 14px 18px, var(--bg-base) 3.5px, var(--cp-shade) 4px, transparent 5px),
+      radial-gradient(circle at 14px 18px, var(--bg-base) 3.5px, var(--cp-shade) 4px, transparent 5px),
+      linear-gradient(90deg, var(--cp-face), var(--cp-face) 26px, var(--cp-shade) 26px, var(--cp-shade) 28px),
+      linear-gradient(270deg, var(--cp-face), var(--cp-face) 26px, var(--cp-shade) 26px, var(--cp-shade) 28px),
+      repeating-linear-gradient(0deg, var(--cp-grain) 0 1px, transparent 1px 3px);
+    background-size: 28px 36px, 28px 36px, 28px 100%, 28px 100%, auto;
+    background-position: left top, right top, left top, right top, 0 0;
+    background-repeat: repeat-y, repeat-y, no-repeat, no-repeat, repeat;
+  }
+}
+html[data-skin="control-panel"] a:focus-visible,
+html[data-skin="control-panel"] button:focus-visible,
+html[data-skin="control-panel"] .hub-search:focus {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+/* ── Top plate ─────────────────────────────────────────────────────────── */
+html[data-skin="control-panel"] .global-nav {
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--cp-shade);
+  box-shadow: inset 0 1px 0 var(--cp-hi), inset 0 -1px 0 var(--cp-hi), 0 4px 0 var(--cp-deep);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-skin="control-panel"] .nav-brand {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 5vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-shadow: none;
+  animation: none;
+  gap: 0.6rem;
+}
+/* Power LED beside the name */
+html[data-skin="control-panel"] .nav-brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--cp-led);
+  box-shadow: 0 0 0 2px var(--cp-face), 0 0 0 3px var(--cp-hi), 0 0 9px 2px var(--cp-led);
+}
+html[data-skin="control-panel"] .nav-right { flex-wrap: wrap; gap: 0.6rem; }
+/* Plays counter: a little readout window */
+html[data-skin="control-panel"] .stats-container {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  opacity: 1;
+  background: var(--bg-base);
+  border: 1px solid var(--cp-shade);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 2px 5px var(--cp-deep), 0 1px 0 var(--cp-hi);
+  padding: 0.4rem 0.7rem;
+}
+/* Fun Mode: a flat switch with a slot and a thumb */
+html[data-skin="control-panel"] .theme-toggle-link {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: var(--cp-bw) solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 var(--cp-hi), var(--cp-key-sh);
+  padding: 0.4rem 0.9rem 0.4rem 3.1rem;
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+html[data-skin="control-panel"] .theme-toggle-link::before {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  width: 28px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, var(--cp-hi), var(--cp-hi)) 3px 3px / 10px 8px no-repeat,
+    var(--bg-base);
+  box-shadow: inset 0 2px 3px var(--cp-deep), 0 0 0 1px var(--cp-shade);
+}
+html[data-skin="control-panel"] .theme-toggle-link:hover { color: var(--text-primary); border-color: var(--text-secondary); background: var(--bg-surface); }
+html[data-skin="control-panel"] .theme-toggle-link:active { transform: translateY(2px); box-shadow: var(--cp-key-sh-down); }
+/* Customize: a knurled knob on phones, a flat switch from 560px up */
+html[data-skin="control-panel"] .theme-open {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  background:
+    radial-gradient(circle at 50% 50%, var(--accent-primary) 0 64%, transparent 65%),
+    repeating-conic-gradient(var(--cp-shade) 0 4deg, transparent 4deg 10deg) center / 100% 100%;
+  background-color: var(--accent-primary);
+  border: 2px solid var(--cp-deep);
+  border-radius: 50%;
+  box-shadow: inset 0 2px 0 var(--cp-hi), 0 0 0 3px var(--cp-face), 0 0 0 4px var(--cp-hi), 0 4px 0 var(--cp-deep);
+  filter: none;
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+/* Pointer notch on the knob */
+html[data-skin="control-panel"] .theme-open::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 3px;
+  height: 9px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: var(--on-accent);
+  pointer-events: none;
+}
+html[data-skin="control-panel"] .theme-open:hover { filter: none; box-shadow: inset 0 2px 0 var(--cp-hi), 0 0 0 3px var(--cp-face), 0 0 0 4px var(--accent-primary), 0 4px 0 var(--cp-deep); }
+html[data-skin="control-panel"] .theme-open:active { transform: translateY(3px); box-shadow: inset 0 2px 0 var(--cp-hi), 0 0 0 3px var(--cp-face), 0 0 0 4px var(--cp-hi), 0 1px 0 var(--cp-deep); }
+html[data-skin="control-panel"] .global-nav a:focus-visible,
+html[data-skin="control-panel"] .global-nav button:focus-visible { outline-color: var(--text-primary); }
+@media (min-width: 560px) {
+  html[data-skin="control-panel"] .theme-open {
+    width: auto;
+    min-width: 48px;
+    padding: 0 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-primary);
+    box-shadow: inset 0 1px 0 var(--cp-hi), 0 0 0 1px var(--cp-shade), var(--cp-key-sh);
+  }
+  html[data-skin="control-panel"] .theme-open::after { display: none; }
+  html[data-skin="control-panel"] .theme-open:hover { box-shadow: inset 0 1px 0 var(--cp-hi), 0 0 0 1px var(--text-primary), var(--cp-key-sh); }
+  html[data-skin="control-panel"] .theme-open:active { box-shadow: inset 0 3px 6px var(--cp-deep), 0 0 0 1px var(--cp-shade); }
+}
+
+/* ── Modules: one per group ────────────────────────────────────────────── */
+html[data-skin="control-panel"] #home-groups {
+  counter-reset: cp-mod;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(1.4rem * var(--cp-d));
+  width: min(92%, 1180px);
+  margin: calc(1.6rem * var(--cp-d)) auto;
+}
+@media (min-width: 900px) {
+  html[data-skin="control-panel"] #home-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html[data-skin="control-panel"] #home-groups > :first-child,
+  html[data-skin="control-panel"] #home-groups > :last-child:nth-child(even) { grid-column: 1 / -1; }
+}
+html[data-skin="control-panel"] #home-groups .nav-section {
+  position: relative;
+  counter-increment: cp-mod;
+  margin: 0;
+  padding: calc(1.3rem * var(--cp-d)) calc(1.4rem * var(--cp-d)) calc(1.3rem * var(--cp-d));
+  background-color: var(--cp-face);
+  background-image: repeating-linear-gradient(90deg, var(--cp-grain) 0 1px, transparent 1px 4px);
+  border: var(--cp-bw) solid var(--cp-deep);
+  border-radius: var(--radius-md);
+  box-shadow: inset 1px 1px 0 var(--cp-hi), inset -1px -1px 0 var(--cp-shade), 0 0 0 1px var(--cp-shade), var(--cp-key-sh);
+  min-width: 0;
+}
+html[data-skin="control-panel"] .nav-section-games { --cp-mod: var(--grp-games); }
+html[data-skin="control-panel"] .nav-section-tools { --cp-mod: var(--grp-tools); }
+html[data-skin="control-panel"] .nav-section-wos { --cp-mod: var(--grp-wos); }
+html[data-skin="control-panel"] .nav-section-more { --cp-mod: var(--grp-more); }
+/* Screws: top pair on ::before, bottom pair on ::after. A slot line over a domed disc. */
+html[data-skin="control-panel"] #home-groups .nav-section::before,
+html[data-skin="control-panel"] #home-groups .nav-section::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 100%;
+  top: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 9px 9px, 9px 9px, 9px 9px, 9px 9px;
+}
+html[data-skin="control-panel"] #home-groups .nav-section::before {
+  background-image:
+    linear-gradient(35deg, transparent 44%, var(--cp-deep) 44%, var(--cp-deep) 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--cp-hi), var(--text-secondary) 45%, var(--cp-deep) 100%),
+    linear-gradient(-50deg, transparent 44%, var(--cp-deep) 44%, var(--cp-deep) 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--cp-hi), var(--text-secondary) 45%, var(--cp-deep) 100%);
+  background-position: left 8px top 8px, left 8px top 8px, right 8px top 8px, right 8px top 8px;
+}
+html[data-skin="control-panel"] #home-groups .nav-section::after {
+  background-image:
+    linear-gradient(-20deg, transparent 44%, var(--cp-deep) 44%, var(--cp-deep) 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--cp-hi), var(--text-secondary) 45%, var(--cp-deep) 100%),
+    linear-gradient(70deg, transparent 44%, var(--cp-deep) 44%, var(--cp-deep) 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--cp-hi), var(--text-secondary) 45%, var(--cp-deep) 100%);
+  background-position: left 8px bottom 8px, left 8px bottom 8px, right 8px bottom 8px, right 8px bottom 8px;
+}
+
+/* Silkscreen header with a tick scale underneath */
+html[data-skin="control-panel"] .section-head {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0 0 calc(1.1rem * var(--cp-d));
+  padding: 0.2rem 0.6rem 0.9rem;
+  background-image:
+    repeating-linear-gradient(90deg, var(--cp-mod) 0 2px, transparent 2px 10px),
+    linear-gradient(var(--cp-mod), var(--cp-mod));
+  background-size: 100% 7px, 100% 2px;
+  background-position: left bottom, left bottom;
+  background-repeat: no-repeat;
+}
+html[data-skin="control-panel"] .nav-section-title,
+html[data-skin="control-panel"] [data-theme="fun"] .nav-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 5.5vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+html[data-skin="control-panel"] #home-groups .nav-section-title::before {
+  content: counter(cp-mod, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  border: 1px solid var(--text-secondary);
+  border-left: 5px solid var(--cp-mod);
+  border-radius: 2px;
+  padding: 0.25rem 0.45rem;
+}
+/* See all: flat switch */
+html[data-skin="control-panel"] .section-all {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: var(--cp-bw) solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 var(--cp-hi), var(--cp-key-sh);
+  padding: 0.4rem 1rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+html[data-skin="control-panel"] .section-all:hover { text-decoration: none; color: var(--text-primary); border-color: var(--cp-mod); box-shadow: inset 0 1px 0 var(--cp-hi), 0 0 0 1px var(--cp-mod), var(--cp-key-sh); }
+html[data-skin="control-panel"] .section-all:active { transform: translateY(2px); box-shadow: var(--cp-key-sh-down); }
+
+/* ── Key grid ──────────────────────────────────────────────────────────── */
+html[data-skin="control-panel"] .nav-grid,
+html[data-skin="control-panel"] .game-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: calc(0.9rem * var(--cp-d));
+  padding: 0;
+}
+html[data-skin="control-panel"] .nav-grid > *,
+html[data-skin="control-panel"] .game-grid > * { min-width: 0; }
+html[data-skin="control-panel"] .search-results .game-grid { margin-bottom: 1.5rem; }
+
+/* ── Panel keys ────────────────────────────────────────────────────────── */
+html[data-skin="control-panel"] .nav-card,
+html[data-skin="control-panel"] .featured-app-card,
+html[data-skin="control-panel"] .game-card,
+html[data-skin="control-panel"] [data-theme="fun"] .nav-card,
+html[data-skin="control-panel"] [data-theme="fun"] .featured-app-card,
+html[data-skin="control-panel"] [data-theme="fun"] .game-card {
+  position: relative;
+  background-color: var(--bg-surface);
+  background-image: linear-gradient(180deg, var(--cp-hi) 0, transparent 14%);
+  color: var(--text-primary);
+  border: var(--cp-bw) solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: calc(1rem * var(--cp-d)) calc(2.2rem * var(--cp-d)) calc(0.9rem * var(--cp-d)) calc(1rem * var(--cp-d));
+  box-shadow: inset 0 1px 0 var(--cp-hi), var(--cp-key-sh);
+  transform: translateY(0);
+  text-decoration: none;
+  transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, border-color 0.15s;
+}
+html[data-skin="control-panel"] .nav-card { gap: 0.8rem; min-height: calc(92px * var(--cp-d)); }
+html[data-skin="control-panel"] .game-card { min-height: calc(120px * var(--cp-d)); gap: 0.5rem; }
+html[data-skin="control-panel"] .nav-section-games .nav-card,
+html[data-skin="control-panel"] .nav-section-tools .nav-card,
+html[data-skin="control-panel"] .nav-section-wos .nav-card,
+html[data-skin="control-panel"] .nav-section-more .nav-card { --cp-led: var(--cp-mod); }
+html[data-skin="control-panel"] .nav-card[class*="nav-card-"],
+html[data-skin="control-panel"] .featured-card-games,
+html[data-skin="control-panel"] .featured-md-reader { border-left: var(--cp-bw) solid var(--card-border); }
+html[data-skin="control-panel"] .nav-card-all[class*="nav-card-"] { border: var(--cp-bw) dashed var(--text-secondary); }
+html[data-skin="control-panel"] .just-added-card { border-color: var(--card-border); }
+
+/* LED: dark dot in a bezel. Glows on hover, focus and for NEW items. */
+html[data-skin="control-panel"] .nav-card::after,
+html[data-skin="control-panel"] .featured-app-card::after,
+html[data-skin="control-panel"] .game-card::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--cp-led-off);
+  box-shadow: inset 0 1px 2px var(--cp-deep), 0 0 0 2px var(--cp-face), 0 0 0 3px var(--cp-shade), 0 0 0 0 transparent;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+html[data-skin="control-panel"] .nav-card:hover::after,
+html[data-skin="control-panel"] .featured-app-card:hover::after,
+html[data-skin="control-panel"] .game-card:hover::after,
+html[data-skin="control-panel"] .nav-card:focus-visible::after,
+html[data-skin="control-panel"] .featured-app-card:focus-visible::after,
+html[data-skin="control-panel"] .game-card:focus-visible::after,
+html[data-skin="control-panel"] .nav-card:active::after,
+html[data-skin="control-panel"] .game-card:active::after,
+html[data-skin="control-panel"] .featured-app-card:active::after,
+html[data-skin="control-panel"] .just-added-card::after,
+html[data-skin="control-panel"] .game-card:has(.badge-new)::after {
+  background: var(--cp-led);
+  box-shadow: inset 0 1px 1px var(--cp-hi), 0 0 0 2px var(--cp-face), 0 0 0 3px var(--cp-shade), 0 0 10px 3px var(--cp-led);
+  animation: cp-flick 0.28s steps(3, end) 1;
+}
+html[data-skin="control-panel"] .game-card:has(.badge-new):not(:hover):not(:focus-visible)::after,
+html[data-skin="control-panel"] .just-added-card:not(:hover):not(:focus-visible)::after { animation: cp-breathe 2.8s ease-in-out infinite; }
+@keyframes cp-flick { 0% { opacity: 0.3; } 40% { opacity: 1; } 60% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes cp-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+html[data-skin="control-panel"] .nav-card:hover,
+html[data-skin="control-panel"] .featured-app-card:hover,
+html[data-skin="control-panel"] .game-card:hover,
+html[data-skin="control-panel"] .nav-card:focus-visible,
+html[data-skin="control-panel"] .featured-app-card:focus-visible,
+html[data-skin="control-panel"] .game-card:focus-visible,
+html[data-skin="control-panel"] [data-theme="fun"] .nav-card:hover,
+html[data-skin="control-panel"] [data-theme="fun"] .game-card:hover {
+  transform: translateY(0);
+  border-color: var(--cp-led);
+  background-color: var(--bg-surface);
+  box-shadow: inset 0 1px 0 var(--cp-hi), 0 0 0 1px var(--cp-led), var(--cp-key-sh);
+}
+/* Quick press-in */
+html[data-skin="control-panel"] .nav-card:active,
+html[data-skin="control-panel"] .featured-app-card:active,
+html[data-skin="control-panel"] .game-card:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 3px 6px var(--cp-deep), 0 0 0 1px var(--cp-led);
+}
+
+/* Lens bezel for the icon */
+html[data-skin="control-panel"] .nav-card-icon,
+html[data-skin="control-panel"] .featured-app-icon,
+html[data-skin="control-panel"] .card-icon,
+html[data-skin="control-panel"] [data-theme="fun"] .card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.45rem;
+  line-height: 1;
+  border-radius: 50%;
+  background: var(--bg-base);
+  box-shadow: inset 0 2px 5px var(--cp-deep), 0 0 0 2px var(--cp-shade), 0 1px 0 2px var(--cp-hi);
+}
+html[data-skin="control-panel"] .featured-app-icon { width: 3.6rem; height: 3.6rem; font-size: 1.9rem; }
+html[data-skin="control-panel"] .card-icon { width: 2.5rem; height: 2.5rem; font-size: 1.25rem; }
+html[data-skin="control-panel"] .card-top { justify-content: flex-start; gap: 0.8rem; }
+
+/* Silkscreen text */
+html[data-skin="control-panel"] .nav-card-title,
+html[data-skin="control-panel"] .featured-app-title,
+html[data-skin="control-panel"] .game-title,
+html[data-skin="control-panel"] [data-theme="fun"] .nav-card-title,
+html[data-skin="control-panel"] [data-theme="fun"] .featured-app-title,
+html[data-skin="control-panel"] [data-theme="fun"] .game-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  line-height: 1.05;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+html[data-skin="control-panel"] .featured-app-title { font-size: 1.7rem; margin: 0 0 0.4rem; }
+html[data-skin="control-panel"] .nav-card-count,
+html[data-skin="control-panel"] .featured-app-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0.35rem 0 0;
+}
+html[data-skin="control-panel"] .nav-card-desc,
+html[data-skin="control-panel"] .featured-app-desc,
+html[data-skin="control-panel"] .game-desc,
+html[data-skin="control-panel"] [data-theme="fun"] .game-desc {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0.4rem 0 0;
+}
+html[data-skin="control-panel"] .featured-app-btn,
+html[data-skin="control-panel"] [data-theme="fun"] .featured-app-btn {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--cp-led);
+  padding: 0.3rem 0 0.1rem;
+}
+html[data-skin="control-panel"] .game-plays { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); }
+html[data-skin="control-panel"] .card-parent { color: var(--text-secondary); }
+html[data-skin="control-panel"] .game-meta,
+html[data-skin="control-panel"] [data-theme="fun"] .game-meta { font-family: var(--font-mono); color: var(--text-secondary); border-top: 1px solid var(--card-border); }
+html[data-skin="control-panel"] .category-tag,
+html[data-skin="control-panel"] [data-theme="fun"] .category-tag {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 2px;
+  padding: 2px 7px;
+}
+html[data-skin="control-panel"] .badge-new,
+html[data-skin="control-panel"] [data-theme="fun"] .badge-new {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--accent-primary);
+  border-radius: 2px;
+  padding: 1px 6px;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* ── Featured, Just added ──────────────────────────────────────────────── */
+html[data-skin="control-panel"] .featured-apps,
+html[data-skin="control-panel"] .just-added {
+  width: min(92%, 1180px);
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+html[data-skin="control-panel"] .featured-apps { padding-top: calc(1.8rem * var(--cp-d)); gap: calc(1.2rem * var(--cp-d)); }
+html[data-skin="control-panel"] .just-added { padding-top: calc(1.8rem * var(--cp-d)); }
+html[data-skin="control-panel"] .just-added-grid { gap: calc(1.2rem * var(--cp-d)); }
+html[data-skin="control-panel"] .just-added .nav-section-title,
+html[data-skin="control-panel"] .search-results .nav-section-title { font-size: 1.5rem; }
+
+/* ── Search: an input window ───────────────────────────────────────────── */
+html[data-skin="control-panel"] .home-search {
+  position: relative;
+  width: min(92%, 1180px);
+  margin: calc(1.4rem * var(--cp-d)) auto 0;
+  padding: 1rem 1.2rem 0.6rem;
+  background-color: var(--cp-face);
+  border: var(--cp-bw) solid var(--cp-deep);
+  border-radius: var(--radius-md);
+  box-shadow: inset 1px 1px 0 var(--cp-hi), inset -1px -1px 0 var(--cp-shade), 0 0 0 1px var(--cp-shade), var(--cp-key-sh);
+}
+html[data-skin="control-panel"] .home-search::before {
+  content: "INPUT / SEARCH";
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  pointer-events: none;
+}
+html[data-skin="control-panel"] .hub-search {
+  font-family: var(--font-mono);
+  min-height: 48px;
+  max-width: none;
+  color: var(--text-primary);
+  caret-color: var(--accent-primary);
+  background: var(--bg-base);
+  border: 1px solid var(--cp-shade);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 3px 7px var(--cp-deep), 0 1px 0 var(--cp-hi);
+  padding: 0.6rem 0.8rem;
+}
+html[data-skin="control-panel"] .hub-search::placeholder { color: var(--text-secondary); opacity: 1; }
+html[data-skin="control-panel"] .hub-search:focus { border-color: var(--accent-primary); }
+html[data-skin="control-panel"] .search-results { width: min(92%, 1180px); margin: 0 auto; padding: 1.4rem 0 0; }
+html[data-skin="control-panel"] .new-label { font-family: var(--font-display); font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--text-secondary); }
+html[data-skin="control-panel"] .new-chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: var(--cp-bw) solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 var(--cp-hi), var(--cp-key-sh);
+  transition: transform 0.06s;
+}
+html[data-skin="control-panel"] .new-chip:hover { border-color: var(--accent-primary); }
+html[data-skin="control-panel"] .new-chip:active { transform: translateY(2px); box-shadow: var(--cp-key-sh-down); }
+html[data-skin="control-panel"] .empty-note { font-family: var(--font-mono); color: var(--text-secondary); }
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+html[data-skin="control-panel"] .landing-footer {
+  margin-top: 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--cp-shade);
+  box-shadow: 0 -1px 0 var(--cp-hi);
+}
+html[data-skin="control-panel"] .footer-link { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding: 0 0.3rem; }
+html[data-skin="control-panel"] .footer-link:hover { color: var(--accent-primary); }
+html[data-skin="control-panel"] .footer-sep { opacity: 1; }
+
+/* ── Small screens ─────────────────────────────────────────────────────── */
+@media (max-width: 479px) {
+  html[data-skin="control-panel"] #home-groups { width: 96%; }
+  html[data-skin="control-panel"] #home-groups .nav-section { padding-left: 0.9rem; padding-right: 0.9rem; }
+  html[data-skin="control-panel"] .featured-apps, html[data-skin="control-panel"] .just-added,
+  html[data-skin="control-panel"] .home-search, html[data-skin="control-panel"] .search-results { width: 96%; }
+}
+/* Motion off: no flicker or breathing, keep the lit state */
+html[data-skin="control-panel"][data-motion="reduced"] .nav-card::after,
+html[data-skin="control-panel"][data-motion="off"] .nav-card::after,
+html[data-skin="control-panel"][data-motion="reduced"] .game-card::after,
+html[data-skin="control-panel"][data-motion="off"] .game-card::after,
+html[data-skin="control-panel"][data-motion="reduced"] .featured-app-card::after,
+html[data-skin="control-panel"][data-motion="off"] .featured-app-card::after { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin="control-panel"] .nav-card::after,
+  html[data-skin="control-panel"] .game-card::after,
+  html[data-skin="control-panel"] .featured-app-card::after { animation: none !important; }
+}

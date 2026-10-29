@@ -36,6 +36,13 @@ Fonts hosted in `assets/fonts/`. Latin subset, woff2 only, `font-display: swap`.
 | `assets/fonts/SpaceGrotesk-Bold.woff2` | **Space Grotesk** 700 | SIL OFL 1.1 | `assets/fonts/SpaceGrotesk-OFL.txt` | Same package. |
 | `assets/fonts/SpaceMono-Regular.woff2` | **Space Mono** 400 | SIL OFL 1.1 | Upstream: github.com/googlefonts/spacemono | Already bundled before the theme engine. Reused for Print Shop labels. |
 | `assets/fonts/Inter-Regular.woff2`, `Inter-Bold.woff2` | **Inter** | SIL OFL 1.1 | Upstream: github.com/rsms/inter | Already bundled before the theme engine. |
+| `assets/fonts/Fraunces-Regular.woff2`, `Fraunces-Bold.woff2` | **Fraunces** 400 and 700 | SIL OFL 1.1 | `assets/fonts/Fraunces-OFL.txt` | npm `@fontsource/fraunces` 5.3.0, latin subset. Used by the cabinet skin. Upstream and copyright details in `docs/skins/cabinet.md`. |
+| `assets/fonts/CourierPrime-Regular.woff2`, `CourierPrime-Bold.woff2` | **Courier Prime** 400 and 700 | SIL OFL 1.1 | `assets/fonts/CourierPrime-OFL.txt` | npm `@fontsource/courier-prime` 5.3.0, latin subset. Used by the cabinet skin. Upstream and copyright details in `docs/skins/cabinet.md`. |
+| `assets/fonts/BarlowCondensed-Regular.woff2`, `BarlowCondensed-Bold.woff2` | **Barlow Condensed** 400 and 700 | SIL OFL 1.1 | `assets/fonts/BarlowCondensed-OFL.txt` | npm `@fontsource/barlow-condensed` 5.3.0, latin subset. Used by the control-panel skin. Upstream and copyright details in `docs/skins/control-panel.md`. |
+| `assets/fonts/IBMPlexMono-Regular.woff2`, `IBMPlexMono-Bold.woff2` | **IBM Plex Mono** 400 and 700 | SIL OFL 1.1 | `assets/fonts/IBMPlexMono-OFL.txt` | npm `@fontsource/ibm-plex-mono` 5.3.0, latin subset. Used by the control-panel skin. Upstream and copyright details in `docs/skins/control-panel.md`. |
+| `assets/fonts/Nunito-Regular.woff2`, `Nunito-Bold.woff2` | **Nunito** 400 and 700 | SIL OFL 1.1 | `assets/fonts/Nunito-OFL.txt` | npm `@fontsource/nunito` 5.3.0, latin subset. Used by the metro-map skin. Upstream and copyright details in `docs/skins/metro-map.md`. |
+| `assets/fonts/Silkscreen-Regular.woff2`, `Silkscreen-Bold.woff2` | **Silkscreen** 400 and 700 | SIL OFL 1.1 | `assets/fonts/Silkscreen-OFL.txt` | npm `@fontsource/silkscreen` 5.3.0, latin subset. Used by the handheld skin. Upstream and copyright details in `docs/skins/handheld.md`. |
+| `assets/fonts/Caveat-Regular.woff2`, `Caveat-Bold.woff2` | **Caveat** 400 and 700 | SIL OFL 1.1 | `assets/fonts/Caveat-OFL.txt` | npm `@fontsource/caveat` 5.3.0, latin subset. Used by the scrapbook skin. Upstream and copyright details in `docs/skins/scrapbook.md`. |
 
 ---
 

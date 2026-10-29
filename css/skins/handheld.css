@@ -1,0 +1,543 @@
+/* Handheld skin: a retro handheld game screen. The page content sits on an LCD
+   with a pixel-stair border, on a plastic body. Cards are menu rows with a
+   blinking pixel cursor arrow, group headings are screen titles, and a very
+   faint scanline overlay finishes the LCD feel. Silkscreen is used for headings,
+   labels and buttons. Descriptions stay in the system monospace so they remain
+   readable. All motion is stepped (steps()). Every rule is scoped to
+   html[data-skin="handheld"], which out-ranks [data-theme="fun"], so ?mode=fun
+   only changes wording. Colors default to the Mint Chip palette and follow any
+   palette or per-color change through the CSS variables the engine sets inline.
+   Silkscreen is bundled (OFL, see docs/skins/handheld.md). */
+
+@font-face { font-family: 'Silkscreen'; src: url('../../assets/fonts/Silkscreen-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Silkscreen'; src: url('../../assets/fonts/Silkscreen-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+
+html[data-skin="handheld"] {
+  --bg-base: #e7f5ec;
+  --bg-surface: #f7fff9;
+  --bg-surface-hover: #f7fff9;
+  --text-primary: #17352a;
+  --text-secondary: #4a6b5a;
+  --text-muted: #4a6b5a;
+  --accent-primary: #1f8a5b;
+  --accent-secondary: #8a4b2a;
+  --accent-glow: rgba(31, 138, 91, 0.15);
+  --card-border: #b9d3c3;
+  --card-border-hover: var(--text-primary);
+  --ink: #17352a;
+  --line: #b9d3c3;
+  --on-accent: #000000;
+  --on-accent2: #ffffff;
+  --btn-bg: var(--accent-primary);
+  --btn-color: var(--on-accent);
+  --filter-active-color: var(--on-accent);
+  --grp-games: #1f8a5b;
+  --grp-tools: #8a4b2a;
+  --grp-wos: #5a7a3c;
+  --grp-more: #4a6b5a;
+  --font-ui: ui-monospace, Menlo, Consolas, monospace;
+  --font-display: 'Silkscreen', ui-monospace, Menlo, monospace;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --nav-border: 0;
+  --card-shadow-hover: none;
+  --hh-px: var(--t-bw, 4px);            /* one "pixel" of the stair border */
+  --hh-d: var(--t-density, 1);
+  --hh-plastic: #cfdcd3;                /* fallback, replaced below where color-mix exists */
+  --hh-shade: rgba(0, 0, 0, 0.2);
+  --hh-drop: calc(var(--hh-px) * 3) calc(var(--hh-px) * 3) 0 0 var(--hh-shade);
+  --hh-lc: var(--accent-primary);
+}
+@supports (background: color-mix(in srgb, red 10%, blue)) {
+  html[data-skin="handheld"] { --hh-plastic: color-mix(in srgb, var(--bg-base) 86%, var(--text-primary)); }
+}
+html[data-skin="handheld"][data-shadow="none"] { --hh-drop: 0 0 0 0 transparent; }
+html[data-skin="handheld"] .nav-section-games { --hh-lc: var(--grp-games); }
+html[data-skin="handheld"] .nav-section-tools { --hh-lc: var(--grp-tools); }
+html[data-skin="handheld"] .nav-section-wos { --hh-lc: var(--grp-wos); }
+html[data-skin="handheld"] .nav-section-more { --hh-lc: var(--grp-more); }
+html[data-skin="handheld"] .nav-section-custom { --hh-lc: var(--accent-secondary); }
+
+/* ── Plastic body ─────────────────────────────────────────────────────────── */
+html[data-skin="handheld"] body {
+  background-color: var(--hh-plastic);
+  background-image: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  position: relative;
+  overflow-x: hidden;
+}
+/* D-pad and A/B buttons on the plastic, only where there is room beside the screen */
+@media (min-width: 1180px) {
+  html[data-skin="handheld"] body::after {
+    content: "";
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--text-primary), var(--text-primary)) calc(50vw - 540px) calc(50vh - 16px) / 96px 32px no-repeat,
+      linear-gradient(var(--text-primary), var(--text-primary)) calc(50vw - 508px) calc(50vh - 48px) / 32px 96px no-repeat,
+      radial-gradient(circle at center, var(--accent-secondary) 0 24px, var(--text-primary) 25px 28px, transparent 29px) calc(50vw + 512px) calc(50vh - 44px) / 64px 64px no-repeat,
+      radial-gradient(circle at center, var(--accent-primary) 0 24px, var(--text-primary) 25px 28px, transparent 29px) calc(50vw + 440px) calc(50vh - 12px) / 64px 64px no-repeat;
+    opacity: 0.9;
+  }
+}
+
+/* ── Header: the top edge of the console ─────────────────────────────────── */
+html[data-skin="handheld"] .global-nav {
+  position: relative;
+  background: transparent;
+  border-bottom: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  z-index: 2;
+}
+html[data-skin="handheld"] .nav-brand {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  text-shadow: none;
+  animation: none;
+  gap: 0.6rem;
+}
+/* Power LED, blinks in steps */
+html[data-skin="handheld"] .nav-brand::before {
+  content: "";
+  width: 10px; height: 10px;
+  flex: 0 0 auto;
+  background: var(--accent-secondary);
+  box-shadow: 0 0 0 2px var(--text-primary);
+  animation: hh-led 2.4s steps(1, end) infinite;
+}
+@keyframes hh-led { 0%, 80% { opacity: 1; } 81%, 100% { opacity: 0.25; } }
+html[data-skin="handheld"] .nav-right { flex-wrap: wrap; gap: 0.4rem 0.75rem; }
+html[data-skin="handheld"] .stats-container {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  opacity: 1;
+}
+html[data-skin="handheld"] .theme-toggle-link,
+html[data-skin="handheld"] .theme-open {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: var(--hh-px) solid var(--text-primary);
+  border-radius: var(--radius-sm);
+  box-shadow: calc(var(--hh-px) * 0.75) calc(var(--hh-px) * 0.75) 0 var(--text-primary);
+  filter: none;
+  transition: none;
+}
+html[data-skin="handheld"] .theme-toggle-link { color: var(--text-primary); background: var(--bg-surface); }
+html[data-skin="handheld"] .theme-open { color: var(--btn-color); background: var(--btn-bg); }
+html[data-skin="handheld"] .theme-toggle-link:hover { color: var(--bg-base); background: var(--text-primary); border-color: var(--text-primary); }
+html[data-skin="handheld"] .theme-open:hover { filter: none; background: var(--btn-bg); }
+html[data-skin="handheld"] .theme-toggle-link:active,
+html[data-skin="handheld"] .theme-open:active { transform: translate(3px, 3px); box-shadow: none; }
+html[data-skin="handheld"] a:focus-visible,
+html[data-skin="handheld"] button:focus-visible,
+html[data-skin="handheld"] .hub-search:focus-visible { outline: 3px solid var(--text-primary); outline-offset: 2px; }
+
+/* ── The LCD ──────────────────────────────────────────────────────────────── */
+html[data-skin="handheld"] main {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: calc(var(--hh-px) * 3) auto calc(var(--hh-px) * 4);
+  width: calc(100% - 28px);
+  padding: 0 0 calc(1rem * var(--hh-d));
+  background: var(--bg-base);
+  border-radius: 0;
+  /* two-step pixel stair border with notched corners */
+  box-shadow:
+    0 calc(-1 * var(--hh-px)) 0 0 var(--text-primary),
+    0 var(--hh-px) 0 0 var(--text-primary),
+    calc(-1 * var(--hh-px)) 0 0 0 var(--text-primary),
+    var(--hh-px) 0 0 0 var(--text-primary),
+    0 calc(-2 * var(--hh-px)) 0 calc(-1 * var(--hh-px)) var(--text-primary),
+    0 calc(2 * var(--hh-px)) 0 calc(-1 * var(--hh-px)) var(--text-primary),
+    calc(-2 * var(--hh-px)) 0 0 calc(-1 * var(--hh-px)) var(--text-primary),
+    calc(2 * var(--hh-px)) 0 0 calc(-1 * var(--hh-px)) var(--text-primary),
+    var(--hh-drop);
+}
+/* Faint scanlines. Never catches clicks. */
+html[data-skin="handheld"] main::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 5;
+  pointer-events: none;
+  color: var(--text-primary);
+  background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 1px, transparent 3px);
+  opacity: 0.045;
+}
+
+/* ── Screen titles: an inverted bar with the group color as a pixel ───────── */
+html[data-skin="handheld"] #home-groups .nav-section,
+html[data-skin="handheld"] .nav-section { padding: 0; margin-top: calc(1.25rem * var(--hh-d)); }
+html[data-skin="handheld"] .section-head {
+  align-items: center;
+  margin: 0;
+  background: var(--text-primary);
+  gap: 0.5rem;
+  padding: 0 0.5rem 0 0;
+}
+html[data-skin="handheld"] .nav-section-title,
+html[data-skin="handheld"] [data-theme="fun"] .nav-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  min-height: 48px;
+  padding: 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg-base);
+  line-height: 1.2;
+  animation: hh-boot 0.6s steps(10, end) 1 backwards;
+}
+@keyframes hh-boot { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+html[data-skin="handheld"] .nav-section-title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 14px; height: 14px;
+  background: var(--hh-lc);
+  box-shadow: 0 0 0 2px var(--bg-base);
+}
+html[data-skin="handheld"] .section-all {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg-base);
+  border: 2px solid var(--bg-base);
+  border-radius: 0;
+  padding: 0 0.7rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+html[data-skin="handheld"] .section-all:hover { text-decoration: none; color: var(--text-primary); background: var(--bg-base); }
+html[data-skin="handheld"] .section-head a:focus-visible { outline-color: var(--bg-base); }
+
+/* ── Menu rows ────────────────────────────────────────────────────────────── */
+html[data-skin="handheld"] .nav-grid,
+html[data-skin="handheld"] .game-grid {
+  display: block;
+  padding: 0;
+  gap: 0;
+}
+html[data-skin="handheld"] .nav-card,
+html[data-skin="handheld"] .game-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 48px;
+  margin: 0;
+  padding: calc(0.75rem * var(--hh-d)) 0.9rem calc(0.75rem * var(--hh-d)) 2.4rem;
+  background: transparent;
+  background-image: none;
+  color: var(--text-primary);
+  border: 0;
+  border-bottom: 2px dotted var(--text-secondary);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+html[data-skin="handheld"] .game-card { flex-direction: column; gap: 0.15rem; }
+html[data-skin="handheld"] .nav-card[class*="nav-card-"] { border: 0; border-bottom: 2px dotted var(--text-secondary); }
+html[data-skin="handheld"] .nav-card:last-child,
+html[data-skin="handheld"] .game-card:last-child { border-bottom: 0; }
+/* Selected row: inverted, with the blinking cursor arrow */
+html[data-skin="handheld"] .nav-card:hover,
+html[data-skin="handheld"] .nav-card:focus-visible,
+html[data-skin="handheld"] .game-card:hover,
+html[data-skin="handheld"] .game-card:focus-visible {
+  background: var(--text-primary);
+  color: var(--bg-base);
+  transform: none;
+  box-shadow: none;
+  border-color: var(--text-secondary);
+}
+html[data-skin="handheld"] .nav-card:focus-visible,
+html[data-skin="handheld"] .game-card:focus-visible { outline: 3px solid var(--text-primary); outline-offset: 2px; }
+html[data-skin="handheld"] .nav-card:active,
+html[data-skin="handheld"] .game-card:active { transform: translateY(2px); }
+/* The cursor: a 4 x 7 pixel arrow cut out with a stepped polygon */
+html[data-skin="handheld"] .nav-card::before,
+html[data-skin="handheld"] .game-card::before {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  top: calc(0.75rem * var(--hh-d) + 0.2rem);
+  width: 12px; height: 21px;
+  background: var(--bg-base);
+  clip-path: polygon(0 0, 25% 0, 25% 14.29%, 50% 14.29%, 50% 28.57%, 75% 28.57%, 75% 42.86%, 100% 42.86%, 100% 57.14%, 75% 57.14%, 75% 71.43%, 50% 71.43%, 50% 85.71%, 25% 85.71%, 25% 100%, 0 100%);
+  visibility: hidden;
+  pointer-events: none;
+}
+html[data-skin="handheld"] .nav-card:hover::before,
+html[data-skin="handheld"] .nav-card:focus-visible::before,
+html[data-skin="handheld"] .game-card:hover::before,
+html[data-skin="handheld"] .game-card:focus-visible::before {
+  visibility: visible;
+  animation: hh-blink 0.8s steps(1, end) infinite;
+}
+@keyframes hh-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+
+html[data-skin="handheld"] .nav-card-icon,
+html[data-skin="handheld"] .card-icon,
+html[data-skin="handheld"] .featured-app-icon { filter: grayscale(1) contrast(1.15); }
+html[data-skin="handheld"] .nav-card:hover .nav-card-icon,
+html[data-skin="handheld"] .nav-card:focus-visible .nav-card-icon,
+html[data-skin="handheld"] .game-card:hover .card-icon,
+html[data-skin="handheld"] .game-card:focus-visible .card-icon { filter: grayscale(1) invert(1); }
+html[data-skin="handheld"] .nav-card-icon { font-size: 1.4rem; width: 1.8rem; text-align: center; }
+html[data-skin="handheld"] .nav-card-title,
+html[data-skin="handheld"] .game-title,
+html[data-skin="handheld"] [data-theme="fun"] .nav-card-title,
+html[data-skin="handheld"] [data-theme="fun"] .game-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: inherit;
+}
+html[data-skin="handheld"] .nav-card-count {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: inherit;
+  margin-top: 0.2rem;
+}
+html[data-skin="handheld"] .nav-card-count::before { content: "["; }
+html[data-skin="handheld"] .nav-card-count::after { content: "]"; }
+html[data-skin="handheld"] .nav-card-desc,
+html[data-skin="handheld"] .game-desc,
+html[data-skin="handheld"] [data-theme="fun"] .game-desc {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 0.3rem;
+}
+html[data-skin="handheld"] .nav-card:hover .nav-card-desc,
+html[data-skin="handheld"] .nav-card:focus-visible .nav-card-desc,
+html[data-skin="handheld"] .game-card:hover .game-desc,
+html[data-skin="handheld"] .game-card:focus-visible .game-desc { color: var(--bg-base); }
+html[data-skin="handheld"] .game-card .card-top { justify-content: flex-start; gap: 0.6rem; }
+html[data-skin="handheld"] .card-icon { font-size: 1.2rem; }
+html[data-skin="handheld"] .category-tag,
+html[data-skin="handheld"] [data-theme="fun"] .category-tag {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: inherit;
+  background: transparent;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  padding: 0 0.4rem;
+}
+html[data-skin="handheld"] .badge-new,
+html[data-skin="handheld"] [data-theme="fun"] .badge-new {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  background: var(--accent-secondary);
+  color: var(--on-accent2);
+  border: 2px solid var(--text-primary);
+  border-radius: 0;
+  padding: 1px 5px;
+  animation: hh-led 1.6s steps(1, end) infinite;
+}
+html[data-skin="handheld"] .game-plays,
+html[data-skin="handheld"] .game-meta,
+html[data-skin="handheld"] [data-theme="fun"] .game-meta,
+html[data-skin="handheld"] .card-parent { font-family: var(--font-ui); font-size: 0.72rem; color: inherit; border-top: 0; padding-top: 0.1rem; }
+html[data-skin="handheld"] .game-card:not(:hover):not(:focus-visible) .game-plays,
+html[data-skin="handheld"] .game-card:not(:hover):not(:focus-visible) .game-meta,
+html[data-skin="handheld"] .game-card:not(:hover):not(:focus-visible) .card-parent { color: var(--text-secondary); }
+
+/* ── Featured and Just added: cartridge slots ─────────────────────────────── */
+html[data-skin="handheld"] .featured-apps,
+html[data-skin="handheld"] .just-added { padding: calc(1.25rem * var(--hh-d)) 1rem 0; }
+html[data-skin="handheld"] .featured-apps,
+html[data-skin="handheld"] .just-added-grid { gap: calc(1rem * var(--hh-d)); }
+html[data-skin="handheld"] .just-added .section-head { margin-bottom: 0.75rem; }
+html[data-skin="handheld"] .featured-app-card,
+html[data-skin="handheld"] [data-theme="fun"] .featured-app-card {
+  position: relative;
+  background: var(--bg-surface);
+  background-image: none;
+  color: var(--text-primary);
+  border: 0;
+  border-radius: 0;
+  padding: calc(1rem * var(--hh-d)) calc(1rem * var(--hh-d));
+  transform: none;
+  transition: none;
+  box-shadow:
+    0 calc(-1 * var(--hh-px) / 2) 0 0 var(--text-primary),
+    0 calc(var(--hh-px) / 2) 0 0 var(--text-primary),
+    calc(-1 * var(--hh-px) / 2) 0 0 0 var(--text-primary),
+    calc(var(--hh-px) / 2) 0 0 0 var(--text-primary);
+}
+html[data-skin="handheld"] .featured-app-card:hover,
+html[data-skin="handheld"] .featured-app-card:focus-visible {
+  background: var(--text-primary);
+  color: var(--bg-base);
+  transform: none;
+  border-color: transparent;
+}
+html[data-skin="handheld"] .featured-app-card:focus-visible { outline: 3px solid var(--text-primary); outline-offset: 4px; }
+html[data-skin="handheld"] .featured-app-card:active { transform: translateY(2px); }
+html[data-skin="handheld"] .featured-app-icon { font-size: 1.8rem; width: 2.6rem; text-align: center; }
+html[data-skin="handheld"] .featured-app-card:hover .featured-app-icon,
+html[data-skin="handheld"] .featured-app-card:focus-visible .featured-app-icon { filter: grayscale(1) invert(1); }
+html[data-skin="handheld"] .featured-app-title,
+html[data-skin="handheld"] [data-theme="fun"] .featured-app-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: inherit;
+}
+html[data-skin="handheld"] .featured-app-label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: inherit;
+}
+html[data-skin="handheld"] .featured-app-desc { font-size: 0.8rem; color: var(--text-secondary); }
+html[data-skin="handheld"] .featured-app-card:hover .featured-app-desc,
+html[data-skin="handheld"] .featured-app-card:focus-visible .featured-app-desc { color: var(--bg-base); }
+html[data-skin="handheld"] .featured-app-btn,
+html[data-skin="handheld"] [data-theme="fun"] .featured-app-btn {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 24px;
+}
+html[data-skin="handheld"] .featured-app-btn::before {
+  content: "";
+  width: 8px; height: 14px;
+  background: currentColor;
+  clip-path: polygon(0 0, 25% 0, 25% 14.29%, 50% 14.29%, 50% 28.57%, 75% 28.57%, 75% 42.86%, 100% 42.86%, 100% 57.14%, 75% 57.14%, 75% 71.43%, 50% 71.43%, 50% 85.71%, 25% 85.71%, 25% 100%, 0 100%);
+  visibility: hidden;
+}
+html[data-skin="handheld"] .featured-app-card:hover .featured-app-btn::before,
+html[data-skin="handheld"] .featured-app-card:focus-visible .featured-app-btn::before { visibility: visible; animation: hh-blink 0.8s steps(1, end) infinite; }
+
+/* ── Search ───────────────────────────────────────────────────────────────── */
+html[data-skin="handheld"] .home-search,
+html[data-skin="handheld"] .search-results { padding: 1.25rem 1rem 0; }
+html[data-skin="handheld"] .home-search { padding-bottom: 0; }
+html[data-skin="handheld"] .hub-search {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  color: var(--text-primary);
+  caret-color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 0;
+  border-radius: 0;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+  margin: 0 0 1rem;
+  box-shadow:
+    0 calc(-1 * var(--hh-px) / 2) 0 0 var(--text-primary),
+    0 calc(var(--hh-px) / 2) 0 0 var(--text-primary),
+    calc(-1 * var(--hh-px) / 2) 0 0 0 var(--text-primary),
+    calc(var(--hh-px) / 2) 0 0 0 var(--text-primary);
+}
+html[data-skin="handheld"] .hub-search::placeholder { color: var(--text-secondary); opacity: 1; }
+html[data-skin="handheld"] .hub-search:focus { outline: 3px solid var(--text-primary); outline-offset: 3px; border-color: transparent; }
+html[data-skin="handheld"] .new-label { font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.08em; color: var(--text-primary); }
+html[data-skin="handheld"] .new-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 2px solid var(--text-primary);
+  border-radius: 0;
+  transition: none;
+}
+html[data-skin="handheld"] .new-chip:hover { border-color: var(--text-primary); color: var(--bg-base); background: var(--text-primary); }
+html[data-skin="handheld"] .empty-note { color: var(--text-secondary); }
+html[data-skin="handheld"] .search-results .game-grid { padding: 0; }
+html[data-skin="handheld"] .search-results .section-head { margin-top: 0; }
+
+/* ── Footer: the speaker grille sits under the screen ─────────────────────── */
+html[data-skin="handheld"] .landing-footer {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  border-top: 0;
+  color: var(--text-primary);
+  padding-top: 5.5rem;
+}
+html[data-skin="handheld"] .landing-footer::before {
+  content: "";
+  position: absolute;
+  top: 1rem; left: 50%;
+  width: 96px; height: 56px;
+  margin-left: -48px;
+  pointer-events: none;
+  color: var(--text-primary);
+  background: repeating-linear-gradient(-45deg, currentColor 0, currentColor 4px, transparent 4px, transparent 12px);
+  opacity: 0.6;
+}
+html[data-skin="handheld"] .footer-link {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.3rem;
+}
+html[data-skin="handheld"] .footer-link:hover { background: var(--text-primary); color: var(--bg-base); }
+html[data-skin="handheld"] .footer-sep { opacity: 1; }
+
+/* ── Motion: stepped only, and off when asked ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin="handheld"] .nav-brand::before,
+  html[data-skin="handheld"] .badge-new,
+  html[data-skin="handheld"] .nav-section-title { animation: none; }
+  html[data-skin="handheld"] .nav-card:hover::before,
+  html[data-skin="handheld"] .nav-card:focus-visible::before,
+  html[data-skin="handheld"] .game-card:hover::before,
+  html[data-skin="handheld"] .game-card:focus-visible::before,
+  html[data-skin="handheld"] .featured-app-card:hover .featured-app-btn::before,
+  html[data-skin="handheld"] .featured-app-card:focus-visible .featured-app-btn::before { animation: none; }
+}

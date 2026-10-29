@@ -5,11 +5,25 @@ The homepage has a **Customize** button in the header. It opens a panel where yo
 ## Switch the look
 
 1. Tap **Customize**, then the **Look** tab.
-2. Pick a **skin**. Classic is the page as it always was. Print Shop is a zine style with tilted sticker cards.
+2. Pick a **skin**. Classic is the page as it always was. The others change the whole layout, type and decoration (see the table below).
 3. Pick a **palette**. It sets every color at once.
 4. Under **Shape and type** change corner radius, border width, shadow, density, fonts and the background pattern. "Skin default" leaves the choice to the skin.
 
 `?mode=fun` still works. In Classic it looks like it always did. In other skins it only changes the wording.
+
+## The skins
+
+| Skin | Look | Notes |
+|---|---|---|
+| Classic | The F.O.N.G. look you know | Default |
+| Print Shop | Zine and risograph: tilted sticker cards on paper | Space Grotesk |
+| Cabinet of Drawers | Wood and brass drawer fronts, index cards with lettered tabs | [docs/skins/cabinet.md](skins/cabinet.md) |
+| Control Panel | Hardware rack with screws, LEDs and tick scales | [docs/skins/control-panel.md](skins/control-panel.md) |
+| Metro Map | Transit lines with stations for each card | [docs/skins/metro-map.md](skins/metro-map.md) |
+| Handheld | Retro LCD with pixel type and menu rows | [docs/skins/handheld.md](skins/handheld.md) |
+| Scrapbook | Corkboard with taped notes and handwriting | [docs/skins/scrapbook.md](skins/scrapbook.md) |
+
+Every skin works with every palette and every color override. Each skin page lists its fonts, licenses and known limits.
 
 ## Make your own theme
 
