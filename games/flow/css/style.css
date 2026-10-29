@@ -15,6 +15,7 @@ body {
 }
 
 canvas {
+    box-sizing: border-box;
     background-color: #222;
     border: 2px solid #444;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);

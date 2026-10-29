@@ -61,7 +61,10 @@ body {
     color: #444;
     cursor: pointer;
     flex-grow: 1; /* evenly space */
+    min-width: 0; /* let the dropdowns shrink so the header fits 360px phones */
 }
+
+.icon-btn.hidden { display: none; } /* .icon-btn display:flex was beating .hidden */
 
 /* Settings Button */
 .icon-btn {
