@@ -94,6 +94,6 @@ Left out: every horror, corrupted or infection generation.
 | Swooshie | Effects | pale pink bubble with stars | airy swell with bubble pops |
 | Gumzy | Melodies | bubblegum-machine robot | round bouncy bass |
 | Lilacorn | Melodies | lilac unicorn, gold horn, pastel mane | flowing bell tune |
-| Razzly | Voices | trio member, mint lightstick | sung pop hook (eh, ah) |
-| Honeyoo | Voices | trio member, butter-yellow lightstick | three-part "ooh" pad, C then A minor |
+| Chirpsy | Voices | trio member, mint lightstick | sung pop hook (eh, ah) |
+| Oolee | Voices | trio member, butter-yellow lightstick | three-part "ooh" pad, C then A minor |
 Name checks and how each asset was made: `ASSET_LOG.md`.

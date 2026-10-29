@@ -35,10 +35,10 @@
             { id: 'bg_lilacorn', name: 'Lilacorn', type: 'melodies', art: { body: 'round', color: '#f3e4ff', eyes: 'big', mouth: 'smile', acc: 'horn', accColor: '#ff9bd0', cheeks: true },
               synth: { kind: 'tone', wave: 'tri', vib: 1, a: 0.02, decays: true, d: 0.6, chord: [0, 12], seq: [81, N, 79, N, 76, 79, N, 76, 72, N, 74, N, 76, N, N, N] } },
             // Voice: pop hook sung with bright "eh" and "ah"
-            { id: 'bg_razzly', name: 'Razzly', type: 'vocals', art: { body: 'tall', color: '#ff5fa2', eyes: 'happy', mouth: 'open', acc: 'lightstick', accColor: '#a8f0d0', cheeks: true },
+            { id: 'bg_razzly', name: 'Chirpsy', type: 'vocals', art: { body: 'tall', color: '#ff5fa2', eyes: 'happy', mouth: 'open', acc: 'lightstick', accColor: '#a8f0d0', cheeks: true },
               synth: { kind: 'voice', seq: [[76, 'e', 1], N, [79, 'e', 1], N, [81, 'a', 2], N, [79, 'e', 1], N, [76, 'e', 1], N, [72, 'o', 2], N, [74, 'e', 1], N, [76, 'a', 2], N] } },
             // Voice: soft three-part "ooh" pad, C then Am
-            { id: 'bg_honeyoo', name: 'Honeyoo', type: 'vocals', art: { body: 'tall', color: '#ffa6cf', eyes: 'sleepy', mouth: 'o', acc: 'lightstick', accColor: '#ffe08a', cheeks: true },
+            { id: 'bg_honeyoo', name: 'Oolee', type: 'vocals', art: { body: 'tall', color: '#ffa6cf', eyes: 'sleepy', mouth: 'o', acc: 'lightstick', accColor: '#ffe08a', cheeks: true },
               synth: { kind: 'layers', amp: 0.9, layers: [
                   { kind: 'voice', seq: [[67, 'o', 8], N, N, N, N, N, N, N, [69, 'o', 8], N, N, N, N, N, N, N] },
                   { kind: 'voice', seq: [[64, 'u', 8], N, N, N, N, N, N, N, [64, 'u', 8], N, N, N, N, N, N, N] },

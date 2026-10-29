@@ -9,8 +9,8 @@ It is one game with three worlds you reach from a bedroom at night:
 
 | World | Door | Feel | Tempo | Creatures |
 |---|---|---|---|---|
-| The Night Garden | The window | Sleepy glowing garden beds (moss, pond, hedge, path) | 90 BPM | Mossle (low hum), Glimmow (glow chime), Puddlet (drip beat), Hedgey (rustle shaker) |
-| The Toy Attic | The hatch | Forgotten toys in a warm attic: wood planks, cardboard, a sunbeam with dust motes | 100 BPM | Clopsy (clip-clop beat), Skeinie (yarn pluck), Tocklet (tin tick), Mallowhorn (music-box chime) |
+| The Night Garden | The window | Sleepy glowing garden beds (moss, pond, hedge, path) | 90 BPM | Mossle (low hum), Glimmow (glow chime), Puddlet (drip beat), Shrublet (rustle shaker) |
+| The Toy Attic | The hatch | Forgotten toys in a warm attic: wood planks, cardboard, a sunbeam with dust motes | 100 BPM | Clopsy (clip-clop beat), Skeinie (yarn pluck), Cogwick (tin tick), Fluffhorn (music-box chime) |
 | The Star Observatory | The skylight | Cosmic creatures hatch from meteor eggs, constellations are the stage | 80 BPM | Orbi (low pad), Twinklit (high bell), Cometail (whoosh sweep), Moonmo (soft drum) |
 
 The title is decided: **Nightlite Choir+** (the plus means more). The creature names are working names. Every name goes through the check in IP-GUARDRAILS.md before it ships.
@@ -22,8 +22,8 @@ The placeholder names Clankin, Spoolie, Buttonbug and Tinglet were replaced. Onl
 |---|---|---|---|---|
 | Clopsy | Hobby horse | Beat | `clop` drum voice: hollow wooden clip-clop on G4 C4 E4 C4, gallop pattern | Tan horse head on a stick, pink yarn mane, star on the cheek |
 | Skeinie | Rag doll with yarn braids | Pluck | Triangle-wave pluck, C D E G A in octave 4 | Cloth face, button eyes, stitched smile, mustard-gold yarn braids, dusty pink dress with a mint patch |
-| Tocklet | Tin wind-up toy | Tick | `click` drum voice: tick-tock pair, last step is a four-click ratchet | Blue-grey tin box robot, rivets, dial, wind-up key, two bulb antennae |
-| Mallowhorn | Plush unicorn | Chime | Music-box sine chime, octave 6, C D E G A | Cream plush, soft gold horn, rose and mint mane, hooves |
+| Cogwick | Tin wind-up toy | Tick | `click` drum voice: tick-tock pair, last step is a four-click ratchet | Blue-grey tin box robot, rivets, dial, wind-up key, two bulb antennae |
+| Fluffhorn | Plush unicorn | Chime | Music-box sine chime, octave 6, C D E G A | Cream plush, soft gold horn, rose and mint mane, hooves |
 
 Worlds share one stage. The first creature placed sets the tempo (Garden 90, Attic 100), so mixed stages work.
 
@@ -62,7 +62,7 @@ Copy and adapt these files into this folder. Do not import from `games/sprunki_v
 |---|---|---|
 | Mossle + Clopsy | Rustlebolt | Beat |
 | Glimmow + Twinklit | Starbloom | Chime |
-| Puddlet + Mallowhorn | Dewdrop | Chime |
+| Puddlet + Fluffhorn | Dewdrop | Chime |
 
 ## Milestones
 1. Fork the S4K engine into this folder, rename, one world, 4 creatures, runs from file:// and Pages.
