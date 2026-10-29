@@ -5,9 +5,10 @@ Branch: claude/site-navigation (from dev). Clone: scratchpad/work-nav2. Tests: s
 ## Done
 - Stage 1: games/cards/shared/card-nav.js, wired into 8 card pages, hub lists all 9 entries.
 
+- Stage 2: js/home-link.js (FongHome) + projects pages (pill or header link). Verified 390/1280.
+- Stage 3: games, tracing, daily, about, wosky/v3, poker menu strip. Verified.
+
 ## In progress / next
-- Stage 2: js/home-link.js (FongHome) + projects pages
-- Stage 3: games, tracing, misc pages (daily, about, wosky/v3)
 - Stage 4: docs/NAVIGATION.md, changelogs (games/flow, projects/shipment-tracker), final report
 
 ## Resume

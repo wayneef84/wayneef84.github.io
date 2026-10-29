@@ -64,6 +64,25 @@ header h1 {
     font-size: 0.8rem;
 }
 
+/* Projects + Home links: 44px tap targets, side by side */
+.back-link {
+    display: flex;
+    gap: 4px;
+    top: 8px;
+    left: 8px;
+}
+
+.back-link a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+}
+
+header {
+    padding-top: 36px;
+}
+
 .back-link a:hover {
     color: var(--accent-color);
 }
