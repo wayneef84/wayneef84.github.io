@@ -1,5 +1,13 @@
 # Nightlite Choir+: Changelog
 
+## v0.3.0 - Milestone 2b (2026-10-29)
+- The Star Observatory door opens ("Through the skylight"). 80 BPM, 6 slots, 4 new creatures: Dozemoon (pad), Glintwand (bell), Twirltail (sweep), Ringhum (soft drum), all C major pentatonic.
+- Deep night sky look: skylight, telescope silhouette, twinkling stars, slow shooting stars. Soft pink and lilac star-map lines join the friends on the stage (decoration only, taps pass through).
+- New world switcher: three chips (Garden, Attic, Observatory) above the tray replace the stacked rows. One tap shows another world's four friends. The stage, sound and undo history stay. Keys 1 to 4 place the shown friends.
+- All three doors are open. The "Coming soon" state is gone. Home stays on every screen.
+- Art generator: bodies moon, star, comet, planet, eyes twinkle, mouth hum, accessories nightcap, wand, sparkles, cowhat, swirl. Synth: `whoosh` and `thrum` drum voices.
+- Tempo rule across worlds: first creature placed sets it (Garden 90, Attic 100, Observatory 80). v0.1.0 and v0.2.0 saves still load.
+
 ## v0.2.0 - Milestone 2a (2026-10-28)
 - The Toy Attic door opens ("Through the hatch"). 100 BPM, 6 slots, 4 new creatures: Clopsy (beat), Skeinie (pluck), Cogwick (tick), Fluffhorn (chime), all C major pentatonic.
 - Warm attic look: planks, cardboard stage, faded pink and cream, sunbeam with dust motes.

@@ -28,6 +28,19 @@
 | 2026-10-28 | Sound: Cogwick tin tick | Sound | `click` voice: short sine plus noise tick-tock (1750 and 1250 Hz), a capital X is a ratchet of four clicks | n/a |
 | 2026-10-28 | Sound: Fluffhorn music-box chime | Sound | Tone spec: decaying sine with an octave partial, octave 6, C D E G A | n/a |
 | 2026-10-28 | Look: attic theme | Image | CSS only: plank stripes, cardboard stage, sunbeam and dust motes in css/style.css, theme colors in js/worlds/attic.js | n/a |
+| 2026-10-29 | Name: Dozemoon | Name | Invented for the sleepy moon creature (replaces placeholder Moonmo, which was not cleared). Doze + moon | Web search (1 query, 2026-10-29, run by a research helper): no exact match. Nearby but different: Doraemon (anime), Dozaemon (GeGeGe no Kitarou character), Dreamy Dozing Sands (Mario and Luigi location). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Glintwand | Name | Invented for the star-with-lightstick creature (replaces placeholder Twinklit). Glint + wand | Web search (2 queries, 2026-10-29): no exact match. Nearby but different: Glinda Wand (Oz prop), generic glitter wand toys, Glitter Burst (collectible line), Lightwand (Mario Wiki item), Gloom Wand (WoW item). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Twirltail | Name | Invented for the comet creature (replaces placeholder Cometail). Twirl + tail. The first pick, Swooshlet, was dropped: it reads as a diminutive of the Nike swoosh | Web search (1 query, 2026-10-29): no game, toy or brand named Twirltail. Nearby but different: "Twirl Tail" (two words, a generic fishing-lure term). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Ringhum | Name | Invented for the humming ringed planet (replaces placeholder Orbi). Ring + hum | Web search (1 query, 2026-10-29): no exact match. Nearby but different: Ringhim (village in Sikkim), Ringebu (village in Norway). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name check note | Name | Backups searched but unused: Napmoon, Lumiwand (near the Firetoys Lumi wand toy), Streamlet (generic word), Hummaring | Web search, no exact matches. |
+| 2026-10-29 | Code: js/art.js additions | Code | Our own generator extended by hand: bodies moon, star, comet, planet, eyes twinkle, mouth hum, accessories nightcap, wand, sparkles, cowhat, swirl. Generic shapes (moon, star, comet, ringed planet), no reference art, no named character | n/a |
+| 2026-10-29 | Art: Dozemoon, Glintwand, Twirltail, Ringhum | Image | Generated at runtime by js/art.js from the specs in js/worlds/observatory.js. Pink, lilac and cream palette chosen by hand. A pink cowgirl hat on Ringhum is a generic hat with a lilac band and a small gold star, no known character or outfit. No image files | n/a |
+| 2026-10-29 | Code: js/synth.js additions | Code | New `whoosh` and `thrum` drum voices written by hand in our synth | n/a |
+| 2026-10-29 | Sound: Dozemoon pad | Sound | Tone spec in js/worlds/observatory.js: triangle wave, chord [0, 7, 12], 0.9 s attack, 900 Hz low-pass, slight vibrato, C3 then G3 | n/a |
+| 2026-10-29 | Sound: Glintwand bell | Sound | Tone spec: decaying sine with a strong 2nd harmonic, chord [0, 12], notes C6 E6 G6 C7 A6 G6 E6 D6 (C pentatonic) | n/a |
+| 2026-10-29 | Sound: Twirltail sweep | Sound | `whoosh` voice: band-passed noise with a rising cutoff and a swell, plus a soft sine glide from G3 to G5 (second hit to E5) | n/a |
+| 2026-10-29 | Sound: Ringhum soft drum | Sound | `thrum` voice: low sine with a small pitch dip and a gentle 2nd harmonic, notes C3 G3 E3 G3 | n/a |
+| 2026-10-29 | Look: observatory theme | Image | CSS plus a small hand-written inline SVG (skylight frame and telescope silhouette) in js/app.js, stars and shooting stars as CSS, star-map lines drawn by js/app.js. No image files | n/a |
 
 Add one row per creature, sound, image and the game title. Name check: search done, result, date.
 
