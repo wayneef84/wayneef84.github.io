@@ -1,558 +1,240 @@
 /**
- * ============================================================================
- * 🎨 THEME CONFIGURATION FILE
- * ============================================================================
- * * --- INSTRUCTIONS FOR HUMANS ---
- * To add a new theme:
- * 1. Copy an existing block (like 'fantasy' or 'classic').
- * 2. Paste it at the bottom of the list.
- * 3. Change the 'key' (e.g., 'my_new_theme') and the 'name'.
- * 4. Update the symbols. You must keep the IDs (1-6, W, S) consistent.
- * * --- INSTRUCTIONS FOR LLM / AI ---
- * Context: This object defines the visual assets for a slot machine engine.
- * Schema Rules:
- * - Root keys (e.g., 'fantasy') must be unique lowercase strings.
- * - 'symbols' array must contain exactly 8 objects.
- * - Symbols IDs '1' through '6' represent standard paying symbols (Low to High).
- * - Symbol ID 'W' is the Wild. Symbol ID 'S' is the Scatter.
- * - 'weight' determines frequency (Higher = More common).
- * ============================================================================
+ * Slots themes. One object per theme, data only. See DESIGN.md "Add a theme".
+ *
+ * Fields
+ *   key      unique id, lowercase letters and digits. Never rename a shipped key (saves use it).
+ *   name     shown in the picker
+ *   group    one of GROUPS below (picker chip)
+ *   kids     true if it is fine for the Kids chip
+ *   flavour  one short line shown under the name
+ *   pal      [background, background 2, accent, reel face, ink], hex colours
+ *   sym      6 paying symbols, lowest to highest. Emoji or an inline "<svg ...>" string.
+ *   wild     wild symbol (substitutes for the 6 paying symbols)
+ *   scat     scatter symbol (3 or more start a bonus in the modes that have one)
+ *   wildName, scatName  optional names for the paytable
+ *
+ * Payouts and odds do NOT live here. Every theme plays the same maths (js/engine.js),
+ * so a theme can never change the return.
  */
-/**
- * ============================================================================
- * 🎨 THEME CONFIGURATION FILE (v1.2)
- * Adds 'paylineColor' for custom win line styling.
- * ============================================================================
- */
+(function () {
+    var S = window.Slots = window.Slots || {};
+    var GROUPS = ['Sweet', 'Nature', 'Fantasy', 'Fun', 'Adventure', 'Space & Tech', 'Classic'];
+    var list = [];
+    var byKey = {};
 
-/**
- * ============================================================================
- * 🎨 THEME CONFIGURATION FILE (v1.3 - Complete Collection)
- * Contains all 20 themes from the original specification.
- * ============================================================================
- */
-
-/**
- * ============================================================================
- * 🎨 THEME CONFIGURATION FILE (v1.3)
- * ============================================================================
- */
-
-/**
- * ============================================================================
- * 🎨 THEME CONFIGURATION FILE
- * Version: 1.0 (Gold Master)
- * ============================================================================
- */
-
-const THEME_LIBRARY = {
-    // 🦄 1. MYSTICAL UNICORN
-    'fantasy': {
-        name: 'Mystical Unicorn',
-        paylineColor: '#C0C0C0', // Silver
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '💎', value: 5,   weight: 100, color: '#ADD8E6' },
-            { id: '2', name: '🔮', value: 10,  weight: 80,  color: '#9370DB' },
-            { id: '3', name: '🛡️', value: 20,  weight: 60,  color: '#C0C0C0' },
-            { id: '4', name: '⚔️', value: 30,  weight: 50,  color: '#E6E6FA' },
-            { id: '5', name: '👸', value: 50,  weight: 30,  color: '#F0E68C' },
-            { id: '6', name: '🏰', value: 100, weight: 20,  color: '#FFFFFF' },
-            { id: 'W', name: '🦄', value: 200, weight: 15,  color: '#D8BFD8', isWild: true }, // Thistle
-            { id: 'S', name: '🌟', value: 0,   weight: 10,  color: '#E6E6FA', isScatter: true }
-        ]
-    },
-
-    // 🍒 2. VEGAS CLASSIC
-    'classic': {
-        name: 'Classic Fruits',
-        paylineColor: '#e74c3c', // Red
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🍒', value: 5,   weight: 100, color: '#e74c3c' },
-            { id: '2', name: '🍋', value: 10,  weight: 80,  color: '#f1c40f' },
-            { id: '3', name: '🍊', value: 20,  weight: 60,  color: '#e67e22' },
-            { id: '4', name: '🍇', value: 30,  weight: 50,  color: '#8e44ad' },
-            { id: '5', name: '🔔', value: 50,  weight: 30,  color: '#f39c12' },
-            { id: '6', name: '💎', value: 100, weight: 20,  color: '#3498db' },
-            { id: 'W', name: '🃏', value: 200, weight: 15,  color: '#fff', isWild: true },
-            { id: 'S', name: '💰', value: 0,   weight: 10,  color: '#2ecc71', isScatter: true }
-        ]
-    },
-
-    // 🐙 3. OCEAN ADVENTURE
-    'ocean': {
-        name: 'Ocean Adventure',
-        paylineColor: '#00ffff', // Cyan
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🐠', value: 5,   weight: 100, color: '#00bcd4' },
-            { id: '2', name: '🐙', value: 10,  weight: 80,  color: '#9c27b0' },
-            { id: '3', name: '🐋', value: 20,  weight: 60,  color: '#2196f3' },
-            { id: '4', name: '🦈', value: 30,  weight: 50,  color: '#607d8b' },
-            { id: '5', name: '🐬', value: 50,  weight: 30,  color: '#03a9f4' },
-            { id: '6', name: '💰', value: 100, weight: 20,  color: '#ffc107' },
-            { id: 'W', name: '🌊', value: 200, weight: 15,  color: '#00acc1', isWild: true },
-            { id: 'S', name: '⚓', value: 0,   weight: 10,  color: '#795548', isScatter: true }
-        ]
-    },
-
-    // 🚀 4. SPACE EXPLORER
-    'space': {
-        name: 'Space Explorer',
-        paylineColor: '#00ff00', // Green
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '👽', value: 5,   weight: 100, color: '#4caf50' },
-            { id: '2', name: '🚀', value: 10,  weight: 80,  color: '#f44336' },
-            { id: '3', name: '🪐', value: 20,  weight: 60,  color: '#ff9800' },
-            { id: '4', name: '🛸', value: 30,  weight: 50,  color: '#9c27b0' },
-            { id: '5', name: '👨‍🚀', value: 50,  weight: 30,  color: '#2196f3' },
-            { id: '6', name: '🌌', value: 100, weight: 20,  color: '#673ab7' },
-            { id: 'W', name: '⭐', value: 200, weight: 15,  color: '#ffeb3b', isWild: true },
-            { id: 'S', name: '🌍', value: 0,   weight: 10,  color: '#4caf50', isScatter: true }
-        ]
-    },
-
-    // 🦁 5. WILD ANIMALS
-    'animals': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Wild Animals',
-        paylineColor: '#e67e22', // Orange
-        symbols: [
-            { id: '1', name: '🐵', value: 5,   weight: 100, color: '#8d6e63' },
-            { id: '2', name: '🐅', value: 10,  weight: 80,  color: '#ff9800' },
-            { id: '3', name: '🐘', value: 20,  weight: 60,  color: '#607d8b' },
-            { id: '4', name: '🦁', value: 30,  weight: 50,  color: '#ffc107' },
-            { id: '5', name: '🐼', value: 50,  weight: 30,  color: '#9e9e9e' },
-            { id: '6', name: '🐉', value: 100, weight: 20,  color: '#f44336' },
-            { id: 'W', name: '🦊', value: 200, weight: 15,  color: '#ff5722', isWild: true },
-            { id: 'S', name: '🌿', value: 0,   weight: 10,  color: '#4caf50', isScatter: true }
-        ]
-    },
-
-    // 🍕 6. DELICIOUS TREATS
-    'food': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Delicious Treats',
-        paylineColor: '#ff69b4', // Pink
-        symbols: [
-            { id: '1', name: '🍕', value: 5,   weight: 100, color: '#ff6b35' },
-            { id: '2', name: '🍔', value: 10,  weight: 80,  color: '#8d6e63' },
-            { id: '3', name: '🍩', value: 20,  weight: 60,  color: '#ff69b4' },
-            { id: '4', name: '🎂', value: 30,  weight: 50,  color: '#ffc107' },
-            { id: '5', name: '🍦', value: 50,  weight: 30,  color: '#81c784' },
-            { id: '6', name: '🍭', value: 100, weight: 20,  color: '#e91e63' },
-            { id: 'W', name: '🍰', value: 200, weight: 15,  color: '#f06292', isWild: true },
-            { id: 'S', name: '🎉', value: 0,   weight: 10,  color: '#ff9800', isScatter: true }
-        ]
-    },
-
-    // 💎 7. PRECIOUS GEMS
-    'gems': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Precious Gems',
-        paylineColor: '#8e44ad', // Purple
-        symbols: [
-            { id: '1', name: '❤️', value: 5,   weight: 100, color: '#f44336' },
-            { id: '2', name: '💚', value: 10,  weight: 80,  color: '#4caf50' },
-            { id: '3', name: '💙', value: 20,  weight: 60,  color: '#2196f3' },
-            { id: '4', name: '💜', value: 30,  weight: 50,  color: '#9c27b0' },
-            { id: '5', name: '💛', value: 50,  weight: 30,  color: '#ffc107' },
-            { id: '6', name: '👑', value: 100, weight: 20,  color: '#ffd700' },
-            { id: 'W', name: '✨', value: 200, weight: 15,  color: '#ffffff', isWild: true },
-            { id: 'S', name: '💍', value: 0,   weight: 10,  color: '#ff69b4', isScatter: true }
-        ]
-    },
-
-    // ♠️ 8. CARD ROYALE
-    'cards': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Card Royale',
-        paylineColor: '#c0392b', // Dark Red
-        symbols: [
-            { id: '1', name: '♣️', value: 5,   weight: 100, color: '#2c3e50' },
-            { id: '2', name: '♦️', value: 10,  weight: 80,  color: '#e74c3c' },
-            { id: '3', name: '♥️', value: 20,  weight: 60,  color: '#e74c3c' },
-            { id: '4', name: '♠️', value: 30,  weight: 50,  color: '#2c3e50' },
-            { id: '5', name: '👸', value: 50,  weight: 30,  color: '#8e44ad' },
-            { id: '6', name: '🤴', value: 100, weight: 20,  color: '#f1c40f' },
-            { id: 'W', name: '🃏', value: 200, weight: 15,  color: '#3498db', isWild: true },
-            { id: 'S', name: '🎴', value: 0,   weight: 10,  color: '#e67e22', isScatter: true }
-        ]
-    },
-
-    // ♛ 9. CHESS MASTERS
-    'chess': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Chess Masters',
-        paylineColor: '#95a5a6', // Silver
-        symbols: [
-            { id: '1', name: '♟️', value: 5,   weight: 100, color: '#7f8c8d' },
-            { id: '2', name: '♞', value: 10,  weight: 80,  color: '#95a5a6' },
-            { id: '3', name: '♝', value: 20,  weight: 60,  color: '#bdc3c7' },
-            { id: '4', name: '♜', value: 30,  weight: 50,  color: '#34495e' },
-            { id: '5', name: '♛', value: 50,  weight: 30,  color: '#9b59b6' },
-            { id: '6', name: '♚', value: 100, weight: 20,  color: '#f1c40f' },
-            { id: 'W', name: '🏆', value: 200, weight: 15,  color: '#d4af37', isWild: true },
-            { id: 'S', name: '⚔️', value: 0,   weight: 10,  color: '#c0392b', isScatter: true }
-        ]
-    },
-
-    // 👻 10. MONSTER MAYHEM
-    'monsters': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Monster Mayhem',
-        paylineColor: '#2ecc71', // Slime Green
-        symbols: [
-            { id: '1', name: '👻', value: 5,   weight: 100, color: '#ecf0f1' },
-            { id: '2', name: '👾', value: 10,  weight: 80,  color: '#9b59b6' },
-            { id: '3', name: '👺', value: 20,  weight: 60,  color: '#e74c3c' },
-            { id: '4', name: '👹', value: 30,  weight: 50,  color: '#c0392b' },
-            { id: '5', name: '🧟', value: 50,  weight: 30,  color: '#27ae60' },
-            { id: '6', name: '🧛', value: 100, weight: 20,  color: '#8e44ad' },
-            { id: 'W', name: '🔮', value: 200, weight: 15,  color: '#9b59b6', isWild: true },
-            { id: 'S', name: '⚡', value: 0,   weight: 10,  color: '#f39c12', isScatter: true }
-        ]
-    },
-
-    // 🐺 11. WOLF PACK
-    'wolves': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Wolf Pack',
-        paylineColor: '#3498db', // Moon Blue
-        symbols: [
-            { id: '1', name: '🐾', value: 5,   weight: 100, color: '#95a5a6' },
-            { id: '2', name: '🌙', value: 10,  weight: 80,  color: '#f1c40f' },
-            { id: '3', name: '🌲', value: 20,  weight: 60,  color: '#27ae60' },
-            { id: '4', name: '🐺', value: 30,  weight: 50,  color: '#7f8c8d' },
-            { id: '5', name: '🏹', value: 50,  weight: 30,  color: '#c0392b' },
-            { id: '6', name: '🌕', value: 100, weight: 20,  color: '#f39c12' },
-            { id: 'W', name: '🔥', value: 200, weight: 15,  color: '#e74c3c', isWild: true },
-            { id: 'S', name: '🌟', value: 0,   weight: 10,  color: '#f1c40f', isScatter: true }
-        ]
-    },
-
-    // 🏺 12. ANCIENT EGYPT
-    'egypt': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Ancient Egypt',
-        paylineColor: '#f1c40f', // Sand Gold
-        symbols: [
-            { id: '1', name: '☥', value: 5,   weight: 100, color: '#f39c12' },
-            { id: '2', name: '👁️', value: 10,  weight: 80,  color: '#3498db' },
-            { id: '3', name: '😺', value: 20,  weight: 60,  color: '#f1c40f' },
-            { id: '4', name: '🪲', value: 30,  weight: 50,  color: '#27ae60' },
-            { id: '5', name: '🧟', value: 50,  weight: 30,  color: '#ecf0f1' },
-            { id: '6', name: '🦁', value: 100, weight: 20,  color: '#d35400' },
-            { id: 'W', name: '🧞', value: 200, weight: 15,  color: '#3498db', isWild: true },
-            { id: 'S', name: '📜', value: 0,   weight: 10,  color: '#7f8c8d', isScatter: true }
-        ]
-    },
-
-    // 🎸 13. MUSIC BEATS
-    'music': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Music Beats',
-        paylineColor: '#e91e63', // Neon Pink
-        symbols: [
-            { id: '1', name: '🎵', value: 5,   weight: 100, color: '#3498db' },
-            { id: '2', name: '🎼', value: 10,  weight: 80,  color: '#9b59b6' },
-            { id: '3', name: '🎸', value: 20,  weight: 60,  color: '#e74c3c' },
-            { id: '4', name: '🎹', value: 30,  weight: 50,  color: '#2c3e50' },
-            { id: '5', name: '🎤', value: 50,  weight: 30,  color: '#d35400' },
-            { id: '6', name: '🎧', value: 100, weight: 20,  color: '#2980b9' },
-            { id: 'W', name: '🔊', value: 200, weight: 15,  color: '#16a085', isWild: true },
-            { id: 'S', name: '💿', value: 0,   weight: 10,  color: '#7f8c8d', isScatter: true }
-        ]
-    },
-
-    // 🏆 14. SPORTS ARENA
-    'sports': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Sports Arena',
-        paylineColor: '#2ecc71', // Field Green
-        symbols: [
-            { id: '1', name: '⚽', value: 5,   weight: 100, color: '#ecf0f1' },
-            { id: '2', name: '🏀', value: 10,  weight: 80,  color: '#e67e22' },
-            { id: '3', name: '🏈', value: 20,  weight: 60,  color: '#795548' },
-            { id: '4', name: '🎾', value: 30,  weight: 50,  color: '#cddc39' },
-            { id: '5', name: '⚾', value: 50,  weight: 30,  color: '#bdc3c7' },
-            { id: '6', name: '🏆', value: 100, weight: 20,  color: '#f1c40f' },
-            { id: 'W', name: '🏅', value: 200, weight: 15,  color: '#ffd700', isWild: true },
-            { id: 'S', name: '🎯', value: 0,   weight: 10,  color: '#e74c3c', isScatter: true }
-        ]
-    },
-
-    // 🤖 15. TECH GADGETS
-    'tech': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Tech Gadgets',
-        paylineColor: '#00cec9', // Electric Blue
-        symbols: [
-            { id: '1', name: '📱', value: 5,   weight: 100, color: '#95a5a6' },
-            { id: '2', name: '💻', value: 10,  weight: 80,  color: '#3498db' },
-            { id: '3', name: '📷', value: 20,  weight: 60,  color: '#2c3e50' },
-            { id: '4', name: '🎮', value: 30,  weight: 50,  color: '#9b59b6' },
-            { id: '5', name: '📺', value: 50,  weight: 30,  color: '#34495e' },
-            { id: '6', name: '🤖', value: 100, weight: 20,  color: '#1abc9c' },
-            { id: 'W', name: '⚡', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
-            { id: 'S', name: '🔌', value: 0,   weight: 10,  color: '#2ecc71', isScatter: true }
-        ]
-    },
-
-    // ⛺ 16. WILDERNESS CAMP
-    'camping': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Wilderness Camp',
-        paylineColor: '#27ae60', // Forest Green
-        symbols: [
-            { id: '1', name: '⛺', value: 5,   weight: 100, color: '#e67e22' },
-            { id: '2', name: '🌲', value: 10,  weight: 80,  color: '#27ae60' },
-            { id: '3', name: '⛰️', value: 20,  weight: 60,  color: '#7f8c8d' },
-            { id: '4', name: '🔥', value: 30,  weight: 50,  color: '#c0392b' },
-            { id: '5', name: '🐟', value: 50,  weight: 30,  color: '#3498db' },
-            { id: '6', name: '🎒', value: 100, weight: 20,  color: '#d35400' },
-            { id: 'W', name: '🧭', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
-            { id: 'S', name: '🌟', value: 0,   weight: 10,  color: '#f1c40f', isScatter: true }
-        ]
-    },
-
-    // ♈ 17. ASTROLOGY SIGNS
-    'astrology': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Astrology Signs',
-        paylineColor: '#9b59b6', // Mystic Purple
-        symbols: [
-            { id: '1', name: '♈', value: 5,   weight: 100, color: '#ff5722' },
-            { id: '2', name: '♉', value: 10,  weight: 80,  color: '#8bc34a' },
-            { id: '3', name: '♊', value: 20,  weight: 60,  color: '#ffeb3b' },
-            { id: '4', name: '♋', value: 30,  weight: 50,  color: '#03a9f4' },
-            { id: '5', name: '♌', value: 50,  weight: 30,  color: '#ff9800' },
-            { id: '6', name: '♍', value: 100, weight: 20,  color: '#9c27b0' },
-            { id: 'W', name: '✨', value: 200, weight: 15,  color: '#e91e63', isWild: true },
-            { id: 'S', name: '🔮', value: 0,   weight: 10,  color: '#9c27b0', isScatter: true }
-        ]
-    },
-
-    // 🌧️ 18. WEATHER FORECAST
-    'weather': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Weather Forecast',
-        paylineColor: '#3498db', // Sky Blue
-        symbols: [
-            { id: '1', name: '☀️', value: 5,   weight: 100, color: '#ffeb3b' },
-            { id: '2', name: '☁️', value: 10,  weight: 80,  color: '#b0bec5' },
-            { id: '3', name: '🌧️', value: 20,  weight: 60,  color: '#2196f3' },
-            { id: '4', name: '⚡', value: 30,  weight: 50,  color: '#ffc107' },
-            { id: '5', name: '❄️', value: 50,  weight: 30,  color: '#e1f5fe' },
-            { id: '6', name: '🌈', value: 100, weight: 20,  color: '#9c27b0' },
-            { id: 'W', name: '🌞', value: 200, weight: 15,  color: '#ff9800', isWild: true },
-            { id: 'S', name: '🌍', value: 0,   weight: 10,  color: '#4caf50', isScatter: true }
-        ]
-    },
-
-    // 🪐 19. SOLAR SYSTEM
-    'planets': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Solar System',
-        paylineColor: '#8e44ad', // Deep Space Purple
-        symbols: [
-            { id: '1', name: '☿', value: 5,   weight: 100, color: '#9e9e9e' },
-            { id: '2', name: '♀', value: 10,  weight: 80,  color: '#ffeb3b' },
-            { id: '3', name: '🌍', value: 20,  weight: 60,  color: '#2196f3' },
-            { id: '4', name: '♂', value: 30,  weight: 50,  color: '#f44336' },
-            { id: '5', name: '♃', value: 50,  weight: 30,  color: '#ff9800' },
-            { id: '6', name: '♄', value: 100, weight: 20,  color: '#ffd54f' },
-            { id: 'W', name: '☀️', value: 200, weight: 15,  color: '#ffeb3b', isWild: true },
-            { id: 'S', name: '⭐', value: 0,   weight: 10,  color: '#e1f5fe', isScatter: true }
-        ]
-    },
-
-    // 😊 20. EMOJI FACES
-    'emoticons': {
-        bgMusic: 'audio/slotsBG.mp3',
-        name: 'Emoji Faces',
-        paylineColor: '#f1c40f', // Smiley Yellow
-        symbols: [
-            { id: '1', name: '😊', value: 5,   weight: 100, color: '#ffeb3b' },
-            { id: '2', name: '😂', value: 10,  weight: 80,  color: '#2196f3' },
-            { id: '3', name: '😉', value: 20,  weight: 60,  color: '#ff9800' },
-            { id: '4', name: '😍', value: 30,  weight: 50,  color: '#f44336' },
-            { id: '5', name: '😎', value: 50,  weight: 30,  color: '#009688' },
-            { id: '6', name: '😮', value: 100, weight: 20,  color: '#9c27b0' },
-            { id: 'W', name: '🥳', value: 200, weight: 15,  color: '#e91e63', isWild: true },
-            { id: 'S', name: '🎭', value: 0,   weight: 10,  color: '#3f51b5', isScatter: true }
-        ]
-    },
-
-    // 🏴‍☠️ 21. PIRATE'S GOLD
-    'pirates': {
-        name: 'Pirate\'s Gold',
-        paylineColor: '#c0392b', // Red
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '⚓', value: 5,   weight: 100, color: '#95a5a6' },
-            { id: '2', name: '💣', value: 10,  weight: 80,  color: '#34495e' },
-            { id: '3', name: '⚔️', value: 20,  weight: 60,  color: '#bdc3c7' },
-            { id: '4', name: '📜', value: 30,  weight: 50,  color: '#f1c40f' },
-            { id: '5', name: '🦜', value: 50,  weight: 30,  color: '#2ecc71' },
-            { id: '6', name: '☠️', value: 100, weight: 20,  color: '#ffffff' },
-            { id: 'W', name: '🏴‍☠️', value: 200, weight: 15,  color: '#000000', isWild: true },
-            { id: 'S', name: '💰', value: 0,   weight: 10,  color: '#ffd700', isScatter: true }
-        ]
-    },
-
-    // 🦖 22. JURASSIC JUNGLE
-    'dinosaurs': {
-        name: 'Jurassic Jungle',
-        paylineColor: '#27ae60', // Green
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🌿', value: 5,   weight: 100, color: '#2ecc71' },
-            { id: '2', name: '🥚', value: 10,  weight: 80,  color: '#f1c40f' },
-            { id: '3', name: '🌋', value: 20,  weight: 60,  color: '#e74c3c' },
-            { id: '4', name: '🥩', value: 30,  weight: 50,  color: '#c0392b' },
-            { id: '5', name: '🦕', value: 50,  weight: 30,  color: '#3498db' },
-            { id: '6', name: '🦖', value: 100, weight: 20,  color: '#27ae60' },
-            { id: 'W', name: '☄️', value: 200, weight: 15,  color: '#e67e22', isWild: true },
-            { id: 'S', name: '🦟', value: 0,   weight: 10,  color: '#f39c12', isScatter: true }
-        ]
-    },
-
-    // ⚔️ 23. SAMURAI SPIRIT
-    'samurai': {
-        name: 'Samurai Spirit',
-        paylineColor: '#e74c3c', // Red
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🌸', value: 5,   weight: 100, color: '#ff69b4' },
-            { id: '2', name: '🍶', value: 10,  weight: 80,  color: '#ecf0f1' },
-            { id: '3', name: '🏮', value: 20,  weight: 60,  color: '#e74c3c' },
-            { id: '4', name: '🏯', value: 30,  weight: 50,  color: '#95a5a6' },
-            { id: '5', name: '👺', value: 50,  weight: 30,  color: '#c0392b' },
-            { id: '6', name: '🗡️', value: 100, weight: 20,  color: '#bdc3c7' },
-            { id: 'W', name: '🥋', value: 200, weight: 15,  color: '#000000', isWild: true },
-            { id: 'S', name: '⛩️', value: 0,   weight: 10,  color: '#e74c3c', isScatter: true }
-        ]
-    },
-
-    // 🛡️ 24. VIKING LEGENDS
-    'vikings': {
-        name: 'Viking Legends',
-        paylineColor: '#3498db', // Blue
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🍺', value: 5,   weight: 100, color: '#f1c40f' },
-            { id: '2', name: '🛡️', value: 10,  weight: 80,  color: '#95a5a6' },
-            { id: '3', name: '🪓', value: 20,  weight: 60,  color: '#7f8c8d' },
-            { id: '4', name: '🛶', value: 30,  weight: 50,  color: '#8e44ad' },
-            { id: '5', name: '🐺', value: 50,  weight: 30,  color: '#bdc3c7' },
-            { id: '6', name: '⚡', value: 100, weight: 20,  color: '#f1c40f' },
-            { id: 'W', name: '🧔', value: 200, weight: 15,  color: '#d35400', isWild: true },
-            { id: 'S', name: '🔨', value: 0,   weight: 10,  color: '#bdc3c7', isScatter: true }
-        ]
-    },
-
-    // ⚙️ 25. STEAMPUNK REVOLUTION
-    'steampunk': {
-        name: 'Steampunk Rev',
-        paylineColor: '#d35400', // Bronze
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🔩', value: 5,   weight: 100, color: '#95a5a6' },
-            { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
-            { id: '3', name: '🕰️', value: 20,  weight: 60,  color: '#d35400' },
-            { id: '4', name: '🗝️', value: 30,  weight: 50,  color: '#f1c40f' },
-            { id: '5', name: '🎩', value: 50,  weight: 30,  color: '#2c3e50' },
-            { id: '6', name: '🚂', value: 100, weight: 20,  color: '#e74c3c' },
-            { id: 'W', name: '💡', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
-            { id: 'S', name: '🧭', value: 0,   weight: 10,  color: '#d35400', isScatter: true }
-        ]
-    },
-
-    // 🤠 26. WILD WEST
-    'wildwest': {
-        name: 'Wild West',
-        paylineColor: '#e67e22', // Orange
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🌵', value: 5,   weight: 100, color: '#27ae60' },
-            { id: '2', name: '👢', value: 10,  weight: 80,  color: '#8d6e63' },
-            { id: '3', name: '🥃', value: 20,  weight: 60,  color: '#e67e22' },
-            { id: '4', name: '🐎', value: 30,  weight: 50,  color: '#795548' },
-            { id: '5', name: '💰', value: 50,  weight: 30,  color: '#f1c40f' },
-            { id: '6', name: '🤠', value: 100, weight: 20,  color: '#d35400' },
-            { id: 'W', name: '⭐', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
-            { id: 'S', name: '🔫', value: 0,   weight: 10,  color: '#95a5a6', isScatter: true }
-        ]
-    },
-
-    // 🧚 27. FAIRY TALE
-    'fairytale': {
-        name: 'Fairy Tale',
-        paylineColor: '#ff69b4', // Pink
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🍄', value: 5,   weight: 100, color: '#e74c3c' },
-            { id: '2', name: '🌸', value: 10,  weight: 80,  color: '#ff69b4' },
-            { id: '3', name: '🐸', value: 20,  weight: 60,  color: '#2ecc71' },
-            { id: '4', name: '👑', value: 30,  weight: 50,  color: '#f1c40f' },
-            { id: '5', name: '🏰', value: 50,  weight: 30,  color: '#9b59b6' },
-            { id: '6', name: '🧚', value: 100, weight: 20,  color: '#e91e63' },
-            { id: 'W', name: '✨', value: 200, weight: 15,  color: '#ffffff', isWild: true },
-            { id: 'S', name: '📖', value: 0,   weight: 10,  color: '#8d6e63', isScatter: true }
-        ]
-    },
-
-    // 🐉 28. DRAGON'S LAIR
-    'dragons': {
-        name: 'Dragon\'s Lair',
-        paylineColor: '#c0392b', // Red
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🥚', value: 5,   weight: 100, color: '#f1c40f' },
-            { id: '2', name: '🔥', value: 10,  weight: 80,  color: '#e74c3c' },
-            { id: '3', name: '🛡️', value: 20,  weight: 60,  color: '#95a5a6' },
-            { id: '4', name: '🗡️', value: 30,  weight: 50,  color: '#bdc3c7' },
-            { id: '5', name: '🏰', value: 50,  weight: 30,  color: '#7f8c8d' },
-            { id: '6', name: '🐉', value: 100, weight: 20,  color: '#c0392b' },
-            { id: 'W', name: '👁️', value: 200, weight: 15,  color: '#2ecc71', isWild: true },
-            { id: 'S', name: '💎', value: 0,   weight: 10,  color: '#3498db', isScatter: true }
-        ]
-    },
-
-    // 🤖 29. ROBOT FACTORY
-    'robots': {
-        name: 'Robot Factory',
-        paylineColor: '#3498db', // Blue
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🔧', value: 5,   weight: 100, color: '#95a5a6' },
-            { id: '2', name: '⚙️', value: 10,  weight: 80,  color: '#7f8c8d' },
-            { id: '3', name: '🔋', value: 20,  weight: 60,  color: '#2ecc71' },
-            { id: '4', name: '💾', value: 30,  weight: 50,  color: '#3498db' },
-            { id: '5', name: '🦿', value: 50,  weight: 30,  color: '#bdc3c7' },
-            { id: '6', name: '🤖', value: 100, weight: 20,  color: '#e74c3c' },
-            { id: 'W', name: '⚡', value: 200, weight: 15,  color: '#f1c40f', isWild: true },
-            { id: 'S', name: '🚨', value: 0,   weight: 10,  color: '#e74c3c', isScatter: true }
-        ]
-    },
-
-    // 🥷 30. NINJA SHADOWS
-    'ninjas': {
-        name: 'Ninja Shadows',
-        paylineColor: '#2c3e50', // Dark Blue
-        bgMusic: 'audio/slotsBG.mp3',
-        symbols: [
-            { id: '1', name: '🍙', value: 5,   weight: 100, color: '#ecf0f1' },
-            { id: '2', name: '🎋', value: 10,  weight: 80,  color: '#2ecc71' },
-            { id: '3', name: '👺', value: 20,  weight: 60,  color: '#c0392b' },
-            { id: '4', name: '🗡️', value: 30,  weight: 50,  color: '#bdc3c7' },
-            { id: '5', name: '🏯', value: 50,  weight: 30,  color: '#34495e' },
-            { id: '6', name: '🥷', value: 100, weight: 20,  color: '#2c3e50' },
-            { id: 'W', name: '💨', value: 200, weight: 15,  color: '#95a5a6', isWild: true },
-            { id: 'S', name: '⭐', value: 0,   weight: 10,  color: '#f1c40f', isScatter: true }
-        ]
+    function lum(hex) {
+        var r = parseInt(hex.substr(1, 2), 16);
+        var g = parseInt(hex.substr(3, 2), 16);
+        var b = parseInt(hex.substr(5, 2), 16);
+        return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
     }
-};
+
+    /** Keep the accent bright enough to read dark ink text on top of it. */
+    function lift(hex) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(hex)) { return '#ffd166'; }
+        var out = hex;
+        for (var i = 0; i < 6 && lum(out) < 0.5; i++) {
+            var parts = [];
+            for (var k = 0; k < 3; k++) {
+                var v = parseInt(out.substr(1 + k * 2, 2), 16);
+                v = Math.round(v + (255 - v) * 0.22);
+                parts.push((v < 16 ? '0' : '') + v.toString(16));
+            }
+            out = '#' + parts.join('');
+        }
+        return out;
+    }
+
+    function add(t) {
+        if (!t || !t.key || byKey[t.key]) { return; }
+        if (!t.sym || t.sym.length !== 6 || !t.wild || !t.scat) { return; }
+        var pal = t.pal || [];
+        t.pal = [pal[0] || '#1a1a2e', pal[1] || '#2a2a50', lift(pal[2] || '#ffd166'), pal[3] || '#f6f6fb', pal[4] || '#1a1a2e'];
+        if (GROUPS.indexOf(t.group) < 0) { t.group = 'Fun'; }
+        t.kids = t.kids !== false;
+        t.wildName = t.wildName || 'Wild';
+        t.scatName = t.scatName || 'Scatter';
+        byKey[t.key] = t;
+        list.push(t);
+    }
+
+    /** The 8 glyphs of a theme in engine order: 6 tiers, wild, scatter. */
+    function glyphs(t) { return t.sym.concat([t.wild, t.scat]); }
+
+    S.themes = {
+        GROUPS: GROUPS,
+        list: list,
+        byKey: byKey,
+        add: add,
+        glyphs: glyphs,
+        get: function (key) { return byKey[key] || list[0]; },
+        has: function (key) { return !!byKey[key]; }
+    };
+
+    var DATA = [
+    { key: 'sugar', name: 'Sugar Counter', group: 'Sweet', kids: true, flavour: 'A sticky-sweet shop with a jar of everything.',
+      pal: ['#4a1740', '#7d2a6a', '#ff7ac8', '#fff3fa', '#4a1040'],
+      sym: ['🍬', '🍭', '🍫', '🍩', '🧁', '🎂'], wild: '🌈', scat: '🎁', wildName: 'Rainbow Swirl', scatName: 'Gift Box' },
+    { key: 'bakery', name: 'Bakery Morning', group: 'Sweet', kids: true, flavour: 'Warm buns and a very early oven.',
+      pal: ['#3d2410', '#6e4020', '#ffc46b', '#fff6e6', '#4a2c14'],
+      sym: ['🥖', '🥐', '🥨', '🥯', '🍞', '🥧'], wild: '🍯', scat: '🔔', wildName: 'Honey Jar', scatName: 'Shop Bell' },
+    { key: 'icecream', name: 'Ice-Cream Truck', group: 'Sweet', kids: true, flavour: 'Jingle jingle, here it comes.',
+      pal: ['#0e3a5c', '#1c6fa0', '#ffe066', '#f2fbff', '#0f3550'],
+      sym: ['🍦', '🍧', '🍨', '🥤', '🍓', '🍒'], wild: '🚚', scat: '☀️', wildName: 'Truck', scatName: 'Hot Day' },
+    { key: 'pizza', name: 'Pizza Night', group: 'Sweet', kids: true, flavour: 'Friday on the sofa, extra cheese.',
+      pal: ['#40130f', '#7a2a1f', '#ffb347', '#fff5ea', '#4a1a12'],
+      sym: ['🧀', '🍄', '🍅', '🌶️', '🥓', '🍕'], wild: '🔥', scat: '📦', wildName: 'Hot Oven', scatName: 'Pizza Box' },
+    { key: 'coral', name: 'Coral Cove', group: 'Nature', kids: true, flavour: 'A sunny reef where the fish never stop chatting.',
+      pal: ['#073a4a', '#0e6a80', '#5ef2e0', '#eefcfb', '#0a3f4a'],
+      sym: ['🐟', '🐠', '🦀', '🐙', '🐢', '🐋'], wild: '🐚', scat: '🦪', wildName: 'Shell', scatName: 'Pearl Oyster' },
+    { key: 'bugs', name: 'Garden Bugs', group: 'Nature', kids: true, flavour: 'Tiny neighbours with big plans.',
+      pal: ['#16381a', '#2c6a30', '#b6f06a', '#f5fbe9', '#1d4a20'],
+      sym: ['🐛', '🐌', '🐜', '🐞', '🐝', '🦋'], wild: '🌻', scat: '🍯', wildName: 'Sunflower', scatName: 'Honey Pot' },
+    { key: 'toys', name: 'Toy Parade', group: 'Fun', kids: true, flavour: 'Wind-up friends marching through the playroom.',
+      pal: ['#2b1a5c', '#4f32a8', '#ff9f43', '#f6f2ff', '#2b1a5c'],
+      sym: ['🧸', '🎈', '🚂', '🥁', '🎠', '🪁'], wild: '🔑', scat: '🎀', wildName: 'Wind-up Key', scatName: 'Ribbon' },
+    { key: 'skyships', name: 'Sky Buccaneers', group: 'Adventure', kids: true, flavour: 'Airships, parrots and one very polite cannon.',
+      pal: ['#16305c', '#2f5fa8', '#ffd166', '#f1f6ff', '#16305c'],
+      sym: ['🦜', '🧭', '🗺️', '⚓', '🔭', '🛩️'], wild: '☁️', scat: '💎', wildName: 'Cloud Hop', scatName: 'Sky Gem' },
+    { key: 'rink', name: 'Ice Rink', group: 'Fun', kids: true, flavour: 'Smooth ice, warm scarves, cocoa after.',
+      pal: ['#12305a', '#2a63a8', '#9be7ff', '#f1faff', '#12305a'],
+      sym: ['⛸️', '🧣', '🧤', '☕', '🎿', '⛄'], wild: '❄️', scat: '🎶', wildName: 'Snowflake', scatName: 'Rink Music' },
+    { key: 'drums', name: 'Jungle Drums', group: 'Nature', kids: true, flavour: 'Rain on big green leaves, beat by beat.',
+      pal: ['#10361f', '#216a3a', '#ffcf40', '#f3fbea', '#143d22'],
+      sym: ['🌴', '🍌', '🦜', '🐒', '🦁', '🐘'], wild: '🥁', scat: '🌺', wildName: 'Big Drum', scatName: 'Jungle Flower' },
+    { key: 'puddles', name: 'Rainy-Day Puddles', group: 'Nature', kids: true, flavour: 'Boots on, umbrellas up, jump.',
+      pal: ['#1d3550', '#3a6a96', '#ffd23f', '#f0f6fb', '#1d3550'],
+      sym: ['☔', '🌂', '🐸', '🐌', '🦆', '🌈'], wild: '💧', scat: '🥾', wildName: 'Raindrop', scatName: 'Rain Boots' },
+    { key: 'lava', name: 'Lava Lagoon', group: 'Nature', kids: true, flavour: 'A snoozing volcano and a very warm beach.',
+      pal: ['#3d1608', '#7a3010', '#ff8a3d', '#fff4e8', '#4a1c0a'],
+      sym: ['🥥', '🍍', '🦀', '🐢', '🌴', '🌋'], wild: '🔥', scat: '🏝️', wildName: 'Warm Glow', scatName: 'Island' },
+    { key: 'moongarden', name: 'Moon Garden', group: 'Fantasy', kids: true, flavour: 'Flowers that only open when the stars come out.',
+      pal: ['#141044', '#2c2a8a', '#c9b6ff', '#f4f1ff', '#1b1660'],
+      sym: ['🌸', '🍄', '🦉', '🐇', '🌙', '⭐'], wild: '🌠', scat: '🌕', wildName: 'Shooting Star', scatName: 'Full Moon' },
+    { key: 'castle', name: 'Fairy-Tale Castle', group: 'Fantasy', kids: true, flavour: 'Once upon a time, there was a drawbridge.',
+      pal: ['#3a1450', '#6a2a8f', '#ffd6f2', '#fbf1ff', '#3a1450'],
+      sym: ['📖', '🗝️', '🕯️', '👑', '🦄', '🏰'], wild: '🧚', scat: '🌹', wildName: 'Fairy', scatName: 'Rose' },
+    { key: 'musicbox', name: 'Music Box Melody', group: 'Fantasy', kids: true, flavour: 'Wind it up and watch the dancer spin.',
+      pal: ['#40202e', '#7a3f58', '#ffc2d6', '#fff2f6', '#4a2434'],
+      sym: ['🎵', '🎶', '🔔', '🎻', '🎹', '💃'], wild: '🗝️', scat: '🎀', wildName: 'Winding Key', scatName: 'Ribbon' },
+    { key: 'lanterns', name: 'Paper Lantern Night', group: 'Fantasy', kids: true, flavour: 'Glowing lanterns drift over the river.',
+      pal: ['#3a0f14', '#7a1f2a', '#ffb347', '#fff3e6', '#4a141a'],
+      sym: ['🥠', '🍵', '🎋', '🐟', '🎆', '🏮'], wild: '🌕', scat: '🎐', wildName: 'Bright Moon', scatName: 'Wind Chime' },
+    { key: 'circus', name: 'Circus Night', group: 'Fun', kids: true, flavour: 'Step right up. Nobody falls.',
+      pal: ['#4a0f2a', '#8a1f4f', '#ffd23f', '#fff5e0', '#4a0f2a'],
+      sym: ['🍿', '🎈', '🎩', '🐘', '🤹', '🎪'], wild: '🌟', scat: '🎟️', wildName: 'Star Act', scatName: 'Big Top Ticket' },
+    { key: 'workshop', name: 'Robot Workshop', group: 'Space & Tech', kids: true, flavour: 'Bolts, batteries and a very happy helper.',
+      pal: ['#1f2b3a', '#3a5370', '#7be0ff', '#eef6fb', '#1f2b3a'],
+      sym: ['🔩', '⚙️', '🔋', '🔧', '💡', '🤖'], wild: '⚡', scat: '🧰', wildName: 'Spark', scatName: 'Toolbox' },
+    { key: 'picnic', name: 'Space Picnic', group: 'Space & Tech', kids: true, flavour: 'Sandwiches float. Napkins, less so.',
+      pal: ['#0f1240', '#24297a', '#ff9ecb', '#f2f3ff', '#12154a'],
+      sym: ['🥪', '🍎', '🧃', '🍪', '🌍', '🚀'], wild: '🧺', scat: '⭐', wildName: 'Picnic Basket', scatName: 'Bright Star' },
+    { key: 'dinodig', name: 'Dino Dig Park', group: 'Nature', kids: true, flavour: 'Fossils, footprints and friendly giants.',
+      pal: ['#2f3a14', '#5a7022', '#ffb84d', '#f7f8e8', '#37431a'],
+      sym: ['🥚', '🌿', '🐾', '🦴', '🦕', '🦖'], wild: '☄️', scat: '🔍', wildName: 'Comet', scatName: 'Magnifier' },
+    { key: 'pets', name: 'Pet Parade', group: 'Fun', kids: true, flavour: 'Everyone is dressed up. Even the goldfish.',
+      pal: ['#3a1a46', '#6a3a80', '#ffb3d9', '#fcf2ff', '#3a1a46'],
+      sym: ['🐟', '🐹', '🐰', '🐱', '🐶', '🦜'], wild: '🎀', scat: '🏅', wildName: 'Bow', scatName: 'Prize Ribbon' },
+    { key: 'pajamas', name: 'Pajama Party', group: 'Fun', kids: true, flavour: 'Pillow forts and one more story.',
+      pal: ['#241a5c', '#4a3a9a', '#ffd86b', '#f4f1ff', '#241a5c'],
+      sym: ['🧦', '🍿', '📚', '🧸', '🛏️', '🌙'], wild: '⭐', scat: '🔦', wildName: 'Night Star', scatName: 'Flashlight' },
+    { key: 'farm', name: 'Farmyard Fun', group: 'Nature', kids: true, flavour: 'Sunrise on the farm and everyone is up.',
+      pal: ['#3d2a0c', '#7a5518', '#ffe27a', '#fff9e3', '#4a3410'],
+      sym: ['🌽', '🥕', '🐔', '🐑', '🐄', '🚜'], wild: '🌾', scat: '🥚', wildName: 'Golden Hay', scatName: 'Egg Basket' },
+    { key: 'beach', name: 'Beach Day', group: 'Nature', kids: true, flavour: 'Sand in the sandwiches. Totally worth it.',
+      pal: ['#0b4a5e', '#1a8aa8', '#ffe27a', '#fffbea', '#0b4a5e'],
+      sym: ['🍉', '🐚', '🦀', '🏄', '🏖️', '☀️'], wild: '🌊', scat: '🏐', wildName: 'Big Wave', scatName: 'Beach Ball' },
+    { key: 'fantasy', name: 'Mystical Unicorn', group: 'Fantasy', kids: true, flavour: 'A sparkly meadow and a very proud unicorn.',
+      pal: ['#191434', '#2e2460', '#C0C0C0', '#efedf7', '#1d163b'],
+      sym: ['💎', '🔮', '🛡️', '⚔️', '👸', '🏰'], wild: '🦄', scat: '🌟' },
+    { key: 'classic', name: 'Classic Fruits', group: 'Classic', kids: true, flavour: 'Cherries, lemons and a shiny bell.',
+      pal: ['#341714', '#602a24', '#e74c3c', '#f7eeed', '#3b1a16'],
+      sym: ['🍒', '🍋', '🍊', '🍇', '🔔', '💎'], wild: '🃏', scat: '🎁' },
+    { key: 'ocean', name: 'Ocean Adventure', group: 'Nature', kids: true, flavour: 'Dive in and meet the neighbours.',
+      pal: ['#143434', '#246060', '#00ffff', '#edf7f7', '#163b3b'],
+      sym: ['🐠', '🐙', '🐋', '🦈', '🐬', '🎁'], wild: '🌊', scat: '⚓' },
+    { key: 'space', name: 'Space Explorer', group: 'Space & Tech', kids: true, flavour: 'Blast off past the ringed planet.',
+      pal: ['#143414', '#246024', '#00ff00', '#edf7ed', '#163b16'],
+      sym: ['👽', '🚀', '🪐', '🛸', '👨‍🚀', '🌌'], wild: '⭐', scat: '🌍' },
+    { key: 'animals', name: 'Wild Animals', group: 'Nature', kids: true, flavour: 'A big day out at the wildlife park.',
+      pal: ['#342314', '#604024', '#e67e22', '#f7f2ed', '#3b2816'],
+      sym: ['🐵', '🐅', '🐘', '🦁', '🐼', '🐉'], wild: '🦊', scat: '🌿' },
+    { key: 'food', name: 'Delicious Treats', group: 'Sweet', kids: true, flavour: 'Pizza, cake and ice cream. All of it.',
+      pal: ['#341424', '#602442', '#ff69b4', '#f7edf2', '#3b1629'],
+      sym: ['🍕', '🍔', '🍩', '🎂', '🍦', '🍭'], wild: '🍰', scat: '🎉' },
+    { key: 'gems', name: 'Precious Gems', group: 'Classic', kids: true, flavour: 'Every colour of shiny you can think of.',
+      pal: ['#2a1434', '#4f2460', '#8e44ad', '#f4edf7', '#30163b'],
+      sym: ['❤️', '💚', '💙', '💜', '💛', '👑'], wild: '✨', scat: '💍' },
+    { key: 'cards', name: 'Card Royale', group: 'Classic', kids: false, flavour: 'Card suits and royal faces.',
+      pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
+      sym: ['♣️', '♦️', '♥️', '♠️', '👸', '🤴'], wild: '🃏', scat: '🎴' },
+    { key: 'chess', name: 'Chess Masters', group: 'Classic', kids: false, flavour: 'Pawns, knights and a very tall king.',
+      pal: ['#191434', '#2e2460', '#95a5a6', '#efedf7', '#1d163b'],
+      sym: ['♟️', '♞', '♝', '♜', '♛', '♚'], wild: '🏆', scat: '⚔️' },
+    { key: 'monsters', name: 'Monster Mayhem', group: 'Fantasy', kids: false, flavour: 'Friendly-ish ghosts and goofy monsters.',
+      pal: ['#143421', '#24603e', '#2ecc71', '#edf7f1', '#163b26'],
+      sym: ['👻', '👾', '👺', '👹', '🧟', '🧛'], wild: '🔮', scat: '⚡' },
+    { key: 'wolves', name: 'Wolf Pack', group: 'Nature', kids: false, flavour: 'Moonlit pines and a howling pack.',
+      pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
+      sym: ['🐾', '🌙', '🌲', '🐺', '🏹', '🌕'], wild: '🔥', scat: '🌟' },
+    { key: 'egypt', name: 'Ancient Egypt', group: 'Adventure', kids: false, flavour: 'Pyramids, scarabs and ancient scrolls.',
+      pal: ['#342d14', '#605424', '#f1c40f', '#f7f5ed', '#3b3416'],
+      sym: ['☥', '👁️', '😺', '🪲', '🧟', '🦁'], wild: '🧞', scat: '📜' },
+    { key: 'music', name: 'Music Beats', group: 'Fun', kids: true, flavour: 'Guitars, keys and a loud little speaker.',
+      pal: ['#34141f', '#602439', '#e91e63', '#f7edf1', '#3b1623'],
+      sym: ['🎵', '🎼', '🎸', '🎹', '🎤', '🎧'], wild: '🔊', scat: '💿' },
+    { key: 'sports', name: 'Sports Arena', group: 'Fun', kids: true, flavour: 'Balls, goals and a big shiny trophy.',
+      pal: ['#143421', '#24603e', '#2ecc71', '#edf7f1', '#163b26'],
+      sym: ['⚽', '🏀', '🏈', '🎾', '⚾', '🏆'], wild: '🏅', scat: '🎯' },
+    { key: 'tech', name: 'Tech Gadgets', group: 'Space & Tech', kids: true, flavour: 'Phones, cameras and a helpful robot.',
+      pal: ['#143433', '#24605f', '#00cec9', '#edf7f7', '#163b3a'],
+      sym: ['📱', '💻', '📷', '🎮', '📺', '🤖'], wild: '⚡', scat: '🔌' },
+    { key: 'camping', name: 'Wilderness Camp', group: 'Nature', kids: true, flavour: 'Tent, campfire and a long hike.',
+      pal: ['#143421', '#24603e', '#27ae60', '#edf7f1', '#163b26'],
+      sym: ['⛺', '🌲', '⛰️', '🔥', '🐟', '🎒'], wild: '🧭', scat: '🌟' },
+    { key: 'astrology', name: 'Astrology Signs', group: 'Space & Tech', kids: false, flavour: 'Star signs and a crystal ball.',
+      pal: ['#2a1434', '#4f2460', '#9b59b6', '#f4edf7', '#30163b'],
+      sym: ['♈', '♉', '♊', '♋', '♌', '♍'], wild: '✨', scat: '🔮' },
+    { key: 'weather', name: 'Weather Forecast', group: 'Nature', kids: true, flavour: 'Sun, rain, snow and a rainbow.',
+      pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
+      sym: ['☀️', '☁️', '🌧️', '⚡', '❄️', '🌈'], wild: '🌞', scat: '🌍' },
+    { key: 'planets', name: 'Solar System', group: 'Space & Tech', kids: true, flavour: 'A tour of the solar system.',
+      pal: ['#2a1434', '#4f2460', '#8e44ad', '#f4edf7', '#30163b'],
+      sym: ['☿', '♀', '🌍', '♂', '♃', '♄'], wild: '☀️', scat: '⭐' },
+    { key: 'emoticons', name: 'Emoji Faces', group: 'Fun', kids: true, flavour: 'Big faces, bigger feelings.',
+      pal: ['#342d14', '#605424', '#f1c40f', '#f7f5ed', '#3b3416'],
+      sym: ['😊', '😂', '😉', '😍', '😎', '😮'], wild: '🥳', scat: '🎭' },
+    { key: 'pirates', name: 'Pirate\'s Gold', group: 'Adventure', kids: false, flavour: 'Treasure maps and a talking parrot.',
+      pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
+      sym: ['⚓', '💣', '⚔️', '📜', '🦜', '🦴'], wild: '🏴‍☠️', scat: '🎁' },
+    { key: 'dinosaurs', name: 'Dino Jungle', group: 'Nature', kids: true, flavour: 'Eggs, ferns and giant friends.',
+      pal: ['#143421', '#24603e', '#27ae60', '#edf7f1', '#163b26'],
+      sym: ['🌿', '🥚', '🌋', '🥩', '🦕', '🦖'], wild: '☄️', scat: '🦟' },
+    { key: 'samurai', name: 'Samurai Spirit', group: 'Adventure', kids: false, flavour: 'Blossoms, lanterns and quiet castles.',
+      pal: ['#341714', '#602a24', '#e74c3c', '#f7eeed', '#3b1a16'],
+      sym: ['🌸', '🍵', '🏮', '🏯', '👺', '🗡️'], wild: '🥋', scat: '⛩️' },
+    { key: 'vikings', name: 'Viking Legends', group: 'Adventure', kids: false, flavour: 'Longships, shields and stormy seas.',
+      pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
+      sym: ['🍖', '🛡️', '🪓', '🛶', '🐺', '⚡'], wild: '🧔', scat: '🔨' },
+    { key: 'steampunk', name: 'Steampunk Rev', group: 'Adventure', kids: true, flavour: 'Gears, clocks and a chugging train.',
+      pal: ['#342014', '#603c24', '#d35400', '#f7f1ed', '#3b2516'],
+      sym: ['🔩', '⚙️', '🕰️', '🗝️', '🎩', '🚂'], wild: '💡', scat: '🧭' },
+    { key: 'wildwest', name: 'Wild West', group: 'Adventure', kids: false, flavour: 'Cactus, boots and a dusty trail.',
+      pal: ['#342314', '#604024', '#e67e22', '#f7f2ed', '#3b2816'],
+      sym: ['🌵', '👢', '🍯', '🐎', '🎁', '🤠'], wild: '⭐', scat: '📜' },
+    { key: 'fairytale', name: 'Fairy Tale', group: 'Fantasy', kids: true, flavour: 'A frog, a crown and a castle.',
+      pal: ['#341424', '#602442', '#ff69b4', '#f7edf2', '#3b1629'],
+      sym: ['🍄', '🌸', '🐸', '👑', '🏰', '🧚'], wild: '✨', scat: '📖' },
+    { key: 'dragons', name: 'Dragon\'s Lair', group: 'Fantasy', kids: true, flavour: 'A cosy cave and a very large egg.',
+      pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
+      sym: ['🥚', '🔥', '🛡️', '🗡️', '🏰', '🐉'], wild: '👁️', scat: '💎' },
+    { key: 'robots', name: 'Robot Factory', group: 'Space & Tech', kids: true, flavour: 'Wrenches, batteries and one big robot.',
+      pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
+      sym: ['🔧', '⚙️', '🔋', '💾', '🦿', '🤖'], wild: '⚡', scat: '🚨' },
+    { key: 'ninjas', name: 'Ninja Shadows', group: 'Adventure', kids: false, flavour: 'Rice balls, bamboo and a quiet rooftop.',
+      pal: ['#142434', '#244260', '#2c3e50', '#edf2f7', '#16293b'],
+      sym: ['🍙', '🎋', '👺', '🗡️', '🏯', '🥷'], wild: '💨', scat: '⭐' }
+
+    ];
+    for (var i = 0; i < DATA.length; i++) { add(DATA[i]); }
+}());

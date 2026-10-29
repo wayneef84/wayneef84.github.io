@@ -2,150 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1a0b2e">
-    <title>Dad's Slots v3.0</title>
-    
-    <link rel="stylesheet" href="css/slots.css?v=3.1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#4a1740">
+    <title>Slots - Just for fun</title>
+    <link rel="stylesheet" href="css/slots.css?v=4.0.0">
 </head>
 <body>
+<div id="app" class="app" data-mode="classic">
 
-    <div id="gameScaler">
+    <header class="bar">
+        <a class="icon-btn" href="../../index.html" aria-label="Back to the arcade">&#127968;</a>
+        <button id="themeBtn" class="theme-btn" type="button" aria-label="Choose a theme">
+            <span id="themeIcon" class="g"></span>
+            <span id="themeName" class="theme-name">Theme</span>
+            <span class="caret" aria-hidden="true">&#9662;</span>
+        </button>
+        <button id="helpBtn" class="icon-btn" type="button" aria-label="How to play and settings">&#10067;</button>
+        <button id="soundBtn" class="icon-btn" type="button" aria-label="Turn sound off" aria-pressed="true">&#128266;</button>
+    </header>
 
-        <div class="game-wrapper">
+    <nav id="modes" class="modes" aria-label="Game modes"></nav>
+    <p id="howto" class="howto"></p>
 
-            <div id="toastContainer" class="toast-container"></div>
+    <section class="hud" aria-label="Your coins">
+        <div class="hud-box"><span class="hud-label">COINS</span><span id="coins" class="hud-val">0</span></div>
+        <div class="hud-box"><span class="hud-label">LAST WIN</span><span id="last" class="hud-val">0</span></div>
+    </section>
 
-            <div class="bolt tl">✦</div>
-            <div class="bolt tr">✦</div>
-            <div class="bolt bl">✦</div>
-            <div class="bolt br">✦</div>
-
-            <div class="top-bar">
-                <button class="sys-btn" onclick="toggleRules()">ℹ️ RULES</button>
-                <select id="themeSelector" class="theme-select" onchange="changeTheme(this.value)"></select>
-                <button id="audioButton" class="sys-btn" onclick="toggleAudio()">🔊</button>
-                <button id="debugButton" class="sys-btn" onclick="toggleDebug()" title="Debug Info">🔧</button>
-                <button class="sys-btn warning" onclick="window.location.href='../../index.html'">🏠</button>
+    <main id="stage" class="stage">
+        <div id="stageInner" class="stage-inner"></div>
+        <button id="lever" class="lever" type="button" aria-label="Pull the lever to spin" hidden>
+            <span class="lever-ball"></span><span class="lever-arm"></span><span class="lever-base"></span>
+        </button>
+        <div id="winpop" class="winpop" aria-hidden="true"></div>
+        <div id="bonus" class="bonus" hidden role="dialog" aria-modal="true" aria-labelledby="bonusTitle">
+            <div class="bonus-card">
+                <h2 id="bonusTitle" class="bonus-title">Bonus!</h2>
+                <div id="bonusBody" class="bonus-body"></div>
             </div>
+        </div>
+    </main>
 
-            <!-- Debug Overlay -->
-            <div id="debugOverlay" style="display: none; position: absolute; top: 60px; left: 10px; background: rgba(0,0,0,0.8); color: #0f0; padding: 10px; font-family: monospace; font-size: 12px; border: 1px solid #0f0; border-radius: 4px; z-index: 9999;">
-                <div><strong>DEBUG INFO</strong></div>
-                <div>Mode: <span id="debugMode">Desktop</span></div>
-                <div>Render: <span id="debug3D">3D</span></div>
-                <div>FPS: <span id="debugFPS">60</span></div>
-                <div>Target: <span id="debugTargetFPS">60</span></div>
-                <div>Shadows: <span id="debugShadows">ON</span></div>
-                <div>Particles: <span id="debugParticles">0</span></div>
-                <div>Win Lines: <span id="debugWinLines">0</span></div>
-                <div>Spinning: <span id="debugSpinning">NO</span></div>
+    <section class="controls" aria-label="Bet and spin">
+        <div class="bet">
+            <button id="betDown" class="round-btn" type="button" aria-label="Lower the bet">&minus;</button>
+            <div class="bet-box"><span class="hud-label">BET</span><span id="bet" class="hud-val">10</span></div>
+            <button id="betUp" class="round-btn" type="button" aria-label="Raise the bet">+</button>
+        </div>
+        <button id="spin" class="spin" type="button">SPIN</button>
+    </section>
+
+    <div id="refill" class="refill" hidden>
+        <span>Need more coins? They are free.</span>
+        <button id="refillBtn" class="btn" type="button">Get 1,000 coins</button>
+    </div>
+
+    <p id="saveNote" class="note" hidden>Your coins will not be remembered in this browser.</p>
+    <p id="fatal" class="note fatal" hidden>The game could not start. Please reload the page.</p>
+    <p class="fine">Just for fun. No real money.</p>
+    <div id="live" class="sr-only" aria-live="polite"></div>
+
+    <div id="themeSheet" class="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="themeTitle">
+        <div class="sheet-card">
+            <div class="sheet-head">
+                <h2 id="themeTitle">Pick a theme</h2>
+                <button class="sheet-close" type="button" data-close="themeSheet" aria-label="Close">&times;</button>
             </div>
+            <input id="themeSearch" class="search" type="search" placeholder="Search themes" aria-label="Search themes" autocomplete="off">
+            <div id="themeChips" class="chips"></div>
+            <div id="themeCount" class="count"></div>
+            <div id="themeList" class="tlist"></div>
+            <p id="themeEmpty" class="count" hidden>No theme matches. Try another word.</p>
+        </div>
+    </div>
 
-            <div class="header">
-                <div class="stats-box">
-                    <div class="label">BALANCE</div>
-                    <div id="coinCount" class="value highlight">$100.00</div>
-                </div>
-                <div class="stats-box">
-                    <div class="label">TOTAL WON</div>
-                    <div id="totalWon" class="value">$0.00</div>
-                </div>
+    <div id="helpSheet" class="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+        <div class="sheet-card">
+            <div class="sheet-head">
+                <h2 id="helpTitle">How to play</h2>
+                <button class="sheet-close" type="button" data-close="helpSheet" aria-label="Close">&times;</button>
             </div>
-
-            <div class="game-container">
-                <!-- Marquee Lights Top Cabinet -->
-                <div class="marquee-lights">
-                    <div class="marquee-title">SLOTS</div>
-                    <div class="light-strip">
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                        <div class="light"></div>
-                    </div>
-                </div>
-
-                <canvas id="slotCanvas"></canvas>
-                <div id="winOverlay" class="win-overlay"></div>
-
-                <!-- Bonus Overlay -->
-                <div id="bonusOverlay" class="bonus-overlay" style="display: none;">
-                    <div class="bonus-content">
-                        <h2>BONUS ROUND</h2>
-                        <div id="bonusCounter">SPIN 1 OF 10</div>
-                        <div id="bonusWinDisplay">TOTAL WON: $0.00</div>
-                        <button id="skipBonusButton" class="sys-btn" onclick="skipBonus()">SKIP TO RESULT ⏩</button>
-                    </div>
-                </div>
-
-                <div id="bonusIndicator" class="bonus-indicator"></div>
-
-                <!-- Mechanical Frame Overlay -->
-                <div class="mechanical-frame">
-                    <div class="frame-top"></div>
-                    <div class="frame-left"></div>
-                    <div class="frame-right"></div>
-                    <div class="frame-bottom-left"></div>
-                    <div class="frame-bottom-right"></div>
-                    <div class="reel-divider" style="left: 20%;"></div>
-                    <div class="reel-divider" style="left: 40%;"></div>
-                    <div class="reel-divider" style="left: 60%;"></div>
-                    <div class="reel-divider" style="left: 80%;"></div>
-                    <div class="glass-reflection"></div>
-                </div>
-
-                <!-- Physical Slot Machine Lever -->
-                <div class="slot-lever">
-                    <div class="lever-ball"></div>
-                    <div class="lever-arm"></div>
-                    <div class="lever-base"></div>
-                </div>
+            <p id="helpText" class="help-text"></p>
+            <p class="help-text small">Coins are play money. They have no value and cannot be bought or cashed out.</p>
+            <h3 id="helpPayTitle" class="help-sub">Prizes</h3>
+            <div id="helpPay" class="pt"></div>
+            <h3 class="help-sub">Settings</h3>
+            <div class="opts">
+                <button id="optSound" class="btn" type="button" aria-pressed="true">Sound: on</button>
+                <button id="optCalm" class="btn" type="button" aria-pressed="false">Calm mode: off</button>
+                <button id="optRefill" class="btn" type="button">Get 1,000 free coins</button>
             </div>
+            <button class="btn primary" type="button" data-close="helpSheet">Got it</button>
+        </div>
+    </div>
+</div>
 
-            <div class="controls">
-                <div class="control-group">
-                    <button class="circle-btn" onclick="changeBet(-0.50)">−</button>
-                    <div class="display-panel">
-                        <span class="label">BET</span>
-                        <span id="betAmount">$1.00</span>
-                    </div>
-                    <button class="circle-btn" onclick="changeBet(0.50)">+</button>
-                </div>
-
-                <button id="spinButton" class="spin-btn" onclick="spin()">SPIN</button>
-
-                <div class="control-group">
-                    <button class="circle-btn" onclick="changePaylines(-1)">−</button>
-                    <div class="display-panel">
-                        <span class="label">LINES</span>
-                        <span id="paylineCount">20</span>
-                    </div>
-                    <button class="circle-btn" onclick="changePaylines(1)">+</button>
-                </div>
-            </div>
-
-            <div id="rulesModal" class="modal-overlay" onclick="toggleRules()">
-                <div class="modal-content" onclick="event.stopPropagation()">
-                    <div class="modal-header">
-                        <h2>PAYTABLE</h2>
-                        <button class="close-btn" onclick="toggleRules()">×</button>
-                    </div>
-                    <div id="paytableContent" class="modal-body"></div>
-                    <div class="modal-footer">
-                        <p>Wilds (W) substitute for all symbols except Scatters.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div> </div> <script src="js/slots_audio.js?v=3.1"></script>
-    <script src="js/themes.js?v=3.1"></script>
-    <script src="js/slots.js?v=3.1"></script>
+<script src="js/engine.js?v=4.0.0"></script>
+<script src="js/themes.js?v=4.0.0"></script>
+<script src="js/store.js?v=4.0.0"></script>
+<script src="js/sfx.js?v=4.0.0"></script>
+<script src="js/view.js?v=4.0.0"></script>
+<script src="js/modes/classic.js?v=4.0.0"></script>
+<script src="js/modes/five.js?v=4.0.0"></script>
+<script src="js/modes/cascade.js?v=4.0.0"></script>
+<script src="js/modes/match3.js?v=4.0.0"></script>
+<script src="js/modes/pick.js?v=4.0.0"></script>
+<script src="js/modes/wheel.js?v=4.0.0"></script>
+<script src="js/ui.js?v=4.0.0"></script>
 </body>
 </html>
