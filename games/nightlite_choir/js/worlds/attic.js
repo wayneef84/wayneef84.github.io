@@ -5,7 +5,7 @@
     var N = null;
     w.NightliteWorlds = w.NightliteWorlds || {};
     w.NightliteWorlds.attic = {
-        id: 'attic', label: 'The Toy Attic', short: 'Toy Attic', bpm: 100,
+        id: 'attic', label: 'The Toy Attic', short: 'Toy Attic', chip: 'Attic', icon: '\uD83E\uDDF8', bpm: 100,
         theme: { bg1: '#6a4a36', bg2: '#35241b', panel: '#7d5a43', text: '#fff3e2', accent: '#f2b8c6', slot: '#8e6548', onaccent: '#3a2218' },
         glow: { count: 18, kind: 'dust' },
         chars: [
