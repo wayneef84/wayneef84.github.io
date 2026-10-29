@@ -14,7 +14,9 @@
  * the hub already supplies Home, Cards and the game list, so nothing is drawn.
  * Links use target="_top" so they always break out of any frame.
  *
- * Options: CardNav.mount({ current: 'blackjack' })  (default: read from URL)
+ * Options: CardNav.mount({ current: 'blackjack', title: 'Blackjack' })
+ *   current: game id to mark and to pass to the hub (default: read from URL)
+ *   title:   label shown on phones (default: the game name)
  */
 var CardNav = (function () {
     'use strict';
@@ -133,7 +135,7 @@ var CardNav = (function () {
 
         nav.appendChild(link(base + '../../index.html', '🏠 Home', 'Home, F.O.N.G. Arcade'));
         nav.appendChild(link(base + 'index.html' + (current ? '?game=' + current : ''), '🃏 Cards', 'Card games hub'));
-        nav.appendChild(el('span', 'cn-title', nameOf(current)));
+        nav.appendChild(el('span', 'cn-title', opts.title || nameOf(current)));
 
         var menu = el('button', 'cn-menu', 'Games ▾');
         menu.setAttribute('type', 'button');
