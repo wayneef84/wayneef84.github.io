@@ -5,13 +5,14 @@ Standalone static game. Strict ES5, no libraries, no network, relative paths, wo
 ## Files
 ```
 games/nightlite_choir/
-  index.html          two screens: door screen and one world screen (filled in for the Garden, the Attic or the Observatory)
+  index.html          four screens: doors, one world screen (filled in per world), Collection, Mixing pot
   css/style.css       layout, doors, stage, tray, glow dots (theme colors are CSS variables)
   js/synth.js         NightliteSynth.render(spec, bpm, seed): spec to a looping Float32Array
   js/art.js           NightliteArt.make(spec) and dataUri(): creature art as SVG
   js/worlds/garden.js world data: theme, 90 BPM, 4 creatures (art spec + synth spec)
   js/worlds/attic.js  world data: theme, 100 BPM, 4 creatures, dust-mote glow
   js/worlds/observatory.js  world data: theme, 80 BPM, 4 creatures, star-sky look
+  js/worlds/blends.js 6 blend creatures: art spec, synth spec, `blend: [parentA, parentB]` (the recipe table)
   js/app.js           doors, screens, stage, tray, drag, undo, save/load, audio context, keys
   *.md                README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT, DESIGN, IP-GUARDRAILS, ASSET_LOG
 ```
@@ -29,3 +30,13 @@ games/nightlite_choir/
 - Observatory look: `glow.kind: 'stars'` builds a skylight and telescope silhouette (inline SVG), twinkling stars and three slow shooting stars (`buildSky`). Panels are translucent so the sky shows. `drawConstellation` puts an SVG of dashed pastel pink and lilac lines between the filled slots inside the stage. It has `pointer-events: none` and is redrawn on every stage change and resize.
 - Theme per world: CSS variables set by `applyTheme`. The Attic adds a plank background, a cardboard stage and a sunbeam with dust motes (`glow.kind: 'dust'`). All access is wrapped in try/catch, so storage can be blocked.
 - Debug hook: `window.Nightlite` (state, voices, addChar). Not used by the UI.
+
+## Milestone 3: sparks, eggs, pot (v0.4.0)
+- Screens: `doors`, `world`, `collect`, `pot` (`S.screen`). `openScreen(name)` pushes the current screen on `S.back` and pauses sound if it came from a world (the stage is kept). `goBack()` pops it and restarts the voices via `resumeWorld()`. `leaveWorld` and `enterWorld` clear the stack. Collection and pot use the calm door theme.
+- Blends are creatures in `charById` with `isBlend: true`, `world: 'blends'` and a tempo taken from the first parent's world, so the tempo rule (first creature placed sets it) is unchanged. They are placeable only when owned (`S.owned[id]`). The tray view `S.view` is a world id or `'blends'` (the fourth chip). Blends do not change the theme.
+- Recipes: `recipeByKey['a+b']` (parent ids sorted, joined with `+`) gives the blend id. The pot (`mix2`) and the egg both end in `S.owned[id] = true`. Only the pot sets `S.found[key]` (the Discovery book). Parents are never touched.
+- Sparks: `S.sparks`, cap 99. One interval (1 s) calls `tick(dt)`. It skips when `document.hidden`, ignores gaps over 2 s and only counts play time when `S.screen === 'world'` and two or more friends are on the stage. `SPARK_EVERY` 15, `WISH_GIVES` 3, `EGG_COST` 5, `HATCH_SECS` 20, `WARM_SHAVE` 2 are constants at the top of app.js.
+- Nest: `S.nest = { left: seconds }` or null, one egg at a time. `nestTick` counts down visible time (not wall-clock time, so closing the page never costs or rewards anything). The blend is picked when the egg hatches from the ones not owned yet. If none are left, the sparks are refunded (`hatch`, and `getEgg` straight away when all 6 are owned).
+- Save: `nightlite.save` = `{ v: 4, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }`, written on every change and on page hide. `loadProgress` validates every field and ignores unknown ones. `nightlite.mix` snapshots get a `v` field; older snapshots without it still load. Blends not owned are dropped from a loaded mix.
+- UI sounds (wish, hatch, pot): `chime(notes)` plays a few soft sine notes (C pentatonic) through the same master gain, so Mute and Volume apply.
+- Art additions for the blends: accessory `ringband`. The egg and nest are a small inline SVG written in js/app.js (`eggSvg`).

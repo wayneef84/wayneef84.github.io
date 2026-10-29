@@ -1,5 +1,13 @@
 # Nightlite Choir+: Changelog
 
+## v0.4.0 - Milestone 3 (2026-10-29)
+- Sparks: a free counter. +1 spark per 15 seconds while two or more friends sing on the stage and the page is visible, cap 99. Nothing accrues in the background. A "Wish" button gives 3 free sparks at any time. No timers, streaks, daily bonus or anything that can be missed.
+- Eggs: 5 sparks puts an egg in the nest. It hatches in about 20 seconds, tap it to warm it (2 seconds sooner per tap). It hatches a blend you do not have. With all 6 owned the egg twinkles and refunds its sparks.
+- Mixing pot: pick any two of the 12 friends, tap Mix. Six invented pairs make a blend at once (nothing is used up) and are saved in the Discovery book. Other pairs say "Not this time".
+- 6 original blends: Mossweave, Halohum, Dewglint, Trotleaf, Tockmoon, Twirlwisp. Own art (generator additions: `ringband`) and own sounds. Tray gets a fourth chip, Blends.
+- Collection screen (button on the door screen and in every world): sparks, nest, Discovery book, blends you own. Mixing pot screen. Home stays on every screen.
+- New save key `nightlite.save` (version 4: sparks, blends, found recipes, nest). v0.1.0, v0.2.0 and v0.3.0 saves still load. Works with storage blocked.
+
 ## v0.3.0 - Milestone 2b (2026-10-29)
 - The Star Observatory door opens ("Through the skylight"). 80 BPM, 6 slots, 4 new creatures: Dozemoon (pad), Glintwand (bell), Twirltail (sweep), Ringhum (soft drum), all C major pentatonic.
 - Deep night sky look: skylight, telescope silhouette, twinkling stars, slow shooting stars. Soft pink and lilac star-map lines join the friends on the stage (decoration only, taps pass through).

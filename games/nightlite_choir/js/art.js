@@ -3,6 +3,7 @@
  * make(spec, horror) returns an SVG string (viewBox 0 0 100 120).
  * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush|moon|star|comet|planet), color, eyes, mouth, acc, accColor,
  *        acc2, acc2Color, cheeks, patch, mark, ring}
+ * Accessories added for the blends (milestone 3): ringband (a thin ring around the body, back half drawn behind).
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {

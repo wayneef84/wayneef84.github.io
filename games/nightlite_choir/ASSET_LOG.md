@@ -41,6 +41,24 @@
 | 2026-10-29 | Sound: Twirltail sweep | Sound | `whoosh` voice: band-passed noise with a rising cutoff and a swell, plus a soft sine glide from G3 to G5 (second hit to E5) | n/a |
 | 2026-10-29 | Sound: Ringhum soft drum | Sound | `thrum` voice: low sine with a small pitch dip and a gentle 2nd harmonic, notes C3 G3 E3 G3 | n/a |
 | 2026-10-29 | Look: observatory theme | Image | CSS plus a small hand-written inline SVG (skylight frame and telescope silhouette) in js/app.js, stars and shooting stars as CSS, star-map lines drawn by js/app.js. No image files | n/a |
+| 2026-10-29 | Name: Mossweave | Name | Invented for the Mossle + Skeinie blend. Moss + weave | Web search (2 queries, 2026-10-29, run by a research helper): no game, character, toy or brand named Mossweave. Nearby but different: Moss Man (Masters of the Universe), Moonweave (Veloren crafting item), Moss-Weaver (Elder Scrolls NPC title). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Halohum | Name | Invented for the Glimmow + Ringhum blend. Halo + hum | Web search (2 queries, 2026-10-29): no exact match. Nearby but different: Halo (Xbox franchise, toys by Youtooz), Halohasta (a microbe genus). The "Halo" prefix is crowded, so a name that is only the word Halo was avoided. Kept, Wayne may prefer a rename. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Dewglint | Name | Invented for the Puddlet + Glintwand blend. Dew + glint | Web search (2 queries, 2026-10-29): no match. Nearby but different: Dewy (Wii game Dewy's Adventure water drop), Glint (a Pikmi Pops dog), Dew Glow Tint (a lip product). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Trotleaf | Name | Invented for the Shrublet + Clopsy blend. Trot + leaf | Web search (2 queries, 2026-10-29): no match, only generic trot and trotter pages. Nearby but different: Umberleaf (a cube game creature). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Tockmoon | Name | Invented for the Cogwick + Dozemoon blend. Tock + moon | Web search (2 queries, 2026-10-29): nothing relevant (moon calendars, unrelated merchandise). Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Name: Twirlwisp | Name | Invented for the Fluffhorn + Twirltail blend. Twirl + wisp | Web search (2 queries, 2026-10-29): no match. Nearby but different: Twip Wips (Fly Free mobile game creatures), Twirlywoos (CBeebies toy line). Wisp is a generic fantasy word. Kept. Quick search only, not legal clearance. |
+| 2026-10-29 | Recipe table (6 pairs) | Design | Invented in DESIGN.md. Chosen only for our own look-and-sound ideas (moss and yarn, ghost and ring, drop and star, hedge and horse, tin and moon, plush and comet). No other game's chart, wiki or combination was opened or used. Every pair crosses two worlds | n/a |
+| 2026-10-29 | Code: js/art.js addition | Code | New accessory `ringband` written by hand (front and back arc of a thin ring) | n/a |
+| 2026-10-29 | Art: Mossweave, Halohum, Dewglint, Trotleaf, Tockmoon, Twirlwisp | Image | Generated at runtime by js/art.js from the specs in js/worlds/blends.js, mixing visual traits of each blend's two parents (bodies, accessories and eyes of the parents, new color mixes). No image files, no references | n/a |
+| 2026-10-29 | Sound: Mossweave wobble bass | Sound | Tone spec in js/worlds/blends.js: triangle wave, 700 Hz low-pass, vibrato, C3 E3 G3 A3 | n/a |
+| 2026-10-29 | Sound: Halohum glow arpeggio | Sound | Tone spec: sine doubled an octave up (chord 0 and 12), slow attack, vibrato, C5 E5 G5 A5 D5 | n/a |
+| 2026-10-29 | Sound: Dewglint droplet marimba | Sound | Tone spec: decaying sine, strong 2nd harmonic, 0.22 s decay, G5 A5 C6 E5 | n/a |
+| 2026-10-29 | Sound: Trotleaf hop pluck | Sound | Tone spec: square wave, 2000 Hz low-pass, 0.1 s decay, G4 C5 E5 A4 | n/a |
+| 2026-10-29 | Sound: Tockmoon chord stabs | Sound | Tone spec: saw wave, 1500 Hz low-pass, chord 0, 7 and 12, off-beat stabs on C4 G4 A4 (each root, fifth and octave stays in C pentatonic) | n/a |
+| 2026-10-29 | Sound: Twirlwisp ooh voice | Sound | Existing `voice` synth kind (formant vowel "o"), C5 E5 G5 A5 | n/a |
+| 2026-10-29 | Sound: wish, egg, hatch, pot chimes | Sound | `chime()` in js/app.js: a few soft sine notes on C pentatonic pitches (C5 to C7 range), played with the Web Audio API. No sound files | n/a |
+| 2026-10-29 | Art: egg and nest | Image | Small inline SVG written by hand in js/app.js (`eggSvg`): cream egg with pastel spots, twig nest, glow and cracks as it warms | n/a |
+| 2026-10-29 | UI: spark counter, Wish, Collection, Mixing pot, Discovery book | Design | Own words and layout (free sparks, tap-to-warm egg, instant recipe pot, discovery book). No My Singing Monsters structure, names, timers or tier labels used | n/a |
 
 Add one row per creature, sound, image and the game title. Name check: search done, result, date.
 
