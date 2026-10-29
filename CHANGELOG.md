@@ -4,6 +4,7 @@ All notable changes to the root hub will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Site navigation:** `games/cards/shared/card-nav.js` (`CardNav`) puts one strip with Home, Cards and the sibling games on every card game. `js/home-link.js` (`FongHome`) adds a small fixed Home pill to pages with no way back to the homepage, and Home links were added to about, daily, and the game, tool and tracing pages that lacked one. The Letter Tracing house button pointed at a missing `games/index.html` and now goes to the homepage. See `docs/NAVIGATION.md`.
 - **Homepage theme engine (Phase 1):** Customize panel on the homepage with two skins (Classic, Print Shop), eight palettes plus Classic, per-color hex edits, shape and type controls, renaming, hide, pin, custom groups by catalog id, behaviors, and JSON export and import with a strict validator and a preview before applying. Recovery links `?theme=default` and `?safe=1`. Custom CSS and scripts are not supported yet. Added Space Grotesk (OFL) to `assets/fonts/`. See `docs/CUSTOMIZE.md`, `docs/CUSTOMIZE_IDS.md` and `docs/THEMING_SPEC.md`.
 - **Homepage skins (Phase 2):** five more skins (Cabinet of Drawers, Control Panel, Metro Map, Handheld, Scrapbook), seven in all, each working with every palette. Font licenses in `LICENSE_AUDIT.md`, per-skin notes in `docs/skins/`.
 - **Pink palettes and presets:** two new palettes (Bubblegum, Unicorn Dusk) and two importable themes in `docs/themes/` (K's board and K's night board).
