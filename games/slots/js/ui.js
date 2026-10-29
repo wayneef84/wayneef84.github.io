@@ -344,9 +344,6 @@
             for (var i = E.BETS.length - 1; i >= 0; i--) { if (E.BETS[i] <= state.coins) { state.bet = E.BETS[i]; break; } }
             if (view.setBet) { view.setBet(state.bet); }
             say('Bet lowered to ' + state.bet + ' coins.');
-            renderHud();
-            persist();
-            return;
         }
         var bet = state.bet;
         state.coins -= bet;
@@ -545,7 +542,8 @@
         if (!state.seen[mode.id]) { openHelp(); }
         S.game = {
             state: function () { return { coins: state.coins, bet: state.bet, theme: state.theme, mode: state.mode, busy: busy }; },
-            isBusy: function () { return busy; }
+            isBusy: function () { return busy; },
+            rounds: function () { return roundSeq; }
         };
         later(resize, 60);
     }
