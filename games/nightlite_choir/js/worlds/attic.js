@@ -16,10 +16,10 @@
               art: { body: 'doll', color: '#e8a5b4', eyes: 'button', mouth: 'stitch', acc: 'braids', accColor: '#d6a23c', cheeks: true, patch: '#9fd1b0' },
               synth: { kind: 'tone', wave: 'tri', harm: 0.35, decays: true, a: 0.003, d: 0.32, lp: 2600, amp: 0.7,
                        seq: [60, N, 64, N, 67, N, 64, 69, N, 67, N, 64, 62, N, 64, N] } },
-            { id: 'tocklet', name: 'Tocklet', role: 'tick',
+            { id: 'tocklet', name: 'Cogwick', role: 'tick',
               art: { body: 'tin', color: '#8fb0bf', eyes: 'big', mouth: 'grille', acc: 'antenna', accColor: '#e8b25a', acc2: 'windkey' },
               synth: { kind: 'drum', voice: 'click', pitch: 1, amp: 0.55, pattern: 'x.x.x.x.x.x.X...' } },
-            { id: 'mallowhorn', name: 'Mallowhorn', role: 'chime',
+            { id: 'mallowhorn', name: 'Fluffhorn', role: 'chime',
               art: { body: 'plush', color: '#f5e8d8', eyes: 'happy', mouth: 'smile', acc: 'horn', accColor: '#f0cf86', acc2: 'tuft', acc2Color: '#e89ab8', cheeks: true },
               synth: { kind: 'tone', wave: 'sine', harm: 0.3, decays: true, a: 0.004, d: 1.5, amp: 0.5,
                        seq: [84, N, 88, N, 91, N, N, N, 93, N, 91, N, 88, N, N, N] } }

@@ -20,7 +20,7 @@
             { id: 'puddlet', name: 'Puddlet', role: 'beat',
               art: { body: 'drop', color: '#5aaee8', eyes: 'happy', mouth: 'smile', acc: 'leaf', accColor: '#7fd6a0', cheeks: true },
               synth: { kind: 'drum', voice: 'drip', pitch: 1, amp: 0.6, pattern: 'x...x.x...x..x..' } },
-            { id: 'hedgey', name: 'Hedgey', role: 'shaker',
+            { id: 'hedgey', name: 'Shrublet', role: 'shaker',
               art: { body: 'bush', color: '#3f8a58', eyes: 'dots', mouth: 'smile', acc: 'firefly', accColor: '#ffe98a' },
               synth: { kind: 'drum', voice: 'rustle', amp: 0.45, pattern: '..x...x.x...x.x.' } }
         ]
