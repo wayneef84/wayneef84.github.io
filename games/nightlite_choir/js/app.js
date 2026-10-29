@@ -1,8 +1,9 @@
 /**
  * Nightlite Choir+ - app logic (strict ES5, no libraries, works from file://).
  * Engine forked from the S4K Mixer v2 app (tray, drag, undo, save, volume, audio context), adapted here.
- * Two screens: the door screen (world select) and a world (Night Garden in milestone 1).
+ * Two screens: the door screen (world select) and a world (Night Garden or Toy Attic).
  * Worlds register themselves in window.NightliteWorlds (see js/worlds/*.js).
+ * One shared stage: creatures from both worlds can stand on it. Tempo comes from the first creature placed.
  */
 (function (w) {
     var d = document;
@@ -12,7 +13,7 @@
 
     var DOORS = [
         { id: 'garden', name: 'The Night Garden', where: 'the window', open: true, c1: '#1d4a62', c2: '#14305a', acc: '#9bd27a', art: 'window' },
-        { id: 'attic', name: 'The Toy Attic', where: 'the hatch', open: false, c1: '#6a4a3a', c2: '#3e2f4a', acc: '#e0b27a', art: 'hatch' },
+        { id: 'attic', name: 'The Toy Attic', where: 'the hatch', open: true, c1: '#6a4a3a', c2: '#3e2f4a', acc: '#e0b27a', art: 'hatch' },
         { id: 'observatory', name: 'The Star Observatory', where: 'the skylight', open: false, c1: '#3a3070', c2: '#1a1a48', acc: '#b9a8ff', art: 'skylight' }
     ];
 
@@ -24,6 +25,7 @@
     var t0 = null;              // transport start time
     var toastTimer = null, drag = null, suppressClick = false, memMix = null;
     var charById = {};
+    var WORLD_ORDER = ['garden', 'attic'];
 
     function $(id) { return d.getElementById(id); }
     function el(tag, cls, text) {
@@ -159,8 +161,31 @@
             })(i);
         }
     }
+    function otherChars() {
+        var out = [], i, k, wd;
+        for (i = 0; i < WORLD_ORDER.length; i++) {
+            wd = w.NightliteWorlds[WORLD_ORDER[i]];
+            if (!wd || wd === S.world) continue;
+            for (k = 0; k < wd.chars.length; k++) out.push(wd.chars[k]);
+        }
+        return out;
+    }
+    function otherNames() {
+        var out = [], i, wd;
+        for (i = 0; i < WORLD_ORDER.length; i++) {
+            wd = w.NightliteWorlds[WORLD_ORDER[i]];
+            if (wd && wd !== S.world) out.push(wd.label.replace(/^The /, 'the '));
+        }
+        return out.join(' and ');
+    }
     function renderTiles() {
-        var box = $('tiles'), list = S.world.chars, i;
+        fillTiles($('tiles'), S.world.chars, 1);
+        var other = otherChars();
+        $('otherLabel').textContent = other.length ? 'Friends from ' + otherNames() : '';
+        fillTiles($('tilesOther'), other, S.world.chars.length + 1);
+    }
+    function fillTiles(box, list, firstNum) {
+        var i;
         box.innerHTML = '';
         for (i = 0; i < list.length; i++) {
             (function (ch, num) {
@@ -181,7 +206,7 @@
                 };
                 bindDrag(b, ch);
                 box.appendChild(b);
-            })(list[i], i + 1);
+            })(list[i], firstNum + i);
         }
     }
     function tileAction(ch) {
@@ -192,6 +217,10 @@
 
     // ---------------------------------------------------------------- history / actions
     function snapshot() { return { world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
+    function setBpm(b) {
+        S.bpm = b;
+        d.documentElement.style.setProperty('--beat', (60 / b) + 's');
+    }
     function pushHistory() {
         history.push(snapshot());
         if (history.length > 40) history.shift();
@@ -210,6 +239,7 @@
         }
         ensureCtx();
         pushHistory();
+        if (!firstFilled()) setBpm(ch.bpm);     // stage tempo comes from the first creature placed
         if (S.slots[idx]) stopVoice(idx);
         S.slots[idx] = ch.id;
         afterChange();
@@ -239,6 +269,7 @@
     function restore(snap) {
         stopAllVoices();
         S.slots = snap.slots.slice();
+        setBpm(snap.bpm > 0 ? snap.bpm : S.world.bpm);
         afterChange();
         var i;
         for (i = 0; i < SLOTS; i++) if (S.slots[i] && charById[S.slots[i]]) startVoice(i); else S.slots[i] = null;
@@ -262,8 +293,12 @@
         var raw = store(SAVE_KEY), snap = null, i;
         if (raw) { try { snap = JSON.parse(raw); } catch (e) { snap = null; } }
         if (!snap || !(snap.slots instanceof Array)) snap = memMix;
-        if (!snap || snap.world !== S.world.id) { toast('No saved mix yet. Make one and tap Save.'); return; }
+        if (!snap) { toast('No saved mix yet. Make one and tap Save.'); return; }
         for (i = 0; i < snap.slots.length; i++) if (snap.slots[i] && !charById[snap.slots[i]]) snap.slots[i] = null;
+        if (!(snap.bpm > 0)) {
+            snap.bpm = S.world.bpm;       // older saves have no tempo: use the tempo of the first creature
+            for (i = 0; i < snap.slots.length; i++) if (snap.slots[i]) { snap.bpm = charById[snap.slots[i]].bpm; break; }
+        }
         ensureCtx();
         pushHistory();
         restore(snap);
@@ -345,17 +380,24 @@
         var r = d.documentElement.style;
         r.setProperty('--bg1', t.bg1); r.setProperty('--bg2', t.bg2); r.setProperty('--panel', t.panel);
         r.setProperty('--text', t.text); r.setProperty('--accent', t.accent); r.setProperty('--slot', t.slot);
-        r.setProperty('--onaccent', '#10200c');
+        r.setProperty('--onaccent', t.onaccent || '#10200c');
     }
-    function buildGlow(n) {
-        var fx = $('fx'), i, p, s;
+    function buildGlow(n, kind) {
+        var fx = $('fx'), i, p, s, dust = (kind === 'dust');
         fx.innerHTML = '';
+        fx.className = 'fx' + (dust ? ' dust' : '');
+        if (dust) fx.appendChild(el('div', 'beam'));     // a sunbeam from the attic window
         for (i = 0; i < n; i++) {
-            s = 6 + Math.random() * 12;
+            s = dust ? 3 + Math.random() * 6 : 6 + Math.random() * 12;
             p = el('div', 'p');
-            p.style.left = (Math.random() * 96) + '%';
+            if (dust) {
+                p.style.left = (28 + Math.random() * 70) + '%';
+                p.style.top = (4 + Math.random() * 88) + '%';
+            } else {
+                p.style.left = (Math.random() * 96) + '%';
+            }
             p.style.width = s + 'px'; p.style.height = s + 'px';
-            p.style.animationDuration = (14 + Math.random() * 14) + 's';
+            p.style.animationDuration = (dust ? 16 + Math.random() * 14 : 14 + Math.random() * 14) + 's';
             p.style.animationDelay = (-Math.random() * 24) + 's';
             fx.appendChild(p);
         }
@@ -407,10 +449,10 @@
         }
     }
     function showScreen(name) {
-        S.screen = name;
+        S.screen = name === 'doors' ? 'doors' : 'world';
         $('screenDoors').hidden = (name !== 'doors');
-        $('screenGarden').hidden = (name !== 'garden');
-        d.body.className = 'screen-' + name;
+        $('screenWorld').hidden = (name === 'doors');
+        d.body.className = name === 'doors' ? 'screen-doors' : 'screen-world world-' + name;
         $('toast').className = 'toast';
         w.scrollTo(0, 0);
     }
@@ -418,10 +460,13 @@
         var world = w.NightliteWorlds[id];
         if (!world) return;
         S.world = world;
-        S.bpm = world.bpm;
+        if (!firstFilled()) setBpm(world.bpm);      // a stage that already has creatures keeps its tempo
+        else setBpm(S.bpm);
         applyTheme(world.theme);
-        buildGlow(world.glow ? world.glow.count : 12);
-        d.documentElement.style.setProperty('--beat', (60 / S.bpm) + 's');
+        buildGlow(world.glow ? world.glow.count : 12, world.glow ? world.glow.kind : '');
+        $('worldTitle').textContent = world.short || world.label;
+        $('screenWorld').setAttribute('aria-label', world.label);
+        S.screen = 'world';
         showScreen(id);
         history = [];
         afterChange();
@@ -441,7 +486,7 @@
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key, tag = d.activeElement ? d.activeElement.tagName : '';
         if (tag === 'INPUT' && k !== 'Escape') return;
-        if (S.screen !== 'garden') return;
+        if (S.screen !== 'world') return;
         var lk = k.toLowerCase(), n;
         if (k === 'Escape') leaveWorld();
         else if (lk === 'm') setMuted(!S.muted);
@@ -449,9 +494,10 @@
         else if (lk === 'r') clearAll();
         else if (lk === 's') saveMix();
         else if (lk === 'l') loadMix();
-        else if (k >= '1' && k <= '4') {
+        else if (k >= '1' && k <= '8') {
             n = parseInt(k, 10) - 1;
-            if (S.world.chars[n]) tileAction(S.world.chars[n]);
+            var all = S.world.chars.concat(otherChars());
+            if (all[n]) tileAction(all[n]);
         }
     }
 
@@ -459,7 +505,11 @@
     function init() {
         var id, j, worlds = w.NightliteWorlds || {};
         for (id in worlds) if (worlds.hasOwnProperty(id)) {
-            for (j = 0; j < worlds[id].chars.length; j++) charById[worlds[id].chars[j].id] = worlds[id].chars[j];
+            for (j = 0; j < worlds[id].chars.length; j++) {
+                worlds[id].chars[j].world = id;
+                worlds[id].chars[j].bpm = worlds[id].bpm;
+                charById[worlds[id].chars[j].id] = worlds[id].chars[j];
+            }
         }
         var vol = parseInt(store('nightlite.vol'), 10);
         if (vol >= 0 && vol <= 100) { S.vol = vol / 100; $('volRange').value = vol; } else { S.vol = 0.7; }
@@ -482,7 +532,7 @@
         d.addEventListener('keydown', onKey);
         d.addEventListener('visibilitychange', function () {
             if (!ctx) return;
-            try { if (d.hidden) ctx.suspend(); else if (S.screen === 'garden') ctx.resume(); } catch (e) {}
+            try { if (d.hidden) ctx.suspend(); else if (S.screen === 'world') ctx.resume(); } catch (e) {}
         });
 
         // Test/debug hook (not used by the UI).
