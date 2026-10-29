@@ -14,6 +14,11 @@
 
 ## Version History
 
+### v1.0.6-C (Claude) - 2026-10-28 UTC
+**Reasoning:** Repair a regression from an earlier merge and wire the Ante buttons.
+* **[FIXED] games/cards/poker/5card/index.html:** The page did not load: an earlier edit had inserted 233 duplicated lines and cut a string in half. Restored the last good version.
+* **[ADDED] games/cards/poker/5card/index.html:** Working Ante - and + buttons ($5 steps, $5 up to your balance, max $100) that update the Deal button label.
+
 ### v1.0.5-C (Claude) - 2026-01-31 UTC
 **Reasoning:** Bug fixes for Blackjack gameplay and creation of comprehensive test suite.
 * **[FIXED] games/cards/blackjack/index.html:** Fixed card animation preview bug - cards no longer flash at destination before flying animation. Changed `opacity: '0'` to `visibility: 'hidden'` for tempSlot element.
