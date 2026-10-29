@@ -1,0 +1,50 @@
+{
+  "format": "fong-theme",
+  "version": 1,
+  "name": "K's night board",
+  "skin": "control-panel",
+  "palette": {
+    "bg": "#2A1038",
+    "surface": "#3A1B4C",
+    "text": "#FFE9F5",
+    "dim": "#DDB0E6",
+    "accent": "#FF7EC0",
+    "accent2": "#9EE6D0"
+  },
+  "labels": {
+    "site-title": "K's Arcade",
+    "kfav": "K's Favorites"
+  },
+  "groups": [
+    {
+      "id": "kfav",
+      "label": "K's Favorites",
+      "items": [
+        "nightlite-choir",
+        "sprunki-v2",
+        "memory-match",
+        "byte-runner-quest",
+        "war"
+      ]
+    }
+  ],
+  "order": [
+    "kfav",
+    "games",
+    "tools",
+    "wos",
+    "more"
+  ],
+  "hidden": [],
+  "pinned": [
+    "nightlite-choir",
+    "memory-match"
+  ],
+  "behaviors": {
+    "sortMostPlayed": false,
+    "showPlayCounts": false,
+    "showNewBadges": true,
+    "showJustAdded": true
+  },
+  "motion": "full"
+}

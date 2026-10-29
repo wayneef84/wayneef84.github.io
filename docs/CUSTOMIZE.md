@@ -11,6 +11,8 @@ The homepage has a **Customize** button in the header. It opens a panel where yo
 
 `?mode=fun` still works. In Classic it looks like it always did. In other skins it only changes the wording.
 
+Ready-made pink themes you can import are in [themes/](themes/README.md).
+
 ## The skins
 
 | Skin | Look | Notes |
