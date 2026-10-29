@@ -1,7 +1,8 @@
 /**
  * Nightlite Choir+ - character art generator (ES5).
  * make(spec, horror) returns an SVG string (viewBox 0 0 100 120).
- * spec: {body (round|tall|drop|wide|square|ghost|bush), color, eyes, mouth, acc, accColor, cheeks}
+ * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush), color, eyes, mouth, acc, accColor,
+ *        acc2, acc2Color, cheeks, patch, mark}
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {
@@ -28,7 +29,34 @@
         wide: { y: 70, d: function (c) { return '<ellipse cx="50" cy="78" rx="44" ry="34" fill="' + c + '"/>'; }, top: 46 },
         square: { y: 64, d: function (c) { return '<rect x="16" y="30" width="68" height="82" rx="18" fill="' + c + '"/>'; }, top: 30 },
         bush: { y: 66, d: function (c) { return '<circle cx="28" cy="74" r="24" fill="' + c + '"/><circle cx="72" cy="74" r="24" fill="' + c + '"/><circle cx="38" cy="48" r="26" fill="' + c + '"/><circle cx="62" cy="48" r="26" fill="' + c + '"/><ellipse cx="50" cy="80" rx="38" ry="28" fill="' + c + '"/>'; }, top: 24 },
-        ghost: { y: 56, d: function (c) { return '<path d="M20 112 L20 54 C20 26 36 14 50 14 C64 14 80 26 80 54 L80 112 L69 102 L59 112 L50 102 L41 112 L31 102Z" fill="' + c + '"/>'; }, top: 14 }
+        ghost: { y: 56, d: function (c) { return '<path d="M20 112 L20 54 C20 26 36 14 50 14 C64 14 80 26 80 54 L80 112 L69 102 L59 112 L50 102 L41 112 L31 102Z" fill="' + c + '"/>'; }, top: 14 },
+        // Toy Attic bodies: rag doll (cloth head and dress), hobby-horse head on a stick, tin wind-up toy, soft plush
+        doll: { y: 44, d: function (c) {
+            var skin = mix(c, '#f6e4cc', 0.85), dark = mix(c, '#5a3a30', 0.25);
+            return '<path d="M30 72 L70 72 L82 112 L18 112Z" fill="' + c + '"/><path d="M18 112 Q26 104 34 112 Q42 104 50 112 Q58 104 66 112 Q74 104 82 112" stroke="' + dark + '" stroke-width="3" fill="none"/>' +
+                '<circle cx="50" cy="42" r="30" fill="' + skin + '"/>';
+        }, top: 14 },
+        pony: { y: 58, d: function (c) {
+            var muzzle = mix(c, '#f6d8d0', 0.55), dark = mix(c, '#3a2a22', 0.45);
+            return '<rect x="45" y="96" width="10" height="26" rx="4" fill="#9a6a3e"/>' +
+                '<path d="M28 30 Q50 20 72 30 C82 50 76 72 69 92 Q66 106 50 106 Q34 106 31 92 C24 72 18 50 28 30Z" fill="' + c + '"/>' +
+                '<path d="M29 80 Q50 88 71 80" stroke="#c4577a" stroke-width="5" fill="none"/><ellipse cx="50" cy="94" rx="18" ry="12" fill="' + muzzle + '"/><circle cx="43" cy="94" r="2.6" fill="' + dark + '"/><circle cx="57" cy="94" r="2.6" fill="' + dark + '"/>';
+        }, top: 24 },
+        tin: { y: 44, d: function (c) {
+            var edge = mix(c, '#2a3038', 0.35), rivet = mix(c, '#ffffff', 0.55);
+            return '<rect x="9" y="82" width="12" height="9" rx="4.5" fill="' + edge + '"/><rect x="79" y="82" width="12" height="9" rx="4.5" fill="' + edge + '"/>' +
+                '<rect x="30" y="104" width="14" height="12" rx="3" fill="' + edge + '"/><rect x="56" y="104" width="14" height="12" rx="3" fill="' + edge + '"/>' +
+                '<rect x="26" y="72" width="48" height="36" rx="7" fill="' + c + '"/><rect x="43" y="66" width="14" height="8" fill="' + edge + '"/>' +
+                '<rect x="18" y="20" width="64" height="48" rx="11" fill="' + c + '"/>' +
+                '<circle cx="50" cy="90" r="9" fill="#f3ead2"/><path d="M50 90 L55 84" stroke="#a33" stroke-width="2.4" stroke-linecap="round"/><circle cx="50" cy="90" r="1.8" fill="#333"/>' +
+                '<circle cx="25" cy="27" r="2.4" fill="' + rivet + '"/><circle cx="75" cy="27" r="2.4" fill="' + rivet + '"/><circle cx="25" cy="61" r="2.4" fill="' + rivet + '"/><circle cx="75" cy="61" r="2.4" fill="' + rivet + '"/>' +
+                '<circle cx="33" cy="78" r="2" fill="' + rivet + '"/><circle cx="67" cy="78" r="2" fill="' + rivet + '"/>';
+        }, top: 20 },
+        plush: { y: 62, d: function (c) {
+            var foot = mix(c, '#b98a78', 0.35);
+            return '<ellipse cx="33" cy="106" rx="13" ry="9" fill="' + foot + '"/><ellipse cx="67" cy="106" rx="13" ry="9" fill="' + foot + '"/>' +
+                '<ellipse cx="50" cy="68" rx="36" ry="38" fill="' + c + '"/>';
+        }, top: 32 }
     };
 
     function eyes(kind, y, horror) {
@@ -36,6 +64,11 @@
         if (horror) {
             return '<ellipse cx="' + l + '" cy="' + y + '" rx="8" ry="10" fill="#07070d"/><ellipse cx="' + r + '" cy="' + y + '" rx="8" ry="10" fill="#07070d"/>' +
                 '<circle cx="' + l + '" cy="' + (y + 1) + '" r="2.6" fill="#f3efb0"/><circle cx="' + r + '" cy="' + (y + 1) + '" r="2.6" fill="#f3efb0"/>';
+        }
+        if (kind === 'button') {
+            return '<circle cx="' + l + '" cy="' + y + '" r="7" fill="#7a4a3a"/><circle cx="' + r + '" cy="' + y + '" r="7" fill="#7a4a3a"/>' +
+                '<circle cx="' + (l - 2.4) + '" cy="' + y + '" r="1.4" fill="#e9d3b8"/><circle cx="' + (l + 2.4) + '" cy="' + y + '" r="1.4" fill="#e9d3b8"/>' +
+                '<circle cx="' + (r - 2.4) + '" cy="' + y + '" r="1.4" fill="#e9d3b8"/><circle cx="' + (r + 2.4) + '" cy="' + y + '" r="1.4" fill="#e9d3b8"/>';
         }
         if (kind === 'big') {
             return '<circle cx="' + l + '" cy="' + y + '" r="10" fill="#fff"/><circle cx="' + r + '" cy="' + y + '" r="10" fill="#fff"/>' +
@@ -58,6 +91,8 @@
             return '<path d="M38 ' + y + ' Q44 ' + (y - 3) + ' 50 ' + y + ' T62 ' + y + '" stroke="#07070d" stroke-width="3" fill="none" stroke-linecap="round"/>';
         }
         if (kind === 'open') return '<ellipse cx="50" cy="' + y + '" rx="9" ry="7" fill="#552233"/><ellipse cx="50" cy="' + (y + 3) + '" rx="5" ry="3" fill="#ff8aa0"/>';
+        if (kind === 'stitch') return '<path d="M38 ' + y + ' Q50 ' + (y + 10) + ' 62 ' + y + '" stroke="#6b4a3a" stroke-width="3" stroke-dasharray="4 3" fill="none" stroke-linecap="round"/>';
+        if (kind === 'grille') return '<rect x="38" y="' + (y - 5) + '" width="24" height="11" rx="3" fill="#2f3640"/><path d="M44 ' + (y - 5) + ' V' + (y + 6) + ' M50 ' + (y - 5) + ' V' + (y + 6) + ' M56 ' + (y - 5) + ' V' + (y + 6) + '" stroke="#aab4c0" stroke-width="2"/>';
         if (kind === 'o') return '<circle cx="50" cy="' + y + '" r="5" fill="#552233"/>';
         if (kind === 'grin') return '<path d="M36 ' + (y - 3) + ' Q50 ' + (y + 14) + ' 64 ' + (y - 3) + 'Z" fill="#552233"/><path d="M40 ' + (y - 1) + ' L60 ' + (y - 1) + '" stroke="#fff" stroke-width="3"/>';
         return '<path d="M38 ' + y + ' Q50 ' + (y + 10) + ' 62 ' + y + '" stroke="#222" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
@@ -105,22 +140,80 @@
                 return '<path d="M28 ' + (t + 14) + ' Q50 ' + (t - 12) + ' 72 ' + (t + 14) + ' Q64 ' + (t + 8) + ' 58 ' + (t + 16) + ' Q50 ' + (t + 8) + ' 42 ' + (t + 16) + ' Q36 ' + (t + 8) + ' 28 ' + (t + 14) + 'Z" fill="' + dim('#ffffff', horror) + '"/>';
             case 'tophat':
                 return '<rect x="30" y="' + (t - 16) + '" width="40" height="26" rx="3" fill="#0b0b10"/><rect x="22" y="' + (t + 6) + '" width="56" height="7" rx="3" fill="#0b0b10"/><rect x="30" y="' + (t + 1) + '" width="40" height="5" fill="' + dim('#7a5cd1', horror) + '"/>';
+            case 'braids':
+                // yarn cap on the head plus tied bows (the plaits are drawn behind in accBack)
+                return '<path d="M20 46 C16 4 84 4 80 46 Q70 22 50 20 Q30 22 20 46Z" fill="' + c + '"/><path d="M50 20 L50 32" stroke="' + mix(color || '#ff77aa', '#3a2a22', 0.4) + '" stroke-width="2"/>' +
+                    '<circle cx="21" cy="50" r="4.5" fill="' + dim('#e98fae', horror) + '"/><circle cx="79" cy="50" r="4.5" fill="' + dim('#e98fae', horror) + '"/>';
+            case 'mane':
+                return '<path d="M34 ' + (t + 4) + ' Q50 ' + (t - 14) + ' 66 ' + (t + 4) + ' Q58 ' + (t + 2) + ' 56 ' + (t + 16) + ' Q50 ' + (t + 6) + ' 44 ' + (t + 16) + ' Q42 ' + (t + 2) + ' 34 ' + (t + 4) + 'Z" fill="' + c + '"/>';
+            case 'horn':
+                return '<path d="M30 ' + (t + 16) + ' L25 ' + (t - 6) + ' L45 ' + (t + 5) + 'Z M70 ' + (t + 16) + ' L75 ' + (t - 6) + ' L55 ' + (t + 5) + 'Z" fill="' + dim('#f4cfc8', horror) + '"/>' +
+                    '<path d="M42 ' + (t + 8) + ' L58 ' + (t + 8) + ' L50 ' + (t - 26) + 'Z" fill="' + c + '"/>' +
+                    '<path d="M44 ' + (t - 1) + ' L56 ' + (t - 5) + ' M46.5 ' + (t - 10) + ' L55 ' + (t - 13) + ' M48.5 ' + (t - 18) + ' L53 ' + (t - 20) + '" stroke="' + dim('#e0a85e', horror) + '" stroke-width="2.2" stroke-linecap="round"/>';
+            case 'tuft':
+                return '<path d="M36 ' + (t + 6) + ' Q22 ' + (t + 2) + ' 24 ' + (t + 22) + ' Q30 ' + (t + 14) + ' 40 ' + (t + 12) + 'Z" fill="' + c + '"/>';
             default:
                 return '';
         }
+    }
+
+    // Accessories drawn behind the body (wings, yarn plaits, pony ears and side mane, side mane locks, wind-up key).
+    function accBack(kind, color, body, horror) {
+        var t = body.top, c = dim(color || '#ff77aa', horror), s = '', i, y, dark;
+        switch (kind) {
+            case 'wings':
+                return acc('wings', color, body, horror);
+            case 'braids':
+                dark = mix(color || '#ff77aa', '#3a2a22', 0.3);
+                for (i = 0; i < 2; i++) {
+                    var x = i ? 80 : 20;
+                    for (y = 56; y < 104; y += 10) {
+                        s += '<ellipse cx="' + x + '" cy="' + y + '" rx="7.5" ry="6.5" fill="' + (((y - 56) / 10) % 2 ? dim(dark, horror) : c) + '"/>';
+                    }
+                    s += '<circle cx="' + x + '" cy="108" r="4.5" fill="' + dim('#e98fae', horror) + '"/><path d="M' + (x - 5) + ' 112 L' + x + ' 108 L' + (x + 5) + ' 112" stroke="' + c + '" stroke-width="3" fill="none"/>';
+                }
+                return s;
+            case 'mane':
+                return '<path d="M30 ' + (t + 14) + ' L26 ' + (t - 14) + ' L48 ' + (t + 2) + 'Z M70 ' + (t + 14) + ' L74 ' + (t - 14) + ' L52 ' + (t + 2) + 'Z" fill="' + dim('#c49a6a', horror) + '"/>' +
+                    '<path d="M32 ' + (t + 6) + ' L29 ' + (t - 6) + ' L40 ' + (t + 1) + 'Z M68 ' + (t + 6) + ' L71 ' + (t - 6) + ' L60 ' + (t + 1) + 'Z" fill="' + dim('#f0b6c4', horror) + '"/>' +
+                    '<path d="M26 ' + (t + 6) + ' Q8 ' + (t + 34) + ' 20 ' + (t + 70) + ' Q22 ' + (t + 40) + ' 34 ' + (t + 20) + 'Z M74 ' + (t + 6) + ' Q92 ' + (t + 34) + ' 80 ' + (t + 70) + ' Q78 ' + (t + 40) + ' 66 ' + (t + 20) + 'Z" fill="' + c + '"/>';
+            case 'tuft':
+                for (i = 0; i < 3; i++) {
+                    s += '<ellipse cx="' + (17 - i * 1) + '" cy="' + (t + 30 + i * 18) + '" rx="10" ry="12" fill="' + (i % 2 ? dim('#a8dccb', horror) : c) + '"/>';
+                }
+                return s;
+            case 'windkey':
+                return '<path d="M80 90 L94 90" stroke="#b9772e" stroke-width="3.5" stroke-linecap="round"/><path d="M94 90 C86 78 100 76 94 90 C86 102 100 104 94 90Z" fill="#d49a48" stroke="#b9772e" stroke-width="1.5"/>';
+            default:
+                return '';
+        }
+    }
+
+    function star(cx, cy, R, fill) {
+        var p = '', i, a, r;
+        for (i = 0; i < 10; i++) {
+            a = -1.5708 + i * 0.62832;
+            r = i % 2 ? R * 0.45 : R;
+            p += (i ? ' L' : 'M') + (cx + Math.cos(a) * r).toFixed(1) + ' ' + (cy + Math.sin(a) * r).toFixed(1);
+        }
+        return '<path d="' + p + 'Z" fill="' + fill + '" stroke="#e0a85e" stroke-width="1.2" stroke-linejoin="round"/>';
     }
 
     function make(spec, horror) {
         var body = BODIES[spec.body] || BODIES.round;
         var col = horror ? mix(spec.color, '#2a2a40', 0.62) : spec.color;
         var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 112 132">';
-        if (spec.acc === 'wings') s += acc('wings', spec.accColor, body, horror);
+        if (spec.acc) s += accBack(spec.acc, spec.accColor, body, horror);
+        if (spec.acc2) s += accBack(spec.acc2, spec.acc2Color, body, horror);
         s += body.d(col);
         if (!horror) s += '<ellipse cx="38" cy="' + (body.y - 18) + '" rx="10" ry="5" fill="#fff" opacity="0.25"/>';
         if (spec.cheeks && !horror) s += '<circle cx="28" cy="' + (body.y + 10) + '" r="5" fill="#ff7a9a" opacity="0.45"/><circle cx="72" cy="' + (body.y + 10) + '" r="5" fill="#ff7a9a" opacity="0.45"/>';
+        if (spec.patch && !horror) s += '<rect x="42" y="86" width="16" height="16" rx="2" fill="' + spec.patch + '" stroke="#fff6e6" stroke-width="1.5" stroke-dasharray="3 2"/>';
         s += eyes(spec.eyes, body.y, horror);
         s += mouth(spec.mouth, body.y, horror);
+        if (spec.mark === 'star' && !horror) s += star(68, body.y + 6, 9, '#ffe08a');
         if (spec.acc && spec.acc !== 'wings') s += acc(spec.acc, spec.accColor, body, horror);
+        if (spec.acc2 && spec.acc2 !== 'wings') s += acc(spec.acc2, spec.acc2Color, body, horror);
         return s + '</svg>';
     }
 
