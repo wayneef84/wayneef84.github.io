@@ -35,6 +35,8 @@ button, a.btn { font-family: inherit; }
 
 .status { display: flex; justify-content: center; gap: 18px; font-size: 1.05rem; padding: 0 8px 2px; flex: 0 0 auto; min-height: 26px; }
 .status[hidden], .status span[hidden] { display: none; }
+.status { align-items: center; flex-wrap: wrap; }
+.cheers-btn { min-height: 44px; font-size: 1rem; padding: 0 12px; }
 
 .board-wrap { flex: 1 1 auto; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 6px; }
 .board { display: grid; gap: 8px; justify-content: center; align-content: center; }
