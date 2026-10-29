@@ -30,6 +30,8 @@ Apply order: skin, palette, overrides, safe CSS, script. A tiny `js/theme/loader
 | Bus Seat | #1F2F7A | #2B3E96 | #FFF4D6 | #C9D0F0 | #FFC20E | #FF8A8A |
 | Mint Chip | #E7F5EC | #F7FFF9 | #17352A | #4A6B5A | #1F8A5B | #8A4B2A |
 | Chalkboard | #22302A | #2C3D35 | #F2F0E6 | #A9B8AE | #F7D56E | #F28F8F |
+| Bubblegum | #FFE3F0 | #FFF5FA | #3F0D2B | #8A2F63 | #C21874 | #6A45C9 |
+| Unicorn Dusk | #2A1038 | #3A1B4C | #FFE9F5 | #DDB0E6 | #FF7EC0 | #9EE6D0 |
 "Classic" keeps today's navy and cyan so nothing is lost. Accent colors are used for large text, borders and button fills (with `onAccent` text), never for small body text.
 
 ## 5. Skins (each must have its own layout idea, type pairing, ornament and motion)

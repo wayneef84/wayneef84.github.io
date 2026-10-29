@@ -18,7 +18,9 @@
         { id: 'night-shift', name: 'Night Shift', bg: '#14110F', surface: '#201B18', text: '#F0E6D8', dim: '#A3968A', accent: '#FF8A3D', accent2: '#8FD694' },
         { id: 'bus-seat', name: 'Bus Seat', bg: '#1F2F7A', surface: '#2B3E96', text: '#FFF4D6', dim: '#C9D0F0', accent: '#FFC20E', accent2: '#FF8A8A' },
         { id: 'mint-chip', name: 'Mint Chip', bg: '#E7F5EC', surface: '#F7FFF9', text: '#17352A', dim: '#4A6B5A', accent: '#1F8A5B', accent2: '#8A4B2A' },
-        { id: 'chalkboard', name: 'Chalkboard', bg: '#22302A', surface: '#2C3D35', text: '#F2F0E6', dim: '#A9B8AE', accent: '#F7D56E', accent2: '#F28F8F' }
+        { id: 'chalkboard', name: 'Chalkboard', bg: '#22302A', surface: '#2C3D35', text: '#F2F0E6', dim: '#A9B8AE', accent: '#F7D56E', accent2: '#F28F8F' },
+        { id: 'bubblegum', name: 'Bubblegum', bg: '#FFE3F0', surface: '#FFF5FA', text: '#3F0D2B', dim: '#8A2F63', accent: '#C21874', accent2: '#6A45C9' },
+        { id: 'unicorn-dusk', name: 'Unicorn Dusk', bg: '#2A1038', surface: '#3A1B4C', text: '#FFE9F5', dim: '#DDB0E6', accent: '#FF7EC0', accent2: '#9EE6D0' }
     ];
 
     function complete(p) {

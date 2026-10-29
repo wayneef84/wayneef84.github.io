@@ -1,0 +1,50 @@
+{
+  "format": "fong-theme",
+  "version": 1,
+  "name": "K's board",
+  "skin": "scrapbook",
+  "palette": {
+    "bg": "#FFE3F0",
+    "surface": "#FFF5FA",
+    "text": "#3F0D2B",
+    "dim": "#8A2F63",
+    "accent": "#C21874",
+    "accent2": "#6A45C9"
+  },
+  "labels": {
+    "site-title": "K's Arcade",
+    "kfav": "K's Favorites"
+  },
+  "groups": [
+    {
+      "id": "kfav",
+      "label": "K's Favorites",
+      "items": [
+        "nightlite-choir",
+        "sprunki-v2",
+        "memory-match",
+        "byte-runner-quest",
+        "war"
+      ]
+    }
+  ],
+  "order": [
+    "kfav",
+    "games",
+    "tools",
+    "wos",
+    "more"
+  ],
+  "hidden": [],
+  "pinned": [
+    "nightlite-choir",
+    "memory-match"
+  ],
+  "behaviors": {
+    "sortMostPlayed": false,
+    "showPlayCounts": false,
+    "showNewBadges": true,
+    "showJustAdded": true
+  },
+  "motion": "full"
+}
