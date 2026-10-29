@@ -19,6 +19,12 @@
         <main class="doors-wrap">
             <p class="lead">It is bedtime. Pick a door.</p>
             <div id="doors" class="doors"></div>
+            <section class="bar sparkbar" aria-label="Sparks and collection">
+                <span class="sparkpill" role="status" aria-label="Your sparks"><span class="ico" aria-hidden="true">&#10024;</span><span class="sparknum" data-spark>0</span></span>
+                <button class="btn" type="button" data-act="wish" aria-label="Wish on a star for free sparks"><span class="ico">&#127776;</span><span class="lbl">Wish</span></button>
+                <button class="btn" type="button" data-act="collect" aria-label="Open the Collection"><span class="ico">&#128214;</span><span class="lbl">Collection</span></button>
+                <button class="btn" type="button" data-act="pot" aria-label="Open the Mixing pot"><span class="ico">&#129379;</span><span class="lbl">Mixing pot</span></button>
+            </section>
         </main>
     </section>
 
@@ -29,6 +35,13 @@
             <h1 id="worldTitle">Night Garden</h1>
             <button class="btn" id="doorsBtn" type="button" aria-label="Back to the doors">&#128682; Doors</button>
         </header>
+
+        <section class="bar sparkbar" aria-label="Sparks and collection">
+            <span class="sparkpill" role="status" aria-label="Your sparks"><span class="ico" aria-hidden="true">&#10024;</span><span class="sparknum" data-spark>0</span></span>
+            <button class="btn" type="button" data-act="wish" aria-label="Wish on a star for free sparks"><span class="ico">&#127776;</span><span class="lbl">Wish</span></button>
+            <button class="btn" type="button" data-act="collect" aria-label="Open the Collection"><span class="ico">&#128214;</span><span class="lbl">Collection</span></button>
+            <button class="btn" type="button" data-act="pot" aria-label="Open the Mixing pot"><span class="ico">&#129379;</span><span class="lbl">Mixing pot</span></button>
+        </section>
 
         <main class="stage-wrap">
             <div id="stage" class="stage" aria-label="Stage"></div>
@@ -57,6 +70,7 @@
     <script src="js/worlds/garden.js"></script>
     <script src="js/worlds/attic.js"></script>
     <script src="js/worlds/observatory.js"></script>
+    <script src="js/worlds/blends.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

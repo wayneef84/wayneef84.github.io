@@ -157,6 +157,18 @@ body.world-observatory .stage { position: relative; }
 .stars-map { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 3; }
 .stars-map .tw { animation: twinkle 3.6s ease-in-out infinite; }
 
+/* sparks: a small counter plus Wish, Collection and Mixing pot buttons */
+.sparkbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.doors-wrap .sparkbar { margin: 18px 0 0; width: 100%; max-width: 560px; }
+.sparkpill {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 52px; padding: 0 14px; border-radius: 26px;
+    background: var(--slot); border: 3px solid var(--accent); font-weight: 900; font-size: 1.25rem;
+}
+.sparkpill .ico { font-size: 1.25rem; }
+.sparkpill.pulse { animation: pulse 0.7s ease-out; }
+@keyframes pulse { 0% { transform: scale(1); } 30% { transform: scale(1.18); box-shadow: 0 0 18px var(--accent); } 100% { transform: scale(1); } }
+.sparkbar .btn { flex-direction: column; gap: 0; min-height: 58px; font-size: 0.8rem; padding: 0 10px; min-width: 56px; }
+
 @media (max-width: 480px) {
     .top h1 { font-size: 1.1rem; }
     .top .btn { padding: 0 10px; font-size: 0.9rem; }
@@ -167,7 +179,7 @@ body.world-observatory .stage { position: relative; }
     .chip .cn { font-size: 0.72rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .fx .p, .fx.dust .beam, .fx .star, .fx .shoot, .stars-map .tw, .slot img, .stage.shake { animation: none; }
+    .sparkpill.pulse, .fx .p, .fx.dust .beam, .fx .star, .fx .shoot, .stars-map .tw, .slot img, .stage.shake { animation: none; }
     .fx .shoot { display: none; }
     .fx .p { opacity: 0.4; }
 }

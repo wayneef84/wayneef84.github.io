@@ -4,6 +4,7 @@
  * Two screens: the door screen (world select) and a world (Night Garden, Toy Attic or Star Observatory).
  * Worlds register themselves in window.NightliteWorlds (see js/worlds/*.js).
  * One shared stage: creatures from all three worlds can stand on it. Tempo comes from the first creature placed.
+ * Milestone 3: free sparks, eggs in a nest, a Mixing pot, a Discovery book and 6 blend creatures (js/worlds/blends.js).
  */
 (function (w) {
     var d = document;
@@ -17,7 +18,18 @@
         { id: 'observatory', name: 'The Star Observatory', where: 'the skylight', c1: '#3a3070', c2: '#1a1a48', acc: '#b9a8ff', art: 'skylight' }
     ];
 
-    var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90 };
+    // Sparks: a free in-game number. Nothing is bought, nothing can be missed or lost.
+    var SPARK_CAP = 99;            // the jar holds at most 99
+    var SPARK_EVERY = 15;          // +1 spark per 15 seconds of real play (2+ friends on the stage, page visible)
+    var WISH_GIVES = 3;            // "Wish on a star": free at any time, no timer
+    var EGG_COST = 5;              // an egg costs 5 sparks
+    var HATCH_SECS = 20;           // an egg hatches in about 20 seconds of looking at the game
+    var WARM_SHAVE = 2;            // each tap on the egg warms it: 2 seconds off
+    var SAVE_VERSION = 4;
+    var DATA_KEY = 'nightlite.save';
+
+    var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
+              sparks: 0, owned: {}, found: {}, nest: null, playSecs: 0 };
     var history = [];
     var ctx = null, mix = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -25,6 +37,8 @@
     var t0 = null;              // transport start time
     var toastTimer = null, drag = null, suppressClick = false, memMix = null;
     var charById = {};
+    var blendById = {};         // blend id -> creature
+    var recipeByKey = {};       // 'parentA+parentB' (sorted) -> blend id
     var WORLD_ORDER = ['garden', 'attic', 'observatory'];
 
     function $(id) { return d.getElementById(id); }
@@ -41,6 +55,97 @@
         } catch (e) { return null; }
         return null;
     }
+
+    // ---------------------------------------------------------------- progress save (sparks, blends, recipes, nest)
+    // One JSON under nightlite.save: { v, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }.
+    // Older v0.1.0 to v0.3.0 saves have no such key and simply start with zero sparks. Storage blocked: everything stays in memory.
+    function recipeKey(a, b) { return a < b ? a + '+' + b : b + '+' + a; }
+    function ownedList() {
+        var out = [], k;
+        for (k in S.owned) if (S.owned.hasOwnProperty(k) && S.owned[k]) out.push(k);
+        return out;
+    }
+    function foundList() {
+        var out = [], k;
+        for (k in S.found) if (S.found.hasOwnProperty(k) && S.found[k]) out.push(k);
+        return out;
+    }
+    function saveProgress() {
+        var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(),
+                     nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
+        store(DATA_KEY, JSON.stringify(data));
+    }
+    function loadProgress() {
+        var raw = store(DATA_KEY), data = null, i, id, key, n;
+        if (raw) { try { data = JSON.parse(raw); } catch (e) { data = null; } }
+        if (!data || typeof data !== 'object') return;
+        n = parseInt(data.sparks, 10);
+        S.sparks = (n >= 0) ? Math.min(SPARK_CAP, n) : 0;
+        if (data.blends instanceof Array) {
+            for (i = 0; i < data.blends.length; i++) if (blendById[data.blends[i]]) S.owned[data.blends[i]] = true;
+        }
+        if (data.found instanceof Array) {
+            for (i = 0; i < data.found.length; i++) {
+                key = data.found[i];
+                id = recipeByKey[key];
+                if (id) { S.found[key] = true; S.owned[id] = true; }     // a found recipe always means the blend is owned
+            }
+        }
+        if (data.nest && typeof data.nest === 'object') {
+            n = parseFloat(data.nest.left);
+            S.nest = { left: (n >= 0 && n <= HATCH_SECS) ? n : HATCH_SECS };
+        }
+    }
+
+    // ---------------------------------------------------------------- sparks
+    function updateSparkUI() {
+        var nodes = d.querySelectorAll('[data-spark]'), i;
+        for (i = 0; i < nodes.length; i++) nodes[i].textContent = String(S.sparks);
+        var pills = d.querySelectorAll('.sparkpill');
+        for (i = 0; i < pills.length; i++) pills[i].setAttribute('aria-label', S.sparks + ' sparks');
+    }
+    function addSparks(n) {
+        var before = S.sparks;
+        S.sparks = Math.max(0, Math.min(SPARK_CAP, S.sparks + n));
+        if (S.sparks !== before) { updateSparkUI(); saveProgress(); }
+        return S.sparks - before;
+    }
+    function pulseSparks() {
+        var pills = d.querySelectorAll('.sparkpill'), i;
+        for (i = 0; i < pills.length; i++) {
+            (function (p) { p.classList.remove('pulse'); void p.offsetWidth; p.classList.add('pulse'); })(pills[i]);
+        }
+    }
+    function wish() {
+        ensureCtx();
+        var got = addSparks(WISH_GIVES);
+        pulseSparks();
+        if (got > 0) { toast('You wished on a star. +' + got + ' sparks!'); chime([84, 88, 91]); }
+        else toast('Your spark jar is full. Time to make an egg or mix a pair!');
+    }
+    function stageCount() {
+        var i, n = 0;
+        for (i = 0; i < SLOTS; i++) if (S.slots[i]) n++;
+        return n;
+    }
+    // Called once a second with the seconds that really passed (at most 2). Sparks only trickle in while the child is
+    // actually playing: a world screen, at least two friends on the stage, page visible. Nothing happens in the background.
+    function tick(dt) {
+        if (d.hidden) return;
+        var changed = false;
+        if (S.screen === 'world' && stageCount() >= 2 && S.sparks < SPARK_CAP) {
+            S.playSecs += dt;
+            while (S.playSecs >= SPARK_EVERY && S.sparks < SPARK_CAP) {
+                S.playSecs -= SPARK_EVERY;
+                S.sparks++;
+                changed = true;
+            }
+            if (S.sparks >= SPARK_CAP) S.playSecs = 0;
+        }
+        if (changed) { updateSparkUI(); pulseSparks(); saveProgress(); }
+        if (S.nest) nestTick(dt);
+    }
+    function nestTick(dt) { }
 
     // ---------------------------------------------------------------- audio
     function barLen() { return 8 * 60 / S.bpm; }
@@ -122,6 +227,24 @@
         var k;
         for (k in voices) if (voices.hasOwnProperty(k)) stopVoice(k);
         t0 = null;
+    }
+
+    // A tiny happy twinkle for wishes, hatching and the pot (pentatonic notes, soft, goes through the same master volume).
+    function chime(notes) {
+        if (!ensureCtx()) return;
+        try {
+            var t = ctx.currentTime + 0.02, i, o, g;
+            for (i = 0; i < notes.length; i++) {
+                o = ctx.createOscillator(); g = ctx.createGain();
+                o.type = 'sine';
+                o.frequency.value = 440 * Math.pow(2, (notes[i] - 69) / 12);
+                g.gain.setValueAtTime(0, t + i * 0.11);
+                g.gain.linearRampToValueAtTime(0.22, t + i * 0.11 + 0.01);
+                g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.11 + 0.7);
+                o.connect(g); g.connect(mix);
+                o.start(t + i * 0.11); o.stop(t + i * 0.11 + 0.8);
+            }
+        } catch (e) {}
     }
 
     // ---------------------------------------------------------------- stage
@@ -563,6 +686,11 @@
         }
     }
 
+    function doAct(act) {
+        if (act === 'wish') wish();
+        else toast('Coming soon.');
+    }
+
     // ---------------------------------------------------------------- init
     function init() {
         var id, j, worlds = w.NightliteWorlds || {};
@@ -573,6 +701,17 @@
                 charById[worlds[id].chars[j].id] = worlds[id].chars[j];
             }
         }
+        var bl = (w.NightliteBlends && w.NightliteBlends.chars) || [];
+        for (j = 0; j < bl.length; j++) {
+            bl[j].world = 'blends';
+            bl[j].isBlend = true;
+            bl[j].bpm = charById[bl[j].blend[0]] ? charById[bl[j].blend[0]].bpm : 90;     // tempo of the first parent's world
+            charById[bl[j].id] = bl[j];
+            blendById[bl[j].id] = bl[j];
+            recipeByKey[recipeKey(bl[j].blend[0], bl[j].blend[1])] = bl[j].id;
+        }
+        loadProgress();
+        updateSparkUI();
         var vol = parseInt(store('nightlite.vol'), 10);
         if (vol >= 0 && vol <= 100) { S.vol = vol / 100; $('volRange').value = vol; } else { S.vol = 0.7; }
         applyTheme(DOOR_THEME);
@@ -591,15 +730,29 @@
         $('resetBtn').onclick = clearAll;
         $('saveBtn').onclick = saveMix;
         $('loadBtn').onclick = loadMix;
+        var acts = d.querySelectorAll('[data-act]'), ai;
+        for (ai = 0; ai < acts.length; ai++) {
+            (function (b) {
+                var act = b.getAttribute('data-act');
+                b.onclick = function () { doAct(act); };
+            })(acts[ai]);
+        }
+        var lastTick = Date.now();
+        w.setInterval(function () {
+            var now = Date.now(), dt = (now - lastTick) / 1000;
+            lastTick = now;
+            tick(Math.max(0, Math.min(2, dt)));
+        }, 1000);
         d.addEventListener('keydown', onKey);
         w.addEventListener('resize', function () { if (S.screen === 'world') drawConstellation(); });
         d.addEventListener('visibilitychange', function () {
             if (!ctx) return;
             try { if (d.hidden) ctx.suspend(); else if (S.screen === 'world') ctx.resume(); } catch (e) {}
         });
+        d.addEventListener('visibilitychange', function () { if (d.hidden) saveProgress(); });
 
         // Test/debug hook (not used by the UI).
-        w.Nightlite = { state: S, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld };
+        w.Nightlite = { state: S, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById };
     }
 
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', init); else init();
