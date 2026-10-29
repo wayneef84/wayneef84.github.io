@@ -1,6 +1,7 @@
 # CHANGELOG.md
 
 ## Maintenance Rules
+- 5-Card Draw page repaired: an earlier edit had inserted 233 duplicated lines and cut a string in half, so the page did not load. Restored the last good version and added working Ante - and + buttons ($5 steps, $5 up to your balance, max $100).
 1. **Additive Only:** All updates must add to the file; never remove history.
 2. **Attribution:** Indicate who (C, G, or W) made the update and the Date/Time (UTC).
 3. **Versioning:**

@@ -234,240 +234,12 @@
                 CardAssets.init();
 
                 // Bind UI
+                this.ui.btnDeal.onclick = () => this.game.startRound();
                 this.ui.btnAnteMinus = document.getElementById('btnAnteMinus');
                 this.ui.btnAntePlus = document.getElementById('btnAntePlus');
-                if (this.ui.btnAnteMinus) {
-                    this.ui.btnAnteMinus.onclick = () => {
-                        this.game.ante = Math.max(5, this.game.ante - 5);
-                        this.ui.btnDeal.textContent = 'Ante 
-
-                // Listen to Game Events
-                window.addEventListener('negen-card-event', (e) => this.onGameEvent(e.detail));
-
-                this.game.init();
-                this.updateStats();
-            }
-
-            onGameEvent(data) {
-                switch(data.type) {
-                    case 'DEAL':
-                        this.renderHand(this.game.players[0], this.ui.playerCards, true);
-                        this.renderHand(this.game.players[1], this.ui.dealerCards, false); // Hidden
-                        this.showControls('play');
-                        break;
-                    case 'SHOWDOWN':
-                        this.renderHand(this.game.players[1], this.ui.dealerCards, true); // Reveal
-                        this.showMessage(
-                            data.winner === 'player1' ? 'YOU WIN!' : (data.winner === 'push' ? 'PUSH' : 'DEALER WINS'),
-                            `${data.p1Hand.name} vs ${data.dealerHand.name}`
-                        );
-                        this.showControls('end');
-                        break;
-                }
-                this.updateStats();
-            }
-
-            handleDraw() {
-                const selected = this.ui.playerCards.querySelectorAll('.selected');
-                const indices = Array.from(selected).map(el => parseInt(el.dataset.index));
-                this.game.drawCards(indices);
-
-                // Re-render player hand
-                this.renderHand(this.game.players[0], this.ui.playerCards, true);
-            }
-
-            renderHand(player, container, faceUp) {
-                container.innerHTML = '';
-                player.hand.contents.forEach((card, index) => {
-                    const slot = document.createElement('div');
-                    slot.className = 'card-slot';
-                    slot.dataset.index = index;
-                    slot.dataset.uuid = card.uuid;
-
-                    // Map NEGEN suits (hearts, diamonds, clubs, spades) to CardAssets (H, D, C, S)
-                    const suitMap = { 'hearts': 'H', 'diamonds': 'D', 'clubs': 'C', 'spades': 'S' };
-                    const assetSuit = suitMap[card.suit] || card.suit;
-
-                    // Ensure Rank is correct ('10' is handled)
-                    // CardAssets uses '10' for Ten, NEGEN uses '10'. They match.
-
-                    const canvas = faceUp
-                        ? CardAssets.getAsset(card.rank, assetSuit)
-                        : CardAssets.getAsset(); // Back
-
-                    const img = document.createElement('canvas');
-                    img.width = canvas.width; img.height = canvas.height;
-                    img.getContext('2d').drawImage(canvas, 0, 0);
-                    slot.appendChild(img);
-
-                    if (faceUp && player.id === 'player1') {
-                        slot.onclick = () => {
-                            if (this.game.state === 'PLAYER_TURN') {
-                                slot.classList.toggle('selected');
-                            }
-                        };
-                    }
-                    container.appendChild(slot);
-                });
-            }
-
-            showMessage(title, sub) {
-                this.ui.msgTitle.textContent = title;
-                this.ui.msgSub.textContent = sub;
-                this.ui.message.classList.add('visible');
-            }
-
-            resetUI() {
-                this.ui.message.classList.remove('visible');
-                this.ui.playerCards.innerHTML = '';
-                this.ui.dealerCards.innerHTML = '';
-                this.showControls('bet');
-            }
-
-            showControls(set) {
-                ['bet', 'play', 'end'].forEach(k => this.ui.controls[k].classList.add('hidden'));
-                this.ui.controls[set].classList.remove('hidden');
-            }
-
-            updateStats() {
-                const p1 = this.game.players[0];
-                this.ui.balance.textContent = p1.balance;
-                this.ui.stats.pot.textContent = this.game.pot;
-                this.ui.stats.deckCount.textContent = this.game.deck.count;
-
-                if (p1 && p1.hand.count > 0) {
-                     const ev = Evaluator.evaluate(p1.hand.contents);
-                     this.ui.stats.rank.textContent = ev.name;
-                } else {
-                     this.ui.stats.rank.textContent = '';
-                }
-            }
-        }
-
-        window.onload = () => new PokerUI();
-    </script>
-</body>
-</html>
- + this.game.ante + ' & Deal';
-                    };
-                }
-                if (this.ui.btnAntePlus) {
-                    this.ui.btnAntePlus.onclick = () => {
-                        const maxAnte = Math.min(100, this.game.players[0] ? this.game.players[0].balance : 100);
-                        this.game.ante = Math.min(maxAnte, this.game.ante + 5);
-                        this.ui.btnDeal.textContent = 'Ante 
-
-                // Listen to Game Events
-                window.addEventListener('negen-card-event', (e) => this.onGameEvent(e.detail));
-
-                this.game.init();
-                this.updateStats();
-            }
-
-            onGameEvent(data) {
-                switch(data.type) {
-                    case 'DEAL':
-                        this.renderHand(this.game.players[0], this.ui.playerCards, true);
-                        this.renderHand(this.game.players[1], this.ui.dealerCards, false); // Hidden
-                        this.showControls('play');
-                        break;
-                    case 'SHOWDOWN':
-                        this.renderHand(this.game.players[1], this.ui.dealerCards, true); // Reveal
-                        this.showMessage(
-                            data.winner === 'player1' ? 'YOU WIN!' : (data.winner === 'push' ? 'PUSH' : 'DEALER WINS'),
-                            `${data.p1Hand.name} vs ${data.dealerHand.name}`
-                        );
-                        this.showControls('end');
-                        break;
-                }
-                this.updateStats();
-            }
-
-            handleDraw() {
-                const selected = this.ui.playerCards.querySelectorAll('.selected');
-                const indices = Array.from(selected).map(el => parseInt(el.dataset.index));
-                this.game.drawCards(indices);
-
-                // Re-render player hand
-                this.renderHand(this.game.players[0], this.ui.playerCards, true);
-            }
-
-            renderHand(player, container, faceUp) {
-                container.innerHTML = '';
-                player.hand.contents.forEach((card, index) => {
-                    const slot = document.createElement('div');
-                    slot.className = 'card-slot';
-                    slot.dataset.index = index;
-                    slot.dataset.uuid = card.uuid;
-
-                    // Map NEGEN suits (hearts, diamonds, clubs, spades) to CardAssets (H, D, C, S)
-                    const suitMap = { 'hearts': 'H', 'diamonds': 'D', 'clubs': 'C', 'spades': 'S' };
-                    const assetSuit = suitMap[card.suit] || card.suit;
-
-                    // Ensure Rank is correct ('10' is handled)
-                    // CardAssets uses '10' for Ten, NEGEN uses '10'. They match.
-
-                    const canvas = faceUp
-                        ? CardAssets.getAsset(card.rank, assetSuit)
-                        : CardAssets.getAsset(); // Back
-
-                    const img = document.createElement('canvas');
-                    img.width = canvas.width; img.height = canvas.height;
-                    img.getContext('2d').drawImage(canvas, 0, 0);
-                    slot.appendChild(img);
-
-                    if (faceUp && player.id === 'player1') {
-                        slot.onclick = () => {
-                            if (this.game.state === 'PLAYER_TURN') {
-                                slot.classList.toggle('selected');
-                            }
-                        };
-                    }
-                    container.appendChild(slot);
-                });
-            }
-
-            showMessage(title, sub) {
-                this.ui.msgTitle.textContent = title;
-                this.ui.msgSub.textContent = sub;
-                this.ui.message.classList.add('visible');
-            }
-
-            resetUI() {
-                this.ui.message.classList.remove('visible');
-                this.ui.playerCards.innerHTML = '';
-                this.ui.dealerCards.innerHTML = '';
-                this.showControls('bet');
-            }
-
-            showControls(set) {
-                ['bet', 'play', 'end'].forEach(k => this.ui.controls[k].classList.add('hidden'));
-                this.ui.controls[set].classList.remove('hidden');
-            }
-
-            updateStats() {
-                const p1 = this.game.players[0];
-                this.ui.balance.textContent = p1.balance;
-                this.ui.stats.pot.textContent = this.game.pot;
-                this.ui.stats.deckCount.textContent = this.game.deck.count;
-
-                if (p1 && p1.hand.count > 0) {
-                     const ev = Evaluator.evaluate(p1.hand.contents);
-                     this.ui.stats.rank.textContent = ev.name;
-                } else {
-                     this.ui.stats.rank.textContent = '';
-                }
-            }
-        }
-
-        window.onload = () => new PokerUI();
-    </script>
-</body>
-</html>
- + this.game.ante + ' & Deal';
-                    };
-                }
-                this.ui.btnDeal.onclick = () => this.game.startRound();
+                if (this.ui.btnAnteMinus) this.ui.btnAnteMinus.onclick = () => this.changeAnte(-5);
+                if (this.ui.btnAntePlus) this.ui.btnAntePlus.onclick = () => this.changeAnte(5);
+                this.updateAnteLabel();
                 this.ui.btnDraw.onclick = () => this.handleDraw();
                 this.ui.btnNewHand.onclick = () => this.resetUI();
                 this.ui.btnBack.onclick = () => window.location.href = '../index.html';
@@ -477,6 +249,18 @@
 
                 this.game.init();
                 this.updateStats();
+            }
+
+            changeAnte(delta) {
+                const player = this.game.players[0];
+                const balance = player ? player.balance : 100;
+                const maxAnte = Math.max(5, Math.min(100, balance));
+                this.game.ante = Math.max(5, Math.min(maxAnte, this.game.ante + delta));
+                this.updateAnteLabel();
+            }
+
+            updateAnteLabel() {
+                this.ui.btnDeal.textContent = 'Ante $' + this.game.ante + ' & Deal';
             }
 
             onGameEvent(data) {
