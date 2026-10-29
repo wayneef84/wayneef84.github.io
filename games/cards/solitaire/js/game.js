@@ -41,7 +41,7 @@ function resizeBoard() {
     var board = document.getElementById('board');
     if (!board) return;
 
-    var baseWidth = 1200; // Matches CSS max-width
+    var baseWidth = 780; // Matches compact 7-column board width for larger mobile cards
     var scale = Math.min(window.innerWidth / baseWidth, 1);
 
     // Force layout width to ensure desktop-like layout before scaling
@@ -53,8 +53,8 @@ function resizeBoard() {
         board.style.transformOrigin = 'top center';
     }
 
-    // Add slight margin for mobile
-    if (scale < 1) scale *= 0.95;
+    // Fit mobile screen cleanly with minimal side margin
+    if (scale < 1) scale *= 0.98;
 
     board.style.transform = 'scale(' + scale + ')';
 
@@ -237,8 +237,19 @@ function applyCardPosition(el, pileName, index, isFaceUp) {
 // INTERACTION
 // ============================================================================
 
+var lastTapInfo = { time: 0, pileName: '', index: -1 };
+
 function handleCardClick(pileName, index, card) {
     console.log('Clicked:', pileName, index, card.id);
+
+    // Mobile double-tap detection (auto-move to foundation)
+    var now = Date.now();
+    if (lastTapInfo.pileName === pileName && lastTapInfo.index === index && (now - lastTapInfo.time) < 350) {
+        lastTapInfo.time = 0;
+        handleCardDoubleClick(pileName, index, card);
+        return;
+    }
+    lastTapInfo = { time: now, pileName: pileName, index: index };
 
     // 1. Stock Click -> Draw
     if (pileName === 'stock') {

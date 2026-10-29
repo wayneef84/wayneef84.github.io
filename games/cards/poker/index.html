@@ -81,8 +81,15 @@
         </a>
     </div>
 
-    <div class="footer">
-        <a href="../../index.html" style="color: inherit; text-decoration: underline;">Back to Card Games</a>
+    <div class="footer" id="poker-footer" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+        <a href="../index.html" target="_top" style="color: #94a3b8; text-decoration: underline;">🃏 Card Games Hub</a>
+        <a href="../../../index.html" target="_top" style="color: #94a3b8; text-decoration: underline;">🏠 Back to Arcade</a>
     </div>
+    <script>
+        if (window.self !== window.top) {
+            var pf = document.getElementById('poker-footer');
+            if (pf) pf.style.display = 'none';
+        }
+    </script>
 </body>
 </html>

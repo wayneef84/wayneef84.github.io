@@ -102,11 +102,33 @@
         .status-msg {
             font-size: 0.9rem; font-weight: 600; color: #fef08a; text-align: center;
         }
+        @media (max-width: 540px) {
+            .game-shell { padding: 6px; }
+            header { padding: 6px 10px; font-size: 0.78rem; gap: 6px; }
+            .table-area { grid-template-columns: 64px 1fr 64px; gap: 4px; }
+            .center-trick { min-height: 120px; padding: 6px; }
+            .trick-cards { gap: 4px; min-height: 74px; flex-wrap: nowrap; }
+            .trick-slot canvas, .kitty-box canvas { width: 45px; height: 63px; }
+            .hand-row { gap: 5px; min-height: 82px; flex-wrap: nowrap; }
+            .card-btn canvas { width: 56px; height: 78px; }
+            .seat-label { font-size: 0.72rem; }
+            .ai-count { font-size: 0.68rem; padding: 2px 6px; }
+        }
     </style>
 </head>
 <body>
 <div class="game-shell">
     <header>
+        <div id="euchre-nav" style="display:flex;gap:6px;">
+            <a href="../../../index.html" target="_top" style="color:#fff;text-decoration:none;background:rgba(255,255,255,0.12);padding:4px 8px;border-radius:6px;font-size:0.8rem;">🏠</a>
+            <a href="../index.html?game=euchre" target="_top" style="color:#fff;text-decoration:none;background:rgba(255,255,255,0.12);padding:4px 8px;border-radius:6px;font-size:0.8rem;">🃏</a>
+        </div>
+        <script>
+            if (window.self !== window.top) {
+                var en = document.getElementById('euchre-nav');
+                if (en) en.style.display = 'none';
+            }
+        </script>
         <div class="score-box">
             <span class="score-us">Us (You & Partner): <span id="scoreTeam1">0</span>/10</span>
             <span class="score-them">Them (West & East): <span id="scoreTeam2">0</span>/10</span>

@@ -704,12 +704,22 @@
 <body>
     <div class="header">
         <h1>
+            <a id="btnBackArcade" href="../../../index.html" target="_top" class="settings-btn" title="Back to Arcade" style="text-decoration:none;font-size:0.95rem;">🏠</a>
+            <a id="btnBackCards" href="../index.html?game=war" target="_top" class="settings-btn" title="Card Games Hub" style="text-decoration:none;font-size:0.95rem;">🃏</a>
             <button id="btnRules" class="settings-btn" title="Rules">📖</button>
             <button id="btnResetGame" class="settings-btn" title="Reset Game">🔄</button>
             <button id="btnHistory" class="settings-btn" title="History">📊</button>
             <button id="btnSettings" class="settings-btn" title="Settings">⚙️</button>
             ⚔️ War
         </h1>
+        <script>
+            if (window.self !== window.top) {
+                var ba = document.getElementById('btnBackArcade');
+                var bc = document.getElementById('btnBackCards');
+                if (ba) ba.style.display = 'none';
+                if (bc) bc.style.display = 'none';
+            }
+        </script>
     </div>
     
     <div class="game-area">

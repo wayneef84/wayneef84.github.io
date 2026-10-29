@@ -49,6 +49,12 @@
         .btn-secondary { background: #334155; color: #fff; }
         .btn-danger { background: #ef4444; color: #fff; }
         .hidden { display: none !important; }
+        @media (max-width: 500px) {
+            .card-container { gap: 5px; min-height: 80px; }
+            .card-slot canvas { width: 54px; height: 76px; }
+            .stats-bar { gap: 12px; font-size: 0.78rem; flex-wrap: wrap; }
+            .btn { padding: 9px 12px; font-size: 0.82rem; }
+        }
     </style>
 </head>
 <body>

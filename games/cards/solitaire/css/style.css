@@ -45,10 +45,12 @@ button:hover {
 
 #board {
     flex: 1;
-    padding: 20px;
+    padding: 12px;
     position: relative;
-    max-width: 1200px;
+    max-width: 780px;
+    width: 780px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* --- Layout --- */
@@ -56,19 +58,19 @@ button:hover {
 #top-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    height: 160px; /* Card height + slop */
+    margin-bottom: 16px;
+    height: 150px; /* Card height + slop */
 }
 
 #stock-container {
     display: flex;
-    gap: 20px;
-    width: 300px; /* Space for stock + waste */
+    gap: 10px;
+    width: 210px; /* Space for stock + waste */
 }
 
 #foundation-container {
     display: flex;
-    gap: 20px;
+    gap: 10px;
 }
 
 #tableau-container {
