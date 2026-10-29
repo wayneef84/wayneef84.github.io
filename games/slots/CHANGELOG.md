@@ -2,6 +2,17 @@
 
 All notable changes. Dates are YYYY-MM-DD.
 
+## [4.1.0] - 2026-10-29
+
+### Added
+- 6 original themes under a new **K's Picks** picker chip (60 total): Unicorn Sparkle, Bubblegum Band (inline SVG round music pals: Strumble, Hummsy, Whoopa, Tavvy, Thrumby, Jinglet), Rainbow Cloud Stage, Pink Pony Ranch, Glitter Garden, Dream Carousel. New optional `kpick: true` field in `js/themes.js`. Name checks are in ASSET_LOG.md.
+- Cheers: a "Cheers" button in the footer opens the grown-ups gate and the shared settings panel (`js/cheer.js`, docs/CHEER.md). Guarded `FongCheer.cheer()` calls: first spin of a visit = start, a win = good, a big win or bonus win = big, a zero-win spin = a gentle line about once in 6 spins and never twice in a row. Off by default. No game rule or payout changed.
+- Easter egg "Sparkle Party": tap the footer title 5 times within 2.5 seconds. A 20-second calm overlay with slow rainbow confetti (none in Calm mode or reduced motion, nothing flashes), a cheer line and 200 free play coins once per page visit (not saved, not daily, no streak).
+- Footer row with the Cheers button and the title.
+
+### Changed
+- Asset query strings bumped to `?v=4.1.0`.
+
 ## [4.0.0] - 2026-10-29
 
 Full rebuild. The v3.1 canvas machine is gone (it was not 3D CSS despite the docs).

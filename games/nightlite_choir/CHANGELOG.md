@@ -1,5 +1,8 @@
 # Nightlite Choir+: Changelog
 
+## Unreleased
+- Cheers button next to Wish, Collection and Mixing pot. A new hatched blend or a new Mixing pot discovery calls `FongCheer.cheer('big')`, guarded (`js/cheer.js`, docs/CHEER.md). Off until a parent turns it on. No rule changes.
+
 ## v0.4.0 - Milestone 3 (2026-10-29)
 - Sparks: a free counter. +1 spark per 15 seconds while two or more friends sing on the stage and the page is visible, cap 99. Nothing accrues in the background. A "Wish" button gives 3 free sparks at any time. No timers, streaks, daily bonus or anything that can be missed.
 - Eggs: 5 sparks puts an egg in the nest. It hatches in about 20 seconds, tap it to warm it (2 seconds sooner per tap). It hatches a blend you do not have. With all 6 owned the egg twinkles and refunds its sparks.

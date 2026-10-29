@@ -27,6 +27,13 @@
     var lastFocus = null;
     var mq = null;
     var forceCalm = false;
+    var sessionStarted = false;   // first spin of this page visit speaks a 'start' cheer
+    var sinceAgain = 0;           // spins since the last gentle 'again' cheer
+    var partyPaid = false;        // Sparkle Party coins: once per page visit
+    var partyOpen = false;
+    var partyTimer = null;
+    var partyConfTimer = null;
+    var brandTaps = [];
 
     function $(id) { return document.getElementById(id); }
     function fmt(n) { return String(Math.floor(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -46,6 +53,8 @@
         timers.push(t);
         return t;
     }
+
+    function cheer(kind) { if (window.FongCheer) { FongCheer.cheer(kind); } }
 
     function say(text) { if (el.live) { el.live.textContent = text; } }
 
@@ -97,7 +106,7 @@
 
     var filterGroup = 'All';
     function buildThemeSheet() {
-        var chips = ['All', 'Kids'].concat(S.themes.GROUPS);
+        var chips = ['All', "K's Picks", 'Kids'].concat(S.themes.GROUPS);
         for (var i = 0; i < chips.length; i++) {
             (function (name) {
                 var b = V.el('button', 'chip', name);
@@ -124,7 +133,8 @@
         for (var i = 0; i < S.themes.list.length; i++) {
             var t = S.themes.list[i];
             if (filterGroup === 'Kids' && !t.kids) { continue; }
-            if (filterGroup !== 'All' && filterGroup !== 'Kids' && t.group !== filterGroup) { continue; }
+            if (filterGroup === "K's Picks" && !t.kpick) { continue; }
+            if (filterGroup !== 'All' && filterGroup !== 'Kids' && filterGroup !== "K's Picks" && t.group !== filterGroup) { continue; }
             if (q && (t.name + ' ' + t.flavour + ' ' + t.group).toLowerCase().indexOf(q) < 0) { continue; }
             el.themeList.appendChild(themeCard(t));
             shown++;
@@ -182,7 +192,7 @@
     }
 
     function anySheetOpen() {
-        return !el.themeSheet.hidden || !el.helpSheet.hidden || !el.bonus.hidden;
+        return !el.themeSheet.hidden || !el.helpSheet.hidden || !el.bonus.hidden || partyOpen;
     }
 
     function openHelp() {
@@ -293,8 +303,11 @@
             S.sfx.play(big ? 'big' : 'win');
             if (big && !isCalm()) { confetti(); }
             say('You won ' + win + ' coins.');
+            if (!round.cheered) { round.cheered = true; cheer(big ? 'big' : 'good'); }
         } else {
             say('No win this round.');
+            // A gentle line only now and then: never two spins in a row, at most about 1 in 6 spins.
+            if (sinceAgain >= 5 && Math.random() < 0.4) { sinceAgain = 0; cheer('again'); }
         }
     }
 
@@ -346,6 +359,8 @@
             say('Bet lowered to ' + state.bet + ' coins.');
         }
         var bet = state.bet;
+        if (!sessionStarted) { sessionStarted = true; cheer('start'); }
+        sinceAgain++;
         state.coins -= bet;
         busy = true;
         var r = round = { id: ++roundSeq, bet: bet, paid: {}, win: 0, done: false };
@@ -419,7 +434,11 @@
                 if (finished) { return; }
                 finished = true;
                 closeBonus();
-                if (total > 0) { showWinPop(total, total >= bet * 5); say('Bonus won ' + total + ' coins.'); }
+                if (total > 0) {
+                    showWinPop(total, total >= bet * 5);
+                    say('Bonus won ' + total + ' coins.');
+                    if (!r.cheered) { r.cheered = true; cheer('big'); }
+                }
                 setLast(r.win);
                 cb();
             }
@@ -430,6 +449,68 @@
     function closeBonus() {
         if (bonusGame) { bonusGame.destroy(); bonusGame = null; }
         if (el.bonus) { el.bonus.hidden = true; }
+    }
+
+    /* ---------------- Sparkle Party (tap the title 5 times quickly) ---------------- */
+
+    var RAINBOW = ['#ff5d8f', '#ff9d4d', '#ffe14d', '#6fe38a', '#5db8ff', '#b48cff'];
+
+    function onBrandTap() {
+        var t = new Date().getTime();
+        brandTaps.push(t);
+        while (brandTaps.length && t - brandTaps[0] > 2500) { brandTaps.shift(); }
+        if (brandTaps.length >= 5) {
+            brandTaps = [];
+            openParty();
+        }
+    }
+
+    function spawnBits(n) {
+        for (var i = 0; i < n; i++) {
+            var b = V.el('span', 'party-bit');
+            b.style.setProperty('--c', RAINBOW[Math.floor(Math.random() * RAINBOW.length)]);
+            b.style.left = (3 + Math.random() * 94) + '%';
+            b.style.animationDelay = (Math.random() * 600) + 'ms';
+            el.partyConf.appendChild(b);
+            (function (node) { setTimeout(function () { if (node.parentNode) { node.parentNode.removeChild(node); } }, 6400); })(b);
+        }
+    }
+
+    function openParty() {
+        if (busy || partyOpen || anySheetOpen()) { return; }
+        partyOpen = true;
+        lastFocus = document.activeElement;
+        var free = false;
+        if (!partyPaid) {
+            partyPaid = true;
+            var add = Math.min(200, E.MAX_COINS - state.coins);
+            if (add > 0) { state.coins += add; free = true; persist(); renderHud(); }
+        }
+        el.partyCoins.textContent = free ? 'Here are 200 free play coins. Just for fun.' : 'Enjoy the party!';
+        el.partyLine.textContent = "You're golden! Look at all that sparkle.";
+        V.clear(el.partyConf);
+        el.party.hidden = false;
+        say('Sparkle Party. ' + el.partyCoins.textContent);
+        S.sfx.play('bonus');
+        cheer('big');
+        if (!isCalm()) {
+            // About 2 new pieces per half second, drifting slowly. Nothing flashes.
+            spawnBits(10);
+            partyConfTimer = setInterval(function () { spawnBits(3); }, 500);
+        }
+        partyTimer = setTimeout(closeParty, 20000);
+        try { el.partyDone.focus(); } catch (e) { /* ignore */ }
+    }
+
+    function closeParty() {
+        if (!partyOpen) { return; }
+        partyOpen = false;
+        clearTimeout(partyTimer);
+        clearInterval(partyConfTimer);
+        el.party.hidden = true;
+        V.clear(el.partyConf);
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) { /* ignore */ } }
+        renderHud();
     }
 
     /* ---------------- init ---------------- */
@@ -453,6 +534,9 @@
         el.refillBtn.addEventListener('click', refill);
         el.themeBtn.addEventListener('click', function () { openSheet(el.themeSheet); });
         el.helpBtn.addEventListener('click', openHelp);
+        el.brand.addEventListener('click', onBrandTap);
+        el.partyDone.addEventListener('click', closeParty);
+        el.cheerBtn.addEventListener('click', function () { if (window.FongCheer) { FongCheer.openSettings(); } });
         el.soundBtn.addEventListener('click', function () { toggleSound(); });
         el.optSound.addEventListener('click', function () { toggleSound(); openHelpRefresh(); });
         el.optCalm.addEventListener('click', function () { state.calm = !state.calm; applyCalm(); persist(); openHelpRefresh(); });
@@ -472,6 +556,7 @@
         document.addEventListener('keydown', function (e) {
             var k = e.key;
             if (k === 'Escape') {
+                if (partyOpen) { closeParty(); return; }
                 if (!el.themeSheet.hidden) { closeSheet(el.themeSheet); } else if (!el.helpSheet.hidden) { closeSheet(el.helpSheet); }
                 return;
             }
@@ -508,13 +593,14 @@
 
     function applyCalm() {
         el.app.classList.toggle('calm', isCalm());
+        document.documentElement.className = isCalm() ? 'calm-on' : '';
     }
 
     function init() {
         var ids = ['app', 'stage', 'stageInner', 'modes', 'howto', 'coins', 'last', 'bet', 'betDown', 'betUp', 'spin', 'lever', 'refill',
             'refillBtn', 'themeBtn', 'themeName', 'themeIcon', 'helpBtn', 'soundBtn', 'winpop', 'live', 'themeSheet', 'themeSearch',
             'themeChips', 'themeList', 'themeEmpty', 'themeCount', 'helpSheet', 'helpTitle', 'helpText', 'helpPay', 'helpPayTitle',
-            'optSound', 'optCalm', 'optRefill', 'bonus', 'bonusBody', 'bonusTitle'];
+            'optSound', 'optCalm', 'optRefill', 'bonus', 'bonusBody', 'bonusTitle', 'party', 'partyConf', 'partyLine', 'partyCoins', 'partyDone', 'brand', 'cheerBtn'];
         for (var i = 0; i < ids.length; i++) { el[ids[i]] = $(ids[i]); }
 
         try { mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null; } catch (e) { mq = null; }

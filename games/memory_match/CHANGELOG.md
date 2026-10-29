@@ -1,5 +1,8 @@
 # Memory Match: Changelog
 
+## Unreleased
+- Cheers button in the status row. Matches call `FongCheer.cheer('good')` and the finished board calls `'done'`, guarded (`js/cheer.js`, docs/CHEER.md). Off until a parent turns it on. No rule changes.
+
 ## v1.0.0 (2026-10-27)
 - First release. Easy 3x4, Normal 4x4, Big 4x5.
 - Two card sets: Emoji (21) and Animals (14 original inline SVG drawings).

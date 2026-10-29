@@ -58,6 +58,9 @@ A spin picks a destination `front' = front - d` (d in 4..8), paints the result o
 ### Board (Cascade, Match)
 CSS grid of `.tile`. Entry uses a `drop` keyframe with per-tile delay, wins get `.win`, others `.dim`, vanishing tiles `.vanish`.
 
+### Cheers and Sparkle Party (js/ui.js)
+`cheer(kind)` is a guarded call to `window.FongCheer` (`../../js/cheer.js`, loaded before `ui.js`). It never changes coins. Sparkle Party (`openParty`) is the only other place that adds coins outside a round. It does so once per page visit (`partyPaid`, in memory, never saved) and is ignored while a round is running.
+
 ### Saves
 Key `fong.slots.v4`: `{ v, coins, bet, theme, mode, muted, calm, seen }`. `store.sanitize` clamps every field and drops unknown themes or modes. Old key `dadsSlotsSave` is migrated once (dollars x 10, cap 5000).
 

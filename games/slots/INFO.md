@@ -4,17 +4,18 @@
 - **Name:** Slots
 - **Path:** `games/slots/`
 - **Catalog id:** `slots`
-- **Version:** 4.0.0
+- **Version:** 4.1.0
 - **Category:** Arcade
 - **Last updated:** 2026-10-29
 - **Status:** Draft (PR into dev)
 
 ## Description
-Play-money slot machine toy with 54 themes and 6 modes (Classic 3-Reel, 5-Reel Lines, Cascade, Match Groups, Pick-a-Prize, Prize Wheel). Coins only, free refill, calm mode, runs offline.
+Play-money slot machine toy with 60 themes and 6 modes (Classic 3-Reel, 5-Reel Lines, Cascade, Match Groups, Pick-a-Prize, Prize Wheel). Coins only, free refill, calm mode, runs offline.
 
 ## Features
 - 6 modes sharing coins, bet and theme
-- 54 data-driven themes with search and group chips
+- 60 data-driven themes with search and group chips (including a K's Picks chip for 6 pink, purple and rainbow themes)
+- Optional parent-controlled spoken cheers (`../../js/cheer.js`, see docs/CHEER.md). Off by default.
 - CSS 3D drum reels
 - Bonus screens: Pick-a-Prize and Prize Wheel (stand-alone and as free bonuses)
 - Calm mode and `prefers-reduced-motion`

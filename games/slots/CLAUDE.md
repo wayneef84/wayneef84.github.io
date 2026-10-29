@@ -55,6 +55,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) and [DESIGN.md](DESIGN.md).
 
 ---
 
+## Cheers and K's Picks (v4.1.0)
+- `FongCheer` is optional and guarded. Never add the child's name to the repo. Never put "so close" or other near-miss wording in a Slots cheer.
+- New K's Picks themes: set `kpick: true`. Check names, log them in ASSET_LOG.md.
+- Sparkle Party pays 200 coins once per page visit. Do not make it daily, saved or streaked.
+
 ## Testing
 - `node games/slots/tests/sim.js [rounds]` headless maths.
 - Browser checks were done with Playwright from outside the repo (see CHANGELOG 4.0.0 for what was covered).

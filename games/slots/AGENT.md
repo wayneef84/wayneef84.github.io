@@ -9,7 +9,7 @@
 ### What Was Done
 - Reviewed v3.1 (canvas slot machine) and found it unreliable. Full list with line numbers is in CHANGELOG.md under 4.0.0 "Fixed".
 - Rebuilt as small ES5 files: `engine.js` (pure maths), `themes.js` (data), `store.js`, `sfx.js`, `view.js` (drum reels and board), `modes/*.js` (one per mode), `ui.js` (controller).
-- 54 themes, 6 modes, free refill, calm mode, save migration from the old `dadsSlotsSave` key.
+- 60 themes (v4.1.0 added 6 K's Picks), 6 modes, free refill, calm mode, save migration from the old `dadsSlotsSave` key.
 - Added `tests/sim.js` (headless RTP and invariants). Playwright runs were done from outside the repo.
 
 ### How It Works (For Next Agent)

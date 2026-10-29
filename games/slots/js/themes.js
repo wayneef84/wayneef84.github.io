@@ -6,6 +6,7 @@
  *   name     shown in the picker
  *   group    one of GROUPS below (picker chip)
  *   kids     true if it is fine for the Kids chip
+ *   kpick    true to also show it under the "K's Picks" chip
  *   flavour  one short line shown under the name
  *   pal      [background, background 2, accent, reel face, ink], hex colours
  *   sym      6 paying symbols, lowest to highest. Emoji or an inline "<svg ...>" string.
@@ -52,6 +53,7 @@
         t.pal = [pal[0] || '#1a1a2e', pal[1] || '#2a2a50', lift(pal[2] || '#ffd166'), pal[3] || '#f6f6fb', pal[4] || '#1a1a2e'];
         if (GROUPS.indexOf(t.group) < 0) { t.group = 'Fun'; }
         t.kids = t.kids !== false;
+        t.kpick = t.kpick === true;
         t.wildName = t.wildName || 'Wild';
         t.scatName = t.scatName || 'Scatter';
         byKey[t.key] = t;
@@ -71,7 +73,49 @@
         has: function (key) { return !!byKey[key]; }
     };
 
+
+    /**
+     * Original round music pal for the Bubblegum Band theme: a coloured ball with a face and one
+     * small instrument-style extra. Inline SVG, no files. kind picks the extra.
+     */
+    function pal(body, kind) {
+        var x = '';
+        if (kind === 'bell') { x = '<path d="M32 9v6" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="7" r="5" fill="#ffd84d"/>'; }
+        if (kind === 'drum') { x = '<path d="M16 8l11 12M48 8L37 20" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="7" r="3.5" fill="#ff5fa8"/><circle cx="49" cy="7" r="3.5" fill="#ff5fa8"/>'; }
+        if (kind === 'keys') { x = '<rect x="19" y="50" width="26" height="10" rx="2" fill="#fff"/><path d="M26 50v6M32 50v10M38 50v6" stroke="#3b2a55" stroke-width="2.4"/>'; }
+        if (kind === 'horn') { x = '<path d="M50 20l10-6v16l-10-6z" fill="#ffd84d" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>'; }
+        if (kind === 'zig') { x = '<path d="M26 14l5-6 4 6 5-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'; }
+        if (kind === 'note') { x = '<circle cx="28" cy="9" r="4" fill="#fff"/><path d="M32 9V-1h8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>'; }
+        return '<svg viewBox="0 0 64 64" width="1em" height="1em" style="width:1em;height:1em;display:block;margin:0 auto;overflow:visible" aria-hidden="true">' +
+            '<circle cx="32" cy="36" r="24" fill="' + body + '" stroke="#fff" stroke-width="3"/>' + x +
+            '<ellipse cx="24" cy="32" rx="5" ry="6" fill="#fff"/><ellipse cx="40" cy="32" rx="5" ry="6" fill="#fff"/>' +
+            '<circle cx="25" cy="33" r="2.6" fill="#3b2a55"/><circle cx="41" cy="33" r="2.6" fill="#3b2a55"/>' +
+            '<path d="M24 44q8 8 16 0" fill="none" stroke="#3b2a55" stroke-width="3" stroke-linecap="round"/>' +
+            '<circle cx="17" cy="42" r="3.2" fill="#ff7ac8" opacity=".55"/><circle cx="47" cy="42" r="3.2" fill="#ff7ac8" opacity=".55"/></svg>';
+    }
+
     var DATA = [
+
+    /* K's Picks: pink, purple and rainbow themes for the youngest players. Names are original. */
+    { key: 'unisparkle', name: 'Unicorn Sparkle', group: 'Fantasy', kids: true, kpick: true, flavour: 'Glitter, rainbows and one very happy unicorn.',
+      pal: ['#4a1a6b', '#8a3aa8', '#ff8fd6', '#fff2fb', '#4a1060'],
+      sym: ['🌸', '⭐', '🍭', '💖', '🌈', '🦄'], wild: '✨', scat: '🎀', wildName: 'Glitter Burst', scatName: 'Pink Ribbon' },
+    { key: 'bubblegum', name: 'Bubblegum Band', group: 'Fun', kids: true, kpick: true, flavour: 'Six round pals hum along: Strumble, Hummsy, Whoopa, Tavvy, Thrumby and Jinglet.',
+      pal: ['#5a1650', '#a02a86', '#ff9ad8', '#fff0fa', '#4f0f45'],
+      sym: [pal('#ff9d7a', 'note'), pal('#8ff0b0', 'zig'), pal('#ffd166', 'horn'), pal('#7fd6ff', 'keys'), pal('#b48cff', 'drum'), pal('#ff8fc7', 'bell')],
+      wild: '🎶', scat: '🍬', wildName: 'Big Chorus', scatName: 'Wrapped Sweet' },
+    { key: 'rainbowstage', name: 'Rainbow Cloud Stage', group: 'Fantasy', kids: true, kpick: true, flavour: 'A fluffy cloud stage where the rainbow sings along.',
+      pal: ['#2f2a7a', '#5a4fc4', '#ffb3e6', '#f6f2ff', '#2a2470'],
+      sym: ['☁️', '🎵', '🎶', '🎤', '🌈', '🌟'], wild: '💫', scat: '🎟️', wildName: 'Shooting Sparkle', scatName: 'Stage Ticket' },
+    { key: 'ponyranch', name: 'Pink Pony Ranch', group: 'Nature', kids: true, kpick: true, flavour: 'Hay, carrots and a pony in a sunny pink hat.',
+      pal: ['#5c1f3f', '#a8446f', '#ffb0cf', '#fff3f7', '#521634'],
+      sym: ['🌾', '🍎', '🥕', '👢', '🤠', '🐴'], wild: '🌼', scat: '🏅', wildName: 'Daisy Chain', scatName: 'Ranch Ribbon' },
+    { key: 'glittergarden', name: 'Glitter Garden', group: 'Nature', kids: true, kpick: true, flavour: 'Sparkly petals and butterflies in the morning sun.',
+      pal: ['#4a1a5e', '#7e3a96', '#e6a8ff', '#fbf2ff', '#43144f'],
+      sym: ['🌷', '🌼', '🌸', '🐞', '🦋', '🧚'], wild: '✨', scat: '🌈', wildName: 'Glitter Dew', scatName: 'Rainbow Arch' },
+    { key: 'dreamcarousel', name: 'Dream Carousel', group: 'Fun', kids: true, kpick: true, flavour: 'Round and round on a merry-go-round of dreams.',
+      pal: ['#3f1a6e', '#7a3fb8', '#ffa8e0', '#fcf2ff', '#37125f'],
+      sym: ['🎈', '🍭', '🎀', '🎡', '🌙', '🎠'], wild: '⭐', scat: '🎁', wildName: 'Dream Star', scatName: 'Surprise Gift' },
     { key: 'sugar', name: 'Sugar Counter', group: 'Sweet', kids: true, flavour: 'A sticky-sweet shop with a jar of everything.',
       pal: ['#4a1740', '#7d2a6a', '#ff7ac8', '#fff3fa', '#4a1040'],
       sym: ['🍬', '🍭', '🍫', '🍩', '🧁', '🎂'], wild: '🌈', scat: '🎁', wildName: 'Rainbow Swirl', scatName: 'Gift Box' },
