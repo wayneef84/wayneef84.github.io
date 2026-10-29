@@ -1,7 +1,6 @@
 # CHANGELOG.md
 
 ## Maintenance Rules
-- 5-Card Draw page repaired: an earlier edit had inserted 233 duplicated lines and cut a string in half, so the page did not load. Restored the last good version and added working Ante - and + buttons ($5 steps, $5 up to your balance, max $100).
 1. **Additive Only:** All updates must add to the file; never remove history.
 2. **Attribution:** Indicate who (C, G, or W) made the update and the Date/Time (UTC).
 3. **Versioning:**
@@ -14,6 +13,11 @@
 ---
 
 ## Version History
+
+### v1.0.6-C (Claude) - 2026-10-28 UTC
+**Reasoning:** Repair a regression from an earlier merge and wire the Ante buttons.
+* **[FIXED] games/cards/poker/5card/index.html:** The page did not load: an earlier edit had inserted 233 duplicated lines and cut a string in half. Restored the last good version.
+* **[ADDED] games/cards/poker/5card/index.html:** Working Ante - and + buttons ($5 steps, $5 up to your balance, max $100) that update the Deal button label.
 
 ### v1.0.5-C (Claude) - 2026-01-31 UTC
 **Reasoning:** Bug fixes for Blackjack gameplay and creation of comprehensive test suite.
