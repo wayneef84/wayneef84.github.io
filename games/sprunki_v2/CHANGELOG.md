@@ -2,7 +2,7 @@
 
 ## v2.2.0 (2026-10-28)
 ### Added
-- Bubblegum Pop pack (12th tab, after Candy): 8 original friends in pink with lilac, mint and butter-yellow accents. A pop trio with glow lightsticks (Starlie, Dazzi, Honeyoo), a unicorn (Lilacorn), a bubblegum-machine robot (Gumzy), a heart drummer (Lubby), a glitter cat (Glittens) and a bubble sweep (Swooshie). 104 BPM, C major pentatonic. Floating hearts.
+- Bubblegum Pop pack (12th tab, after Candy): 8 original friends in pink with lilac, mint and butter-yellow accents. A pop trio with glow lightsticks (Starlie, Razzly, Honeyoo), a unicorn (Lilacorn), a bubblegum-machine robot (Gumzy), a heart drummer (Heartbo), a glitter cat (Glittens) and a bubble sweep (Swooshie). 104 BPM, C major pentatonic. Floating hearts.
 - Art generator: `heart` body and `lightstick`, `horn`, `gumball`, `sparkle` accessories (no change to existing looks).
 - ASSET_LOG.md with name checks and how each asset was made.
 

@@ -88,12 +88,12 @@ Left out: every horror, corrupted or infection generation.
 ### Bubblegum Pop friends
 | Friend | List | Look | Sound |
 |---|---|---|---|
-| Lubby | Beats | pink heart with sparkles | kick plus clap backbeat |
+| Heartbo | Beats | pink heart with sparkles | kick plus clap backbeat |
 | Glittens | Beats | glitter cat with pink ears | offbeat hats and a few bright plucks |
 | Starlie | Effects | trio member, lilac lightstick | high bell notes with tiny twinkles (glow-stick sparkle) |
 | Swooshie | Effects | pale pink bubble with stars | airy swell with bubble pops |
 | Gumzy | Melodies | bubblegum-machine robot | round bouncy bass |
 | Lilacorn | Melodies | lilac unicorn, gold horn, pastel mane | flowing bell tune |
-| Dazzi | Voices | trio member, mint lightstick | sung pop hook (eh, ah) |
+| Razzly | Voices | trio member, mint lightstick | sung pop hook (eh, ah) |
 | Honeyoo | Voices | trio member, butter-yellow lightstick | three-part "ooh" pad, C then A minor |
 Name checks and how each asset was made: `ASSET_LOG.md`.

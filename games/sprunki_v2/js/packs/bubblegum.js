@@ -11,7 +11,7 @@
         bpm: 104,
         chars: [
             // Beat: heart-shaped drummer, kick plus clap
-            { id: 'bg_lubby', name: 'Lubby', type: 'beats', art: { body: 'heart', color: '#ff6fae', eyes: 'happy', mouth: 'grin', acc: 'sparkle', accColor: '#ffffff', cheeks: true },
+            { id: 'bg_heartbo', name: 'Heartbo', type: 'beats', art: { body: 'heart', color: '#ff6fae', eyes: 'happy', mouth: 'grin', acc: 'sparkle', accColor: '#ffffff', cheeks: true },
               synth: { kind: 'layers', layers: [
                   { kind: 'drum', voice: 'kick', pitch: 1.05, pattern: 'x..x....x..x.x..' },
                   { kind: 'drum', voice: 'clap', pattern: '..x...x...x...x.' } ] } },
@@ -35,7 +35,7 @@
             { id: 'bg_lilacorn', name: 'Lilacorn', type: 'melodies', art: { body: 'round', color: '#f3e4ff', eyes: 'big', mouth: 'smile', acc: 'horn', accColor: '#ff9bd0', cheeks: true },
               synth: { kind: 'tone', wave: 'tri', vib: 1, a: 0.02, decays: true, d: 0.6, chord: [0, 12], seq: [81, N, 79, N, 76, 79, N, 76, 72, N, 74, N, 76, N, N, N] } },
             // Voice: pop hook sung with bright "eh" and "ah"
-            { id: 'bg_dazzi', name: 'Dazzi', type: 'vocals', art: { body: 'tall', color: '#ff5fa2', eyes: 'happy', mouth: 'open', acc: 'lightstick', accColor: '#a8f0d0', cheeks: true },
+            { id: 'bg_razzly', name: 'Razzly', type: 'vocals', art: { body: 'tall', color: '#ff5fa2', eyes: 'happy', mouth: 'open', acc: 'lightstick', accColor: '#a8f0d0', cheeks: true },
               synth: { kind: 'voice', seq: [[76, 'e', 1], N, [79, 'e', 1], N, [81, 'a', 2], N, [79, 'e', 1], N, [76, 'e', 1], N, [72, 'o', 2], N, [74, 'e', 1], N, [76, 'a', 2], N] } },
             // Voice: soft three-part "ooh" pad, C then Am
             { id: 'bg_honeyoo', name: 'Honeyoo', type: 'vocals', art: { body: 'tall', color: '#ffa6cf', eyes: 'sleepy', mouth: 'o', acc: 'lightstick', accColor: '#ffe08a', cheeks: true },
