@@ -31,6 +31,33 @@ Done 2026-10-29 by one helper doing 1 or 2 web searches per name. It looked for 
 
 Also changed after review: the old theme "Jurassic Jungle" is now "Dino Jungle" (Jurassic is a film franchise name). Old theme names that stayed (Mystical Unicorn, Classic Fruits, Ocean Adventure, Space Explorer, Wild Animals, Delicious Treats, Precious Gems, Card Royale, Chess Masters, Monster Mayhem, Wolf Pack, Ancient Egypt, Music Beats, Sports Arena, Tech Gadgets, Wilderness Camp, Astrology Signs, Weather Forecast, Solar System, Emoji Faces, Pirate's Gold, Samurai Spirit, Viking Legends, Steampunk Rev, Wild West, Fairy Tale, Dragon's Lair, Robot Factory, Ninja Shadows) were NOT searched. They are generic but unchecked.
 
+## K's Picks (v4.1.0)
+Searched 2026-10-29. Quick searches, not legal clearance. Several short rounds of 1 or 2 web searches per name (existing slot titles, kids brands, toys, apps, cartoon and game characters, plus a look for overlap with Sprunki, My Singing Monsters, Moshi Monsters, K-pop Demon Hunters, Lily Lovebraids and Toy Story). Searches were thin and some search tools returned little. No trademark registry or app store was searched. Symbols are Unicode emoji or the original inline SVG round pals drawn in `js/themes.js` (function `pal`, a circle, a face and one small extra).
+
+| Name | Finding | What was done |
+|---|---|---|
+| Unicorn Sparkle | No exact match. Other unicorn slots and a kids board game (Unicorn Glitterluck) exist | Kept (CAUTION, generic) |
+| Bubblegum Band | No title found | Kept |
+| Rainbow Cloud Stage | Nothing found | Kept |
+| Pink Pony Ranch | No match (an old Linux racing game is called Pink Pony) | Kept |
+| Glitter Garden | No exact title. A My Little Pony nursery playset is called Giggle Garden (loose echo) | Kept (CAUTION, generic phrase) |
+| Dream Carousel | No exact title. A funfair slot called Carousel exists | Kept (CAUTION, generic) |
+| Tinkle | A kids' comic of that name (unverified) | Not used |
+| Boomba | Close to "Boom Buddies", a kids' music series | Not used |
+| Plinky | A Moshi Monsters Tunies Moshling and close to My Singing Monsters' Plinkajou | Not used |
+| Chimey | "Chimey Chums" kids music channel | Not used |
+| Rumbly, Keysie | Generic, but near monster-name and kids music app neighbours (Keezy) | Not used |
+| Boppo | A kids' music handheld tablet | Not used |
+| Zizzy | A character in Roblox Piggy | Not used |
+| Buzzle | An existing toddler puzzle app | Not used |
+| Pink Gumball, Bubblegum Drop | A World of Warcraft item, and a gum-drop slot feature | Not used. Scatter is "Wrapped Sweet" |
+| Strumble, Whoopa, Thrumby, Jinglet, Tavvy | Nothing found | Kept as pal names |
+| Hummsy | Nothing found (thin search) | Kept (CAUTION, thin search) |
+| Wrapped Sweet, Glitter Burst, Big Chorus, Daisy Chain, Ranch Ribbon, Stage Ticket | Nothing found or generic phrases | Kept |
+| Pink Ribbon, Shooting Sparkle, Glitter Dew, Rainbow Arch, Dream Star, Surprise Gift | Generic phrases, not searched | Kept |
+
+Symbol notes: the pal shapes are plain circles with eyes, a smile and one accessory. They were drawn for this game and do not copy any character. Pink Pony Ranch uses only generic ranch items (hay, carrot, boot, hat). A final visual and roster check of the six pals against Sprunki and My Singing Monsters is worth doing before wider promotion.
+
 ## Open questions
 - Card Royale: "Royale" is common but was not checked against card-game brands.
 - The 9 old audio files: who made them?

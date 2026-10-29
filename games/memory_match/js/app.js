@@ -119,6 +119,7 @@
             paintCard(f); paintCard(i);
             snd('match');
             say('A match! ' + c.item.name);
+            if (window.FongCheer && game.matched < game.pairs) { FongCheer.cheer('good'); }
             if (game.matched === game.pairs) { game.over = true; stopClock(); window.setTimeout(win, 800); }
         } else {
             game.pending = [f, i];
@@ -135,6 +136,7 @@
         updateStatus();
         els.winPanel.hidden = false;
         snd('win');
+        if (window.FongCheer) { FongCheer.cheer('done'); }
         say('You found all the pairs in ' + game.moves + ' moves.');
         confetti();
         try { els.againBtn.focus(); } catch (e) { /* ignore */ }
@@ -337,6 +339,7 @@
         });
         els.board.addEventListener('keydown', onKey);
         document.addEventListener('pointerdown', unlock);
+        if ($('cheersBtn')) { $('cheersBtn').addEventListener('click', function () { if (window.FongCheer) { FongCheer.openSettings(); } }); }
         els.restartBtn.addEventListener('click', function () { els.settingsPanel.hidden = true; newGame(); });
         els.settingsBtn.addEventListener('click', function () { if (els.settingsPanel.hidden) { openSettings(); } else { closeSettings(); } });
         els.closeSettings.addEventListener('click', closeSettings);
