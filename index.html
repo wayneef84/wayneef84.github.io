@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>F.O.N.G. Arcade | Home</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <meta name="theme-color" content="#0f1117">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fong Arcade">
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
     <script src="./js/theme/loader.js"></script>
     <link rel="stylesheet" href="./css/components/global.css">
     <link rel="stylesheet" href="./css/components/card.css">
@@ -29,6 +36,9 @@
     </header>
 
     <main>
+        <!-- Install app button or iOS hint. Filled by js/pwa.js, hidden unless installable -->
+        <div id="pwa-install" hidden></div>
+
         <!-- Just added: big cards for catalog entries with spotlight: true -->
         <section class="just-added" id="just-added" aria-label="Just added" hidden></section>
 
@@ -72,6 +82,7 @@
     <script src="./js/hub-nav.js"></script>
     <script src="./js/hub-filters.js"></script>
     <script src="./js/theme/panel.js"></script>
+    <script src="./js/pwa.js" data-install="1"></script>
     <script>if (window.FongStats) { window.FongStats.trackClicks(); }</script>
 </body>
 </html>

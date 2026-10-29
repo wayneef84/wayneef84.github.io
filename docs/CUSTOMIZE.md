@@ -95,6 +95,7 @@ Add one of these to the end of the page address:
 
 - `?theme=default` ignores the saved theme for that visit and offers to reset it.
 - `?safe=1` does the same and also keeps custom code off (code is off anyway for now).
+- `?pwa=off` unregisters the offline service worker and clears its saved copies on this device. `?pwa=on` turns it back on. See [PWA.md](PWA.md).
 
 ## For developers
 
