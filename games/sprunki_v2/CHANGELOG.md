@@ -1,5 +1,15 @@
 # S4K Mixer v2: Changelog
 
+## v2.2.0 (2026-10-28)
+### Added
+- Bubblegum Pop pack (12th tab, after Candy): 8 original friends in pink with lilac, mint and butter-yellow accents. A pop trio with glow lightsticks (Starlie, Razzly, Honeyoo), a unicorn (Lilacorn), a bubblegum-machine robot (Gumzy), a heart drummer (Heartbo), a glitter cat (Glittens) and a bubble sweep (Swooshie). 104 BPM, C major pentatonic. Floating hearts.
+- Art generator: `heart` body and `lightstick`, `horn`, `gumball`, `sparkle` accessories (no change to existing looks).
+- ASSET_LOG.md with name checks and how each asset was made.
+
+### Changed
+- All tab pack label shrinks a little when the pack name is long (so "Bubblegum Pop" fits).
+- Help dialog: Shift+arrows reach all 12 pack tabs.
+
 ## v2.1.0 (2026-10-27)
 ### Added
 - All tab (first tab): every friend from every pack in the tray, each in a box labelled with its pack name and edged in the pack color. Neutral look. Tap, drag, undo, save and load work as elsewhere, and Mr. Black still works from it.

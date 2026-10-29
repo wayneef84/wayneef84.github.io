@@ -1,9 +1,11 @@
 # S4K Mixer v2: Roadmap
 
 ## Next
+- [ ] Listen test of the Bubblegum Pop pack on a phone speaker, and let the young player pick the friends' names if she wants to rename them
+- [ ] Optional: a Shift+- and Shift+= shortcut for tabs 11 and 12 (today only the arrows and a tap reach them)
 - [ ] Listen test of the four new packs on a phone speaker (levels and distinctness)
 - [ ] Optional: remember "All" as the start tab
-- [ ] Optional: search or pack filter chips inside the All tab (93 friends is a long row)
+- [ ] Optional: search or pack filter chips inside the All tab (101 friends is a long row)
 
 ## Future: singing monster game
 Idea from Wayne: a "My Singing Monsters" style game, built later and separately. Collectible monsters, each with its own looping sound, placed on an island or stage.
