@@ -17,8 +17,8 @@ export default class TexasHoldem extends BasePokerGame {
     }
 
     startRound() {
-        const p1 = this.players[0];
-        const opp = this.players[1];
+        var p1 = this.players[0];
+        var opp = this.players[1];
         if (!p1 || p1.balance < this.ante) return false;
 
         this._collectAnte(p1);
@@ -36,10 +36,11 @@ export default class TexasHoldem extends BasePokerGame {
         return true;
     }
 
-    betAndAdvance(multiplier = 1) {
-        const p1 = this.players[0];
-        const opp = this.players[1];
-        const amount = this.ante * multiplier;
+    betAndAdvance(multiplier) {
+        if (multiplier === undefined) multiplier = 1;
+        var p1 = this.players[0];
+        var opp = this.players[1];
+        var amount = this.ante * multiplier;
         if (p1 && p1.balance >= amount) {
             p1.balance -= amount;
             this.pot += amount;
@@ -52,8 +53,8 @@ export default class TexasHoldem extends BasePokerGame {
     }
 
     fold() {
-        const opp = this.players[1];
-        const potWon = this.pot;
+        var opp = this.players[1];
+        var potWon = this.pot;
         if (opp) opp.balance += this.pot;
         this.pot = 0;
         this.state = 'GAME_OVER';
@@ -72,7 +73,7 @@ export default class TexasHoldem extends BasePokerGame {
             return;
         }
 
-        const phase = this.phases[this.currentPhaseIndex];
+        var phase = this.phases[this.currentPhaseIndex];
         this.state = phase;
 
         switch (phase) {
@@ -95,33 +96,34 @@ export default class TexasHoldem extends BasePokerGame {
 
     _dealCommunity(count) {
         this.deck.give(this.discard, 1); // Burn 1 card
-        const cards = this.deck.give(this.community, count);
-        cards.forEach(c => c.faceUp = true);
+        var cards = this.deck.give(this.community, count);
+        cards.forEach(function (c) { c.faceUp = true; });
         this.emit('COMMUNITY_DEAL', { cards });
     }
 
     _showdown() {
-        const communityCards = this.community.contents;
-        const results = this.players.map(p => {
-            const allCards = [...p.hand.contents, ...communityCards];
-            const ev = this.Evaluator.evaluate(allCards);
+        var communityCards = this.community.contents;
+        var self = this;
+        var results = this.players.map(function (p) {
+            var allCards = p.hand.contents.concat(communityCards);
+            var ev = self.Evaluator.evaluate(allCards);
             return { player: p, hand: ev };
         });
 
-        results.sort((a, b) => b.hand.score - a.hand.score);
-        const bestScore = results[0].hand.score;
-        const winners = results.filter(r => r.hand.score === bestScore);
+        results.sort(function (a, b) { return b.hand.score - a.hand.score; });
+        var bestScore = results[0].hand.score;
+        var winners = results.filter(function (r) { return r.hand.score === bestScore; });
 
-        const share = Math.floor(this.pot / winners.length);
-        winners.forEach(w => { w.player.balance += share; });
-        const potWon = this.pot;
+        var share = Math.floor(this.pot / winners.length);
+        winners.forEach(function (w) { w.player.balance += share; });
+        var potWon = this.pot;
         this.pot = 0;
 
-        const winnerId = winners.length > 1 ? 'push' : winners[0].player.id;
+        var winnerId = winners.length > 1 ? 'push' : winners[0].player.id;
         this.state = 'GAME_OVER';
         this.emit('SHOWDOWN', {
             winner: winnerId,
-            results: results.map(r => ({ playerId: r.player.id, hand: r.hand })),
+            results: results.map(function (r) { return { playerId: r.player.id, hand: r.hand }; }),
             pot: potWon
         });
     }
