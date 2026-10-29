@@ -4,6 +4,7 @@
  * Two screens: the door screen (world select) and a world (Night Garden, Toy Attic or Star Observatory).
  * Worlds register themselves in window.NightliteWorlds (see js/worlds/*.js).
  * One shared stage: creatures from all three worlds can stand on it. Tempo comes from the first creature placed.
+ * Milestone 3: free sparks, eggs in a nest, a Mixing pot, a Discovery book and 6 blend creatures (js/worlds/blends.js).
  */
 (function (w) {
     var d = document;
@@ -17,7 +18,19 @@
         { id: 'observatory', name: 'The Star Observatory', where: 'the skylight', c1: '#3a3070', c2: '#1a1a48', acc: '#b9a8ff', art: 'skylight' }
     ];
 
-    var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90 };
+    // Sparks: a free in-game number. Nothing is bought, nothing can be missed or lost.
+    var SPARK_CAP = 99;            // the jar holds at most 99
+    var SPARK_EVERY = 15;          // +1 spark per 15 seconds of real play (2+ friends on the stage, page visible)
+    var WISH_GIVES = 3;            // "Wish on a star": free at any time, no timer
+    var EGG_COST = 5;              // an egg costs 5 sparks
+    var HATCH_SECS = 20;           // an egg hatches in about 20 seconds of looking at the game
+    var WARM_SHAVE = 2;            // each tap on the egg warms it: 2 seconds off
+    var SAVE_VERSION = 4;
+    var DATA_KEY = 'nightlite.save';
+
+    var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
+              sparks: 0, owned: {}, found: {}, nest: null, playSecs: 0,
+              view: 'garden', back: [], pot: [null, null], reveal: null };
     var history = [];
     var ctx = null, mix = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -25,6 +38,8 @@
     var t0 = null;              // transport start time
     var toastTimer = null, drag = null, suppressClick = false, memMix = null;
     var charById = {};
+    var blendById = {};         // blend id -> creature
+    var recipeByKey = {};       // 'parentA+parentB' (sorted) -> blend id
     var WORLD_ORDER = ['garden', 'attic', 'observatory'];
 
     function $(id) { return d.getElementById(id); }
@@ -40,6 +55,105 @@
             w.localStorage.setItem(key, val);
         } catch (e) { return null; }
         return null;
+    }
+
+    // ---------------------------------------------------------------- progress save (sparks, blends, recipes, nest)
+    // One JSON under nightlite.save: { v, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }.
+    // Older v0.1.0 to v0.3.0 saves have no such key and simply start with zero sparks. Storage blocked: everything stays in memory.
+    function recipeKey(a, b) { return a < b ? a + '+' + b : b + '+' + a; }
+    function ownedList() {
+        var out = [], k;
+        for (k in S.owned) if (S.owned.hasOwnProperty(k) && S.owned[k]) out.push(k);
+        return out;
+    }
+    function foundList() {
+        var out = [], k;
+        for (k in S.found) if (S.found.hasOwnProperty(k) && S.found[k]) out.push(k);
+        return out;
+    }
+    function saveProgress() {
+        var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(),
+                     nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
+        store(DATA_KEY, JSON.stringify(data));
+    }
+    function loadProgress() {
+        var raw = store(DATA_KEY), data = null, i, id, key, n;
+        if (raw) { try { data = JSON.parse(raw); } catch (e) { data = null; } }
+        if (!data || typeof data !== 'object') return;
+        n = parseInt(data.sparks, 10);
+        S.sparks = (n >= 0) ? Math.min(SPARK_CAP, n) : 0;
+        if (data.blends instanceof Array) {
+            for (i = 0; i < data.blends.length; i++) if (blendById[data.blends[i]]) S.owned[data.blends[i]] = true;
+        }
+        if (data.found instanceof Array) {
+            for (i = 0; i < data.found.length; i++) {
+                key = data.found[i];
+                id = recipeByKey[key];
+                if (id) { S.found[key] = true; S.owned[id] = true; }     // a found recipe always means the blend is owned
+            }
+        }
+        if (data.nest && typeof data.nest === 'object') {
+            n = parseFloat(data.nest.left);
+            S.nest = { left: (n >= 0 && n <= HATCH_SECS) ? n : HATCH_SECS };
+        }
+    }
+
+    // ---------------------------------------------------------------- sparks
+    function updateSparkUI() {
+        var nodes = d.querySelectorAll('[data-spark]'), i;
+        for (i = 0; i < nodes.length; i++) nodes[i].textContent = String(S.sparks);
+        var pills = d.querySelectorAll('.sparkpill');
+        for (i = 0; i < pills.length; i++) pills[i].setAttribute('aria-label', S.sparks + ' sparks');
+    }
+    function addSparks(n) {
+        var before = S.sparks;
+        S.sparks = Math.max(0, Math.min(SPARK_CAP, S.sparks + n));
+        if (S.sparks !== before) { updateSparkUI(); saveProgress(); }
+        return S.sparks - before;
+    }
+    function pulseSparks() {
+        var pills = d.querySelectorAll('.sparkpill'), i;
+        for (i = 0; i < pills.length; i++) {
+            (function (p) { p.classList.remove('pulse'); void p.offsetWidth; p.classList.add('pulse'); })(pills[i]);
+        }
+    }
+    function wish() {
+        ensureCtx();
+        var got = addSparks(WISH_GIVES);
+        pulseSparks();
+        if (got > 0) { toast('You wished on a star. +' + got + ' sparks!'); chime([84, 88, 91]); }
+        else toast('Your spark jar is full. Time to make an egg or mix a pair!');
+    }
+    function stageCount() {
+        var i, n = 0;
+        for (i = 0; i < SLOTS; i++) if (S.slots[i]) n++;
+        return n;
+    }
+    // Called once a second with the seconds that really passed (at most 2). Sparks only trickle in while the child is
+    // actually playing: a world screen, at least two friends on the stage, page visible. Nothing happens in the background.
+    function tick(dt) {
+        if (d.hidden) return;
+        var changed = false;
+        if (S.screen === 'world' && stageCount() >= 2 && S.sparks < SPARK_CAP) {
+            S.playSecs += dt;
+            while (S.playSecs >= SPARK_EVERY && S.sparks < SPARK_CAP) {
+                S.playSecs -= SPARK_EVERY;
+                S.sparks++;
+                changed = true;
+            }
+            if (S.sparks >= SPARK_CAP) S.playSecs = 0;
+        }
+        if (changed) { updateSparkUI(); pulseSparks(); saveProgress(); }
+        if (S.nest) nestTick(dt);
+    }
+    var nestSaveAcc = 0;
+    function nestTick(dt) {
+        if (!S.nest) return;
+        S.nest.left -= dt;
+        nestSaveAcc += dt;
+        if (S.nest.left <= 0) { hatch(); return; }
+        if (nestSaveAcc >= 5) { nestSaveAcc = 0; saveProgress(); }
+        updateNestLive();
     }
 
     // ---------------------------------------------------------------- audio
@@ -124,6 +238,24 @@
         t0 = null;
     }
 
+    // A tiny happy twinkle for wishes, hatching and the pot (pentatonic notes, soft, goes through the same master volume).
+    function chime(notes) {
+        if (!ensureCtx()) return;
+        try {
+            var t = ctx.currentTime + 0.02, i, o, g;
+            for (i = 0; i < notes.length; i++) {
+                o = ctx.createOscillator(); g = ctx.createGain();
+                o.type = 'sine';
+                o.frequency.value = 440 * Math.pow(2, (notes[i] - 69) / 12);
+                g.gain.setValueAtTime(0, t + i * 0.11);
+                g.gain.linearRampToValueAtTime(0.22, t + i * 0.11 + 0.01);
+                g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.11 + 0.7);
+                o.connect(g); g.connect(mix);
+                o.start(t + i * 0.11); o.stop(t + i * 0.11 + 0.8);
+            }
+        } catch (e) {}
+    }
+
     // ---------------------------------------------------------------- stage
     function imgSrc(ch) { return w.NightliteArt.dataUri(w.NightliteArt.make(ch.art, false)); }
     function onStageIdx(id) {
@@ -201,7 +333,7 @@
         for (i = 0; i < WORLD_ORDER.length; i++) {
             (function (wd) {
                 if (!wd) return;
-                var on = (wd === S.world);
+                var on = (wd.id === S.view);
                 var b = el('button', 'chip' + (on ? ' on' : ''));
                 b.type = 'button';
                 b.id = 'chip-' + wd.id;
@@ -209,14 +341,39 @@
                 b.appendChild(el('span', 'cn', wd.chip || wd.short));
                 b.setAttribute('aria-pressed', on ? 'true' : 'false');
                 b.setAttribute('aria-label', 'Show friends from ' + wd.label);
-                b.onclick = function () { if (wd !== S.world) setWorldView(wd); };
+                b.onclick = function () { if (wd.id !== S.view) setWorldView(wd); };
                 box.appendChild(b);
             })(w.NightliteWorlds[WORLD_ORDER[i]]);
         }
+        var bb = el('button', 'chip' + (S.view === 'blends' ? ' on' : ''));
+        bb.type = 'button';
+        bb.id = 'chip-blends';
+        bb.appendChild(el('span', 'ci', w.NightliteBlends.icon));
+        bb.appendChild(el('span', 'cn', w.NightliteBlends.chip));
+        bb.setAttribute('aria-pressed', S.view === 'blends' ? 'true' : 'false');
+        bb.setAttribute('aria-label', 'Show your blend friends');
+        bb.onclick = function () { if (S.view !== 'blends') { S.view = 'blends'; renderTiles(); } };
+        box.appendChild(bb);
+    }
+    // The friends shown in the tray: the shown world's four, or the blends you own
+    function viewList() {
+        if (S.view === 'blends') return ownedBlendChars();
+        return S.world.chars;
+    }
+    function ownedBlendChars() {
+        var out = [], i, bl = w.NightliteBlends.chars;
+        for (i = 0; i < bl.length; i++) if (S.owned[bl[i].id]) out.push(bl[i]);
+        return out;
     }
     function renderTiles() {
+        var box = $('tiles'), list = viewList(), isBl = (S.view === 'blends'), note = $('trayNote');
         renderChips();
-        fillTiles($('tiles'), S.world.chars, 1);
+        box.className = 'tiles' + (isBl ? ' six' : '');
+        fillTiles(box, list, 1);
+        if (isBl && !list.length) {
+            note.textContent = 'Blends you find show up here. Try the Mixing pot or an egg!';
+            note.hidden = false;
+        } else { note.hidden = true; }
     }
     function fillTiles(box, list, firstNum) {
         var i;
@@ -250,7 +407,7 @@
     function afterChange() { renderStage(); renderTiles(); updateButtons(); }
 
     // ---------------------------------------------------------------- history / actions
-    function snapshot() { return { world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
+    function snapshot() { return { v: SAVE_VERSION, world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
     function setBpm(b) {
         S.bpm = b;
         d.documentElement.style.setProperty('--beat', (60 / b) + 's');
@@ -264,6 +421,7 @@
 
     function addChar(ch, slotIdx) {
         if (onStageIdx(ch.id) >= 0) return;
+        if (ch.isBlend && !S.owned[ch.id]) return;
         var idx = (slotIdx === undefined || slotIdx === null) ? firstEmpty() : slotIdx;
         if (idx < 0) {
             var st = $('stage'); st.classList.add('shake');
@@ -328,7 +486,9 @@
         if (raw) { try { snap = JSON.parse(raw); } catch (e) { snap = null; } }
         if (!snap || !(snap.slots instanceof Array)) snap = memMix;
         if (!snap) { toast('No saved mix yet. Make one and tap Save.'); return; }
-        for (i = 0; i < snap.slots.length; i++) if (snap.slots[i] && !charById[snap.slots[i]]) snap.slots[i] = null;
+        for (i = 0; i < snap.slots.length; i++) {
+            if (snap.slots[i] && (!charById[snap.slots[i]] || (charById[snap.slots[i]].isBlend && !S.owned[snap.slots[i]]))) snap.slots[i] = null;
+        }
         if (!(snap.bpm > 0)) {
             snap.bpm = S.world.bpm;       // older saves have no tempo: use the tempo of the first creature
             for (i = 0; i < snap.slots.length; i++) if (snap.slots[i]) { snap.bpm = charById[snap.slots[i]].bpm; break; }
@@ -508,16 +668,20 @@
         }
     }
     function showScreen(name) {
-        S.screen = name === 'doors' ? 'doors' : 'world';
+        var isWorld = !(name === 'doors' || name === 'collect' || name === 'pot');
+        S.screen = isWorld ? 'world' : name;
         $('screenDoors').hidden = (name !== 'doors');
-        $('screenWorld').hidden = (name === 'doors');
-        d.body.className = name === 'doors' ? 'screen-doors' : 'screen-world world-' + name;
+        $('screenWorld').hidden = !isWorld;
+        $('screenCollect').hidden = (name !== 'collect');
+        $('screenPot').hidden = (name !== 'pot');
+        d.body.className = isWorld ? 'screen-world world-' + name : 'screen-' + name;
         $('toast').className = 'toast';
         w.scrollTo(0, 0);
     }
     // Show a world's look and friends. The stage, its sound and the undo history are not touched.
     function setWorldView(world) {
         S.world = world;
+        S.view = world.id;
         if (!firstFilled()) setBpm(world.bpm);      // a stage that already has creatures keeps its tempo
         applyTheme(world.theme);
         buildGlow(world.glow ? world.glow.count : 12, world.glow ? world.glow.kind : '');
@@ -531,6 +695,7 @@
         if (!world) return;
         S.screen = 'world';
         showScreen(id);
+        S.back = [];
         history = [];
         setWorldView(world);
         if (ensureCtxIfRunning()) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
@@ -538,6 +703,7 @@
     function ensureCtxIfRunning() { return !!ctx; }
     function leaveWorld() {
         stopAllVoices();      // stage is kept, it restarts when you come back
+        S.back = [];
         applyTheme(DOOR_THEME);
         buildGlow(10);
         showScreen('doors');
@@ -549,6 +715,7 @@
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key, tag = d.activeElement ? d.activeElement.tagName : '';
         if (tag === 'INPUT' && k !== 'Escape') return;
+        if (S.screen === 'collect' || S.screen === 'pot') { if (k === 'Escape') goBack(); return; }
         if (S.screen !== 'world') return;
         var lk = k.toLowerCase(), n;
         if (k === 'Escape') leaveWorld();
@@ -557,10 +724,328 @@
         else if (lk === 'r') clearAll();
         else if (lk === 's') saveMix();
         else if (lk === 'l') loadMix();
-        else if (k >= '1' && k <= '4') {
+        else if (k >= '1' && k <= '6') {
             n = parseInt(k, 10) - 1;
-            if (S.world.chars[n]) tileAction(S.world.chars[n]);
+            var vl = viewList();
+            if (vl[n]) tileAction(vl[n]);
         }
+    }
+
+    // ---------------------------------------------------------------- screens: Collection and Mixing pot
+    function openScreen(name) {
+        var from = S.screen;
+        if (from === name) return;
+        if (from === 'collect') S.reveal = null;
+        S.back.push(from);
+        if (from === 'world') stopAllVoices();      // like leaving a world: the stage is kept, the sound pauses
+        if (from === 'world' || from === 'doors') { applyTheme(DOOR_THEME); buildGlow(10); }
+        showScreen(name);
+        if (name === 'collect') renderCollect(); else renderPot();
+    }
+    function resumeWorld() {
+        showScreen(S.world.id);
+        setWorldView(S.world);
+        if (ctx) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
+    }
+    function goBack() {
+        var to = S.back.pop() || 'doors';
+        S.reveal = null;
+        if (to === 'world') { resumeWorld(); return; }
+        if (to === 'doors') { showScreen('doors'); return; }
+        showScreen(to);
+        if (to === 'collect') renderCollect(); else renderPot();
+    }
+    function doAct(act) {
+        if (act === 'wish') { wish(); if (S.screen === 'collect') renderNest(); }
+        else if (act === 'collect') openScreen('collect');
+        else if (act === 'pot') openScreen('pot');
+    }
+
+    function burst(host) {
+        var b = el('span', 'burst'), i, p, a, r;
+        for (i = 0; i < 14; i++) {
+            p = el('i');
+            a = (i / 14) * 6.2832; r = 50 + (i % 3) * 22;
+            p.style.setProperty('--dx', Math.round(Math.cos(a) * r) + 'px');
+            p.style.setProperty('--dy', Math.round(Math.sin(a) * r) + 'px');
+            p.style.animationDelay = ((i % 4) * 0.05) + 's';
+            b.appendChild(p);
+        }
+        host.appendChild(b);
+        w.setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 1700);
+    }
+
+    // ---- Mixing pot: pick two base friends, tap Mix. Parents are never used up.
+    function baseChars() {
+        var out = [], i, j, wd;
+        for (i = 0; i < WORLD_ORDER.length; i++) {
+            wd = w.NightliteWorlds[WORLD_ORDER[i]];
+            for (j = 0; j < wd.chars.length; j++) out.push(wd.chars[j]);
+        }
+        return out;
+    }
+    function potSlot(id, idx) {
+        var b = $(idx ? 'potB' : 'potA'), ch = id ? charById[id] : null;
+        b.innerHTML = '';
+        b.className = 'pslot' + (ch ? ' has' : '');
+        if (ch) {
+            var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
+            b.appendChild(im);
+            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend: ' + ch.name + '. Tap to take out.');
+        } else {
+            b.appendChild(el('span', 'q', '?'));
+            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend, empty');
+        }
+    }
+    function potOut(blend, isNew) {
+        var o = $('potOut');
+        o.innerHTML = '';
+        o.className = 'pslot bowl';
+        if (blend) {
+            var im = el('img'); im.src = imgSrc(blend); im.alt = blend.name;
+            o.appendChild(im);
+            void o.offsetWidth;
+            o.classList.add('made');
+            burst(o);
+        } else {
+            o.appendChild(el('span', 'q', '?'));
+        }
+    }
+    function potMsg(t) { $('potMsg').textContent = t; }
+    function renderPot() {
+        var box = $('potTiles'), list = baseChars(), i;
+        potSlot(S.pot[0], 0); potSlot(S.pot[1], 1);
+        box.innerHTML = '';
+        for (i = 0; i < list.length; i++) {
+            (function (ch) {
+                var on = (S.pot[0] === ch.id || S.pot[1] === ch.id);
+                var b = el('button', 'ptile' + (on ? ' picked' : ''));
+                b.type = 'button';
+                b.id = 'ptile-' + ch.id;
+                var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
+                b.appendChild(im);
+                b.appendChild(el('span', 'nm', ch.name));
+                b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                b.setAttribute('aria-label', ch.name + (on ? ', in the pot. Tap to take out.' : '. Tap to put in the pot.'));
+                b.onclick = function () { potPick(ch.id); };
+                box.appendChild(b);
+            })(list[i]);
+        }
+    }
+    function potPick(id) {
+        var k = S.pot.indexOf ? S.pot.indexOf(id) : (S.pot[0] === id ? 0 : (S.pot[1] === id ? 1 : -1));
+        if (k >= 0) S.pot[k] = null;
+        else if (!S.pot[0]) S.pot[0] = id;
+        else if (!S.pot[1]) S.pot[1] = id;
+        else { S.pot[0] = S.pot[1]; S.pot[1] = id; }
+        potOut(null);
+        potMsg(S.pot[0] && S.pot[1] ? 'Ready. Tap Mix!' : 'Pick one more friend.');
+        renderPot();
+    }
+    function mix2() {
+        var a = S.pot[0], b = S.pot[1], id, blend, isNew, key;
+        if (!a || !b) { potMsg('Pick two friends first. They always stay with you.'); return; }
+        ensureCtx();
+        key = recipeKey(a, b);
+        id = recipeByKey[key];
+        if (!id) {
+            var o = $('potOut');
+            o.classList.remove('nope'); void o.offsetWidth; o.classList.add('nope');
+            potMsg('Not this time. Nothing was lost. Try another pair!');
+            chime([76, 74]);
+            return;
+        }
+        blend = blendById[id];
+        isNew = !S.owned[id];
+        S.owned[id] = true;
+        S.found[key] = true;
+        saveProgress();
+        potOut(blend, isNew);
+        chime([84, 88, 91, 96]);
+        potMsg(isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.');
+    }
+
+    // ---- Collection: nest, Discovery book, blends you own
+    // The nest holds one egg at a time. An egg costs EGG_COST sparks. It hatches by itself after about HATCH_SECS
+    // seconds while the game is open and visible, and every tap on it warms it up (WARM_SHAVE seconds sooner). Waiting is optional.
+    function unownedBlends() {
+        var out = [], i, bl = w.NightliteBlends.chars;
+        for (i = 0; i < bl.length; i++) if (!S.owned[bl[i].id]) out.push(bl[i]);
+        return out;
+    }
+    function eggSvg(warm, emptyNest) {
+        var s = '<svg viewBox="0 0 100 132" aria-hidden="true" focusable="false">' +
+            '<ellipse cx="50" cy="116" rx="46" ry="13" fill="#7a5a3a"/><path d="M8 114 Q50 136 92 114" fill="none" stroke="#a98458" stroke-width="5" stroke-linecap="round"/>' +
+            '<path d="M14 108 Q30 120 50 120 Q72 120 88 106" fill="none" stroke="#c9a672" stroke-width="3" stroke-linecap="round"/>';
+        if (emptyNest) return s.replace('viewBox="0 0 100 132"', 'viewBox="0 96 100 40"') + '</svg>';
+        if (warm > 0.2) s += '<ellipse cx="50" cy="66" rx="' + (42 + warm * 8) + '" ry="' + (52 + warm * 8) + '" fill="#ffe9a0" opacity="' + (0.15 + warm * 0.3).toFixed(2) + '"/>';
+        s += '<path d="M50 8 C78 8 90 54 90 78 C90 100 72 114 50 114 C28 114 10 100 10 78 C10 54 22 8 50 8Z" fill="#fbf0d8" stroke="#d9b98a" stroke-width="3"/>' +
+            '<circle cx="34" cy="62" r="6" fill="#c9b6f2"/><circle cx="64" cy="48" r="5" fill="#f4b6cc"/><circle cx="58" cy="86" r="7" fill="#a8dcc4"/><circle cx="30" cy="92" r="4" fill="#f4b6cc"/><circle cx="72" cy="72" r="3.5" fill="#c9b6f2"/>' +
+            '<ellipse cx="38" cy="36" rx="7" ry="11" fill="#fff" opacity="0.5" transform="rotate(18 38 36)"/>';
+        if (warm > 0.55) s += '<path d="M30 62 L40 70 L46 60 L54 72 L62 62 L70 70" fill="none" stroke="#b8905c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+        if (warm > 0.8) s += '<path d="M40 70 L38 82 M54 72 L58 84" stroke="#b8905c" stroke-width="2.2" stroke-linecap="round"/>';
+        return s + '</svg>';
+    }
+    function nestWarmth() { return S.nest ? Math.max(0, Math.min(1, 1 - S.nest.left / HATCH_SECS)) : 0; }
+    function nestText() {
+        var n = Math.max(1, Math.ceil(S.nest.left));
+        return 'Tap the egg to warm it and it hatches sooner. Or just wait, about ' + n + ' second' + (n === 1 ? '' : 's') + '.';
+    }
+    function updateNestLive() {
+        if (S.screen !== 'collect' || !S.nest) return;
+        var f = $('nestFill'), t = $('nestText');
+        if (f) f.style.width = Math.round(nestWarmth() * 100) + '%';
+        if (t) t.textContent = nestText();
+    }
+    function renderNest() {
+        var box = $('nestBox'), r, e, m, f, b;
+        box.innerHTML = '';
+        if (S.reveal) {
+            r = el('div', 'reveal');
+            r.id = 'nestReveal';
+            if (S.reveal.id) {
+                var im = el('img'); im.src = imgSrc(charById[S.reveal.id]); im.alt = '';
+                r.appendChild(im);
+                r.appendChild(el('span', '', 'You hatched ' + charById[S.reveal.id].name + '!'));
+                r.appendChild(el('span', 'hint', 'Find it under Blends on any stage.'));
+            } else {
+                r.appendChild(el('span', '', '\u2728 Twinkle! You already have every blend, so your sparks came back.'));
+            }
+            box.appendChild(r);
+            if (S.reveal.id) burst(r);
+        }
+        if (S.nest) {
+            e = el('button', 'egg warm');
+            e.type = 'button'; e.id = 'eggBtn';
+            e.innerHTML = eggSvg(nestWarmth());
+            e.setAttribute('aria-label', 'Warm the egg');
+            e.onclick = warmEgg;
+            box.appendChild(e);
+            m = el('div', 'meter'); f = el('div', 'fill'); f.id = 'nestFill';
+            f.style.width = Math.round(nestWarmth() * 100) + '%';
+            m.appendChild(f);
+            box.appendChild(m);
+            var t = el('p', 'hint', nestText()); t.id = 'nestText';
+            box.appendChild(t);
+        } else {
+            e = el('div', 'egg empty');
+            e.innerHTML = eggSvg(0, true);
+            box.appendChild(e);
+            b = el('button', 'btn primary wide' + (S.sparks < EGG_COST ? ' soft' : ''));
+            b.type = 'button'; b.id = 'eggGet';
+            b.appendChild(el('span', 'ico', '\uD83E\uDD5A'));
+            b.appendChild(el('span', 'lbl', 'Egg (' + EGG_COST + ' \u2728)'));
+            b.setAttribute('aria-label', 'Get an egg for ' + EGG_COST + ' sparks');
+            b.onclick = getEgg;
+            box.appendChild(b);
+            box.appendChild(el('p', 'hint', S.sparks < EGG_COST ? 'An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free.' : 'Put an egg in the nest. It hatches a new blend friend.'));
+        }
+    }
+    function getEgg() {
+        if (S.nest) return;
+        if (S.sparks < EGG_COST) { toast('An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free!'); return; }
+        ensureCtx();
+        S.reveal = null;
+        S.sparks -= EGG_COST;
+        if (!unownedBlends().length) {
+            // every blend is already yours: a happy twinkle and the sparks come right back
+            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);
+            S.reveal = { id: null };
+            chime([84, 88, 91, 96, 91]);
+        } else {
+            S.nest = { left: HATCH_SECS };
+            nestSaveAcc = 0;
+            chime([72, 76]);
+        }
+        updateSparkUI(); saveProgress(); renderNest();
+    }
+    function warmEgg() {
+        if (!S.nest) return;
+        ensureCtx();
+        S.nest.left = Math.max(0, S.nest.left - WARM_SHAVE);
+        chime([79]);
+        if (S.nest.left <= 0) { hatch(); return; }
+        var e = $('eggBtn');
+        if (e) {
+            e.innerHTML = eggSvg(nestWarmth());
+            e.classList.remove('tapped'); void e.offsetWidth; e.classList.add('tapped');
+        }
+        updateNestLive();
+        saveProgress();
+    }
+    function hatch() {
+        var c = unownedBlends(), pick;
+        S.nest = null;
+        if (!c.length) {
+            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);     // nothing new to hatch: the sparks come back
+            S.reveal = { id: null };
+            chime([84, 88, 91, 96, 91]);
+            toast('Twinkle! You already have every blend. Your sparks came back.');
+        } else {
+            pick = c[Math.floor(Math.random() * c.length)];
+            S.owned[pick.id] = true;
+            S.reveal = { id: pick.id };
+            chime([84, 88, 91, 96]);
+            toast('Your egg hatched: ' + pick.name + '!');
+        }
+        updateSparkUI(); saveProgress();
+        if (S.screen === 'collect') renderCollect();
+        else if (S.screen === 'world') renderTiles();
+    }
+    function renderCollect() {
+        renderNest();
+        renderBook();
+        renderOwned();
+        updateSparkUI();
+    }
+    function faceCard(ch) {
+        var f = el('span', 'face');
+        if (ch) {
+            var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
+            f.appendChild(im);
+            f.appendChild(el('span', 'fn', ch.name));
+        } else {
+            f.appendChild(el('span', 'qm', '?'));
+            f.appendChild(el('span', 'fn', '?'));
+        }
+        return f;
+    }
+    function renderBook() {
+        var box = $('bookBox'), bl = w.NightliteBlends.chars, i, ch, key, found, r;
+        box.innerHTML = '';
+        for (i = 0; i < bl.length; i++) {
+            ch = bl[i];
+            key = recipeKey(ch.blend[0], ch.blend[1]);
+            found = !!S.found[key];
+            r = el('div', 'recipe' + (found ? ' known' : ' unknown'));
+            r.setAttribute('data-blend', ch.id);
+            r.appendChild(faceCard(found ? charById[ch.blend[0]] : null));
+            r.appendChild(el('span', 'op', '+'));
+            r.appendChild(faceCard(found ? charById[ch.blend[1]] : null));
+            r.appendChild(el('span', 'op', '='));
+            r.appendChild(faceCard((found || S.owned[ch.id]) ? ch : null));
+            r.setAttribute('aria-label', found ? charById[ch.blend[0]].name + ' plus ' + charById[ch.blend[1]].name + ' makes ' + ch.name : 'A recipe not found yet');
+            box.appendChild(r);
+        }
+    }
+    function renderOwned() {
+        var box = $('ownedBox'), bl = w.NightliteBlends.chars, i, ch, c, n = 0;
+        box.innerHTML = '';
+        for (i = 0; i < bl.length; i++) {
+            ch = bl[i];
+            c = el('div', 'ocard');
+            if (S.owned[ch.id]) {
+                n++;
+                var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
+                c.appendChild(im);
+                c.appendChild(el('span', 'nm', ch.name));
+            } else {
+                c.appendChild(el('span', 'qm', '?'));
+                c.appendChild(el('span', 'nm', '?'));
+            }
+            box.appendChild(c);
+        }
+        $('ownedCount').textContent = n + ' of ' + bl.length;
     }
 
     // ---------------------------------------------------------------- init
@@ -573,6 +1058,17 @@
                 charById[worlds[id].chars[j].id] = worlds[id].chars[j];
             }
         }
+        var bl = (w.NightliteBlends && w.NightliteBlends.chars) || [];
+        for (j = 0; j < bl.length; j++) {
+            bl[j].world = 'blends';
+            bl[j].isBlend = true;
+            bl[j].bpm = charById[bl[j].blend[0]] ? charById[bl[j].blend[0]].bpm : 90;     // tempo of the first parent's world
+            charById[bl[j].id] = bl[j];
+            blendById[bl[j].id] = bl[j];
+            recipeByKey[recipeKey(bl[j].blend[0], bl[j].blend[1])] = bl[j].id;
+        }
+        loadProgress();
+        updateSparkUI();
         var vol = parseInt(store('nightlite.vol'), 10);
         if (vol >= 0 && vol <= 100) { S.vol = vol / 100; $('volRange').value = vol; } else { S.vol = 0.7; }
         applyTheme(DOOR_THEME);
@@ -581,6 +1077,11 @@
         showScreen('doors');
 
         $('doorsBtn').onclick = leaveWorld;
+        $('backBtn3').onclick = goBack;
+        $('backBtn4').onclick = goBack;
+        $('mixBtn').onclick = mix2;
+        $('potA').onclick = function () { if (S.pot[0]) potPick(S.pot[0]); };
+        $('potB').onclick = function () { if (S.pot[1]) potPick(S.pot[1]); };
         $('muteBtn').onclick = function () { setMuted(!S.muted); };
         $('volRange').oninput = function () {
             S.vol = this.value / 100;
@@ -591,15 +1092,29 @@
         $('resetBtn').onclick = clearAll;
         $('saveBtn').onclick = saveMix;
         $('loadBtn').onclick = loadMix;
+        var acts = d.querySelectorAll('[data-act]'), ai;
+        for (ai = 0; ai < acts.length; ai++) {
+            (function (b) {
+                var act = b.getAttribute('data-act');
+                b.onclick = function () { doAct(act); };
+            })(acts[ai]);
+        }
+        var lastTick = Date.now();
+        w.setInterval(function () {
+            var now = Date.now(), dt = (now - lastTick) / 1000;
+            lastTick = now;
+            tick(Math.max(0, Math.min(2, dt)));
+        }, 1000);
         d.addEventListener('keydown', onKey);
         w.addEventListener('resize', function () { if (S.screen === 'world') drawConstellation(); });
         d.addEventListener('visibilitychange', function () {
             if (!ctx) return;
             try { if (d.hidden) ctx.suspend(); else if (S.screen === 'world') ctx.resume(); } catch (e) {}
         });
+        d.addEventListener('visibilitychange', function () { if (d.hidden) saveProgress(); });
 
         // Test/debug hook (not used by the UI).
-        w.Nightlite = { state: S, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld };
+        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById };
     }
 
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', init); else init();

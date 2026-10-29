@@ -3,6 +3,7 @@
  * make(spec, horror) returns an SVG string (viewBox 0 0 100 120).
  * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush|moon|star|comet|planet), color, eyes, mouth, acc, accColor,
  *        acc2, acc2Color, cheeks, patch, mark, ring}
+ * Accessories added for the blends (milestone 3): ringband (a thin ring around the body, back half drawn behind).
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {
@@ -198,6 +199,9 @@
                     '<circle cx="93" cy="48" r="15" fill="' + c + '" opacity="0.28"/><path d="' + starPath(93, 48, 11, 5, 5) + '" fill="' + c + '" stroke="#fff6fb" stroke-width="1.6" stroke-linejoin="round"/>';
             case 'sparkles':
                 return sparkle(10, 24, 6, c) + sparkle(90, 14, 5, c) + sparkle(8, 82, 4, c) + sparkle(30, 6, 3.5, c);
+            case 'ringband':
+                // front half of a thin ring that circles the body (the back half is drawn behind in accBack)
+                return '<g transform="rotate(-10 50 ' + (body.y + 14) + ')"><path d="M2 ' + (body.y + 14) + ' A48 11 0 0 0 98 ' + (body.y + 14) + '" fill="none" stroke="' + c + '" stroke-width="6" stroke-linecap="round"/></g>';
             case 'cowhat':
                 return '<path d="M30 ' + (t + 5) + ' C30 ' + (t - 16) + ' 38 ' + (t - 18) + ' 43 ' + (t - 14) + ' Q50 ' + (t - 8) + ' 57 ' + (t - 14) + ' C62 ' + (t - 18) + ' 70 ' + (t - 16) + ' 70 ' + (t + 5) + 'Z" fill="' + c + '"/>' +
                     '<path d="M13 ' + (t - 2) + ' Q18 ' + (t + 8) + ' 50 ' + (t + 8) + ' Q82 ' + (t + 8) + ' 87 ' + (t - 2) + ' Q80 ' + (t + 16) + ' 50 ' + (t + 15) + ' Q20 ' + (t + 16) + ' 13 ' + (t - 2) + 'Z" fill="' + c + '"/>' +
@@ -237,6 +241,8 @@
                 return '<path d="M32 74 C6 66 -2 100 16 108 C32 114 44 98 32 94" stroke="' + c + '" stroke-width="16" fill="none" stroke-linecap="round"/>' +
                     '<path d="M32 74 C6 66 -2 100 16 108 C32 114 44 98 32 94" stroke="' + mix(color || '#ff77aa', '#ffffff', 0.55) + '" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
                     sparkle(6, 54, 4, c) + sparkle(60, 112, 3.5, c);
+            case 'ringband':
+                return '<g transform="rotate(-10 50 ' + (body.y + 14) + ')"><path d="M2 ' + (body.y + 14) + ' A48 11 0 0 1 98 ' + (body.y + 14) + '" fill="none" stroke="' + mix(color || '#ff77aa', '#6a5aa8', 0.35) + '" stroke-width="6" stroke-linecap="round"/></g>';
             case 'windkey':
                 return '<path d="M80 90 L94 90" stroke="#b9772e" stroke-width="3.5" stroke-linecap="round"/><path d="M94 90 C86 78 100 76 94 90 C86 102 100 104 94 90Z" fill="#d49a48" stroke="#b9772e" stroke-width="1.5"/>';
             default:

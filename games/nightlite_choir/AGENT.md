@@ -1,5 +1,6 @@
 # Nightlite Choir+: agent notes
 
+- 2026-10-29: milestone 3 built (v0.4.0): sparks (free trickle, Wish button), eggs and nest, Mixing pot, Discovery book, Collection screen, 6 blends (Mossweave, Halohum, Dewglint, Trotleaf, Tockmoon, Twirlwisp), save key `nightlite.save` v4. Name checks in ASSET_LOG.md (run by a research helper). Tested with Playwright (390x844 over http, 360x640 over file://). Next: milestone 4 (polish). Wayne to confirm the blend names and the numbers (5 sparks per egg, 20 s hatch, 1 spark per 15 s, Wish +3).
 - 2026-10-29: milestone 2b built (v0.3.0): Star Observatory world (Dozemoon, Glintwand, Twirltail, Ringhum), world switcher chips, all doors open, star-map lines. Tested with Playwright (390x844, 360x640, http and file://). Next: milestone 3 (eggs, sparks, combine). Wayne to confirm the Observatory names. Swooshlet was dropped (too close to the Nike swoosh).
 - 2026-10-28: milestone 2a built (v0.2.0): Toy Attic world, 4 original creatures, shared stage across worlds, both doors open. Tested with Playwright (390x844, 360x640, file://). Next: Star Observatory (milestone 2b). Wayne to confirm the Attic names.
 - 2026-10-28: design and guardrails written.
