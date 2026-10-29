@@ -291,7 +291,7 @@
                     var pc = packColor(ch);
                     b.style.setProperty('--pk', pc);
                     b.style.setProperty('--pkt', lum(pc) > 0.62 ? '#161616' : '#ffffff');
-                    b.appendChild(el('span', 'pk', packLabel(ch)));
+                    b.appendChild(el('span', packLabel(ch).length > 11 ? 'pk long' : 'pk', packLabel(ch)));
                 }
                 var im = el('img', ch.img ? 'photo' : '');
                 im.src = imgSrc(ch); im.alt = ''; im.draggable = false;

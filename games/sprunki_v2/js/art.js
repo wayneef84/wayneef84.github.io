@@ -2,6 +2,7 @@
  * Sprunki v2 - character art generator (ES5).
  * make(spec, horror) returns an SVG string (viewBox 0 0 100 120).
  * spec: {body, color, eyes, mouth, acc, accColor, cheeks}
+ * bodies: round tall drop wide square ghost heart. Bubblegum Pop adds acc lightstick, horn, gumball and sparkle.
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {
@@ -27,6 +28,7 @@
         drop: { y: 68, d: function (c) { return '<path d="M50 12 C80 48 88 70 80 94 C74 114 26 114 20 94 C12 70 20 48 50 12Z" fill="' + c + '"/>'; }, top: 14 },
         wide: { y: 70, d: function (c) { return '<ellipse cx="50" cy="78" rx="44" ry="34" fill="' + c + '"/>'; }, top: 46 },
         square: { y: 64, d: function (c) { return '<rect x="16" y="30" width="68" height="82" rx="18" fill="' + c + '"/>'; }, top: 30 },
+        heart: { y: 62, d: function (c) { return '<path d="M50 108 C6 76 4 40 27 28 C40 22 50 30 50 41 C50 30 60 22 73 28 C96 40 94 76 50 108Z" fill="' + c + '"/>'; }, top: 26 },
         ghost: { y: 56, d: function (c) { return '<path d="M20 112 L20 54 C20 26 36 14 50 14 C64 14 80 26 80 54 L80 112 L69 102 L59 112 L50 102 L41 112 L31 102Z" fill="' + c + '"/>'; }, top: 14 }
     };
 
@@ -102,6 +104,26 @@
                 return '<path d="M28 ' + (t + 14) + ' Q50 ' + (t - 12) + ' 72 ' + (t + 14) + ' Q64 ' + (t + 8) + ' 58 ' + (t + 16) + ' Q50 ' + (t + 8) + ' 42 ' + (t + 16) + ' Q36 ' + (t + 8) + ' 28 ' + (t + 14) + 'Z" fill="' + dim('#ffffff', horror) + '"/>';
             case 'tophat':
                 return '<rect x="30" y="' + (t - 16) + '" width="40" height="26" rx="3" fill="#0b0b10"/><rect x="22" y="' + (t + 6) + '" width="56" height="7" rx="3" fill="#0b0b10"/><rect x="30" y="' + (t + 1) + '" width="40" height="5" fill="' + dim('#7a5cd1', horror) + '"/>';
+            case 'lightstick':
+                // glow lightstick held at the right side: handle, glowing heart-star orb and a soft halo
+                return '<path d="M84 ' + (body.y + 34) + ' L93 ' + (body.y - 4) + '" stroke="' + dim('#ffffff', horror) + '" stroke-width="4" stroke-linecap="round"/>' +
+                    '<circle cx="94" cy="' + (body.y - 12) + '" r="13" fill="' + c + '" opacity="0.35"/>' +
+                    '<circle cx="94" cy="' + (body.y - 12) + '" r="7.5" fill="' + c + '"/><circle cx="92" cy="' + (body.y - 14) + '" r="2.4" fill="#fff" opacity="0.8"/>';
+            case 'horn':
+                // unicorn: golden twist horn plus a soft pastel mane (pinks and lilac, no rainbow)
+                return '<circle cx="22" cy="' + (t + 14) + '" r="9" fill="' + dim('#e9c9ff', horror) + '"/><circle cx="17" cy="' + (t + 28) + '" r="9" fill="' + dim('#ffc2e0', horror) + '"/><circle cx="19" cy="' + (t + 42) + '" r="8" fill="' + dim('#d7c2ff', horror) + '"/>' +
+                    '<path d="M43 ' + (t + 6) + ' L50 ' + (t - 26) + ' L57 ' + (t + 6) + 'Z" fill="' + dim('#ffe08a', horror) + '"/><path d="M45 ' + (t - 2) + ' L56 ' + (t - 8) + ' M44 ' + (t + 3) + ' L57 ' + (t - 3) + ' M47 ' + (t - 12) + ' L54 ' + (t - 16) + '" stroke="' + c + '" stroke-width="2.2"/>';
+            case 'gumball':
+                // bubblegum machine dome with little gumballs
+                return '<rect x="30" y="' + (t - 2) + '" width="40" height="7" rx="3" fill="' + dim('#ffffff', horror) + '"/>' +
+                    '<path d="M28 ' + (t - 1) + ' A22 22 0 0 1 72 ' + (t - 1) + 'Z" fill="#ffffff" opacity="0.55"/>' +
+                    '<circle cx="40" cy="' + (t - 8) + '" r="6" fill="' + c + '"/><circle cx="54" cy="' + (t - 9) + '" r="6" fill="' + dim('#c9a8ff', horror) + '"/><circle cx="48" cy="' + (t - 18) + '" r="6" fill="' + dim('#a8f0d0', horror) + '"/><circle cx="62" cy="' + (t - 7) + '" r="5" fill="' + dim('#ffe08a', horror) + '"/>';
+            case 'sparkle':
+                for (i = 0; i < 3; i++) {
+                    var sx = 30 + i * 20, sy = t - 6 - (i === 1 ? 10 : 0), sr = i === 1 ? 9 : 6;
+                    s += '<path d="M' + sx + ' ' + (sy - sr) + ' L' + (sx + sr * 0.3) + ' ' + (sy - sr * 0.3) + ' L' + (sx + sr) + ' ' + sy + ' L' + (sx + sr * 0.3) + ' ' + (sy + sr * 0.3) + ' L' + sx + ' ' + (sy + sr) + ' L' + (sx - sr * 0.3) + ' ' + (sy + sr * 0.3) + ' L' + (sx - sr) + ' ' + sy + ' L' + (sx - sr * 0.3) + ' ' + (sy - sr * 0.3) + 'Z" fill="' + (i === 1 ? c : dim('#ffe08a', horror)) + '"/>';
+                }
+                return s;
             default:
                 return '';
         }
