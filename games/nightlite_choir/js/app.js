@@ -29,7 +29,8 @@
     var DATA_KEY = 'nightlite.save';
 
     var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
-              sparks: 0, owned: {}, found: {}, nest: null, playSecs: 0 };
+              sparks: 0, owned: {}, found: {}, nest: null, playSecs: 0,
+              view: 'garden', back: [], pot: [null, null], reveal: null };
     var history = [];
     var ctx = null, mix = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -324,7 +325,7 @@
         for (i = 0; i < WORLD_ORDER.length; i++) {
             (function (wd) {
                 if (!wd) return;
-                var on = (wd === S.world);
+                var on = (wd.id === S.view);
                 var b = el('button', 'chip' + (on ? ' on' : ''));
                 b.type = 'button';
                 b.id = 'chip-' + wd.id;
@@ -332,14 +333,39 @@
                 b.appendChild(el('span', 'cn', wd.chip || wd.short));
                 b.setAttribute('aria-pressed', on ? 'true' : 'false');
                 b.setAttribute('aria-label', 'Show friends from ' + wd.label);
-                b.onclick = function () { if (wd !== S.world) setWorldView(wd); };
+                b.onclick = function () { if (wd.id !== S.view) setWorldView(wd); };
                 box.appendChild(b);
             })(w.NightliteWorlds[WORLD_ORDER[i]]);
         }
+        var bb = el('button', 'chip' + (S.view === 'blends' ? ' on' : ''));
+        bb.type = 'button';
+        bb.id = 'chip-blends';
+        bb.appendChild(el('span', 'ci', w.NightliteBlends.icon));
+        bb.appendChild(el('span', 'cn', w.NightliteBlends.chip));
+        bb.setAttribute('aria-pressed', S.view === 'blends' ? 'true' : 'false');
+        bb.setAttribute('aria-label', 'Show your blend friends');
+        bb.onclick = function () { if (S.view !== 'blends') { S.view = 'blends'; renderTiles(); } };
+        box.appendChild(bb);
+    }
+    // The friends shown in the tray: the shown world's four, or the blends you own
+    function viewList() {
+        if (S.view === 'blends') return ownedBlendChars();
+        return S.world.chars;
+    }
+    function ownedBlendChars() {
+        var out = [], i, bl = w.NightliteBlends.chars;
+        for (i = 0; i < bl.length; i++) if (S.owned[bl[i].id]) out.push(bl[i]);
+        return out;
     }
     function renderTiles() {
+        var box = $('tiles'), list = viewList(), isBl = (S.view === 'blends'), note = $('trayNote');
         renderChips();
-        fillTiles($('tiles'), S.world.chars, 1);
+        box.className = 'tiles' + (isBl ? ' six' : '');
+        fillTiles(box, list, 1);
+        if (isBl && !list.length) {
+            note.textContent = 'Blends you find show up here. Try the Mixing pot or an egg!';
+            note.hidden = false;
+        } else { note.hidden = true; }
     }
     function fillTiles(box, list, firstNum) {
         var i;
@@ -373,7 +399,7 @@
     function afterChange() { renderStage(); renderTiles(); updateButtons(); }
 
     // ---------------------------------------------------------------- history / actions
-    function snapshot() { return { world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
+    function snapshot() { return { v: SAVE_VERSION, world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
     function setBpm(b) {
         S.bpm = b;
         d.documentElement.style.setProperty('--beat', (60 / b) + 's');
@@ -387,6 +413,7 @@
 
     function addChar(ch, slotIdx) {
         if (onStageIdx(ch.id) >= 0) return;
+        if (ch.isBlend && !S.owned[ch.id]) return;
         var idx = (slotIdx === undefined || slotIdx === null) ? firstEmpty() : slotIdx;
         if (idx < 0) {
             var st = $('stage'); st.classList.add('shake');
@@ -451,7 +478,9 @@
         if (raw) { try { snap = JSON.parse(raw); } catch (e) { snap = null; } }
         if (!snap || !(snap.slots instanceof Array)) snap = memMix;
         if (!snap) { toast('No saved mix yet. Make one and tap Save.'); return; }
-        for (i = 0; i < snap.slots.length; i++) if (snap.slots[i] && !charById[snap.slots[i]]) snap.slots[i] = null;
+        for (i = 0; i < snap.slots.length; i++) {
+            if (snap.slots[i] && (!charById[snap.slots[i]] || (charById[snap.slots[i]].isBlend && !S.owned[snap.slots[i]]))) snap.slots[i] = null;
+        }
         if (!(snap.bpm > 0)) {
             snap.bpm = S.world.bpm;       // older saves have no tempo: use the tempo of the first creature
             for (i = 0; i < snap.slots.length; i++) if (snap.slots[i]) { snap.bpm = charById[snap.slots[i]].bpm; break; }
@@ -631,16 +660,20 @@
         }
     }
     function showScreen(name) {
-        S.screen = name === 'doors' ? 'doors' : 'world';
+        var isWorld = !(name === 'doors' || name === 'collect' || name === 'pot');
+        S.screen = isWorld ? 'world' : name;
         $('screenDoors').hidden = (name !== 'doors');
-        $('screenWorld').hidden = (name === 'doors');
-        d.body.className = name === 'doors' ? 'screen-doors' : 'screen-world world-' + name;
+        $('screenWorld').hidden = !isWorld;
+        $('screenCollect').hidden = (name !== 'collect');
+        $('screenPot').hidden = (name !== 'pot');
+        d.body.className = isWorld ? 'screen-world world-' + name : 'screen-' + name;
         $('toast').className = 'toast';
         w.scrollTo(0, 0);
     }
     // Show a world's look and friends. The stage, its sound and the undo history are not touched.
     function setWorldView(world) {
         S.world = world;
+        S.view = world.id;
         if (!firstFilled()) setBpm(world.bpm);      // a stage that already has creatures keeps its tempo
         applyTheme(world.theme);
         buildGlow(world.glow ? world.glow.count : 12, world.glow ? world.glow.kind : '');
@@ -654,6 +687,7 @@
         if (!world) return;
         S.screen = 'world';
         showScreen(id);
+        S.back = [];
         history = [];
         setWorldView(world);
         if (ensureCtxIfRunning()) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
@@ -661,6 +695,7 @@
     function ensureCtxIfRunning() { return !!ctx; }
     function leaveWorld() {
         stopAllVoices();      // stage is kept, it restarts when you come back
+        S.back = [];
         applyTheme(DOOR_THEME);
         buildGlow(10);
         showScreen('doors');
@@ -672,6 +707,7 @@
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key, tag = d.activeElement ? d.activeElement.tagName : '';
         if (tag === 'INPUT' && k !== 'Escape') return;
+        if (S.screen === 'collect' || S.screen === 'pot') { if (k === 'Escape') goBack(); return; }
         if (S.screen !== 'world') return;
         var lk = k.toLowerCase(), n;
         if (k === 'Escape') leaveWorld();
@@ -680,15 +716,201 @@
         else if (lk === 'r') clearAll();
         else if (lk === 's') saveMix();
         else if (lk === 'l') loadMix();
-        else if (k >= '1' && k <= '4') {
+        else if (k >= '1' && k <= '6') {
             n = parseInt(k, 10) - 1;
-            if (S.world.chars[n]) tileAction(S.world.chars[n]);
+            var vl = viewList();
+            if (vl[n]) tileAction(vl[n]);
         }
     }
 
+    // ---------------------------------------------------------------- screens: Collection and Mixing pot
+    function openScreen(name) {
+        var from = S.screen;
+        if (from === name) return;
+        S.back.push(from);
+        if (from === 'world') stopAllVoices();      // like leaving a world: the stage is kept, the sound pauses
+        if (from === 'world' || from === 'doors') { applyTheme(DOOR_THEME); buildGlow(10); }
+        showScreen(name);
+        if (name === 'collect') renderCollect(); else renderPot();
+    }
+    function resumeWorld() {
+        showScreen(S.world.id);
+        setWorldView(S.world);
+        if (ctx) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
+    }
+    function goBack() {
+        var to = S.back.pop() || 'doors';
+        if (to === 'world') { resumeWorld(); return; }
+        if (to === 'doors') { showScreen('doors'); return; }
+        showScreen(to);
+        if (to === 'collect') renderCollect(); else renderPot();
+    }
     function doAct(act) {
-        if (act === 'wish') wish();
-        else toast('Coming soon.');
+        if (act === 'wish') { wish(); if (S.screen === 'collect') renderNest(); }
+        else if (act === 'collect') openScreen('collect');
+        else if (act === 'pot') openScreen('pot');
+    }
+
+    function burst(host) {
+        var b = el('span', 'burst'), i, p, a, r;
+        for (i = 0; i < 14; i++) {
+            p = el('i');
+            a = (i / 14) * 6.2832; r = 50 + (i % 3) * 22;
+            p.style.setProperty('--dx', Math.round(Math.cos(a) * r) + 'px');
+            p.style.setProperty('--dy', Math.round(Math.sin(a) * r) + 'px');
+            p.style.animationDelay = ((i % 4) * 0.05) + 's';
+            b.appendChild(p);
+        }
+        host.appendChild(b);
+        w.setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 1700);
+    }
+
+    // ---- Mixing pot: pick two base friends, tap Mix. Parents are never used up.
+    function baseChars() {
+        var out = [], i, j, wd;
+        for (i = 0; i < WORLD_ORDER.length; i++) {
+            wd = w.NightliteWorlds[WORLD_ORDER[i]];
+            for (j = 0; j < wd.chars.length; j++) out.push(wd.chars[j]);
+        }
+        return out;
+    }
+    function potSlot(id, idx) {
+        var b = $(idx ? 'potB' : 'potA'), ch = id ? charById[id] : null;
+        b.innerHTML = '';
+        b.className = 'pslot' + (ch ? ' has' : '');
+        if (ch) {
+            var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
+            b.appendChild(im);
+            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend: ' + ch.name + '. Tap to take out.');
+        } else {
+            b.appendChild(el('span', 'q', '?'));
+            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend, empty');
+        }
+    }
+    function potOut(blend, isNew) {
+        var o = $('potOut');
+        o.innerHTML = '';
+        o.className = 'pslot bowl';
+        if (blend) {
+            var im = el('img'); im.src = imgSrc(blend); im.alt = blend.name;
+            o.appendChild(im);
+            void o.offsetWidth;
+            o.classList.add('made');
+            burst(o);
+        } else {
+            o.appendChild(el('span', 'q', '?'));
+        }
+    }
+    function potMsg(t) { $('potMsg').textContent = t; }
+    function renderPot() {
+        var box = $('potTiles'), list = baseChars(), i;
+        potSlot(S.pot[0], 0); potSlot(S.pot[1], 1);
+        box.innerHTML = '';
+        for (i = 0; i < list.length; i++) {
+            (function (ch) {
+                var on = (S.pot[0] === ch.id || S.pot[1] === ch.id);
+                var b = el('button', 'ptile' + (on ? ' picked' : ''));
+                b.type = 'button';
+                b.id = 'ptile-' + ch.id;
+                var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
+                b.appendChild(im);
+                b.appendChild(el('span', 'nm', ch.name));
+                b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                b.setAttribute('aria-label', ch.name + (on ? ', in the pot. Tap to take out.' : '. Tap to put in the pot.'));
+                b.onclick = function () { potPick(ch.id); };
+                box.appendChild(b);
+            })(list[i]);
+        }
+    }
+    function potPick(id) {
+        var k = S.pot.indexOf ? S.pot.indexOf(id) : (S.pot[0] === id ? 0 : (S.pot[1] === id ? 1 : -1));
+        if (k >= 0) S.pot[k] = null;
+        else if (!S.pot[0]) S.pot[0] = id;
+        else if (!S.pot[1]) S.pot[1] = id;
+        else { S.pot[0] = S.pot[1]; S.pot[1] = id; }
+        potOut(null);
+        potMsg(S.pot[0] && S.pot[1] ? 'Ready. Tap Mix!' : 'Pick one more friend.');
+        renderPot();
+    }
+    function mix2() {
+        var a = S.pot[0], b = S.pot[1], id, blend, isNew, key;
+        if (!a || !b) { potMsg('Pick two friends first. They always stay with you.'); return; }
+        ensureCtx();
+        key = recipeKey(a, b);
+        id = recipeByKey[key];
+        if (!id) {
+            var o = $('potOut');
+            o.classList.remove('nope'); void o.offsetWidth; o.classList.add('nope');
+            potMsg('Not this time. Nothing was lost. Try another pair!');
+            chime([76, 74]);
+            return;
+        }
+        blend = blendById[id];
+        isNew = !S.owned[id];
+        S.owned[id] = true;
+        S.found[key] = true;
+        saveProgress();
+        potOut(blend, isNew);
+        chime([84, 88, 91, 96]);
+        potMsg(isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.');
+    }
+
+    // ---- Collection: nest, Discovery book, blends you own
+    function renderNest() { }
+    function renderCollect() {
+        renderNest();
+        renderBook();
+        renderOwned();
+        updateSparkUI();
+    }
+    function faceCard(ch) {
+        var f = el('span', 'face');
+        if (ch) {
+            var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
+            f.appendChild(im);
+            f.appendChild(el('span', 'fn', ch.name));
+        } else {
+            f.appendChild(el('span', 'qm', '?'));
+            f.appendChild(el('span', 'fn', '?'));
+        }
+        return f;
+    }
+    function renderBook() {
+        var box = $('bookBox'), bl = w.NightliteBlends.chars, i, ch, key, found, r;
+        box.innerHTML = '';
+        for (i = 0; i < bl.length; i++) {
+            ch = bl[i];
+            key = recipeKey(ch.blend[0], ch.blend[1]);
+            found = !!S.found[key];
+            r = el('div', 'recipe' + (found ? ' known' : ' unknown'));
+            r.setAttribute('data-blend', ch.id);
+            r.appendChild(faceCard(found ? charById[ch.blend[0]] : null));
+            r.appendChild(el('span', 'op', '+'));
+            r.appendChild(faceCard(found ? charById[ch.blend[1]] : null));
+            r.appendChild(el('span', 'op', '='));
+            r.appendChild(faceCard((found || S.owned[ch.id]) ? ch : null));
+            r.setAttribute('aria-label', found ? charById[ch.blend[0]].name + ' plus ' + charById[ch.blend[1]].name + ' makes ' + ch.name : 'A recipe not found yet');
+            box.appendChild(r);
+        }
+    }
+    function renderOwned() {
+        var box = $('ownedBox'), bl = w.NightliteBlends.chars, i, ch, c, n = 0;
+        box.innerHTML = '';
+        for (i = 0; i < bl.length; i++) {
+            ch = bl[i];
+            c = el('div', 'ocard');
+            if (S.owned[ch.id]) {
+                n++;
+                var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
+                c.appendChild(im);
+                c.appendChild(el('span', 'nm', ch.name));
+            } else {
+                c.appendChild(el('span', 'qm', '?'));
+                c.appendChild(el('span', 'nm', '?'));
+            }
+            box.appendChild(c);
+        }
+        $('ownedCount').textContent = n + ' of ' + bl.length;
     }
 
     // ---------------------------------------------------------------- init
@@ -720,6 +942,11 @@
         showScreen('doors');
 
         $('doorsBtn').onclick = leaveWorld;
+        $('backBtn3').onclick = goBack;
+        $('backBtn4').onclick = goBack;
+        $('mixBtn').onclick = mix2;
+        $('potA').onclick = function () { if (S.pot[0]) potPick(S.pot[0]); };
+        $('potB').onclick = function () { if (S.pot[1]) potPick(S.pot[1]); };
         $('muteBtn').onclick = function () { setMuted(!S.muted); };
         $('volRange').oninput = function () {
             S.vol = this.value / 100;

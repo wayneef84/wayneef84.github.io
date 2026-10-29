@@ -60,7 +60,66 @@
         <section class="bar tray" aria-label="Creatures">
             <div id="worldChips" class="chips" role="group" aria-label="Choose whose friends to show"></div>
             <div id="tiles" class="tiles"></div>
+            <p id="trayNote" class="tray-note" hidden></p>
         </section>
+    </section>
+
+    <!-- Screen 3: the Collection (sparks, nest, Discovery book, blends you own). Filled in by js/app.js -->
+    <section id="screenCollect" class="screen" aria-label="Collection" hidden>
+        <header class="bar top">
+            <a class="btn" href="../../index.html" id="homeBtn3">&#127968; Home</a>
+            <h1>Collection</h1>
+            <button class="btn" id="backBtn3" type="button" aria-label="Go back">&#8592; Back</button>
+        </header>
+        <main class="coll-wrap">
+            <section class="card" aria-label="Sparks">
+                <h2>Sparks</h2>
+                <div class="card-row">
+                    <span class="sparkpill" role="status" aria-label="Your sparks"><span class="ico" aria-hidden="true">&#10024;</span><span class="sparknum" data-spark>0</span></span>
+                    <button class="btn primary" type="button" data-act="wish" aria-label="Wish on a star for free sparks"><span class="ico">&#127776;</span><span class="lbl">Wish on a star</span></button>
+                </div>
+                <p class="hint">Sparks trickle in while friends sing on the stage. Wishing is always free, any time.</p>
+            </section>
+            <section class="card" aria-label="Nest">
+                <h2>Nest</h2>
+                <div id="nestBox" class="nest"></div>
+            </section>
+            <section class="card" aria-label="Mixing pot">
+                <h2>Mixing pot</h2>
+                <p class="hint">Pick two friends and mix them. Your friends always stay with you.</p>
+                <button class="btn primary wide" type="button" data-act="pot"><span class="ico">&#129379;</span><span class="lbl">Open the Mixing pot</span></button>
+            </section>
+            <section class="card" aria-label="Discovery book">
+                <h2>Discovery book</h2>
+                <div id="bookBox" class="book"></div>
+            </section>
+            <section class="card" aria-label="My blends">
+                <h2>My blends <span id="ownedCount" class="count"></span></h2>
+                <div id="ownedBox" class="owned"></div>
+            </section>
+        </main>
+    </section>
+
+    <!-- Screen 4: the Mixing pot -->
+    <section id="screenPot" class="screen" aria-label="Mixing pot" hidden>
+        <header class="bar top">
+            <a class="btn" href="../../index.html" id="homeBtn4">&#127968; Home</a>
+            <h1>Mixing pot</h1>
+            <button class="btn" id="backBtn4" type="button" aria-label="Go back">&#8592; Back</button>
+        </header>
+        <main class="coll-wrap">
+            <p class="lead">Pick two friends, then tap Mix.</p>
+            <div class="pot-row">
+                <button class="pslot" id="potA" type="button" aria-label="First friend, empty"><span class="q">?</span></button>
+                <span class="op" aria-hidden="true">+</span>
+                <button class="pslot" id="potB" type="button" aria-label="Second friend, empty"><span class="q">?</span></button>
+                <span class="op" aria-hidden="true">=</span>
+                <div class="pslot bowl" id="potOut" aria-live="polite"><span class="q">?</span></div>
+            </div>
+            <button class="btn primary mixbtn" id="mixBtn" type="button"><span class="ico">&#10024;</span><span class="lbl">Mix</span></button>
+            <p id="potMsg" class="potmsg" role="status" aria-live="polite">Nothing is used up. Try any two!</p>
+            <div id="potTiles" class="ptiles"></div>
+        </main>
     </section>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
