@@ -6,7 +6,7 @@
 - [x] Garden creature names confirmed (the bush creature was renamed from a hedgehog-like name to Shrublet, 2026-10-28)
 - [x] Milestone 2a: Toy Attic world, 4 creatures, shared stage across worlds (v0.2.0)
 - [x] Toy Attic names settled (Clopsy, Skeinie, Cogwick, Fluffhorn; two were renamed on 2026-10-28 to stay clear of existing names)
-- [ ] Milestone 2b: Star Observatory world, 4 more creatures (name checks for each)
-- [ ] Milestone 3: eggs, sparks, combine (6 blends)
+- [x] Milestone 2b: Star Observatory world, 4 more creatures, world switcher (Dozemoon, Glintwand, Twirltail, Ringhum; name checks in ASSET_LOG.md) (v0.3.0)
+- [ ] Next, Milestone 3: eggs, sparks, combine (6 blends)
 - [ ] Milestone 4: polish, tests, docs, final catalog update
 - [ ] Possible later: pause button, more than 6 slots, spooky night mode

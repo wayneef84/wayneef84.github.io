@@ -1,8 +1,8 @@
 /**
  * Nightlite Choir+ - character art generator (ES5).
  * make(spec, horror) returns an SVG string (viewBox 0 0 100 120).
- * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush), color, eyes, mouth, acc, accColor,
- *        acc2, acc2Color, cheeks, patch, mark}
+ * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush|moon|star|comet|planet), color, eyes, mouth, acc, accColor,
+ *        acc2, acc2Color, cheeks, patch, mark, ring}
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {
@@ -21,6 +21,20 @@
         return toHex([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
     }
     function dim(c, horror) { return horror ? mix(c, '#232338', 0.68) : c; }
+
+    function starPath(cx, cy, R, r, n) {
+        var p = '', i, a, rr;
+        for (i = 0; i < n * 2; i++) {
+            a = -1.5708 + i * Math.PI / n;
+            rr = i % 2 ? r : R;
+            p += (i ? ' L' : 'M') + (cx + Math.cos(a) * rr).toFixed(1) + ' ' + (cy + Math.sin(a) * rr).toFixed(1);
+        }
+        return p + 'Z';
+    }
+    function sparkle(cx, cy, r, fill) {
+        return '<path d="M' + cx + ' ' + (cy - r) + ' Q' + (cx + r * 0.2) + ' ' + (cy - r * 0.2) + ' ' + (cx + r) + ' ' + cy + ' Q' + (cx + r * 0.2) + ' ' + (cy + r * 0.2) + ' ' + cx + ' ' + (cy + r) +
+            ' Q' + (cx - r * 0.2) + ' ' + (cy + r * 0.2) + ' ' + (cx - r) + ' ' + cy + ' Q' + (cx - r * 0.2) + ' ' + (cy - r * 0.2) + ' ' + cx + ' ' + (cy - r) + 'Z" fill="' + fill + '"/>';
+    }
 
     var BODIES = {
         round: { y: 62, d: function (c) { return '<ellipse cx="50" cy="68" rx="35" ry="40" fill="' + c + '"/>'; }, top: 28 },
@@ -56,7 +70,26 @@
             var foot = mix(c, '#b98a78', 0.35);
             return '<ellipse cx="33" cy="106" rx="13" ry="9" fill="' + foot + '"/><ellipse cx="67" cy="106" rx="13" ry="9" fill="' + foot + '"/>' +
                 '<ellipse cx="50" cy="68" rx="36" ry="38" fill="' + c + '"/>';
-        }, top: 32 }
+        }, top: 32 },
+        // Star Observatory bodies: sleepy moon, rounded star, comet head (tail is accBack 'swirl'), ringed planet
+        moon: { y: 62, d: function (c) {
+            var shade = mix(c, '#8a78c8', 0.35), rim = mix(c, '#ffffff', 0.6);
+            return '<circle cx="50" cy="68" r="38" fill="' + c + '"/><path d="M50 30 A38 38 0 0 0 50 106 A44 38 0 0 1 50 30Z" fill="' + rim + '" opacity="0.55"/>' +
+                '<circle cx="74" cy="46" r="6" fill="' + shade + '" opacity="0.5"/><circle cx="24" cy="88" r="5" fill="' + shade + '" opacity="0.5"/><circle cx="70" cy="98" r="4" fill="' + shade + '" opacity="0.5"/><circle cx="82" cy="72" r="3" fill="' + shade + '" opacity="0.5"/>';
+        }, top: 30 },
+        star: { y: 66, d: function (c) {
+            return '<path d="' + starPath(50, 68, 46, 27, 5) + '" fill="' + c + '" stroke="' + c + '" stroke-width="12" stroke-linejoin="round"/>';
+        }, top: 18 },
+        comet: { y: 66, d: function (c) {
+            var rim = mix(c, '#ffffff', 0.5);
+            return '<circle cx="50" cy="66" r="34" fill="' + c + '"/><path d="M26 44 A34 34 0 0 1 56 33" stroke="' + rim + '" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>';
+        }, top: 32 },
+        planet: { y: 56, d: function (c, spec) {
+            var ring = spec.ring || mix(c, '#ffe9b0', 0.7), ringBack = mix(ring, '#6a5aa8', 0.35), band = mix(c, '#ffffff', 0.45);
+            return '<g transform="rotate(-10 50 84)"><ellipse cx="50" cy="84" rx="47" ry="10" fill="none" stroke="' + ringBack + '" stroke-width="7"/></g>' +
+                '<circle cx="50" cy="60" r="32" fill="' + c + '"/><ellipse cx="50" cy="45" rx="27" ry="3.5" fill="' + band + '" opacity="0.28"/>' +
+                '<g transform="rotate(-10 50 84)"><path d="M3 84 A47 10 0 0 0 97 84" fill="none" stroke="' + ring + '" stroke-width="7" stroke-linecap="round"/></g>';
+        }, top: 28 }
     };
 
     function eyes(kind, y, horror) {
@@ -78,6 +111,9 @@
             return '<path d="M30 ' + (y + 3) + ' Q38 ' + (y - 8) + '46 ' + (y + 3) + '" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/>' +
                 '<path d="M54 ' + (y + 3) + ' Q62 ' + (y - 8) + ' 70 ' + (y + 3) + '" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/>';
         }
+        if (kind === 'twinkle') {
+            return sparkle(l, y, 11, '#3a1f66') + sparkle(r, y, 11, '#3a1f66') + '<circle cx="' + (l - 2) + '" cy="' + (y - 2) + '" r="2" fill="#fff"/><circle cx="' + (r - 2) + '" cy="' + (y - 2) + '" r="2" fill="#fff"/>';
+        }
         if (kind === 'sleepy') {
             return '<path d="M31 ' + y + ' L45 ' + y + '" stroke="#222" stroke-width="4" stroke-linecap="round"/><path d="M55 ' + y + ' L69 ' + y + '" stroke="#222" stroke-width="4" stroke-linecap="round"/>';
         }
@@ -93,6 +129,7 @@
         if (kind === 'open') return '<ellipse cx="50" cy="' + y + '" rx="9" ry="7" fill="#552233"/><ellipse cx="50" cy="' + (y + 3) + '" rx="5" ry="3" fill="#ff8aa0"/>';
         if (kind === 'stitch') return '<path d="M38 ' + y + ' Q50 ' + (y + 10) + ' 62 ' + y + '" stroke="#6b4a3a" stroke-width="3" stroke-dasharray="4 3" fill="none" stroke-linecap="round"/>';
         if (kind === 'grille') return '<rect x="38" y="' + (y - 5) + '" width="24" height="11" rx="3" fill="#2f3640"/><path d="M44 ' + (y - 5) + ' V' + (y + 6) + ' M50 ' + (y - 5) + ' V' + (y + 6) + ' M56 ' + (y - 5) + ' V' + (y + 6) + '" stroke="#aab4c0" stroke-width="2"/>';
+        if (kind === 'hum') return '<ellipse cx="50" cy="' + y + '" rx="6" ry="4" fill="#6a2f55"/><path d="M69 ' + (y - 4) + ' L69 ' + (y - 16) + ' L76 ' + (y - 13) + '" stroke="#6a2f55" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="66.5" cy="' + (y - 4) + '" r="3.2" fill="#6a2f55"/>';
         if (kind === 'o') return '<circle cx="50" cy="' + y + '" r="5" fill="#552233"/>';
         if (kind === 'grin') return '<path d="M36 ' + (y - 3) + ' Q50 ' + (y + 14) + ' 64 ' + (y - 3) + 'Z" fill="#552233"/><path d="M40 ' + (y - 1) + ' L60 ' + (y - 1) + '" stroke="#fff" stroke-width="3"/>';
         return '<path d="M38 ' + y + ' Q50 ' + (y + 10) + ' 62 ' + y + '" stroke="#222" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
@@ -152,6 +189,19 @@
                     '<path d="M44 ' + (t - 1) + ' L56 ' + (t - 5) + ' M46.5 ' + (t - 10) + ' L55 ' + (t - 13) + ' M48.5 ' + (t - 18) + ' L53 ' + (t - 20) + '" stroke="' + dim('#e0a85e', horror) + '" stroke-width="2.2" stroke-linecap="round"/>';
             case 'tuft':
                 return '<path d="M36 ' + (t + 6) + ' Q22 ' + (t + 2) + ' 24 ' + (t + 22) + ' Q30 ' + (t + 14) + ' 40 ' + (t + 12) + 'Z" fill="' + c + '"/>';
+            case 'nightcap':
+                return '<path d="M26 ' + (t + 14) + ' C24 ' + (t - 12) + ' 56 ' + (t - 18) + ' 76 ' + (t - 2) + ' C88 ' + (t + 8) + ' 90 ' + (t + 22) + ' 86 ' + (t + 30) + ' C82 ' + (t + 20) + ' 76 ' + (t + 14) + ' 74 ' + (t + 14) + 'Z" fill="' + c + '"/>' +
+                    '<rect x="24" y="' + (t + 8) + '" width="52" height="9" rx="4.5" fill="' + dim('#fff6fb', horror) + '"/><path d="' + starPath(86, t + 32, 8, 3.6, 5) + '" fill="' + dim('#ffe08a', horror) + '" stroke="#fff6fb" stroke-width="1.2" stroke-linejoin="round"/>';
+            case 'wand':
+                // a little glowing lightstick: lilac handle, soft glow, star-shaped tip
+                return '<path d="M82 114 L91 62" stroke="' + dim('#b9a0ff', horror) + '" stroke-width="5" stroke-linecap="round"/><path d="M82 114 L84 104" stroke="#fff6fb" stroke-width="5" stroke-linecap="round"/>' +
+                    '<circle cx="93" cy="48" r="15" fill="' + c + '" opacity="0.28"/><path d="' + starPath(93, 48, 11, 5, 5) + '" fill="' + c + '" stroke="#fff6fb" stroke-width="1.6" stroke-linejoin="round"/>';
+            case 'sparkles':
+                return sparkle(10, 24, 6, c) + sparkle(90, 14, 5, c) + sparkle(8, 82, 4, c) + sparkle(30, 6, 3.5, c);
+            case 'cowhat':
+                return '<path d="M30 ' + (t + 5) + ' C30 ' + (t - 16) + ' 38 ' + (t - 18) + ' 43 ' + (t - 14) + ' Q50 ' + (t - 8) + ' 57 ' + (t - 14) + ' C62 ' + (t - 18) + ' 70 ' + (t - 16) + ' 70 ' + (t + 5) + 'Z" fill="' + c + '"/>' +
+                    '<path d="M13 ' + (t - 2) + ' Q18 ' + (t + 8) + ' 50 ' + (t + 8) + ' Q82 ' + (t + 8) + ' 87 ' + (t - 2) + ' Q80 ' + (t + 16) + ' 50 ' + (t + 15) + ' Q20 ' + (t + 16) + ' 13 ' + (t - 2) + 'Z" fill="' + c + '"/>' +
+                    '<rect x="30" y="' + (t - 1) + '" width="40" height="6" fill="' + dim('#c9b8ff', horror) + '"/><path d="' + starPath(50, t + 2, 4.5, 2, 5) + '" fill="' + dim('#ffe08a', horror) + '"/>';
             default:
                 return '';
         }
@@ -182,6 +232,11 @@
                     s += '<ellipse cx="' + (17 - i * 1) + '" cy="' + (t + 30 + i * 18) + '" rx="10" ry="12" fill="' + (i % 2 ? dim('#a8dccb', horror) : c) + '"/>';
                 }
                 return s;
+            case 'swirl':
+                // comet tail: a fat swirl that curls out behind the head, with a light stripe and tiny sparkles
+                return '<path d="M32 74 C6 66 -2 100 16 108 C32 114 44 98 32 94" stroke="' + c + '" stroke-width="16" fill="none" stroke-linecap="round"/>' +
+                    '<path d="M32 74 C6 66 -2 100 16 108 C32 114 44 98 32 94" stroke="' + mix(color || '#ff77aa', '#ffffff', 0.55) + '" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
+                    sparkle(6, 54, 4, c) + sparkle(60, 112, 3.5, c);
             case 'windkey':
                 return '<path d="M80 90 L94 90" stroke="#b9772e" stroke-width="3.5" stroke-linecap="round"/><path d="M94 90 C86 78 100 76 94 90 C86 102 100 104 94 90Z" fill="#d49a48" stroke="#b9772e" stroke-width="1.5"/>';
             default:
@@ -205,7 +260,7 @@
         var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 112 132">';
         if (spec.acc) s += accBack(spec.acc, spec.accColor, body, horror);
         if (spec.acc2) s += accBack(spec.acc2, spec.acc2Color, body, horror);
-        s += body.d(col);
+        s += body.d(col, spec);
         if (!horror) s += '<ellipse cx="38" cy="' + (body.y - 18) + '" rx="10" ry="5" fill="#fff" opacity="0.25"/>';
         if (spec.cheeks && !horror) s += '<circle cx="28" cy="' + (body.y + 10) + '" r="5" fill="#ff7a9a" opacity="0.45"/><circle cx="72" cy="' + (body.y + 10) + '" r="5" fill="#ff7a9a" opacity="0.45"/>';
         if (spec.patch && !horror) s += '<rect x="42" y="86" width="16" height="16" rx="2" fill="' + spec.patch + '" stroke="#fff6e6" stroke-width="1.5" stroke-dasharray="3 2"/>';

@@ -5,7 +5,7 @@
     var N = null;
     w.NightliteWorlds = w.NightliteWorlds || {};
     w.NightliteWorlds.garden = {
-        id: 'garden', label: 'The Night Garden', short: 'Night Garden', bpm: 90,
+        id: 'garden', label: 'The Night Garden', short: 'Night Garden', chip: 'Garden', icon: '\uD83C\uDF3F', bpm: 90,
         theme: { bg1: '#14284a', bg2: '#08122a', panel: '#1a3354', text: '#eaf4de', accent: '#9bd27a', slot: '#21496a' },
         glow: { count: 16 },
         chars: [

@@ -5,7 +5,7 @@
  * and wrap around the loop end so loops are seamless.
  *
  * Specs:
- *   {kind:'drum', voice:'kick|snare|hat|tick|clap|tom|shaker|pop|wood|drip|rustle|clop|click', pattern:'x...x...x...x...', pitch:1}
+ *   {kind:'drum', voice:'kick|snare|hat|tick|clap|tom|shaker|pop|wood|drip|rustle|clop|click|whoosh|thrum', pattern:'x...x...x...x...', pitch:1}
  *   {kind:'tone', wave:'sine|tri|square|saw', seq:[midi|null|[midi,lenSteps],... x16], a:0.01, d:0.4,
  *                 lp:3000, vib:0, amp:1, chord:[0,4,7]}
  *   {kind:'voice', seq:[[midi,'a|o|e|u',lenSteps]|null ... x16], amp:1}
@@ -17,6 +17,8 @@
     var STEPS = 16;
     var DRIP_NOTES = [67, 72, 76, 74, 79, 69];   // C major pentatonic only (G C E D G A)
     var CLOP_NOTES = [67, 60, 64, 60];            // hobby-horse clip-clop, pentatonic (G4 C4 E4 C4)
+    var THRUM_NOTES = [48, 55, 52, 55];           // soft planet drum, pentatonic (C3 G3 E3 G3)
+    var WHOOSH_ENDS = [79, 76];                   // comet sweep ends on G5, then E5
 
     function mulberry(seed) {
         var a = seed >>> 0;
@@ -49,7 +51,7 @@
             if (ch !== 'x' && ch !== 'X') continue;
             var g = ch === 'X' ? 1 : 0.7;
             var start = Math.round(s * stepLen);
-            var len = Math.round(SR * 0.4), n, t, e, v, ph = 0, lp = 0;
+            var len = Math.round(SR * (spec.voice === 'whoosh' ? 2.6 : 0.4)), n, t, e, v, ph = 0, lp = 0, lp2 = 0, wk, wx, wr;
             hit++;
             for (n = 0; n < len; n++) {
                 t = n / SR;
@@ -102,6 +104,21 @@
                         var ct = t, ck = 0;
                         if (ch === 'X') { ck = Math.floor(t / 0.035); ct = t - ck * 0.035; if (ck > 3) ct = 1; }
                         v = (Math.sin(6.283185307 * (hit % 2 ? 1250 : 1750) * pitch * ct) * 0.6 + (rnd() * 2 - 1) * 0.35) * Math.exp(-ct * 150) * 0.6;
+                        break;
+                    case 'whoosh':
+                        // comet sweep: an airy noise band that opens up and fades, with a thin glide that ends on a pentatonic note
+                        wr = Math.min(1, t / 1.6);
+                        wk = 0.015 + 0.16 * wr * wr;
+                        wx = (rnd() * 2 - 1);
+                        lp += (wx - lp) * wk; lp2 += (lp - lp2) * wk;
+                        v = (lp - lp2) * 5 * Math.pow(Math.sin(Math.min(1, t / 1.8) * 3.14159), 2) * Math.exp(-t * 0.6);
+                        ph += hz(55 + (WHOOSH_ENDS[hit % WHOOSH_ENDS.length] - 55) * wr) / SR;
+                        v += Math.sin(6.283185307 * ph) * Math.pow(Math.sin(Math.min(1, t / 2.2) * 3.14159), 2) * 0.12;
+                        break;
+                    case 'thrum':
+                        // soft felt-mallet planet drum: warm low sine with a small pitch dip and a gentle overtone
+                        ph += (hz(THRUM_NOTES[hit % THRUM_NOTES.length]) * (1 + 0.25 * Math.exp(-t * 30))) * pitch / SR;
+                        v = Math.sin(6.283185307 * ph) * Math.exp(-t * 8) * 0.8 + Math.sin(6.283185307 * 2 * ph) * Math.exp(-t * 14) * 0.2;
                         break;
                     case 'wood':
                         v = (Math.sin(6.283185307 * 820 * pitch * t) + 0.5 * Math.sin(6.283185307 * 1330 * pitch * t)) * Math.exp(-t * 55) * 0.45;

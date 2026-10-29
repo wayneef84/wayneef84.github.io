@@ -53,10 +53,6 @@ button, a.btn, input { font-family: inherit; }
 .door .dt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .door .dn { font-size: 1.3rem; font-weight: 800; line-height: 1.15; }
 .door .dw { font-size: 0.95rem; opacity: 0.9; }
-.door .soon { display: none; align-self: flex-start; margin-top: 4px; padding: 2px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.2); font-size: 0.85rem; font-weight: 800; }
-.door.locked { filter: saturate(0.55) brightness(0.85); }
-.door.locked .soon { display: inline-block; }
-.door.shake { animation: shake 0.45s; }
 .stage.shake { animation: shake 0.35s; }
 @keyframes shake { 0%, 100% { transform: none; } 20% { transform: translateX(-7px) rotate(-0.6deg); } 60% { transform: translateX(7px) rotate(0.6deg); } 80% { transform: translateX(-3px); } }
 
@@ -90,7 +86,7 @@ button, a.btn, input { font-family: inherit; }
 .vol { display: flex; align-items: center; gap: 4px; flex: 1 1 130px; min-width: 120px; max-width: 220px; }
 .vol input { flex: 1; width: 100%; height: 36px; accent-color: var(--accent); }
 
-/* tray: this world's 4 creatures, then a compact row of friends from the other world */
+/* tray: a world switcher (three chips), then the shown world's 4 creatures */
 .tray { margin-bottom: 10px; padding-bottom: 10px; }
 .tiles { display: flex; gap: 8px; justify-content: center; }
 .tile {
@@ -102,11 +98,17 @@ button, a.btn, input { font-family: inherit; }
 .tile img { width: 100%; height: 66px; object-fit: contain; pointer-events: none; }
 .tile .nm { font-size: 0.8rem; font-weight: 800; }
 .tile.used { opacity: 0.45; border-bottom-style: dotted; }
-.tray-label { margin: 8px 0 4px; text-align: center; font-size: 0.8rem; font-weight: 800; opacity: 0.8; }
-.tray-label:empty { display: none; }
-.tiles.small .tile { min-height: 76px; max-width: 110px; padding: 4px 2px; border-bottom-width: 4px; }
-.tiles.small .tile img { height: 40px; }
-.tiles.small .tile .nm { font-size: 0.7rem; }
+.chips { display: flex; gap: 6px; margin-bottom: 8px; }
+.chip {
+    flex: 1 1 0; min-width: 0; min-height: 56px; padding: 4px 2px; border-radius: 16px; cursor: pointer; touch-action: manipulation;
+    background: transparent; color: var(--text); border: 3px solid rgba(255, 255, 255, 0.22);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; font-weight: 800;
+}
+.chip .ci { font-size: 1.25rem; line-height: 1.1; }
+.chip .cn { font-size: 0.78rem; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: clip; white-space: nowrap; }
+.chip.on { background: var(--accent); color: var(--onaccent); border-color: var(--accent); }
+.chip:active { transform: scale(0.96); }
+.chip:focus-visible { outline: 4px solid var(--text); outline-offset: 2px; }
 .tile .key { display: none; position: absolute; top: 4px; left: 6px; font-size: 0.7rem; opacity: 0.6; }
 @media (hover: hover) and (pointer: fine) { .tile .key { display: block; } }
 .ghost { position: fixed; width: 84px; height: 84px; object-fit: contain; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%) scale(1.15); filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5)); opacity: 0.9; }
@@ -140,6 +142,21 @@ body.world-attic .slot.on, body.world-attic .slot.over { border-color: var(--acc
 @keyframes beam { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
 @keyframes mote { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 0.85; } 50% { transform: translate(-18px, 22px); opacity: 0.5; } 80% { opacity: 0.85; } 100% { transform: translate(10px, -14px); opacity: 0; } }
 
+/* Star Observatory: deep night sky, skylight and telescope silhouette, twinkling and shooting stars, star-map lines */
+body.world-observatory { background: radial-gradient(ellipse at 50% 0%, #3b2b7a 0%, transparent 60%), linear-gradient(170deg, var(--bg1), var(--bg2)) fixed; }
+body.world-observatory .slot { border-color: rgba(220, 205, 255, 0.35); }
+body.world-observatory .slot.on, body.world-observatory .slot.over { border-color: var(--accent); }
+body.world-observatory .stage { position: relative; }
+.fx.sky .scope { position: absolute; inset: 0; }
+.fx.sky .scope svg { width: 100%; height: 100%; display: block; opacity: 0.9; }
+.fx .star { position: absolute; border-radius: 50%; box-shadow: 0 0 6px 1px rgba(255, 240, 255, 0.7); animation: twinkle ease-in-out infinite; }
+.fx .shoot { position: absolute; width: 110px; height: 2px; border-radius: 2px; opacity: 0; transform: rotate(28deg);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), #ffd3ec 70%, #fff); animation: shoot linear infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes shoot { 0%, 88% { opacity: 0; transform: translate(0, 0) rotate(28deg); } 90% { opacity: 1; } 99% { opacity: 0.8; transform: translate(-46vw, 26vw) rotate(28deg); } 100% { opacity: 0; transform: translate(-46vw, 26vw) rotate(28deg); } }
+.stars-map { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 3; }
+.stars-map .tw { animation: twinkle 3.6s ease-in-out infinite; }
+
 @media (max-width: 480px) {
     .top h1 { font-size: 1.1rem; }
     .top .btn { padding: 0 10px; font-size: 0.9rem; }
@@ -147,8 +164,10 @@ body.world-attic .slot.on, body.world-attic .slot.over { border-color: var(--acc
     .slot { height: 104px; }
     .stage { gap: 8px; padding: 8px; }
     .door { min-height: 104px; }
+    .chip .cn { font-size: 0.72rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .fx .p, .fx.dust .beam, .slot img, .stage.shake, .door.shake { animation: none; }
+    .fx .p, .fx.dust .beam, .fx .star, .fx .shoot, .stars-map .tw, .slot img, .stage.shake { animation: none; }
+    .fx .shoot { display: none; }
     .fx .p { opacity: 0.4; }
 }
