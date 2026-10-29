@@ -92,4 +92,57 @@ Fun Mode (`?mode=fun`) is carried to the browse pages and sub-hubs. Browse and s
 
 - Fixed: the dead `combined.html` card on `wosky/index.html` was removed.
 - Fixed: `js/projects.js` was deleted (it is in git history if needed).
-- Untouched, intentionally not linked: `archive/*.html`, `games/cards/euchre/` (ruleset only, no page), `games/cards/test*.html`.
+- Untouched, intentionally not linked: `archive/*.html`, `games/cards/test*.html`. (`games/cards/euchre/` now has a page and is in the hub.)
+
+## 5. Getting back to the homepage (every page)
+
+Every page has a visible way to the homepage. Two shared helpers do most of the work. Both are ES5, classic scripts, relative paths only, and work from `file://` and GitHub Pages.
+
+### Card games: `games/cards/shared/card-nav.js` (`CardNav`)
+
+One 44 px strip at the top of each card page: `Home` (site homepage), `Cards` (card hub, opens that game inside the hub), then the other games (Blackjack, War, Solitaire, Big 2, Poker 5-Card, Hold'em, 13-Card, Euchre) with the current one marked. Under 900 px wide the games fold into a `Games` menu button so the strip stays on one line. Links use `target="_top"`.
+
+When the hub loads a page in its frame (`games/cards/index.html?game=<id>`) the strip draws nothing, because the hub already has Home, Cards and the game list. So there are never two Home buttons.
+
+| Page | Home | Cards | Other games |
+|---|---|---|---|
+| blackjack, war, solitaire, big2, euchre | strip | strip | strip |
+| poker/5card, poker/holdem, poker/13card | strip | strip | strip (the old back arrow still goes to the Poker menu) |
+| poker menu (`poker/index.html`) | strip | strip | strip, plus its three game cards |
+| hub (`games/cards/index.html`) | Back to Arcade / Exit | itself | all nine entries (Poker Menu, 5-Card, Hold'em, 13-Card, Euchre included) |
+
+Add it to a new card game: put these two lines right after `<body>` (path to `shared/` relative to the page), add the game to the `GAMES` array in `card-nav.js` and in the hub's `GAMES` array:
+
+    <script src="../shared/card-nav.js"></script>
+    <script>CardNav.mount();</script>
+
+`CardNav.mount({ current: 'id', title: 'Name' })` overrides the detected game. The strip is `position: relative` and 45 px tall (CSS variable `--cardnav-h`, class `has-cardnav` on `<html>`). A page with a fixed 100vh layout should subtract it, as solitaire, euchre and Big 2 do.
+
+### Everything else: `js/home-link.js` (`FongHome`)
+
+A small fixed `Home` pill (at least 44x44 px, safe-area aware, 85 percent opaque, hidden when printing). It mounts itself, does nothing when the page already links to the homepage, and takes no layout space.
+
+    <script src="../../js/home-link.js" data-corner="br"></script>
+
+Put it just before `</body>`. Attributes: `data-corner` (`tl`, `tr`, `bl`, `br`, default `tl`), `data-root` (relative path to the site root, default read from the script's own `src`, then from the URL), `data-label`. Pick the corner by checking a 390x844 and a 1280x900 viewport so it does not sit on a button, a HUD or a tap area. Prefer a real Home link inside an existing header when the page has one.
+
+### Pages changed
+
+| Page | Before | After | How |
+|---|---|---|---|
+| games/animal_stack, falldown | none | Home | pill, top-right (HUD is top-left) |
+| games/snake/negen_version, mahjong | none | Home | pill, bottom-right |
+| games/flow | none | Home | pill, top-left |
+| games/tracing/letters | house button to a missing page | Home | house button now points to the homepage |
+| games/tracing/words, chinese, sentences | hub link only | Home | pill, bottom-right |
+| projects/shipment-tracker | none | Home | house button in the header controls |
+| projects/dev-utils | none | Home | nav item at the top of the sidebar |
+| projects/code | Projects hub only | Home | link next to "Projects" |
+| projects/md-reader, input-a11y, input-a11y_v1, input-a11y_v2 | none | Home | pill, bottom-right |
+| projects/regex_builder, web-archive, project-ti-tanium | none | Home | pill, top-left |
+| projects/internal-tests, sprunki-survival, survival-doc | none | Home | pill, bottom-right |
+| daily | none | Home | pill, bottom-right |
+| about.html | none | Home | pill, top-left |
+| wosky/v3 | none | Home | house button in the header |
+
+Left alone on purpose: `games/sprunki_v2`, `nightlite_choir`, `memory_match`, `byte_runner`, `byte_runner_quest` (own Home buttons, other work in progress).

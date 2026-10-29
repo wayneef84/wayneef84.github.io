@@ -9,6 +9,10 @@
 
 ## Project History
 
+### Navigation (2026-10-28)
+
+- Added a Home button (house icon) to the header controls, linking to the homepage (`../../index.html`).
+
 ### Origins (2026-01-22)
 
 **Initial Concept**
