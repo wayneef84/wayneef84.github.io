@@ -4,7 +4,7 @@
 - **Name:** Slots
 - **Path:** `games/slots/`
 - **Catalog id:** `slots`
-- **Version:** 4.1.0
+- **Version:** 4.1.1
 - **Category:** Arcade
 - **Last updated:** 2026-10-29
 - **Status:** Draft (PR into dev)

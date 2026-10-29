@@ -135,7 +135,7 @@
             if (filterGroup === 'Kids' && !t.kids) { continue; }
             if (filterGroup === "K's Picks" && !t.kpick) { continue; }
             if (filterGroup !== 'All' && filterGroup !== 'Kids' && filterGroup !== "K's Picks" && t.group !== filterGroup) { continue; }
-            if (q && (t.name + ' ' + t.flavour + ' ' + t.group).toLowerCase().indexOf(q) < 0) { continue; }
+            if (q && (t.name + ' ' + (t.aka || '') + ' ' + t.flavour + ' ' + t.group).toLowerCase().indexOf(q) < 0) { continue; }
             el.themeList.appendChild(themeCard(t));
             shown++;
         }

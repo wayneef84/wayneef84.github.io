@@ -117,7 +117,7 @@ var FONG_CATALOG = [
         funTitle: 'JACKPOT SLOTS 🎰',
         description: 'Play-money slots with 6 modes (3-reel, 5-reel, cascade, match, pick, wheel), 60 themes including K\'s Picks, and CSS 3D drums. Free coins, calm mode, optional parent-set cheers.',
         funDescription: 'Spin, pop and pick! 6 ways to play and 60 themes. Just for fun.',
-        version: 'v4.1.0',
+        version: 'v4.1.1',
         href: './games/slots/index.html',
         hub: 'arcade',
         featured: true,

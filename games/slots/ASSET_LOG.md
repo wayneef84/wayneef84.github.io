@@ -61,3 +61,28 @@ Symbol notes: the pal shapes are plain circles with eyes, a smile and one access
 ## Open questions
 - Card Royale: "Royale" is common but was not checked against card-game brands.
 - The 9 old audio files: who made them?
+
+## v4.1.1 renames
+Searched 2026-10-29. Quick searches, not legal clearance. One or two web searches per name (exact phrase plus game or slot). No trademark registry or app store was searched. Only display names changed. The `aka` field keeps the old name for search.
+
+| Old name | New name | Finding | Result |
+|---|---|---|---|
+| Dragon's Lair | Cosy Dragon Cave | No exact match. Similar "Dragon Cave" adoptables site | Used |
+| Robot Factory | Gizmo Garage | No exact match. Nearby: "Robo Buck's Garage" slot, "Gizmo" board game | Used |
+| Pirate's Gold | Buried Treasure Bay | No exact match. Nearby: Merkur "Treasure Bay" slot | Used |
+| Samurai Spirit | Blossom Blade (first pick) | CONFLICT: "Touhou: Blossom Blade" (2026 Switch and PC game) | Dropped |
+| Samurai Spirit | Petal Dojo Days | No exact match. Only unrelated "Petal ..." titles. Checked Cherry Blossom Dojo (real aikido club) and Sakura Sword Dojo (close to Sakura Samurai: Art of the Sword) too | Used |
+| Wolf Pack | Moonlit Howl | "A Moonlit Howl" is a tabletop adventure. Generic | Used |
+| Wild Animals | Safari Day Out | No exact match | Used |
+| Monster Mayhem | Goofy Ghost Gang | No exact match. Loose echo of Goof Troop | Used |
+| Solar System | Planet Parade | Generic use: a science-centre event, an iOS app "Parade of the Planets", a board game "Planetary Parade" | Used |
+| Classic Fruits | Cherry Bell Corner | "Cherry Bell" is a generic classic slot name (Mills, Bigpot Gaming). Exact phrase not found | Used |
+| Music Beats | Loud Little Speaker | No game or brand hit | Used |
+| Card Royale | Card Court | No exact match. A card game called "Court" exists | Used |
+| Chess Masters | Checkmate Corner | No exact match | Used |
+| Mystical Unicorn | Sparkle Meadow | No exact match. "Sparkle" marble-shooter series only | Used |
+| Ancient Egypt | Sandy Scarab Tomb | No exact match | Used |
+| Wilderness Camp | Campfire Trail | No exact match | Used |
+| Viking Legends | Longship Tales | No exact match | Used |
+
+The list above in "Old theme names that stayed" is now out of date for these 16 names.
