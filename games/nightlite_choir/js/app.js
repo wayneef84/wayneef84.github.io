@@ -146,7 +146,15 @@
         if (changed) { updateSparkUI(); pulseSparks(); saveProgress(); }
         if (S.nest) nestTick(dt);
     }
-    function nestTick(dt) { }
+    var nestSaveAcc = 0;
+    function nestTick(dt) {
+        if (!S.nest) return;
+        S.nest.left -= dt;
+        nestSaveAcc += dt;
+        if (S.nest.left <= 0) { hatch(); return; }
+        if (nestSaveAcc >= 5) { nestSaveAcc = 0; saveProgress(); }
+        updateNestLive();
+    }
 
     // ---------------------------------------------------------------- audio
     function barLen() { return 8 * 60 / S.bpm; }
@@ -727,6 +735,7 @@
     function openScreen(name) {
         var from = S.screen;
         if (from === name) return;
+        if (from === 'collect') S.reveal = null;
         S.back.push(from);
         if (from === 'world') stopAllVoices();      // like leaving a world: the stage is kept, the sound pauses
         if (from === 'world' || from === 'doors') { applyTheme(DOOR_THEME); buildGlow(10); }
@@ -740,6 +749,7 @@
     }
     function goBack() {
         var to = S.back.pop() || 'doors';
+        S.reveal = null;
         if (to === 'world') { resumeWorld(); return; }
         if (to === 'doors') { showScreen('doors'); return; }
         showScreen(to);
@@ -856,7 +866,132 @@
     }
 
     // ---- Collection: nest, Discovery book, blends you own
-    function renderNest() { }
+    // The nest holds one egg at a time. An egg costs EGG_COST sparks. It hatches by itself after about HATCH_SECS
+    // seconds while the game is open and visible, and every tap on it warms it up (WARM_SHAVE seconds sooner). Waiting is optional.
+    function unownedBlends() {
+        var out = [], i, bl = w.NightliteBlends.chars;
+        for (i = 0; i < bl.length; i++) if (!S.owned[bl[i].id]) out.push(bl[i]);
+        return out;
+    }
+    function eggSvg(warm, emptyNest) {
+        var s = '<svg viewBox="0 0 100 132" aria-hidden="true" focusable="false">' +
+            '<ellipse cx="50" cy="116" rx="46" ry="13" fill="#7a5a3a"/><path d="M8 114 Q50 136 92 114" fill="none" stroke="#a98458" stroke-width="5" stroke-linecap="round"/>' +
+            '<path d="M14 108 Q30 120 50 120 Q72 120 88 106" fill="none" stroke="#c9a672" stroke-width="3" stroke-linecap="round"/>';
+        if (emptyNest) return s.replace('viewBox="0 0 100 132"', 'viewBox="0 96 100 40"') + '</svg>';
+        if (warm > 0.2) s += '<ellipse cx="50" cy="66" rx="' + (42 + warm * 8) + '" ry="' + (52 + warm * 8) + '" fill="#ffe9a0" opacity="' + (0.15 + warm * 0.3).toFixed(2) + '"/>';
+        s += '<path d="M50 8 C78 8 90 54 90 78 C90 100 72 114 50 114 C28 114 10 100 10 78 C10 54 22 8 50 8Z" fill="#fbf0d8" stroke="#d9b98a" stroke-width="3"/>' +
+            '<circle cx="34" cy="62" r="6" fill="#c9b6f2"/><circle cx="64" cy="48" r="5" fill="#f4b6cc"/><circle cx="58" cy="86" r="7" fill="#a8dcc4"/><circle cx="30" cy="92" r="4" fill="#f4b6cc"/><circle cx="72" cy="72" r="3.5" fill="#c9b6f2"/>' +
+            '<ellipse cx="38" cy="36" rx="7" ry="11" fill="#fff" opacity="0.5" transform="rotate(18 38 36)"/>';
+        if (warm > 0.55) s += '<path d="M30 62 L40 70 L46 60 L54 72 L62 62 L70 70" fill="none" stroke="#b8905c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+        if (warm > 0.8) s += '<path d="M40 70 L38 82 M54 72 L58 84" stroke="#b8905c" stroke-width="2.2" stroke-linecap="round"/>';
+        return s + '</svg>';
+    }
+    function nestWarmth() { return S.nest ? Math.max(0, Math.min(1, 1 - S.nest.left / HATCH_SECS)) : 0; }
+    function nestText() {
+        var n = Math.max(1, Math.ceil(S.nest.left));
+        return 'Tap the egg to warm it and it hatches sooner. Or just wait, about ' + n + ' second' + (n === 1 ? '' : 's') + '.';
+    }
+    function updateNestLive() {
+        if (S.screen !== 'collect' || !S.nest) return;
+        var f = $('nestFill'), t = $('nestText');
+        if (f) f.style.width = Math.round(nestWarmth() * 100) + '%';
+        if (t) t.textContent = nestText();
+    }
+    function renderNest() {
+        var box = $('nestBox'), r, e, m, f, b;
+        box.innerHTML = '';
+        if (S.reveal) {
+            r = el('div', 'reveal');
+            r.id = 'nestReveal';
+            if (S.reveal.id) {
+                var im = el('img'); im.src = imgSrc(charById[S.reveal.id]); im.alt = '';
+                r.appendChild(im);
+                r.appendChild(el('span', '', 'You hatched ' + charById[S.reveal.id].name + '!'));
+                r.appendChild(el('span', 'hint', 'Find it under Blends on any stage.'));
+            } else {
+                r.appendChild(el('span', '', '\u2728 Twinkle! You already have every blend, so your sparks came back.'));
+            }
+            box.appendChild(r);
+            if (S.reveal.id) burst(r);
+        }
+        if (S.nest) {
+            e = el('button', 'egg warm');
+            e.type = 'button'; e.id = 'eggBtn';
+            e.innerHTML = eggSvg(nestWarmth());
+            e.setAttribute('aria-label', 'Warm the egg');
+            e.onclick = warmEgg;
+            box.appendChild(e);
+            m = el('div', 'meter'); f = el('div', 'fill'); f.id = 'nestFill';
+            f.style.width = Math.round(nestWarmth() * 100) + '%';
+            m.appendChild(f);
+            box.appendChild(m);
+            var t = el('p', 'hint', nestText()); t.id = 'nestText';
+            box.appendChild(t);
+        } else {
+            e = el('div', 'egg empty');
+            e.innerHTML = eggSvg(0, true);
+            box.appendChild(e);
+            b = el('button', 'btn primary wide' + (S.sparks < EGG_COST ? ' soft' : ''));
+            b.type = 'button'; b.id = 'eggGet';
+            b.appendChild(el('span', 'ico', '\uD83E\uDD5A'));
+            b.appendChild(el('span', 'lbl', 'Egg (' + EGG_COST + ' \u2728)'));
+            b.setAttribute('aria-label', 'Get an egg for ' + EGG_COST + ' sparks');
+            b.onclick = getEgg;
+            box.appendChild(b);
+            box.appendChild(el('p', 'hint', S.sparks < EGG_COST ? 'An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free.' : 'Put an egg in the nest. It hatches a new blend friend.'));
+        }
+    }
+    function getEgg() {
+        if (S.nest) return;
+        if (S.sparks < EGG_COST) { toast('An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free!'); return; }
+        ensureCtx();
+        S.reveal = null;
+        S.sparks -= EGG_COST;
+        if (!unownedBlends().length) {
+            // every blend is already yours: a happy twinkle and the sparks come right back
+            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);
+            S.reveal = { id: null };
+            chime([84, 88, 91, 96, 91]);
+        } else {
+            S.nest = { left: HATCH_SECS };
+            nestSaveAcc = 0;
+            chime([72, 76]);
+        }
+        updateSparkUI(); saveProgress(); renderNest();
+    }
+    function warmEgg() {
+        if (!S.nest) return;
+        ensureCtx();
+        S.nest.left = Math.max(0, S.nest.left - WARM_SHAVE);
+        chime([79]);
+        if (S.nest.left <= 0) { hatch(); return; }
+        var e = $('eggBtn');
+        if (e) {
+            e.innerHTML = eggSvg(nestWarmth());
+            e.classList.remove('tapped'); void e.offsetWidth; e.classList.add('tapped');
+        }
+        updateNestLive();
+        saveProgress();
+    }
+    function hatch() {
+        var c = unownedBlends(), pick;
+        S.nest = null;
+        if (!c.length) {
+            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);     // nothing new to hatch: the sparks come back
+            S.reveal = { id: null };
+            chime([84, 88, 91, 96, 91]);
+            toast('Twinkle! You already have every blend. Your sparks came back.');
+        } else {
+            pick = c[Math.floor(Math.random() * c.length)];
+            S.owned[pick.id] = true;
+            S.reveal = { id: pick.id };
+            chime([84, 88, 91, 96]);
+            toast('Your egg hatched: ' + pick.name + '!');
+        }
+        updateSparkUI(); saveProgress();
+        if (S.screen === 'collect') renderCollect();
+        else if (S.screen === 'world') renderTiles();
+    }
     function renderCollect() {
         renderNest();
         renderBook();
@@ -979,7 +1114,7 @@
         d.addEventListener('visibilitychange', function () { if (d.hidden) saveProgress(); });
 
         // Test/debug hook (not used by the UI).
-        w.Nightlite = { state: S, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById };
+        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById };
     }
 
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', init); else init();
