@@ -47,7 +47,7 @@
     }
 
     function cleanExtra(x) {
-        if (!x || typeof x !== 'object' || x instanceof Array) { return null; }
+        if (!x || typeof x !== 'object' || Array.isArray(x)) { return null; }
         var out = {}, n = 0, k;
         for (k in x) {
             if (!has.call(x, k) || n >= 6 || isBadKey(k) || !/^[A-Za-z][A-Za-z0-9_]{0,15}$/.test(k)) { continue; }
@@ -125,7 +125,7 @@
             if (!g || typeof g !== 'object') { continue; }
             var meta = cleanMeta(g, id);
             meta.entries = [];
-            var list = g.entries instanceof Array ? g.entries : [];
+            var list = Array.isArray(g.entries) ? g.entries : [];
             for (var i = 0; i < list.length && i < 50; i++) {
                 var e = cleanEntry(list[i]);
                 if (e) { meta.entries.push(e); if (e.t > out.clock) { out.clock = e.t; } }
@@ -293,11 +293,11 @@
         if (str.length > MAX_IMPORT_CHARS) { return fail('That file is too big (limit is about 256 KB).'); }
         var data;
         try { data = JSON.parse(str); } catch (e) { return fail('That file is not valid JSON.'); }
-        if (!data || typeof data !== 'object' || data instanceof Array) { return fail('That file is not a scores file.'); }
+        if (!data || typeof data !== 'object' || Array.isArray(data)) { return fail('That file is not a scores file.'); }
         if (hasBadKey(data, 0)) { return fail('That file has keys that are not allowed.'); }
         if (data.format !== FORMAT) { return fail('That file is not a Fong scores file.'); }
         if (data.version !== VERSION) { return fail('That file version is not supported (' + cleanText(data.version, 10) + ').'); }
-        if (!data.games || typeof data.games !== 'object' || data.games instanceof Array) { return fail('That file has no games list.'); }
+        if (!data.games || typeof data.games !== 'object' || Array.isArray(data.games)) { return fail('That file has no games list.'); }
         var ids = Object.keys(data.games);
         if (ids.length > MAX_GAMES) { return fail('That file lists too many games.'); }
 
@@ -311,7 +311,7 @@
             var g = has.call(s.games, id) ? s.games[id] : null;
             if (!g) { g = { title: meta.title, unit: meta.unit, hib: meta.hib, max: meta.max, entries: [] }; s.games[id] = g; }
             else if (mode === 'replace') { g.title = meta.title; g.unit = meta.unit; g.hib = meta.hib; g.max = meta.max; }
-            var list = src.entries instanceof Array ? src.entries : [];
+            var list = Array.isArray(src.entries) ? src.entries : [];
             var gameAdded = 0;
             for (var j = 0; j < list.length; j++) {
                 if (j >= 50) { res.skipped++; continue; }
@@ -408,8 +408,7 @@
         reset: reset,
         resetAll: resetAll,
         exportJSON: exportJSON,
-        exportObject: exportObject,
-        importJSON: importJSON,
+        exportObject: exportObject, importJSON: importJSON,
         celebrate: celebrate,
         format: format,
         isPersistent: isPersistent,
@@ -417,5 +416,4 @@
         UNITS: UNITS
     };
     root.FongScores = api;
-    if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
-})(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));
+})(window);

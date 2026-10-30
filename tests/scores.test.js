@@ -11,25 +11,36 @@ function mockStorage() {
     return { getItem: function (k) { return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
         setItem: function (k, v) { data[k] = String(v); }, removeItem: function (k) { delete data[k]; }, _d: data };
 }
-function fresh(blocked) {
-    delete require.cache[require.resolve(path.join(__dirname, '../js/scores.js'))];
-    delete global.localStorage;
+var vm = require('vm');
+var fs = require('fs');
+var SRC = fs.readFileSync(path.join(__dirname, '../js/scores.js'), 'utf8');
+var lastWin = null;
+// Loads js/scores.js into a fake window. blocked: any localStorage access throws.
+// keepStorage: reuse the previous window's storage (simulates a page reload).
+function fresh(blocked, keepStorage) {
+    var win = {};
     if (blocked) {
-        Object.defineProperty(global, 'localStorage', { configurable: true, get: function () { throw new Error('blocked'); } });
-    } else { global.localStorage = mockStorage(); }
-    return require(path.join(__dirname, '../js/scores.js'));
+        Object.defineProperty(win, 'localStorage', { get: function () { throw new Error('blocked'); } });
+    } else {
+        win.localStorage = (keepStorage && lastWin) ? lastWin.localStorage : mockStorage();
+    }
+    win.setTimeout = setTimeout;
+    win.window = win;
+    vm.runInNewContext(SRC, { window: win, Date: Date, Math: Math, JSON: JSON, Object: Object, String: String, Number: Number, parseInt: parseInt, isFinite: isFinite, console: console });
+    lastWin = win;
+    return win.FongScores;
 }
 
 ok('higher is better sorts high to low', function () {
     var S = fresh(); S.register('a', { title: 'A', higherIsBetter: true });
     S.submit('a', 10); S.submit('a', 30); S.submit('a', 20);
-    assert.deepStrictEqual(S.list('a').map(function (e) { return e.value; }), [30, 20, 10]);
+    assert.strictEqual(JSON.stringify(S.list('a').map(function (e) { return e.value; })), JSON.stringify([30, 20, 10]));
     assert.strictEqual(S.best('a'), 30);
 });
 ok('lower is better sorts low to high', function () {
     var S = fresh(); S.register('t', { title: 'T', unit: 'seconds', higherIsBetter: false });
     S.submit('t', 90); S.submit('t', 45); S.submit('t', 60);
-    assert.deepStrictEqual(S.list('t').map(function (e) { return e.value; }), [45, 60, 90]);
+    assert.strictEqual(JSON.stringify(S.list('t').map(function (e) { return e.value; })), JSON.stringify([45, 60, 90]));
     assert.strictEqual(S.best('t'), 45);
 });
 ok('keeps top 5 by default and trims', function () {
@@ -83,11 +94,9 @@ ok('reset one game and reset all', function () {
 });
 ok('survives a reload (persisted)', function () {
     var S = fresh(); S.register('a', { title: 'A' }); S.submit('a', 77);
-    var saved = global.localStorage._d['fong.scores.v1'];
-    assert.ok(saved);
-    delete require.cache[require.resolve('../js/scores.js')];
-    var ls = global.localStorage; var S2 = require('../js/scores.js');
-    assert.strictEqual(global.localStorage, ls); assert.strictEqual(S2.best('a'), 77);
+    assert.ok(lastWin.localStorage._d['fong.scores.v1']);
+    var S2 = fresh(false, true);
+    assert.strictEqual(S2.best('a'), 77);
 });
 ok('export then import round trip', function () {
     var S = fresh(); S.register('a', { title: 'A' }); S.register('t', { title: 'T', unit: 'seconds', higherIsBetter: false });
@@ -105,9 +114,9 @@ ok('merge adds, does not duplicate; replace drops others', function () {
     S.submit('a', 20);
     var m = S.importJSON(json, { mode: 'merge' });
     assert.strictEqual(m.ok, true); assert.strictEqual(m.added, 0);
-    assert.deepStrictEqual(S.list('a').map(function (e) { return e.value; }), [20, 10]);
+    assert.strictEqual(JSON.stringify(S.list('a').map(function (e) { return e.value; })), JSON.stringify([20, 10]));
     var r = S.importJSON(json, { mode: 'replace' });
-    assert.deepStrictEqual(S.list('a').map(function (e) { return e.value; }), [10]);
+    assert.strictEqual(JSON.stringify(S.list('a').map(function (e) { return e.value; })), JSON.stringify([10]));
 });
 ok('dryRun changes nothing', function () {
     var S = fresh(); S.register('a', { title: 'A' }); S.submit('a', 10);
@@ -170,8 +179,8 @@ ok('storage blocked: still works from memory and says so', function () {
     assert.strictEqual(S.importJSON(S.exportJSON(), { mode: 'merge' }).ok, true);
 });
 ok('corrupt stored data starts clean', function () {
-    var S = fresh(); global.localStorage.setItem('fong.scores.v1', '{not json');
-    assert.deepStrictEqual(S.list('a'), []); assert.strictEqual(S.submit('a', 4).isBest, true);
+    var S = fresh(); lastWin.localStorage.setItem('fong.scores.v1', '{not json');
+    assert.strictEqual(S.list('a').length, 0); assert.strictEqual(S.submit('a', 4).isBest, true);
 });
 ok('format helper', function () {
     var S = fresh();
