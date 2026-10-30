@@ -70,7 +70,7 @@
         return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /** Card HTML. opts (optional): label (custom title), noNew (no NEW badge), plays (number, shows a play count). prefix is prepended to catalog hrefs ('' on root, '.' keeps ./ so use '../' style by replace). */
+    /** Card HTML. opts (optional): label (custom title), noNew (no NEW badge), plays (number, shows a play count), best (text, added to the play count line). prefix is prepended to catalog hrefs ('' on root, '.' keeps ./ so use '../' style by replace). */
     function cardHtml(e, mode, rootPrefix, opts) {
         var title = mode === 'fun' ? (e.funTitle || e.title) : e.title;
         if (opts && typeof opts.label === 'string' && opts.label) title = opts.label;
@@ -83,7 +83,7 @@
             '<div class="game-title">' + escapeHtml(title) + (e.isNew && !(opts && opts.noNew) ? '<span class="badge-new">NEW</span>' : '') + '</div>' +
             parent +
             '<p class="game-desc">' + escapeHtml(desc) + '</p>' +
-            (opts && typeof opts.plays === 'number' ? '<div class="game-plays">' + opts.plays + (opts.plays === 1 ? ' play' : ' plays') + '</div>' : '') +
+            (opts && typeof opts.plays === 'number' ? '<div class="game-plays">' + opts.plays + (opts.plays === 1 ? ' play' : ' plays') + (opts.best ? ' &middot; Best: ' + escapeHtml(opts.best) : '') + '</div>' : '') +
             (e.version ? '<div class="game-meta"><span>' + escapeHtml(e.version) + '</span></div>' : '') +
             '</a>';
     }

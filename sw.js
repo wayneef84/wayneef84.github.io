@@ -7,7 +7,7 @@
  * when you need every phone to drop its cached copies). Old caches are
  * deleted on activate.
  */
-var CACHE_VERSION = 'v1';
+var CACHE_VERSION = 'v2';
 
 var SHELL_CACHE = 'fong-shell-' + CACHE_VERSION;
 var RUNTIME_CACHE = 'fong-runtime-' + CACHE_VERSION;
@@ -34,6 +34,7 @@ var SHELL = [
     './css/skins/scrapbook.css',
     './css/theme-overrides.css',
     './css/theme-panel.css',
+    './css/settings.css',
     './js/theme/loader.js',
     './js/theme/palettes.js',
     './js/theme/validate.js',
@@ -41,6 +42,10 @@ var SHELL = [
     './js/theme/panel.js',
     './js/catalog.js',
     './js/player-stats.js',
+    './js/scores.js',
+    './js/prefs.js',
+    './js/cheer.js',
+    './js/settings.js',
     './js/hub-data.js',
     './js/hub-nav.js',
     './js/hub-filters.js',

@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="./css/skins/scrapbook.css">
     <link rel="stylesheet" href="./css/theme-overrides.css">
     <link rel="stylesheet" href="./css/theme-panel.css">
+    <link rel="stylesheet" href="./css/settings.css">
 </head>
 <body>
 
@@ -30,7 +31,7 @@
         <a href="./index.html" class="nav-brand">F.O.N.G. ARCADE</a>
         <div class="nav-right">
             <div id="global-play-count" class="stats-container">Plays: 0</div>
-            <button type="button" id="theme-open" class="theme-open" aria-haspopup="dialog" aria-label="Customize this page"><span aria-hidden="true">&#9881;</span><span class="theme-open-label">Customize</span></button>
+            <button type="button" id="theme-open" class="theme-open" aria-haspopup="dialog" aria-label="Settings"><span aria-hidden="true">&#9881;</span><span class="theme-open-label">Settings</span></button>
             <a href="?mode=fun" id="theme-toggle" class="theme-toggle-link">&#127918; Fun Mode</a>
         </div>
     </header>
@@ -75,12 +76,16 @@
 
     <script src="./js/catalog.js"></script>
     <script src="./js/player-stats.js"></script>
+    <script src="./js/scores.js"></script>
+    <script src="./js/prefs.js"></script>
+    <script src="./js/cheer.js"></script>
     <script src="./js/theme/palettes.js"></script>
     <script src="./js/theme/validate.js"></script>
     <script src="./js/theme/apply.js"></script>
     <script src="./js/hub-data.js"></script>
     <script src="./js/hub-nav.js"></script>
     <script src="./js/hub-filters.js"></script>
+    <script src="./js/settings.js"></script>
     <script src="./js/theme/panel.js"></script>
     <script src="./js/pwa.js" data-install="1"></script>
     <script>if (window.FongStats) { window.FongStats.trackClicks(); }</script>
