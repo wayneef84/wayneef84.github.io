@@ -140,7 +140,13 @@ export default class InvadersScene extends Scene {
 
     update(dt) {
         this.timer.update(dt);
-        if (this.state !== 'playing') return;
+        if (this.state !== 'playing') {
+            if (!this.scoreSent) {
+                this.scoreSent = true;
+                if (window.FongScores) { FongScores.celebrate(FongScores.submit('space-invaders', this.score, { title: 'Space Invaders', unit: 'points' })); }
+            }
+            return;
+        }
 
         // --- Player ---
         if (this.engine.input.keys['ArrowLeft']) this.player.x -= this.player.speed;

@@ -694,6 +694,9 @@ function levelClear() {
   writeSave();
   run.newBest = newBest;
   run.final = L.index === NLEV - 1;
+  if (window.FongScores && L.index + 1 > (FongScores.best('byte-runner-quest:level') || 0)) {
+    FongScores.celebrate(FongScores.submit('byte-runner-quest:level', L.index + 1, { title: 'Byte Runner Quest: furthest level', unit: 'level' }));
+  }
   sfx('clear');
   for (i = 0; i < 6; i++) fwQueue.push(frame + i * 14);
 }
@@ -721,6 +724,7 @@ function endRun() {
   state = 'over'; menuSel = 0;
   run.newBest = run.dist > (save.endless || 0);
   if (run.newBest) { save.endless = run.dist; writeSave(); }
+  if (window.FongScores && Math.floor(run.dist) > 0) { FongScores.celebrate(FongScores.submit('byte-runner-quest:endless', Math.floor(run.dist), { title: 'Byte Runner Quest: endless run', unit: 'points' })); }
 }
 
 /* ================= menus ================= */

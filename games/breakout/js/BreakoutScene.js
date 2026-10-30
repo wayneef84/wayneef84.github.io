@@ -79,6 +79,10 @@ export default class BreakoutScene extends Scene {
 
     update(dt) {
         if (this.state !== 'playing') {
+            if (!this.scoreSent) {
+                this.scoreSent = true;
+                if (window.FongScores) { FongScores.celebrate(FongScores.submit('breakout', this.score, { title: 'Breakout', unit: 'points' })); }
+            }
             if (this.engine.input.pointer.isPressed || this.engine.input.keys['Space']) {
                 this.resetGame();
             }
@@ -177,6 +181,7 @@ export default class BreakoutScene extends Scene {
     resetGame() {
         this.lives = 3;
         this.score = 0;
+        this.scoreSent = false;
         this.state = 'playing';
         this.bricks = [];
         this.setupLevel();

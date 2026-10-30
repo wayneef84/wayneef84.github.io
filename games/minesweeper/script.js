@@ -536,6 +536,9 @@ function loadHighScore() {
 
 function checkHighScore() {
     if (gameState.currentDifficulty === 'custom') return;
+    if (window.FongScores && gameState.timer > 0) {
+        FongScores.submit('minesweeper:' + gameState.currentDifficulty, gameState.timer, { title: 'Minesweeper (' + gameState.currentDifficulty + ')', unit: 'seconds', higherIsBetter: false });
+    }
 
     const key = `minesweeper_highscore_${gameState.currentDifficulty}`;
     const currentBest = localStorage.getItem(key);

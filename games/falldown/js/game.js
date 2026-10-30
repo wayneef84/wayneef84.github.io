@@ -515,6 +515,7 @@ const Game = {
     gameOver: function() {
         this.state = 'GAMEOVER';
         const finalScore = Math.floor(this.score);
+        if (window.FongScores) { FongScores.celebrate(FongScores.submit('falldown', finalScore, { title: 'Falldown', unit: 'points' })); }
 
         if (typeof StorageManager !== 'undefined') {
             StorageManager.isHighScore(finalScore).then(isNewHigh => {

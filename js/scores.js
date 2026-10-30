@@ -199,6 +199,12 @@
                 g = { title: gameId, unit: 'points', hib: true, max: DEFAULT_KEEP, entries: [] };
                 s.games[gameId] = g;
             }
+            // Optional one-call setup: submit(id, v, { title, unit, higherIsBetter, max })
+            if (opts && (opts.title || opts.unit || opts.higherIsBetter !== undefined || opts.max)) {
+                var m = cleanMeta(opts, g.title);
+                g.title = m.title; g.unit = m.unit; g.hib = m.hib; g.max = m.max;
+                sortEntries(g.entries, g.hib);
+            }
             if (g.entries.length) { res.previousBest = g.entries[0].v; }
             var v = cleanValue(Number(value));
             if (v === null) { return res; }

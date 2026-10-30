@@ -34,6 +34,15 @@ export default class PongScene extends Scene {
         this.resetBall();
 
         this.dividerStyle = { x: this.width/2 - 2, w: 4, h: 20, gap: 15 };
+
+        // Pong has no end of match, so the points you scored are saved when you leave the page.
+        var self = this;
+        if (!this.leaveBound) {
+            this.leaveBound = true;
+            window.addEventListener('pagehide', function () {
+                if (self.p1.score > 0 && window.FongScores) { FongScores.submit('pong', self.p1.score, { title: 'Pong', unit: 'points' }); }
+            });
+        }
     }
 
     resetBall(winner) {

@@ -131,6 +131,7 @@
     function win() {
         var key = bestKey(), prev = settings.best[key], isBest = (typeof prev !== 'number' || game.moves < prev);
         if (isBest) { settings.best[key] = game.moves; save(); }
+        if (window.FongScores) { FongScores.submit('memory-match:' + settings.size, game.moves, { title: 'Memory Match (' + SIZES[settings.size].label + ')', unit: 'moves', higherIsBetter: false, label: settings.set }); }
         els.winText.textContent = 'You did it in ' + game.moves + (game.moves === 1 ? ' move.' : ' moves.');
         els.winBest.textContent = isBest ? (typeof prev === 'number' ? 'A new best! Wow!' : 'Your first best score!') : 'Best so far: ' + prev + ' moves.';
         updateStatus();
