@@ -3,7 +3,7 @@
 The Sprunki Survival Handbook is designed to work seamlessly with or without custom assets.
 When an asset is missing, the system automatically displays a colored placeholder with the filename it expects.
 
-> Status: no art files exist yet, so `js/data.js` has empty `normalImg` and `horrorImg` paths and the page shows the colored placeholder (no 404s). After adding files, set each path back to `assets/<name>_normal.png` or `assets/<name>_horror.png` in `js/data.js`.
+> Status: no art files exist yet, so `js/data.js` has empty `normalImg` paths and the page shows the colored placeholder (no 404s). After adding files, set each path back to `assets/<name>_normal.png` in `js/data.js`.
 
 ## Quick Start: Adding Images
 
@@ -15,20 +15,19 @@ When an asset is missing, the system automatically displays a colored placeholde
 
 By default, the system is configured to look for files in the `assets/` folder with the following pattern:
 
--   **Normal Mode**: `[name]_normal.png`
--   **Horror Mode**: `[name]_horror.png`
+-   **Picture**: `[name]_normal.png`
 
 *(Filenames should be lowercase)*
 
 ### Character Checklist
 
-| Character | Normal File | Horror File |
-| :--- | :--- | :--- |
-| **Oren** | `oren_normal.png` | `oren_horror.png` |
-| **Raddy** | `raddy_normal.png` | `raddy_horror.png` |
-| **Clukr** | `clukr_normal.png` | `clukr_horror.png` |
-| **Fun Bot** | `fun_bot_normal.png` | `fun_bot_horror.png` |
-| **Wenda** | `wenda_normal.png` | `wenda_horror.png` |
+| Character | File |
+| :--- | :--- |
+| **Oren** | `oren_normal.png` |
+| **Raddy** | `raddy_normal.png` |
+| **Clukr** | `clukr_normal.png` |
+| **Fun Bot** | `fun_bot_normal.png` |
+| **Wenda** | `wenda_normal.png` |
 
 ## Advanced Configuration
 
@@ -36,7 +35,7 @@ If you want to use different filenames or file types (e.g., `.webp`, `.jpg`), yo
 
 1.  Open `js/data.js`.
 2.  Locate the character entry you wish to modify.
-3.  Update the `normalImg` or `horrorImg` path to match your file.
+3.  Update the `normalImg` path to match your file.
 
 ```javascript
 // Example modification in js/data.js

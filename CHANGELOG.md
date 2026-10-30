@@ -18,6 +18,7 @@ All notable changes to the root hub will be documented in this file.
 
 ### Removed
 - Streak counters and flame from the Daily Command Center, and the `fong_streak_*` keys.
+- **Sprunki Survival Handbook:** the Safe/Danger switch and every alternate dark text and style path are gone. The page is calm only, any old saved setting is ignored, and the catalog description no longer says "glitchy". Doc set added.
 
 ## [2.1.0] - 2026-02-15
 ### Added
