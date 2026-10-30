@@ -8,6 +8,19 @@
     --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
+/* Sideways-scroll guard shared by every NEGEN game page: body already hides
+   overflow-x but html did not, and headers (width 100% + padding) were 20px wide. */
+html {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+.game-header {
+    box-sizing: border-box;
+}
+img {
+    max-width: 100%;
+}
+
 body {
     margin: 0;
     background-color: var(--bg-color);

@@ -12,6 +12,7 @@ All notable changes to the root hub will be documented in this file.
 - **Shared play stats:** `js/player-stats.js` (`FongStats`) keeps plays, last played and best score per catalog id, on-device only. Old `playcount_*` keys migrate once. See `docs/PLAYER_STATS.md`.
 
 ### Fixed
+- **Phone fixes (360x640, 390x844, 844x390):** Input A11y v2 now loads `games/lib/StorageManager.js` (was `../../lib/`, a 404 that broke the page). Breakout QR script path fixed. SKYbreakers canvas sized by CSS so it no longer scrolls sideways at 2x. Snake clamps the food radius (no more IndexSizeError in landscape) and fits its controls bar. Sprunki Survival shows its placeholder without five 404s. Shared `negen/style.css` stops sideways scroll on all NEGEN pages (html overflow-x, border-box game headers). Flow canvas, Trace Letters header (was 419px wide) and the Tracing hub Back button overlap fixed.
 - Header "Plays:" counter showed 0 (nothing wrote the counts it read). It now shows the real total, no 99 cap, large numbers as 1.2k.
 
 ### Removed
