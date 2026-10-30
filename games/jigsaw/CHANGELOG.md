@@ -1,5 +1,8 @@
 # Jigsaw - Changelog
 
+## Unreleased
+- One guarded `FongScores.submit` on a finished puzzle saves the best time per piece count (`jigsaw:<pieces>`), only when "Show time played" is on (it is off by default). `js/scores.js` script tag added.
+
 ## 2.0.0 - 2026-10-29
 Full rebuild.
 - Pure, unit-tested geometry, groups and model modules (node tests/run.js).

@@ -29,6 +29,8 @@ Ids are the `id` values in `FONG_CATALOG`. A new catalog entry works with no cha
 | `FongStats.isPersistent()` | `false` when localStorage is blocked |
 | `FongStats.trackClicks()` | Once per hub page: counts a play when a catalog card is clicked |
 
+For per-game top-5 lists that can be exported and reset, use `FongScores` instead, see [SCORES.md](SCORES.md). `FongStats.setBest` is still supported.
+
 A game records its own best score like this:
 
 ```js
