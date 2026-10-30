@@ -47,6 +47,17 @@
     function playsOf(id) {
         try { return window.FongStats ? window.FongStats.count(id) : 0; } catch (e) { return 0; }
     }
+    // "1,240" from FongScores when this game has exactly one score board. '' otherwise.
+    function bestOf(id) {
+        try {
+            if (!window.FongScores) return '';
+            var all = window.FongScores.listAll(), found = null, n = 0;
+            for (var i = 0; i < all.length; i++) {
+                if ((all[i].id === id || all[i].id.indexOf(id + ':') === 0) && all[i].scores.length) { found = all[i]; n++; }
+            }
+            return n === 1 ? window.FongScores.format(found.scores[0].value, found.unit) : '';
+        } catch (e) { return ''; }
+    }
     function entryById(id) {
         return hasOwn.call(window.FONG_NAV.byId, id) ? window.FONG_NAV.byId[id] : null;
     }
@@ -54,7 +65,11 @@
         var o = {}, l = labelFor(e.id);
         if (l) o.label = l;
         if (!beh('showNewBadges')) o.noNew = true;
-        if (beh('showPlayCounts')) o.plays = playsOf(e.id);
+        if (beh('showPlayCounts')) {
+            o.plays = playsOf(e.id);
+            var b = bestOf(e.id);
+            if (b) o.best = b;
+        }
         return o;
     }
 

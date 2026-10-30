@@ -243,6 +243,10 @@
             Au.chime();
             Au.buzz(30);
             cheer('done');
+            // Best time per piece count. Only when the player turned on "Show time played" (off by default).
+            if (S.settings.showTime && window.FongScores && (st.elapsedMs || 0) >= 1000) {
+                FongScores.submit('jigsaw:' + st.pz.count, Math.round(st.elapsedMs / 1000), { title: 'Jigsaw (' + st.pz.count + ' pieces)', unit: 'seconds', higherIsBetter: false });
+            }
         }
         st.celebrated = true;
         UI.status('You did it! The whole picture is together.');

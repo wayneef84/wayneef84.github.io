@@ -190,6 +190,7 @@ export default class SkyScene extends Scene {
 
         document.getElementById('msg').innerHTML = `CRASHED<br><span style="font-size:0.5em">SCORE: ${this.score}<br>BEST: ${this.highScore}</span>`;
         document.getElementById('msg').style.display = 'block';
+        if (window.FongScores) { FongScores.celebrate(FongScores.submit('sky-breakers', this.score, { title: 'Sky Breakers', unit: 'points' })); }
     }
 
     draw(renderer) {

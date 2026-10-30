@@ -9,6 +9,7 @@ The homepage can be installed on phones and desktops and works offline for pages
 | `manifest.webmanifest` | Name "Fong Family Arcade", short name "Fong Arcade", `start_url` and `scope` `./`, standalone, theme and background `#0f1117` (default skin), icons |
 | `sw.js` | Service worker. Must stay at the repo root so its scope covers the whole site |
 | `offline.html` | Friendly page for a navigation that fails offline and was never visited |
+| `js/scores.js`, `js/prefs.js`, `js/cheer.js`, `js/settings.js`, `css/settings.css` | Part of the shell list (Settings hub and scores). `CACHE_VERSION` is `v2` since they were added |
 | `js/pwa.js` | Registers the worker, update toast, Install app button, kill switch |
 | `assets/icons/` | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` (180). Original controller art made by `assets/icons/make-icons.js` (`node assets/icons/make-icons.js`) |
 

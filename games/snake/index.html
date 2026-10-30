@@ -328,6 +328,7 @@
         Updates by Jules (v2.0) - Jan 2026
     </footer>
 
+    <script src="../../js/scores.js"></script>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -716,6 +717,7 @@
             if(navigator.vibrate) navigator.vibrate(300);
             finalScoreEl.textContent = score;
             gameOverScreen.classList.add('active');
+            if (!isAttractMode && window.FongScores) { FongScores.celebrate(FongScores.submit('snake', score, { title: 'Snake', unit: 'points' })); }
         }
 
         function turnLeft() {

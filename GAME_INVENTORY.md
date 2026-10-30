@@ -25,24 +25,24 @@
 |-----------|------|----------|--------|--------------|--------------|--------------|-------|
 | Blackjack | `/games/cards/blackjack/` | Card | Production | 95% | ✅ Yes | 2026-01-31 | v1.0.5-C: Core engine complete, insurance/double-down working, Safari tested |
 | War | `/games/cards/war/` | Card | Production | 90% | ✅ Yes | 2026-01-17 | v1.1.0: Battle history, endless/non-endless modes, nested ties handled |
-| Slots | `/games/slots/` | Arcade | Draft | 90% | ✅ Yes | 2026-10-29 | v4.1.1: 16 theme display names changed (ids and saves unchanged, picker search still finds old names). v4.1.0: 60 themes (6 new K's Picks), Sparkle Party Easter egg, parent-set cheers (`js/cheer.js`). v4.0.0: rebuild, play-money coins, 6 modes (3-reel, 5-reel lines, cascade, match groups, pick-a-prize, prize wheel), 54 themes, CSS 3D drums, free refill, calm mode, works from file:// |
+| Slots | `/games/slots/` | Arcade | Draft | 90% | ✅ Yes | 2026-10-29 | v4.1.1: 16 theme display names changed (ids and saves unchanged, picker search still finds old names). v4.1.0: 60 themes (6 new K's Picks), Sparkle Party Easter egg, parent-set cheers (`js/cheer.js`). v4.0.0: rebuild, play-money coins, 6 modes (3-reel, 5-reel lines, cascade, match groups, pick-a-prize, prize wheel), 54 themes, CSS 3D drums, free refill, calm mode, works from file:// Best scores saved per device (FongScores). |
 | Letter Tracing | `/games/tracing/` | Educational | Production | 90% | ✅ Yes | 2026-02-10 | v5.1: A-B-C audio, voice speed control, 4 variants (letters/words/sentences/chinese) |
 | Sprunki Mixer | `/games/sprunki/` | Arcade | Production | 85% | ✅ Yes | 2026-02-10 | Music mixer: 20+ characters, 2 packs, drag-and-drop, requires local server |
 | S4K Mixer v2 | `/games/sprunki_v2/` | Arcade | Draft | 80% | ✅ Yes | 2026-10-27 | v2.2.0: standalone rebuild, All tab, 11 packs (Classic, 4 seasons, Halloween, Aqua, Toxic, Robo, Candy, Bubblegum Pop), Shift+number tab shortcuts, Mr. Black spooky mode, touch UI, works from file:// |
 | Nightlite Choir+ | `/games/nightlite_choir/` | Arcade | Draft | 40% | ✅ Yes | 2026-10-29 | v0.4.0 Milestone 3: door screen (3 open doors), Night Garden, Toy Attic and Star Observatory with 4 original creatures each, free sparks, eggs and nest, Mixing pot, Discovery book, 6 blend creatures, world switcher, shared stage, C pentatonic synth loops, tap/drag, undo, save/load, works from file:// |
-| Memory Match | `/games/memory_match/` | Puzzle | Production | 95% | ✅ Yes | 2026-10-27 | v1.0.0 pairs game for young children: Easy 3x4, Normal 4x4, Big 4x5, Emoji and 14 original SVG animal sets, synthesized sound, remembered best, keyboard play, works from file:// |
+| Memory Match | `/games/memory_match/` | Puzzle | Production | 95% | ✅ Yes | 2026-10-27 | v1.0.0 pairs game for young children: Easy 3x4, Normal 4x4, Big 4x5, Emoji and 14 original SVG animal sets, synthesized sound, remembered best, keyboard play, works from file:// Best scores saved per device (FongScores). |
 | J Quiz | `/games/j/` | Educational | Production | 85% | ✅ Yes | 2026-02-15 | v4.x: 1000+ questions, 17+ packs, advanced settings, revamp mode |
 | Sudoku | `/games/sudoku/` | Puzzle | Production | 90% | ✅ Yes | 2026-02-13 | Dual input, notes, undo/redo, customizable zoom, mobile-optimized |
-| Minesweeper | `/games/minesweeper/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-13 | Mini zoom, hold-to-flag, custom settings, F.O.N.G. integrated |
-| Snake | `/games/snake/` | Arcade | Production | 90% | ✅ Yes | 2026-02-13 | Neon Serpent v1: Web Audio, negen_version variant exists |
+| Minesweeper | `/games/minesweeper/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-13 | Mini zoom, hold-to-flag, custom settings, F.O.N.G. integrated Best scores saved per device (FongScores). |
+| Snake | `/games/snake/` | Arcade | Production | 90% | ✅ Yes | 2026-02-13 | Neon Serpent v1: Web Audio, negen_version variant exists Best scores saved per device (FongScores). |
 | Mahjong | `/games/mahjong/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-10 | 3D tiles, custom symbols, mobile touch controls |
-| Jigsaw | `/games/jigsaw/` | Puzzle | Production | 90% | ✅ Yes | 2026-10-29 | v2.0.0: any picture, snapping groups, 6-300 pieces, little hands, zoom/pan, save/resume, puzzle files |
-| Sky Breakers | `/games/sky_breakers/` | Arcade | Production | 80% | ✅ Yes | 2026-02-13 | Canvas-based shooter with smooth controls, difficulty levels |
-| Pong | `/games/pong/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Pong: Classic two-player mechanics, responsive |
-| Space Invaders | `/games/space_invaders/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Space Invaders: Grid-based shooter, score system |
-| Breakout | `/games/breakout/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Breakout: Brick-breaker mechanics, level progression |
+| Jigsaw | `/games/jigsaw/` | Puzzle | Production | 90% | ✅ Yes | 2026-10-29 | v2.0.0: any picture, snapping groups, 6-300 pieces, little hands, zoom/pan, save/resume, puzzle files Best scores saved per device (FongScores). |
+| Sky Breakers | `/games/sky_breakers/` | Arcade | Production | 80% | ✅ Yes | 2026-02-13 | Canvas-based shooter with smooth controls, difficulty levels Best scores saved per device (FongScores). |
+| Pong | `/games/pong/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Pong: Classic two-player mechanics, responsive Best scores saved per device (FongScores). |
+| Space Invaders | `/games/space_invaders/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Space Invaders: Grid-based shooter, score system Best scores saved per device (FongScores). |
+| Breakout | `/games/breakout/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Breakout: Brick-breaker mechanics, level progression Best scores saved per device (FongScores). |
 | Byte Runner | `/games/byte_runner/` | Arcade | Production | 85% | ✅ Yes | 2026-10-25 | v1.0.0: Self-playing platformer + live copy monitor (byte-runner.ps1), demo mode on the site |
-| Byte Runner Quest | `/games/byte_runner_quest/` | Arcade | Production | 90% | ✅ Yes | 2026-10-25 | v1.0.0: 12 levels in 4 worlds, level select, 36 disks, Endless Run, saves; levels solver-verified |
+| Byte Runner Quest | `/games/byte_runner_quest/` | Arcade | Production | 90% | ✅ Yes | 2026-10-25 | v1.0.0: 12 levels in 4 worlds, level select, 36 disks, Endless Run, saves; levels solver-verified Best scores saved per device (FongScores). |
 | Board Games | `/games/board/` | Arcade | Production | 75% | ✅ Yes | 2026-02-10 | Board Games Arcade collection (Chess, Checkers) |
 | Animal Stack | `/games/animal_stack/` | Arcade | Production | 75% | ✅ Yes | 2026-02-10 | Stacking gameplay, mobile touch controls |
 | XTC Ball | `/games/xtc_ball/` | Puzzle | Production | 75% | ✅ Yes | 2026-02-10 | Magic 8-ball inspired, DOM/SVG rendering, synthesized sound |
@@ -60,7 +60,7 @@
 | Poker (Texas Hold'em) | `/games/cards/poker/holdem/` | Card | Development | 20% | ⚠️ Unknown | 2026-02-08 | Stub only ("Coming Soon"), needs full implementation |
 | Solitaire (Klondike) | `/games/cards/solitaire/` | Card | Development | 50% | ✅ Yes | 2026-02-15 | Uses shared card engine, basic structure in place, rules incomplete |
 | Flow Games | `/games/flow/` | Puzzle | Development | 70% | ✅ Yes | 2026-02-10 | Multiple variants (Free/Bridge/Hex/Warp), engine architecture complete, UI polish needed |
-| Fall Down | `/games/falldown/` | Arcade | Development | 75% | ✅ Yes | 2026-02-15 | Recently enhanced: boxed layout, levels, lives, powerups |
+| Fall Down | `/games/falldown/` | Arcade | Development | 75% | ✅ Yes | 2026-02-15 | Recently enhanced: boxed layout, levels, lives, powerups Best scores saved per device (FongScores). |
 | PuzzLLer | `/games/puzzller/` | Puzzle | Development | 70% | ✅ Yes | 2026-02-13 | Mobile touch controls added, UI/controls improved, gameplay stable |
 | Flash Classics | `/games/flash_classics/` | Arcade | Development | 50% | ✅ Yes | 2026-02-13 | Menu-only collection (Chopper, Defender, Runner stubs) - needs implementation |
 

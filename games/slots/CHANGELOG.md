@@ -2,6 +2,13 @@
 
 All notable changes. Dates are YYYY-MM-DD.
 
+## [4.1.2] - 2026-10-29
+
+### Added
+- Best scores on this device through `FongScores`: most coins (saved when you leave the page) and biggest single win (saved only when beaten). See Settings, Scores.
+- Slots now also follows the shared Calm pref (`fong.prefs.v1`, `FongPrefs`), alongside its own Calm mode and the system reduced-motion setting.
+- `ui.js` query string bumped to `?v=4.1.2`.
+
 ## [4.1.1] - 2026-10-29
 
 ### Changed

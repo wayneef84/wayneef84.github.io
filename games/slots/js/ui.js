@@ -39,7 +39,7 @@
     function fmt(n) { return String(Math.floor(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 
     function isCalm() {
-        return forceCalm || state.calm || !!(mq && mq.matches);
+        return forceCalm || state.calm || !!(mq && mq.matches) || !!(window.FongPrefs && FongPrefs.get('calm'));
     }
 
     function persist() { S.store.save(state); }
@@ -297,6 +297,10 @@
     function celebrate(win, bet) {
         if (!round) { return; }
         setLast(round.win);
+        // Personal bests on this device (only saved when beaten, so the list stays distinct)
+        if (round.win > 0 && window.FongScores && round.win > (FongScores.best('slots:win') || 0)) {
+            FongScores.submit('slots:win', round.win, { title: 'Slots: biggest win', unit: 'coins' });
+        }
         if (win > 0) {
             var big = win >= bet * 5;
             showWinPop(win, big);
@@ -571,6 +575,11 @@
         window.addEventListener('resize', resize);
         window.addEventListener('orientationchange', function () { later(resize, 250); });
         window.addEventListener('pagehide', persist);
+        window.addEventListener('pagehide', function () {
+            if (window.FongScores && state.coins > (FongScores.best('slots:coins') || 0)) {
+                FongScores.submit('slots:coins', state.coins, { title: 'Slots: most coins', unit: 'coins' });
+            }
+        });
     }
 
     function openHelpRefresh() {

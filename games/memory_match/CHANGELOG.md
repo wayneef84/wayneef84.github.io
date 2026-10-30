@@ -1,6 +1,7 @@
 # Memory Match: Changelog
 
 ## Unreleased
+- Fewest moves per board size are also saved through `FongScores` (boards `memory-match:easy`, `:normal`, `:big`). Visible in Settings, Scores. No change to rules or the win screen.
 - Cheers button in the status row. Matches call `FongCheer.cheer('good')` and the finished board calls `'done'`, guarded (`js/cheer.js`, docs/CHEER.md). Off until a parent turns it on. No rule changes.
 
 ## v1.0.0 (2026-10-27)

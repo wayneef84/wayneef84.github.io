@@ -1,10 +1,10 @@
 # Customize the homepage
 
-The homepage has a **Customize** button in the header. It opens a panel where you change how the page looks and what it shows. Your choices are saved on this device only (browser storage). Nothing is sent anywhere.
+The homepage has a **Settings** button in the header (it used to say Customize). It opens the Settings hub, see [SETTINGS.md](SETTINGS.md). The **Look** tab there has **Open Customize**, which opens the panel where you change how the page looks and what it shows. Your choices are saved on this device only (browser storage). Nothing is sent anywhere.
 
 ## Switch the look
 
-1. Tap **Customize**, then the **Look** tab.
+1. Tap **Settings**, then **Look**, then **Open Customize**, then the panel's **Look** tab.
 2. Pick a **skin**. Classic is the page as it always was. The others change the whole layout, type and decoration (see the table below).
 3. Pick a **palette**. It sets every color at once.
 4. Under **Shape and type** change corner radius, border width, shadow, density, fonts and the background pattern. "Skin default" leaves the choice to the skin.
