@@ -178,6 +178,27 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 @keyframes pop-in { 0% { opacity: 0; transform: translateX(-50%) scale(0.7); } 15% { opacity: 1; transform: translateX(-50%) scale(1.06); } 25% { transform: translateX(-50%) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes conf-fall { from { transform: translateY(0) rotate(0deg); opacity: 1; } to { transform: translateY(520%) rotate(260deg); opacity: 0; } }
 
+/* inline SVG symbols (Bubblegum Band) */
+.g svg { width: 1em; height: 1em; display: block; margin: 0 auto; }
+
+/* footer row: Cheers button and title (tap the title 5 times quickly for a surprise) */
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 0 0 auto; }
+.foot-btn { min-height: 44px; padding: 0 14px; font-size: 15px; font-weight: 700; background: rgba(0, 0, 0, 0.28); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: 22px; cursor: pointer; }
+.brand { margin: 0; font-size: inherit; }
+.brand-btn { border-color: transparent; background: transparent; color: var(--accent); }
+
+/* Sparkle Party */
+.party { position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 14px; background: rgba(40, 8, 60, 0.82); overflow: hidden; }
+.party-conf { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none; }
+.party-bit { position: absolute; top: -8%; width: 10px; height: 14px; border-radius: 3px; background: var(--c, #ff7ac8); opacity: 0.9; animation: party-fall 5.5s linear both; }
+.party-card { position: relative; width: 100%; max-width: 340px; padding: 16px; text-align: center; background: var(--bg); border: 3px solid var(--accent); border-radius: 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+.party-rainbow { height: 14px; margin: 0 0 10px; border-radius: 7px; background: linear-gradient(90deg, #ff5d8f, #ff9d4d, #ffe14d, #6fe38a, #5db8ff, #b48cff); }
+.party-title { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+.party-line { margin: 0 0 6px; font-size: 20px; font-weight: 700; }
+.party-coins { margin: 0 0 12px; font-size: 16px; min-height: 1.3em; }
+@keyframes party-fall { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(125vh) rotate(300deg); } }
+.calm .party-bit { display: none; }
+
 /* Calm mode: JS adds .calm (user choice or prefers-reduced-motion). Static highlights only. */
 .calm *, .calm *::before, .calm *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 .calm .face.win .g, .calm .tile.win .g { animation: none; }

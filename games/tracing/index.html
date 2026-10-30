@@ -41,6 +41,11 @@
             transition: all 0.2s;
         }
 
+        /* The absolute Back button sat on top of the title icon on phones. Push the page content below it. */
+        @media (max-width: 700px) {
+            body { padding-top: 84px; }
+        }
+
         .back-btn:active {
             transform: scale(0.95);
         }

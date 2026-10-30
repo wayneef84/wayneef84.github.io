@@ -6,6 +6,7 @@
  *   name     shown in the picker
  *   group    one of GROUPS below (picker chip)
  *   kids     true if it is fine for the Kids chip
+ *   kpick    true to also show it under the "K's Picks" chip
  *   flavour  one short line shown under the name
  *   pal      [background, background 2, accent, reel face, ink], hex colours
  *   sym      6 paying symbols, lowest to highest. Emoji or an inline "<svg ...>" string.
@@ -52,6 +53,7 @@
         t.pal = [pal[0] || '#1a1a2e', pal[1] || '#2a2a50', lift(pal[2] || '#ffd166'), pal[3] || '#f6f6fb', pal[4] || '#1a1a2e'];
         if (GROUPS.indexOf(t.group) < 0) { t.group = 'Fun'; }
         t.kids = t.kids !== false;
+        t.kpick = t.kpick === true;
         t.wildName = t.wildName || 'Wild';
         t.scatName = t.scatName || 'Scatter';
         byKey[t.key] = t;
@@ -71,7 +73,49 @@
         has: function (key) { return !!byKey[key]; }
     };
 
+
+    /**
+     * Original round music pal for the Bubblegum Band theme: a coloured ball with a face and one
+     * small instrument-style extra. Inline SVG, no files. kind picks the extra.
+     */
+    function pal(body, kind) {
+        var x = '';
+        if (kind === 'bell') { x = '<path d="M32 9v6" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="7" r="5" fill="#ffd84d"/>'; }
+        if (kind === 'drum') { x = '<path d="M16 8l11 12M48 8L37 20" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="15" cy="7" r="3.5" fill="#ff5fa8"/><circle cx="49" cy="7" r="3.5" fill="#ff5fa8"/>'; }
+        if (kind === 'keys') { x = '<rect x="19" y="50" width="26" height="10" rx="2" fill="#fff"/><path d="M26 50v6M32 50v10M38 50v6" stroke="#3b2a55" stroke-width="2.4"/>'; }
+        if (kind === 'horn') { x = '<path d="M50 20l10-6v16l-10-6z" fill="#ffd84d" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>'; }
+        if (kind === 'zig') { x = '<path d="M26 14l5-6 4 6 5-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'; }
+        if (kind === 'note') { x = '<circle cx="28" cy="9" r="4" fill="#fff"/><path d="M32 9V-1h8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>'; }
+        return '<svg viewBox="0 0 64 64" width="1em" height="1em" style="width:1em;height:1em;display:block;margin:0 auto;overflow:visible" aria-hidden="true">' +
+            '<circle cx="32" cy="36" r="24" fill="' + body + '" stroke="#fff" stroke-width="3"/>' + x +
+            '<ellipse cx="24" cy="32" rx="5" ry="6" fill="#fff"/><ellipse cx="40" cy="32" rx="5" ry="6" fill="#fff"/>' +
+            '<circle cx="25" cy="33" r="2.6" fill="#3b2a55"/><circle cx="41" cy="33" r="2.6" fill="#3b2a55"/>' +
+            '<path d="M24 44q8 8 16 0" fill="none" stroke="#3b2a55" stroke-width="3" stroke-linecap="round"/>' +
+            '<circle cx="17" cy="42" r="3.2" fill="#ff7ac8" opacity=".55"/><circle cx="47" cy="42" r="3.2" fill="#ff7ac8" opacity=".55"/></svg>';
+    }
+
     var DATA = [
+
+    /* K's Picks: pink, purple and rainbow themes for the youngest players. Names are original. */
+    { key: 'unisparkle', name: 'Unicorn Sparkle', group: 'Fantasy', kids: true, kpick: true, flavour: 'Glitter, rainbows and one very happy unicorn.',
+      pal: ['#4a1a6b', '#8a3aa8', '#ff8fd6', '#fff2fb', '#4a1060'],
+      sym: ['🌸', '⭐', '🍭', '💖', '🌈', '🦄'], wild: '✨', scat: '🎀', wildName: 'Glitter Burst', scatName: 'Pink Ribbon' },
+    { key: 'bubblegum', name: 'Bubblegum Band', group: 'Fun', kids: true, kpick: true, flavour: 'Six round pals hum along: Strumble, Hummsy, Whoopa, Tavvy, Thrumby and Jinglet.',
+      pal: ['#5a1650', '#a02a86', '#ff9ad8', '#fff0fa', '#4f0f45'],
+      sym: [pal('#ff9d7a', 'note'), pal('#8ff0b0', 'zig'), pal('#ffd166', 'horn'), pal('#7fd6ff', 'keys'), pal('#b48cff', 'drum'), pal('#ff8fc7', 'bell')],
+      wild: '🎶', scat: '🍬', wildName: 'Big Chorus', scatName: 'Wrapped Sweet' },
+    { key: 'rainbowstage', name: 'Rainbow Cloud Stage', group: 'Fantasy', kids: true, kpick: true, flavour: 'A fluffy cloud stage where the rainbow sings along.',
+      pal: ['#2f2a7a', '#5a4fc4', '#ffb3e6', '#f6f2ff', '#2a2470'],
+      sym: ['☁️', '🎵', '🎶', '🎤', '🌈', '🌟'], wild: '💫', scat: '🎟️', wildName: 'Shooting Sparkle', scatName: 'Stage Ticket' },
+    { key: 'ponyranch', name: 'Pink Pony Ranch', group: 'Nature', kids: true, kpick: true, flavour: 'Hay, carrots and a pony in a sunny pink hat.',
+      pal: ['#5c1f3f', '#a8446f', '#ffb0cf', '#fff3f7', '#521634'],
+      sym: ['🌾', '🍎', '🥕', '👢', '🤠', '🐴'], wild: '🌼', scat: '🏅', wildName: 'Daisy Chain', scatName: 'Ranch Ribbon' },
+    { key: 'glittergarden', name: 'Glitter Garden', group: 'Nature', kids: true, kpick: true, flavour: 'Sparkly petals and butterflies in the morning sun.',
+      pal: ['#4a1a5e', '#7e3a96', '#e6a8ff', '#fbf2ff', '#43144f'],
+      sym: ['🌷', '🌼', '🌸', '🐞', '🦋', '🧚'], wild: '✨', scat: '🌈', wildName: 'Glitter Dew', scatName: 'Rainbow Arch' },
+    { key: 'dreamcarousel', name: 'Dream Carousel', group: 'Fun', kids: true, kpick: true, flavour: 'Round and round on a merry-go-round of dreams.',
+      pal: ['#3f1a6e', '#7a3fb8', '#ffa8e0', '#fcf2ff', '#37125f'],
+      sym: ['🎈', '🍭', '🎀', '🎡', '🌙', '🎠'], wild: '⭐', scat: '🎁', wildName: 'Dream Star', scatName: 'Surprise Gift' },
     { key: 'sugar', name: 'Sugar Counter', group: 'Sweet', kids: true, flavour: 'A sticky-sweet shop with a jar of everything.',
       pal: ['#4a1740', '#7d2a6a', '#ff7ac8', '#fff3fa', '#4a1040'],
       sym: ['🍬', '🍭', '🍫', '🍩', '🧁', '🎂'], wild: '🌈', scat: '🎁', wildName: 'Rainbow Swirl', scatName: 'Gift Box' },
@@ -144,10 +188,10 @@
     { key: 'beach', name: 'Beach Day', group: 'Nature', kids: true, flavour: 'Sand in the sandwiches. Totally worth it.',
       pal: ['#0b4a5e', '#1a8aa8', '#ffe27a', '#fffbea', '#0b4a5e'],
       sym: ['🍉', '🐚', '🦀', '🏄', '🏖️', '☀️'], wild: '🌊', scat: '🏐', wildName: 'Big Wave', scatName: 'Beach Ball' },
-    { key: 'fantasy', name: 'Mystical Unicorn', group: 'Fantasy', kids: true, flavour: 'A sparkly meadow and a very proud unicorn.',
+    { key: 'fantasy', name: 'Sparkle Meadow', aka: 'Mystical Unicorn', group: 'Fantasy', kids: true, flavour: 'A sparkly meadow and a very proud unicorn.',
       pal: ['#191434', '#2e2460', '#C0C0C0', '#efedf7', '#1d163b'],
       sym: ['💎', '🔮', '🛡️', '⚔️', '👸', '🏰'], wild: '🦄', scat: '🌟' },
-    { key: 'classic', name: 'Classic Fruits', group: 'Classic', kids: true, flavour: 'Cherries, lemons and a shiny bell.',
+    { key: 'classic', name: 'Cherry Bell Corner', aka: 'Classic Fruits', group: 'Classic', kids: true, flavour: 'Cherries, lemons and a shiny bell.',
       pal: ['#341714', '#602a24', '#e74c3c', '#f7eeed', '#3b1a16'],
       sym: ['🍒', '🍋', '🍊', '🍇', '🔔', '💎'], wild: '🃏', scat: '🎁' },
     { key: 'ocean', name: 'Ocean Adventure', group: 'Nature', kids: true, flavour: 'Dive in and meet the neighbours.',
@@ -156,7 +200,7 @@
     { key: 'space', name: 'Space Explorer', group: 'Space & Tech', kids: true, flavour: 'Blast off past the ringed planet.',
       pal: ['#143414', '#246024', '#00ff00', '#edf7ed', '#163b16'],
       sym: ['👽', '🚀', '🪐', '🛸', '👨‍🚀', '🌌'], wild: '⭐', scat: '🌍' },
-    { key: 'animals', name: 'Wild Animals', group: 'Nature', kids: true, flavour: 'A big day out at the wildlife park.',
+    { key: 'animals', name: 'Safari Day Out', aka: 'Wild Animals', group: 'Nature', kids: true, flavour: 'A big day out at the wildlife park.',
       pal: ['#342314', '#604024', '#e67e22', '#f7f2ed', '#3b2816'],
       sym: ['🐵', '🐅', '🐘', '🦁', '🐼', '🐉'], wild: '🦊', scat: '🌿' },
     { key: 'food', name: 'Delicious Treats', group: 'Sweet', kids: true, flavour: 'Pizza, cake and ice cream. All of it.',
@@ -165,22 +209,22 @@
     { key: 'gems', name: 'Precious Gems', group: 'Classic', kids: true, flavour: 'Every colour of shiny you can think of.',
       pal: ['#2a1434', '#4f2460', '#8e44ad', '#f4edf7', '#30163b'],
       sym: ['❤️', '💚', '💙', '💜', '💛', '👑'], wild: '✨', scat: '💍' },
-    { key: 'cards', name: 'Card Royale', group: 'Classic', kids: false, flavour: 'Card suits and royal faces.',
+    { key: 'cards', name: 'Card Court', aka: 'Card Royale', group: 'Classic', kids: false, flavour: 'Card suits and royal faces.',
       pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
       sym: ['♣️', '♦️', '♥️', '♠️', '👸', '🤴'], wild: '🃏', scat: '🎴' },
-    { key: 'chess', name: 'Chess Masters', group: 'Classic', kids: false, flavour: 'Pawns, knights and a very tall king.',
+    { key: 'chess', name: 'Checkmate Corner', aka: 'Chess Masters', group: 'Classic', kids: false, flavour: 'Pawns, knights and a very tall king.',
       pal: ['#191434', '#2e2460', '#95a5a6', '#efedf7', '#1d163b'],
       sym: ['♟️', '♞', '♝', '♜', '♛', '♚'], wild: '🏆', scat: '⚔️' },
-    { key: 'monsters', name: 'Monster Mayhem', group: 'Fantasy', kids: false, flavour: 'Friendly-ish ghosts and goofy monsters.',
+    { key: 'monsters', name: 'Goofy Ghost Gang', aka: 'Monster Mayhem', group: 'Fantasy', kids: false, flavour: 'Friendly-ish ghosts and goofy monsters.',
       pal: ['#143421', '#24603e', '#2ecc71', '#edf7f1', '#163b26'],
       sym: ['👻', '👾', '👺', '👹', '🧟', '🧛'], wild: '🔮', scat: '⚡' },
-    { key: 'wolves', name: 'Wolf Pack', group: 'Nature', kids: false, flavour: 'Moonlit pines and a howling pack.',
+    { key: 'wolves', name: 'Moonlit Howl', aka: 'Wolf Pack', group: 'Nature', kids: false, flavour: 'Moonlit pines and a howling pack.',
       pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
       sym: ['🐾', '🌙', '🌲', '🐺', '🏹', '🌕'], wild: '🔥', scat: '🌟' },
-    { key: 'egypt', name: 'Ancient Egypt', group: 'Adventure', kids: false, flavour: 'Pyramids, scarabs and ancient scrolls.',
+    { key: 'egypt', name: 'Sandy Scarab Tomb', aka: 'Ancient Egypt', group: 'Adventure', kids: false, flavour: 'Pyramids, scarabs and ancient scrolls.',
       pal: ['#342d14', '#605424', '#f1c40f', '#f7f5ed', '#3b3416'],
       sym: ['☥', '👁️', '😺', '🪲', '🧟', '🦁'], wild: '🧞', scat: '📜' },
-    { key: 'music', name: 'Music Beats', group: 'Fun', kids: true, flavour: 'Guitars, keys and a loud little speaker.',
+    { key: 'music', name: 'Loud Little Speaker', aka: 'Music Beats', group: 'Fun', kids: true, flavour: 'Guitars, keys and a loud little speaker.',
       pal: ['#34141f', '#602439', '#e91e63', '#f7edf1', '#3b1623'],
       sym: ['🎵', '🎼', '🎸', '🎹', '🎤', '🎧'], wild: '🔊', scat: '💿' },
     { key: 'sports', name: 'Sports Arena', group: 'Fun', kids: true, flavour: 'Balls, goals and a big shiny trophy.',
@@ -189,7 +233,7 @@
     { key: 'tech', name: 'Tech Gadgets', group: 'Space & Tech', kids: true, flavour: 'Phones, cameras and a helpful robot.',
       pal: ['#143433', '#24605f', '#00cec9', '#edf7f7', '#163b3a'],
       sym: ['📱', '💻', '📷', '🎮', '📺', '🤖'], wild: '⚡', scat: '🔌' },
-    { key: 'camping', name: 'Wilderness Camp', group: 'Nature', kids: true, flavour: 'Tent, campfire and a long hike.',
+    { key: 'camping', name: 'Campfire Trail', aka: 'Wilderness Camp', group: 'Nature', kids: true, flavour: 'Tent, campfire and a long hike.',
       pal: ['#143421', '#24603e', '#27ae60', '#edf7f1', '#163b26'],
       sym: ['⛺', '🌲', '⛰️', '🔥', '🐟', '🎒'], wild: '🧭', scat: '🌟' },
     { key: 'astrology', name: 'Astrology Signs', group: 'Space & Tech', kids: false, flavour: 'Star signs and a crystal ball.',
@@ -198,22 +242,22 @@
     { key: 'weather', name: 'Weather Forecast', group: 'Nature', kids: true, flavour: 'Sun, rain, snow and a rainbow.',
       pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
       sym: ['☀️', '☁️', '🌧️', '⚡', '❄️', '🌈'], wild: '🌞', scat: '🌍' },
-    { key: 'planets', name: 'Solar System', group: 'Space & Tech', kids: true, flavour: 'A tour of the solar system.',
+    { key: 'planets', name: 'Planet Parade', aka: 'Solar System', group: 'Space & Tech', kids: true, flavour: 'A tour of the solar system.',
       pal: ['#2a1434', '#4f2460', '#8e44ad', '#f4edf7', '#30163b'],
       sym: ['☿', '♀', '🌍', '♂', '♃', '♄'], wild: '☀️', scat: '⭐' },
     { key: 'emoticons', name: 'Emoji Faces', group: 'Fun', kids: true, flavour: 'Big faces, bigger feelings.',
       pal: ['#342d14', '#605424', '#f1c40f', '#f7f5ed', '#3b3416'],
       sym: ['😊', '😂', '😉', '😍', '😎', '😮'], wild: '🥳', scat: '🎭' },
-    { key: 'pirates', name: 'Pirate\'s Gold', group: 'Adventure', kids: false, flavour: 'Treasure maps and a talking parrot.',
+    { key: 'pirates', name: 'Buried Treasure Bay', aka: 'Pirate\'s Gold', group: 'Adventure', kids: false, flavour: 'Treasure maps and a talking parrot.',
       pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
       sym: ['⚓', '💣', '⚔️', '📜', '🦜', '🦴'], wild: '🏴‍☠️', scat: '🎁' },
     { key: 'dinosaurs', name: 'Dino Jungle', group: 'Nature', kids: true, flavour: 'Eggs, ferns and giant friends.',
       pal: ['#143421', '#24603e', '#27ae60', '#edf7f1', '#163b26'],
       sym: ['🌿', '🥚', '🌋', '🥩', '🦕', '🦖'], wild: '☄️', scat: '🦟' },
-    { key: 'samurai', name: 'Samurai Spirit', group: 'Adventure', kids: false, flavour: 'Blossoms, lanterns and quiet castles.',
+    { key: 'samurai', name: 'Petal Dojo Days', aka: 'Samurai Spirit', group: 'Adventure', kids: false, flavour: 'Blossoms, lanterns and quiet castles.',
       pal: ['#341714', '#602a24', '#e74c3c', '#f7eeed', '#3b1a16'],
       sym: ['🌸', '🍵', '🏮', '🏯', '👺', '🗡️'], wild: '🥋', scat: '⛩️' },
-    { key: 'vikings', name: 'Viking Legends', group: 'Adventure', kids: false, flavour: 'Longships, shields and stormy seas.',
+    { key: 'vikings', name: 'Longship Tales', aka: 'Viking Legends', group: 'Adventure', kids: false, flavour: 'Longships, shields and stormy seas.',
       pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
       sym: ['🍖', '🛡️', '🪓', '🛶', '🐺', '⚡'], wild: '🧔', scat: '🔨' },
     { key: 'steampunk', name: 'Steampunk Rev', group: 'Adventure', kids: true, flavour: 'Gears, clocks and a chugging train.',
@@ -225,10 +269,10 @@
     { key: 'fairytale', name: 'Fairy Tale', group: 'Fantasy', kids: true, flavour: 'A frog, a crown and a castle.',
       pal: ['#341424', '#602442', '#ff69b4', '#f7edf2', '#3b1629'],
       sym: ['🍄', '🌸', '🐸', '👑', '🏰', '🧚'], wild: '✨', scat: '📖' },
-    { key: 'dragons', name: 'Dragon\'s Lair', group: 'Fantasy', kids: true, flavour: 'A cosy cave and a very large egg.',
+    { key: 'dragons', name: 'Cosy Dragon Cave', aka: 'Dragon\'s Lair', group: 'Fantasy', kids: true, flavour: 'A cosy cave and a very large egg.',
       pal: ['#341714', '#602a24', '#c0392b', '#f7eeed', '#3b1a16'],
       sym: ['🥚', '🔥', '🛡️', '🗡️', '🏰', '🐉'], wild: '👁️', scat: '💎' },
-    { key: 'robots', name: 'Robot Factory', group: 'Space & Tech', kids: true, flavour: 'Wrenches, batteries and one big robot.',
+    { key: 'robots', name: 'Gizmo Garage', aka: 'Robot Factory', group: 'Space & Tech', kids: true, flavour: 'Wrenches, batteries and one big robot.',
       pal: ['#142734', '#244860', '#3498db', '#edf3f7', '#162c3b'],
       sym: ['🔧', '⚙️', '🔋', '💾', '🦿', '🤖'], wild: '⚡', scat: '🚨' },
     { key: 'ninjas', name: 'Ninja Shadows', group: 'Adventure', kids: false, flavour: 'Rice balls, bamboo and a quiet rooftop.',

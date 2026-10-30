@@ -3,6 +3,8 @@
 The Sprunki Survival Handbook is designed to work seamlessly with or without custom assets.
 When an asset is missing, the system automatically displays a colored placeholder with the filename it expects.
 
+> Status: no art files exist yet, so `js/data.js` has empty `normalImg` and `horrorImg` paths and the page shows the colored placeholder (no 404s). After adding files, set each path back to `assets/<name>_normal.png` or `assets/<name>_horror.png` in `js/data.js`.
+
 ## Quick Start: Adding Images
 
 1.  Open the `assets/` folder in this directory.

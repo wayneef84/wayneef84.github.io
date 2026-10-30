@@ -759,6 +759,7 @@
         if (act === 'wish') { wish(); if (S.screen === 'collect') renderNest(); }
         else if (act === 'collect') openScreen('collect');
         else if (act === 'pot') openScreen('pot');
+        else if (act === 'cheers') { if (w.FongCheer) w.FongCheer.openSettings(); }
     }
 
     function burst(host) {
@@ -861,6 +862,7 @@
         S.found[key] = true;
         saveProgress();
         potOut(blend, isNew);
+        if (isNew && w.FongCheer) w.FongCheer.cheer('big');
         chime([84, 88, 91, 96]);
         potMsg(isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.');
     }
@@ -987,6 +989,7 @@
             S.reveal = { id: pick.id };
             chime([84, 88, 91, 96]);
             toast('Your egg hatched: ' + pick.name + '!');
+            if (w.FongCheer) w.FongCheer.cheer('big');
         }
         updateSparkUI(); saveProgress();
         if (S.screen === 'collect') renderCollect();

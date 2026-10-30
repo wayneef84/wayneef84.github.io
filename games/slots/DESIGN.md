@@ -41,5 +41,10 @@ Rules: unique `key` (never rename a shipped one), `group` is one of Sweet, Natur
 3. Call `api.credit(win, tag)` once, `done()` once, and make `skip()` finish the round.
 4. Add the script tag to `index.html` after the other modes and before `ui.js`.
 
+## K's Picks and the Easter egg
+- A theme with `kpick: true` also shows under the "K's Picks" chip. It still has a normal `group` and `kids: true`. Maths are unchanged.
+- Cheers (`../../js/cheer.js`) are a parent setting, off by default. The only line used for a zero-win spin comes from the gentle 'again' list, at most about once in 6 spins and never on consecutive spins. No "so close" or "almost" wording anywhere.
+- Easter egg: tap the footer title 5 times within 2.5 seconds for Sparkle Party (20 seconds, 200 free play coins once per page visit, not saved, no daily or streak). Calm mode and reduced motion show no confetti. Nothing flashes.
+
 ## Accessibility and motion
 Buttons are real buttons, targets 44px or more, a live region announces wins, focus is returned when sheets close. Calm mode and `prefers-reduced-motion`: short reel moves, no blur, no pulsing, no confetti. Infinite animations are 1.2s long (under 1 per second).

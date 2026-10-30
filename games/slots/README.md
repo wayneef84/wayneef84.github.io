@@ -1,7 +1,7 @@
 # Slots
 
 ## What is this?
-A friendly play-money slot machine with 54 themes and 6 ways to play. Everything is coins. Coins are not money, cannot be bought and cannot be cashed out. There are no ads, no timers and no streaks.
+A friendly play-money slot machine with 60 themes and 6 ways to play. Everything is coins. Coins are not money, cannot be bought and cannot be cashed out. There are no ads, no timers and no streaks.
 
 **Who should play:** Anyone who likes spinning reels, popping gems and opening gift boxes. Made so a young child can play on a phone.
 **Why it exists:** A calm, original arcade toy for the family site. Every theme plays the same fair maths, so picking a theme is only about what you like to look at.
@@ -20,7 +20,8 @@ If the coins run low, a **Get 1,000 coins** button appears. It is free, instant 
 ---
 
 ## Features
-- 54 themes: 30 older ones plus 24 new ones (Sugar Counter, Coral Cove, Space Picnic, Dino Dig Park and more).
+- 60 themes: 30 older ones, 24 from v4.0 (Sugar Counter, Coral Cove, Space Picnic, Dino Dig Park and more) and 6 pink, purple and rainbow ones under the **K's Picks** chip (Unicorn Sparkle, Bubblegum Band, Rainbow Cloud Stage, Pink Pony Ranch, Glitter Garden, Dream Carousel).
+- Cheers: a grown-up can turn on short spoken praise and a big caption with the **Cheers** button. Off by default. See docs/CHEER.md.
 - 6 modes that share your coins and your theme.
 - Real CSS 3D drum reels (each reel is a 12-sided drum).
 - Theme picker built for phones: search box, group chips, a Kids chip, remembers your last pick.
@@ -46,7 +47,7 @@ Tap the **?** button for the prize table at your current bet.
 ---
 
 ## Status
-- Version 4.0.0. Playable. See CHANGELOG.md.
+- Version 4.1.0. Playable. See CHANGELOG.md.
 - Average payback is set to about 94 to 95 percent over many rounds, the same in every theme. See DESIGN.md.
 
 ---

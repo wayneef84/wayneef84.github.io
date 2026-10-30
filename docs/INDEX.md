@@ -21,6 +21,8 @@ One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for eve
 | Doc | Use |
 |---|---|
 | [reference/DOCUMENTATION_STANDARD.md](reference/DOCUMENTATION_STANDARD.md) | 7-file per-game doc standard (decided: required for new and touched games) |
+| [CHEER.md](CHEER.md) | `FongCheer` parent-controlled spoken cheers and captions (`js/cheer.js`), parent settings and privacy |
+| [PWA.md](PWA.md) | Installable app: manifest, `sw.js`, `js/pwa.js`, offline play, how to bump `CACHE_VERSION`, kill switch `?pwa=off`, testing, limits |
 | [PLAYER_STATS.md](PLAYER_STATS.md) | `FongStats` on-device play counts, last played and best scores (`js/player-stats.js`) |
 | [THEMING_SPEC.md](THEMING_SPEC.md) | Homepage skins, palettes, JSON themes and the security model (approved. Phase 1 built, see section 10) |
 | [CUSTOMIZE.md](CUSTOMIZE.md) | User guide for the homepage Customize panel, theme JSON fields and adding apps to a group by id |

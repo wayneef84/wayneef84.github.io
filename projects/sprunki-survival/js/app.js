@@ -48,10 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadImage(container, char, horrorMode) {
         container.innerHTML = '';
+        var imgPath = horrorMode ? char.horrorImg : char.normalImg;
+        if (!imgPath) {
+            showFallback(container, char, horrorMode);
+            return;
+        }
         const img = document.createElement('img');
         img.className = 'card-img';
         img.alt = char.name;
-        img.src = horrorMode ? char.horrorImg : char.normalImg;
+        img.src = imgPath;
 
         img.onerror = () => {
             showFallback(container, char, horrorMode);

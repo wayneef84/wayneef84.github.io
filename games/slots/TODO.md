@@ -11,7 +11,8 @@
 - [ ] Optional: a "Lucky Ladder" mode. Skipped on purpose, the push-your-luck shape is close to loss-chasing.
 
 ### Priority 3 - Medium
-- [ ] Inline SVG symbols for a few themes (the data format already allows it).
+- [x] Inline SVG symbols for a few themes (Bubblegum Band, v4.1.0). More are welcome.
+- [ ] Real-voice and real-device check of Cheers on iOS Safari and Android Chrome (only tested with a mocked `speechSynthesis`).
 - [ ] Long-press on a mode chip to show its prize table.
 
 ### Priority 4 - Low

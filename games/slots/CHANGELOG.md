@@ -2,6 +2,24 @@
 
 All notable changes. Dates are YYYY-MM-DD.
 
+## [4.1.1] - 2026-10-29
+
+### Changed
+- Renamed 16 theme display names that matched known products. Theme keys, symbols and saved data are unchanged. Dragon's Lair is Cosy Dragon Cave, Robot Factory is Gizmo Garage, Pirate's Gold is Buried Treasure Bay, Samurai Spirit is Petal Dojo Days, Wolf Pack is Moonlit Howl, Wild Animals is Safari Day Out, Monster Mayhem is Goofy Ghost Gang, Solar System is Planet Parade, Classic Fruits is Cherry Bell Corner, Music Beats is Loud Little Speaker, Card Royale is Card Court, Chess Masters is Checkmate Corner, Mystical Unicorn is Sparkle Meadow, Ancient Egypt is Sandy Scarab Tomb, Wilderness Camp is Campfire Trail, Viking Legends is Longship Tales.
+- New optional `aka` field in `js/themes.js` holds the old name. The theme picker search checks it, so typing an old or a new name finds the theme.
+- Asset query strings bumped to `?v=4.1.1`.
+
+## [4.1.0] - 2026-10-29
+
+### Added
+- 6 original themes under a new **K's Picks** picker chip (60 total): Unicorn Sparkle, Bubblegum Band (inline SVG round music pals: Strumble, Hummsy, Whoopa, Tavvy, Thrumby, Jinglet), Rainbow Cloud Stage, Pink Pony Ranch, Glitter Garden, Dream Carousel. New optional `kpick: true` field in `js/themes.js`. Name checks are in ASSET_LOG.md.
+- Cheers: a "Cheers" button in the footer opens the grown-ups gate and the shared settings panel (`js/cheer.js`, docs/CHEER.md). Guarded `FongCheer.cheer()` calls: first spin of a visit = start, a win = good, a big win or bonus win = big, a zero-win spin = a gentle line about once in 6 spins and never twice in a row. Off by default. No game rule or payout changed.
+- Easter egg "Sparkle Party": tap the footer title 5 times within 2.5 seconds. A 20-second calm overlay with slow rainbow confetti (none in Calm mode or reduced motion, nothing flashes), a cheer line and 200 free play coins once per page visit (not saved, not daily, no streak).
+- Footer row with the Cheers button and the title.
+
+### Changed
+- Asset query strings bumped to `?v=4.1.0`.
+
 ## [4.0.0] - 2026-10-29
 
 Full rebuild. The v3.1 canvas machine is gone (it was not 3D CSS despite the docs).
