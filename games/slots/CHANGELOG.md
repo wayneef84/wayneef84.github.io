@@ -2,6 +2,13 @@
 
 All notable changes. Dates are YYYY-MM-DD.
 
+## [4.1.1] - 2026-10-29
+
+### Changed
+- Renamed 16 theme display names that matched known products. Theme keys, symbols and saved data are unchanged. Dragon's Lair is Cosy Dragon Cave, Robot Factory is Gizmo Garage, Pirate's Gold is Buried Treasure Bay, Samurai Spirit is Petal Dojo Days, Wolf Pack is Moonlit Howl, Wild Animals is Safari Day Out, Monster Mayhem is Goofy Ghost Gang, Solar System is Planet Parade, Classic Fruits is Cherry Bell Corner, Music Beats is Loud Little Speaker, Card Royale is Card Court, Chess Masters is Checkmate Corner, Mystical Unicorn is Sparkle Meadow, Ancient Egypt is Sandy Scarab Tomb, Wilderness Camp is Campfire Trail, Viking Legends is Longship Tales.
+- New optional `aka` field in `js/themes.js` holds the old name. The theme picker search checks it, so typing an old or a new name finds the theme.
+- Asset query strings bumped to `?v=4.1.1`.
+
 ## [4.1.0] - 2026-10-29
 
 ### Added
