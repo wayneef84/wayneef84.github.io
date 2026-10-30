@@ -4,7 +4,6 @@
     --card-bg: #ffffff;
     --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
     --accent-color: #4a90e2;
-    --danger-color: #e74c3c;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -33,58 +32,6 @@ header {
 h1 {
     margin: 0;
     font-size: 1.5rem;
-}
-
-.toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Switch Styles */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: var(--danger-color);
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
 }
 
 /* Roster Grid */
@@ -196,69 +143,4 @@ footer {
 footer a {
     color: var(--accent-color);
     text-decoration: none;
-}
-
-/* HORROR MODE STYLES */
-body.horror-mode {
-    --bg-color: #050505;
-    --text-color: #ccc;
-    --card-bg: #111;
-    --card-shadow: 0 4px 6px rgba(255, 0, 0, 0.2);
-    --accent-color: #8b0000;
-    --danger-color: #ff0000;
-    --font-family: 'Courier New', Courier, monospace;
-}
-
-body.horror-mode header {
-    border-bottom: 2px solid #330000;
-}
-
-body.horror-mode .card {
-    border: 1px solid #330000;
-}
-
-body.horror-mode .card-title {
-    color: #ff0000;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-body.horror-mode .card-meta {
-    color: #888;
-}
-
-body.horror-mode .survival-tip {
-    background-color: #220000;
-    color: #ffcccc;
-    border-left-color: #ff0000;
-}
-
-body.horror-mode .img-fallback {
-    /* Glitchy texture for fallback */
-    background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 10px,
-        rgba(0, 0, 0, 0.1) 10px,
-        rgba(0, 0, 0, 0.1) 20px
-    );
-}
-
-/* Glitch Animation for Titles */
-body.horror-mode h1 {
-    animation: glitch 1s infinite;
-}
-
-@keyframes glitch {
-    0% { transform: translate(0); text-shadow: none; }
-    20% { transform: translate(-2px, 2px); text-shadow: 2px 0 #ff0000, -2px 0 #00ff00; }
-    40% { transform: translate(-2px, -2px); text-shadow: 3px 0 #ff00ff, -3px 0 #ffff00; }
-    60% { transform: translate(2px, 2px); text-shadow: 2px 0 #0000ff, -2px 0 #ff0000; }
-    80% { transform: translate(2px, -2px); text-shadow: 1px 0 #00ff00, -1px 0 #0000ff; }
-    100% { transform: translate(0); text-shadow: none; }
-}
-
-body.horror-mode .card:hover {
-    transform: scale(1.02) rotate(1deg);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }

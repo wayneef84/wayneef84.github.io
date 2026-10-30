@@ -1,127 +1,83 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const roster = document.getElementById('roster');
-    const toggle = document.getElementById('horrorToggle');
-    let isHorror = false;
+(function () {
+    'use strict';
 
-    function init() {
-        renderRoster();
-
-        toggle.addEventListener('change', (e) => {
-            isHorror = e.target.checked;
-            updateMode();
-        });
+    // Calm handbook only. There is no mode switch and nothing is read from storage,
+    // so any old saved setting from the removed switch is never looked at.
+    function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) { node.className = className; }
+        if (text) { node.textContent = text; }
+        return node;
     }
 
-    function renderRoster() {
-        roster.innerHTML = '';
-        sprunkiData.forEach(char => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.dataset.id = char.id;
-
-            // HTML Structure
-            card.innerHTML = `
-                <div class="card-img-container" style="background-color: ${char.color}20;">
-                    <!-- Image inserted via JS for error handling -->
-                </div>
-                <div class="card-content">
-                    <h2 class="card-title">${char.name}</h2>
-                    <div class="card-meta">
-                        <span class="char-type">${char.type}</span>
-                        <span class="char-color" style="color:${char.color}">●</span>
-                    </div>
-                    <p class="card-desc">${char.normalDesc}</p>
-                    <div class="survival-tip">
-                        <span class="tip-label">Care Instructions:</span>
-                        <span class="survival-tip-text">Keep well-tuned and rhythmically active.</span>
-                    </div>
-                </div>
-            `;
-
-            // Insert Image
-            const container = card.querySelector('.card-img-container');
-            loadImage(container, char, false);
-
-            roster.appendChild(card);
-        });
-    }
-
-    function loadImage(container, char, horrorMode) {
+    function showFallback(container, char) {
         container.innerHTML = '';
-        var imgPath = horrorMode ? char.horrorImg : char.normalImg;
-        if (!imgPath) {
-            showFallback(container, char, horrorMode);
-            return;
-        }
-        const img = document.createElement('img');
-        img.className = 'card-img';
-        img.alt = char.name;
-        img.src = imgPath;
-
-        img.onerror = () => {
-            showFallback(container, char, horrorMode);
-        };
-
-        container.appendChild(img);
-    }
-
-    function showFallback(container, char, horrorMode) {
-        container.innerHTML = '';
-        const fallback = document.createElement('div');
-        fallback.className = 'img-fallback';
+        var fallback = el('div', 'img-fallback');
         fallback.style.backgroundColor = char.color;
-
-        // Darken text color if background is bright, lighten if dark?
-        // For simplicity, using white text with shadow (handled in CSS).
-
-        const fileName = horrorMode ?
-            `${char.name.toLowerCase()}_horror.png` :
-            `${char.name.toLowerCase()}_normal.png`;
-
-        fallback.innerHTML = `
-            <span>ASSET MISSING:</span>
-            <br>
-            <span style="font-family: monospace">${fileName}</span>
-        `;
-
+        fallback.appendChild(el('span', '', 'ASSET MISSING:'));
+        fallback.appendChild(document.createElement('br'));
+        var name = el('span', '', char.name.toLowerCase() + '_normal.png');
+        name.style.fontFamily = 'monospace';
+        fallback.appendChild(name);
         container.appendChild(fallback);
     }
 
-    function updateMode() {
-        if (isHorror) {
-            document.body.classList.add('horror-mode');
-        } else {
-            document.body.classList.remove('horror-mode');
+    function loadImage(container, char) {
+        container.innerHTML = '';
+        if (!char.normalImg) {
+            showFallback(container, char);
+            return;
         }
-
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            const id = card.dataset.id;
-            const char = sprunkiData.find(d => d.id === id);
-            if (!char) return;
-
-            // Update Text
-            const descEl = card.querySelector('.card-desc');
-            const tipLabel = card.querySelector('.tip-label');
-            const tipText = card.querySelector('.survival-tip-text');
-
-            if (isHorror) {
-                descEl.textContent = char.horrorDesc;
-                tipLabel.textContent = "CONTAINMENT PROTOCOL:";
-                tipText.textContent = char.survivalRating;
-                card.style.borderColor = char.color; // Optional: Tint border
-            } else {
-                descEl.textContent = char.normalDesc;
-                tipLabel.textContent = "Care Instructions:";
-                tipText.textContent = "Keep well-tuned and rhythmically active.";
-                card.style.borderColor = 'transparent';
-            }
-
-            // Update Image
-            const container = card.querySelector('.card-img-container');
-            loadImage(container, char, isHorror);
-        });
+        var img = document.createElement('img');
+        img.className = 'card-img';
+        img.alt = char.name;
+        img.onerror = function () { showFallback(container, char); };
+        img.src = char.normalImg;
+        container.appendChild(img);
     }
 
-    init();
-});
+    function renderCard(char) {
+        var card = el('div', 'card');
+        card.setAttribute('data-id', char.id);
+
+        var imgBox = el('div', 'card-img-container');
+        imgBox.style.backgroundColor = char.color + '20';
+        card.appendChild(imgBox);
+
+        var content = el('div', 'card-content');
+        content.appendChild(el('h2', 'card-title', char.name));
+
+        var meta = el('div', 'card-meta');
+        meta.appendChild(el('span', 'char-type', char.type));
+        var dot = el('span', 'char-color', '●');
+        dot.style.color = char.color;
+        meta.appendChild(dot);
+        content.appendChild(meta);
+
+        content.appendChild(el('p', 'card-desc', char.normalDesc));
+
+        var tip = el('div', 'survival-tip');
+        tip.appendChild(el('span', 'tip-label', 'Care Instructions:'));
+        tip.appendChild(document.createTextNode(' '));
+        tip.appendChild(el('span', 'survival-tip-text', 'Keep well-tuned and rhythmically active.'));
+        content.appendChild(tip);
+
+        card.appendChild(content);
+        loadImage(imgBox, char);
+        return card;
+    }
+
+    function start() {
+        var roster = document.getElementById('roster');
+        roster.innerHTML = '';
+        for (var i = 0; i < sprunkiData.length; i++) {
+            roster.appendChild(renderCard(sprunkiData[i]));
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', start);
+    } else {
+        start();
+    }
+}());
