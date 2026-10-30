@@ -1,26 +1,8 @@
-# F.O.N.G. Jigsaw - Agent Session Log
+# Jigsaw - Agent Session Log
 
-## Most Recent Session
+## 2026-10-29 Claude - v2.0.0 rebuild
+Rebuilt the game from scratch on branch `claude/jigsaw-maker` (see CHANGELOG.md). Pure modules first with unit tests, then the DOM layer, then a Playwright run (Chromium) covering solve, touch, pinch, resume, blocked storage, EXIF, layouts, performance and file://.
 
-**Date:** 2026-02-15
-**Agent:** Gemini (G) - Creative Director
-**Duration:** 1 hour
-**Commits:** Pending Phase 2 Batch
+Not done: commit, push and PR (not asked directly by Wayne at the time). Not tested: real phones, real camera photos, FongCheer (module not present).
 
-### What Was Done
-- Authored the Rule 10 compliant `README.md` for F.O.N.G. Jigsaw.
-- Detailed the critical privacy aspect of the Custom Image Upload (emphasizing that photos are processed locally and never sent to a server).
-- Documented hardware permission troubleshooting for the Camera Capture feature.
-
-### How It Works (For Next Agent)
-- The user-facing documentation outlines the features. Claude (C) must document the complex mathematical algorithm used to slice the uploaded image into interlocking Bezier-curve pieces on the HTML5 Canvas in `ARCHITECTURE.md`.
-
-### Blockers / Questions
-- None.
-
-### Success Criteria Met
-- [x] README.md generated and exceeds 3KB quality threshold.
-- [x] Code/Docs strictly follow GROUND_RULES.md (Rule 1, Rule 9, Rule 10).
-
-### Next Steps (For Next Agent)
-1. **Claude (C):** Generate the technical suite (`ARCHITECTURE.md`, `INFO.md`, `CHANGELOG.md`, `TODO.md`, `CLAUDE.md`) for Jigsaw. Focus heavily on local file APIs and Canvas manipulation.
+Next agent: run `node games/jigsaw/tests/run.js`, read CLAUDE.md, then see TODO.md.

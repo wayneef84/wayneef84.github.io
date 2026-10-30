@@ -2,112 +2,159 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jigsaw Puzzle Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#2a2350">
+    <title>F.O.N.G. Jigsaw</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Setup Screen -->
-        <div id="setup-screen">
-            <div class="setup-container">
-                <div class="setup-nav">
-                    <a href="../../index.html" class="back-link">← Arcade</a>
-                </div>
-                <h1>Jigsaw Puzzle Engine</h1>
+<div id="app">
 
-                <div class="form-group">
-                    <label for="file-input">Select Image:</label>
-                    <input type="file" id="file-input" accept="image/*">
-                    <button id="take-photo-btn" class="btn btn-secondary" style="margin-top: 10px;">📷 Take Photo</button>
-                    <div id="image-preview">No image selected</div>
-                </div>
+    <!-- Picker -->
+    <section id="picker" class="screen" aria-labelledby="picker-title">
+        <header class="bar">
+            <a class="btn btn-ghost" id="home-link" href="../../index.html"><span aria-hidden="true">&#8962;</span> Home</a>
+            <h1 id="picker-title">Jigsaw</h1>
+            <span class="bar-spacer"></span>
+        </header>
 
-                <div class="form-group">
-                    <label for="difficulty">Difficulty (Pieces):</label>
-                    <select id="difficulty">
-                        <option value="12">Very Easy (12)</option>
-                        <option value="24">Easy (24)</option>
-                        <option value="48" selected>Medium (48)</option>
-                        <option value="96">Hard (96)</option>
-                        <option value="192">Expert (192)</option>
-                        <option value="custom">Custom...</option>
-                    </select>
-                </div>
+        <main class="pick-main" id="pick-main">
+            <div id="resume-card" class="card" hidden>
+                <p class="card-text">You have a puzzle in progress.</p>
+                <button type="button" id="resume-btn" class="btn btn-primary">Keep playing</button>
+            </div>
 
-                <div id="custom-difficulty" class="hidden">
-                    <div class="form-group">
-                        <label for="rows">Rows:</label>
-                        <input type="number" id="rows" value="5" min="2" max="50">
-                    </div>
-                    <div class="form-group">
-                        <label for="cols">Columns:</label>
-                        <input type="number" id="cols" value="8" min="2" max="50">
-                    </div>
-                </div>
+            <div id="notice" class="notice" role="status" hidden></div>
 
-                <div class="form-group">
-                    <label for="jaggedness">Edge Variation:</label>
-                    <input type="range" id="jaggedness" min="0" max="100" value="40">
+            <section class="card" aria-labelledby="h-pick">
+                <h2 id="h-pick">1. Choose a picture</h2>
+                <div class="row">
+                    <label class="btn btn-primary" for="file-input">Choose a photo</label>
+                    <input type="file" id="file-input" class="sr-input" accept="image/*">
+                    <label class="btn" for="camera-input">Take a photo</label>
+                    <input type="file" id="camera-input" class="sr-input" accept="image/*" capture="environment">
+                    <label class="btn" for="puzzle-input">Open puzzle file</label>
+                    <input type="file" id="puzzle-input" class="sr-input" accept=".json,application/json">
                 </div>
+                <p class="hint-text">You can also drop a picture on this page or paste one. Your pictures stay on this device and are never uploaded.</p>
 
-                <div class="form-group">
-                    <label for="snap-distance">Snap Distance (px):</label>
-                    <input type="number" id="snap-distance" value="20" min="5" max="100">
+                <h3>Sample pictures</h3>
+                <div id="samples" class="thumbs" role="list"></div>
+
+                <div id="shelf-wrap" hidden>
+                    <h3>My pictures</h3>
+                    <div id="shelf" class="thumbs" role="list"></div>
+                </div>
+            </section>
+
+            <section id="options" class="card" aria-labelledby="h-cut" hidden>
+                <h2 id="h-cut">2. Cut the puzzle</h2>
+                <div class="preview-row">
+                    <canvas id="preview" width="240" height="180" aria-label="Chosen picture"></canvas>
+                    <div id="preview-info" class="hint-text"></div>
                 </div>
 
-                <button id="start-btn" class="btn" disabled>Start Puzzle</button>
-                <button id="load-btn" class="btn btn-secondary">Load Saved Game</button>
+                <fieldset class="chips" id="count-chips">
+                    <legend>Number of pieces</legend>
+                </fieldset>
+                <label class="check"><input type="checkbox" id="little-hands"> <span><strong>Little hands</strong>: a few big pieces that snap from far away</span></label>
+                <fieldset class="chips" id="little-chips" hidden>
+                    <legend>Big pieces</legend>
+                </fieldset>
+
+                <fieldset class="chips" id="style-chips">
+                    <legend>Piece shape</legend>
+                </fieldset>
+
+                <details class="more">
+                    <summary>More choices</summary>
+                    <label class="field">
+                        <span>Snap distance: <output id="snap-out" for="snap-range">25%</output></span>
+                        <input type="range" id="snap-range" min="5" max="50" step="1" value="25">
+                    </label>
+                    <label class="check"><input type="checkbox" id="opt-lock" checked> <span>Lock correct pieces in place</span></label>
+                    <label class="check"><input type="checkbox" id="opt-rotate"> <span>Turn pieces (tap a piece to rotate it)</span></label>
+                </details>
+
+                <button type="button" id="start-btn" class="btn btn-primary btn-wide">Start puzzle</button>
+            </section>
+        </main>
+    </section>
+
+    <!-- Game -->
+    <section id="game" class="screen" aria-label="Puzzle" hidden>
+        <header class="bar">
+            <button type="button" id="back-btn" class="btn btn-ghost" aria-label="Back to pictures"><span aria-hidden="true">&#9664;</span> Pictures</button>
+            <div class="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+            <span id="time-out" class="time" hidden>0:00</span>
+            <a class="btn btn-ghost btn-icon" id="game-home" href="../../index.html" aria-label="Home"><span aria-hidden="true">&#8962;</span></a>
+        </header>
+
+        <div id="stage">
+            <canvas id="board" tabindex="0" role="application"
+                    aria-label="Jigsaw table. Press Tab to pick a piece, Enter to pick it up or put it down, arrow keys to move it, R to turn it."></canvas>
+            <canvas id="confetti" aria-hidden="true"></canvas>
+            <div class="zoom-ctrl">
+                <button type="button" id="zoom-in" class="btn btn-round" aria-label="Zoom in">+</button>
+                <button type="button" id="zoom-out" class="btn btn-round" aria-label="Zoom out">&minus;</button>
+            </div>
+            <div id="toast" class="toast" role="status" hidden></div>
+            <div id="done" class="done" role="dialog" aria-labelledby="done-title" hidden>
+                <h2 id="done-title">You did it!</h2>
+                <p id="done-sub">The whole picture is together.</p>
+                <div class="row">
+                    <button type="button" id="again-btn" class="btn btn-primary">Do it again</button>
+                    <button type="button" id="newpic-btn" class="btn">New picture</button>
+                </div>
             </div>
         </div>
 
-        <!-- Game Screen -->
-        <div id="game-screen" class="hidden">
-            <div id="toolbar">
-                <div>
-                    <button id="exit-btn" class="btn btn-secondary">Exit</button>
-                    <button id="save-btn" class="btn btn-secondary">Save</button>
-                </div>
-                <div id="timer">00:00</div>
-                <div id="piece-count" class="piece-count">0 / 0</div>
-                <div>
-                    <button id="hint-btn" class="btn btn-secondary">Hint (Hold)</button>
-                </div>
+        <nav class="tools" aria-label="Puzzle tools">
+            <button type="button" id="t-shuffle" class="tool" aria-label="Shuffle the loose pieces"><span class="ico" aria-hidden="true">&#128256;</span><span class="lbl">Shuffle</span></button>
+            <button type="button" id="t-edges" class="tool" aria-label="Gather edge pieces in a row"><span class="ico" aria-hidden="true">&#9645;</span><span class="lbl">Edges</span></button>
+            <button type="button" id="t-ghost" class="tool" aria-pressed="true" aria-label="Show or hide the faint picture on the board"><span class="ico" aria-hidden="true">&#128444;</span><span class="lbl">Ghost</span></button>
+            <button type="button" id="t-preview" class="tool" aria-label="Hold to see the whole picture"><span class="ico" aria-hidden="true">&#128065;</span><span class="lbl">Peek</span></button>
+            <button type="button" id="t-hint" class="tool" aria-label="Hint: show one piece and where it goes"><span class="ico" aria-hidden="true">&#128161;</span><span class="lbl">Hint</span></button>
+            <button type="button" id="t-fit" class="tool" aria-label="Fit the whole table on screen"><span class="ico" aria-hidden="true">&#9974;</span><span class="lbl">Fit</span></button>
+            <button type="button" id="t-menu" class="tool" aria-haspopup="dialog" aria-label="More options"><span class="ico" aria-hidden="true">&#9776;</span><span class="lbl">More</span></button>
+        </nav>
+    </section>
+
+    <!-- Menu -->
+    <div id="menu" class="sheet" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden>
+        <div class="sheet-body">
+            <h2 id="menu-title">Options</h2>
+            <label class="field">
+                <span>Snap distance: <output id="m-snap-out" for="m-snap">25%</output></span>
+                <input type="range" id="m-snap" min="5" max="50" step="1" value="25">
+            </label>
+            <label class="check"><input type="checkbox" id="m-lock"> <span>Lock correct pieces in place</span></label>
+            <label class="check"><input type="checkbox" id="m-rotate"> <span>Turn pieces (tap a piece to rotate it)</span></label>
+            <label class="check"><input type="checkbox" id="m-sound"> <span>Sounds</span></label>
+            <label class="check"><input type="checkbox" id="m-haptics"> <span>Gentle vibration</span></label>
+            <label class="check"><input type="checkbox" id="m-time"> <span>Show time played</span></label>
+            <div class="row">
+                <button type="button" id="m-save" class="btn">Save puzzle as file</button>
+                <button type="button" id="m-restart" class="btn">Start this picture again</button>
             </div>
-            <canvas id="puzzle-canvas"></canvas>
+            <button type="button" id="m-close" class="btn btn-primary btn-wide">Done</button>
         </div>
     </div>
 
-    <!-- Win Modal -->
-    <div id="win-modal" class="modal-overlay hidden">
-        <div class="modal">
-            <div class="win-emoji">🧩</div>
-            <h2>Puzzle Complete!</h2>
-            <p class="win-time">Time: <span id="final-time"></span></p>
-            <button id="play-again-btn" class="btn">Play Again</button>
-        </div>
-    </div>
+    <div id="status" class="sr" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="drop-hint" class="drop-hint" aria-hidden="true" hidden>Drop a picture to make a puzzle</div>
+</div>
 
-    <!-- Camera Modal -->
-    <div id="camera-modal" class="modal-overlay hidden">
-        <div class="modal camera-modal-content">
-            <h2>Take a Photo</h2>
-            <div class="video-container">
-                <video id="camera-video" autoplay playsinline></video>
-                <canvas id="camera-canvas" class="hidden"></canvas>
-            </div>
-            <div class="modal-actions">
-                <button id="capture-btn" class="btn">Capture</button>
-                <button id="cancel-camera-btn" class="btn btn-secondary">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/storage.js"></script>
-    <script src="js/renderer.js"></script>
-    <script src="js/input.js"></script>
-    <script src="js/puzzle.js"></script>
-    <script src="js/app.js"></script>
+<script src="../../js/home-link.js" data-corner="br"></script>
+<script src="js/geometry.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/model.js"></script>
+<script src="js/images.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/samples.js"></script>
+<script src="js/render.js"></script>
+<script src="js/input.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

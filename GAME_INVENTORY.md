@@ -36,7 +36,7 @@
 | Minesweeper | `/games/minesweeper/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-13 | Mini zoom, hold-to-flag, custom settings, F.O.N.G. integrated |
 | Snake | `/games/snake/` | Arcade | Production | 90% | ✅ Yes | 2026-02-13 | Neon Serpent v1: Web Audio, negen_version variant exists |
 | Mahjong | `/games/mahjong/` | Puzzle | Production | 85% | ✅ Yes | 2026-02-10 | 3D tiles, custom symbols, mobile touch controls |
-| Jigsaw | `/games/jigsaw/` | Puzzle | Production | 80% | ✅ Yes | 2026-02-13 | Custom image upload, variable difficulty, camera capture support |
+| Jigsaw | `/games/jigsaw/` | Puzzle | Production | 90% | ✅ Yes | 2026-10-29 | v2.0.0: any picture, snapping groups, 6-300 pieces, little hands, zoom/pan, save/resume, puzzle files |
 | Sky Breakers | `/games/sky_breakers/` | Arcade | Production | 80% | ✅ Yes | 2026-02-13 | Canvas-based shooter with smooth controls, difficulty levels |
 | Pong | `/games/pong/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Pong: Classic two-player mechanics, responsive |
 | Space Invaders | `/games/space_invaders/` | Arcade | Production | 80% | ✅ Yes | 2026-02-10 | NEGEN Space Invaders: Grid-based shooter, score system |
