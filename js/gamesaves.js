@@ -198,6 +198,32 @@
         return warnings;
     }
 
+    // Cheap list of the manifest (no stored data is read). For callers that poll.
+    function manifest() {
+        var out = [], i, g;
+        for (i = 0; i < order.length; i++) { g = games[order[i]]; out.push({ id: g.id, name: g.name, keys: g.keys.slice(), prefixes: g.prefixes.slice() }); }
+        return out;
+    }
+
+    // One-step undo support for callers that replace a game's data. snapshot() copies every stored key of the game,
+    // rollback() puts exactly that back (keys that did not exist before are removed). Nothing here is exported.
+    function snapshot(id) {
+        if (typeof id !== 'string' || !has.call(games, id)) { return null; }
+        return { game: id, data: gameData(games[id]) || {} };
+    }
+    function rollback(snap) {
+        if (!snap || typeof snap.game !== 'string' || !has.call(games, snap.game) || !snap.data || typeof snap.data !== 'object') { return false; }
+        var g = games[snap.game], now = gameData(g) || {}, ks = Object.keys(now), i, ok = true, k;
+        for (i = 0; i < ks.length; i++) { if (!has.call(snap.data, ks[i])) { removeKey(ks[i]); } }
+        ks = Object.keys(snap.data);
+        for (i = 0; i < ks.length; i++) {
+            k = ks[i];
+            if (!keyAllowed(g, k) || typeof snap.data[k] !== 'string') { continue; }
+            if (!writeKey(k, snap.data[k])) { ok = false; }
+        }
+        return ok;
+    }
+
     // ---- importing -----------------------------------------------------
 
     // Checks one game's data object. Returns { writes: {key: value}, skipped: n }.
@@ -298,6 +324,9 @@
     var api = {
         register: register,
         list: list,
+        manifest: manifest,
+        snapshot: snapshot,
+        rollback: rollback,
         exportGame: exportGame,
         exportAll: exportAll,
         exportObject: exportObject,

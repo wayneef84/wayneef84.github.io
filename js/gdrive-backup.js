@@ -220,7 +220,7 @@
     // ---- files ---------------------------------------------------------
 
     function cleanProps(o) {
-        var out = {}, ks = ['hash', 'game', 'device', 'label'], i;
+        var out = {}, ks = ['hash', 'game', 'device', 'label', 'savedAt'], i;
         if (!o || typeof o !== 'object') { return out; }
         for (i = 0; i < ks.length; i++) { if (typeof o[ks[i]] === 'string' && o[ks[i]].length <= 100) { out[ks[i]] = o[ks[i]]; } }
         return out;
@@ -237,9 +237,9 @@
         function iso(v) { return typeof v === 'string' && !isNaN(Date.parse(v)) ? new Date(v).toISOString() : ''; }
         var made = iso(f.createdTime), mod = iso(f.modifiedTime);
         var t = type === 'auto' ? (mod || made) : (made || (type === 'manual' ? stamp : stamp + 'T00:00:00.000Z'));
-        var size = Number(f.size), props = cleanProps(f.appProperties);
+        var size = Number(f.size), props = cleanProps(f.appProperties), sa = /^\d{1,15}$/.test(props.savedAt || '') ? parseInt(props.savedAt, 10) : 0;
         return { id: f.id, name: f.name, scope: scope, type: type, day: type === 'daily' ? stamp : '', time: t || '', modified: mod, version: typeof f.version === 'string' ? f.version.substr(0, 30) : '',
-            hash: props.hash || '', label: props.label || '', size: isFinite(size) ? size : 0 };
+            hash: props.hash || '', label: props.label || '', savedAt: sa, size: isFinite(size) ? size : 0 };
     }
 
     function list(cb) {
@@ -294,7 +294,16 @@
                 var x = type === 'daily' ? a.day : a.time, y = type === 'daily' ? b.day : b.time;
                 return x < y ? 1 : (x > y ? -1 : 0);
             });
-            var extra = mine.slice(keep), n = 0;
+            var extra, n = 0;
+            if (type === 'daily') {   // newest "keep" distinct days, one file per day: a second device cannot eat the slots with duplicates
+                var seen = {}, days = 0, drop = [];
+                for (i = 0; i < mine.length; i++) {
+                    if (Object.prototype.hasOwnProperty.call(seen, mine[i].day)) { drop.push(mine[i]); continue; }
+                    seen[mine[i].day] = true; days++;
+                    if (days > keep) { drop.push(mine[i]); }
+                }
+                extra = drop;
+            } else { extra = mine.slice(keep); }
             function next() {
                 if (!extra.length) { cb(n); return; }
                 var f = extra.shift();
@@ -343,7 +352,7 @@
             if (e) { cb(e); return; }
             var d = parseJSON(t);
             if (!d || typeof d.id !== 'string') { cb(err('http', 'Google Drive sent a reply the arcade could not read.')); return; }
-            var r = fileResult(t); r.hash = cleanProps(d.appProperties).hash || '';
+            var r = fileResult(t), pr = cleanProps(d.appProperties); r.hash = pr.hash || ''; r.savedAt = /^\d{1,15}$/.test(pr.savedAt || '') ? parseInt(pr.savedAt, 10) : 0;
             cb(null, r);
         });
     }
@@ -381,7 +390,9 @@
         if (!has) { cb(err('empty', 'There is no saved progress to back up yet.')); return; }
         var name = 'fong-' + scope + '-' + new Date().toISOString() + '.json';
         var label = cleanLabel(opts && opts.label);
-        createFile(name, r.text, label ? { label: label } : null, function (e, made) {
+        var props = { savedAt: String(Date.now()) };
+        if (label) { props.label = label; }
+        createFile(name, r.text, props, function (e, made) {
             if (e) { cb(e); return; }
             var out = { id: made.id, name: name, scope: scope, label: label };
             prune('manual', scope, KEEP, function (n) { out.pruned = n; cb(null, out); });

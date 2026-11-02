@@ -315,7 +315,7 @@ body.world-observatory .stage { position: relative; }
 .cfg-check input { width: 28px; height: 28px; accent-color: var(--accent); }
 .cfg-dline { min-height: 1.3em; transition: opacity 0.4s; }
 .cfg-dline.fade { opacity: 0; }
-.gdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #9ca3af; margin-left: 4px; vertical-align: middle; }
+.gdot { display: inline-block; min-width: 14px; height: 14px; line-height: 14px; font-size: 10px; font-weight: 700; text-align: center; color: #111; border-radius: 50%; background: #9ca3af; margin-left: 4px; vertical-align: middle; }
 .gdot.ok { background: #4ade80; }
 .gdot.wait { background: #fbbf24; }
 .gdot.bad { background: #f87171; }

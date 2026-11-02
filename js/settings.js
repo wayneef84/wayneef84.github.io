@@ -234,6 +234,7 @@
         var box = el('div', 'fs-box');
         box.appendChild(el('p', 'fs-strong', extra.title || (kind === 'all' ? 'Import everything' : (kind === 'games' ? 'Import game saves' : 'Import scores'))));
         box.appendChild(el('p', 'fs-note', 'Choose a file or paste the text, then Preview. Nothing changes until you tap Apply.'));
+        if (extra.note) { box.appendChild(el('p', 'fs-warn', extra.note)); }
         var file = el('input', 'fs-input');
         file.type = 'file'; file.accept = '.json,application/json';
         box.appendChild(field('Choose a file', file, 'fs-file-' + idk));
@@ -610,16 +611,30 @@
         });
     }
 
+    // Load the Drive save for a paused game. Needs the grown-ups question. Opens the usual preview, for that game only.
     function driveLoadNewer(pr) {
         var A = w.FongGDriveAuto;
         if (!unlocked) { return; }
-        drive.busy = true; driveSay('Getting the newer backup...', false); driveRerender();
+        drive.busy = true; driveSay('Getting the Drive save...', false); driveRerender();
         A.load(pr.game, function (e, text, meta) {
             drive.busy = false;
             if (e) { driveSay(e.message, true); driveRerender(); return; }
-            drive.restore = { text: text, title: 'Load the newer backup: ' + pr.name, mode: 'merge', game: pr.game, meta: meta };
-            driveSay('Backup loaded. Preview it below, then tap Apply.', false);
+            drive.restore = { text: text, title: 'Load the Drive save: ' + pr.name, mode: 'replace', game: pr.game, meta: meta,
+                note: 'Progress on this device for ' + pr.name + ' will be replaced by the Drive save. You can undo this once, right after.' };
+            driveSay('Drive save loaded. Preview it below, then tap Apply.', false);
             driveRerender();
+        });
+    }
+
+    function driveKeep(pr) {
+        var A = w.FongGDriveAuto;
+        if (!unlocked) { return; }
+        drive.busy = true; driveSay('Saving this device to Drive...', false); driveRerender();
+        A.keepDevice(pr.game, function (e) {
+            drive.busy = false;
+            if (e) { driveSay(e.message, true); driveRerender(); return; }
+            driveSay('Drive now has this device\'s save for ' + pr.name + '. Auto backup is on again for it.', false);
+            driveRefresh();
         });
     }
 
@@ -627,27 +642,43 @@
     function renderDriveRestore(host) {
         var G = w.FongGameSaves, A = w.FongGDriveAuto, r = drive.restore;
         if (!r || !G) { return; }
+        var only = r.game ? [r.game] : null;
         loadBox(host, 'games',
-            function (t, m) { return G.importJSON(t, { mode: m, dryRun: true }); },
+            function (t, m) { return G.importJSON(t, { mode: m, dryRun: true, only: only }); },
             function (t, m) {
-                var res = G.importJSON(t, { mode: m });
-                if (res.ok && r.game && A) { A.markLoaded(r.game, r.meta); }
+                if (r.game && A && !A.stash(r.game)) { return { ok: false, errors: ['Could not keep an undo copy of this device, so nothing was changed.'], message: '' }; }
+                var res = G.importJSON(t, { mode: m, only: only });
+                if (res.ok && A) {
+                    if (r.game) { A.markLoaded(r.game, r.meta, m); }
+                    else { var ids = [], gi; for (gi = 0; gi < res.games.length; gi++) { ids.push(res.games[gi].id); } A.afterRestore(ids); }
+                }
                 res.message = res.ok ? 'Restored game saves for ' + res.games.length + ' game' + (res.games.length === 1 ? '' : 's') + '. Reload a game to see it.' : '';
                 if (res.ok) { w.setTimeout(function () { drive.restore = null; }, 0); }
                 return res;
             },
-            { idKey: 'drive', title: r.title, preset: r.text, mode: r.mode, needUnlock: true, onMode: function (m) { r.mode = m; } });
+            { idKey: 'drive', title: r.title, preset: r.text, mode: r.mode, needUnlock: true, note: r.note || '', onMode: function (m) { r.mode = m; } });
     }
 
     function statusClass(phase) {
         return phase === 'error' ? 'fs-dot-bad' : (phase === 'backedup' || phase === 'connected' ? 'fs-dot-ok' : (phase === 'off' ? 'fs-dot-off' : 'fs-dot-wait'));
+    }
+    // Not colour alone: a short word for screen readers and hover, and a mark inside the dot.
+    var PHASE_WORD = { off: 'Drive backup off', connecting: 'Drive backup connecting', connected: 'Drive backup connected', backedup: 'Drive backup saved', another: 'Drive backup running in another window',
+        reconnect: 'Drive backup needs you to reconnect', paused: 'Drive backup paused for a game', error: 'Drive backup problem' };
+    var PHASE_MARK = { connected: '\u2713', backedup: '\u2713', error: '!', paused: '\u23F8', reconnect: '!', another: '\u2026', connecting: '\u2026', off: '' };
+    function dotLook(d, phase) {
+        d.className = 'fs-dot ' + statusClass(phase);
+        d.textContent = has.call(PHASE_MARK, phase) ? PHASE_MARK[phase] : '';
+        d.setAttribute('title', PHASE_WORD[phase] || 'Drive backup');
+        d.setAttribute('aria-label', PHASE_WORD[phase] || 'Drive backup');
+        d.setAttribute('role', 'img');
     }
 
     // Updates the status dots and line without rebuilding the sheet. The line fades out after about 4 seconds,
     // except errors and the reconnect chip, which stay. The dot stays. Reduced motion: it just disappears.
     function driveStatusNodes(s) {
         var dots = doc.querySelectorAll('.fs-dot'), i, line = doc.getElementById('fs-drive-status');
-        for (i = 0; i < dots.length; i++) { dots[i].className = 'fs-dot ' + statusClass(s.phase); }
+        for (i = 0; i < dots.length; i++) { dotLook(dots[i], s.phase); }
         if (!line) { return; }
         if (s.seq === drive.fadeSeq) { return; }
         drive.fadeSeq = s.seq;
@@ -667,14 +698,14 @@
     function driveOnStatus(s) {
         drive.st = s;
         driveStatusNodes(s);
-        var key = [s.connected, s.auto, s.prompts.length, s.phase === 'reconnect', s.phase === 'another', s.last].join('|');
+        var key = [s.connected, s.auto, s.prompts.map(function (p) { return p.game + (p.later ? 'L' : ''); }).join(','), s.phase === 'reconnect', s.phase === 'another', s.last].join('|');
         if (key !== drive.viewKey) {
             drive.viewKey = key;
             if (isOpen && activeTab === 'data' && !drive.busy && !(doc.activeElement && doc.activeElement.id === 'fs-drive-label')) { driveRerender(); }
         }
     }
 
-    function dot(s) { var d = el('span', 'fs-dot ' + statusClass(s ? s.phase : 'off')); d.setAttribute('aria-hidden', 'true'); return d; }
+    function dot(s) { var d = el('span', 'fs-dot'); dotLook(d, s ? s.phase : 'off'); return d; }
 
     function renderDrive(host) {
         var D = w.FongGDrive, A = w.FongGDriveAuto, s = A ? A.getStatus() : null;
@@ -683,7 +714,7 @@
         head.appendChild(dot(s));
         host.appendChild(head);
         host.appendChild(el('p', 'fs-note', 'Optional. Keeps copies of your game progress in your own Google Drive, in a hidden folder only this arcade can open. Saving to a file above and importing a file below still work with no account.'));
-        host.appendChild(el('p', 'fs-note', 'Google is only contacted after you tap Connect. The sign-in is kept in memory only, so each new visit asks you to connect again.'));
+        host.appendChild(el('p', 'fs-note', 'Google is only contacted after you tap Connect. The sign-in is kept in memory only (never saved on the device). A new visit connects again: if you used Drive before, the page tries once on its own without a pop-up, and the browser may block that, then you tap to reconnect.'));
         var configured = D.isConfigured(), connected = D.isConnected();
         if (!configured) { host.appendChild(el('p', 'fs-warn', D.NOT_SET_UP)); }
         host.appendChild(el('p', 'fs-strong', connected ? 'Connected to Google Drive.' : 'Not connected.'));
@@ -721,24 +752,35 @@
             (function (pr) {
                 var card = el('div', 'fs-box fs-drive-card');
                 card.setAttribute('role', 'group');
-                card.appendChild(el('p', 'fs-strong', 'A newer backup was found for ' + pr.name + '. Load it?'));
-                if (pr.reason === 'conflict') { card.appendChild(el('p', 'fs-dim', 'Another device saved to Drive since this one did, so this device did not overwrite it.')); }
+                card.setAttribute('aria-label', 'Drive has a newer save for ' + pr.name);
+                card.appendChild(el('p', 'fs-strong', 'Drive has a newer save for ' + pr.name + '.'));
+                card.appendChild(el('p', 'fs-note', 'Saved at: ' + (pr.driveTime ? new Date(pr.driveTime).toLocaleString() : 'unknown') + ' on Drive, ' + (pr.deviceTime ? new Date(pr.deviceTime).toLocaleString() : 'unknown') + ' on this device.'));
+                card.appendChild(el('p', pr.later ? 'fs-warn' : 'fs-dim', pr.later ? 'Decide later: auto backup for ' + pr.name + ' stays paused until you decide or the page closes.' : 'Auto backup for ' + pr.name + ' is paused until you decide.'));
                 var cr = el('div', 'fs-row');
-                var lb = btn('Load', 'fs-go', function () { driveLoadNewer(pr); });
+                var kb = btn('Keep this device', 'fs-go', function () { driveKeep(pr); });
+                kb.disabled = drive.busy;
+                var lb = btn('Load the Drive save', '', function () { driveLoadNewer(pr); });
                 lb.disabled = drive.busy;
-                cr.appendChild(lb);
-                cr.appendChild(btn('Not now', '', function () { A.dismiss(pr.game); driveRerender(); }));
+                cr.appendChild(kb); cr.appendChild(lb);
+                cr.appendChild(btn('Decide later', '', function () { A.dismiss(pr.game); driveRerender(); }));
                 card.appendChild(cr);
                 host.appendChild(card);
             })(prs[pi]);
+        }
+        var undos = A ? A.undoList() : [], ui;
+        for (ui = 0; ui < undos.length; ui++) {
+            (function (u) {
+                var ub = btn('Undo the last Drive load for ' + u.name, '', function () { say(A.undo(u.id) ? 'Put back what this device had for ' + u.name + '. Reload the game to see it.' : 'Could not undo.'); driveRerender(); });
+                host.appendChild(ub);
+            })(undos[ui]);
         }
         // autosave
         if (A) {
             var lab = el('label', 'fs-check');
             var cb = el('input'); cb.type = 'checkbox'; cb.id = 'fs-auto'; cb.checked = A.isAuto();
             lab.appendChild(cb);
-            lab.appendChild(el('span', '', 'Auto backup (one changed game at a time, kept as one copy per game plus one per day)'));
-            cb.addEventListener('change', function () { A.setAuto(cb.checked); driveSay(cb.checked ? 'Auto backup on.' : 'Auto backup off. This sign-in ends when you close Settings.', false); driveRerender(); });
+            lab.appendChild(el('span', '', 'Auto backup (one changed game at a time, one copy per game plus one per day). While on, this page stays signed in until it is closed.'));
+            cb.addEventListener('change', function () { A.setAuto(cb.checked); driveSay(cb.checked ? 'Auto backup on. This page stays signed in until it is closed.' : 'Auto backup off. This sign-in ends when you close Settings.', false); driveRerender(); });
             host.appendChild(lab);
             if (s && s.phase === 'another') { host.appendChild(el('p', 'fs-note', 'Another window is backing up.')); }
             var lt = A.lastTimes(), li;
@@ -763,8 +805,9 @@
                 drive.busy = true; driveSay('Backing up...', false); driveRerender();
                 A.runNow(function (e, r) {
                     drive.busy = false;
-                    if (e) { driveSay(e.message, true); } else if (r && r.conflicts && !r.saved) { driveSay('A newer backup was found, so nothing was overwritten.', false); }
-                    else { driveSay(r && r.saved ? 'Backed up ' + r.saved + ' game' + (r.saved === 1 ? '' : 's') + '.' : 'Nothing has changed.', false); }
+                    var held = r && r.paused && r.paused.length ? ' Paused, waiting for you: ' + r.paused.join(', ') + '.' : '';
+                    if (e) { driveSay(e.message, true); }
+                    else { driveSay((r && r.saved ? 'Backed up ' + r.saved + ' game' + (r.saved === 1 ? '' : 's') + '.' : 'Nothing has changed.') + held, !!held && !(r && r.saved)); }
                     driveRefresh();
                 });
             });
@@ -787,10 +830,10 @@
             for (i = 0; i < items.length && i < 60; i++) {
                 (function (it) {
                     var li2 = el('li', 'fs-drive-item');
-                    var when = new Date(it.time), kind = it.type === 'auto' ? 'Auto' : (it.type === 'daily' ? 'Daily' : 'Save point');
+                    var when = new Date(it.savedAt || it.time), kind = it.type === 'auto' ? 'Auto' : (it.type === 'daily' ? 'Daily' : 'Save point');
                     li2.appendChild(el('span', 'fs-strong', driveScopeName(it.scope)));
                     if (it.label) { li2.appendChild(el('span', 'fs-strong', ' "' + it.label + '"')); }
-                    li2.appendChild(el('span', 'fs-dim', ' ' + kind + ', ' + (isNaN(when.getTime()) ? '' : when.toLocaleString()) + ', ' + driveSize(it.size)));
+                    li2.appendChild(el('span', 'fs-dim', ' ' + kind + '. Saved at: ' + (isNaN(when.getTime()) ? 'unknown' : when.toLocaleString()) + ', ' + driveSize(it.size)));
                     var r2 = el('div', 'fs-row');
                     var rb = btn('Restore', '', function () { driveRestore(it); });
                     rb.setAttribute('aria-label', 'Restore ' + driveScopeName(it.scope) + ' ' + kind.toLowerCase());
@@ -826,6 +869,7 @@
             var r = G.importJSON(t, { mode: m });
             if (!r.ok) { r.message = ''; return r; }
             r.message = r.ok ? 'Imported game saves for ' + r.games.length + ' game' + (r.games.length === 1 ? '' : 's') + '. Reload a game to see it.' : '';
+            if (r.ok && w.FongGDriveAuto) { var ids2 = [], gi2; for (gi2 = 0; gi2 < r.games.length; gi2++) { ids2.push(r.games[gi2].id); } w.FongGDriveAuto.afterRestore(ids2); }
             return r;
         }
         loadBox(host, 'games', check, apply);
@@ -949,7 +993,7 @@
         }
         var dataTab = tablist.querySelector('[data-tab="data"]');
         if (dataTab && w.FongGDriveAuto) {   // a small status dot for Drive backup, hidden while it is off
-            var td = el('span', 'fs-dot fs-dot-off'); td.setAttribute('aria-hidden', 'true');
+            var td = el('span', 'fs-dot fs-dot-off'); dotLook(td, 'off');
             dataTab.appendChild(td);
         }
         sheet.appendChild(tablist);

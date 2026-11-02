@@ -7,13 +7,16 @@ function makeTab(o) {
     o = o || {};
     var store = o.store || {}, drive = o.drive || makeDrive(), win = { window: null };
     win.window = win; win.store = store; win.drive = drive;
-    win.localStorage = {
-        get length() { return Object.keys(store).length; },
-        key: function (i) { return Object.keys(store)[i] || null; },
-        removeItem: function (k) { delete store[k]; },
-        getItem: function (k) { return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
-        setItem: function (k, v) { store[k] = String(v); }
-    };
+    // A Storage-like class so the module can hook writes the way it does in a browser.
+    function Storage() {}
+    Storage.prototype.removeItem = function (k) { delete store[k]; };
+    Storage.prototype.getItem = function (k) { return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; };
+    Storage.prototype.setItem = function (k, v) { store[k] = String(v); };
+    Storage.prototype.key = function (i) { return Object.keys(store)[i] || null; };
+    Storage.prototype.clear = function () { Object.keys(store).forEach(function (k) { delete store[k]; }); };
+    Object.defineProperty(Storage.prototype, 'length', { get: function () { return Object.keys(store).length; } });
+    win.Storage = Storage; win.localStorage = new Storage();
+    if (o.noHook) { win.Storage = undefined; }
     win.FONG_GDRIVE_CLIENT_ID = o.clientId === undefined ? 'abc.apps.googleusercontent.com' : o.clientId;
     win.navigator = { onLine: true };
     win.setTimeout = setTimeout; win.clearTimeout = clearTimeout; win.setInterval = setInterval; win.clearInterval = clearInterval;
