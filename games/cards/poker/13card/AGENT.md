@@ -1,37 +1,13 @@
-# F.O.N.G. 13-Card Poker - Agent Session Log
+# 13 Card Poker - Agent Notes
 
-## Most Recent Session
+Current build: free-for-all Chinese Poker (v2.0.0). See README.md for rules, ARCHITECTURE.md for scoring and settlement, TECHNICAL.md for files.
 
-**Date:** 2026-02-15
+Do:
+- Keep rules and money in `ffa.js` (pure) and cover changes in `tests/13card.test.js`.
+- Use `CardAnim` for movement, and honor `CardAnim.reduced()`.
+- Run `node tests/13card.test.js`, `node tests/card-anim.test.js`, `node scripts/check-site.mjs` before committing.
 
-**Agent:** Gemini (G) - Creative Director
-
-**Duration:** 1 hour
-
-**Commits:** Pending Phase 3 Batch
-
-### What Was Done
-
-- Generated the `README.md` for 13-Card Poker.
-
-- Documented the specific HTML5 Drag-and-Drop interactions and mobile touch limitations.
-
-- Applied strict list formatting protocols.
-
-### How It Works (For Next Agent)
-
-- Claude (C) must document the complex comparative scoring logic (comparing 3 distinct hands simultaneously against CPU hands) in `ARCHITECTURE.md`.
-
-### Blockers / Questions
-
-- None.
-
-### Success Criteria Met
-
-- [x] README.md generated and exceeds 3KB quality threshold.
-
-- [x] Code/Docs strictly follow GROUND_RULES.md.
-
-### Next Steps (For Next Agent)
-
-1. **Claude (C):** Generate the technical suite for 13-Card Poker.
+Do not:
+- Add modules, CDNs or absolute paths.
+- Change the save key shape without bumping `v` in `ffa.js`.
+- Use innerHTML for any saved or generated text.

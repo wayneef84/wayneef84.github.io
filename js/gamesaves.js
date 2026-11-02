@@ -79,6 +79,7 @@
     register('xtc-ball', { name: 'XTC Ball (custom balls)', keys: ['oracle_custom_balls'], json: ['oracle_custom_balls'] });
     register('big2', { name: 'Big 2', keys: ['fong.big2.opts'], json: ['fong.big2.opts'] });
     register('card-games', { name: 'Card games (balance and War history)', keys: ['family_arcade_balance', 'war_history', 'war_match_history'], json: ['war_history', 'war_match_history'] });
+    register('13card', { name: '13 Card', keys: ['fong.13card.save'], json: ['fong.13card.save'] });
     register('tracing-words', { name: 'Trace Words', keys: ['fong_custom_words', 'fong_word_category'], json: ['fong_custom_words'] });
     register('tracing-chinese', { name: 'Trace Chinese', keys: ['chinese-settings', 'chinese-completed', 'chinese-daily'], json: ['chinese-settings', 'chinese-completed', 'chinese-daily'] });
     register('tracing-sentences', { name: 'Trace Sentences', keys: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'], json: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'] });
