@@ -787,6 +787,9 @@
         hideRest(false);
         d.body.className = d.body.className.replace(/ ?cfg-lock/g, '');
         cfgDisarm();
+        cfgUnlocked = false; cfgGate = null; cfgText = ''; $('cfgText').value = ''; cfgDMeta = null; cfgDList(null);
+        var D2 = w.FongGDrive, A2 = w.FongGDriveAuto;
+        if (D2 && D2.isConnected() && !(A2 && A2.isAuto())) D2.disconnect(function () {});   // no autosave: do not keep the sign-in
         if (cfgFrom && cfgFrom.focus) { try { cfgFrom.focus(); } catch (e) {} }
     }
     function cfgExport() {
@@ -813,7 +816,7 @@
         $('cfgQ').textContent = 'Grown-ups only. What is ' + a + ' × ' + b + '?';
         $('cfgAns').value = '';
         $('cfgGate').hidden = false;
-        cfgMsg(note ? 'Google Drive is locked so little fingers cannot use it.' : 'Replacing saves is locked so little fingers cannot wipe them.');
+        cfgMsg('Grown-ups only. Answering the question unlocks Drive and Replace for this panel.');
         $('cfgAns').focus();
         return false;
     }
@@ -822,7 +825,7 @@
         if (parseInt($('cfgAns').value, 10) === cfgGate.answer) {
             cfgUnlocked = true;
             $('cfgGate').hidden = true;
-            cfgMsg(cfgGate.note || 'Unlocked. Tap the button again, then tap once more to confirm.');
+            cfgMsg(cfgGate.note || 'Unlocked for this panel. Tap the button again, then tap once more to confirm.');
             var f = cfgGate.then;
             cfgGate = null;
             if (f && $(f)) $(f).focus();
@@ -869,6 +872,7 @@
             cfgMsg(r.errors[0] || 'That file cannot be used.', true);
             return;
         }
+        if (cfgDMeta && w.FongGDriveAuto) { w.FongGDriveAuto.markLoaded(SAVE_ID, cfgDMeta); cfgDMeta = null; }
         syncUndo();
         cfgMsg('Done. Loading your saves...');
         cfgReload('Imported, but the page could not reload. Reload it to see your saves.');
@@ -914,11 +918,14 @@
     }
     // ---- optional Google Drive copy (js/gdrive-backup.js). Restore only loads the text into the box below the file
     // controls: Add missing and Replace then run the exact same checks, gate, confirm and undo stash as a file import.
-    var cfgDBusy = false;
+    var cfgDBusy = false, cfgDMeta = null, cfgDFade = 0, cfgDSeq = -1;
     function syncDrive() {
         var D = w.FongGDrive, on = !!(D && D.isConfigured()), st = $('cfgDStatus');
         $('cfgDBackup').disabled = !on || cfgDBusy;
         $('cfgDRestore').disabled = !on || cfgDBusy;
+        $('cfgDAuto').disabled = !on || !w.FongGDriveAuto;
+        var ae = d.activeElement;
+        if (ae && ae.disabled && $('cfgOv').contains(ae)) $('cfgMsg').focus();   // a focused button went away: keep focus inside the panel
         if (!D) st.textContent = 'Not available on this page.';
         else if (!on) st.textContent = D.NOT_SET_UP;
         else st.textContent = D.isConnected() ? 'Connected to Google Drive for this visit.' : 'Not connected. Each button asks Google to sign in first.';
@@ -930,12 +937,12 @@
         if (!items) return;
         if (!items.length) { box.appendChild(d.createElement('p')).textContent = 'No backups of this game in Drive yet.'; return; }
         var i;
-        for (i = 0; i < items.length && i < 5; i++) {
+        for (i = 0; i < items.length && i < 8; i++) {
             (function (it) {
                 var b = d.createElement('button'), t = new Date(it.time);
                 b.type = 'button'; b.className = 'btn wide';
                 var lbl = d.createElement('span'); lbl.className = 'lbl';
-                lbl.textContent = (it.scope === 'all' ? 'Everything, ' : 'This game, ') + (isNaN(t.getTime()) ? '' : t.toLocaleString());
+                lbl.textContent = (it.label ? it.label + ', ' : '') + (it.type === 'auto' ? 'Auto, ' : (it.type === 'daily' ? 'Daily, ' : '')) + (it.scope === 'all' ? 'Everything, ' : 'This game, ') + (isNaN(t.getTime()) ? '' : t.toLocaleString());
                 b.appendChild(lbl);
                 b.onclick = function () { cfgDriveLoad(it); };
                 box.appendChild(b);
@@ -947,14 +954,62 @@
         var D = w.FongGDrive;
         if (loadingSave || cfgDBusy) return;
         if (!D || !D.isConfigured()) { syncDrive(); cfgMsg(D ? D.NOT_SET_UP : 'Google Drive is not available here.', true); return; }
+        if (!cfgNeedGate(who, D.isConnected() ? 'Unlocked for this panel. Tap the Drive button again.' : 'Unlocked for this panel. Tap the Drive button again to sign in with Google.')) return;
         if (D.isConnected()) { then(); return; }
-        if (!cfgNeedGate(who, 'Unlocked. Tap the Drive button again to sign in with Google.')) return;
         cfgDBusy = true; syncDrive(); cfgMsg('Opening Google sign-in...');
         D.connect(function (e) {
             cfgDBusy = false; syncDrive();
             if (e) { cfgMsg(e.message, true); return; }
             cfgMsg('Connected.');
             then();
+        });
+    }
+    // ---- Drive status (dot on each gear, one line, auto switch, newer-backup card) ----
+    function gdotClass(phase) {
+        return 'gdot ' + (phase === 'error' ? 'bad' : (phase === 'backedup' || phase === 'connected' ? 'ok' : (phase === 'off' ? 'off' : 'wait')));
+    }
+    function cfgOnStatus(s) {
+        var gd = d.querySelectorAll('.gearBtn .gdot'), i, line = $('cfgDLine'), A = w.FongGDriveAuto;
+        for (i = 0; i < gd.length; i++) gd[i].className = gdotClass(s.phase);
+        if (s.seq !== cfgDSeq) {
+            cfgDSeq = s.seq;
+            w.clearTimeout(cfgDFade);
+            line.className = 'hint cfg-dline';
+            line.textContent = s.text;
+            if (s.text && !s.sticky) {
+                cfgDFade = w.setTimeout(function () {
+                    var calm = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    if (calm) { line.textContent = ''; return; }
+                    line.className = 'hint cfg-dline fade';
+                    cfgDFade = w.setTimeout(function () { line.textContent = ''; line.className = 'hint cfg-dline'; }, 500);
+                }, 4000);
+            }
+        }
+        $('cfgDAuto').checked = s.auto;
+        $('cfgDReconnect').hidden = s.phase !== 'reconnect';
+        var lt = A ? A.lastTimes() : [], mine = null;
+        for (i = 0; i < lt.length; i++) if (lt[i].id === SAVE_ID) mine = lt[i];
+        $('cfgDLast').textContent = mine ? 'Last auto backup of this game: ' + new Date(mine.time).toLocaleString() : '';
+        var pr = null, ps = s.prompts;
+        for (i = 0; i < ps.length; i++) if (ps[i].game === SAVE_ID) pr = ps[i];
+        $('cfgDPrompt').hidden = !pr;
+        if (pr) $('cfgDPromptText').textContent = 'A newer backup was found for ' + pr.name + '. Load it?';
+    }
+    function cfgDriveLoadNewer() {
+        var A = w.FongGDriveAuto, G = w.FongGameSaves;
+        if (loadingSave || cfgDBusy || !A) return;
+        if (!cfgUnlocked) { cfgNeedGate('cfgDLoadNew', 'Unlocked for this panel. Tap Load again.'); return; }
+        cfgDBusy = true; syncDrive(); cfgMsg('Getting the newer backup...');
+        A.load(SAVE_ID, function (e, text, meta) {
+            cfgDBusy = false; syncDrive();
+            if (e) { cfgMsg(e.message, true); return; }
+            cfgDisarm();
+            cfgText = text; $('cfgText').readOnly = text.length > 5000;
+            $('cfgText').value = text.length > 5000 ? text.substr(0, 5000) + '\n...' : text;
+            var chk = G.importJSON(text, { mode: 'replace', dryRun: true, only: [SAVE_ID] });
+            if (!chk.ok) { cfgMsg(chk.errors[0] || 'That backup cannot be used.', true); return; }
+            cfgDMeta = meta;
+            cfgMsg('Backup loaded. Choose Add missing or Replace my saves.');
         });
     }
     function cfgDriveBackup() {
@@ -964,8 +1019,9 @@
             D.backupNow(SAVE_ID, function (e) {
                 cfgDBusy = false; syncDrive();
                 if (e) { cfgMsg(e.message, true); return; }
-                cfgMsg('Backed up to Google Drive.');
-            });
+                $('cfgDLabel').value = '';
+                cfgMsg('Saved a save point to Google Drive.');
+            }, { label: D.cleanLabel($('cfgDLabel').value) });
         }, 'cfgDBackup');
     }
     function cfgDriveRestore() {
@@ -976,7 +1032,7 @@
                 cfgDBusy = false; syncDrive();
                 if (e) { cfgMsg(e.message, true); return; }
                 var mine = [], i;
-                for (i = 0; i < items.length; i++) if (items[i].scope === SAVE_ID || items[i].scope === 'all') mine.push(items[i]);
+                for (i = 0; i < items.length; i++) if (items[i].scope === SAVE_ID || (items[i].scope === 'all' && items[i].type === 'manual')) mine.push(items[i]);
                 cfgDList(mine);
                 cfgMsg(mine.length ? 'Pick a backup. It loads into the box above so you can check it first.' : 'No backups of this game in Drive yet.');
             });
@@ -985,6 +1041,7 @@
     function cfgDriveLoad(it) {
         var D = w.FongGDrive, G = w.FongGameSaves;
         if (loadingSave || cfgDBusy) return;
+        if (!cfgUnlocked) { cfgDList(null); cfgNeedGate('cfgDRestore', 'Unlocked for this panel. Tap Restore from Drive again.'); return; }
         cfgDBusy = true; syncDrive(); cfgMsg('Getting that backup...');
         D.restore(it.id, function (e, text) {
             cfgDBusy = false; syncDrive();
@@ -995,7 +1052,7 @@
             var chk = G ? G.importJSON(text, { mode: 'merge', dryRun: true, only: [SAVE_ID] }) : { ok: false, errors: ['Loading saves is not available here.'] };
             var chk2 = G && !chk.ok ? G.importJSON(text, { mode: 'replace', dryRun: true, only: [SAVE_ID] }) : chk;
             if (!chk2.ok) { cfgMsg(chk2.errors[0] || 'That backup cannot be used.', true); return; }
-            cfgDList(null);
+            cfgDList(null); cfgDMeta = null;
             cfgMsg('Backup loaded. Choose Add missing or Replace my saves.');
         });
     }
@@ -1020,13 +1077,23 @@
         $('cfgReplace').onclick = function () { cfgImport('replace'); };
         $('cfgRestore').onclick = cfgRestore;
         $('cfgDBackup').onclick = cfgDriveBackup;
+        if (w.FongGDriveAuto) {
+            var A3 = w.FongGDriveAuto, gs = d.querySelectorAll('.gearBtn'), gi, dt;
+            for (gi = 0; gi < gs.length; gi++) { dt = d.createElement('span'); dt.className = 'gdot off'; dt.setAttribute('aria-hidden', 'true'); gs[gi].appendChild(dt); }
+            $('cfgDAuto').onchange = function () { A3.setAuto(this.checked); cfgMsg(this.checked ? 'Auto backup on.' : 'Auto backup off. The sign-in ends when you close this panel.'); };
+            $('cfgDReconnect').onclick = function () { cfgDriveEnsure(function () { cfgMsg('Connected.'); }, 'cfgDReconnect'); };
+            $('cfgDLoadNew').onclick = cfgDriveLoadNewer;
+            $('cfgDNotNow').onclick = function () { A3.dismiss(SAVE_ID); };
+            A3.onStatus(cfgOnStatus);
+            cfgOnStatus(A3.getStatus());
+        } else { $('cfgDAuto').disabled = true; }
         $('cfgDRestore').onclick = cfgDriveRestore;
         $('cfgUnlock').onclick = cfgUnlock;
         $('cfgAns').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); cfgUnlock(); } });
-        $('cfgText').oninput = function () { cfgText = this.value; cfgDisarm(); };   // the box always holds the whole text
+        $('cfgText').oninput = function () { cfgText = this.value; cfgDMeta = null; cfgDisarm(); };   // the box always holds the whole text
         $('cfgFile').onchange = function () {
             var f = this.files && this.files[0];
-            cfgDisarm();
+            cfgDisarm(); cfgDMeta = null;
             if (!f) return;
             var lim = (w.FongGameSaves && w.FongGameSaves.MAX_CHARS) || 600000;
             if (f.size > lim) { cfgMsg('That file is too big.', true); return; }

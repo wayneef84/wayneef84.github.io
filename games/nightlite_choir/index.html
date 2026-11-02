@@ -172,12 +172,25 @@
             <p class="hint">Replace overwrites the saves in the file. Anything not in the file is left as it is.</p>
             <button class="btn wide" id="cfgRestore" type="button" hidden><span class="lbl">Restore previous</span></button>
             <h3>Google Drive (optional)</h3>
-            <p class="hint">Also keep a copy in your own Google Drive. The file buttons above still work. You sign in again each visit.</p>
+            <p class="hint">Also keep copies in your own Google Drive. The file buttons above still work. Nothing stays signed in: connect again each visit.</p>
             <p id="cfgDStatus" class="hint"></p>
+            <p id="cfgDLine" class="hint cfg-dline" aria-live="polite"></p>
+            <button class="btn wide" id="cfgDReconnect" type="button" hidden><span class="lbl">Tap to reconnect</span></button>
+            <div id="cfgDPrompt" class="cfg-gate" hidden>
+                <p id="cfgDPromptText" class="cfg-q"></p>
+                <div class="cfg-row">
+                    <button class="btn" id="cfgDLoadNew" type="button"><span class="lbl">Load</span></button>
+                    <button class="btn" id="cfgDNotNow" type="button"><span class="lbl">Not now</span></button>
+                </div>
+            </div>
+            <label class="cfg-check" for="cfgDAuto"><input type="checkbox" id="cfgDAuto"> <span>Auto backup after you connect</span></label>
+            <p id="cfgDLast" class="hint"></p>
+            <label class="cfg-label" for="cfgDLabel">Save point name (optional)</label>
+            <input type="text" id="cfgDLabel" maxlength="30" autocomplete="off">
             <button class="btn wide" id="cfgDBackup" type="button"><span class="ico">&#9729;&#65039;</span><span class="lbl">Back up to Drive</span></button>
             <button class="btn wide" id="cfgDRestore" type="button"><span class="ico">&#128229;</span><span class="lbl">Restore from Drive</span></button>
             <div id="cfgDList" class="cfg-dlist" hidden></div>
-            <p id="cfgMsg" class="cfg-msg" role="status" aria-live="polite"></p>
+            <p id="cfgMsg" class="cfg-msg" role="status" aria-live="polite" tabindex="-1"></p>
             <p class="hint">Exporting or importing all games at once is in the arcade Settings, Data tab. <a href="../../index.html?settings=data">Open arcade Settings</a></p>
         </div>
     </div>
@@ -194,6 +207,7 @@
     <script src="../../js/gamesaves.js"></script>
     <script src="../../js/gdrive-config.js"></script>
     <script src="../../js/gdrive-backup.js"></script>
+    <script src="../../js/gdrive-auto.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
