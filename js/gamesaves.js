@@ -15,6 +15,7 @@
     var FORMAT_ONE = 'fong-game-save';
     var FORMAT_ALL = 'fong-game-saves';
 
+    var MAX_PREFIXED = 200;   // most prefix-matched keys one game may export or import
     var KEY_OK = /^[A-Za-z0-9_.:-]{1,120}$/;   // a key found by prefix must look like this
 
     // id -> { id, name, keys: [], prefixes: [], json: { key or prefix: true } }
@@ -100,22 +101,34 @@
         return false;
     }
 
-    function prefixedKeys(g) {
-        var out = [], n = 0, i, k;
+    function startsWithPrefix(g, k) {
+        for (var i = 0; i < g.prefixes.length; i++) { if (k.length > g.prefixes[i].length && k.indexOf(g.prefixes[i]) === 0) { return true; } }
+        return false;
+    }
+
+    // Keys under a registered prefix. A key import would refuse (odd characters, over 120 characters) or more than
+    // MAX_PREFIXED of them is reported through warnings instead of silently dropped.
+    function prefixedKeys(g, warnings) {
+        var out = [], n = 0, i, k, bad = 0;
         try { n = w.localStorage.length; } catch (e) { return out; }
         for (i = 0; i < n; i++) {
             try { k = w.localStorage.key(i); } catch (e2) { k = null; }
-            if (typeof k === 'string' && g.keys.indexOf(k) < 0 && keyAllowed(g, k)) { out.push(k); }
+            if (typeof k !== 'string' || g.keys.indexOf(k) >= 0 || !startsWithPrefix(g, k)) { continue; }
+            if (keyAllowed(g, k)) { out.push(k); } else { bad++; }
         }
         out.sort();
+        if (warnings) {
+            if (bad) { warnings.push(g.name + ': ' + bad + ' saved item' + (bad === 1 ? ' has' : 's have') + ' a name that cannot be restored (odd characters or too long). ' + (bad === 1 ? 'It is' : 'They are') + ' left out.'); }
+            if (out.length > MAX_PREFIXED) { warnings.push(g.name + ': ' + out.length + ' saved items is more than the ' + MAX_PREFIXED + ' that can be restored. Only the first ' + MAX_PREFIXED + ' would come back.'); }
+        }
         return out;
     }
 
     // ---- reading -------------------------------------------------------
 
-    function gameData(g) {
+    function gameData(g, warnings) {
         var out = {}, any = false, i, v, all = g.keys;
-        if (g.prefixes.length) { all = g.keys.concat(prefixedKeys(g)); }
+        if (g.prefixes.length) { all = g.keys.concat(prefixedKeys(g, warnings)); }
         for (i = 0; i < all.length; i++) {
             v = readKey(all[i]);
             if (typeof v === 'string') { out[all[i]] = v; any = true; }
@@ -127,7 +140,7 @@
         var out = [], i, g;
         for (i = 0; i < order.length; i++) {
             g = games[order[i]];
-            out.push({ id: g.id, name: g.name, keys: g.keys.concat(g.prefixes), hasData: !!gameData(g) });
+            out.push({ id: g.id, name: g.name, keys: g.keys.slice(), prefixes: g.prefixes.slice(), hasData: !!gameData(g) });
         }
         return out;
     }
@@ -152,18 +165,18 @@
     function exportGame(id) {
         var warnings = [];
         if (typeof id !== 'string' || !has.call(games, id)) { return { text: '', warnings: ['Unknown game.'] }; }
-        var g = games[id], data = gameData(g) || {};
+        var g = games[id], data = gameData(g, warnings) || {};
         sizeWarnings(g, data, warnings);
         var text = JSON.stringify({ format: FORMAT_ONE, version: 1, game: g.id, name: g.name, saved: new Date().toISOString(), data: data }, null, 2);
         fileWarning(text, warnings);
         return { text: text, warnings: warnings };
     }
 
-    function exportObject() {
+    function exportObject(warnings) {
         var out = {}, i, g, d;
         for (i = 0; i < order.length; i++) {
             g = games[order[i]];
-            d = gameData(g);
+            d = gameData(g, warnings);
             if (d) { out[g.id] = { name: g.name, data: d }; }
         }
         return out;
@@ -171,7 +184,7 @@
 
     // Returns {text, warnings}.
     function exportAll() {
-        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        var warnings = [], obj = exportObject(warnings), ids = Object.keys(obj), i;
         for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
         var text = JSON.stringify({ format: FORMAT_ALL, version: 1, saved: new Date().toISOString(), games: obj }, null, 2);
         fileWarning(text, warnings);
@@ -180,7 +193,7 @@
 
     // Warnings for the games part of the everything file (the caller checks the whole file length).
     function exportWarnings() {
-        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        var warnings = [], obj = exportObject(warnings), ids = Object.keys(obj), i;
         for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
         return warnings;
     }
@@ -189,10 +202,14 @@
 
     // Checks one game's data object. Returns { writes: {key: value}, skipped: n }.
     function plan(g, data, mode, notes) {
-        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0;
+        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0, pre = 0;
         for (i = 0; i < ks.length; i++) {
             k = ks[i]; v = data[k];
             if (!keyAllowed(g, k)) { continue; }   // unknown keys are dropped quietly
+            if (g.keys.indexOf(k) < 0 && ++pre > MAX_PREFIXED) {   // too many prefix keys: keep the first MAX_PREFIXED
+                skipped++; if (pre === MAX_PREFIXED + 1) { notes.push(g.name + ': more than ' + MAX_PREFIXED + ' saved items, the rest were skipped.'); }
+                continue;
+            }
             if (typeof v !== 'string') { skipped++; notes.push(g.name + ': skipped ' + k + ' (not text).'); continue; }
             if (v.length > MAX_VALUE) { skipped++; notes.push(g.name + ': skipped ' + k + ' (too big).'); continue; }
             if (keyIsJson(g, k)) {
@@ -286,6 +303,7 @@
         exportObject: exportObject,
         exportWarnings: exportWarnings,
         MAX_CHARS: MAX_CHARS,
+        MAX_PREFIXED: MAX_PREFIXED,
         MAX_VALUE: MAX_VALUE
     };
     api.importJSON = importJSON;
