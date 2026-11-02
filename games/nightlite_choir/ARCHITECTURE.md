@@ -17,6 +17,7 @@ games/nightlite_choir/
   js/recipes.js       NightliteRecipes: collectBlends, build (match, hint, suggest, fromStage, tempo), roll, rareSynth. No DOM
   tests/nightlite.test.js  (repo root tests/) node test with a fake window
   ../../js/gamesaves.js  shared FongGameSaves (export and import of the keys below)
+  ../../js/gdrive-config.js, ../../js/gdrive-backup.js  optional FongGDrive
   js/app.js           doors, screens, stage, tray, drag, undo, save/load, audio context, keys
   *.md                README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT, DESIGN, IP-GUARDRAILS, ASSET_LOG
 ```
@@ -63,3 +64,7 @@ games/nightlite_choir/
 - Rare sound: wrappers (`voice`, `noise`) copy the base `amp`, the extra layer has a level `lvl` (new, `js/synth.js` layers only, default full). The test renders every blend and keeps the rare peak within 1.3x of the base. Drum voices drip, clop and thrum go up a whole octave (pitch x 2), whoosh is left alone, unpitched voices get x 1.25.
 - `loadProgress`: ids are looked up with `hasOwnProperty`, each list is cut at 200 entries, entries must be strings and a rare needs its blend already owned.
 - Restore previous: an undo copy without a `rare` field leaves `nightlite.rare` as it is.
+
+## Drive backup in the overlay
+
+`cfgDriveEnsure(then, who)` in `js/app.js` runs `then` once connected: unconfigured shows the not set up message, not connected asks the grown-up question (first tap) and then calls `FongGDrive.connect` (second tap, it needs a tap). Back up calls `FongGDrive.backupNow('nightlite-choir')`. Restore lists backups with scope `nightlite-choir` or `all` (up to 5 buttons in `#cfgDList`), and picking one puts the text in `cfgText` and the paste box (read only if over 5000 characters, shown cut) after a dry run. The write itself is the unchanged `cfgImport`. The token lives in memory only.

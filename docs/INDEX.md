@@ -25,6 +25,7 @@ One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for eve
 | [PWA.md](PWA.md) | Installable app: manifest, `sw.js`, `js/pwa.js`, offline play, how to bump `CACHE_VERSION`, kill switch `?pwa=off`, testing, limits |
 | [SCORES.md](SCORES.md) | `FongScores` per-device high scores that can be reset, exported and imported (`js/scores.js`), games wired, file format, privacy |
 | [GAMESAVES.md](GAMESAVES.md) | `FongGameSaves` per-game save export and import (`js/gamesaves.js`), manifest, file formats, safety rules |
+| [GDRIVE_SETUP.md](GDRIVE_SETUP.md) | One-time Google Cloud setup for the optional Drive backup (Client ID in `js/gdrive-config.js`) |
 | [SETTINGS.md](SETTINGS.md) | Settings hub on the homepage (Look, Scores, Cheers, Play, Data), grown-ups gate, Calm pref (`js/settings.js`, `js/prefs.js`), deep links |
 | [PLAYER_STATS.md](PLAYER_STATS.md) | `FongStats` on-device play counts, last played and best scores (`js/player-stats.js`) |
 | [THEMING_SPEC.md](THEMING_SPEC.md) | Homepage skins, palettes, JSON themes and the security model (approved. Phase 1 built, see section 10) |
