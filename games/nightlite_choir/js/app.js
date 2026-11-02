@@ -1002,7 +1002,7 @@
         $('cfgDPrompt').hidden = !pr;
         if (pr) {
             $('cfgDPromptText').textContent = 'Drive has a newer save for ' + pr.name + '.';
-            $('cfgDPromptTimes').textContent = 'Saved at: ' + (pr.driveTime ? new Date(pr.driveTime).toLocaleString() : 'unknown') + ' on Drive, ' + (pr.deviceTime ? new Date(pr.deviceTime).toLocaleString() : 'unknown') + ' on this device. ' +
+            $('cfgDPromptTimes').textContent = 'Saved at: ' + (pr.driveTime ? new Date(pr.driveTime).toLocaleString() : 'unknown') + ' on Drive, ' + (pr.deviceTime ? new Date(pr.deviceTime).toLocaleString() + ' on this device. ' : 'nothing saved on this device. ') +
                 (pr.later ? 'Decide later: auto backup for this game stays paused until you decide or the page closes.' : 'Auto backup for this game is paused until you decide.');
         }
     }

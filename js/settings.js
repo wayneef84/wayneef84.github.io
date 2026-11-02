@@ -754,7 +754,7 @@
                 card.setAttribute('role', 'group');
                 card.setAttribute('aria-label', 'Drive has a newer save for ' + pr.name);
                 card.appendChild(el('p', 'fs-strong', 'Drive has a newer save for ' + pr.name + '.'));
-                card.appendChild(el('p', 'fs-note', 'Saved at: ' + (pr.driveTime ? new Date(pr.driveTime).toLocaleString() : 'unknown') + ' on Drive, ' + (pr.deviceTime ? new Date(pr.deviceTime).toLocaleString() : 'unknown') + ' on this device.'));
+                card.appendChild(el('p', 'fs-note', 'Saved at: ' + (pr.driveTime ? new Date(pr.driveTime).toLocaleString() : 'unknown') + ' on Drive, ' + (pr.deviceTime ? new Date(pr.deviceTime).toLocaleString() + ' on this device.' : 'nothing saved on this device.')));
                 card.appendChild(el('p', pr.later ? 'fs-warn' : 'fs-dim', pr.later ? 'Decide later: auto backup for ' + pr.name + ' stays paused until you decide or the page closes.' : 'Auto backup for ' + pr.name + ' is paused until you decide.'));
                 var cr = el('div', 'fs-row');
                 var kb = btn('Keep this device', 'fs-go', function () { driveKeep(pr); });

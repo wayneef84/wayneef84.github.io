@@ -1,6 +1,6 @@
 // Review fixes for js/gdrive-backup.js and js/gamesaves.js. Run: node tests/gdrive-review.test.js
 var assert = require('assert'), F = require('./gdrive-fake.js');
-function T(o) { o = o || {}; o.auto = false; return F.makeTab(o); }
+function T(o) { o = o || {}; if (o.auto === undefined) { o.auto = false; } return F.makeTab(o); }
 function connect(w, cb) { w.FongGDrive.connect(function (e) { cb(e); }); }
 var steps = [];
 
@@ -104,6 +104,39 @@ steps.push(function (next) {   // 9: prefix cap on import and export warning
     assert(r.ok && r.applied === 200 && r.skipped === 50, r.applied + ' ' + r.skipped);
     assert(G.exportGame('j-quiz').warnings.some(function (x) { return /more than the 200/.test(x); }));
     next();
+});
+
+steps.push(function (next) {   // manual save points carry savedAt
+    var w = T(); w.store['nightlite.save'] = '{"v":1}';
+    connect(w, function () { w.FongGDrive.backupNow('nightlite-choir', function (e) {
+        assert(!e); var f = w.drive.files[0]; assert(/^\d{13}$/.test(f.appProperties.savedAt), 'savedAt set');
+        assert(JSON.parse(f.content).saved, 'saved time in the file');
+        w.FongGDrive.list(function (e2, items) { assert(!e2 && items[0].savedAt === parseInt(f.appProperties.savedAt, 10)); next(); });
+    }); });
+});
+
+steps.push(function (next) {   // per-game undo: put back, remove keys the load created, never exported
+    var w = F.makeTab({}), G = w.FongGameSaves, A = w.FongGDriveAuto;
+    w.store['j_score_a'] = '5'; w.store['j_muted'] = 'true';
+    assert(A.stash('j-quiz')); assert(w.store['fong.undo.j-quiz']);
+    assert(G.exportAll().text.indexOf('fong.undo') < 0, 'not exported');
+    G.importJSON(JSON.stringify({ format: 'fong-game-save', version: 1, game: 'j-quiz', data: { j_score_a: '9', j_score_new: '1' } }), { mode: 'replace', only: ['j-quiz'] });
+    assert(w.store['j_score_new'] === '1' && w.store['j_score_a'] === '9');
+    assert(A.undoList()[0].id === 'j-quiz');
+    assert(A.undo('j-quiz')); assert(w.store['j_score_a'] === '5' && w.store['j_muted'] === 'true' && !('j_score_new' in w.store) && !w.store['fong.undo.j-quiz']);
+    assert(!A.undo('j-quiz'));
+    next();
+});
+
+steps.push(function (next) {   // before creating the auto file there is a fresh list, and an existing file is never duplicated
+    var drive = F.makeDrive(), store = { 'fong.slots.v4': '{"mine":1}' };
+    drive.files.push({ id: 'seed1', name: 'fong-auto-slots.json', parents: ['appDataFolder'], appProperties: { hash: 'other', savedAt: '5' }, createdTime: new Date().toISOString(), modifiedTime: new Date().toISOString(), version: '9', size: '2', content: '{}' });
+    var w = F.makeTab({ store: store, drive: drive });
+    w.FongGDrive.connect(function () { F.until(function () { return w.FongGDriveAuto.prompts().length === 1; }, 1500, function (e) {
+        assert(!e); assert.strictEqual(drive.files.filter(function (f) { return f.name === 'fong-auto-slots.json'; }).length, 1);
+        assert(!w.reqs.some(function (r) { return r.opts.method === 'POST'; }), 'nothing created');
+        next();
+    }); });
 });
 
 steps.push(function (next) {   // blank id: no new module calls anything

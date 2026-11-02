@@ -16,6 +16,7 @@
 - [ ] Wayne to listen to the rare sounds and the new blends on a real phone speaker (Cozynub bass is very low)
 - [x] Optional Drive backup and restore in the settings overlay (needs Client ID in js/gdrive-config.js)
 - [x] Auto backup switch, status dot, newer-backup card in the overlay
+- [x] Pause card (Keep this device, Load the Drive save, Decide later) with Saved at times
 - [ ] Try Drive backup and autosave on a real iPhone (popup after first tap, quiet reconnect)
 - [ ] Wayne to confirm the blend names and the spark numbers (see DESIGN.md)
 - [ ] Milestone 4: polish, tests, docs, final catalog update

@@ -176,7 +176,9 @@
         return out;
     }
     function getStatus() {
-        return { phase: st.phase, text: st.text, sticky: st.sticky, seq: st.seq, last: st.last, connected: D.isConnected(), auto: isAuto(),
+        var ph = st.phase;
+        if ((ph === 'connected' || ph === 'backedup') && Object.keys(pending).length) { ph = 'paused'; }   // the dot never looks fine while a game waits for a decision
+        return { phase: ph, text: st.text, sticky: st.sticky, seq: st.seq, last: st.last, connected: D.isConnected(), auto: isAuto(),
             leader: st.leader, perRun: D.MAX_GAMES_PER_RUN, prompts: prompts() };
     }
     function emit() { var s = getStatus(), i; for (i = 0; i < fns.length; i++) { try { fns[i](s); } catch (e) { /* ignore */ } } }
@@ -448,6 +450,7 @@
         D.list(function (e, items) {
             if (e) { cb(e); return; }
             files = items;
+            scan(true);   // learn when each game last changed on this device
             var i, f, info, s, known = {}, all = w.FongGameSaves ? w.FongGameSaves.manifest() : [];
             for (i = 0; i < all.length; i++) { known[all[i].id] = true; }
             for (i = 0; i < items.length; i++) {

@@ -39,8 +39,8 @@ Commit and publish. The Back up to Google Drive buttons then turn on. Until the 
 ## What a family member sees
 1. Settings, Data, Back up to Google Drive (or the gear in Nightlite Choir+). A parent question comes first.
 2. A Google pop-up: pick the account, press Continue or Allow. It says Fong Arcade wants to store its own data in your Drive.
-3. Auto backup is on once you connect: the arcade saves one changed game at a time, in the background while the page is open. You can also make a save point yourself (Back up everything or Back up on one game, with an optional name). Restore picks from a dated list and always asks first.
-If you connected before, the arcade quietly asks Google again when a page opens (no pop-up). If Google or the browser says no, a Tap to reconnect button shows. A device that never connected does not contact Google.
+3. Auto backup is on once you connect, and the page keeps the sign-in (in memory only, never saved on the device) until it is closed. Turn it off with the switch if you do not want that: the arcade saves one changed game at a time, in the background while the page is open. You can also make a save point yourself (Back up everything or Back up on one game, with an optional name). Restore picks from a dated list and always asks first.
+If you connected before, the arcade asks Google again when a page opens, without a pop-up. Google or the browser may say no or block it, and then a Tap to reconnect button shows. A device that never connected does not contact Google.
 Google may show a "Google hasn't verified this app" page while the app is in Testing mode. Press Advanced, then Go to Fong Arcade. Only the test users you added can pass it.
 
 ## Later, optional: remove the weekly sign-in and the 100 person limit
