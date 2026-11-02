@@ -15,7 +15,8 @@
 - [ ] Merge the second blend set (global `NightliteBlendsExtra_AGY`) when it arrives: drop the file in `js/worlds/`, add one script tag, add its ASSET_LOG rows
 - [ ] Wayne to listen to the rare sounds and the new blends on a real phone speaker (Cozynub bass is very low)
 - [x] Optional Drive backup and restore in the settings overlay (needs Client ID in js/gdrive-config.js)
-- [ ] Try Drive backup on a real iPhone (popup after first tap)
+- [x] Auto backup switch, status dot, newer-backup card in the overlay
+- [ ] Try Drive backup and autosave on a real iPhone (popup after first tap, quiet reconnect)
 - [ ] Wayne to confirm the blend names and the spark numbers (see DESIGN.md)
 - [ ] Milestone 4: polish, tests, docs, final catalog update
 - [ ] Possible later: pause button, more than 6 slots, spooky night mode

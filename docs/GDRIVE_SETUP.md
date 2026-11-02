@@ -39,11 +39,12 @@ Commit and publish. The Back up to Google Drive buttons then turn on. Until the 
 ## What a family member sees
 1. Settings, Data, Back up to Google Drive (or the gear in Nightlite Choir+). A parent question comes first.
 2. A Google pop-up: pick the account, press Continue or Allow. It says Fong Arcade wants to store its own data in your Drive.
-3. Back up everything (or Back up on one game). Later, Restore picks from a dated list.
+3. Auto backup is on once you connect: the arcade saves one changed game at a time, in the background while the page is open. You can also make a save point yourself (Back up everything or Back up on one game, with an optional name). Restore picks from a dated list and always asks first.
+If you connected before, the arcade quietly asks Google again when a page opens (no pop-up). If Google or the browser says no, a Tap to reconnect button shows. A device that never connected does not contact Google.
 Google may show a "Google hasn't verified this app" page while the app is in Testing mode. Press Advanced, then Go to Fong Arcade. Only the test users you added can pass it.
 
 ## Later, optional: remove the weekly sign-in and the 100 person limit
 Google Auth Platform, Audience, Publish app. Publishing needs a privacy policy web page that says what the app stores, and Google may ask for a short review. This is not needed for family use.
 
 ## What is stored, and where
-Backup files go into a hidden app folder (appDataFolder) in the signed-in person's own Drive. The arcade cannot see any other Drive file. The person can delete the backups, or remove the app's access at https://myaccount.google.com/permissions. Nothing is sent to any server that belongs to the arcade.
+Backups go into a hidden app folder (appDataFolder) as save points, one rolling auto file per game and up to 7 daily copies per game in the signed-in person's own Drive. The arcade cannot see any other Drive file. The person can delete the backups, or remove the app's access at https://myaccount.google.com/permissions. Nothing is sent to any server that belongs to the arcade.

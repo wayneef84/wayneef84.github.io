@@ -284,7 +284,7 @@
         });
     }
 
-    // Keeps the newest `keep` files of one kind for one scope. Calls cb(removedCount).
+    // Keeps the newest "keep" files of one kind for one scope. Calls cb(removedCount).
     function prune(type, scope, keep, cb) {
         list(function (e, items) {
             if (e) { cb(0); return; }

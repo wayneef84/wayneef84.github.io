@@ -531,8 +531,14 @@
 
     function driveRerender() {
         var top = bodyEl ? bodyEl.scrollTop : 0;
+        var had = doc.activeElement && bodyEl && bodyEl.contains(doc.activeElement) ? doc.activeElement.id : '';
         render();
-        if (bodyEl) { bodyEl.scrollTop = top; }
+        if (bodyEl) {
+            bodyEl.scrollTop = top;
+            var again = had ? doc.getElementById(had) : null;
+            if (again) { again.focus(); }
+            else if (had || doc.activeElement === doc.body) { bodyEl.tabIndex = -1; bodyEl.focus(); }   // keep keys (Escape, Tab) working inside the sheet
+        }
     }
 
     function driveSay(text, warn) { drive.msg = text || ''; drive.warn = !!warn; say(text || ''); }

@@ -82,4 +82,12 @@ Tabs follow the tab pattern (arrow keys, Home and End). Escape closes and focus 
 
 ## Back up to Google Drive (Data tab)
 
-Optional section under Game saves. Texts: it is optional, manual file export and import still work, nothing stays signed in. Connect (behind the grown-ups question), connection status, Back up everything, a Back up button on each game row, Refresh list, Disconnect, and a list of backups (scope, date, size) each with Restore and Delete (Delete needs a second tap). Restore opens the same preview and Apply box as a manual import, with Merge or Replace. With no Client ID in `js/gdrive-config.js` every Drive button is disabled and the section says "Not set up yet. See docs/GDRIVE_SETUP.md". Setup: `docs/GDRIVE_SETUP.md`. Details: `docs/GAMESAVES.md`. `index.html` loads `js/gdrive-config.js` and `js/gdrive-backup.js` before `js/settings.js`.
+Optional section under Game saves, with a status dot on the Data tab and next to the heading (hidden while Drive is off). It says it is optional, that manual file export and import still work and that nothing stays signed in. With no Client ID in `js/gdrive-config.js` every Drive button is disabled and it says "Not set up yet. See docs/GDRIVE_SETUP.md".
+
+- Connect sits behind the grown-ups question. A visit to the sheet starts locked. While locked and connected the section shows only the question: Back up, Restore, Delete and Load are not available until it is answered. Closing the sheet locks it again and forgets any loaded backup (and signs out if Auto backup is off).
+- Status line (Connecting..., Connected, Backed up <time>) fades after about 4 seconds, no animation with reduced motion. Errors stay until Dismiss. "Tap to reconnect" shows when the quiet reconnect failed.
+- Auto backup switch (on after the first connect), last auto backup time per game, Back up changes now. Autosave saves one changed game per run. See `docs/GAMESAVES.md`.
+- Newer backup card: "A newer backup was found for <game>. Load it?" with Load and Not now. Load opens the normal preview and Apply box (Replace behind the gate).
+- Save points: optional name (30 characters), Back up everything, and a Back up button on each game row (disabled when locked, offline or nothing saved). The list shows name, kind (Save point, Auto, Daily), date and size, each with Restore and Delete (Delete needs a second tap). Restore opens the preview and Apply box. The box survives unrelated redraws and is cleared on close or disconnect.
+
+`index.html` loads `js/gdrive-config.js`, `js/gdrive-backup.js` and `js/gdrive-auto.js` before `js/settings.js`. Setup: `docs/GDRIVE_SETUP.md`.

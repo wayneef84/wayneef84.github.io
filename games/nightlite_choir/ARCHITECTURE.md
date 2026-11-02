@@ -17,7 +17,7 @@ games/nightlite_choir/
   js/recipes.js       NightliteRecipes: collectBlends, build (match, hint, suggest, fromStage, tempo), roll, rareSynth. No DOM
   tests/nightlite.test.js  (repo root tests/) node test with a fake window
   ../../js/gamesaves.js  shared FongGameSaves (export and import of the keys below)
-  ../../js/gdrive-config.js, ../../js/gdrive-backup.js  optional FongGDrive
+  ../../js/gdrive-config.js, ../../js/gdrive-backup.js, ../../js/gdrive-auto.js  optional FongGDrive and FongGDriveAuto
   js/app.js           doors, screens, stage, tray, drag, undo, save/load, audio context, keys
   *.md                README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT, DESIGN, IP-GUARDRAILS, ASSET_LOG
 ```
@@ -68,3 +68,5 @@ games/nightlite_choir/
 ## Drive backup in the overlay
 
 `cfgDriveEnsure(then, who)` in `js/app.js` runs `then` once connected: unconfigured shows the not set up message, not connected asks the grown-up question (first tap) and then calls `FongGDrive.connect` (second tap, it needs a tap). Back up calls `FongGDrive.backupNow('nightlite-choir')`. Restore lists backups with scope `nightlite-choir` or `all` (up to 5 buttons in `#cfgDList`), and picking one puts the text in `cfgText` and the paste box (read only if over 5000 characters, shown cut) after a dry run. The write itself is the unchanged `cfgImport`. The token lives in memory only.
+
+Status and autosave in the overlay: `cfgOnStatus` follows `FongGDriveAuto.onStatus` (dots on every `.gearBtn`, the fading `#cfgDLine`, `#cfgDAuto`, `#cfgDLast`, the `#cfgDPrompt` card). `cfgDriveEnsure` always asks the grown-up question first (the `cfgUnlocked` flag lasts for one opening of the panel), then connects if needed. `cfgDriveLoadNewer` and `cfgDriveLoad` put Drive text in `cfgText` and remember the file in `cfgDMeta`, and `cfgImport` calls `markLoaded` after a successful write. `closeConfig` locks again and signs out when autosave is off.
