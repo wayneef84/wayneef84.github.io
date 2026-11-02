@@ -33,7 +33,7 @@ games/nightlite_choir/
 - Debug hook: `window.Nightlite` (state, voices, addChar). Not used by the UI.
 
 ## Settings overlay
-`#cfgOv` in index.html, logic in `js/app.js` (`openConfig`, `closeConfig`, `cfgExport`, `cfgImport`). Any `.gearBtn` opens it. `setVolume` and `setMuted` are shared with the world controls and call `syncCfg`. Import is a dry run first, then a real write through `FongGameSaves.importJSON(text, {mode, only: ['nightlite-choir']})`, then a reload. The `loadingSave` flag stops `saveProgress` so the old in-memory state cannot overwrite the import. The document key handler ignores keys while the overlay is open.
+`#cfgOv` in index.html, logic in `js/app.js` (`openConfig`, `closeConfig`, `cfgExport`, `cfgImport`). Any `.gearBtn` opens it. `setVolume` and `setMuted` are shared with the world controls and call `syncCfg`. Import is a dry run first, then a real write through `FongGameSaves.importJSON(text, {mode, only: ['nightlite-choir']})`, then a reload. The `loadingSave` flag stops `saveProgress` so the old in-memory state cannot overwrite the import. The document key handler (`onKey`) closes the overlay on Escape and ignores other keys while it is open. Everything else in the body is marked `inert` and `aria-hidden` and restored on close. `nightlite.undo` holds the one-step undo and is not in the manifest.
 
 ## Milestone 3: sparks, eggs, pot (v0.4.0)
 - Screens: `doors`, `world`, `collect`, `pot` (`S.screen`). `openScreen(name)` pushes the current screen on `S.back` and pauses sound if it came from a world (the stage is kept). `goBack()` pops it and restarts the voices via `resumeWorld()`. `leaveWorld` and `enterWorld` clear the stack. Collection and pot use the calm door theme.
