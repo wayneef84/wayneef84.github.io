@@ -2,7 +2,7 @@
  * Settings hub for the homepage. One sheet with tabs: Look, Scores, Cheers, Play, Data.
  * Opened by the Settings button (#theme-open), by #settings or ?settings=1 (or ?settings=scores,
  * look, cheers, play, data) in the address, or by FongSettings.open(tab).
- * Load BEFORE js/theme/panel.js (it takes over the button click) and AFTER js/scores.js and js/prefs.js.
+ * Load BEFORE js/theme/panel.js (it takes over the button click) and AFTER js/scores.js, js/prefs.js and js/gamesaves.js.
  * Text is always written with textContent, never innerHTML. Strict ES5. No network.
  * Everything stays on this device. Docs: docs/SETTINGS.md
  */
@@ -229,7 +229,7 @@
     // Shared import box. kind: 'scores' or 'all'
     function loadBox(host, kind, check, apply) {
         var box = el('div', 'fs-box');
-        box.appendChild(el('p', 'fs-strong', kind === 'all' ? 'Import everything' : 'Import scores'));
+        box.appendChild(el('p', 'fs-strong', kind === 'all' ? 'Import everything' : (kind === 'games' ? 'Import game saves' : 'Import scores')));
         box.appendChild(el('p', 'fs-note', 'Choose a file or paste the text, then Preview. Nothing changes until you tap Apply.'));
         var file = el('input', 'fs-input');
         file.type = 'file'; file.accept = '.json,application/json';
@@ -260,12 +260,18 @@
                 for (var i = 0; i < res.errors.length && i < 5; i++) { out.appendChild(el('p', 'fs-note', res.errors[i])); }
                 return;
             }
-            out.appendChild(el('p', 'fs-strong', 'Ready: ' + res.added + ' score' + (res.added === 1 ? '' : 's') + ' to add, ' + res.skipped + ' skipped.'));
-            var ul = el('ul', 'fs-list');
-            for (var j = 0; j < res.games.length && j < 30; j++) { ul.appendChild(el('li', '', res.games[j].title + ': ' + res.games[j].added)); }
+            var ul = el('ul', 'fs-list'), isGames = kind === 'games';
+            if (isGames) {
+                out.appendChild(el('p', 'fs-strong', 'Ready: ' + res.games.length + ' game' + (res.games.length === 1 ? '' : 's') + ' to update, ' + res.skipped + ' item' + (res.skipped === 1 ? '' : 's') + ' skipped.'));
+                for (var g = 0; g < res.games.length && g < 30; g++) { ul.appendChild(el('li', '', res.games[g].name + ': ' + res.games[g].keys + ' saved item' + (res.games[g].keys === 1 ? '' : 's'))); }
+                if (res.notes) { for (var nn = 0; nn < res.notes.length && nn < 5; nn++) { out.appendChild(el('p', 'fs-dim', res.notes[nn])); } }
+            } else {
+                out.appendChild(el('p', 'fs-strong', 'Ready: ' + res.added + ' score' + (res.added === 1 ? '' : 's') + ' to add, ' + res.skipped + ' skipped.'));
+                for (var j = 0; j < res.games.length && j < 30; j++) { ul.appendChild(el('li', '', res.games[j].title + ': ' + res.games[j].added)); }
+            }
             out.appendChild(ul);
             if (res.extra) { for (var k = 0; k < res.extra.length; k++) { out.appendChild(el('p', 'fs-note', res.extra[k])); } }
-            if (getMode() === 'replace') { out.appendChild(el('p', 'fs-warn', 'Replace swaps your scores for the ones in this file.')); }
+            if (getMode() === 'replace') { out.appendChild(el('p', 'fs-warn', kind === 'games' ? 'Replace overwrites the saved progress of these games.' : 'Replace swaps your scores for the ones in this file.')); }
         }
         file.addEventListener('change', function () {
             readFile(file.files && file.files[0], function (t, err) {
@@ -366,6 +372,7 @@
         obj.scores = w.FongScores ? w.FongScores.exportObject() : null;
         obj.cheer = cheerObject(includeName);
         obj.prefs = w.FongPrefs ? w.FongPrefs.all() : null;
+        if (w.FongGameSaves) { obj.games = w.FongGameSaves.exportObject(); }   // optional field, version stays 1
         return JSON.stringify(obj, null, 2);
     }
 
@@ -378,6 +385,8 @@
         }
         return false;
     }
+
+    function gamesFile(g) { return JSON.stringify({ format: 'fong-game-saves', version: 1, games: g }); }
 
     function parseEverything(text) {
         var res = { ok: false, errors: [], added: 0, skipped: 0, games: [], extra: [], data: null };
@@ -401,6 +410,10 @@
         }
         if (d.cheer) { res.extra.push('Cheer settings: ' + (cleanCheer(d.cheer) ? 'ready to use.' : 'cannot be used and will be left alone.')); }
         if (d.prefs) { res.extra.push('Play options: ready to use.'); }
+        if (d.games && w.FongGameSaves) {
+            var gs = w.FongGameSaves.importJSON(gamesFile(d.games), { mode: 'merge', dryRun: true });
+            res.extra.push(gs.ok ? 'Game saves: ' + gs.games.length + ' game' + (gs.games.length === 1 ? '' : 's') + ' ready to use.' : 'Game saves in this file cannot be used and will be left alone.');
+        }
         res.ok = true;
         return res;
     }
@@ -429,7 +442,57 @@
             }
         }
         if (d.prefs && w.FongPrefs) { w.FongPrefs.load(d.prefs); done.push('play options'); }
+        if (d.games && w.FongGameSaves) {
+            var gr = w.FongGameSaves.importJSON(gamesFile(d.games), { mode: mode });
+            if (gr.ok && gr.applied) { done.push('game saves'); }
+        }
         return { ok: true, message: 'Imported: ' + (done.length ? done.join(', ') : 'nothing new') + '. Reload the page to see everything.' };
+    }
+
+    function gameSaveBoard(G, g, host) {
+        var sec = el('section', 'fs-game');
+        sec.setAttribute('data-game', g.id);
+        var head = el('div', 'fs-gamehead');
+        head.appendChild(el('h4', 'fs-gname', g.name));
+        sec.appendChild(head);
+        sec.appendChild(el('p', 'fs-dim', g.hasData ? 'Has saved progress on this device.' : 'Nothing saved yet.'));
+        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost');
+        var eb = btn('Export', '', function () {
+            say(download('fong-save-' + g.id + '.json', G.exportGame(g.id)) ? 'Downloaded fong-save-' + g.id + '.json.' : 'Could not download. Try Copy instead.');
+        });
+        eb.setAttribute('aria-label', 'Export ' + g.name);
+        var cb = btn('Copy', '', function () { copyText(G.exportGame(g.id), copyHost); });
+        cb.setAttribute('aria-label', 'Copy ' + g.name + ' save');
+        row.appendChild(eb); row.appendChild(cb);
+        sec.appendChild(row); sec.appendChild(copyHost);
+        host.appendChild(sec);
+    }
+
+    function renderGameSaves(host) {
+        var G = w.FongGameSaves;
+        host.appendChild(el('h3', 'fs-h', 'Game saves'));
+        if (!G) { host.appendChild(el('p', 'fs-note', 'Game saves are not available on this page.')); return; }
+        host.appendChild(el('p', 'fs-note', 'Progress that games keep on this device, one file per game. High scores are in the Scores tab.'));
+        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost');
+        row.appendChild(btn('Export all game saves', 'fs-go', function () {
+            say(download('fong-game-saves.json', G.exportAll()) ? 'Downloaded fong-game-saves.json.' : 'Could not download. Try Copy instead.');
+        }));
+        row.appendChild(btn('Copy all game saves', '', function () { copyText(G.exportAll(), copyHost); }));
+        host.appendChild(row); host.appendChild(copyHost);
+        var all = G.list(), list = el('div', 'fs-games'), i;
+        for (i = 0; i < all.length; i++) { gameSaveBoard(G, all[i], list); }
+        host.appendChild(list);
+    }
+
+    function renderGameSaveImports(host) {
+        var G = w.FongGameSaves;
+        function check(t, m) { return G.importJSON(t, { mode: m, dryRun: true }); }
+        function apply(t, m) {
+            var r = G.importJSON(t, { mode: m });
+            r.message = r.ok ? 'Imported game saves for ' + r.games.length + ' game' + (r.games.length === 1 ? '' : 's') + '. Reload a game to see it.' : '';
+            return r;
+        }
+        loadBox(host, 'games', check, apply);
     }
 
     function renderData(host) {
@@ -438,7 +501,7 @@
         host.appendChild(el('p', 'fs-note', 'Nothing is sent anywhere. No accounts. Use Export everything to keep a backup or move to a new device.'));
 
         host.appendChild(el('h3', 'fs-h', 'Export everything'));
-        host.appendChild(el('p', 'fs-note', 'Theme, scores, cheer settings and play options in one file.'));
+        host.appendChild(el('p', 'fs-note', 'Theme, scores, cheer settings, play options and game saves in one file.'));
         var lab = el('label', 'fs-check');
         var inc = el('input'); inc.type = 'checkbox'; inc.id = 'fs-incname';
         lab.appendChild(inc);
@@ -452,8 +515,11 @@
         row.appendChild(btn('Copy everything', '', function () { copyText(buildEverything(inc.checked), copyHost); }));
         host.appendChild(row); host.appendChild(copyHost);
 
+        renderGameSaves(host);
+
         host.appendChild(el('h3', 'fs-h', 'Grown-up tools'));
         if (!unlocked) { renderGate(host, render); return; }
+        if (w.FongGameSaves) { renderGameSaveImports(host); }
         loadBox(host, 'all', function (t) { return parseEverything(t); }, applyEverything);
 
         var rb = el('div', 'fs-box');

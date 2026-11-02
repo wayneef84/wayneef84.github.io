@@ -7,7 +7,7 @@
  * when you need every phone to drop its cached copies). Old caches are
  * deleted on activate.
  */
-var CACHE_VERSION = 'v2';
+var CACHE_VERSION = 'v3';
 
 var SHELL_CACHE = 'fong-shell-' + CACHE_VERSION;
 var RUNTIME_CACHE = 'fong-runtime-' + CACHE_VERSION;
@@ -44,6 +44,7 @@ var SHELL = [
     './js/player-stats.js',
     './js/scores.js',
     './js/prefs.js',
+    './js/gamesaves.js',
     './js/cheer.js',
     './js/settings.js',
     './js/hub-data.js',
