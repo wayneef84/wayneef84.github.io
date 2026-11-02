@@ -394,7 +394,7 @@ var FONG_CATALOG = [
         funTitle: 'JIGSAW 🧩',
         description: 'Make a jigsaw from any picture. Real tabs, snapping groups, 6 to 300 pieces, little-hands mode, zoom and pan. Photos stay on your device.',
         funDescription: "Use YOUR own photos! Slice 'em up and snap 'em back together!",
-        version: 'v2.0.0',
+        version: 'v2.0.1',
         href: './games/jigsaw/index.html',
         hub: 'puzzle',
         featured: false,

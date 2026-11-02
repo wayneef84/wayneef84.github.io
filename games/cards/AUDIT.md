@@ -106,9 +106,9 @@
       - `resolveAction` handles `'orderUp'`, `'pass'`, and `'call_*'`, **but has no implementation for `'playCard'`** (trick play, following suit with Left Bower as trump suit, trick winner evaluation, and 5-trick round scoring are not wired into `resolveAction`).
 
 19. **[Poker — Texas Hold'em & 13-Card Poker] Placeholder UIs & Partial Logic (`games/cards/poker/holdem/` & `games/cards/poker/13card/`)**
-    - Both `poker/holdem/index.html` and `poker/13card/index.html` are static `"Coming Soon - March 2026 update"` placeholder pages.
+    - `poker/holdem/index.html` is a static `"Coming Soon - March 2026 update"` placeholder page. (`poker/13card/` is no longer a placeholder: it is a playable free-for-all since v2.0.0.)
     - `TexasHoldem.js` deals hole and community cards and evaluates 7-card hands, but lacks betting rounds, AI actions, and split-pot handling on ties (`results[0]` takes the entire pot).
-    - `ThirteenCard.js` validates front/middle/back foul ordering (`Back >= Mid >= Front`), but lacks an AI 13-card hand-arrangement solver and row-by-row scoring in `submitArrangement()`.
+    - `ThirteenCard.js` (deleted, replaced by `poker/13card/ffa.js`, which has foul ordering, an NPC arrangement search and full pairwise scoring).
 
 ---
 
@@ -116,7 +116,7 @@
 
 20. **Dual Engine / Evaluator Split in Poker (`games/cards/poker/` vs. `games/cards/shared/`)**
     - `games/cards/poker/5card/ruleset.js` was written for `games/cards/shared/engine.js` (`FiveCardDrawRuleset`), has a duplicate `resolveAction` key (lines 44 and 193), and is **completely unused**.
-    - Instead, `poker/5card/five_card_draw.js`, `TexasHoldem.js`, and `ThirteenCard.js` import from `../../../../negen/cards/CardGame.js` and `games/cards/poker/shared/evaluator.js`, duplicating `games/cards/shared/poker-evaluator.js`.
+    - Instead, `poker/5card/five_card_draw.js` and `TexasHoldem.js` import (`ThirteenCard.js` did too, until it was replaced by `ffa.js`) from `../../../../negen/cards/CardGame.js` and `games/cards/poker/shared/evaluator.js`, duplicating `games/cards/shared/poker-evaluator.js`.
 21. **Duplicate `card-assets.js` Files**
     - `games/cards/card-assets.js` and `games/cards/shared/card-assets.js` are near-identical copies (462 lines each).
 22. **ES5 Compatibility Drift**

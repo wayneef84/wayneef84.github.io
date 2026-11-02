@@ -17,8 +17,8 @@
  * API (done is optional everywhere):
  *   deal(deckEl, targetEls, opts, done)  opts: rounds, stagger, duration, w, h, makeFlyer(), onArrive(target, i, round)
  *   flip(cardEl, done, opts)             opts: duration, delay, swap() runs at the half-way point (swap face and back)
- *   sweep(cardEls, toEl, done, opts)     opts: duration, stagger, back (default true: cards slide back after)
- *   fly(el, fromEl, toEl, done, opts)    el may be null (a coin is made). opts: duration, keep, delay
+ *   sweep(cardEls, toEl, done, opts)     opts: duration, stagger, back (default true: cards slide back after; false: they stay at toEl)
+ *   fly(el, fromEl, toEl, done, opts)    el may be null (a coin is made). opts: duration, keep (leave el visible at toEl), delay
  *   pulse(el, done, opts)
  *   makeCoin(size), reduced(), cancelAll(), skip (boolean), pure (timing helpers, unit tested)
  */
@@ -86,6 +86,11 @@
         rec.over = true;
         untrack(rec);
         try { rec.stop(); } catch (e) { /* ignore */ }
+        if (rec.hold && rec.final && rec.el && rec.el.style) {
+            // keep: leave the element in its end state (stop() reverted the inline styles)
+            if (rec.final.transform !== undefined) { rec.el.style.transform = rec.final.transform; }
+            if (rec.final.opacity !== undefined) { rec.el.style.opacity = String(rec.final.opacity); }
+        }
         if (rec.finish) { try { rec.finish(); } catch (e2) { /* ignore */ } }
         if (callDone && rec.done) { rec.done(); }
     }
@@ -94,7 +99,7 @@
 
     // frames: { from: {transform, opacity}, to: {...} }. o: duration, delay, easing, finish, done.
     function animate(el, from, to, o) {
-        var rec = { over: false, finish: o.finish, done: o.done, stop: noop };
+        var rec = { over: false, finish: o.finish, done: o.done, stop: noop, hold: o.hold === true, final: to, el: el };
         active.push(rec);
         var dur = clamp(o.duration, 1, 5000);
         var delay = clamp(o.delay || 0, 0, 20000);
@@ -248,7 +253,7 @@
                 animate(el, { transform: 'translate(0px,0px) scale(1)', opacity: 1 },
                     { transform: tr(dx, dy, 0.35), opacity: 0.15 },
                     {
-                        duration: dur, delay: idx * step, easing: 'ease-in',
+                        duration: dur, delay: idx * step, easing: 'ease-in', hold: !back,
                         done: function () {
                             if (!back) { fin(); return; }
                             animate(el, { transform: tr(dx, dy, 0.35), opacity: 0.15 },
@@ -286,6 +291,7 @@
         opts = opts || {};
         if (reduced() || !doc() || !fromEl || !toEl) {
             if (el && !opts.keep) { removeNode(el); }
+            if (el && opts.keep && el.style) { el.style.opacity = '1'; }
             if (done) { done(); }
             return;
         }
@@ -298,7 +304,7 @@
             { transform: tr(a.x - w / 2, a.y - h / 2, 0.8), opacity: 0 },
             { transform: tr(b.x - w / 2, b.y - h / 2, 1), opacity: 1 },
             {
-                duration: clamp(opts.duration || 520, 60, 4000), delay: opts.delay || 0, easing: 'ease-in-out',
+                duration: clamp(opts.duration || 520, 60, 4000), delay: opts.delay || 0, easing: 'ease-in-out', hold: opts.keep === true,
                 finish: function () { if (!opts.keep) { removeNode(node); } },
                 done: done
             });

@@ -6,6 +6,7 @@
 (function () {
     'use strict';
     var F = window.FFA, A = window.CardAnim;
+    var SUITNAME = { S: 'spades', H: 'hearts', D: 'diamonds', C: 'clubs' };
     var SYM = { S: '♠', H: '♥', D: '♦', C: '♣' };
     var KEYS = F.ROW_NAMES;                  // front, mid, back
     var REVEAL_ORDER = ['back', 'mid', 'front'];
@@ -39,7 +40,7 @@
         R.timers.push(t);
     }
     function clearTimers() { for (var i = 0; i < R.timers.length; i++) { clearTimeout(R.timers[i]); } R.timers = []; }
-    function banner(t) { $('banner').textContent = t; }
+    function banner(t) { var b = $('banner'); if (b.textContent !== t) { b.textContent = t; } }   // only on change, so a status region is not re-announced
     function npcList() { var o = []; for (var i = 0; i < R.players.length; i++) { if (!R.players[i].human) { o.push(R.players[i]); } } return o; }
     function fmtBal(n) { return n < 0 ? 'owes ' + (-n) : String(n); }
     function fmtChg(n) { return n > 0 ? '+' + n : String(n); }
@@ -155,7 +156,7 @@
         for (var k = 0; k < KEYS.length; k++) { R.mine[KEYS[k]].sort(function (a, b) { return b.rank - a.rank; }); }
     }
 
-    function renderMine() {
+    function renderMine(focusId) {
         if (!R.mine) { for (var z = 0; z < KEYS.length; z++) { clear($('row-' + KEYS[z])); $('ev-' + KEYS[z]).textContent = '-'; } return; }
         for (var k = 0; k < KEYS.length; k++) {
             var key = KEYS[k], rowEl = $('row-' + key);
@@ -163,10 +164,12 @@
             var cards = R.mine[key];
             for (var i = 0; i < cards.length; i++) {
                 var w = mk('div', 'hc');
+                var isSel = !!(R.sel && R.sel.key === key && R.sel.pos === i);
                 w.setAttribute('role', 'button'); w.setAttribute('tabindex', '0');
-                w.setAttribute('aria-label', F.rankLabel(cards[i].rank) + ' of ' + SYM[cards[i].suit] + ', ' + key + ' row');
-                w.setAttribute('data-row', key); w.setAttribute('data-pos', String(i));
-                if (R.sel && R.sel.key === key && R.sel.pos === i) { w.className += ' sel'; }
+                w.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+                w.setAttribute('aria-label', F.rankLabel(cards[i].rank) + ' of ' + SUITNAME[cards[i].suit] + ', ' + key + ' row' + (isSel ? ', selected' : ''));
+                w.setAttribute('data-row', key); w.setAttribute('data-pos', String(i)); w.setAttribute('data-id', cards[i].id);
+                if (isSel) { w.className += ' sel'; }
                 w.appendChild(makeCanvas(cards[i]));
                 rowEl.appendChild(w);
             }
@@ -176,6 +179,12 @@
             if (F.isFoul(R.mine)) { banner('Foul warning: Back must beat Middle, and Middle must beat Front.'); }
             else { banner('Drag or tap two cards to swap them. Then tap Lock.'); }
             $('btnLock').textContent = 'Lock';
+        }
+        if (focusId) {
+            var nodes = $('rows').querySelectorAll('.hc');
+            for (var f = 0; f < nodes.length; f++) {
+                if (nodes[f].getAttribute('data-id') === focusId) { nodes[f].focus(); break; }
+            }
         }
     }
 
@@ -188,20 +197,22 @@
     }
 
     function swapCards(k1, p1, k2, p2) {
+        var moved = R.mine[k1][p1].id;   // focus follows the card that was picked up
         var t = R.mine[k1][p1];
         R.mine[k1][p1] = R.mine[k2][p2];
         R.mine[k2][p2] = t;
         sortRows();
         R.sel = null; R.armed = false;
-        renderMine();
+        renderMine(moved);
     }
 
     function tap(key, pos) {
         if (R.phase !== 'arrange') { return; }
+        var id = R.mine[key][pos].id;
         if (!R.sel) { R.sel = { key: key, pos: pos }; }
         else if (R.sel.key === key && R.sel.pos === pos) { R.sel = null; }
         else { swapCards(R.sel.key, R.sel.pos, key, pos); return; }
-        renderMine();
+        renderMine(id);
     }
 
     var drag = null;
@@ -288,11 +299,11 @@
             for (var n = 0; n < npcs.length; n++) { npcs[n].el.mini.style.visibility = 'visible'; }
         }
         var rounds = 3;
+        R.resume = afterDeal;   // set before the call: with reduced motion done runs synchronously and clears it
         A.deal($('deck'), targets, {
             rounds: rounds, stagger: 70, duration: 320, w: 36, h: 50,
             onArrive: function (t, idx, r) { if (r === rounds - 1) { t.style.visibility = 'visible'; } }
         }, function () { R.resume = null; afterDeal(); });
-        R.resume = afterDeal;
         function afterDeal() {
             if (R.phase !== 'dealing' || myRound !== roundNo) { return; }
             reveal();
@@ -488,6 +499,19 @@
         s.appendChild(mk('div', 'note', 'Balances carry over and can go below zero. Tap an opponent to see their hand.'));
     }
 
+    // Back to the table-is-empty state: no old rows, results or settlement panel.
+    function toIdle() {
+        A.cancelAll(); R.token++; clearTimers();
+        R.phase = 'idle'; R.mine = null; R.sel = null; R.armed = false; R.result = null; R.resume = null;
+        $('settle').hidden = true; clear($('settle'));
+        $('rows').style.visibility = 'visible';
+        $('btnDeal').textContent = 'Deal'; $('btnDeal').hidden = false; $('btnAuto').hidden = true; $('btnLock').hidden = true;
+        setControlsLocked(false);
+        buildSeats();
+        renderMine();
+        banner('Pick your options, then tap Deal.');
+    }
+
     // ---------- controls ----------
     function init() {
         $('selNpc').value = String(S.npcs);
@@ -498,14 +522,12 @@
         wireHuman();
         buildSeats();
         R.mine = null; renderMine();
-        $('selNpc').addEventListener('change', function () {
-            S.npcs = +$('selNpc').value; save(); R.phase = 'idle'; $('settle').hidden = true; buildSeats();
-        });
+        $('selNpc').addEventListener('change', function () { S.npcs = +$('selNpc').value; save(); toIdle(); });
         $('selAnte').addEventListener('change', function () { S.ante = +$('selAnte').value; save(); });
         $('chkSkip').addEventListener('change', function () { S.skip = $('chkSkip').checked; A.skip = S.skip; save(); });
         $('btnReset').addEventListener('click', function () {
             if (window.confirm('Reset every bankroll back to 100 coins?')) {
-                F.resetBanks(S); save(); buildSeats(); banner('Bankrolls reset to 100 coins.');
+                F.resetBanks(S); save(); toIdle(); banner('Bankrolls reset to 100 coins.');
             }
         });
         $('btnDeal').addEventListener('click', startRound);
@@ -520,6 +542,7 @@
         document.addEventListener('visibilitychange', function () {
             if (!document.hidden) { return; }
             A.cancelAll();
+            if (R.phase === 'arrange') { var np = npcList(); for (var q = 0; q < np.length; q++) { npcArrange(np[q]); } }   // chips end in 'ready', not 'arranging'
             var f = R.resume;
             if (f) { R.resume = null; R.token++; clearTimers(); f(); }
         });

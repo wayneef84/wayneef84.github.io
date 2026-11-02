@@ -30,7 +30,7 @@ Minor documentation update.
 
 ## Addendum: card-anim.js v1.1.0 (2026-11-01)
 
-New file, no existing file changed. `window.CardAnim`: `deal`, `flip`, `sweep`, `fly`, `pulse`, `makeCoin`, `reduced`, `cancelAll`, `skip`, plus `pure` timing helpers. Transforms and opacity only (Web Animations API, CSS transition fallback). When FongPrefs calm, the OS reduce-motion setting or `CardAnim.skip` is on, every call runs its final-state callback and calls `done` at once. `cancelAll()` (also run when the page hides) restores styles and runs final-state callbacks but does not call `done`. First user: 13 Card Poker. Test: `node tests/card-anim.test.js`.
+New file, no existing file changed. `window.CardAnim`: `deal`, `flip`, `sweep`, `fly`, `pulse`, `makeCoin`, `reduced`, `cancelAll`, `skip`, plus `pure` timing helpers. Transforms and opacity only (Web Animations API, CSS transition fallback). When FongPrefs calm, the OS reduce-motion setting or `CardAnim.skip` is on, every call runs its final-state callback and calls `done` at once. `cancelAll()` (also run when the page hides) restores styles and runs final-state callbacks but does not call `done`. `fly` with `keep` and `sweep` with `back:false` leave the element visible in its end state (also after cancelAll). First user: 13 Card Poker. Test: `node tests/card-anim.test.js`.
 
 ---
 

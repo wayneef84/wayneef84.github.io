@@ -353,9 +353,10 @@
             return false;
         }
         if (personality === 'cautious') {
-            // lift the weakest row first (even rows), then the total
-            x = Math.min(sa[0], sa[1], sa[2]); y = Math.min(sb[0], sb[1], sb[2]);
-            if (x !== y) { return x > y; }
+            // even rows: smallest hand-category gap between neighbouring rows (back-mid plus mid-front),
+            // then the stronger total. Kickers do not count toward the gap.
+            x = Math.floor(sa[0]) - Math.floor(sa[2]); y = Math.floor(sb[0]) - Math.floor(sb[2]);
+            if (x !== y) { return x < y; }
             return sa[0] + sa[1] + sa[2] > sb[0] + sb[1] + sb[2];
         }
         // balanced: weighted total, middle and back count a little more

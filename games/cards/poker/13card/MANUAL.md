@@ -11,4 +11,9 @@ Front hand ranks: three of a kind, then pair, then high card. A straight or flus
 
 Balances show as "owes N" when below zero. Reset bankrolls puts everyone back to 100. Skip animations (or the arcade calm setting, or the device reduce-motion setting) shows final states at once.
 
-NPCs: Dana is cautious (even rows), Rafi is greedy (strongest back), Mina is balanced.
+NPCs (all legal, none foul):
+- Dana is cautious. She picks the setup where the hand types of back, middle and front are closest together (smallest gap in hand category), then the strongest total.
+- Rafi is greedy. He builds the strongest possible back row, then the strongest middle, then the front.
+- Mina is balanced. She picks the highest weighted total, counting back x1.2, middle x1.1 and front x1.
+
+Keyboard: Tab to a card, Enter or Space selects it, then Enter on another card swaps them. Focus stays on the moved card.

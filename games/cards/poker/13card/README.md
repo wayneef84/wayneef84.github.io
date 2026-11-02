@@ -14,7 +14,7 @@ Open `index.html` (works from file:// and GitHub Pages, no network).
 
 ## Controls
 
-NPCs (1 to 3), Ante, Skip animations, Reset bankrolls (asks first). Drag a card onto another to swap, or tap two cards. Auto-arrange suggests a legal setup. Lock reveals the hands. Tap an opponent to see their hand large.
+NPCs (1 to 3), Ante, Skip animations, Reset bankrolls (asks first). Drag a card onto another to swap, or tap two cards. Auto-arrange suggests a legal setup (the balanced style). NPCs: Dana cautious (closest hand types across rows), Rafi greedy (strongest back first), Mina balanced (weighted total). Lock reveals the hands. Tap an opponent to see their hand large.
 
 ## Files
 

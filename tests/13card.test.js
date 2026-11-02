@@ -184,6 +184,24 @@ var hand = H('AS', 'AH', 'AD', 'KS', 'KH', '9D', '9C', '9S', '5H', '4C', '3D', '
 var gr = F.rowsFromIdx(hand, F.arrange(hand, 'greedy')), ca = F.rowsFromIdx(hand, F.arrange(hand, 'cautious'));
 assert(F.evalRow(gr.back).score >= F.evalRow(ca.back).score);
 assert(F.evalRow(ca.front).score >= F.evalRow(gr.front).score);
+// personalities differ on fixed deals (seeded) and behave as described
+var seed = 12345;
+function rng() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+var diff = { 'cautious-greedy': 0, 'cautious-balanced': 0, 'greedy-balanced': 0 }, gapOk = true, backOk = true;
+function catGap(r) { return F.evalRow(r.back).cat - F.evalRow(r.front).cat; }
+for (var fd = 0; fd < 60; fd++) {
+    var fc = F.shuffle(F.makeDeck(), rng).slice(0, 13);
+    var ra = {}, key2 = {};
+    pers.forEach(function (pp) { ra[pp] = F.rowsFromIdx(fc, F.arrange(fc, pp)); key2[pp] = JSON.stringify(ra[pp], function (k, v) { return k === 'id' ? v : (k === 'rank' || k === 'suit' ? undefined : v); }); });
+    if (key2.cautious !== key2.greedy) { diff['cautious-greedy']++; }
+    if (key2.cautious !== key2.balanced) { diff['cautious-balanced']++; }
+    if (key2.greedy !== key2.balanced) { diff['greedy-balanced']++; }
+    if (catGap(ra.cautious) > catGap(ra.greedy) || catGap(ra.cautious) > catGap(ra.balanced)) { gapOk = false; }
+    if (F.evalRow(ra.greedy.back).score < F.evalRow(ra.cautious.back).score || F.evalRow(ra.greedy.back).score < F.evalRow(ra.balanced.back).score) { backOk = false; }
+}
+assert(diff['cautious-greedy'] > 5 && diff['cautious-balanced'] > 5 && diff['greedy-balanced'] > 5, JSON.stringify(diff));
+assert(gapOk, 'cautious has the smallest category gap');
+assert(backOk, 'greedy has the strongest back');
 // plain layout has right shape
 assert(F.validShape(F.plainRows(hand)));
 assert.strictEqual(F.NPCS.length, 3);

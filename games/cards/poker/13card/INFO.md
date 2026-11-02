@@ -1,7 +1,7 @@
 # 13 Card Poker - Info
 
 **Type:** Game
-**Version:** v2.0.0
+**Version:** v2.0.1
 **Directory:** `games/cards/poker/13card/`
 **Parent Project:** F.O.N.G.
 **Last Updated:** 2026-11-01

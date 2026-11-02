@@ -23,7 +23,7 @@ Tie rule: if every payer's debt can be split in whole coins in proportion to wha
 
 ## NPCs
 
-`arrange(cards, personality)` enumerates every legal partition and keeps the best by personality: cautious maximizes the weakest row then the total, greedy maximizes back then middle then front, balanced maximizes a weighted total. A legal partition always exists (best back, then best middle of the rest), so NPCs never foul.
+`arrange(cards, personality)` enumerates every legal partition and keeps the best by personality: cautious minimizes the hand-category gap (back category minus front category, which also bounds the middle) and breaks ties by the larger total, greedy maximizes back then middle then front, balanced maximizes a weighted total (back x1.2, middle x1.1, front x1). Strength is score / 1e10, so category is the integer part. A legal partition always exists (best back, then best middle of the rest), so NPCs never foul.
 
 ## Flow
 
