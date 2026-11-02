@@ -15,7 +15,9 @@
     var FORMAT_ONE = 'fong-game-save';
     var FORMAT_ALL = 'fong-game-saves';
 
-    // id -> { id, name, keys: [], json: { key: true } }
+    var KEY_OK = /^[A-Za-z0-9_.:-]{1,120}$/;   // a key found by prefix must look like this
+
+    // id -> { id, name, keys: [], prefixes: [], json: { key or prefix: true } }
     var games = {};
     var order = [];
 
@@ -42,7 +44,7 @@
         if (typeof id !== 'string' || !id || badName(id) || !info) { return false; }
         var g = has.call(games, id) ? games[id] : null;
         if (!g) {
-            g = games[id] = { id: id, name: id, keys: [], json: {} };
+            g = games[id] = { id: id, name: id, keys: [], prefixes: [], json: {} };
             order.push(id);
         }
         if (typeof info.name === 'string' && info.name) { g.name = info.name; }
@@ -52,15 +54,22 @@
             k = keys[i];
             if (typeof k === 'string' && k && !badName(k) && g.keys.indexOf(k) < 0) { g.keys.push(k); }
         }
+        var pf = isArr(info.prefixes) ? info.prefixes : [];
+        for (i = 0; i < pf.length; i++) {
+            k = pf[i];
+            if (typeof k === 'string' && k && !badName(k) && KEY_OK.test(k) && g.prefixes.indexOf(k) < 0) { g.prefixes.push(k); }
+        }
         var js = isArr(info.json) ? info.json : [];
         for (i = 0; i < js.length; i++) {
-            if (typeof js[i] === 'string' && g.keys.indexOf(js[i]) >= 0) { g.json[js[i]] = true; }
+            if (typeof js[i] === 'string' && (g.keys.indexOf(js[i]) >= 0 || g.prefixes.indexOf(js[i]) >= 0)) { g.json[js[i]] = true; }
         }
         return true;
     }
 
     // ---- manifest ------------------------------------------------------
     register('nightlite-choir', { name: 'Nightlite Choir+', keys: ['nightlite.save', 'nightlite.mix', 'nightlite.vol', 'nightlite.rare'], json: ['nightlite.save', 'nightlite.mix'] });
+    // games/j and games/j_v1 share these keys. J Quiz keeps its own Export and Import buttons too.
+    register('j-quiz', { name: 'J Quiz', keys: ['j_muted', 'j_category_order'], prefixes: ['j_history_', 'j_score_', 'j_best_'], json: ['j_category_order', 'j_history_', 'j_score_', 'j_best_'] });
     register('s4k-mixer-v2', { name: 'S4K Mixer v2', keys: ['sprunkiV2.slots', 'sprunkiV2.pack', 'sprunkiV2.vol', 'sprunkiV2.saves', 'sprunkiV2.saveNum'], json: ['sprunkiV2.saves'] });
     register('s4k-mixer', { name: 'S4K Mixer (custom characters)', keys: ['s4k_custom_chars'], json: ['s4k_custom_chars'] });
     register('slots', { name: 'Slots', keys: ['fong.slots.v4'], json: ['fong.slots.v4'] });
@@ -72,13 +81,44 @@
     register('tracing-chinese', { name: 'Trace Chinese', keys: ['chinese-settings', 'chinese-completed', 'chinese-daily'], json: ['chinese-settings', 'chinese-completed', 'chinese-daily'] });
     register('tracing-sentences', { name: 'Trace Sentences', keys: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'], json: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'] });
 
+    // A key is accepted if it is an exact registered key, or starts with a registered prefix and has a safe shape.
+    function keyAllowed(g, k) {
+        if (g.keys.indexOf(k) >= 0) { return true; }
+        if (typeof k !== 'string' || !KEY_OK.test(k) || badName(k)) { return false; }
+        for (var i = 0; i < g.prefixes.length; i++) {
+            if (k.length > g.prefixes[i].length && k.indexOf(g.prefixes[i]) === 0) { return true; }
+        }
+        return false;
+    }
+
+    // True if the value under this key must parse as JSON (declared key, or under a declared json prefix).
+    function keyIsJson(g, k) {
+        if (has.call(g.json, k)) { return true; }
+        for (var i = 0; i < g.prefixes.length; i++) {
+            if (has.call(g.json, g.prefixes[i]) && k.indexOf(g.prefixes[i]) === 0) { return true; }
+        }
+        return false;
+    }
+
+    function prefixedKeys(g) {
+        var out = [], n = 0, i, k;
+        try { n = w.localStorage.length; } catch (e) { return out; }
+        for (i = 0; i < n; i++) {
+            try { k = w.localStorage.key(i); } catch (e2) { k = null; }
+            if (typeof k === 'string' && g.keys.indexOf(k) < 0 && keyAllowed(g, k)) { out.push(k); }
+        }
+        out.sort();
+        return out;
+    }
+
     // ---- reading -------------------------------------------------------
 
     function gameData(g) {
-        var out = {}, any = false, i, v;
-        for (i = 0; i < g.keys.length; i++) {
-            v = readKey(g.keys[i]);
-            if (typeof v === 'string') { out[g.keys[i]] = v; any = true; }
+        var out = {}, any = false, i, v, all = g.keys;
+        if (g.prefixes.length) { all = g.keys.concat(prefixedKeys(g)); }
+        for (i = 0; i < all.length; i++) {
+            v = readKey(all[i]);
+            if (typeof v === 'string') { out[all[i]] = v; any = true; }
         }
         return any ? out : null;
     }
@@ -87,7 +127,7 @@
         var out = [], i, g;
         for (i = 0; i < order.length; i++) {
             g = games[order[i]];
-            out.push({ id: g.id, name: g.name, keys: g.keys.slice(), hasData: !!gameData(g) });
+            out.push({ id: g.id, name: g.name, keys: g.keys.concat(g.prefixes), hasData: !!gameData(g) });
         }
         return out;
     }
@@ -152,10 +192,10 @@
         var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0;
         for (i = 0; i < ks.length; i++) {
             k = ks[i]; v = data[k];
-            if (g.keys.indexOf(k) < 0) { continue; }   // unknown keys are dropped quietly
+            if (!keyAllowed(g, k)) { continue; }   // unknown keys are dropped quietly
             if (typeof v !== 'string') { skipped++; notes.push(g.name + ': skipped ' + k + ' (not text).'); continue; }
             if (v.length > MAX_VALUE) { skipped++; notes.push(g.name + ': skipped ' + k + ' (too big).'); continue; }
-            if (has.call(g.json, k)) {
+            if (keyIsJson(g, k)) {
                 var p;
                 try { p = JSON.parse(v); } catch (e) { skipped++; notes.push(g.name + ': skipped ' + k + ' (not valid JSON).'); continue; }
                 if (badKey(p, 0)) { skipped++; notes.push(g.name + ': skipped ' + k + ' (keys not allowed).'); continue; }
