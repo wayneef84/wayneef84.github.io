@@ -141,6 +141,12 @@
             <h3>Your saves</h3>
             <p class="hint">Keep a copy of this game on a file, or load one back in.</p>
             <button class="btn wide" id="cfgExport" type="button"><span class="ico">&#128228;</span><span class="lbl">Export this game</span></button>
+            <div id="cfgGate" class="cfg-gate" hidden>
+                <p id="cfgQ" class="cfg-q"></p>
+                <label class="cfg-label" for="cfgAns">Answer</label>
+                <input type="number" id="cfgAns" inputmode="numeric" autocomplete="off">
+                <button class="btn" id="cfgUnlock" type="button"><span class="lbl">Unlock</span></button>
+            </div>
             <label class="cfg-label" for="cfgFile">Import this game: choose a file</label>
             <input type="file" id="cfgFile" accept=".json,application/json">
             <label class="cfg-label" for="cfgText">Or paste the text here</label>
@@ -149,6 +155,8 @@
                 <button class="btn" id="cfgAdd" type="button"><span class="lbl">Add missing</span></button>
                 <button class="btn" id="cfgReplace" type="button"><span class="lbl">Replace my saves</span></button>
             </div>
+            <p class="hint">Replace overwrites the saves in the file. Anything not in the file is left as it is.</p>
+            <button class="btn wide" id="cfgRestore" type="button" hidden><span class="lbl">Restore previous</span></button>
             <p id="cfgMsg" class="cfg-msg" role="status" aria-live="polite"></p>
             <p class="hint">Exporting or importing all games at once is in the arcade Settings, Data tab. <a href="../../index.html?settings=data">Open arcade Settings</a></p>
         </div>
