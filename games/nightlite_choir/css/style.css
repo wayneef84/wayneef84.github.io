@@ -231,7 +231,10 @@ body.world-observatory .stage { position: relative; }
 .ocard .qm { height: 64px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; opacity: 0.45; }
 
 .pot-row { display: flex; align-items: center; justify-content: center; gap: 4px; }
-.pot-row .op { font-size: 1.6rem; font-weight: 900; opacity: 0.85; }
+.pot-row .pslot { flex: 1 1 0; min-width: 0; width: auto; height: clamp(72px, 22vw, 96px); padding: 2px; }
+.pot-mix { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.pot-mix .op { font-size: 1.6rem; font-weight: 900; opacity: 0.85; }
+.pot-mix .mixbtn { min-width: 140px; }
 .pslot {
     flex: 0 0 auto; width: clamp(66px, 22vw, 96px); height: clamp(78px, 26vw, 108px); border-radius: 18px; padding: 4px; position: relative;
     background: var(--slot); border: 3px dashed rgba(255, 255, 255, 0.4); color: var(--text); cursor: pointer; touch-action: manipulation;
@@ -273,3 +276,29 @@ body.world-observatory .stage { position: relative; }
     .fx .shoot { display: none; }
     .fx .p { opacity: 0.4; }
 }
+
+/* v0.5.0: pot tools, suggestion cards, rare stars, book pages, clue lines */
+.pot-tools { display: flex; gap: 8px; }
+.bigtool { flex: 1 1 0; min-width: 0; min-height: 64px; flex-direction: column; gap: 2px; font-size: 1rem; text-align: center; line-height: 1.1; }
+.suggest { display: flex; flex-direction: column; gap: 8px; }
+.scard {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; min-height: 96px; padding: 10px 8px; border-radius: 20px; cursor: pointer; touch-action: manipulation;
+    background: var(--slot); color: var(--text); border: 3px solid var(--accent); font-weight: 800; font-size: 1rem; line-height: 1.25;
+}
+.scard.known { border-style: solid; }
+.scard.unknown { border-style: dashed; }
+.scard .srow { display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%; }
+.scard .srow img { flex: 0 1 56px; min-width: 0; width: 56px; height: 56px; object-fit: contain; pointer-events: none; }
+.scard .sop { font-size: 1.3rem; font-weight: 900; opacity: 0.85; }
+.scard .sq { flex: 0 1 56px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; border: 3px dashed rgba(255, 255, 255, 0.45); border-radius: 14px; }
+.scard .sname { text-align: center; }
+.rstar { position: absolute; top: 2px; right: 4px; font-size: 1rem; line-height: 1; color: #ffe08a; text-shadow: 0 0 6px rgba(255, 224, 138, 0.9); pointer-events: none; }
+.slot, .tile, .ptile, .pslot, .face, .ocard { position: relative; }
+.ocard.rare { box-shadow: 0 0 12px rgba(255, 224, 138, 0.55); }
+.booktabs { display: flex; gap: 8px; }
+.booktabs .btn { flex: 1 1 0; min-height: 52px; }
+.recipe { flex-wrap: wrap; }
+.recipe .clue { flex: 1 0 100%; text-align: center; font-weight: 700; font-size: 0.85rem; opacity: 0.9; padding: 2px 4px 4px; }
+.recipe .face .rstar { top: -2px; right: 0; }
+#rareBtn.on { background: rgba(255, 224, 138, 0.25); border-color: #ffe08a; }
+.tiles.six { max-height: 38vh; overflow-y: auto; }

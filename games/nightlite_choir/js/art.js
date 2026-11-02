@@ -4,6 +4,7 @@
  * spec: {body (round|tall|drop|wide|square|ghost|bush|doll|pony|tin|plush|moon|star|comet|planet), color, eyes, mouth, acc, accColor,
  *        acc2, acc2Color, cheeks, patch, mark, ring}
  * Accessories added for the blends (milestone 3): ringband (a thin ring around the body, back half drawn behind).
+ * Rare friends (v0.5.0): rareSpec(spec) hue shifts every color and sets spec.rare, which draws extra sparkles.
  * Horror look = darker, desaturated body, hollow eyes with pale glow, flat mouth. Never red, never gory.
  */
 (function (w) {
@@ -20,6 +21,34 @@
     function mix(c1, c2, t) {
         var a = hex(c1), b = hex(c2);
         return toHex([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
+    }
+    // Hue shift by deg degrees (rare colorway). Keeps lightness, lifts saturation a little so it shimmers.
+    function shiftHue(c, deg) {
+        if (!c || c.charAt(0) !== '#') return c;
+        var a = hex(c), r = a[0] / 255, g = a[1] / 255, b = a[2] / 255;
+        var mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, h = 0, s = 0, dd = mx - mn;
+        if (dd > 0) {
+            s = l > 0.5 ? dd / (2 - mx - mn) : dd / (mx + mn);
+            if (mx === r) h = (g - b) / dd + (g < b ? 6 : 0); else if (mx === g) h = (b - r) / dd + 2; else h = (r - g) / dd + 4;
+            h *= 60;
+        }
+        h = (h + deg + 360) % 360;
+        s = Math.min(1, s * 1.1 + 0.08);
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+        function ch(t) {
+            t = (t + 360) % 360;
+            var v = t < 60 ? p + (q - p) * t / 60 : (t < 180 ? q : (t < 240 ? p + (q - p) * (240 - t) / 60 : p));
+            return v * 255;
+        }
+        return toHex(s === 0 ? [l * 255, l * 255, l * 255] : [ch(h + 120), ch(h), ch(h - 120)]);
+    }
+    // Same creature, shimmer colorway: hue shift on every color of the spec, plus a sparkle overlay (spec.rare) drawn by make().
+    function rareSpec(spec) {
+        var o = {}, k, keys = ['color', 'accColor', 'acc2Color', 'patch', 'ring'];
+        for (k in spec) if (Object.prototype.hasOwnProperty.call(spec, k)) o[k] = spec[k];
+        for (k = 0; k < keys.length; k++) if (o[keys[k]]) o[keys[k]] = shiftHue(o[keys[k]], 70);
+        o.rare = true;
+        return o;
     }
     function dim(c, horror) { return horror ? mix(c, '#232338', 0.68) : c; }
 
@@ -275,10 +304,11 @@
         if (spec.mark === 'star' && !horror) s += star(68, body.y + 6, 9, '#ffe08a');
         if (spec.acc && spec.acc !== 'wings') s += acc(spec.acc, spec.accColor, body, horror);
         if (spec.acc2 && spec.acc2 !== 'wings') s += acc(spec.acc2, spec.acc2Color, body, horror);
+        if (spec.rare && !horror) s += sparkle(14, 16, 7, '#fff6c8') + sparkle(88, 30, 5, '#ffffff') + sparkle(80, 104, 6, '#fff6c8') + sparkle(20, 96, 4, '#ffffff') + sparkle(50, 4, 4, '#fff6c8');
         return s + '</svg>';
     }
 
     function dataUri(svg) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
 
-    w.NightliteArt = { make: make, dataUri: dataUri };
+    w.NightliteArt = { make: make, dataUri: dataUri, rareSpec: rareSpec, shiftHue: shiftHue };
 })(window);
