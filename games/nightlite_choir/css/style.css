@@ -307,3 +307,17 @@ body.world-observatory .stage { position: relative; }
 @media (prefers-reduced-motion: reduce) {
     .pslot.bowl.made, .pslot.bowl.nope, .nest .reveal { animation: none; }
 }
+.cfg-dlist { margin: 6px 0; }
+.cfg-dlist .btn { margin-bottom: 8px; }
+.cfg-dlist p { margin: 4px 0; font-weight: 700; }
+.cfg-sheet input[type=text] { width: 100%; box-sizing: border-box; min-height: 52px; font-size: 1rem; border-radius: 12px; border: 3px solid rgba(255, 255, 255, 0.3); background: var(--slot); color: var(--text); padding: 0 10px; }
+.cfg-check { display: flex; align-items: center; gap: 10px; min-height: 52px; font-weight: 700; }
+.cfg-check input { width: 28px; height: 28px; accent-color: var(--accent); }
+.cfg-dline { min-height: 1.3em; transition: opacity 0.4s; }
+.cfg-dline.fade { opacity: 0; }
+.gdot { display: inline-block; min-width: 14px; height: 14px; line-height: 14px; font-size: 10px; font-weight: 700; text-align: center; color: #111; border-radius: 50%; background: #9ca3af; margin-left: 4px; vertical-align: middle; }
+.gdot.ok { background: #4ade80; }
+.gdot.wait { background: #fbbf24; }
+.gdot.bad { background: #f87171; }
+.gdot.off { display: none; }
+@media (prefers-reduced-motion: reduce) { .cfg-dline { transition: none; } }

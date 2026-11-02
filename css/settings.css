@@ -57,3 +57,15 @@
 .fs-link { margin: 0.3rem 0; }
 @media (prefers-reduced-motion: no-preference) { html:not([data-calm]) .fs-ov:not([hidden]) .fs-sheet { animation: fs-in 0.18s ease-out; } }
 @keyframes fs-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Google Drive backup status */
+.fs-dot { display: inline-block; min-width: 0.9rem; height: 0.9rem; line-height: 0.9rem; font-size: 0.65rem; font-weight: 700; text-align: center; color: #111; border-radius: 50%; margin-left: 0.35rem; vertical-align: middle; background: #9ca3af; }
+.fs-dot-ok { background: #4ade80; }
+.fs-dot-wait { background: #fbbf24; }
+.fs-dot-bad { background: #f87171; }
+.fs-tab .fs-dot-off { display: none; }
+.fs-statusline { min-height: 1.2em; transition: opacity 0.4s; }
+.fs-statusline.fs-fade { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .fs-statusline { transition: none; } }
+.fs-drive-card { border-color: var(--accent-primary, #00e5ff); }
+.fs-drive-item { margin-bottom: 0.6rem; overflow-wrap: anywhere; }

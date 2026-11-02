@@ -15,7 +15,10 @@
     var FORMAT_ONE = 'fong-game-save';
     var FORMAT_ALL = 'fong-game-saves';
 
-    // id -> { id, name, keys: [], json: { key: true } }
+    var MAX_PREFIXED = 200;   // most prefix-matched keys one game may export or import
+    var KEY_OK = /^[A-Za-z0-9_.:-]{1,120}$/;   // a key found by prefix must look like this
+
+    // id -> { id, name, keys: [], prefixes: [], json: { key or prefix: true } }
     var games = {};
     var order = [];
 
@@ -42,7 +45,7 @@
         if (typeof id !== 'string' || !id || badName(id) || !info) { return false; }
         var g = has.call(games, id) ? games[id] : null;
         if (!g) {
-            g = games[id] = { id: id, name: id, keys: [], json: {} };
+            g = games[id] = { id: id, name: id, keys: [], prefixes: [], json: {} };
             order.push(id);
         }
         if (typeof info.name === 'string' && info.name) { g.name = info.name; }
@@ -52,15 +55,22 @@
             k = keys[i];
             if (typeof k === 'string' && k && !badName(k) && g.keys.indexOf(k) < 0) { g.keys.push(k); }
         }
+        var pf = isArr(info.prefixes) ? info.prefixes : [];
+        for (i = 0; i < pf.length; i++) {
+            k = pf[i];
+            if (typeof k === 'string' && k && !badName(k) && KEY_OK.test(k) && g.prefixes.indexOf(k) < 0) { g.prefixes.push(k); }
+        }
         var js = isArr(info.json) ? info.json : [];
         for (i = 0; i < js.length; i++) {
-            if (typeof js[i] === 'string' && g.keys.indexOf(js[i]) >= 0) { g.json[js[i]] = true; }
+            if (typeof js[i] === 'string' && (g.keys.indexOf(js[i]) >= 0 || g.prefixes.indexOf(js[i]) >= 0)) { g.json[js[i]] = true; }
         }
         return true;
     }
 
     // ---- manifest ------------------------------------------------------
     register('nightlite-choir', { name: 'Nightlite Choir+', keys: ['nightlite.save', 'nightlite.mix', 'nightlite.vol', 'nightlite.rare'], json: ['nightlite.save', 'nightlite.mix'] });
+    // games/j and games/j_v1 share these keys. J Quiz keeps its own Export and Import buttons too.
+    register('j-quiz', { name: 'J Quiz', keys: ['j_muted', 'j_category_order'], prefixes: ['j_history_', 'j_score_', 'j_best_'], json: ['j_category_order', 'j_history_', 'j_score_', 'j_best_'] });
     register('s4k-mixer-v2', { name: 'S4K Mixer v2', keys: ['sprunkiV2.slots', 'sprunkiV2.pack', 'sprunkiV2.vol', 'sprunkiV2.saves', 'sprunkiV2.saveNum'], json: ['sprunkiV2.saves'] });
     register('s4k-mixer', { name: 'S4K Mixer (custom characters)', keys: ['s4k_custom_chars'], json: ['s4k_custom_chars'] });
     register('slots', { name: 'Slots', keys: ['fong.slots.v4'], json: ['fong.slots.v4'] });
@@ -72,13 +82,56 @@
     register('tracing-chinese', { name: 'Trace Chinese', keys: ['chinese-settings', 'chinese-completed', 'chinese-daily'], json: ['chinese-settings', 'chinese-completed', 'chinese-daily'] });
     register('tracing-sentences', { name: 'Trace Sentences', keys: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'], json: ['sentences-settings', 'sentences-saved', 'sentences-completed', 'sentences-unlocked'] });
 
+    // A key is accepted if it is an exact registered key, or starts with a registered prefix and has a safe shape.
+    function keyAllowed(g, k) {
+        if (g.keys.indexOf(k) >= 0) { return true; }
+        if (typeof k !== 'string' || !KEY_OK.test(k) || badName(k)) { return false; }
+        for (var i = 0; i < g.prefixes.length; i++) {
+            if (k.length > g.prefixes[i].length && k.indexOf(g.prefixes[i]) === 0) { return true; }
+        }
+        return false;
+    }
+
+    // True if the value under this key must parse as JSON (declared key, or under a declared json prefix).
+    function keyIsJson(g, k) {
+        if (has.call(g.json, k)) { return true; }
+        for (var i = 0; i < g.prefixes.length; i++) {
+            if (has.call(g.json, g.prefixes[i]) && k.indexOf(g.prefixes[i]) === 0) { return true; }
+        }
+        return false;
+    }
+
+    function startsWithPrefix(g, k) {
+        for (var i = 0; i < g.prefixes.length; i++) { if (k.length > g.prefixes[i].length && k.indexOf(g.prefixes[i]) === 0) { return true; } }
+        return false;
+    }
+
+    // Keys under a registered prefix. A key import would refuse (odd characters, over 120 characters) or more than
+    // MAX_PREFIXED of them is reported through warnings instead of silently dropped.
+    function prefixedKeys(g, warnings) {
+        var out = [], n = 0, i, k, bad = 0;
+        try { n = w.localStorage.length; } catch (e) { return out; }
+        for (i = 0; i < n; i++) {
+            try { k = w.localStorage.key(i); } catch (e2) { k = null; }
+            if (typeof k !== 'string' || g.keys.indexOf(k) >= 0 || !startsWithPrefix(g, k)) { continue; }
+            if (keyAllowed(g, k)) { out.push(k); } else { bad++; }
+        }
+        out.sort();
+        if (warnings) {
+            if (bad) { warnings.push(g.name + ': ' + bad + ' saved item' + (bad === 1 ? ' has' : 's have') + ' a name that cannot be restored (odd characters or too long). ' + (bad === 1 ? 'It is' : 'They are') + ' left out.'); }
+            if (out.length > MAX_PREFIXED) { warnings.push(g.name + ': ' + out.length + ' saved items is more than the ' + MAX_PREFIXED + ' that can be restored. Only the first ' + MAX_PREFIXED + ' would come back.'); }
+        }
+        return out;
+    }
+
     // ---- reading -------------------------------------------------------
 
-    function gameData(g) {
-        var out = {}, any = false, i, v;
-        for (i = 0; i < g.keys.length; i++) {
-            v = readKey(g.keys[i]);
-            if (typeof v === 'string') { out[g.keys[i]] = v; any = true; }
+    function gameData(g, warnings) {
+        var out = {}, any = false, i, v, all = g.keys;
+        if (g.prefixes.length) { all = g.keys.concat(prefixedKeys(g, warnings)); }
+        for (i = 0; i < all.length; i++) {
+            v = readKey(all[i]);
+            if (typeof v === 'string') { out[all[i]] = v; any = true; }
         }
         return any ? out : null;
     }
@@ -87,7 +140,7 @@
         var out = [], i, g;
         for (i = 0; i < order.length; i++) {
             g = games[order[i]];
-            out.push({ id: g.id, name: g.name, keys: g.keys.slice(), hasData: !!gameData(g) });
+            out.push({ id: g.id, name: g.name, keys: g.keys.slice(), prefixes: g.prefixes.slice(), hasData: !!gameData(g) });
         }
         return out;
     }
@@ -112,18 +165,18 @@
     function exportGame(id) {
         var warnings = [];
         if (typeof id !== 'string' || !has.call(games, id)) { return { text: '', warnings: ['Unknown game.'] }; }
-        var g = games[id], data = gameData(g) || {};
+        var g = games[id], data = gameData(g, warnings) || {};
         sizeWarnings(g, data, warnings);
         var text = JSON.stringify({ format: FORMAT_ONE, version: 1, game: g.id, name: g.name, saved: new Date().toISOString(), data: data }, null, 2);
         fileWarning(text, warnings);
         return { text: text, warnings: warnings };
     }
 
-    function exportObject() {
+    function exportObject(warnings) {
         var out = {}, i, g, d;
         for (i = 0; i < order.length; i++) {
             g = games[order[i]];
-            d = gameData(g);
+            d = gameData(g, warnings);
             if (d) { out[g.id] = { name: g.name, data: d }; }
         }
         return out;
@@ -131,7 +184,7 @@
 
     // Returns {text, warnings}.
     function exportAll() {
-        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        var warnings = [], obj = exportObject(warnings), ids = Object.keys(obj), i;
         for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
         var text = JSON.stringify({ format: FORMAT_ALL, version: 1, saved: new Date().toISOString(), games: obj }, null, 2);
         fileWarning(text, warnings);
@@ -140,22 +193,52 @@
 
     // Warnings for the games part of the everything file (the caller checks the whole file length).
     function exportWarnings() {
-        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        var warnings = [], obj = exportObject(warnings), ids = Object.keys(obj), i;
         for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
         return warnings;
+    }
+
+    // Cheap list of the manifest (no stored data is read). For callers that poll.
+    function manifest() {
+        var out = [], i, g;
+        for (i = 0; i < order.length; i++) { g = games[order[i]]; out.push({ id: g.id, name: g.name, keys: g.keys.slice(), prefixes: g.prefixes.slice() }); }
+        return out;
+    }
+
+    // One-step undo support for callers that replace a game's data. snapshot() copies every stored key of the game,
+    // rollback() puts exactly that back (keys that did not exist before are removed). Nothing here is exported.
+    function snapshot(id) {
+        if (typeof id !== 'string' || !has.call(games, id)) { return null; }
+        return { game: id, data: gameData(games[id]) || {} };
+    }
+    function rollback(snap) {
+        if (!snap || typeof snap.game !== 'string' || !has.call(games, snap.game) || !snap.data || typeof snap.data !== 'object') { return false; }
+        var g = games[snap.game], now = gameData(g) || {}, ks = Object.keys(now), i, ok = true, k;
+        for (i = 0; i < ks.length; i++) { if (!has.call(snap.data, ks[i])) { removeKey(ks[i]); } }
+        ks = Object.keys(snap.data);
+        for (i = 0; i < ks.length; i++) {
+            k = ks[i];
+            if (!keyAllowed(g, k) || typeof snap.data[k] !== 'string') { continue; }
+            if (!writeKey(k, snap.data[k])) { ok = false; }
+        }
+        return ok;
     }
 
     // ---- importing -----------------------------------------------------
 
     // Checks one game's data object. Returns { writes: {key: value}, skipped: n }.
     function plan(g, data, mode, notes) {
-        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0;
+        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0, pre = 0;
         for (i = 0; i < ks.length; i++) {
             k = ks[i]; v = data[k];
-            if (g.keys.indexOf(k) < 0) { continue; }   // unknown keys are dropped quietly
+            if (!keyAllowed(g, k)) { continue; }   // unknown keys are dropped quietly
+            if (g.keys.indexOf(k) < 0 && ++pre > MAX_PREFIXED) {   // too many prefix keys: keep the first MAX_PREFIXED
+                skipped++; if (pre === MAX_PREFIXED + 1) { notes.push(g.name + ': more than ' + MAX_PREFIXED + ' saved items, the rest were skipped.'); }
+                continue;
+            }
             if (typeof v !== 'string') { skipped++; notes.push(g.name + ': skipped ' + k + ' (not text).'); continue; }
             if (v.length > MAX_VALUE) { skipped++; notes.push(g.name + ': skipped ' + k + ' (too big).'); continue; }
-            if (has.call(g.json, k)) {
+            if (keyIsJson(g, k)) {
                 var p;
                 try { p = JSON.parse(v); } catch (e) { skipped++; notes.push(g.name + ': skipped ' + k + ' (not valid JSON).'); continue; }
                 if (badKey(p, 0)) { skipped++; notes.push(g.name + ': skipped ' + k + ' (keys not allowed).'); continue; }
@@ -241,11 +324,15 @@
     var api = {
         register: register,
         list: list,
+        manifest: manifest,
+        snapshot: snapshot,
+        rollback: rollback,
         exportGame: exportGame,
         exportAll: exportAll,
         exportObject: exportObject,
         exportWarnings: exportWarnings,
         MAX_CHARS: MAX_CHARS,
+        MAX_PREFIXED: MAX_PREFIXED,
         MAX_VALUE: MAX_VALUE
     };
     api.importJSON = importJSON;
