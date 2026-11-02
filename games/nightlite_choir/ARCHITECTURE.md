@@ -12,7 +12,10 @@ games/nightlite_choir/
   js/worlds/garden.js world data: theme, 90 BPM, 4 creatures (art spec + synth spec)
   js/worlds/attic.js  world data: theme, 100 BPM, 4 creatures, dust-mote glow
   js/worlds/observatory.js  world data: theme, 80 BPM, 4 creatures, star-sky look
-  js/worlds/blends.js 6 blend creatures: art spec, synth spec, `blend: [parentA, parentB]` (the recipe table)
+  js/worlds/blends.js 6 blend creatures: art spec, synth spec, `blend: [2 to 5 ids]` (the recipe table), `clue`
+  js/worlds/blends_claude.js  15 more blends (global NightliteBlendsExtra_CLAUDE). Any NightliteBlendsExtra_* global is merged
+  js/recipes.js       NightliteRecipes: collectBlends, build (match, hint, suggest, fromStage, tempo), roll, rareSynth. No DOM
+  tests/nightlite.test.js  (repo root tests/) node test with a fake window
   ../../js/gamesaves.js  shared FongGameSaves (export and import of the keys below)
   js/app.js           doors, screens, stage, tray, drag, undo, save/load, audio context, keys
   *.md                README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT, DESIGN, IP-GUARDRAILS, ASSET_LOG
@@ -44,3 +47,19 @@ games/nightlite_choir/
 - Save: `nightlite.save` = `{ v: 4, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }`, written on every change and on page hide. `loadProgress` validates every field and ignores unknown ones. `nightlite.mix` snapshots get a `v` field; older snapshots without it still load. Blends not owned are dropped from a loaded mix.
 - UI sounds (wish, hatch, pot): `chime(notes)` plays a few soft sine notes (C pentatonic) through the same master gain, so Mute and Volume apply.
 - Art additions for the blends: accessory `ringband`. The egg and nest are a small inline SVG written in js/app.js (`eggSvg`).
+
+## v0.5.0: pot upgrade
+- Recipes: `blend` is 2 to 5 distinct ids (base or blend). Key = sorted ids joined with `+` (2 ingredient keys are the same as before, so old `found` keys still match). `NightliteRecipes.build` makes `recipeByKey`, `recipes` (each with `ing` and `tier`: 2 when an ingredient is a blend) and an `errors` list (wrong count, unknown id, repeat, same set as another recipe). Matching is an exact set match, order never matters.
+- Merge: `collectBlends(window)` takes `NightliteBlends.chars` first, then every `window.NightliteBlendsExtra_*` global in alphabetical order. A repeated id is skipped.
+- Tempo: `model.tempo(id)` follows the first listed ingredient down to a base friend and uses that world's tempo (depth capped). Existing 2 ingredient blends are unchanged.
+- Pot: `S.pot` has 5 slots. Mix needs 2 or more. `model.hint` gives `{kind:'almost', n}` (smallest number short, recipes not found yet, other ingredients owned) or `{kind:'many'}`. `model.suggest(stage, picks, owned, found)` lists recipes with all ingredients on the stage, or containing the picks, owned ingredients only, not found first. `model.fromStage` picks up to 5 stage friends, preferring the biggest overlap with a recipe not found yet. Tray: 12 base friends plus owned blends.
+- Book: page 1 (base friends only) and page 2 (uses a blend), "?" cards show N faces and the clue. The Collection counts found out of total.
+- Rares: `S.rares['<id>_rare']`. At init each blend gets a rare twin in `charById` (`rare: true`, art from `NightliteArt.rareSpec` = hue shift plus sparkles, synth from `rareSynth` = octave layer and extra harmonic, or a shimmer layer for noise, all C pentatonic). Roll: `NightliteRecipes.roll(Math.random, S.rareOn)` is true about 1 time in 10. A rare comes IN ADDITION to the normal blend (that is still owned and its recipe found). Rares are not pot ingredients (a rare counts as nothing extra), show a star in the tray, stage, book and Collection ("Rare friends" card), and live in `nightlite.save` as `rares: [...]`. Toggle: `nightlite.rare` = '1' or '0', registered in `js/gamesaves.js` with the other nightlite keys.
+- Save v5: adds `rares`. A v1 to v4 save loads as it is (rares start empty). `nightlite.rare` is stashed and restored with the import undo.
+
+## v0.5.0 review fixes
+- `build` rejects, in rounds, any blend with a wrong ingredient count, an id that is also a base friend, a repeated or unknown ingredient, the same ingredient set as an earlier blend, an ingredient cycle (also through other blends) or an ingredient that was itself rejected. Rejected blends are in `errors` only: they are not in `byId`, `blendById`, `recipes` or `valid`. `init` builds the model first, sets `NightliteBlends.chars = model.valid` and `console.warn`s every error, so a bad extra set never leaves a friend without a recipe. Tray, pot tray, eggs, book and counts all read `blendList()` (= `model.valid`).
+- Vetting a new set: `node tests/nightlite.test.js` builds every `NightliteBlendsExtra_*` set loaded from `js/worlds/blends_*.js` plus the base blends and fails on any error.
+- Rare sound: wrappers (`voice`, `noise`) copy the base `amp`, the extra layer has a level `lvl` (new, `js/synth.js` layers only, default full). The test renders every blend and keeps the rare peak within 1.3x of the base. Drum voices drip, clop and thrum go up a whole octave (pitch x 2), whoosh is left alone, unpitched voices get x 1.25.
+- `loadProgress`: ids are looked up with `hasOwnProperty`, each list is cut at 200 entries, entries must be strings and a rare needs its blend already owned.
+- Restore previous: an undo copy without a `rare` field leaves `nightlite.rare` as it is.

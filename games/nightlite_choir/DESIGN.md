@@ -54,8 +54,8 @@ All numbers are ours and live as constants at the top of `js/app.js`.
 | Sparks | A free counter. +1 spark for every 15 seconds that two or more creatures stand on the stage and the page is visible. Cap 99. Nothing accrues while the tab is hidden or closed. No daily bonus, no login streak, no countdown, nothing to miss or lose. |
 | Wish on a star | A free button (door screen, every world, Collection): +3 sparks at any time, no timer. So a child can never get stuck. At 99 it says the jar is full. |
 | Egg | 5 sparks puts one egg in the nest (one egg at a time). It hatches by itself after about 20 seconds that the game is open and visible. Tapping the egg warms it: each tap takes 2 seconds off. Waiting is optional. It hatches one blend the child does not own yet. With all 6 owned the egg gives a happy twinkle and the sparks come back. |
-| Mixing pot | Pick any two of the 12 base creatures (any worlds), tap Mix. A pair in the recipe table makes the blend at once with a short sparkle. The parents are NOT used up. The recipe is saved in the Discovery book. Other pairs say "Not this time. Nothing was lost." Eggs and the pot make the same 6 blends. The pot is the guaranteed path. |
-| Discovery book | One card per recipe: the two parents plus the blend, or "?" cards while it is not found. Eggs do not fill the book, only the pot does. |
+| Mixing pot | Pick 2 to 5 friends (the 12 base creatures, plus blends you own), tap Mix. A group that matches a recipe exactly (order never matters) makes the blend at once with a short sparkle. The friends are NOT used up. The recipe is saved in the Discovery book. Other groups say "Not this time. Nothing was lost." Eggs and the pot make the same blends. The pot is the guaranteed path. v0.5.0 adds Match my stage, What can I make?, hints and rare friends, see below. |
+| Discovery book | One card per recipe: the ingredient faces plus the blend, or "?" faces and the one-line clue while it is not found. Page 1 holds recipes of base friends, page 2 the recipes that use a blend. Eggs do not fill the book, only the pot does. |
 | Collection screen | Sparks, the nest, the Discovery book and the blends owned. Button on the door screen and in every world. |
 
 ## Blends (built in milestone 3)
@@ -81,17 +81,26 @@ Copy and adapt these files into this folder. Do not import from `games/sprunki_v
 - `js/synth.js` (synth), `js/art.js` (art generator), the tray, drag and drop, undo, save and load, volume and keyboard code in `js/app.js`, and the pack data format.
 - Do NOT reuse the Classic pack, its images or its loops. Those come from the community Sprunki game. See IP-GUARDRAILS.md.
 
+## Pot upgrade (v0.5.0)
+- Recipes have 2 to 5 distinct ingredients. Ingredients are base friends or blends the child owns. No two recipes share an ingredient set, so one pot never matches two blends. 21 blends now: the 6 above plus 15 from set CLAUDE (6 pairs, 4 triples, 3 quads, 2 quints, see [RECIPES_CLAUDE.md](RECIPES_CLAUDE.md)). A second set can be dropped in.
+- Match my stage: fills the pot with up to 5 distinct stage friends. If part of the stage belongs to a recipe not found yet, it uses that part.
+- What can I make?: big cards. With nothing in the pot: recipes whose friends are all on the stage. With picks: recipes that include them. Unfound recipes come first, shown as the ingredient faces, "?" and the clue. Tapping a card fills the pot.
+- Hints (numbers only, never names): "Almost! Add N more friend(s)" when the pick is part of a recipe NOT found yet whose other friends you own (found recipes never give "Almost"). "That is a lot of friends. Try fewer." when the pick holds a whole recipe (found or not) plus extras. If both are true, "Try fewer" wins, so the two never contradict. No match and no hint: "Not sure about that group. Try Mix and see." Nothing is ever lost.
+- Found recipes: still mixable ("made it again"), shown last in What can I make? with face and name, skipped by Match my stage and by "Almost".
+- Rare friends: 1 in 10 on a successful mix or an egg, a shimmering twin of the blend (hue shift, sparkles, brighter sound) given in addition to the normal one. Collectible only, never needed. Off switch in the pot, saved.
+- Tempo of a blend: first listed ingredient's world, through blends if needed.
+
 ## Creature data format
 ```
-{ id: 'mossweave', name: 'Mossweave', role: 'wobble bass', blend: ['mossle', 'skeinie'],
+{ id: 'mossweave', name: 'Mossweave', role: 'wobble bass', blend: ['mossle', 'skeinie'], clue: 'one line shown for unfound recipes',
   art: { /* art generator spec */ }, synth: { /* synth spec, C pentatonic */ } }
 ```
-Base creatures are in `js/worlds/*.js` (no `blend` field). Blends are in `js/worlds/blends.js`. The `blend` pair is the recipe: order does not matter. Parent ids are the internal ids (some differ from the display names: `hedgey` is Shrublet, `tocklet` is Cogwick, `mallowhorn` is Fluffhorn).
+Base creatures are in `js/worlds/*.js` (no `blend` field). Blends are in `js/worlds/blends.js` and any `js/worlds/blends_*.js` set. The `blend` list (2 to 5 ids) is the recipe: order does not matter. Parent ids are the internal ids (some differ from the display names: `hedgey` is Shrublet, `tocklet` is Cogwick, `mallowhorn` is Fluffhorn).
 
 ## Milestones
 1. Fork the S4K engine into this folder, rename, one world, 4 creatures, runs from file:// and Pages.
 2. Add the other two worlds and all 12 creatures (done: 2a Attic, 2b Observatory).
-3. Eggs, sparks and combine, with 6 blends (done, v0.4.0).
+3. Eggs, sparks and combine, with 6 blends (done, v0.4.0). Pot upgrade with 21 blends and rares (done, v0.5.0).
 4. Polish, save and load, tests, docs, catalog entry, PR.
 
 Each milestone ends with a commit and a push. Test with Playwright (play the game, check the console, phone width).

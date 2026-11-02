@@ -60,6 +60,24 @@
 | 2026-10-29 | Art: egg and nest | Image | Small inline SVG written by hand in js/app.js (`eggSvg`): cream egg with pastel spots, twig nest, glow and cracks as it warms | n/a |
 | 2026-10-29 | UI: spark counter, Wish, Collection, Mixing pot, Discovery book | Design | Own words and layout (free sparks, tap-to-warm egg, instant recipe pot, discovery book). No My Singing Monsters structure, names, timers or tier labels used | n/a |
 
+| 2026-11-01 | Creature: Lilybop (set CLAUDE) | Name | Coined name, specs in js/worlds/blends_claude.js. Name check: search "Lilybop character game toy cartoon", no hit (nearby Babble Bop, Toy Story LilyPad). Kept. Details in RECIPES_CLAUDE.md. Quick search, not legal clearance | 2026-11-01 |
+| 2026-11-01 | Creature: Tintrot (set CLAUDE) | Name | Coined name. No hit (nearby Trotro, a different word). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Streakle (set CLAUDE) | Name | Coined name. No hit (nearby Streak, Streaky). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Glowfluff (set CLAUDE) | Name | Coined name. No hit (nearby Fluffie Stuffiez, GlowPuff asset). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Hushbush (set CLAUDE) | Name | Coined name. No hit (nearby Hush Puppy, Mush-Mush). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Yarnkite (set CLAUDE) | Name | Coined name. No hit (nearby Yarny, Yarnimals). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Nodlight (set CLAUDE) | Name | Coined name. No hit (nearby Noddy, Nood). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Tootlepip (set CLAUDE) | Name | Coined name. No hit (nearby Toot & Puddle, Tonies Pip). Kept, not close | 2026-11-01 |
+| 2026-11-01 | Creature: Sprizzle (set CLAUDE) | Name | Coined name. No hit (nearby Sprunki through search drift, Sprinkle plush). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Warblestar (set CLAUDE) | Name | Coined name. No hit (nearby Warrior Cats, Crystar). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Patterpop (set CLAUDE) | Name | Coined name, replaced Pitterpat (close hit: Pitterpatch, Pitter Patter Pets). Patterpop: no hit (nearby Popples, Patter Peacock). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Bounceboom (set CLAUDE) | Name | Coined name. No hit (nearby Bounce, Sonic Boom). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Cozynub (set CLAUDE) | Name | Coined name, replaced Snugbump (close hit: SnuggleBumms). Cozynub: no hit (nearby Cozys, Cozy Monster). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Glimmerjig (set CLAUDE) | Name | Coined name. No hit (nearby Glimmer, Glimmies, Lil' Gleemerz). Kept | 2026-11-01 |
+| 2026-11-01 | Creature: Jubilume (set CLAUDE) | Name | Coined name. No hit (nearby Jubilee, a different word). Kept | 2026-11-01 |
+| 2026-11-01 | Art and sound: the 15 set CLAUDE blends | Image/Sound | Art specs for js/art.js and synth specs for js/synth.js in js/worlds/blends_claude.js, written by Claude, C pentatonic only. No image or sound files, no references | n/a |
+| 2026-11-01 | Art and sound: rare shimmer versions | Code | Rare friends are made at runtime by `rareSpec` in js/art.js (hue shift plus sparkles) and `rareSynth` in js/recipes.js (octave layer, extra harmonic). Generated from each blend's own spec, no new files | n/a |
+
 Add one row per creature, sound, image and the game title. Name check: search done, result, date.
 
 ## Rename log (2026-10-28)

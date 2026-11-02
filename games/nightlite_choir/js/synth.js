@@ -222,7 +222,13 @@
         var stepLen = buf.length / STEPS;
         var i;
         if (spec.kind === 'layers') {
-            for (i = 0; i < spec.layers.length; i++) renderInto(spec.layers[i], buf, rnd);
+            for (i = 0; i < spec.layers.length; i++) {
+                if (spec.layers[i].lvl > 0) {       // optional level of one layer (rare friends): render apart, add scaled
+                    var tmp = new Float32Array(buf.length), q;
+                    renderInto(spec.layers[i], tmp, rnd);
+                    for (q = 0; q < buf.length; q++) buf[q] += tmp[q] * spec.layers[i].lvl;
+                } else renderInto(spec.layers[i], buf, rnd);
+            }
             return;
         }
         if (spec.kind === 'drum') renderDrum(spec, buf, stepLen, rnd);

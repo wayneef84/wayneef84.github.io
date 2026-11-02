@@ -60,7 +60,7 @@
     }
 
     // ---- manifest ------------------------------------------------------
-    register('nightlite-choir', { name: 'Nightlite Choir+', keys: ['nightlite.save', 'nightlite.mix', 'nightlite.vol'], json: ['nightlite.save', 'nightlite.mix'] });
+    register('nightlite-choir', { name: 'Nightlite Choir+', keys: ['nightlite.save', 'nightlite.mix', 'nightlite.vol', 'nightlite.rare'], json: ['nightlite.save', 'nightlite.mix'] });
     register('s4k-mixer-v2', { name: 'S4K Mixer v2', keys: ['sprunkiV2.slots', 'sprunkiV2.pack', 'sprunkiV2.vol', 'sprunkiV2.saves', 'sprunkiV2.saveNum'], json: ['sprunkiV2.saves'] });
     register('s4k-mixer', { name: 'S4K Mixer (custom characters)', keys: ['s4k_custom_chars'], json: ['s4k_custom_chars'] });
     register('slots', { name: 'Slots', keys: ['fong.slots.v4'], json: ['fong.slots.v4'] });

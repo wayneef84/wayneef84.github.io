@@ -5,6 +5,8 @@
  * Worlds register themselves in window.NightliteWorlds (see js/worlds/*.js).
  * One shared stage: creatures from all three worlds can stand on it. Tempo comes from the first creature placed.
  * Milestone 3: free sparks, eggs in a nest, a Mixing pot, a Discovery book and 6 blend creatures (js/worlds/blends.js).
+ * v0.5.0: recipes of 2 to 5 friends (blends can be ingredients), pot suggestions, extra blend sets (js/worlds/blends_*.js), rare friends.
+ * Recipe rules live in js/recipes.js (no DOM, tested by tests/nightlite.test.js).
  */
 (function (w) {
     var d = document;
@@ -25,12 +27,16 @@
     var EGG_COST = 5;              // an egg costs 5 sparks
     var HATCH_SECS = 20;           // an egg hatches in about 20 seconds of looking at the game
     var WARM_SHAVE = 2;            // each tap on the egg warms it: 2 seconds off
-    var SAVE_VERSION = 4;
+    var SAVE_VERSION = 5;          // 5 adds rares: [ids]. Older saves load as they are (rares start empty), see loadProgress
     var DATA_KEY = 'nightlite.save';
+    var RARE_KEY = 'nightlite.rare';   // '1' or '0': the Rare friends toggle (default on)
+    var POT_SLOTS = 5;
+    var SAVE_LIST_CAP = 200;           // most entries read from each saved list (blends, found, rares)
+    var R = w.NightliteRecipes;
 
     var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
-              sparks: 0, owned: {}, found: {}, nest: null, playSecs: 0,
-              view: 'garden', back: [], pot: [null, null], reveal: null };
+              sparks: 0, owned: {}, found: {}, rares: {}, rareOn: true, nest: null, playSecs: 0,
+              view: 'garden', back: [], pot: [null, null, null, null, null], reveal: null, suggest: [], showSuggest: false, bookPage: 1 };
     var history = [];
     var ctx = null, mix = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -39,7 +45,8 @@
     var toastTimer = null, drag = null, suppressClick = false, memMix = null;
     var charById = {};
     var blendById = {};         // blend id -> creature
-    var recipeByKey = {};       // 'parentA+parentB' (sorted) -> blend id
+    var recipeByKey = {};       // sorted ids joined with '+' -> blend id (2 to 5 ingredients)
+    var model = null;           // recipe tables and rules (js/recipes.js)
     var WORLD_ORDER = ['garden', 'attic', 'observatory'];
 
     function $(id) { return d.getElementById(id); }
@@ -58,9 +65,14 @@
     }
 
     // ---------------------------------------------------------------- progress save (sparks, blends, recipes, nest)
-    // One JSON under nightlite.save: { v, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }.
+    // One JSON under nightlite.save: { v, sparks, blends: [ids], found: ['a+b', ...], rares: ['id_rare', ...], nest: { left } | null }.
+    // v5 added rares. A v1 to v4 save has none and loads unchanged (nothing is dropped). found keys are sorted ids, so old 'a+b' keys still match.
     // Older v0.1.0 to v0.3.0 saves have no such key and simply start with zero sparks. Storage blocked: everything stays in memory.
-    function recipeKey(a, b) { return a < b ? a + '+' + b : b + '+' + a; }
+    function raresList() {
+        var out = [], k;
+        for (k in S.rares) if (S.rares.hasOwnProperty(k) && S.rares[k]) out.push(k);
+        return out;
+    }
     function ownedList() {
         var out = [], k;
         for (k in S.owned) if (S.owned.hasOwnProperty(k) && S.owned[k]) out.push(k);
@@ -74,7 +86,7 @@
     var loadingSave = false;      // true while a save import is reloading the page, so old memory never overwrites it
     function saveProgress() {
         if (loadingSave) return;
-        var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(),
+        var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(), rares: raresList(),
                      nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
         store(DATA_KEY, JSON.stringify(data));
     }
@@ -84,14 +96,25 @@
         if (!data || typeof data !== 'object') return;
         n = parseInt(data.sparks, 10);
         S.sparks = (n >= 0) ? Math.min(SPARK_CAP, n) : 0;
-        if (data.blends instanceof Array) {
-            for (i = 0; i < data.blends.length; i++) if (blendById[data.blends[i]]) S.owned[data.blends[i]] = true;
+        // A save file can be edited by hand: ids are looked up with hasOwnProperty (so "constructor" means nothing),
+        // each list is capped, and a rare only counts when its blend is already owned.
+        if (Array.isArray(data.blends)) {
+            for (i = 0; i < data.blends.length && i < SAVE_LIST_CAP; i++) {
+                id = data.blends[i];
+                if (typeof id === 'string' && blendById.hasOwnProperty(id)) S.owned[id] = true;
+            }
         }
-        if (data.found instanceof Array) {
-            for (i = 0; i < data.found.length; i++) {
+        if (Array.isArray(data.found)) {
+            for (i = 0; i < data.found.length && i < SAVE_LIST_CAP; i++) {
                 key = data.found[i];
-                id = recipeByKey[key];
-                if (id) { S.found[key] = true; S.owned[id] = true; }     // a found recipe always means the blend is owned
+                if (typeof key !== 'string' || !recipeByKey.hasOwnProperty(key)) continue;
+                S.found[key] = true; S.owned[recipeByKey[key]] = true;     // a found recipe always means the blend is owned
+            }
+        }
+        if (Array.isArray(data.rares)) {
+            for (i = 0; i < data.rares.length && i < SAVE_LIST_CAP; i++) {
+                id = data.rares[i];
+                if (typeof id === 'string' && R.isRareId(id) && blendById.hasOwnProperty(R.baseId(id)) && S.owned[R.baseId(id)]) S.rares[id] = true;
             }
         }
         if (data.nest && typeof data.nest === 'object') {
@@ -285,7 +308,8 @@
                     b.appendChild(im);
                     b.appendChild(el('span', 'nm', ch.name));
                     b.appendChild(el('span', 'x', '×'));
-                    b.setAttribute('aria-label', ch.name + ' on spot ' + (idx + 1) + '. Tap to remove.');
+                    if (ch.rare) b.appendChild(el('span', 'rstar', '\u2605'));
+                    b.setAttribute('aria-label', ch.name + (ch.rare ? ' (rare)' : '') + ' on spot ' + (idx + 1) + '. Tap to remove.');
                 } else {
                     b.appendChild(el('span', 'plus', '+'));
                     b.setAttribute('aria-label', 'Empty spot ' + (idx + 1));
@@ -362,10 +386,20 @@
         if (S.view === 'blends') return ownedBlendChars();
         return S.world.chars;
     }
+    function blendList() { return (model && model.valid) || []; }       // the one list of blends: tray, pot, eggs, book and counts
     function ownedBlendChars() {
-        var out = [], i, bl = w.NightliteBlends.chars;
-        for (i = 0; i < bl.length; i++) if (S.owned[bl[i].id]) out.push(bl[i]);
+        var out = [], i, bl = blendList();
+        for (i = 0; i < bl.length; i++) {
+            if (S.owned[bl[i].id]) out.push(bl[i]);
+            if (S.rares[R.rareId(bl[i].id)]) out.push(charById[R.rareId(bl[i].id)]);
+        }
         return out;
+    }
+    // Is this friend on hand? Base friends always, a blend once owned, a rare once found.
+    function haveChar(ch) {
+        if (!ch) return false;
+        if (ch.rare) return !!S.rares[ch.id];
+        return !ch.isBlend || !!S.owned[ch.id];
     }
     function renderTiles() {
         var box = $('tiles'), list = viewList(), isBl = (S.view === 'blends'), note = $('trayNote');
@@ -391,8 +425,9 @@
                 b.appendChild(im);
                 b.appendChild(el('span', 'nm', ch.name));
                 b.appendChild(el('span', 'key', String(num)));
+                if (ch.rare) b.appendChild(el('span', 'rstar', '\u2605'));
                 b.setAttribute('aria-pressed', used ? 'true' : 'false');
-                b.setAttribute('aria-label', ch.name + (used ? ', on stage. Tap to remove.' : '. Tap to add.'));
+                b.setAttribute('aria-label', ch.name + (ch.rare ? ' (rare)' : '') + (used ? ', on stage. Tap to remove.' : '. Tap to add.'));
                 b.onclick = function () {
                     if (suppressClick) return;
                     tileAction(ch);
@@ -423,7 +458,7 @@
 
     function addChar(ch, slotIdx) {
         if (onStageIdx(ch.id) >= 0) return;
-        if (ch.isBlend && !S.owned[ch.id]) return;
+        if (!haveChar(ch)) return;
         var idx = (slotIdx === undefined || slotIdx === null) ? firstEmpty() : slotIdx;
         if (idx < 0) {
             var st = $('stage'); st.classList.add('shake');
@@ -489,7 +524,7 @@
         if (!snap || !(snap.slots instanceof Array)) snap = memMix;
         if (!snap) { toast('No saved mix yet. Make one and tap Save.'); return; }
         for (i = 0; i < snap.slots.length; i++) {
-            if (snap.slots[i] && (!charById[snap.slots[i]] || (charById[snap.slots[i]].isBlend && !S.owned[snap.slots[i]]))) snap.slots[i] = null;
+            if (snap.slots[i] && !haveChar(charById[snap.slots[i]])) snap.slots[i] = null;
         }
         if (!(snap.bpm > 0)) {
             snap.bpm = S.world.bpm;       // older saves have no tempo: use the tempo of the first creature
@@ -798,7 +833,7 @@
     }
     // Stash what is stored now, so one Restore can bring it back.
     function cfgStash() {
-        var snap = { save: store(DATA_KEY), mix: store(SAVE_KEY), vol: store('nightlite.vol') };
+        var snap = { save: store(DATA_KEY), mix: store(SAVE_KEY), vol: store('nightlite.vol'), rare: store(RARE_KEY) };
         store(UNDO_KEY, JSON.stringify(snap));
         return store(UNDO_KEY) !== null;
     }
@@ -852,6 +887,7 @@
         }
         cfgDisarm();
         var keys = [['nightlite.save', snap.save], ['nightlite.mix', snap.mix], ['nightlite.vol', snap.vol]], i, now = {}, ok = true, k;
+        if (snap.hasOwnProperty('rare')) keys.push([RARE_KEY, snap.rare]);      // an older undo copy has no rare field: leave it as it is
         loadingSave = true;
         for (i = 0; i < keys.length; i++) now[keys[i][0]] = store(keys[i][0]);
         try {
@@ -1022,7 +1058,7 @@
         w.setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 1700);
     }
 
-    // ---- Mixing pot: pick two base friends, tap Mix. Parents are never used up.
+    // ---- Mixing pot: pick 2 to 5 friends (base friends or blends you own), tap Mix. Friends are never used up.
     function baseChars() {
         var out = [], i, j, wd;
         for (i = 0; i < WORLD_ORDER.length; i++) {
@@ -1031,26 +1067,37 @@
         }
         return out;
     }
-    function potSlot(id, idx) {
-        var b = $(idx ? 'potB' : 'potA'), ch = id ? charById[id] : null;
+    function potIds() {
+        var out = [], i;
+        for (i = 0; i < POT_SLOTS; i++) if (S.pot[i]) out.push(S.pot[i]);
+        return out;
+    }
+    function setPot(ids) {
+        var i;
+        S.pot = [];
+        for (i = 0; i < POT_SLOTS; i++) S.pot.push(ids[i] || null);
+    }
+    function potSlot(idx) {
+        var id = S.pot[idx], b = $('potS' + idx), ch = id ? charById[id] : null;
         b.innerHTML = '';
         b.className = 'pslot' + (ch ? ' has' : '');
         if (ch) {
             var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
             b.appendChild(im);
-            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend: ' + ch.name + '. Tap to take out.');
+            b.setAttribute('aria-label', 'Spot ' + (idx + 1) + ': ' + ch.name + '. Tap to take out.');
         } else {
             b.appendChild(el('span', 'q', '?'));
-            b.setAttribute('aria-label', (idx ? 'Second' : 'First') + ' friend, empty');
+            b.setAttribute('aria-label', 'Spot ' + (idx + 1) + ', empty');
         }
     }
-    function potOut(blend, isNew) {
+    function potOut(blend, isNew, isRare) {
         var o = $('potOut');
         o.innerHTML = '';
         o.className = 'pslot bowl';
         if (blend) {
-            var im = el('img'); im.src = imgSrc(blend); im.alt = blend.name;
+            var im = el('img'); im.src = imgSrc(isRare ? charById[R.rareId(blend.id)] : blend); im.alt = blend.name;
             o.appendChild(im);
+            if (isRare) o.appendChild(el('span', 'rstar', '★'));
             void o.offsetWidth;
             o.classList.add('made');
             burst(o);
@@ -1059,65 +1106,167 @@
         }
     }
     function potMsg(t) { $('potMsg').textContent = t; }
+    function hintText(h) {
+        if (!h) return '';
+        if (h.kind === 'almost') return 'Almost! Add ' + h.n + ' more friend' + (h.n === 1 ? '' : 's') + '.';
+        return 'That is a lot of friends. Try fewer.';
+    }
+    // The pot tray: the 12 base friends, then the blends you own
+    function potChoices() {
+        var list = baseChars(), bl = blendList(), i;
+        for (i = 0; i < bl.length; i++) if (S.owned[bl[i].id]) list.push(bl[i]);
+        return list;
+    }
     function renderPot() {
-        var box = $('potTiles'), list = baseChars(), i;
-        potSlot(S.pot[0], 0); potSlot(S.pot[1], 1);
+        var box = $('potTiles'), list = potChoices(), i, n = potIds().length;
+        for (i = 0; i < POT_SLOTS; i++) potSlot(i);
+        $('mixBtn').disabled = n < R.MIN;
+        syncRareBtn();
         box.innerHTML = '';
         for (i = 0; i < list.length; i++) {
             (function (ch) {
-                var on = (S.pot[0] === ch.id || S.pot[1] === ch.id);
-                var b = el('button', 'ptile' + (on ? ' picked' : ''));
+                var on = S.pot.indexOf(ch.id) >= 0;
+                var b = el('button', 'ptile' + (on ? ' picked' : '') + (ch.isBlend ? ' blendtile' : ''));
                 b.type = 'button';
                 b.id = 'ptile-' + ch.id;
                 var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
                 b.appendChild(im);
                 b.appendChild(el('span', 'nm', ch.name));
+                if (S.rares[R.rareId(ch.id)]) b.appendChild(el('span', 'rstar', '★'));     // you have the rare version of this friend
                 b.setAttribute('aria-pressed', on ? 'true' : 'false');
                 b.setAttribute('aria-label', ch.name + (on ? ', in the pot. Tap to take out.' : '. Tap to put in the pot.'));
                 b.onclick = function () { potPick(ch.id); };
                 box.appendChild(b);
             })(list[i]);
         }
+        renderSuggest();
     }
     function potPick(id) {
-        var k = S.pot.indexOf ? S.pot.indexOf(id) : (S.pot[0] === id ? 0 : (S.pot[1] === id ? 1 : -1));
+        var k = S.pot.indexOf(id), ids;
         if (k >= 0) S.pot[k] = null;
-        else if (!S.pot[0]) S.pot[0] = id;
-        else if (!S.pot[1]) S.pot[1] = id;
-        else { S.pot[0] = S.pot[1]; S.pot[1] = id; }
+        else {
+            ids = potIds();
+            if (ids.length >= POT_SLOTS) { ids.shift(); ids.push(id); setPot(ids); }     // full: the oldest friend steps out
+            else S.pot[S.pot.indexOf(null)] = id;
+        }
         potOut(null);
-        potMsg(S.pot[0] && S.pot[1] ? 'Ready. Tap Mix!' : 'Pick one more friend.');
+        potStatus();
         renderPot();
     }
-    function mix2() {
-        var a = S.pot[0], b = S.pot[1], id, blend, isNew, key;
-        if (!a || !b) { potMsg('Pick two friends first. They always stay with you.'); return; }
+    // The message under the pot: ready, closeness hint, or what to do next
+    function potStatus() {
+        var ids = potIds(), h;
+        if (ids.length < R.MIN) { potMsg(ids.length ? 'Pick one more friend.' : 'Nothing is used up. Try 2 to 5 friends!'); return; }
+        if (model.match(ids)) { potMsg('Ready. Tap Mix!'); return; }
+        h = model.hint(ids, S.owned, S.found);
+        potMsg(h ? hintText(h) : 'Not sure about that group. Try Mix and see.');
+    }
+    function mixPot() {
+        var ids = potIds(), id, blend, isNew, key, rare = false, newRare = false, h;
+        if (ids.length < R.MIN) { potMsg('Pick at least 2 friends first. They always stay with you.'); return; }
         ensureCtx();
-        key = recipeKey(a, b);
-        id = recipeByKey[key];
+        id = model.match(ids);
         if (!id) {
             var o = $('potOut');
             o.classList.remove('nope'); void o.offsetWidth; o.classList.add('nope');
-            potMsg('Not this time. Nothing was lost. Try another pair!');
+            h = model.hint(ids, S.owned, S.found);
+            potMsg('Not this time. Nothing was lost.' + (h ? ' ' + hintText(h) : ' Try another group!'));
             chime([76, 74]);
             return;
         }
+        key = R.keyOf(ids);
         blend = blendById[id];
         isNew = !S.owned[id];
         S.owned[id] = true;
         S.found[key] = true;
+        rare = R.roll(w.Math.random, S.rareOn);
+        if (rare && !S.rares[R.rareId(id)]) { S.rares[R.rareId(id)] = true; newRare = true; }
         saveProgress();
-        potOut(blend, isNew);
-        if (isNew && w.FongCheer) w.FongCheer.cheer('big');
-        chime([84, 88, 91, 96]);
-        potMsg(isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.');
+        S.showSuggest = false;
+        renderPot();
+        potOut(blend, isNew, rare);
+        if ((isNew || newRare) && w.FongCheer) w.FongCheer.cheer('big');
+        chime(rare ? [84, 88, 91, 96, 100, 103] : [84, 88, 91, 96]);
+        potMsg((rare ? 'A shimmering RARE ' + blend.name + ' appeared! ' : '') +
+               (isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.'));
+    }
+    function stageIds() {
+        var ids = [], i;
+        for (i = 0; i < SLOTS; i++) if (S.slots[i]) ids.push(S.slots[i]);
+        return ids;
+    }
+    // Match my stage: fill the pot from the friends standing on the stage
+    function matchStage() {
+        var ids = stageIds(), picked;
+        if (!ids.length) { potMsg('The stage is empty. Put friends on a stage first, or pick from below.'); return; }
+        picked = model.fromStage(ids, S.owned, S.found);
+        if (!picked.length) { potMsg('Those friends cannot go in the pot. Pick from below.'); return; }
+        setPot(picked);
+        potOut(null);
+        S.showSuggest = false;
+        renderPot();
+        if (picked.length < R.MIN) potMsg('Only one friend is on the stage. Pick one more.'); else potStatus();
+    }
+    // What can I make?: big cards for recipes made of what is on the stage (or containing your picks)
+    function showSuggestions() {
+        S.showSuggest = true;
+        renderSuggest();
+        var box = $('potSuggest');
+        if (box && box.scrollIntoView) { try { box.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+    }
+    function renderSuggest() {
+        var box = $('potSuggest'), i, list;
+        box.innerHTML = '';
+        if (!S.showSuggest) { box.hidden = true; return; }
+        S.suggest = list = model.suggest(stageIds(), potIds(), S.owned, S.found, 12);
+        box.hidden = false;
+        if (!list.length) {
+            box.appendChild(el('p', 'hint', potIds().length ? 'No ideas for those friends yet. Try adding or taking out a friend.' : 'No ideas yet. Put 2 or more friends on the stage, or pick some from below.'));
+            return;
+        }
+        for (i = 0; i < list.length; i++) {
+            (function (rec) {
+                var done = !!S.found[rec.key], blend = blendById[rec.id], b = el('button', 'scard' + (done ? ' known' : ' unknown')), row = el('span', 'srow'), j, f;
+                b.type = 'button';
+                for (j = 0; j < rec.ing.length; j++) {
+                    f = el('img'); f.src = imgSrc(charById[rec.ing[j]]); f.alt = ''; f.draggable = false;
+                    row.appendChild(f);
+                }
+                row.appendChild(el('span', 'sop', '='));
+                if (done) { f = el('img'); f.src = imgSrc(blend); f.alt = ''; f.draggable = false; row.appendChild(f); }
+                else row.appendChild(el('span', 'sq', '?'));
+                b.appendChild(row);
+                b.appendChild(el('span', 'sname', done ? blend.name : (blend.clue || 'These friends sing well together.')));
+                b.setAttribute('aria-label', done ? blend.name + '. Tap to put the friends in the pot.' : 'A new friend to find. ' + (blend.clue || '') + ' Tap to put the friends in the pot.');
+                b.onclick = function () {
+                    setPot(rec.ing);
+                    potOut(null);
+                    S.showSuggest = false;
+                    renderPot();
+                    potMsg('Ready. Tap Mix!');
+                };
+                box.appendChild(b);
+            })(list[i]);
+        }
+    }
+    function syncRareBtn() {
+        var b = $('rareBtn');
+        b.querySelector('.lbl').textContent = 'Rare friends: ' + (S.rareOn ? 'On' : 'Off');
+        b.setAttribute('aria-pressed', S.rareOn ? 'true' : 'false');
+        b.className = 'btn wide' + (S.rareOn ? ' on' : '');
+    }
+    function toggleRare() {
+        S.rareOn = !S.rareOn;
+        if (!loadingSave) store(RARE_KEY, S.rareOn ? '1' : '0');
+        syncRareBtn();
+        potMsg(S.rareOn ? 'Rare friends are on. A shimmering one might show up!' : 'Rare friends are off. No shimmer surprises.');
     }
 
     // ---- Collection: nest, Discovery book, blends you own
     // The nest holds one egg at a time. An egg costs EGG_COST sparks. It hatches by itself after about HATCH_SECS
     // seconds while the game is open and visible, and every tap on it warms it up (WARM_SHAVE seconds sooner). Waiting is optional.
     function unownedBlends() {
-        var out = [], i, bl = w.NightliteBlends.chars;
+        var out = [], i, bl = blendList();
         for (i = 0; i < bl.length; i++) if (!S.owned[bl[i].id]) out.push(bl[i]);
         return out;
     }
@@ -1152,9 +1301,10 @@
             r = el('div', 'reveal');
             r.id = 'nestReveal';
             if (S.reveal.id) {
-                var im = el('img'); im.src = imgSrc(charById[S.reveal.id]); im.alt = '';
+                var rc = S.reveal.rare ? charById[R.rareId(S.reveal.id)] : charById[S.reveal.id];
+                var im = el('img'); im.src = imgSrc(rc); im.alt = '';
                 r.appendChild(im);
-                r.appendChild(el('span', '', 'You hatched ' + charById[S.reveal.id].name + '!'));
+                r.appendChild(el('span', '', (S.reveal.rare ? '\u2605 A shimmering RARE ' : 'You hatched ') + charById[S.reveal.id].name + '!'));
                 r.appendChild(el('span', 'hint', 'Find it under Blends on any stage.'));
             } else {
                 r.appendChild(el('span', '', '\u2728 Twinkle! You already have every blend, so your sparks came back.'));
@@ -1222,7 +1372,7 @@
         saveProgress();
     }
     function hatch() {
-        var c = unownedBlends(), pick;
+        var c = unownedBlends(), pick, rare = false;
         S.nest = null;
         if (!c.length) {
             S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);     // nothing new to hatch: the sparks come back
@@ -1232,14 +1382,17 @@
         } else {
             pick = c[Math.floor(Math.random() * c.length)];
             S.owned[pick.id] = true;
-            S.reveal = { id: pick.id };
-            chime([84, 88, 91, 96]);
-            toast('Your egg hatched: ' + pick.name + '!');
+            rare = R.roll(w.Math.random, S.rareOn);
+            if (rare) S.rares[R.rareId(pick.id)] = true;
+            S.reveal = { id: pick.id, rare: rare };
+            chime(rare ? [84, 88, 91, 96, 100, 103] : [84, 88, 91, 96]);
+            toast('Your egg hatched: ' + (rare ? 'a RARE ' : '') + pick.name + '!');
             if (w.FongCheer) w.FongCheer.cheer('big');
         }
         updateSparkUI(); saveProgress();
         if (S.screen === 'collect') renderCollect();
         else if (S.screen === 'world') renderTiles();
+        else if (S.screen === 'pot') renderPot();       // the new blend joins the pot tray
     }
     function renderCollect() {
         renderNest();
@@ -1247,11 +1400,12 @@
         renderOwned();
         updateSparkUI();
     }
-    function faceCard(ch) {
+    function faceCard(ch, star) {
         var f = el('span', 'face');
         if (ch) {
             var im = el('img'); im.src = imgSrc(ch); im.alt = ''; im.draggable = false;
             f.appendChild(im);
+            if (star) f.appendChild(el('span', 'rstar', '\u2605'));
             f.appendChild(el('span', 'fn', ch.name));
         } else {
             f.appendChild(el('span', 'qm', '?'));
@@ -1259,27 +1413,56 @@
         }
         return f;
     }
+    // Discovery book: page 1 = recipes of base friends only, page 2 = recipes that use a blend. Found recipes show every face,
+    // unfound ones show "?" faces (one per ingredient) and the one-line clue.
+    function bookBlends(page) {
+        var out = [], i, r;
+        for (i = 0; i < model.recipes.length; i++) {
+            r = model.recipes[i];
+            if (r.tier === page) out.push(r);
+        }
+        return out;
+    }
     function renderBook() {
-        var box = $('bookBox'), bl = w.NightliteBlends.chars, i, ch, key, found, r;
+        var box = $('bookBox'), i, j, r, ch, found, row, list, tabs, page = S.bookPage, n = 0, p;
         box.innerHTML = '';
-        for (i = 0; i < bl.length; i++) {
-            ch = bl[i];
-            key = recipeKey(ch.blend[0], ch.blend[1]);
-            found = !!S.found[key];
-            r = el('div', 'recipe' + (found ? ' known' : ' unknown'));
-            r.setAttribute('data-blend', ch.id);
-            r.appendChild(faceCard(found ? charById[ch.blend[0]] : null));
-            r.appendChild(el('span', 'op', '+'));
-            r.appendChild(faceCard(found ? charById[ch.blend[1]] : null));
-            r.appendChild(el('span', 'op', '='));
-            r.appendChild(faceCard((found || S.owned[ch.id]) ? ch : null));
-            r.setAttribute('aria-label', found ? charById[ch.blend[0]].name + ' plus ' + charById[ch.blend[1]].name + ' makes ' + ch.name : 'A recipe not found yet');
-            box.appendChild(r);
+        for (i = 0; i < model.recipes.length; i++) if (S.found[model.recipes[i].key]) n++;
+        $('bookCount').textContent = n + ' of ' + model.recipes.length;
+        tabs = el('div', 'booktabs');
+        for (p = 1; p <= 2; p++) {
+            (function (pg) {
+                var t = el('button', 'btn' + (page === pg ? ' primary' : ''), 'Page ' + pg);
+                t.type = 'button';
+                t.setAttribute('aria-pressed', page === pg ? 'true' : 'false');
+                t.setAttribute('aria-label', pg === 1 ? 'Book page 1, recipes of the first friends' : 'Book page 2, recipes that use a blend');
+                t.onclick = function () { S.bookPage = pg; renderBook(); };
+                tabs.appendChild(t);
+            })(p);
+        }
+        box.appendChild(tabs);
+        list = bookBlends(page);
+        for (i = 0; i < list.length; i++) {
+            r = list[i];
+            ch = blendById[r.id];
+            found = !!S.found[r.key];
+            row = el('div', 'recipe' + (found ? ' known' : ' unknown'));
+            row.setAttribute('data-blend', ch.id);
+            for (j = 0; j < r.ing.length; j++) {
+                if (j) row.appendChild(el('span', 'op', '+'));
+                row.appendChild(faceCard(found ? charById[r.ing[j]] : null));
+            }
+            row.appendChild(el('span', 'op', '='));
+            row.appendChild(faceCard((found || S.owned[ch.id]) ? ch : null, S.rares[R.rareId(ch.id)] && (found || S.owned[ch.id])));
+            if (!found) row.appendChild(el('span', 'clue', ch.clue || 'These friends sing well together.'));
+            else row.setAttribute('aria-label', 'Recipe found: ' + ch.name);
+            if (!found) row.setAttribute('aria-label', 'A recipe not found yet. ' + (ch.clue || ''));
+            box.appendChild(row);
         }
     }
     function renderOwned() {
-        var box = $('ownedBox'), bl = w.NightliteBlends.chars, i, ch, c, n = 0;
+        var box = $('ownedBox'), rbox = $('rareBox'), bl = blendList(), i, ch, c, n = 0, nr = 0;
         box.innerHTML = '';
+        rbox.innerHTML = '';
         for (i = 0; i < bl.length; i++) {
             ch = bl[i];
             c = el('div', 'ocard');
@@ -1293,8 +1476,19 @@
                 c.appendChild(el('span', 'nm', '?'));
             }
             box.appendChild(c);
+            if (S.rares[R.rareId(ch.id)]) {
+                nr++;
+                var rc = charById[R.rareId(ch.id)], rcard = el('div', 'ocard rare'), rim = el('img');
+                rim.src = imgSrc(rc); rim.alt = ch.name + ' (rare)'; rim.draggable = false;
+                rcard.appendChild(rim);
+                rcard.appendChild(el('span', 'nm', ch.name));
+                rcard.appendChild(el('span', 'rstar', '★'));
+                rbox.appendChild(rcard);
+            }
         }
         $('ownedCount').textContent = n + ' of ' + bl.length;
+        $('rareCount').textContent = String(nr);
+        $('rareCard').hidden = nr === 0;
     }
 
     // ---------------------------------------------------------------- init
@@ -1307,15 +1501,30 @@
                 charById[worlds[id].chars[j].id] = worlds[id].chars[j];
             }
         }
-        var bl = (w.NightliteBlends && w.NightliteBlends.chars) || [];
+        var all = R.collectBlends(w), bl, bases = [], rc, ei;        // old blends plus every NightliteBlendsExtra_* set
+        for (id in charById) if (charById.hasOwnProperty(id)) bases.push(charById[id]);
+        model = R.build(bases, all);
+        bl = model.valid;                                  // only blends that have a working recipe exist in the game
+        if (w.NightliteBlends) w.NightliteBlends.chars = bl;
+        for (ei = 0; ei < model.errors.length; ei++) { try { if (w.console && w.console.warn) w.console.warn('Nightlite blend left out: ' + model.errors[ei]); } catch (e) {} }
         for (j = 0; j < bl.length; j++) {
             bl[j].world = 'blends';
             bl[j].isBlend = true;
-            bl[j].bpm = charById[bl[j].blend[0]] ? charById[bl[j].blend[0]].bpm : 90;     // tempo of the first parent's world
+            bl[j].clue = bl[j].clue || 'These friends sing well together.';
             charById[bl[j].id] = bl[j];
             blendById[bl[j].id] = bl[j];
-            recipeByKey[recipeKey(bl[j].blend[0], bl[j].blend[1])] = bl[j].id;
         }
+        recipeByKey = model.recipeByKey;
+        for (j = 0; j < bl.length; j++) {
+            bl[j].bpm = model.tempo(bl[j].id, 90);          // tempo of the first ingredient's world, down through blends
+            rc = {};                                        // the rare twin: same creature, shimmer colors and a brighter sound
+            for (id in bl[j]) if (bl[j].hasOwnProperty(id)) rc[id] = bl[j][id];
+            rc.id = R.rareId(bl[j].id); rc.rare = true; rc.baseId = bl[j].id;
+            rc.art = w.NightliteArt.rareSpec(bl[j].art);
+            rc.synth = R.rareSynth(bl[j].synth);
+            charById[rc.id] = rc;
+        }
+        S.rareOn = store(RARE_KEY) !== '0';
         loadProgress();
         updateSparkUI();
         var vol = parseInt(store('nightlite.vol'), 10);
@@ -1329,9 +1538,14 @@
         $('doorsBtn').onclick = leaveWorld;
         $('backBtn3').onclick = goBack;
         $('backBtn4').onclick = goBack;
-        $('mixBtn').onclick = mix2;
-        $('potA').onclick = function () { if (S.pot[0]) potPick(S.pot[0]); };
-        $('potB').onclick = function () { if (S.pot[1]) potPick(S.pot[1]); };
+        $('mixBtn').onclick = mixPot;
+        $('matchBtn').onclick = matchStage;
+        $('canBtn').onclick = showSuggestions;
+        $('rareBtn').onclick = toggleRare;
+        var ps;
+        for (ps = 0; ps < POT_SLOTS; ps++) {
+            (function (n) { $('potS' + n).onclick = function () { if (S.pot[n]) potPick(S.pot[n]); }; })(ps);
+        }
         $('muteBtn').onclick = function () { setMuted(!S.muted); };
         $('volRange').oninput = function () { setVolume(this.value); };
         $('undoBtn').onclick = undo;
@@ -1360,7 +1574,7 @@
         d.addEventListener('visibilitychange', function () { if (d.hidden) saveProgress(); });
 
         // Test/debug hook (not used by the UI).
-        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById };
+        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById, model: model, potPick: potPick };
     }
 
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', init); else init();
