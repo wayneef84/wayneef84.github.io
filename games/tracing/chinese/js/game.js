@@ -806,9 +806,11 @@
     // ========== CHARACTER GRID ==========
 
     function populateGrid() {
-        var chars = state.currentChars || [];
-        var html = '';
+        var chars = state.currentChars instanceof Array ? state.currentChars : [];
+        if (!(state.completedChars instanceof Array)) { state.completedChars = []; }
 
+        // Characters can come from an imported save (daily list): build nodes with textContent, never HTML.
+        while (elements.characterGrid.firstChild) { elements.characterGrid.removeChild(elements.characterGrid.firstChild); }
         chars.forEach(function(char) {
             var isCompleted = state.completedChars.indexOf(char) !== -1;
             var isSelected = char === state.currentChar;
@@ -816,10 +818,12 @@
             if (isCompleted) classes += ' completed';
             if (isSelected) classes += ' selected';
 
-            html += '<div class="' + classes + '" data-char="' + char + '">' + char + '</div>';
+            var cell = document.createElement('div');
+            cell.className = classes;
+            cell.setAttribute('data-char', String(char));
+            cell.textContent = String(char);
+            elements.characterGrid.appendChild(cell);
         });
-
-        elements.characterGrid.innerHTML = html;
 
         // Bind click events
         var cells = elements.characterGrid.querySelectorAll('.char-cell');

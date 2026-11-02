@@ -234,7 +234,14 @@ class OracleGame {
         
         const data = this.getBallData(this.state.currentBallId);
         const answer = this.pickWeightedAnswer(data.answers);
-        this.dom.answerText.innerHTML = answer.text.replace(/\n/g, '<br>');
+        // answer text can come from an imported save: build nodes, never HTML
+        const at = this.dom.answerText;
+        while (at.firstChild) at.removeChild(at.firstChild);
+        const parts = String(answer.text).split('\n');
+        for (let pi = 0; pi < parts.length; pi++) {
+            if (pi > 0) at.appendChild(document.createElement('br'));
+            at.appendChild(document.createTextNode(parts[pi]));
+        }
 
         const charCount = answer.text.length;
         if (charCount > 20) this.dom.answerText.style.fontSize = '9px'; 

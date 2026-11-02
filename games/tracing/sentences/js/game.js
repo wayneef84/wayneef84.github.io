@@ -557,17 +557,36 @@
         hideAllViews();
         elements.savedView.classList.remove('hidden');
 
+        if (!(state.savedSentences instanceof Array)) { state.savedSentences = []; }
+        while (elements.savedList.firstChild) { elements.savedList.removeChild(elements.savedList.firstChild); }
         if (state.savedSentences.length === 0) {
-            elements.savedList.innerHTML = '<div class="empty-state"><span class="empty-state-icon">📝</span><p>No saved sentences yet.</p></div>';
+            var empty = document.createElement('div');
+            empty.className = 'empty-state';
+            var emptyIcon = document.createElement('span');
+            emptyIcon.className = 'empty-state-icon';
+            emptyIcon.textContent = '📝';
+            var emptyMsg = document.createElement('p');
+            emptyMsg.textContent = 'No saved sentences yet.';
+            empty.appendChild(emptyIcon);
+            empty.appendChild(emptyMsg);
+            elements.savedList.appendChild(empty);
         } else {
-            var html = '';
+            // Saved sentences can come from an imported save: build nodes with textContent, never HTML.
             state.savedSentences.forEach(function(sentence, idx) {
-                html += '<div class="custom-sentence-card" data-index="' + idx + '">';
-                html += '<span class="custom-sentence-text">' + sentence + '</span>';
-                html += '<button class="custom-sentence-delete" data-index="' + idx + '">×</button>';
-                html += '</div>';
+                var card = document.createElement('div');
+                card.className = 'custom-sentence-card';
+                card.setAttribute('data-index', String(idx));
+                var txt = document.createElement('span');
+                txt.className = 'custom-sentence-text';
+                txt.textContent = String(sentence);
+                var del = document.createElement('button');
+                del.className = 'custom-sentence-delete';
+                del.setAttribute('data-index', String(idx));
+                del.textContent = '×';
+                card.appendChild(txt);
+                card.appendChild(del);
+                elements.savedList.appendChild(card);
             });
-            elements.savedList.innerHTML = html;
 
             elements.savedList.querySelectorAll('.custom-sentence-delete').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {

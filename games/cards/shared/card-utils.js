@@ -89,9 +89,13 @@ var CardUtils = (function() {
          * @param {Object} card - Card object
          * @returns {String} HTML string with colored card
          */
+        escapeHTML: function(v) {
+            return String(v === undefined || v === null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        },
+
         renderCardHTML: function(card) {
             var color = this.getCardColor(card);
-            var text = this.renderCardText(card);
+            var text = this.escapeHTML(this.renderCardText(card));
             return '<span class="card-text card-' + color + '">' + text + '</span>';
         },
 

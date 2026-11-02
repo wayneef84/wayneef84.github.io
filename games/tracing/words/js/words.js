@@ -67,7 +67,11 @@ class WordGame {
         var saved = localStorage.getItem('fong_custom_words');
         if (saved) {
             try {
-                this.customWords = JSON.parse(saved);
+                var parsedWords = JSON.parse(saved), cleanWords = [], pw;
+                if (parsedWords instanceof Array) {
+                    for (pw = 0; pw < parsedWords.length; pw++) { if (typeof parsedWords[pw] === 'string') { cleanWords.push(parsedWords[pw]); } }
+                }
+                this.customWords = cleanWords;
             } catch(e) { console.error("Save data corrupted", e); }
         }
 

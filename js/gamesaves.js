@@ -35,6 +35,7 @@
     }
 
     function readKey(k) { try { return w.localStorage.getItem(k); } catch (e) { return null; } }
+    function removeKey(k) { try { w.localStorage.removeItem(k); return true; } catch (e) { return false; } }
     function writeKey(k, v) { try { w.localStorage.setItem(k, v); return true; } catch (e) { return false; } }
 
     function register(id, info) {
@@ -91,10 +92,31 @@
         return out;
     }
 
+    // Warnings for anything import would refuse: a value over MAX_VALUE or a file over MAX_CHARS.
+    function sizeWarnings(g, data, warnings) {
+        var ks = Object.keys(data), i;
+        for (i = 0; i < ks.length; i++) {
+            if (data[ks[i]].length > MAX_VALUE) {
+                warnings.push(g.name + ': ' + ks[i] + ' is too big to import again (' + data[ks[i]].length + ' characters, the limit is ' + MAX_VALUE + '). It will be skipped on import.');
+            }
+        }
+    }
+
+    function fileWarning(text, warnings) {
+        if (text.length > MAX_CHARS) {
+            warnings.push('This file is ' + text.length + ' characters, over the ' + MAX_CHARS + ' limit, so it cannot be imported as one file.');
+        }
+    }
+
+    // Returns {text, warnings}. text is '' for an unknown game.
     function exportGame(id) {
-        if (typeof id !== 'string' || !has.call(games, id)) { return ''; }
-        var g = games[id];
-        return JSON.stringify({ format: FORMAT_ONE, version: 1, game: g.id, name: g.name, saved: new Date().toISOString(), data: gameData(g) || {} }, null, 2);
+        var warnings = [];
+        if (typeof id !== 'string' || !has.call(games, id)) { return { text: '', warnings: ['Unknown game.'] }; }
+        var g = games[id], data = gameData(g) || {};
+        sizeWarnings(g, data, warnings);
+        var text = JSON.stringify({ format: FORMAT_ONE, version: 1, game: g.id, name: g.name, saved: new Date().toISOString(), data: data }, null, 2);
+        fileWarning(text, warnings);
+        return { text: text, warnings: warnings };
     }
 
     function exportObject() {
@@ -107,15 +129,27 @@
         return out;
     }
 
+    // Returns {text, warnings}.
     function exportAll() {
-        return JSON.stringify({ format: FORMAT_ALL, version: 1, saved: new Date().toISOString(), games: exportObject() }, null, 2);
+        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
+        var text = JSON.stringify({ format: FORMAT_ALL, version: 1, saved: new Date().toISOString(), games: obj }, null, 2);
+        fileWarning(text, warnings);
+        return { text: text, warnings: warnings };
+    }
+
+    // Warnings for the games part of the everything file (the caller checks the whole file length).
+    function exportWarnings() {
+        var warnings = [], obj = exportObject(), ids = Object.keys(obj), i;
+        for (i = 0; i < ids.length; i++) { sizeWarnings(games[ids[i]], obj[ids[i]].data, warnings); }
+        return warnings;
     }
 
     // ---- importing -----------------------------------------------------
 
     // Checks one game's data object. Returns { writes: {key: value}, skipped: n }.
     function plan(g, data, mode, notes) {
-        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0;
+        var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0;
         for (i = 0; i < ks.length; i++) {
             k = ks[i]; v = data[k];
             if (g.keys.indexOf(k) < 0) { skipped++; notes.push(g.name + ': ignored a key that is not part of this game.'); continue; }
@@ -126,10 +160,10 @@
                 try { p = JSON.parse(v); } catch (e) { skipped++; notes.push(g.name + ': skipped ' + k + ' (not valid JSON).'); continue; }
                 if (badKey(p, 0)) { skipped++; notes.push(g.name + ': skipped ' + k + ' (keys not allowed).'); continue; }
             }
-            if (mode === 'merge' && readKey(k) !== null) { skipped++; continue; }
+            if (mode === 'merge' && readKey(k) !== null) { skipped++; kept++; continue; }
             writes[k] = v; n++;
         }
-        return { writes: writes, skipped: skipped, count: n };
+        return { writes: writes, skipped: skipped, count: n, kept: kept };
     }
 
     function importJSON(text, opts) {
@@ -161,7 +195,7 @@
             }
         }
 
-        var plans = [], j, it, g, p;
+        var plans = [], j, it, g, p, kept = 0;
         for (i = 0; i < items.length; i++) {
             it = items[i];
             if (only && only.indexOf(it.id) < 0) { continue; }
@@ -169,19 +203,35 @@
             g = games[it.id];
             p = plan(g, it.data, mode, res.notes);
             res.skipped += p.skipped;
+            kept += p.kept;
             if (p.count > 0) { plans.push({ g: g, p: p }); }
         }
-        if (!plans.length) { res.errors.push('Nothing in that file can be added to your games.'); return res; }
+        if (!plans.length) {
+            if (kept > 0) { res.alreadyHave = true; res.errors.push('You already have saves here. Use Replace to load the file.'); }
+            else { res.errors.push('Nothing in that file can be added to your games.'); }
+            return res;
+        }
 
         for (i = 0; i < plans.length; i++) {
             res.games.push({ id: plans[i].g.id, name: plans[i].g.name, keys: plans[i].p.count });
-            if (!dry) {
-                var ks = Object.keys(plans[i].p.writes);
-                for (j = 0; j < ks.length; j++) {
-                    if (writeKey(ks[j], plans[i].p.writes[ks[j]])) { res.applied++; }
-                    else { res.skipped++; res.notes.push(plans[i].g.name + ': could not save ' + ks[j] + ' (storage blocked).'); }
-                }
+        }
+        if (!dry) {
+            // Snapshot every key about to change. If any write fails, put everything back and report nothing applied.
+            var todo = [], prev = {}, ks, done = [];
+            for (i = 0; i < plans.length; i++) {
+                ks = Object.keys(plans[i].p.writes);
+                for (j = 0; j < ks.length; j++) { todo.push([ks[j], plans[i].p.writes[ks[j]]]); prev[ks[j]] = readKey(ks[j]); }
             }
+            for (i = 0; i < todo.length; i++) {
+                if (writeKey(todo[i][0], todo[i][1])) { done.push(todo[i][0]); continue; }
+                for (j = 0; j < done.length; j++) {
+                    if (prev[done[j]] === null) { removeKey(done[j]); } else { writeKey(done[j], prev[done[j]]); }
+                }
+                res.ok = false; res.applied = 0; res.games = [];
+                res.errors.push('Could not save (the browser blocked storage or it is full). Nothing was changed.');
+                return res;
+            }
+            res.applied = done.length;
         }
         if (dry) { res.applied = 0; }
         res.ok = true;
@@ -194,7 +244,9 @@
         exportGame: exportGame,
         exportAll: exportAll,
         exportObject: exportObject,
-        MAX_CHARS: MAX_CHARS
+        exportWarnings: exportWarnings,
+        MAX_CHARS: MAX_CHARS,
+        MAX_VALUE: MAX_VALUE
     };
     api.importJSON = importJSON;
     w.FongGameSaves = api;

@@ -16,7 +16,7 @@
     var has = Object.prototype.hasOwnProperty;
     var TABS = [['look', 'Look'], ['scores', 'Scores'], ['cheers', 'Cheers'], ['play', 'Play'], ['data', 'Data']];
     var CHEER_KEY = 'fong.cheer.v1';
-    var MAX_ALL_CHARS = 600000;
+    var MAX_ALL_CHARS = (w.FongGameSaves && w.FongGameSaves.MAX_CHARS) || 600000;   // same cap the game saves import uses
 
     // Games that save scores, so the list can show them before the first play.
     var KNOWN = [
@@ -271,7 +271,7 @@
             }
             out.appendChild(ul);
             if (res.extra) { for (var k = 0; k < res.extra.length; k++) { out.appendChild(el('p', 'fs-note', res.extra[k])); } }
-            if (getMode() === 'replace') { out.appendChild(el('p', 'fs-warn', kind === 'games' ? 'Replace overwrites the saved progress of these games.' : 'Replace swaps your scores for the ones in this file.')); }
+            if (getMode() === 'replace') { out.appendChild(el('p', 'fs-warn', kind === 'games' ? 'Replace overwrites the saved progress of these games. Keys not in the file are left as they are.' : 'Replace swaps your scores for the ones in this file.')); }
         }
         file.addEventListener('change', function () {
             readFile(file.files && file.files[0], function (t, err) {
@@ -288,8 +288,9 @@
             var res = apply(text, getMode());
             applyBtn.disabled = true;
             while (out.firstChild) { out.removeChild(out.firstChild); }
-            out.appendChild(el('p', res.ok ? 'fs-strong' : 'fs-warn', res.ok ? (res.message || 'Done.') : 'Could not import that.'));
-            say(res.ok ? (res.message || 'Done.') : 'Could not import that.');
+            var failMsg = 'Could not import that.' + (res.errors && res.errors[0] ? ' ' + res.errors[0] : '');
+            out.appendChild(el('p', res.ok ? 'fs-strong' : 'fs-warn', res.ok ? (res.message || 'Done.') : failMsg));
+            say(res.ok ? (res.message || 'Done.') : failMsg);
             if (res.ok && kind === 'scores') { w.setTimeout(render, 700); }
         });
         box.appendChild(applyBtn);
@@ -386,9 +387,21 @@
         return false;
     }
 
+    function showWarnings(host, list) {
+        while (host.firstChild) { host.removeChild(host.firstChild); }
+        for (var i = 0; i < list.length && i < 6; i++) { host.appendChild(el('p', 'fs-warn', list[i])); }
+    }
+
+    function everythingWarnings(text) {
+        var list = w.FongGameSaves ? w.FongGameSaves.exportWarnings() : [];
+        if (text.length > MAX_ALL_CHARS) { list.push('This file is ' + text.length + ' characters, over the ' + MAX_ALL_CHARS + ' limit, so importing it again will be refused.'); }
+        return list;
+    }
+
     function gamesFile(g) { return JSON.stringify({ format: 'fong-game-saves', version: 1, games: g }); }
 
-    function parseEverything(text) {
+    function parseEverything(text, mode) {
+        mode = mode === 'replace' ? 'replace' : 'merge';   // preview with the mode that Apply will use
         var res = { ok: false, errors: [], added: 0, skipped: 0, games: [], extra: [], data: null };
         if (typeof text !== 'string' || !text) { res.errors.push('Nothing to read.'); return res; }
         if (text.length > MAX_ALL_CHARS) { res.errors.push('That file is too big.'); return res; }
@@ -400,7 +413,7 @@
         if (badKey(d, 0)) { res.errors.push('That file has keys that are not allowed.'); return res; }
         res.data = d;
         if (d.scores && w.FongScores) {
-            var s = w.FongScores.importJSON(JSON.stringify(d.scores), { mode: 'merge', dryRun: true });
+            var s = w.FongScores.importJSON(JSON.stringify(d.scores), { mode: mode, dryRun: true });
             if (s.ok) { res.added = s.added; res.skipped = s.skipped; res.games = s.games; }
             else { res.extra.push('Scores in this file cannot be used: ' + (s.errors[0] || 'unknown problem')); }
         }
@@ -411,17 +424,17 @@
         if (d.cheer) { res.extra.push('Cheer settings: ' + (cleanCheer(d.cheer) ? 'ready to use.' : 'cannot be used and will be left alone.')); }
         if (d.prefs) { res.extra.push('Play options: ready to use.'); }
         if (d.games && w.FongGameSaves) {
-            var gs = w.FongGameSaves.importJSON(gamesFile(d.games), { mode: 'merge', dryRun: true });
-            res.extra.push(gs.ok ? 'Game saves: ' + gs.games.length + ' game' + (gs.games.length === 1 ? '' : 's') + ' ready to use.' : 'Game saves in this file cannot be used and will be left alone.');
+            var gs = w.FongGameSaves.importJSON(gamesFile(d.games), { mode: mode, dryRun: true });
+            res.extra.push(gs.ok ? 'Game saves: ' + gs.games.length + ' game' + (gs.games.length === 1 ? '' : 's') + ' ready to use.' : 'Game saves in this file will be left alone: ' + (gs.errors[0] || 'cannot be used.'));
         }
         res.ok = true;
         return res;
     }
 
     function applyEverything(text, mode) {
-        var chk = parseEverything(text);
+        var chk = parseEverything(text, mode);
         if (!chk.ok) { return { ok: false }; }
-        var d = chk.data, done = [];
+        var d = chk.data, done = [], failed = '';
         if (d.scores && w.FongScores) {
             var s = w.FongScores.importJSON(JSON.stringify(d.scores), { mode: mode });
             if (s.ok) { done.push('scores'); }
@@ -445,8 +458,9 @@
         if (d.games && w.FongGameSaves) {
             var gr = w.FongGameSaves.importJSON(gamesFile(d.games), { mode: mode });
             if (gr.ok && gr.applied) { done.push('game saves'); }
+            else if (!gr.ok && !gr.alreadyHave) { failed = ' Game saves were not changed: ' + (gr.errors[0] || 'unknown problem'); }
         }
-        return { ok: true, message: 'Imported: ' + (done.length ? done.join(', ') : 'nothing new') + '. Reload the page to see everything.' };
+        return { ok: true, message: 'Imported: ' + (done.length ? done.join(', ') : 'nothing new') + '.' + failed + ' Reload the page to see everything.' };
     }
 
     function gameSaveBoard(G, g, host) {
@@ -456,15 +470,17 @@
         head.appendChild(el('h4', 'fs-gname', g.name));
         sec.appendChild(head);
         sec.appendChild(el('p', 'fs-dim', g.hasData ? 'Has saved progress on this device.' : 'Nothing saved yet.'));
-        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost');
+        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost'), warnHost = el('div', 'fs-warnhost');
         var eb = btn('Export', '', function () {
-            say(download('fong-save-' + g.id + '.json', G.exportGame(g.id)) ? 'Downloaded fong-save-' + g.id + '.json.' : 'Could not download. Try Copy instead.');
+            var r = G.exportGame(g.id);
+            showWarnings(warnHost, r.warnings);
+            say(download('fong-save-' + g.id + '.json', r.text) ? 'Downloaded fong-save-' + g.id + '.json.' : 'Could not download. Try Copy instead.');
         });
         eb.setAttribute('aria-label', 'Export ' + g.name);
-        var cb = btn('Copy', '', function () { copyText(G.exportGame(g.id), copyHost); });
+        var cb = btn('Copy', '', function () { var r = G.exportGame(g.id); showWarnings(warnHost, r.warnings); copyText(r.text, copyHost); });
         cb.setAttribute('aria-label', 'Copy ' + g.name + ' save');
         row.appendChild(eb); row.appendChild(cb);
-        sec.appendChild(row); sec.appendChild(copyHost);
+        sec.appendChild(row); sec.appendChild(copyHost); sec.appendChild(warnHost);
         host.appendChild(sec);
     }
 
@@ -473,12 +489,14 @@
         host.appendChild(el('h3', 'fs-h', 'Game saves'));
         if (!G) { host.appendChild(el('p', 'fs-note', 'Game saves are not available on this page.')); return; }
         host.appendChild(el('p', 'fs-note', 'Progress that games keep on this device, one file per game. High scores are in the Scores tab.'));
-        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost');
+        var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost'), warnHost = el('div', 'fs-warnhost');
         row.appendChild(btn('Export all game saves', 'fs-go', function () {
-            say(download('fong-game-saves.json', G.exportAll()) ? 'Downloaded fong-game-saves.json.' : 'Could not download. Try Copy instead.');
+            var r = G.exportAll();
+            showWarnings(warnHost, r.warnings);
+            say(download('fong-game-saves.json', r.text) ? 'Downloaded fong-game-saves.json.' : 'Could not download. Try Copy instead.');
         }));
-        row.appendChild(btn('Copy all game saves', '', function () { copyText(G.exportAll(), copyHost); }));
-        host.appendChild(row); host.appendChild(copyHost);
+        row.appendChild(btn('Copy all game saves', '', function () { var r = G.exportAll(); showWarnings(warnHost, r.warnings); copyText(r.text, copyHost); }));
+        host.appendChild(row); host.appendChild(copyHost); host.appendChild(warnHost);
         var all = G.list(), list = el('div', 'fs-games'), i;
         for (i = 0; i < all.length; i++) { gameSaveBoard(G, all[i], list); }
         host.appendChild(list);
@@ -489,6 +507,7 @@
         function check(t, m) { return G.importJSON(t, { mode: m, dryRun: true }); }
         function apply(t, m) {
             var r = G.importJSON(t, { mode: m });
+            if (!r.ok) { r.message = ''; return r; }
             r.message = r.ok ? 'Imported game saves for ' + r.games.length + ' game' + (r.games.length === 1 ? '' : 's') + '. Reload a game to see it.' : '';
             return r;
         }
@@ -509,18 +528,25 @@
         host.appendChild(lab);
         host.appendChild(el('p', 'fs-dim', 'Leave this off to share the file without the name.'));
         var row = el('div', 'fs-row'), copyHost = el('div', 'fs-copyhost');
+        var warnHost = el('div', 'fs-warnhost');
         row.appendChild(btn('Export everything', 'fs-go', function () {
-            say(download('fong-everything.json', buildEverything(inc.checked)) ? 'Downloaded fong-everything.json.' : 'Could not download. Try Copy instead.');
+            var t = buildEverything(inc.checked);
+            showWarnings(warnHost, everythingWarnings(t));
+            say(download('fong-everything.json', t) ? 'Downloaded fong-everything.json.' : 'Could not download. Try Copy instead.');
         }));
-        row.appendChild(btn('Copy everything', '', function () { copyText(buildEverything(inc.checked), copyHost); }));
-        host.appendChild(row); host.appendChild(copyHost);
+        row.appendChild(btn('Copy everything', '', function () {
+            var t = buildEverything(inc.checked);
+            showWarnings(warnHost, everythingWarnings(t));
+            copyText(t, copyHost);
+        }));
+        host.appendChild(row); host.appendChild(copyHost); host.appendChild(warnHost);
 
         renderGameSaves(host);
 
         host.appendChild(el('h3', 'fs-h', 'Grown-up tools'));
         if (!unlocked) { renderGate(host, render); return; }
         if (w.FongGameSaves) { renderGameSaveImports(host); }
-        loadBox(host, 'all', function (t) { return parseEverything(t); }, applyEverything);
+        loadBox(host, 'all', function (t, m) { return parseEverything(t, m); }, applyEverything);
 
         var rb = el('div', 'fs-box');
         rb.appendChild(el('p', 'fs-strong', 'Reset app'));
