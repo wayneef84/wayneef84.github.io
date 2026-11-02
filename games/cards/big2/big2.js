@@ -556,6 +556,325 @@ var Big2AI = (function () {
 })();
 
 // ============================================================================
+// DEAL RULES
+// Pure functions: deck, deal for 2/3/4 players, start card, pickup card.
+// Everything derives from the ruleset suit order (lowest suit first).
+// ============================================================================
+
+var Big2Deal = (function () {
+
+    var SUITS_STANDARD = ['DIAMONDS', 'CLUBS', 'HEARTS', 'SPADES'];
+    var SUITS_REVERSED = ['SPADES', 'HEARTS', 'CLUBS', 'DIAMONDS'];
+    var RANKS = ['THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN','JACK','QUEEN','KING','ACE','TWO'];
+    var SYMBOLS = { SPADES: '♠', HEARTS: '♥', DIAMONDS: '♦', CLUBS: '♣' };
+    var LABELS = { THREE:'3', FOUR:'4', FIVE:'5', SIX:'6', SEVEN:'7', EIGHT:'8', NINE:'9', TEN:'10',
+                   JACK:'J', QUEEN:'Q', KING:'K', ACE:'A', TWO:'2' };
+    var SUIT_NAMES = { SPADES: 'spades', HEARTS: 'hearts', DIAMONDS: 'diamonds', CLUBS: 'clubs' };
+    var HAND_SMALL_TABLE = 17;   // 2 and 3 player hand size
+
+    // Suits lowest to highest for this ruleset
+    function suitOrder(ruleset) {
+        return (ruleset && ruleset.suitOrder === 'reversed') ? SUITS_REVERSED.slice() : SUITS_STANDARD.slice();
+    }
+
+    // Rank first, suit breaks ties. Lower number = lower card.
+    function cardValue(card, ruleset) {
+        return RANKS.indexOf(card.rank) * 10 + suitOrder(ruleset).indexOf(card.suit);
+    }
+
+    function cardLabel(card) {
+        return card ? (LABELS[card.rank] + SYMBOLS[card.suit]) : '';
+    }
+
+    function sameCard(a, b) {
+        return !!a && !!b && a.rank === b.rank && a.suit === b.suit;
+    }
+
+    // The start card, as a plain { rank, suit }.
+    //   ruleset.startingCard {rank,suit}  explicit card, always honored
+    //   ruleset.firstTurnRule 'diamond3'  literally the 3 of diamonds
+    //   anything else ('lowest', default) the 3 of the ruleset's lowest suit
+    function startCard(ruleset) {
+        var sc = ruleset && ruleset.startingCard;
+        if (sc && sc.rank && sc.suit) { return { rank: sc.rank, suit: sc.suit }; }
+        if (ruleset && ruleset.firstTurnRule === 'diamond3') { return { rank: 'THREE', suit: 'DIAMONDS' }; }
+        return { rank: 'THREE', suit: suitOrder(ruleset)[0] };
+    }
+
+    // Used when the face-up card IS the start card: the lowest card of the start
+    // card's rank in the lowest other suit (second-lowest suit for the usual start card).
+    function fallbackCard(ruleset) {
+        var sc = startCard(ruleset);
+        var order = suitOrder(ruleset);
+        for (var i = 0; i < order.length; i++) {
+            if (order[i] !== sc.suit) { return { rank: sc.rank, suit: order[i] }; }
+        }
+        return sc;
+    }
+
+    function handSizeFor(ruleset, playerCount) {
+        if (playerCount === 4) { return (ruleset && ruleset.startingHandSize) || 13; }
+        return HAND_SMALL_TABLE;
+    }
+
+    function buildDeck() {
+        var cards = [];
+        var cardId = 0;
+        for (var si = 0; si < SUITS_STANDARD.length; si++) {
+            for (var ri = 0; ri < RANKS.length; ri++) {
+                cards.push({
+                    suit: SUITS_STANDARD[si],
+                    rank: RANKS[ri],
+                    uuid: 'c' + (cardId++),
+                    id: (RANKS[ri].charAt(0)) + SUITS_STANDARD[si].charAt(0)
+                });
+            }
+        }
+        return cards;
+    }
+
+    function shuffle(cards, rng) {
+        rng = rng || Math.random;
+        for (var i = cards.length - 1; i > 0; i--) {
+            var j = Math.floor(rng() * (i + 1));
+            var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
+        }
+        return cards;
+    }
+
+    function findHolder(hands, card) {
+        for (var pi = 0; pi < hands.length; pi++) {
+            for (var ci = 0; ci < hands[pi].length; ci++) {
+                if (sameCard(hands[pi][ci], card)) { return pi; }
+            }
+        }
+        return -1;
+    }
+
+    function lowestDealt(hands, ruleset) {
+        var best = null, bestIdx = -1;
+        for (var pi = 0; pi < hands.length; pi++) {
+            for (var ci = 0; ci < hands[pi].length; ci++) {
+                if (!best || cardValue(hands[pi][ci], ruleset) < cardValue(best, ruleset)) {
+                    best = hands[pi][ci]; bestIdx = pi;
+                }
+            }
+        }
+        return { card: best, idx: bestIdx };
+    }
+
+    /**
+     * Deal a shuffled deck.
+     * opts: { rng, whoStarts: 'lowest'|'winner', lastWinnerIdx: number|null, deck: cards (already shuffled) }
+     * Returns { hands, faceUp, extra, startCard, pickupIdx, pickupCard, starterIdx,
+     *           mustInclude, scenario, playerCount }
+     *   scenario: 'four', 'three', 'three-faceup-start', 'two', 'two-faceup-start',
+     *             'two-start-in-pile', 'two-faceup-start-nobody'
+     */
+    function deal(ruleset, playerCount, opts) {
+        opts = opts || {};
+        if (playerCount !== 2 && playerCount !== 3) { playerCount = 4; }
+        var deck = opts.deck || shuffle(buildDeck(), opts.rng);
+        var size = handSizeFor(ruleset, playerCount);
+        var hands = [];
+        for (var pi = 0; pi < playerCount; pi++) { hands.push(deck.splice(0, size)); }
+
+        var sc = startCard(ruleset);
+        var fb = fallbackCard(ruleset);
+        var faceUp = null;
+        var extra = [];
+        var pickupIdx = -1;
+        var mustInclude = null;
+        var scenario = 'four';
+        var starterIdx;
+        var holder;
+
+        if (playerCount === 4) {
+            extra = deck;   // only non-empty if a ruleset deals fewer than 13
+            holder = findHolder(hands, sc);
+            if (holder >= 0) { mustInclude = sc; starterIdx = holder; }
+            else {
+                var low4 = lowestDealt(hands, ruleset);
+                mustInclude = low4.card; starterIdx = low4.idx;
+            }
+        } else {
+            faceUp = deck[0] || null;
+            extra = playerCount === 2 ? deck : [];   // 2 players: the 18 left over (face-up is one of them)
+            scenario = playerCount === 3 ? 'three' : 'two';
+            if (faceUp && sameCard(faceUp, sc)) {
+                scenario = playerCount === 3 ? 'three-faceup-start' : 'two-faceup-start';
+                holder = findHolder(hands, fb);
+                if (holder >= 0) {
+                    pickupIdx = holder; mustInclude = faceUp; starterIdx = holder;
+                } else {
+                    // 2 players only: fallback card is in the extra pile too. Nobody picks up.
+                    scenario = 'two-faceup-start-nobody';
+                    var lowN = lowestDealt(hands, ruleset);
+                    mustInclude = lowN.card; starterIdx = lowN.idx;
+                }
+            } else {
+                holder = findHolder(hands, sc);
+                if (holder >= 0) {
+                    pickupIdx = holder; mustInclude = sc; starterIdx = holder;
+                } else {
+                    // 2 players only: start card sits in the extra pile. Face-up card is discarded.
+                    scenario = 'two-start-in-pile';
+                    var low2 = lowestDealt(hands, ruleset);
+                    mustInclude = low2.card; starterIdx = low2.idx;
+                }
+            }
+            if (pickupIdx >= 0) {
+                hands[pickupIdx].push(faceUp);
+                // remove the picked card from the extra pile list
+                for (var xi = extra.length - 1; xi >= 0; xi--) {
+                    if (extra[xi] === faceUp) { extra.splice(xi, 1); }
+                }
+            }
+        }
+
+        // mustInclude must be the real dealt card object (it has a uuid)
+        if (mustInclude && !mustInclude.uuid) {
+            var mh = findHolder(hands, mustInclude);
+            if (mh >= 0) {
+                for (var mi = 0; mi < hands[mh].length; mi++) {
+                    if (sameCard(hands[mh][mi], mustInclude)) { mustInclude = hands[mh][mi]; break; }
+                }
+            }
+        }
+
+        // Last winner starts instead (first game, or a winner not seated: lowest card rule above)
+        var viaWinner = false;
+        if (opts.whoStarts === 'winner' && typeof opts.lastWinnerIdx === 'number' &&
+            opts.lastWinnerIdx >= 0 && opts.lastWinnerIdx < playerCount) {
+            starterIdx = opts.lastWinnerIdx;
+            mustInclude = null;   // the winner may not hold the start card, so no required card
+            viaWinner = true;
+        }
+
+        return {
+            playerCount: playerCount,
+            hands: hands,
+            faceUp: faceUp,
+            extra: extra,
+            startCard: sc,
+            fallbackCard: fb,
+            pickupIdx: pickupIdx,
+            pickupCard: pickupIdx >= 0 ? faceUp : null,
+            starterIdx: starterIdx,
+            mustInclude: mustInclude,
+            viaWinner: viaWinner,
+            scenario: scenario
+        };
+    }
+
+    // One plain sentence about the deal in use, for the setup screen.
+    function explain(ruleset, playerCount, whoStarts) {
+        var sc = cardLabel(startCard(ruleset));
+        var fb = cardLabel(fallbackCard(ruleset));
+        var t;
+        if (playerCount === 4) {
+            t = '4 players: 13 cards each. The ' + sc + ' holder starts.';
+        } else if (playerCount === 3) {
+            t = '3 players: 17 cards each, 1 turned up for the ' + sc + ' holder (18 cards). ' +
+                'If the ' + sc + ' is the one turned up, the ' + fb + ' holder takes it and starts.';
+        } else {
+            t = '2 players: 17 cards each, 18 left in a spare pile with 1 turned up. The ' + sc +
+                ' holder takes the turned-up card. If the ' + sc + ' is in the spare pile, the turned-up card is' +
+                ' discarded and the lowest dealt card starts. If it is turned up, the ' + fb + ' holder takes it.';
+        }
+        if (whoStarts === 'winner') {
+            t += ' Last winner starts (the first game uses the lowest card).';
+        }
+        return t;
+    }
+
+    // Message shown after a deal. names: array of player names by seat.
+    function describe(d, names) {
+        var msg = '';
+        var who = d.starterIdx >= 0 ? names[d.starterIdx] : '';
+        var fu = cardLabel(d.faceUp);
+        if (d.playerCount === 4) {
+            msg = 'Dealt 13 each. ';
+        } else if (d.scenario === 'three' || d.scenario === 'two') {
+            msg = fu + ' was turned up. ' + names[d.pickupIdx] + ' picked it up (holds the ' + cardLabel(d.startCard) + ').';
+        } else if (d.scenario === 'three-faceup-start' || d.scenario === 'two-faceup-start') {
+            msg = fu + ' was turned up. ' + names[d.pickupIdx] + ' holds the ' + cardLabel(d.fallbackCard) +
+                ' and picked it up.';
+        } else if (d.scenario === 'two-start-in-pile') {
+            msg = fu + ' was turned up. The ' + cardLabel(d.startCard) + ' is in the spare pile, so ' + fu + ' is discarded.';
+        } else {
+            msg = fu + ' was turned up. Nobody holds the ' + cardLabel(d.fallbackCard) + ', so it is discarded.';
+        }
+        if (d.viaWinner) {
+            msg += ' ' + who + ' won last game and starts.';
+        } else if (d.mustInclude) {
+            msg += ' ' + who + ' starts with the ' + cardLabel(d.mustInclude) + '.';
+        } else {
+            msg += ' ' + who + ' starts.';
+        }
+        return msg;
+    }
+
+    return {
+        suitOrder: suitOrder,
+        cardValue: cardValue,
+        cardLabel: cardLabel,
+        startCard: startCard,
+        fallbackCard: fallbackCard,
+        handSizeFor: handSizeFor,
+        buildDeck: buildDeck,
+        shuffle: shuffle,
+        deal: deal,
+        explain: explain,
+        describe: describe
+    };
+
+})();
+
+// ============================================================================
+// SAVED OPTIONS (localStorage key fong.big2.opts, one versioned JSON object)
+// ============================================================================
+
+var Big2Options = (function () {
+    var KEY = 'fong.big2.opts';
+    var has = Object.prototype.hasOwnProperty;
+    var WHO = ['lowest', 'winner'];
+    var COUNTS = [2, 3, 4];
+
+    function defaults() { return { v: 1, players: 4, whoStarts: 'lowest', lastWinner: null }; }
+
+    // Accepts anything (parsed JSON or garbage). Always returns a clean options object.
+    function sanitize(raw) {
+        var out = defaults();
+        if (!raw || typeof raw !== 'object' || Object.prototype.toString.call(raw) === '[object Array]') { return out; }
+        if (!has.call(raw, 'v') || raw.v !== 1) { return out; }
+        if (has.call(raw, 'players') && typeof raw.players === 'number' && COUNTS.indexOf(raw.players) >= 0) {
+            out.players = raw.players;
+        }
+        if (has.call(raw, 'whoStarts') && typeof raw.whoStarts === 'string' && WHO.indexOf(raw.whoStarts) >= 0) {
+            out.whoStarts = raw.whoStarts;
+        }
+        if (has.call(raw, 'lastWinner') && typeof raw.lastWinner === 'string' && /^player[0-3]$/.test(raw.lastWinner)) {
+            out.lastWinner = raw.lastWinner;
+        }
+        return out;
+    }
+
+    function load(storage) {
+        try {
+            var s = storage.getItem(KEY);
+            return s ? sanitize(JSON.parse(s)) : defaults();
+        } catch (e) { return defaults(); }
+    }
+
+    function save(storage, opts) {
+        try { storage.setItem(KEY, JSON.stringify(sanitize(opts))); return true; } catch (e) { return false; }
+    }
+
+    return { KEY: KEY, defaults: defaults, sanitize: sanitize, load: load, save: save };
+})();
+
+// ============================================================================
 // BIG 2 GAME ENGINE
 // ============================================================================
 
@@ -563,10 +882,14 @@ var Big2AI = (function () {
  * Big2Game constructor
  *
  * @param {Object} ruleset  - a Big2Rulesets entry
- * @param {Array}  players  - array of { id, name, type: 'human'|'ai'|'remote' }
+ * @param {Array}  players  - array of { id, name, type: 'human'|'ai'|'remote' } (2 to 4)
+ * @param {Object} options  - optional { whoStarts: 'lowest'|'winner', lastWinnerId: string|null, rng: function }
  */
-function Big2Game(ruleset, players) {
+function Big2Game(ruleset, players, options) {
     players = players || [];
+    this.options = options || {};
+    this.dealInfo = null;       // result of the last deal (face-up card, pickup, starter)
+    this.mustIncludeCard = null; // card the opening play must include, or null
     this.ruleset = ruleset;
     this.players = players; // [{ id, name, type, hand: [] }]
     this.state = 'WAITING'; // WAITING | DEALING | PLAYING | GAME_OVER
@@ -606,36 +929,24 @@ Big2Game.prototype._emit = function (event, data) {
 Big2Game.prototype.deal = function () {
     this.state = 'DEALING';
 
-    // Build and shuffle deck
-    var cards = [];
-    var suits = ['DIAMONDS', 'CLUBS', 'HEARTS', 'SPADES'];
-    var ranks = ['THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN','JACK','QUEEN','KING','ACE','TWO'];
-    var cardId = 0;
-    for (var si = 0; si < suits.length; si++) {
-        for (var ri = 0; ri < ranks.length; ri++) {
-            cards.push({
-                suit: suits[si],
-                rank: ranks[ri],
-                uuid: 'c' + (cardId++),
-                id: (ranks[ri].charAt(0)) + suits[si].charAt(0)
-            });
+    var lastIdx = null;
+    if (this.options.lastWinnerId) {
+        for (var wi = 0; wi < this.players.length; wi++) {
+            if (this.players[wi].id === this.options.lastWinnerId) { lastIdx = wi; break; }
         }
     }
-
-    // Fisher-Yates shuffle
-    for (var i = cards.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
-    }
-
-    // Deal to players
-    var perPlayer = this.ruleset.startingHandSize;
+    var d = Big2Deal.deal(this.ruleset, this.players.length, {
+        rng: this.options.rng,
+        whoStarts: this.options.whoStarts,
+        lastWinnerIdx: lastIdx
+    });
     for (var pi = 0; pi < this.players.length; pi++) {
-        this.players[pi].hand = cards.splice(0, perPlayer);
+        this.players[pi].hand = d.hands[pi];
+        this.players[pi].dealtCount = d.hands[pi].length;
     }
-
-    // Find who goes first
-    this.currentPlayerIdx = this._findFirstPlayer();
+    this.dealInfo = d;
+    this.mustIncludeCard = d.mustInclude;
+    this.currentPlayerIdx = d.starterIdx;
     this.pile = [];
     this.pileHand = null;
     this.passCount = 0;
@@ -646,24 +957,6 @@ Big2Game.prototype.deal = function () {
 
     this._emit('onStateChange', this._getSnapshot());
     this._startTurn();
-};
-
-/**
- * Determine who plays first based on ruleset.
- */
-Big2Game.prototype._findFirstPlayer = function () {
-    if (this.ruleset.firstTurnRule === 'diamond3') {
-        for (var pi = 0; pi < this.players.length; pi++) {
-            var hand = this.players[pi].hand;
-            for (var ci = 0; ci < hand.length; ci++) {
-                if (hand[ci].rank === 'THREE' && hand[ci].suit === 'DIAMONDS') {
-                    return pi;
-                }
-            }
-        }
-    }
-    // Fallback: player 0
-    return 0;
 };
 
 /**
@@ -712,20 +1005,18 @@ Big2Game.prototype._aiTakeTurn = function () {
 };
 
 /**
- * Returns the card that MUST be included in the first play (e.g., 3♦), or null.
+ * Returns the card that MUST be included in the first play (the start card or the
+ * picked-up card, see Big2Deal), or null.
  */
 Big2Game.prototype._getMustIncludeCard = function (player) {
     player = player || this.currentPlayer();
     if (!player || !player.hand) return null;
     if (!this.ruleset.firstPlayMustIncludeStartCard) return null;
     if (this.turnHistory.length > 0) return null; // Only on very first play of game
-    if (this.ruleset.firstTurnRule !== 'diamond3') return null;
-
+    if (!this.mustIncludeCard) return null;
     var hand = player.hand;
     for (var ci = 0; ci < hand.length; ci++) {
-        if (hand[ci].rank === 'THREE' && hand[ci].suit === 'DIAMONDS') {
-            return hand[ci];
-        }
+        if (hand[ci].uuid === this.mustIncludeCard.uuid) { return hand[ci]; }
     }
     return null;
 };
@@ -770,7 +1061,7 @@ Big2Game.prototype.playCards = function (playerId, cards) {
         for (var ci = 0; ci < cards.length; ci++) {
             if (cards[ci].uuid === mustInclude.uuid) { hasMust = true; break; }
         }
-        if (!hasMust) return { ok: false, error: 'First play must include 3♦.' };
+        if (!hasMust) return { ok: false, error: 'First play must include ' + Big2Deal.cardLabel(mustInclude) + '.' };
     }
 
     // Can it beat the pile?
@@ -892,7 +1183,7 @@ Big2Game.prototype._handleWin = function (playerId) {
         if (p.id === playerId) { this.scores[p.id] = 0; continue; }
         var cardCount = p.hand.length;
         var penalty = cardCount * rs.penaltyPerCard;
-        if (rs.tripleIfThirteen && cardCount === 13) penalty *= 3;
+        if (rs.tripleIfThirteen && cardCount === (p.dealtCount || 13)) penalty *= 3;
         else if (rs.doubleIfTenOrMore && cardCount >= 10) penalty *= 2;
         if (isPowerWin) penalty *= 2;
         this.scores[p.id] = penalty;
@@ -929,7 +1220,8 @@ Big2Game.prototype._getSnapshot = function () {
         pileHand: this.pileHand,
         passCount: this.passCount,
         winner: this.winner,
-        scores: this.scores
+        scores: this.scores,
+        dealInfo: this.dealInfo
     };
 };
 

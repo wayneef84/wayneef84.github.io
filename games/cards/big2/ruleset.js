@@ -100,7 +100,10 @@ var Big2Rulesets = {
         startingHandSize: 13,
 
         // --- Turn Rules ---
-        // Who goes first: 'diamond3' (whoever has 3♦) or 'lowest'
+        // Who goes first: 'diamond3' (literally the 3 of diamonds) or 'lowest'
+        // ('lowest' = the 3 of this ruleset's lowest suit, see Big2Deal.startCard in big2.js).
+        // Optional: startingCard: { rank: 'THREE', suit: 'CLUBS' } overrides both.
+        // Same result for standard suit order. Players 2 to 4 come from the setup screen.
         firstTurnRule: 'diamond3',
         // First play must include the starting card
         firstPlayMustIncludeStartCard: true,
@@ -227,7 +230,8 @@ var Big2Rulesets = {
 
         playerCount: 4,
         startingHandSize: 13,
-        firstTurnRule: 'diamond3',
+        // Spades are lowest here, so the start card is the 3 of spades (fallback 3 of hearts)
+        firstTurnRule: 'lowest',
         firstPlayMustIncludeStartCard: true,
         canPassOnFirstTurn: false,
 
