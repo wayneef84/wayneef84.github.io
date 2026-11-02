@@ -235,10 +235,10 @@ class OracleGame {
         const data = this.getBallData(this.state.currentBallId);
         const answer = this.pickWeightedAnswer(data.answers);
         // answer text can come from an imported save: build nodes, never HTML
-        const at = this.dom.answerText;
+        var at = this.dom.answerText;
         while (at.firstChild) at.removeChild(at.firstChild);
-        const parts = String(answer.text).split('\n');
-        for (let pi = 0; pi < parts.length; pi++) {
+        var parts = String(answer.text).split('\n');
+        for (var pi = 0; pi < parts.length; pi++) {
             if (pi > 0) at.appendChild(document.createElement('br'));
             at.appendChild(document.createTextNode(parts[pi]));
         }
