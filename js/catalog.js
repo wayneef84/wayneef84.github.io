@@ -98,7 +98,7 @@ var FONG_CATALOG = [
         icon: '🂢',
         title: 'Big 2',
         funTitle: 'Big 2 大老二',
-        description: 'Classic shedding game with HK, Taiwanese & Singapore rulesets. Play vs AI.',
+        description: 'Classic shedding game with HK, Taiwanese & Singapore rulesets. 2, 3 or 4 players vs AI.',
         funDescription: 'Shed your cards before anyone else! Three rulesets, serious AI.',
         version: 'v0.1',
         href: './games/cards/big2/index.html',

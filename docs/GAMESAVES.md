@@ -6,7 +6,7 @@
 
 Saved progress and user-made content that games keep in localStorage. Not covered because they have their own home: high scores (`FongScores`), theme, cheers, play options. Settings-only keys (mute, volume of games without progress, themes, zoom and so on) are left out on purpose.
 
-Registered in the manifest: nightlite-choir, j-quiz (J Quiz), s4k-mixer-v2, s4k-mixer (custom characters), slots, jigsaw (progress only, not pictures), sudoku (game in progress), xtc-ball (custom balls), card-games (balance, War history), tracing-words, tracing-chinese, tracing-sentences. Skipped: Jigsaw pictures (large image data), minesweeper, snake, byte runner, memory match, falldown, sky breakers (scores or settings only).
+Registered in the manifest: nightlite-choir, j-quiz (J Quiz), s4k-mixer-v2, s4k-mixer (custom characters), slots, jigsaw (progress only, not pictures), sudoku (game in progress), xtc-ball (custom balls), card-games (balance, War history), big2 (deal options and last winner), tracing-words, tracing-chinese, tracing-sentences. Skipped: Jigsaw pictures (large image data), minesweeper, snake, byte runner, memory match, falldown, sky breakers (scores or settings only).
 
 ## API
 
