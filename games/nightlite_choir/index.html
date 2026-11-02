@@ -12,7 +12,7 @@
     <!-- Screen 1: pick a door -->
     <section id="screenDoors" class="screen" aria-label="Choose a door">
         <header class="bar top">
-            <a class="btn" href="../../index.html" id="homeBtn">&#127968; Home</a>
+            <span class="top-left"><a class="btn" href="../../index.html" id="homeBtn" aria-label="Home"><span class="ico">&#127968;</span><span class="lbl">Home</span></a><button class="btn gearBtn" type="button" aria-label="Settings" aria-haspopup="dialog"><span class="ico">&#9881;&#65039;</span></button></span>
             <h1>Nightlite Choir+</h1>
             <span class="top-gap" aria-hidden="true"></span>
         </header>
@@ -32,7 +32,7 @@
     <!-- Screen 2: a world (Night Garden, Toy Attic or Star Observatory). Content is filled in by js/app.js -->
     <section id="screenWorld" class="screen" aria-label="World" hidden>
         <header class="bar top">
-            <a class="btn" href="../../index.html" id="homeBtn2">&#127968; Home</a>
+            <span class="top-left"><a class="btn" href="../../index.html" id="homeBtn2" aria-label="Home"><span class="ico">&#127968;</span><span class="lbl">Home</span></a><button class="btn gearBtn" type="button" aria-label="Settings" aria-haspopup="dialog"><span class="ico">&#9881;&#65039;</span></button></span>
             <h1 id="worldTitle">Night Garden</h1>
             <button class="btn" id="doorsBtn" type="button" aria-label="Back to the doors">&#128682; Doors</button>
         </header>
@@ -69,7 +69,7 @@
     <!-- Screen 3: the Collection (sparks, nest, Discovery book, blends you own). Filled in by js/app.js -->
     <section id="screenCollect" class="screen" aria-label="Collection" hidden>
         <header class="bar top">
-            <a class="btn" href="../../index.html" id="homeBtn3">&#127968; Home</a>
+            <span class="top-left"><a class="btn" href="../../index.html" id="homeBtn3" aria-label="Home"><span class="ico">&#127968;</span><span class="lbl">Home</span></a><button class="btn gearBtn" type="button" aria-label="Settings" aria-haspopup="dialog"><span class="ico">&#9881;&#65039;</span></button></span>
             <h1>Collection</h1>
             <button class="btn" id="backBtn3" type="button" aria-label="Go back">&#8592; Back</button>
         </header>
@@ -105,7 +105,7 @@
     <!-- Screen 4: the Mixing pot -->
     <section id="screenPot" class="screen" aria-label="Mixing pot" hidden>
         <header class="bar top">
-            <a class="btn" href="../../index.html" id="homeBtn4">&#127968; Home</a>
+            <span class="top-left"><a class="btn" href="../../index.html" id="homeBtn4" aria-label="Home"><span class="ico">&#127968;</span><span class="lbl">Home</span></a><button class="btn gearBtn" type="button" aria-label="Settings" aria-haspopup="dialog"><span class="ico">&#9881;&#65039;</span></button></span>
             <h1>Mixing pot</h1>
             <button class="btn" id="backBtn4" type="button" aria-label="Go back">&#8592; Back</button>
         </header>
@@ -126,6 +126,34 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+    <!-- Settings overlay: opened by any gear button. Filled in by js/app.js -->
+    <div id="cfgOv" class="cfg-ov" hidden>
+        <div class="cfg-sheet" role="dialog" aria-modal="true" aria-labelledby="cfgTitle">
+            <div class="cfg-head">
+                <h2 id="cfgTitle">Settings</h2>
+                <button class="btn" id="cfgClose" type="button">Close</button>
+            </div>
+            <div class="cfg-row">
+                <button class="btn" id="cfgMute" type="button" aria-pressed="false"><span class="ico">&#128266;</span><span class="lbl">Mute</span></button>
+                <label class="vol"><span class="ico" aria-hidden="true">&#128265;</span>
+                    <input type="range" id="cfgVol" min="0" max="100" value="70" aria-label="Volume"></label>
+            </div>
+            <h3>Your saves</h3>
+            <p class="hint">Keep a copy of this game on a file, or load one back in.</p>
+            <button class="btn wide" id="cfgExport" type="button"><span class="ico">&#128228;</span><span class="lbl">Export this game</span></button>
+            <label class="cfg-label" for="cfgFile">Import this game: choose a file</label>
+            <input type="file" id="cfgFile" accept=".json,application/json">
+            <label class="cfg-label" for="cfgText">Or paste the text here</label>
+            <textarea id="cfgText" rows="3" spellcheck="false"></textarea>
+            <div class="cfg-row">
+                <button class="btn" id="cfgAdd" type="button"><span class="lbl">Add missing</span></button>
+                <button class="btn" id="cfgReplace" type="button"><span class="lbl">Replace my saves</span></button>
+            </div>
+            <p id="cfgMsg" class="cfg-msg" role="status" aria-live="polite"></p>
+            <p class="hint">Exporting or importing all games at once is in the arcade Settings, Data tab. <a href="../../index.html?settings=data">Open arcade Settings</a></p>
+        </div>
+    </div>
+
     <script src="js/synth.js"></script>
     <script src="js/art.js"></script>
     <script src="js/worlds/garden.js"></script>
@@ -133,6 +161,7 @@
     <script src="js/worlds/observatory.js"></script>
     <script src="js/worlds/blends.js"></script>
     <script src="../../js/cheer.js"></script>
+    <script src="../../js/gamesaves.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

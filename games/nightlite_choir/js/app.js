@@ -71,7 +71,9 @@
         for (k in S.found) if (S.found.hasOwnProperty(k) && S.found[k]) out.push(k);
         return out;
     }
+    var loadingSave = false;      // true while a save import is reloading the page, so old memory never overwrites it
     function saveProgress() {
+        if (loadingSave) return;
         var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(),
                      nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
         store(DATA_KEY, JSON.stringify(data));
@@ -504,6 +506,7 @@
         $('muteBtn').querySelector('.ico').textContent = m ? '🔇' : '🔊';
         $('muteBtn').querySelector('.lbl').textContent = m ? 'Unmute' : 'Mute';
         $('muteBtn').setAttribute('aria-pressed', m ? 'true' : 'false');
+        syncCfg();
         applyVolume();
     }
     function toast(msg) {
@@ -667,6 +670,126 @@
             })(DOORS[i]);
         }
     }
+    // ---------------------------------------------------------------- settings overlay (gear button on every screen)
+    // Volume and Mute share the world screen's state. Export and Import use FongGameSaves (id nightlite-choir).
+    var SAVE_ID = 'nightlite-choir';
+    var cfgOpen = false, cfgFrom = null, cfgText = '', cfgArmed = false;
+    function setVolume(val) {
+        S.vol = val / 100;
+        if (S.muted && S.vol > 0) setMuted(false); else applyVolume();
+        store('nightlite.vol', String(val));
+        syncCfg();
+    }
+    function syncCfg() {
+        var r = $('volRange'), c = $('cfgVol'), b = $('cfgMute');
+        if (c && r) c.value = r.value;
+        if (b) {
+            b.querySelector('.ico').textContent = S.muted ? '🔇' : '🔊';
+            b.querySelector('.lbl').textContent = S.muted ? 'Unmute' : 'Mute';
+            b.setAttribute('aria-pressed', S.muted ? 'true' : 'false');
+        }
+    }
+    function cfgMsg(text, bad) {
+        var m = $('cfgMsg');
+        m.textContent = text;
+        m.className = bad ? 'cfg-msg bad' : 'cfg-msg';
+    }
+    function cfgDisarm() {
+        cfgArmed = false;
+        $('cfgReplace').querySelector('.lbl').textContent = 'Replace my saves';
+    }
+    function cfgFocusables() {
+        var list = $('cfgOv').querySelectorAll('button, a[href], input, textarea'), out = [], i;
+        for (i = 0; i < list.length; i++) if (!list[i].disabled) out.push(list[i]);
+        return out;
+    }
+    function openConfig(from) {
+        cfgFrom = from || d.activeElement;
+        cfgOpen = true;
+        cfgText = ''; $('cfgText').value = ''; $('cfgFile').value = '';
+        cfgDisarm(); cfgMsg('');
+        syncCfg();
+        $('cfgOv').hidden = false;
+        $('cfgClose').focus();
+    }
+    function closeConfig() {
+        if (!cfgOpen) return;
+        cfgOpen = false;
+        $('cfgOv').hidden = true;
+        cfgDisarm();
+        if (cfgFrom && cfgFrom.focus) { try { cfgFrom.focus(); } catch (e) {} }
+    }
+    function cfgExport() {
+        var G = w.FongGameSaves;
+        if (!G) { cfgMsg('Saving to a file is not available here.', true); return; }
+        var text = G.exportGame(SAVE_ID), ok = false;
+        try {
+            var url = w.URL.createObjectURL(new w.Blob([text], { type: 'application/json' }));
+            var a = d.createElement('a');
+            a.href = url; a.download = 'fong-save-' + SAVE_ID + '.json'; a.style.display = 'none';
+            d.body.appendChild(a); a.click();
+            w.setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); w.URL.revokeObjectURL(url); }, 1000);
+            ok = true;
+        } catch (e) { ok = false; }
+        if (ok) { cfgMsg('Saved a file called fong-save-' + SAVE_ID + '.json.'); }
+        else { $('cfgText').value = text; cfgText = text; cfgMsg('Could not download. Copy the text in the box and keep it somewhere safe.', true); }
+    }
+    function cfgImport(mode) {
+        var G = w.FongGameSaves;
+        if (!G) { cfgMsg('Loading saves is not available here.', true); return; }
+        var text = cfgText || $('cfgText').value;
+        var chk = G.importJSON(text, { mode: mode, dryRun: true, only: [SAVE_ID] });
+        if (!chk.ok) { cfgDisarm(); cfgMsg(chk.errors[0] || 'That file cannot be used.', true); return; }
+        if (mode === 'replace' && !cfgArmed) {
+            cfgArmed = true;
+            $('cfgReplace').querySelector('.lbl').textContent = 'Tap again to confirm';
+            cfgMsg('This replaces your saves. Tap again to confirm.', true);
+            return;
+        }
+        cfgDisarm();
+        loadingSave = true;                                  // stop any save from overwriting the imported data
+        var r = G.importJSON(text, { mode: mode, only: [SAVE_ID] });
+        if (!r.ok || !r.applied) {
+            loadingSave = false;
+            cfgMsg(r.ok ? 'Nothing new to add. Your saves are already here.' : (r.errors[0] || 'That file cannot be used.'), !r.ok);
+            return;
+        }
+        cfgMsg('Done. Loading your saves...');
+        w.setTimeout(function () { w.location.reload(); }, 900);
+    }
+    function initConfig() {
+        var gears = d.querySelectorAll('.gearBtn'), i;
+        for (i = 0; i < gears.length; i++) {
+            (function (g) { g.onclick = function () { openConfig(g); }; })(gears[i]);
+        }
+        $('cfgVol').value = $('volRange').value;
+        $('cfgVol').oninput = function () { setVolume(this.value); $('volRange').value = this.value; };
+        $('cfgMute').onclick = function () { setMuted(!S.muted); };
+        $('cfgClose').onclick = closeConfig;
+        $('cfgOv').addEventListener('click', function (e) { if (e.target === $('cfgOv')) closeConfig(); });
+        $('cfgOv').addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { e.preventDefault(); closeConfig(); return; }
+            if (e.key !== 'Tab') return;
+            var f = cfgFocusables(), first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && (d.activeElement === first || !$('cfgOv').contains(d.activeElement))) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && (d.activeElement === last || !$('cfgOv').contains(d.activeElement))) { e.preventDefault(); first.focus(); }
+        });
+        $('cfgExport').onclick = cfgExport;
+        $('cfgAdd').onclick = function () { cfgImport('merge'); };
+        $('cfgReplace').onclick = function () { cfgImport('replace'); };
+        $('cfgText').oninput = function () { cfgText = this.value; cfgDisarm(); };
+        $('cfgFile').onchange = function () {
+            var f = this.files && this.files[0];
+            cfgDisarm();
+            if (!f) return;
+            if (f.size > 600000) { cfgMsg('That file is too big.', true); return; }
+            var fr = new w.FileReader();
+            fr.onload = function () { cfgText = String(fr.result); $('cfgText').value = cfgText.length > 3000 ? cfgText.substr(0, 3000) + '\n...' : cfgText; cfgMsg('File loaded. Choose Add missing or Replace.'); };
+            fr.onerror = function () { cfgMsg('Could not read that file.', true); };
+            fr.readAsText(f);
+        };
+    }
+
     function showScreen(name) {
         var isWorld = !(name === 'doors' || name === 'collect' || name === 'pot');
         S.screen = isWorld ? 'world' : name;
@@ -715,6 +838,7 @@
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key, tag = d.activeElement ? d.activeElement.tagName : '';
         if (tag === 'INPUT' && k !== 'Escape') return;
+        if (cfgOpen) return;        // the settings overlay handles its own keys
         if (S.screen === 'collect' || S.screen === 'pot') { if (k === 'Escape') goBack(); return; }
         if (S.screen !== 'world') return;
         var lk = k.toLowerCase(), n;
@@ -1074,6 +1198,7 @@
         updateSparkUI();
         var vol = parseInt(store('nightlite.vol'), 10);
         if (vol >= 0 && vol <= 100) { S.vol = vol / 100; $('volRange').value = vol; } else { S.vol = 0.7; }
+        initConfig();
         applyTheme(DOOR_THEME);
         buildGlow(10);
         renderDoors();
@@ -1086,11 +1211,7 @@
         $('potA').onclick = function () { if (S.pot[0]) potPick(S.pot[0]); };
         $('potB').onclick = function () { if (S.pot[1]) potPick(S.pot[1]); };
         $('muteBtn').onclick = function () { setMuted(!S.muted); };
-        $('volRange').oninput = function () {
-            S.vol = this.value / 100;
-            if (S.muted && S.vol > 0) setMuted(false); else applyVolume();
-            store('nightlite.vol', String(this.value));
-        };
+        $('volRange').oninput = function () { setVolume(this.value); };
         $('undoBtn').onclick = undo;
         $('resetBtn').onclick = clearAll;
         $('saveBtn').onclick = saveMix;

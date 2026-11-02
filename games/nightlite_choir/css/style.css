@@ -25,6 +25,22 @@ button, a.btn, input { font-family: inherit; }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .top h1 { margin: 0; font-size: 1.4rem; letter-spacing: 0.3px; flex: 1; text-align: center; line-height: 1.1; }
 .top-gap { min-width: 52px; }
+.top-left { display: flex; gap: 6px; align-items: center; }
+.cfg-ov { position: fixed; inset: 0; z-index: 50; background: rgba(5, 8, 20, 0.75); display: flex; align-items: flex-end; justify-content: center; }
+.cfg-ov[hidden] { display: none; }
+.cfg-sheet { background: var(--panel); color: var(--text); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; border-radius: 22px 22px 0 0; padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); border-top: 4px solid var(--accent); }
+.cfg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cfg-head h2, .cfg-sheet h3 { margin: 6px 0; }
+.cfg-row { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.cfg-row .vol { flex: 1; min-width: 140px; display: flex; align-items: center; gap: 6px; }
+.cfg-row .vol input { flex: 1; width: 100%; height: 36px; accent-color: var(--accent); }
+.cfg-label { display: block; margin: 10px 0 4px; font-weight: 700; }
+.cfg-sheet input[type=file] { width: 100%; min-height: 52px; color: var(--text); }
+.cfg-sheet textarea { width: 100%; box-sizing: border-box; background: var(--slot); color: var(--text); border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 8px; font-family: monospace; font-size: 0.85rem; }
+.cfg-sheet a { color: var(--accent); font-weight: 700; display: inline-block; min-height: 44px; line-height: 44px; }
+.cfg-msg { min-height: 1.4em; font-weight: 700; margin: 6px 0; }
+.cfg-msg.bad { color: #ffd0a0; }
+body.cfg-lock { overflow: hidden; }
 
 .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -241,6 +257,7 @@ body.world-observatory .stage { position: relative; }
 @media (max-width: 480px) {
     .top h1 { font-size: 1.1rem; }
     .top .btn { padding: 0 10px; font-size: 0.9rem; }
+    .top-left .lbl { display: none; }
     .toast { bottom: 20px; }
     .slot { height: 104px; }
     .stage { gap: 8px; padding: 8px; }

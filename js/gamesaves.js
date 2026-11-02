@@ -19,6 +19,8 @@
     var games = {};
     var order = [];
 
+    function isArr(a) { return Object.prototype.toString.call(a) === '[object Array]'; }
+
     function badName(k) { return k === '__proto__' || k === 'constructor' || k === 'prototype'; }
 
     function badKey(o, depth) {
@@ -44,12 +46,12 @@
         }
         if (typeof info.name === 'string' && info.name) { g.name = info.name; }
         var i, k;
-        var keys = info.keys instanceof Array ? info.keys : [];
+        var keys = isArr(info.keys) ? info.keys : [];
         for (i = 0; i < keys.length; i++) {
             k = keys[i];
             if (typeof k === 'string' && k && !badName(k) && g.keys.indexOf(k) < 0) { g.keys.push(k); }
         }
-        var js = info.json instanceof Array ? info.json : [];
+        var js = isArr(info.json) ? info.json : [];
         for (i = 0; i < js.length; i++) {
             if (typeof js[i] === 'string' && g.keys.indexOf(js[i]) >= 0) { g.json[js[i]] = true; }
         }
@@ -134,7 +136,7 @@
         opts = opts || {};
         var mode = opts.mode === 'replace' ? 'replace' : 'merge';
         var dry = !!opts.dryRun;
-        var only = opts.only instanceof Array ? opts.only : null;
+        var only = isArr(opts.only) ? opts.only : null;
         var res = { ok: false, errors: [], games: [], applied: 0, skipped: 0, notes: [] };
         if (typeof text !== 'string' || !text) { res.errors.push('Nothing to read.'); return res; }
         if (text.length > MAX_CHARS) { res.errors.push('That file is too big.'); return res; }
@@ -186,13 +188,14 @@
         return res;
     }
 
-    w.FongGameSaves = {
+    var api = {
         register: register,
         list: list,
         exportGame: exportGame,
         exportAll: exportAll,
         exportObject: exportObject,
-        importJSON: importJSON,
         MAX_CHARS: MAX_CHARS
     };
+    api.importJSON = importJSON;
+    w.FongGameSaves = api;
 })(window);
