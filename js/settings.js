@@ -2,9 +2,10 @@
  * Settings hub for the homepage. One sheet with tabs: Look, Scores, Cheers, Play, Data.
  * Opened by the Settings button (#theme-open), by #settings or ?settings=1 (or ?settings=scores,
  * look, cheers, play, data) in the address, or by FongSettings.open(tab).
- * Load BEFORE js/theme/panel.js (it takes over the button click) and AFTER js/scores.js, js/prefs.js and js/gamesaves.js.
- * Text is always written with textContent, never innerHTML. Strict ES5. No network.
- * Everything stays on this device. Docs: docs/SETTINGS.md
+ * Load BEFORE js/theme/panel.js (it takes over the button click) and AFTER js/scores.js, js/prefs.js, js/gamesaves.js, js/gdrive-config.js and js/gdrive-backup.js.
+ * Text is always written with textContent, never innerHTML. Strict ES5. No network by itself
+ * (the optional Drive backup in js/gdrive-backup.js only connects after a tap on Connect).
+ * Everything stays on this device unless the user backs up to Drive. Docs: docs/SETTINGS.md
  */
 (function (w) {
     'use strict';
@@ -227,20 +228,22 @@
     }
 
     // Shared import box. kind: 'scores' or 'all'
-    function loadBox(host, kind, check, apply) {
+    function loadBox(host, kind, check, apply, extra) {
+        extra = extra || {};
+        var idk = extra.idKey || kind;   // unique element ids when two boxes of one kind are on screen
         var box = el('div', 'fs-box');
-        box.appendChild(el('p', 'fs-strong', kind === 'all' ? 'Import everything' : (kind === 'games' ? 'Import game saves' : 'Import scores')));
+        box.appendChild(el('p', 'fs-strong', extra.title || (kind === 'all' ? 'Import everything' : (kind === 'games' ? 'Import game saves' : 'Import scores'))));
         box.appendChild(el('p', 'fs-note', 'Choose a file or paste the text, then Preview. Nothing changes until you tap Apply.'));
         var file = el('input', 'fs-input');
         file.type = 'file'; file.accept = '.json,application/json';
-        box.appendChild(field('Choose a file', file, 'fs-file-' + kind));
+        box.appendChild(field('Choose a file', file, 'fs-file-' + idk));
         var ta = el('textarea', 'fs-area');
         ta.setAttribute('rows', '4'); ta.setAttribute('spellcheck', 'false');
-        box.appendChild(field('Or paste here', ta, 'fs-paste-' + kind));
+        box.appendChild(field('Or paste here', ta, 'fs-paste-' + idk));
         var modeWrap = el('div', 'fs-modes');
         var mode = 'merge';
-        var mMerge = el('input'); mMerge.type = 'radio'; mMerge.name = 'fs-mode-' + kind; mMerge.value = 'merge'; mMerge.checked = true; mMerge.id = 'fs-mm-' + kind;
-        var mRep = el('input'); mRep.type = 'radio'; mRep.name = 'fs-mode-' + kind; mRep.value = 'replace'; mRep.id = 'fs-mr-' + kind;
+        var mMerge = el('input'); mMerge.type = 'radio'; mMerge.name = 'fs-mode-' + idk; mMerge.value = 'merge'; mMerge.checked = true; mMerge.id = 'fs-mm-' + idk;
+        var mRep = el('input'); mRep.type = 'radio'; mRep.name = 'fs-mode-' + idk; mRep.value = 'replace'; mRep.id = 'fs-mr-' + idk;
         function lab(inp, text) { var l = el('label', 'fs-radio'); l.appendChild(inp); l.appendChild(el('span', '', text)); return l; }
         modeWrap.appendChild(lab(mMerge, 'Merge: keep mine and add these'));
         modeWrap.appendChild(lab(mRep, 'Replace: use only these'));
@@ -295,6 +298,7 @@
         });
         box.appendChild(applyBtn);
         host.appendChild(box);
+        if (typeof extra.preset === 'string' && extra.preset) { text = extra.preset; ta.value = text.length > 5000 ? text.substr(0, 5000) + '\n...' : text; preview(); }
     }
 
     function renderScoreImport(host) {
@@ -480,6 +484,12 @@
         var cb = btn('Copy', '', function () { var r = G.exportGame(g.id); showWarnings(warnHost, r.warnings); copyText(r.text, copyHost); });
         cb.setAttribute('aria-label', 'Copy ' + g.name + ' save');
         row.appendChild(eb); row.appendChild(cb);
+        if (w.FongGDrive) {
+            var db = btn('Back up', '', function () { driveBackup(g.id); });
+            db.setAttribute('aria-label', 'Back up ' + g.name + ' to Google Drive');
+            db.disabled = !driveReady() || !g.hasData;
+            row.appendChild(db);
+        }
         sec.appendChild(row); sec.appendChild(copyHost); sec.appendChild(warnHost);
         host.appendChild(sec);
     }
@@ -502,6 +512,157 @@
         host.appendChild(list);
     }
 
+    // ---- Google Drive backup (optional, see js/gdrive-backup.js) ------------
+
+    var drive = { msg: '', warn: false, items: null, busy: false, gating: false, armedDel: '' };
+
+    function driveReady() { var D = w.FongGDrive; return !!(D && D.isConfigured() && D.isConnected() && !drive.busy); }
+
+    function driveRerender() {
+        var top = bodyEl ? bodyEl.scrollTop : 0;
+        render();
+        if (bodyEl) { bodyEl.scrollTop = top; }
+    }
+
+    function driveSay(text, warn) { drive.msg = text || ''; drive.warn = !!warn; say(text || ''); }
+
+    function driveRefresh(after) {
+        var D = w.FongGDrive;
+        D.list(function (e, items) {
+            if (e) { driveSay(e.message, true); drive.items = null; } else { drive.items = items; }
+            drive.busy = false;
+            if (after) { after(); }
+            driveRerender();
+        });
+    }
+
+    function driveConnect() {
+        var D = w.FongGDrive;
+        drive.busy = true; driveSay('Opening Google sign-in...', false); driveRerender();
+        D.connect(function (e) {
+            if (e) { drive.busy = false; drive.items = null; driveSay(e.message, true); driveRerender(); return; }
+            driveSay('Connected.', false);
+            driveRefresh();
+        });
+    }
+
+    function driveBackup(scope) {
+        var D = w.FongGDrive;
+        if (!driveReady()) { return; }
+        drive.busy = true; driveSay('Backing up...', false); driveRerender();
+        D.backupNow(scope, function (e, r) {
+            if (e) { drive.busy = false; driveSay(e.message, true); driveRerender(); return; }
+            var msg = 'Backed up to Google Drive.' + (r && r.pruned ? ' Removed ' + r.pruned + ' older backup' + (r.pruned === 1 ? '' : 's') + ' (the newest ' + D.KEEP + ' are kept).' : '');
+            driveSay(msg, false);
+            driveRefresh();
+        });
+    }
+
+    function driveScopeName(scope) {
+        if (scope === 'all') { return 'Everything'; }
+        var all = w.FongGameSaves ? w.FongGameSaves.list() : [], i;
+        for (i = 0; i < all.length; i++) { if (all[i].id === scope) { return all[i].name; } }
+        return scope;
+    }
+
+    function driveSize(n) { return n >= 1024 ? Math.round(n / 1024) + ' KB' : n + ' bytes'; }
+
+    function driveRestore(item, host) {
+        var D = w.FongGDrive, G = w.FongGameSaves;
+        drive.busy = true; driveSay('Getting that backup...', false); driveRerender();
+        D.restore(item.id, function (e, text) {
+            drive.busy = false;
+            if (e) { driveSay(e.message, true); driveRerender(); return; }
+            driveSay('Backup loaded. Preview it below, then tap Apply.', false);
+            driveRerender();
+            var rh = bodyEl ? bodyEl.querySelector('.fs-drive-restore') : null;
+            if (!rh) { return; }
+            while (rh.firstChild) { rh.removeChild(rh.firstChild); }
+            loadBox(rh, 'games',
+                function (t, m) { return G.importJSON(t, { mode: m, dryRun: true }); },
+                function (t, m) {
+                    var r = G.importJSON(t, { mode: m });
+                    r.message = r.ok ? 'Restored game saves for ' + r.games.length + ' game' + (r.games.length === 1 ? '' : 's') + '. Reload a game to see it.' : '';
+                    return r;
+                },
+                { idKey: 'drive', title: 'Restore from Google Drive: ' + driveScopeName(item.scope), preset: text });
+            try { rh.scrollIntoView(); } catch (x) { /* ignore */ }
+        });
+    }
+
+    function renderDrive(host) {
+        var D = w.FongGDrive;
+        host.appendChild(el('h3', 'fs-h', 'Back up to Google Drive'));
+        host.appendChild(el('p', 'fs-note', 'Optional. Keeps a copy of game progress in your own Google Drive, in a hidden folder only this arcade can open. Saving to a file above and importing a file below still work with no account.'));
+        host.appendChild(el('p', 'fs-note', 'Nothing stays signed in. Each visit, tap Connect and sign in again. Google is only contacted after you tap Connect.'));
+        var configured = D.isConfigured(), connected = D.isConnected();
+        if (!configured) { host.appendChild(el('p', 'fs-warn', D.NOT_SET_UP)); }
+        host.appendChild(el('p', 'fs-strong', connected ? 'Connected to Google Drive.' : 'Not connected.'));
+        var msg = el('p', drive.warn ? 'fs-warn' : 'fs-note', drive.msg);
+        msg.setAttribute('aria-live', 'polite');
+        host.appendChild(msg);
+        if (drive.gating && !unlocked) {
+            renderGate(host, function () { drive.gating = false; driveConnect(); });
+            return;
+        }
+        var row = el('div', 'fs-row');
+        if (!connected) {
+            var cbtn = btn('Connect to Google Drive', 'fs-go', function () {
+                if (!unlocked) { drive.gating = true; driveRerender(); return; }
+                driveConnect();
+            });
+            cbtn.disabled = !configured || drive.busy;
+            row.appendChild(cbtn);
+        } else {
+            var ball = btn('Back up everything', 'fs-go', function () { driveBackup('all'); });
+            ball.disabled = !driveReady();
+            row.appendChild(ball);
+            var rf = btn('Refresh list', '', function () { drive.busy = true; driveSay('Loading backups...', false); driveRerender(); driveRefresh(); });
+            rf.disabled = drive.busy;
+            row.appendChild(rf);
+            row.appendChild(btn('Disconnect', '', function () {
+                D.disconnect(function () { drive.items = null; drive.armedDel = ''; driveSay('Disconnected.', false); driveRerender(); });
+            }));
+        }
+        host.appendChild(row);
+        if (connected) {
+            host.appendChild(el('p', 'fs-dim', 'Use the Back up button on a game below to save just that game. The newest ' + D.KEEP + ' backups of each kind are kept.'));
+            var items = drive.items;
+            if (items && !items.length) { host.appendChild(el('p', 'fs-note', 'No backups yet.')); }
+            if (items && items.length) {
+                var ul = el('ul', 'fs-list fs-drive-list'), i;
+                for (i = 0; i < items.length && i < 60; i++) {
+                    (function (it) {
+                        var li = el('li', 'fs-drive-item');
+                        var when = new Date(it.time);
+                        li.appendChild(el('span', 'fs-strong', driveScopeName(it.scope)));
+                        li.appendChild(el('span', 'fs-dim', ' ' + (isNaN(when.getTime()) ? '' : when.toLocaleString()) + ', ' + driveSize(it.size)));
+                        var r2 = el('div', 'fs-row');
+                        var rb = btn('Restore', '', function () { driveRestore(it); });
+                        rb.setAttribute('aria-label', 'Restore ' + driveScopeName(it.scope) + ' backup');
+                        rb.disabled = drive.busy;
+                        var armed = drive.armedDel === it.id;
+                        var db = btn(armed ? 'Tap again to delete' : 'Delete', armed ? 'fs-danger' : '', function () {
+                            if (drive.armedDel !== it.id) { drive.armedDel = it.id; driveRerender(); return; }
+                            drive.armedDel = ''; drive.busy = true; driveSay('Deleting...', false); driveRerender();
+                            D.remove(it.id, function (e) {
+                                if (e) { drive.busy = false; driveSay(e.message, true); driveRerender(); return; }
+                                driveSay('Deleted.', false); driveRefresh();
+                            });
+                        });
+                        db.setAttribute('aria-label', 'Delete ' + driveScopeName(it.scope) + ' backup');
+                        db.disabled = drive.busy;
+                        r2.appendChild(rb); r2.appendChild(db);
+                        li.appendChild(r2);
+                        ul.appendChild(li);
+                    })(items[i]);
+                }
+                host.appendChild(ul);
+            }
+            host.appendChild(el('div', 'fs-drive-restore'));
+        }
+    }
+
     function renderGameSaveImports(host) {
         var G = w.FongGameSaves;
         function check(t, m) { return G.importJSON(t, { mode: m, dryRun: true }); }
@@ -517,7 +678,7 @@
     function renderData(host) {
         host.appendChild(el('h3', 'fs-h', 'Data'));
         host.appendChild(el('p', 'fs-strong', 'Everything stays on this device. Clearing browser data erases it.'));
-        host.appendChild(el('p', 'fs-note', 'Nothing is sent anywhere. No accounts. Use Export everything to keep a backup or move to a new device.'));
+        host.appendChild(el('p', 'fs-note', 'Nothing is sent anywhere unless you choose Google Drive backup below. No accounts. Use Export everything to keep a backup or move to a new device.'));
 
         host.appendChild(el('h3', 'fs-h', 'Export everything'));
         host.appendChild(el('p', 'fs-note', 'Theme, scores, cheer settings, play options and game saves in one file.'));
@@ -542,6 +703,7 @@
         host.appendChild(row); host.appendChild(copyHost); host.appendChild(warnHost);
 
         renderGameSaves(host);
+        if (w.FongGDrive) { renderDrive(host); }
 
         host.appendChild(el('h3', 'fs-h', 'Grown-up tools'));
         if (!unlocked) { renderGate(host, render); return; }
