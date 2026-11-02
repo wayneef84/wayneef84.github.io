@@ -302,3 +302,4 @@ body.world-observatory .stage { position: relative; }
 .recipe .face .rstar { top: -2px; right: 0; }
 #rareBtn.on { background: rgba(255, 224, 138, 0.25); border-color: #ffe08a; }
 .tiles.six { max-height: 38vh; overflow-y: auto; }
+.slot .rstar, .tile .rstar { right: auto; left: 6px; top: 4px; }

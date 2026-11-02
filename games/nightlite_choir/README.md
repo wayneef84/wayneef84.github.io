@@ -2,7 +2,7 @@
 
 A cozy music game for a young child. Little creatures each sing a short loop. Put them on a stage and the loops layer into a song. Three worlds: the Night Garden, the Toy Attic and the Star Observatory. All three doors are open.
 
-Status: Milestone 3 (v0.4.0). 12 base creatures, free sparks, eggs, a Mixing pot, a Discovery book and 6 blend creatures.
+Status: v0.5.0. 12 base creatures, free sparks, eggs, a Mixing pot for 2 to 5 friends, a Discovery book, 21 blend creatures and rare shimmer versions.
 
 ## Play
 Open `index.html` (works from file:// and GitHub Pages) or visit games/nightlite_choir/ on the site.
@@ -15,10 +15,15 @@ Open `index.html` (works from file:// and GitHub Pages) or visit games/nightlite
 ## Sparks, eggs and the Mixing pot
 - Sparks are free. One spark trickles in for every 15 seconds that two or more friends sing on the stage (page open and visible, up to 99). Tap "Wish" any time for 3 free sparks. Nothing is ever bought, nothing can be missed.
 - The Collection screen (button on the door screen and in every world) shows your sparks, the nest, the Discovery book and your blends.
-- An egg costs 5 sparks. Put it in the nest. It hatches by itself in about 20 seconds, or tap it to warm it up and make it hatch sooner. It hatches a blend you do not have yet. If you have all 6, you get a happy twinkle and the sparks come back.
-- The Mixing pot: pick any two of the 12 friends and tap Mix. A matching pair makes a blend at once (nothing is used up) and writes the recipe in the Discovery book. Other pairs say "Not this time" and nothing is lost.
+- An egg costs 5 sparks. Put it in the nest. It hatches by itself in about 20 seconds, or tap it to warm it up and make it hatch sooner. It hatches a blend you do not have yet. If you have them all, you get a happy twinkle and the sparks come back.
+- The Mixing pot: five spots. Pick 2 to 5 friends (the 12 base friends, plus any blend you own, so a blend can be an ingredient) and tap Mix. The order never matters and the group must match a recipe exactly. A match makes a blend at once (nothing is used up) and writes the recipe in the Discovery book. Other groups say "Not this time. Nothing was lost."
+- Match my stage fills the pot from the friends standing on the stage (up to 5, preferring a recipe you have not found yet).
+- What can I make? shows big cards for recipes whose friends are all on the stage (or that include what you already put in the pot). A found recipe shows its blend. A new one shows a "?" and a one-line clue. Tap a card to fill the pot.
+- Hints: "Almost! Add 1 more friend" (only a number, never a name) and "That is a lot of friends. Try fewer."
+- Rare friends: each mix or egg has a 1 in 10 chance to also give a shimmering RARE version of the blend (same friend, new colors and sparkles, a brighter sound). Rares have a star, can stand on the stage, and are never needed for anything. The button "Rare friends: On/Off" in the pot turns the chance off (saved in `nightlite.rare`).
+- More blends: any file in `js/worlds/` that sets a global named `NightliteBlendsExtra_<NAME>` is merged in by `js/recipes.js` (add one script tag). Set CLAUDE has 15: [RECIPES_CLAUDE.md](RECIPES_CLAUDE.md).
 - Everything the child earns is saved in the browser. Nothing is sent anywhere.
 - The gear button (Settings) is on every screen. It has Volume, Mute, Export this game and Import this game. Export downloads `fong-save-nightlite-choir.json`. Import takes that file (or pasted text): Add missing keeps what you have, Replace asks a grown-up question first, then a second tap, and overwrites only what is in the file. Restore previous brings back what you had before the last import. All games at once: arcade Settings, Data tab.
 
 ## More
-[DESIGN.md](DESIGN.md) | [IP-GUARDRAILS.md](IP-GUARDRAILS.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [ASSET_LOG.md](ASSET_LOG.md)
+[DESIGN.md](DESIGN.md) | [IP-GUARDRAILS.md](IP-GUARDRAILS.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [ASSET_LOG.md](ASSET_LOG.md) | [RECIPES_CLAUDE.md](RECIPES_CLAUDE.md)

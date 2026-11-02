@@ -1,5 +1,13 @@
 # Nightlite Choir+: Changelog
 
+## v0.5.0 - Pot upgrade (2026-11-01)
+- Mixing pot takes 2 to 5 friends. Blends you own can be ingredients. Recipe key = sorted ids joined with `+`, exact set match, order never matters. The 6 old recipes and old saves work unchanged. Tempo of a blend is the first ingredient's world, through blends.
+- Pot screen: 5 spots, Mix needs 2, "Match my stage" and "What can I make?" buttons with big suggestion cards (ingredient faces, "?" and a clue for new recipes), hints "Almost! Add N more friend(s)" and "That is a lot of friends. Try fewer."
+- 15 new blends (set CLAUDE, `js/worlds/blends_claude.js`, notes in RECIPES_CLAUDE.md). Any `NightliteBlendsExtra_*` global is merged by the new `js/recipes.js`, so a second set is one file and one script tag. Name checks in ASSET_LOG.md. The 6 old blends got clues.
+- Discovery book: page 1 and page 2 (recipes that use a blend), N faces per recipe, clue on unfound cards, "found of total" count.
+- Rare friends: 1 in 10 on a mix or an egg, shimmering twin (`<id>_rare`, hue shift, sparkles, brighter C pentatonic sound), star on the tray, stage, book and a Collection card. Toggle "Rare friends: On/Off" in the pot (`nightlite.rare`, added to the saves manifest). Rares are saved in `nightlite.save` (v5, `rares` list). Never required.
+- Tests: `node tests/nightlite.test.js`.
+
 ## Unreleased
 - Settings overlay: a gear button (aria-label "Settings") beside Home on every screen. Volume and Mute (same state as the world controls), Export this game, Import this game (file or pasted text, Add missing or Replace), and a link to the arcade Settings, Data tab for all-site export and import. Replace and Restore previous ask a grown-up question (times table) and then need a second tap. One-step undo under `nightlite.undo` (not exported). Import is all or nothing. The page is made inert while the overlay is open, Escape is handled at document level, and the paste box always holds the whole file. Escape closes it, focus is trapped and returns to the gear. Uses `js/gamesaves.js` (`FongGameSaves`, id `nightlite-choir`). After an import the page reloads, and saving is paused until then so old memory cannot overwrite the import. Home is icon only below 480px wide. No rule changes.
 - Cheers button next to Wish, Collection and Mixing pot. A new hatched blend or a new Mixing pot discovery calls `FongCheer.cheer('big')`, guarded (`js/cheer.js`, docs/CHEER.md). Off until a parent turns it on. No rule changes.
