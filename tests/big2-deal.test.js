@@ -185,4 +185,24 @@ gs.players[0].hand = []; gs.players[1].hand = gs.players[1].hand.slice(0, 5); gs
 gs.players[2].dealtCount = gs.players[2].hand.length; gs._handleWin('player0');
 assert.strictEqual(gs.scores.player1, 5); assert.strictEqual(gs.scores.player2, gs.players[2].hand.length * 3);
 
+// Review fixes: real hand size in the message, spare pile count, null storage
+(function () {
+    var names = ['A', 'B', 'C', 'D'];
+    var d4 = Deal.deal(RS.hongkong, 4, { rng: seeded(1) });
+    assert(/Dealt 13 each\./.test(Deal.describe(d4, names)));
+    var small = Object.create(RS.hongkong); small.startingHandSize = 10;
+    var d10 = Deal.deal(small, 4, { rng: seeded(1) });
+    assert.strictEqual(d10.handSize, 10); assert(/Dealt 10 each\./.test(Deal.describe(d10, names)));
+    for (var i = 1; i < 300; i++) {
+        var d = Deal.deal(RS.hongkong, 2, { rng: seeded(i) });
+        var down = 0; d.extra.forEach(function (c) { if (c !== d.faceUp) { down++; } });
+        assert.strictEqual(down, 17, 'face down spare count is 17 in every 2 player case');
+    }
+    assert(/17 face down/.test(Deal.explain(RS.hongkong, 2, 'lowest')));
+    assert(/13 cards each/.test(Deal.explain(RS.hongkong, 4, 'lowest')));
+    assert.deepEqual(Opts.load(null), Opts.defaults());
+    assert.strictEqual(Opts.save(null, Opts.defaults()), false);
+    assert.strictEqual(Opts.save({ setItem: function () { throw new Error('full'); } }, Opts.defaults()), false);
+})();
+
 console.log('big2 deal tests passed', JSON.stringify(counts));

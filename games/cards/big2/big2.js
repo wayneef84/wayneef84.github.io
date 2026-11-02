@@ -666,7 +666,7 @@ var Big2Deal = (function () {
     /**
      * Deal a shuffled deck.
      * opts: { rng, whoStarts: 'lowest'|'winner', lastWinnerIdx: number|null, deck: cards (already shuffled) }
-     * Returns { hands, faceUp, extra, startCard, pickupIdx, pickupCard, starterIdx,
+     * Returns { handSize, hands, faceUp, extra, startCard, pickupIdx, pickupCard, starterIdx,
      *           mustInclude, scenario, playerCount }
      *   scenario: 'four', 'three', 'three-faceup-start', 'two', 'two-faceup-start',
      *             'two-start-in-pile', 'two-faceup-start-nobody'
@@ -756,6 +756,7 @@ var Big2Deal = (function () {
             hands: hands,
             faceUp: faceUp,
             extra: extra,
+            handSize: size,
             startCard: sc,
             fallbackCard: fb,
             pickupIdx: pickupIdx,
@@ -773,14 +774,15 @@ var Big2Deal = (function () {
         var fb = cardLabel(fallbackCard(ruleset));
         var t;
         if (playerCount === 4) {
-            t = '4 players: 13 cards each. The ' + sc + ' holder starts.';
+            t = '4 players: ' + handSizeFor(ruleset, 4) + ' cards each. The ' + sc + ' holder starts.';
         } else if (playerCount === 3) {
             t = '3 players: 17 cards each, 1 turned up for the ' + sc + ' holder (18 cards). ' +
                 'If the ' + sc + ' is the one turned up, the ' + fb + ' holder takes it and starts.';
         } else {
-            t = '2 players: 17 cards each, 18 left in a spare pile with 1 turned up. The ' + sc +
-                ' holder takes the turned-up card. If the ' + sc + ' is in the spare pile, the turned-up card is' +
-                ' discarded and the lowest dealt card starts. If it is turned up, the ' + fb + ' holder takes it.';
+            t = '2 players: 17 cards each, 18 spare cards with 1 of them turned up (17 face down). The ' + sc +
+                ' holder takes the turned-up card and starts. If the ' + sc + ' is in the spare pile, the turned-up card is' +
+                ' discarded and the lowest dealt card starts. If the ' + sc + ' is the turned-up card, the ' + fb +
+                ' holder takes it (if nobody holds the ' + fb + ', the lowest dealt card starts).';
         }
         if (whoStarts === 'winner') {
             t += ' Last winner starts (the first game uses the lowest card).';
@@ -795,7 +797,7 @@ var Big2Deal = (function () {
         var starts = (who === 'You') ? ' start' : ' starts';
         var fu = cardLabel(d.faceUp);
         if (d.playerCount === 4) {
-            msg = 'Dealt 13 each.';
+            msg = 'Dealt ' + d.handSize + ' each.';
         } else if (d.scenario === 'three' || d.scenario === 'two') {
             msg = fu + ' was turned up. ' + names[d.pickupIdx] + ' picked it up (holds the ' + cardLabel(d.startCard) + ').';
         } else if (d.scenario === 'three-faceup-start' || d.scenario === 'two-faceup-start') {
@@ -863,12 +865,14 @@ var Big2Options = (function () {
 
     function load(storage) {
         try {
+            if (!storage) { return defaults(); }
             var s = storage.getItem(KEY);
             return s ? sanitize(JSON.parse(s)) : defaults();
         } catch (e) { return defaults(); }
     }
 
     function save(storage, opts) {
+        if (!storage) { return false; }
         try { storage.setItem(KEY, JSON.stringify(sanitize(opts))); return true; } catch (e) { return false; }
     }
 

@@ -23,7 +23,7 @@ Special cases when the face-up card matters:
 - 2 players, the start card is in the spare pile: nobody picks up, the face-up card is discarded with the spare pile, and the holder of the lowest dealt card (rank, then suit order) starts.
 - 2 players, the face-up card is the start card and the fallback card is also in the spare pile: nobody picks up, the lowest dealt card starts.
 
-A deal panel shows the face-up card, the spare pile and a sentence saying who picked up. Tap Got it to close it (it also closes when you play).
+A deal panel shows the face-up card, the face-down spare pile (17 cards in a 2 player deal) and a sentence saying who picked up. Tap Got it to close it (it also closes when you play).
 
 ## Opening play
 If the ruleset flag `firstPlayMustIncludeStartCard` is on (it is on in every ruleset), the first play must include the start card, in any legal combination. With a pickup, the picked-up card counts: if you picked up the start card it must be in your opening play. If nobody held the start card, the lowest dealt card must be in the opening play.
@@ -32,4 +32,6 @@ If the ruleset flag `firstPlayMustIncludeStartCard` is on (it is on in every rul
 With Who starts set to Last winner, the winner of the previous game starts and no card is required in the opening play. The first game, or a first game at a seat count where the saved winner is not seated, uses the lowest card rule. In 3 and 2 player games the holder of the start card still picks up the face-up card, even if someone else starts.
 
 ## Scoring note
+Hands of 17 or 18 cards mean the double penalty (10 or more cards left) applies to almost every loser in 2 and 3 player games, so scoring is harsher there. Scoring itself is unchanged.
+
 The triple penalty applies to a player who never played a card (17 or 18 cards in a 2 or 3 player game, 13 in a 4 player game). Double penalty at 10 or more cards is unchanged.

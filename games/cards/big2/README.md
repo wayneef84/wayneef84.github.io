@@ -21,3 +21,7 @@ Options are saved on the device in `localStorage` key `fong.big2.opts` and are i
 | `ruleset.js` | Ruleset definitions |
 
 See MANUAL.md for the rules, TECHNICAL.md for the deal algorithm. Test: `node tests/big2-deal.test.js`.
+
+## Scoring note
+
+With 17 or 18 card hands (2 and 3 players) the double penalty for 10 or more cards left applies to almost every loser, so scoring is harsher than at 4 players. Scoring is unchanged.

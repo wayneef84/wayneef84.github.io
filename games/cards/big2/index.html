@@ -161,7 +161,7 @@
         #deal-close { min-height: 44px; min-width: 44px; background: none; border: 1px solid rgba(255,255,255,0.2);
             color: var(--text-dim); border-radius: 10px; font-size: 0.8rem; cursor: pointer; margin-top: 4px; }
         @media (prefers-reduced-motion: no-preference) {
-            html:not([data-calm]) .deal-item .card.deal-in { opacity: 0; animation: dealIn 0.5s ease-out 0.1s forwards; }
+            html:not([data-calm]) .deal-item .card.panel-in { opacity: 0; animation: dealIn 0.5s ease-out 0.1s forwards; }
             html:not([data-calm]) .deal-item .card.picked { animation: dealPick 0.6s ease-in forwards; }
             html:not([data-calm]) .deal-item .card.picked.to-top { animation-name: dealPickUp; }
         }
@@ -400,6 +400,7 @@
         }
         #your-turn-indicator.visible { display: block; }
 
+        #hand-cards:focus { outline: none; }
         #hand-cards {
             display: flex;
             flex-wrap: wrap;
@@ -687,6 +688,20 @@
 
         /* Opponent slot pulse when they play */
         .opponent-slot.opp-played { animation: oppPulse 0.6s ease-out; }
+
+        /* Reduced motion and calm mode: no animation anywhere, final states show at once.
+           Keep this block last so it wins over the rules above. */
+        @media (prefers-reduced-motion: reduce) {
+            .card, .card.deal-in, .card.hint, .card.pile-sweep, #pile-cards .card,
+            #deal-panel .card, .opponent-slot.opp-played { animation: none !important; transition: none !important; }
+            .card:hover { transform: none; }
+        }
+        html[data-calm] .card, html[data-calm] .card.deal-in, html[data-calm] .card.hint,
+        html[data-calm] .card.pile-sweep, html[data-calm] #pile-cards .card,
+        html[data-calm] #deal-panel .card, html[data-calm] .opponent-slot.opp-played {
+            animation: none !important; transition: none !important;
+        }
+        html[data-calm] .card:hover { transform: none; }
     </style>
 </head>
 <body>
@@ -711,14 +726,14 @@
 
     <div class="setup-card">
         <h2>Players</h2>
-        <div class="seg-label">Number of players (you plus AI)</div>
-        <div class="seg-row" id="players-seg">
+        <div class="seg-label" id="players-label">Number of players (you plus AI)</div>
+        <div class="seg-row" id="players-seg" role="group" aria-labelledby="players-label">
             <button type="button" class="seg-btn" data-players="2">2</button>
             <button type="button" class="seg-btn" data-players="3">3</button>
             <button type="button" class="seg-btn" data-players="4">4</button>
         </div>
-        <div class="seg-label">Who starts</div>
-        <div class="seg-row" id="who-seg">
+        <div class="seg-label" id="who-label">Who starts</div>
+        <div class="seg-row" id="who-seg" role="group" aria-labelledby="who-label">
             <button type="button" class="seg-btn" data-who="lowest">Lowest card</button>
             <button type="button" class="seg-btn" data-who="winner">Last winner</button>
         </div>
@@ -755,9 +770,9 @@
 
     <!-- Table Center -->
     <div id="table-center">
-        <div id="deal-panel">
+        <div id="deal-panel" role="region" aria-label="The deal">
             <div id="deal-row"></div>
-            <div id="deal-msg"></div>
+            <div id="deal-msg" role="status" aria-live="polite" aria-atomic="true"></div>
             <div style="text-align:center"><button type="button" id="deal-close" onclick="UI.hideDeal()">Got it</button></div>
         </div>
         <div id="pile-label">Played Cards</div>
@@ -772,7 +787,7 @@
             <span id="player-name-label">Your Hand</span>
             <span id="your-turn-indicator">YOUR TURN</span>
         </div>
-        <div id="hand-cards"></div>
+        <div id="hand-cards" tabindex="-1"></div>
     </div>
 
     <!-- Selected Info -->
@@ -871,7 +886,10 @@ var UI = (function () {
     var autoPass = false;
     var hintUuids = {};
     var isFirstDeal = false;
-    var opts = Big2Options.load(window.localStorage);
+    function getStorage() {
+        try { return window.localStorage || null; } catch (e) { return null; }
+    }
+    var opts = Big2Options.load(getStorage());
     var SEAT_NAMES = ['You', 'Alex (AI)', 'Sam (AI)', 'Kai (AI)'];
 
     // Card display helpers
@@ -1223,7 +1241,7 @@ var UI = (function () {
 
     // ---- OPTIONS (Players, Who starts) ----
 
-    function saveOpts() { Big2Options.save(window.localStorage, opts); }
+    function saveOpts() { Big2Options.save(getStorage(), opts); }
 
     function markSeg(containerId, attr, value) {
         var btns = document.getElementById(containerId).querySelectorAll('.seg-btn');
@@ -1269,7 +1287,14 @@ var UI = (function () {
     // ---- DEAL PANEL ----
 
     function hideDeal() {
-        document.getElementById('deal-panel').classList.remove('visible');
+        var panel = document.getElementById('deal-panel');
+        var hadFocus = panel.contains(document.activeElement);
+        panel.classList.remove('visible');
+        document.getElementById('deal-msg').textContent = '';   // so the next deal is announced again
+        if (hadFocus) {
+            var hc = document.getElementById('hand-cards');
+            try { hc.focus({ preventScroll: true }); } catch (e) { hc.focus(); }
+        }
     }
 
     function deckBackStack(n) {
@@ -1297,7 +1322,7 @@ var UI = (function () {
             item.className = 'deal-item';
             var ce = makeCardEl(d.faceUp, false);
             ce.removeAttribute('data-uuid');   // the same card is in a hand now, keep ids unique
-            ce.className += ' deal-in';
+            ce.className += ' panel-in';
             item.appendChild(ce);
             var cap = document.createElement('div');
             cap.textContent = 'Turned up';
@@ -1313,17 +1338,22 @@ var UI = (function () {
                 cap.textContent = 'Turned up (discarded)';
             }
         }
-        if (d.extra && d.extra.length > 0) {
+        if (d.extra && d.extra.length > 0 && d.extra.length > (d.faceUp && d.extra.indexOf(d.faceUp) >= 0 ? 1 : 0)) {
             var ex = document.createElement('div');
             ex.className = 'deal-item';
-            ex.appendChild(deckBackStack(d.extra.length));
+            var down = 0;
+            for (var xi = 0; xi < d.extra.length; xi++) { if (d.extra[xi] !== d.faceUp) down++; }
+            ex.appendChild(deckBackStack(down));
             var ecap = document.createElement('div');
-            ecap.textContent = 'Spare pile: ' + d.extra.length + ' cards';
+            ecap.textContent = 'Spare pile: ' + down + ' face down';
             ex.appendChild(ecap);
             row.appendChild(ex);
         }
-        document.getElementById('deal-msg').textContent = Big2Deal.describe(d, names);
         panel.classList.add('visible');
+        // text is set after the panel is visible so the polite live region announces it once
+        document.getElementById('deal-msg').textContent = Big2Deal.describe(d, names);
+        var closeBtn = document.getElementById('deal-close');
+        try { closeBtn.focus({ preventScroll: true }); } catch (e2) { closeBtn.focus(); }
     }
 
     function startGame() {
@@ -1531,7 +1561,7 @@ var UI = (function () {
         list.innerHTML = '';
 
         var rows = [
-            ['First Turn', rs.firstTurnRule === 'diamond3' ? 'Player with 3♦' : 'Lowest card'],
+            ['First Turn', 'Player with ' + Big2Deal.cardLabel(Big2Deal.startCard(rs))],
             ['Must play start card', rs.firstPlayMustIncludeStartCard ? 'Yes' : 'No'],
             ['Valid plays', rs.id === 'pokerhands' ? '5-card hands only' : '1, 2, 3, or 5-card hands'],
             ['Power win doubles', rs.powerWinDoubles ? 'Yes (Quads / Str. Flush)' : 'No'],
