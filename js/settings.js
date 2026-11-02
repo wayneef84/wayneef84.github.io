@@ -256,7 +256,7 @@
             var res = check(text, getMode());
             applyBtn.disabled = !res.ok;
             if (!res.ok) {
-                out.appendChild(el('p', 'fs-warn', 'Could not use that.'));
+                out.appendChild(el('p', 'fs-warn', res.alreadyHave ? 'Nothing to add.' : 'Could not use that.'));
                 for (var i = 0; i < res.errors.length && i < 5; i++) { out.appendChild(el('p', 'fs-note', res.errors[i])); }
                 return;
             }

@@ -152,7 +152,7 @@
         var writes = {}, skipped = 0, ks = Object.keys(data), i, k, v, n = 0, kept = 0;
         for (i = 0; i < ks.length; i++) {
             k = ks[i]; v = data[k];
-            if (g.keys.indexOf(k) < 0) { skipped++; notes.push(g.name + ': ignored a key that is not part of this game.'); continue; }
+            if (g.keys.indexOf(k) < 0) { continue; }   // unknown keys are dropped quietly
             if (typeof v !== 'string') { skipped++; notes.push(g.name + ': skipped ' + k + ' (not text).'); continue; }
             if (v.length > MAX_VALUE) { skipped++; notes.push(g.name + ': skipped ' + k + ' (too big).'); continue; }
             if (has.call(g.json, k)) {
