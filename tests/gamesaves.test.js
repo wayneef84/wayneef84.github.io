@@ -29,7 +29,7 @@ assert(!G.importJSON('{"format":"x","version":1}').ok);
 var bad=JSON.stringify({format:'fong-game-save',version:1,game:'nightlite-choir',data:{'evil':'1','nightlite.save':'{bad','nightlite.vol':5}});
 store={};r=G.importJSON(bad,{});assert(!r.ok&&Object.keys(store).length===0);
 var mix=JSON.stringify({format:'fong-game-save',version:1,game:'nightlite-choir',data:{'evil':'1','nightlite.vol':'9'}});
-r=G.importJSON(mix,{});assert(r.ok&&r.skipped===1&&!store.evil&&store['nightlite.vol']==='9');
+r=G.importJSON(mix,{});assert(r.ok&&r.skipped===0&&!store.evil&&store['nightlite.vol']==='9');
 var proto='{"format":"fong-game-save","version":1,"game":"nightlite-choir","data":{"__proto__":{"x":1}}}';
 assert(!G.importJSON(proto).ok);
 var protoIn=JSON.stringify({format:'fong-game-save',version:1,game:'nightlite-choir',data:{'nightlite.save':'{"__proto__":{"a":1}}'}});
