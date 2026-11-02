@@ -792,9 +792,10 @@ var Big2Deal = (function () {
     function describe(d, names) {
         var msg = '';
         var who = d.starterIdx >= 0 ? names[d.starterIdx] : '';
+        var starts = (who === 'You') ? ' start' : ' starts';
         var fu = cardLabel(d.faceUp);
         if (d.playerCount === 4) {
-            msg = 'Dealt 13 each. ';
+            msg = 'Dealt 13 each.';
         } else if (d.scenario === 'three' || d.scenario === 'two') {
             msg = fu + ' was turned up. ' + names[d.pickupIdx] + ' picked it up (holds the ' + cardLabel(d.startCard) + ').';
         } else if (d.scenario === 'three-faceup-start' || d.scenario === 'two-faceup-start') {
@@ -806,11 +807,11 @@ var Big2Deal = (function () {
             msg = fu + ' was turned up. Nobody holds the ' + cardLabel(d.fallbackCard) + ', so it is discarded.';
         }
         if (d.viaWinner) {
-            msg += ' ' + who + ' won last game and starts.';
+            msg += ' ' + who + ' won last game and' + starts + '.';
         } else if (d.mustInclude) {
-            msg += ' ' + who + ' starts with the ' + cardLabel(d.mustInclude) + '.';
+            msg += ' ' + who + starts + ' with the ' + cardLabel(d.mustInclude) + '.';
         } else {
-            msg += ' ' + who + ' starts.';
+            msg += ' ' + who + starts + '.';
         }
         return msg;
     }

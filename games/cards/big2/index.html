@@ -149,13 +149,13 @@
         #deal-panel.visible { display: block; }
         #deal-row { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
         .deal-item { text-align: center; font-size: 0.7rem; color: var(--text-dim); }
-        .deal-item .card { width: 40px; height: 56px; margin: 0 auto 2px; cursor: default; }
-        .deal-item .card .card-rank-top { font-size: 10px; }
-        .deal-item .card .card-suit-top { font-size: 8px; }
-        .deal-item .card .card-center { font-size: 18px; }
+        .deal-item .card { width: var(--card-w-sm); height: var(--card-h-sm); margin: 0 auto 2px; cursor: default; }
+        .deal-item .card .card-rank-top { font-size: 11px; }
+        .deal-item .card .card-suit-top { font-size: 9px; }
+        .deal-item .card .card-center { font-size: 22px; }
         .deal-item .card:hover { transform: none; }
         .deal-item .card.picked { opacity: 0.45; }
-        .deal-stack { position: relative; width: 40px; height: 56px; margin: 0 auto 2px; }
+        .deal-stack { position: relative; width: var(--card-w-sm); height: var(--card-h-sm); margin: 0 auto 2px; }
         .deal-stack .mini-card-back { position: absolute; width: 36px; height: 52px; }
         #deal-msg { font-size: 0.8rem; color: var(--text); text-align: center; margin-top: 6px; line-height: 1.35; }
         #deal-close { min-height: 44px; min-width: 44px; background: none; border: 1px solid rgba(255,255,255,0.2);

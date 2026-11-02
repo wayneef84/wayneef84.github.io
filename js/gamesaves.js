@@ -77,6 +77,7 @@
     register('jigsaw', { name: 'Jigsaw', keys: ['fong.jigsaw.v2'], json: ['fong.jigsaw.v2'] });
     register('sudoku', { name: 'Sudoku (game in progress)', keys: ['sudoku_autosave'], json: ['sudoku_autosave'] });
     register('xtc-ball', { name: 'XTC Ball (custom balls)', keys: ['oracle_custom_balls'], json: ['oracle_custom_balls'] });
+    register('big2', { name: 'Big 2', keys: ['fong.big2.opts'], json: ['fong.big2.opts'] });
     register('card-games', { name: 'Card games (balance and War history)', keys: ['family_arcade_balance', 'war_history', 'war_match_history'], json: ['war_history', 'war_match_history'] });
     register('tracing-words', { name: 'Trace Words', keys: ['fong_custom_words', 'fong_word_category'], json: ['fong_custom_words'] });
     register('tracing-chinese', { name: 'Trace Chinese', keys: ['chinese-settings', 'chinese-completed', 'chinese-daily'], json: ['chinese-settings', 'chinese-completed', 'chinese-daily'] });
