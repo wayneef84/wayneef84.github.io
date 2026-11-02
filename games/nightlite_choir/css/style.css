@@ -307,3 +307,6 @@ body.world-observatory .stage { position: relative; }
 @media (prefers-reduced-motion: reduce) {
     .pslot.bowl.made, .pslot.bowl.nope, .nest .reveal { animation: none; }
 }
+.cfg-dlist { margin: 6px 0; }
+.cfg-dlist .btn { margin-bottom: 8px; }
+.cfg-dlist p { margin: 4px 0; font-weight: 700; }

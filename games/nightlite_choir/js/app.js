@@ -770,11 +770,11 @@
     function openConfig(from) {
         cfgFrom = from || d.activeElement;
         cfgOpen = true;
-        cfgText = ''; $('cfgText').value = ''; $('cfgFile').value = '';
+        cfgText = ''; $('cfgText').value = ''; $('cfgText').readOnly = false; $('cfgFile').value = '';
         cfgUnlocked = false;
         $('cfgGate').hidden = true;
         cfgDisarm(); cfgMsg('');
-        syncCfg(); syncUndo();
+        syncCfg(); syncUndo(); syncDrive(); cfgDList(null);
         hideRest(true);
         d.body.className += ' cfg-lock';
         $('cfgOv').hidden = false;
@@ -806,14 +806,14 @@
         else { $('cfgText').value = text; cfgText = text; cfgMsg('Could not download. Copy the text in the box and keep it somewhere safe.' + warn, true); }
     }
     // Ask the grown-up question before anything that replaces saves. Returns true when already unlocked.
-    function cfgNeedGate(then) {
+    function cfgNeedGate(then, note) {
         if (cfgUnlocked) return true;
         var a = 6 + Math.floor(Math.random() * 4), b = 6 + Math.floor(Math.random() * 4);
-        cfgGate = { answer: a * b, then: then };
+        cfgGate = { answer: a * b, then: then, note: note || '' };
         $('cfgQ').textContent = 'Grown-ups only. What is ' + a + ' × ' + b + '?';
         $('cfgAns').value = '';
         $('cfgGate').hidden = false;
-        cfgMsg('Replacing saves is locked so little fingers cannot wipe them.');
+        cfgMsg(note ? 'Google Drive is locked so little fingers cannot use it.' : 'Replacing saves is locked so little fingers cannot wipe them.');
         $('cfgAns').focus();
         return false;
     }
@@ -822,7 +822,7 @@
         if (parseInt($('cfgAns').value, 10) === cfgGate.answer) {
             cfgUnlocked = true;
             $('cfgGate').hidden = true;
-            cfgMsg('Unlocked. Tap the button again, then tap once more to confirm.');
+            cfgMsg(cfgGate.note || 'Unlocked. Tap the button again, then tap once more to confirm.');
             var f = cfgGate.then;
             cfgGate = null;
             if (f && $(f)) $(f).focus();
@@ -912,6 +912,93 @@
         cfgMsg('Restored. Loading your saves...');
         cfgReload('Restored, but the page could not reload. Reload it to see your saves.');
     }
+    // ---- optional Google Drive copy (js/gdrive-backup.js). Restore only loads the text into the box below the file
+    // controls: Add missing and Replace then run the exact same checks, gate, confirm and undo stash as a file import.
+    var cfgDBusy = false;
+    function syncDrive() {
+        var D = w.FongGDrive, on = !!(D && D.isConfigured()), st = $('cfgDStatus');
+        $('cfgDBackup').disabled = !on || cfgDBusy;
+        $('cfgDRestore').disabled = !on || cfgDBusy;
+        if (!D) st.textContent = 'Not available on this page.';
+        else if (!on) st.textContent = D.NOT_SET_UP;
+        else st.textContent = D.isConnected() ? 'Connected to Google Drive for this visit.' : 'Not connected. Each button asks Google to sign in first.';
+    }
+    function cfgDList(items) {
+        var box = $('cfgDList');
+        while (box.firstChild) box.removeChild(box.firstChild);
+        box.hidden = !items;
+        if (!items) return;
+        if (!items.length) { box.appendChild(d.createElement('p')).textContent = 'No backups of this game in Drive yet.'; return; }
+        var i;
+        for (i = 0; i < items.length && i < 5; i++) {
+            (function (it) {
+                var b = d.createElement('button'), t = new Date(it.time);
+                b.type = 'button'; b.className = 'btn wide';
+                var lbl = d.createElement('span'); lbl.className = 'lbl';
+                lbl.textContent = (it.scope === 'all' ? 'Everything, ' : 'This game, ') + (isNaN(t.getTime()) ? '' : t.toLocaleString());
+                b.appendChild(lbl);
+                b.onclick = function () { cfgDriveLoad(it); };
+                box.appendChild(b);
+            })(items[i]);
+        }
+    }
+    // Calls then() once connected. First tap asks the grown-up question, second tap opens Google sign-in (it needs a tap).
+    function cfgDriveEnsure(then, who) {
+        var D = w.FongGDrive;
+        if (loadingSave || cfgDBusy) return;
+        if (!D || !D.isConfigured()) { syncDrive(); cfgMsg(D ? D.NOT_SET_UP : 'Google Drive is not available here.', true); return; }
+        if (D.isConnected()) { then(); return; }
+        if (!cfgNeedGate(who, 'Unlocked. Tap the Drive button again to sign in with Google.')) return;
+        cfgDBusy = true; syncDrive(); cfgMsg('Opening Google sign-in...');
+        D.connect(function (e) {
+            cfgDBusy = false; syncDrive();
+            if (e) { cfgMsg(e.message, true); return; }
+            cfgMsg('Connected.');
+            then();
+        });
+    }
+    function cfgDriveBackup() {
+        cfgDriveEnsure(function () {
+            var D = w.FongGDrive;
+            cfgDBusy = true; syncDrive(); cfgMsg('Backing up...');
+            D.backupNow(SAVE_ID, function (e) {
+                cfgDBusy = false; syncDrive();
+                if (e) { cfgMsg(e.message, true); return; }
+                cfgMsg('Backed up to Google Drive.');
+            });
+        }, 'cfgDBackup');
+    }
+    function cfgDriveRestore() {
+        cfgDriveEnsure(function () {
+            var D = w.FongGDrive;
+            cfgDBusy = true; syncDrive(); cfgMsg('Looking for backups...');
+            D.list(function (e, items) {
+                cfgDBusy = false; syncDrive();
+                if (e) { cfgMsg(e.message, true); return; }
+                var mine = [], i;
+                for (i = 0; i < items.length; i++) if (items[i].scope === SAVE_ID || items[i].scope === 'all') mine.push(items[i]);
+                cfgDList(mine);
+                cfgMsg(mine.length ? 'Pick a backup. It loads into the box above so you can check it first.' : 'No backups of this game in Drive yet.');
+            });
+        }, 'cfgDRestore');
+    }
+    function cfgDriveLoad(it) {
+        var D = w.FongGDrive, G = w.FongGameSaves;
+        if (loadingSave || cfgDBusy) return;
+        cfgDBusy = true; syncDrive(); cfgMsg('Getting that backup...');
+        D.restore(it.id, function (e, text) {
+            cfgDBusy = false; syncDrive();
+            if (e) { cfgMsg(e.message, true); return; }
+            cfgDisarm();
+            cfgText = text; $('cfgText').value = text.length > 5000 ? text.substr(0, 5000) + '\n...' : text;
+            if (text.length > 5000) { $('cfgText').readOnly = true; } else { $('cfgText').readOnly = false; }
+            var chk = G ? G.importJSON(text, { mode: 'merge', dryRun: true, only: [SAVE_ID] }) : { ok: false, errors: ['Loading saves is not available here.'] };
+            var chk2 = G && !chk.ok ? G.importJSON(text, { mode: 'replace', dryRun: true, only: [SAVE_ID] }) : chk;
+            if (!chk2.ok) { cfgMsg(chk2.errors[0] || 'That backup cannot be used.', true); return; }
+            cfgDList(null);
+            cfgMsg('Backup loaded. Choose Add missing or Replace my saves.');
+        });
+    }
     function initConfig() {
         var gears = d.querySelectorAll('.gearBtn'), i;
         for (i = 0; i < gears.length; i++) {
@@ -932,6 +1019,8 @@
         $('cfgAdd').onclick = function () { cfgImport('merge'); };
         $('cfgReplace').onclick = function () { cfgImport('replace'); };
         $('cfgRestore').onclick = cfgRestore;
+        $('cfgDBackup').onclick = cfgDriveBackup;
+        $('cfgDRestore').onclick = cfgDriveRestore;
         $('cfgUnlock').onclick = cfgUnlock;
         $('cfgAns').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); cfgUnlock(); } });
         $('cfgText').oninput = function () { cfgText = this.value; cfgDisarm(); };   // the box always holds the whole text
@@ -942,7 +1031,7 @@
             var lim = (w.FongGameSaves && w.FongGameSaves.MAX_CHARS) || 600000;
             if (f.size > lim) { cfgMsg('That file is too big.', true); return; }
             var fr = new w.FileReader();
-            fr.onload = function () { cfgText = String(fr.result); $('cfgText').value = cfgText; cfgMsg('File loaded. Choose Add missing or Replace.'); };
+            fr.onload = function () { cfgText = String(fr.result); $('cfgText').readOnly = false; $('cfgText').value = cfgText; cfgMsg('File loaded. Choose Add missing or Replace.'); };
             fr.onerror = function () { cfgMsg('Could not read that file.', true); };
             fr.readAsText(f);
         };
