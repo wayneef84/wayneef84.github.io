@@ -53,13 +53,20 @@ Only Slots reads it today (alongside its own Calm option and the system reduced-
 One file, `fong-everything.json`:
 
 ```json
-{ "format": "fong-everything", "version": 1, "theme": { }, "scores": { }, "cheer": { }, "prefs": { "calm": false } }
+{ "format": "fong-everything", "version": 1, "theme": { }, "scores": { }, "cheer": { }, "prefs": { "calm": false }, "games": { } }
 ```
 
 - `theme` is the theme file from [CUSTOMIZE.md](CUSTOMIZE.md). `scores` is the scores file from [SCORES.md](SCORES.md). `cheer` is the Cheers settings (`fong.cheer.v1`). `prefs` is `fong.prefs.v1`.
+- `games` is optional (older files have none and still import). It is the `games` object from [GAMESAVES.md](GAMESAVES.md). Replace mode only overwrites keys named in the file.
 - The child's name and spoken spelling are left out unless **Include the name used for cheers** is ticked.
 - Import checks every section the same way as its own import. A bad section is left alone and reported. Cheers text is cleaned (names to 24 characters, phrases to 20 per kind and 80 characters). A name already on the device is kept when the file has none. Scores merge or replace as chosen. The page should be reloaded after applying.
 - Limit about 600 KB. `__proto__`, `constructor` and `prototype` keys refuse the file.
+
+## Game saves
+
+Data tab, section **Game saves**. One row per game in the manifest (listed even before the game is opened) with **Export** (downloads `fong-save-<id>.json`) and **Copy** (text fallback). **Export all game saves** downloads `fong-game-saves.json`. Exports are always allowed. Importing is under Grown-up tools, behind the same question gate: choose a file or paste, Preview (dry run, nothing written), then Apply. Merge keeps any key already on the device. Replace overwrites the keys in the file. Reload the game afterwards.
+
+Safety rules: only keys in the game's manifest entry are written, anything else is ignored and counted as skipped. Values must be text under 200,000 characters, keys marked JSON must parse, `__proto__`, `constructor` and `prototype` keys refuse the file, 600,000 character file cap. High scores, theme, cheers and play options are not part of game saves. Full details: [GAMESAVES.md](GAMESAVES.md). Nightlite Choir+ has its own gear overlay that uses the same code (no gate there, Replace needs a second tap).
 
 ## Reset app
 

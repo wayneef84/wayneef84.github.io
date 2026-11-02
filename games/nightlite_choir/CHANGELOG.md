@@ -1,6 +1,7 @@
 # Nightlite Choir+: Changelog
 
 ## Unreleased
+- Settings overlay: a gear button (aria-label "Settings") beside Home on every screen. Volume and Mute (same state as the world controls), Export this game, Import this game (file or pasted text, Add missing or Replace), and a link to the arcade Settings, Data tab for all-site export and import. Replace asks for a second tap. Escape closes it, focus is trapped and returns to the gear. Uses `js/gamesaves.js` (`FongGameSaves`, id `nightlite-choir`). After an import the page reloads, and saving is paused until then so old memory cannot overwrite the import. Home is icon only below 480px wide. No rule changes.
 - Cheers button next to Wish, Collection and Mixing pot. A new hatched blend or a new Mixing pot discovery calls `FongCheer.cheer('big')`, guarded (`js/cheer.js`, docs/CHEER.md). Off until a parent turns it on. No rule changes.
 
 ## v0.4.0 - Milestone 3 (2026-10-29)
