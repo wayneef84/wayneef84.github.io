@@ -85,7 +85,8 @@ Copy and adapt these files into this folder. Do not import from `games/sprunki_v
 - Recipes have 2 to 5 distinct ingredients. Ingredients are base friends or blends the child owns. No two recipes share an ingredient set, so one pot never matches two blends. 21 blends now: the 6 above plus 15 from set CLAUDE (6 pairs, 4 triples, 3 quads, 2 quints, see [RECIPES_CLAUDE.md](RECIPES_CLAUDE.md)). A second set can be dropped in.
 - Match my stage: fills the pot with up to 5 distinct stage friends. If part of the stage belongs to a recipe not found yet, it uses that part.
 - What can I make?: big cards. With nothing in the pot: recipes whose friends are all on the stage. With picks: recipes that include them. Unfound recipes come first, shown as the ingredient faces, "?" and the clue. Tapping a card fills the pot.
-- Hints (numbers only, never names): "Almost! Add N more friend(s)" when the pick is part of a recipe not found yet whose other friends you own. "That is a lot of friends. Try fewer." when the pick holds a whole recipe plus extras.
+- Hints (numbers only, never names): "Almost! Add N more friend(s)" when the pick is part of a recipe NOT found yet whose other friends you own (found recipes never give "Almost"). "That is a lot of friends. Try fewer." when the pick holds a whole recipe (found or not) plus extras. If both are true, "Try fewer" wins, so the two never contradict. No match and no hint: "Not sure about that group. Try Mix and see." Nothing is ever lost.
+- Found recipes: still mixable ("made it again"), shown last in What can I make? with face and name, skipped by Match my stage and by "Almost".
 - Rare friends: 1 in 10 on a successful mix or an egg, a shimmering twin of the blend (hue shift, sparkles, brighter sound) given in addition to the normal one. Collectible only, never needed. Off switch in the pot, saved.
 - Tempo of a blend: first listed ingredient's world, through blends if needed.
 

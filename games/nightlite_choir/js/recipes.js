@@ -56,6 +56,16 @@
         }
         return out;
     }
+    // Drum voices whose pitch follows C pentatonic notes (drip, clop, thrum): a rare can only go up whole octaves (ratio 2).
+    // Unpitched voices (kick, hat, tick and so on) get a brighter 1.25.
+    var NOTE_DRUMS = { drip: 1, clop: 1, thrum: 1, whoosh: 1 };
+    function rareDrumPitch(spec) {
+        var p = spec.pitch || 1;
+        if (spec.voice === 'whoosh') return p;                 // sweep ends on set notes: leave it alone
+        return NOTE_DRUMS[spec.voice] ? p * 2 : p * 1.25;
+    }
+    // Wrappers copy the base amp so the loudness stays the same (render normalises on the top level spec).
+    // lvl is the level of a layer inside a wrapper (js/synth.js, layers only).
     function rareSynth(spec) {
         var o = {}, k, i, chord, has12, layers;
         for (k in spec) if (hasOwn(spec, k)) o[k] = spec[k];
@@ -67,41 +77,78 @@
             if (!has12) chord.push(12);
             o.chord = chord;
         } else if (spec.kind === 'voice') {
-            o = { kind: 'layers', layers: [spec, { kind: 'voice', amp: (spec.amp || 1) * 0.5, seq: shift(spec.seq || [], 12) }] };
+            o = { kind: 'layers', amp: spec.amp || 1, layers: [spec, { kind: 'voice', lvl: 0.5, seq: shift(spec.seq || [], 12) }] };
         } else if (spec.kind === 'drum') {
-            o.pitch = (spec.pitch || 1) * 1.25;
+            o.pitch = rareDrumPitch(spec);
         } else if (spec.kind === 'layers') {
             layers = [];
             for (i = 0; i < spec.layers.length; i++) layers.push(rareSynth(spec.layers[i]));
             o = { kind: 'layers', layers: layers };
             if (spec.amp) o.amp = spec.amp;
         } else if (spec.kind === 'noise') {
-            o = { kind: 'layers', layers: [spec, { kind: 'tone', wave: 'sine', harm: 0.5, decays: true, a: 0.003, d: 0.4, amp: 0.3,
+            o = { kind: 'layers', amp: spec.amp || 1, layers: [spec, { kind: 'tone', wave: 'sine', harm: 0.5, decays: true, a: 0.003, d: 0.4, lvl: 0.35,
                 seq: [null, null, null, 96, null, null, null, null, null, 91, null, null, null, null, 93, null] }] };
         }
         return o;
     }
 
     // ---- model: tables built from the base choirers and the blend choirers
+    // Tables from the base choirers and the blend choirers. Blends with a problem (wrong count, unknown or repeated ingredient,
+    // same ingredient set as an earlier blend, a cycle, or an ingredient that was itself rejected) are left out of everything
+    // (byId, blendById, recipes, valid) and listed in errors.
     function build(baseChars, blendChars) {
-        var m = { byId: {}, blendById: {}, recipeByKey: {}, recipes: [], errors: [] }, i, j, ch, ok, key, ing, seen;
-        for (i = 0; i < baseChars.length; i++) m.byId[baseChars[i].id] = baseChars[i];
-        for (i = 0; i < blendChars.length; i++) { m.byId[blendChars[i].id] = blendChars[i]; m.blendById[blendChars[i].id] = blendChars[i]; }
-        for (i = 0; i < blendChars.length; i++) {
-            ch = blendChars[i]; ing = ch.blend; ok = true;
-            if (!Array.isArray(ing) || ing.length < MIN || ing.length > MAX) { m.errors.push(ch.id + ': needs 2 to 5 ingredients'); continue; }
-            seen = {};
-            for (j = 0; j < ing.length; j++) {
-                if (!m.byId[ing[j]]) { m.errors.push(ch.id + ': unknown ingredient ' + ing[j]); ok = false; }
-                if (ing[j] === ch.id) { m.errors.push(ch.id + ': uses itself'); ok = false; }
-                if (seen[ing[j]]) { m.errors.push(ch.id + ': repeated ingredient ' + ing[j]); ok = false; }
-                seen[ing[j]] = true;
+        var m = { byId: {}, blendById: {}, recipeByKey: {}, recipes: [], errors: [], valid: [] }, i, j, ch, ing, seen, key, changed;
+        var live = {}, reject = {}, baseIds = {}, state;
+        for (i = 0; i < baseChars.length; i++) baseIds[baseChars[i].id] = baseChars[i];
+        for (i = 0; i < blendChars.length; i++) live[blendChars[i].id] = blendChars[i];
+        function drop(c, why) { if (live[c.id] === c) { delete live[c.id]; m.errors.push(c.id + ': ' + why); changed = true; } }
+        function known(id) { return hasOwn(baseIds, id) || hasOwn(live, id); }
+        function walk(id, path) {                              // true when a cycle is reached from id
+            if (path[id] === 1) return true;
+            if (path[id] === 2 || !hasOwn(live, id)) return false;
+            path[id] = 1;
+            var list = live[id].blend, q;
+            for (q = 0; q < list.length; q++) if (walk(list[q], path)) return true;
+            path[id] = 2;
+            return false;
+        }
+        do {
+            changed = false;
+            for (i = 0; i < blendChars.length; i++) {          // structure
+                ch = blendChars[i];
+                if (live[ch.id] !== ch) continue;
+                ing = ch.blend; seen = {};
+                if (!Array.isArray(ing) || ing.length < MIN || ing.length > MAX) { drop(ch, 'needs 2 to 5 ingredients'); continue; }
+                if (hasOwn(baseIds, ch.id)) { drop(ch, 'id is also a base friend'); continue; }
+                for (j = 0; j < ing.length; j++) {
+                    if (ing[j] === ch.id) { drop(ch, 'uses itself'); break; }
+                    if (!known(ing[j])) { drop(ch, 'unknown or rejected ingredient ' + ing[j]); break; }
+                    if (seen[ing[j]]) { drop(ch, 'repeated ingredient ' + ing[j]); break; }
+                    seen[ing[j]] = true;
+                }
             }
-            if (!ok) continue;
-            key = keyOf(ing);
-            if (hasOwn(m.recipeByKey, key)) { m.errors.push(ch.id + ': same ingredients as ' + m.recipeByKey[key]); continue; }
+            seen = {};
+            for (i = 0; i < blendChars.length; i++) {          // same ingredient set: the first one wins
+                ch = blendChars[i];
+                if (live[ch.id] !== ch) continue;
+                key = keyOf(ch.blend);
+                if (hasOwn(seen, key)) drop(ch, 'same ingredients as ' + seen[key]); else seen[key] = ch.id;
+            }
+            state = {};
+            for (i = 0; i < blendChars.length; i++) {          // cycles
+                ch = blendChars[i];
+                if (live[ch.id] === ch && walk(ch.id, state)) { drop(ch, 'ingredient cycle'); state = {}; }
+            }
+        } while (changed);
+        for (i = 0; i < baseChars.length; i++) m.byId[baseChars[i].id] = baseChars[i];
+        for (i = 0; i < blendChars.length; i++) {
+            ch = blendChars[i];
+            if (live[ch.id] !== ch) continue;
+            m.valid.push(ch);
+            m.byId[ch.id] = ch; m.blendById[ch.id] = ch;
+            key = keyOf(ch.blend);
             m.recipeByKey[key] = ch.id;
-            m.recipes.push({ key: key, id: ch.id, ing: distinct(ing), tier: 1 });
+            m.recipes.push({ key: key, id: ch.id, ing: distinct(ch.blend), tier: 1 });
         }
         for (i = 0; i < m.recipes.length; i++) {
             for (j = 0; j < m.recipes[i].ing.length; j++) if (m.blendById[m.recipes[i].ing[j]]) m.recipes[i].tier = 2;
@@ -147,8 +194,8 @@
                 }
                 if (r.ing.length < picks.length && subset(r.ing, picks)) many = true;
             }
+            if (many) return { kind: 'many' };            // the pick already holds a whole recipe: never say "almost"
             if (best) return { kind: 'almost', n: best };
-            if (many) return { kind: 'many' };
             return null;
         };
         // Recipes to offer. With picks: makeable recipes that contain every pick. Without: recipes whose ingredients are ALL on the stage.

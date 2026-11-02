@@ -29,7 +29,7 @@ function makeStub() {
     });
     return p;
 }
-function loadWindow(randomFn, withApp) {
+function loadWindow(randomFn, withApp, hook) {
     var win = { Math: Object.create(Math) };
     win.window = win;
     if (randomFn) win.Math.random = randomFn;
@@ -46,6 +46,7 @@ function loadWindow(randomFn, withApp) {
     var extras = fs.readdirSync(DIR + 'worlds').filter(function (f) { return /^blends_.*\.js$/.test(f) && f !== 'blends_claude.js'; });
     for (i = 0; i < extras.length; i++) vm.runInContext(read('worlds/' + extras[i]), ctx, { filename: extras[i] });
     vm.runInContext(read('recipes.js'), ctx, { filename: 'recipes.js' });
+    if (hook) hook(win);
     if (withApp) vm.runInContext(read('app.js'), ctx, { filename: 'app.js' });
     return win;
 }
@@ -237,7 +238,7 @@ assert.strictEqual(app2.Nightlite.state.sparks, 5);
 store = { 'nightlite.save': 'not json' };
 assert.strictEqual(loadWindow(seeded(1), true).Nightlite.state.sparks, 0);
 // a save from the game with a found key for a recipe that is not in this build is ignored, not fatal
-store = { 'nightlite.save': JSON.stringify({ v: 5, blends: ['nope'], found: ['a+b'], rares: ['nope_rare', 'mossweave_rare'] }) };
+store = { 'nightlite.save': JSON.stringify({ v: 5, blends: ['nope', 'mossweave'], found: ['a+b'], rares: ['nope_rare', 'mossweave_rare', 'halohum_rare'] }) };
 var app3 = loadWindow(seeded(1), true);
 same(Object.keys(app3.Nightlite.state.found), []);
 assert(app3.Nightlite.state.rares.mossweave_rare && app3.Nightlite.state.owned.mossweave, 'rare saved in nightlite.save comes back');
@@ -276,5 +277,109 @@ all.Nightlite.hatch();
 assert.strictEqual(st2.sparks, 9, 'sparks come back when every blend is owned');
 assert.strictEqual(st2.reveal.id, null, 'twinkle reveal');
 assert.strictEqual(st2.nest, null);
+
+// ---- review fixes
+// vetting: every NightliteBlendsExtra_* set plus the base blends must build with no errors (this is how a new set is checked)
+var vetted = [], gk;
+for (gk in win) if (gk.indexOf('NightliteBlendsExtra_') === 0) vetted.push(gk);
+assert(vetted.length >= 1, 'at least the CLAUDE set is loaded');
+var vet = R.build(bases, R.collectBlends(win));
+assert.strictEqual(vet.errors.length, 0, 'vetting: ' + vet.errors.join('; '));
+assert.strictEqual(vet.valid.length, R.collectBlends(win).length, 'every blend is valid');
+
+// a bad later set: duplicate ingredient set, cycle, a blend that needs a rejected one, base id clash, bad count
+var badSet = R.build(bases, [
+    { id: 'g1', blend: ['mossle', 'puddlet'] },
+    { id: 'g2', blend: ['puddlet', 'mossle'] },          // same set as g1
+    { id: 'c1', blend: ['c2', 'clopsy'] },
+    { id: 'c2', blend: ['c1', 'skeinie'] },               // cycle with c1
+    { id: 'd1', blend: ['g2', 'skeinie'] },               // needs a rejected blend
+    { id: 'mossle', blend: ['clopsy', 'skeinie'] },       // clashes with a base id
+    { id: 'ok1', blend: ['g1', 'hedgey'] }
+]);
+same(badSet.valid.map(function (c) { return c.id; }), ['g1', 'ok1'], 'only working blends stay: ' + badSet.errors.join('; '));
+assert.strictEqual(badSet.errors.length, 5);
+assert.strictEqual(badSet.match(['mossle', 'puddlet']), 'g1');
+assert(!badSet.byId.g2 && !badSet.byId.c1 && !badSet.blendById.d1, 'rejected blends are nowhere in the tables');
+assert.strictEqual(badSet.recipes.length, 2);
+var selfCycle = R.build(bases, [{ id: 's1', blend: ['s1', 'mossle'] }, { id: 'a1', blend: ['a2', 'mossle'] }, { id: 'a2', blend: ['a3', 'mossle'] }, { id: 'a3', blend: ['a1', 'clopsy'] }]);
+assert.strictEqual(selfCycle.valid.length, 0, 'self use and a 3 cycle are rejected');
+// the app drops a bad extra from every list (eggs, tray, counts)
+store = {};
+var badApp = (function () {
+    var warned = [];
+    var w2 = loadWindow(seeded(7), true, function (w3) {
+        w3.NightliteBlendsExtra_ZZ = { chars: [{ id: 'dupset', name: 'Dupset', blend: ['puddlet', 'mossle'], art: { body: 'round', color: '#aabbcc' }, synth: { kind: 'tone', seq: [60] } }] };
+        w3.console = { warn: function (m) { warned.push(m); } };
+    });
+    return { w: w2, warned: warned };
+})();
+assert(badApp.w.Nightlite, 'app runs with a bad extra set');
+assert(!badApp.w.Nightlite.charById.dupset, 'creature with a duplicate recipe does not exist');
+assert(badApp.warned.length >= 1 && /dupset/.test(badApp.warned[0]), 'errors are visible in console.warn');
+assert.strictEqual(badApp.w.NightliteBlends.chars.length, blends.length, 'blend list has no orphans');
+
+// hints: a whole recipe inside the pick wins over "almost"
+assert.strictEqual(model.hint(['mossle', 'puddlet', 'glimmow'], none, none).kind, 'many', 'Lilybop inside, glimmow is part of Nodlight: not "almost"');
+
+// rare voice and noise friends are not louder than the base
+function peakOf(spec) {
+    var out = win.NightliteSynth.render(spec, 90, 11).data, pk = 0, q;
+    for (q = 0; q < out.length; q++) if (Math.abs(out[q]) > pk) pk = Math.abs(out[q]);
+    return pk;
+}
+var loudChecked = 0;
+blends.forEach(function (b) {
+    var base = peakOf(b.synth), rare = peakOf(R.rareSynth(b.synth));
+    assert(rare <= base * 1.3 + 1e-9, b.id + ' rare peak ' + rare + ' vs base ' + base);
+    assert(rare > 0.01, b.id + ' rare is not silent');
+    loudChecked++;
+});
+['voice', 'noise'].forEach(function (kind) {
+    var spec = kind === 'voice' ? { kind: 'voice', amp: 0.7, seq: [[72, 'o', 3], null, null, null, [76, 'o', 2], null, null, null, null, null, null, null, null, null, null, null] }
+                                : { kind: 'noise', lp: 900, lfo: 2, depth: 0.7, amp: 0.5 };
+    assert(peakOf(R.rareSynth(spec)) <= peakOf(spec) * 1.3 + 1e-9, kind + ' rare not louder');
+    assert.strictEqual(R.rareSynth(spec).amp, spec.amp, kind + ' wrapper keeps the amp');
+});
+assert(loudChecked >= 21);
+
+// drum voices: note-based voices only go up whole octaves, unpitched ones get 1.25
+['kick', 'snare', 'hat', 'tick', 'clap', 'tom', 'shaker', 'pop', 'wood', 'drip', 'rustle', 'clop', 'click', 'whoosh', 'thrum'].forEach(function (v) {
+    var spec = { kind: 'drum', voice: v, pitch: 1, amp: 0.6, pattern: 'x...x.x.x...x.x.' }, rs = R.rareSynth(spec), ratio = rs.pitch / spec.pitch;
+    if (v === 'drip' || v === 'clop' || v === 'thrum') assert.strictEqual(ratio, 2, v + ' goes up an octave');
+    else if (v === 'whoosh') assert.strictEqual(ratio, 1, 'whoosh is left alone');
+    else assert.strictEqual(ratio, 1.25, v + ' is unpitched');
+    assert(peakOf(rs) > 0.01 && peakOf(rs) <= peakOf(spec) * 1.3 + 1e-9, v + ' renders and is not louder');
+});
+var dr = R.rareSynth({ kind: 'drum', voice: 'drip', pitch: 0.8 });
+assert.strictEqual(dr.pitch, 1.6);
+
+// tamper test: hand edited saves
+store = { 'nightlite.save': JSON.stringify({ v: 5, sparks: 1e9,
+    blends: ['constructor', '__proto__', 'toString', 'hasOwnProperty', 5, null, 'mossweave'],
+    found: ['constructor', '__proto__', 'valueOf', 'mossle+skeinie', { a: 1 }],
+    rares: ['constructor', '__proto___rare', 'toString_rare', 'halohum_rare', 'mossweave_rare', 'mossweave_rare_rare', '_rare'] }) };
+var tam = loadWindow(seeded(5), true).Nightlite.state;
+same(Object.keys(tam.owned).sort(), ['mossweave'], 'only real blends owned');
+same(Object.keys(tam.found), ['mossle+skeinie']);
+same(Object.keys(tam.rares), ['mossweave_rare'], 'rares need the blend owned and a real id');
+assert.strictEqual(tam.sparks, 99, 'sparks are capped');
+assert.strictEqual(Object.prototype.polluted, undefined);
+var longList = [], li;
+for (li = 0; li < 250; li++) longList.push('nothing' + li);
+longList[210] = 'halohum'; longList[10] = 'dewglint';
+store = { 'nightlite.save': JSON.stringify({ v: 5, blends: longList, found: longList.slice(), rares: longList.map(function (x) { return x + '_rare'; }) }) };
+var cap = loadWindow(seeded(5), true).Nightlite.state;
+same(Object.keys(cap.owned), ['dewglint'], 'lists are cut at 200 entries');
+store = { 'nightlite.save': JSON.stringify({ v: 5, blends: ['halohum'], found: [], rares: ['nothing_rare'] }) };
+same(Object.keys(loadWindow(seeded(5), true).Nightlite.state.rares), [], 'unknown rare ignored');
+
+// hatch while the pot screen is open does not break
+store = {};
+var pa = loadWindow(seeded(8), true);
+pa.Nightlite.state.screen = 'pot';
+pa.Nightlite.state.nest = { left: 0 };
+pa.Nightlite.hatch();
+assert.strictEqual(Object.keys(pa.Nightlite.state.owned).length, 1);
 
 console.log('nightlite tests passed (' + checked + ' recipe orders, ' + model.recipes.length + ' recipes)');

@@ -31,6 +31,7 @@
     var DATA_KEY = 'nightlite.save';
     var RARE_KEY = 'nightlite.rare';   // '1' or '0': the Rare friends toggle (default on)
     var POT_SLOTS = 5;
+    var SAVE_LIST_CAP = 200;           // most entries read from each saved list (blends, found, rares)
     var R = w.NightliteRecipes;
 
     var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
@@ -95,20 +96,25 @@
         if (!data || typeof data !== 'object') return;
         n = parseInt(data.sparks, 10);
         S.sparks = (n >= 0) ? Math.min(SPARK_CAP, n) : 0;
-        if (data.blends instanceof Array) {
-            for (i = 0; i < data.blends.length; i++) if (blendById[data.blends[i]]) S.owned[data.blends[i]] = true;
-        }
-        if (data.found instanceof Array) {
-            for (i = 0; i < data.found.length; i++) {
-                key = data.found[i];
-                id = recipeByKey[key];
-                if (id) { S.found[key] = true; S.owned[id] = true; }     // a found recipe always means the blend is owned
+        // A save file can be edited by hand: ids are looked up with hasOwnProperty (so "constructor" means nothing),
+        // each list is capped, and a rare only counts when its blend is already owned.
+        if (Array.isArray(data.blends)) {
+            for (i = 0; i < data.blends.length && i < SAVE_LIST_CAP; i++) {
+                id = data.blends[i];
+                if (typeof id === 'string' && blendById.hasOwnProperty(id)) S.owned[id] = true;
             }
         }
-        if (data.rares instanceof Array) {
-            for (i = 0; i < data.rares.length; i++) {
+        if (Array.isArray(data.found)) {
+            for (i = 0; i < data.found.length && i < SAVE_LIST_CAP; i++) {
+                key = data.found[i];
+                if (typeof key !== 'string' || !recipeByKey.hasOwnProperty(key)) continue;
+                S.found[key] = true; S.owned[recipeByKey[key]] = true;     // a found recipe always means the blend is owned
+            }
+        }
+        if (Array.isArray(data.rares)) {
+            for (i = 0; i < data.rares.length && i < SAVE_LIST_CAP; i++) {
                 id = data.rares[i];
-                if (R.isRareId(id) && blendById[R.baseId(id)]) { S.rares[id] = true; S.owned[R.baseId(id)] = true; }
+                if (typeof id === 'string' && R.isRareId(id) && blendById.hasOwnProperty(R.baseId(id)) && S.owned[R.baseId(id)]) S.rares[id] = true;
             }
         }
         if (data.nest && typeof data.nest === 'object') {
@@ -380,8 +386,9 @@
         if (S.view === 'blends') return ownedBlendChars();
         return S.world.chars;
     }
+    function blendList() { return (model && model.valid) || []; }       // the one list of blends: tray, pot, eggs, book and counts
     function ownedBlendChars() {
-        var out = [], i, bl = w.NightliteBlends.chars;
+        var out = [], i, bl = blendList();
         for (i = 0; i < bl.length; i++) {
             if (S.owned[bl[i].id]) out.push(bl[i]);
             if (S.rares[R.rareId(bl[i].id)]) out.push(charById[R.rareId(bl[i].id)]);
@@ -879,7 +886,8 @@
             return;
         }
         cfgDisarm();
-        var keys = [['nightlite.save', snap.save], ['nightlite.mix', snap.mix], ['nightlite.vol', snap.vol], [RARE_KEY, snap.rare]], i, now = {}, ok = true, k;
+        var keys = [['nightlite.save', snap.save], ['nightlite.mix', snap.mix], ['nightlite.vol', snap.vol]], i, now = {}, ok = true, k;
+        if (snap.hasOwnProperty('rare')) keys.push([RARE_KEY, snap.rare]);      // an older undo copy has no rare field: leave it as it is
         loadingSave = true;
         for (i = 0; i < keys.length; i++) now[keys[i][0]] = store(keys[i][0]);
         try {
@@ -1105,7 +1113,7 @@
     }
     // The pot tray: the 12 base friends, then the blends you own
     function potChoices() {
-        var list = baseChars(), bl = w.NightliteBlends.chars, i;
+        var list = baseChars(), bl = blendList(), i;
         for (i = 0; i < bl.length; i++) if (S.owned[bl[i].id]) list.push(bl[i]);
         return list;
     }
@@ -1151,7 +1159,7 @@
         if (ids.length < R.MIN) { potMsg(ids.length ? 'Pick one more friend.' : 'Nothing is used up. Try 2 to 5 friends!'); return; }
         if (model.match(ids)) { potMsg('Ready. Tap Mix!'); return; }
         h = model.hint(ids, S.owned, S.found);
-        potMsg(h ? hintText(h) : 'Ready. Tap Mix!');
+        potMsg(h ? hintText(h) : 'Not sure about that group. Try Mix and see.');
     }
     function mixPot() {
         var ids = potIds(), id, blend, isNew, key, rare = false, newRare = false, h;
@@ -1258,7 +1266,7 @@
     // The nest holds one egg at a time. An egg costs EGG_COST sparks. It hatches by itself after about HATCH_SECS
     // seconds while the game is open and visible, and every tap on it warms it up (WARM_SHAVE seconds sooner). Waiting is optional.
     function unownedBlends() {
-        var out = [], i, bl = w.NightliteBlends.chars;
+        var out = [], i, bl = blendList();
         for (i = 0; i < bl.length; i++) if (!S.owned[bl[i].id]) out.push(bl[i]);
         return out;
     }
@@ -1384,6 +1392,7 @@
         updateSparkUI(); saveProgress();
         if (S.screen === 'collect') renderCollect();
         else if (S.screen === 'world') renderTiles();
+        else if (S.screen === 'pot') renderPot();       // the new blend joins the pot tray
     }
     function renderCollect() {
         renderNest();
@@ -1451,7 +1460,7 @@
         }
     }
     function renderOwned() {
-        var box = $('ownedBox'), rbox = $('rareBox'), bl = w.NightliteBlends.chars, i, ch, c, n = 0, nr = 0;
+        var box = $('ownedBox'), rbox = $('rareBox'), bl = blendList(), i, ch, c, n = 0, nr = 0;
         box.innerHTML = '';
         rbox.innerHTML = '';
         for (i = 0; i < bl.length; i++) {
@@ -1492,8 +1501,12 @@
                 charById[worlds[id].chars[j].id] = worlds[id].chars[j];
             }
         }
-        var bl = R.collectBlends(w), bases = [], rc;        // old blends plus every NightliteBlendsExtra_* set
+        var all = R.collectBlends(w), bl, bases = [], rc, ei;        // old blends plus every NightliteBlendsExtra_* set
         for (id in charById) if (charById.hasOwnProperty(id)) bases.push(charById[id]);
+        model = R.build(bases, all);
+        bl = model.valid;                                  // only blends that have a working recipe exist in the game
+        if (w.NightliteBlends) w.NightliteBlends.chars = bl;
+        for (ei = 0; ei < model.errors.length; ei++) { try { if (w.console && w.console.warn) w.console.warn('Nightlite blend left out: ' + model.errors[ei]); } catch (e) {} }
         for (j = 0; j < bl.length; j++) {
             bl[j].world = 'blends';
             bl[j].isBlend = true;
@@ -1501,7 +1514,6 @@
             charById[bl[j].id] = bl[j];
             blendById[bl[j].id] = bl[j];
         }
-        model = R.build(bases, bl);
         recipeByKey = model.recipeByKey;
         for (j = 0; j < bl.length; j++) {
             bl[j].bpm = model.tempo(bl[j].id, 90);          // tempo of the first ingredient's world, down through blends
