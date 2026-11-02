@@ -18,6 +18,7 @@ Open `index.html` (works from file:// and GitHub Pages) or visit games/nightlite
 - An egg costs 5 sparks. Put it in the nest. It hatches by itself in about 20 seconds, or tap it to warm it up and make it hatch sooner. It hatches a blend you do not have yet. If you have all 6, you get a happy twinkle and the sparks come back.
 - The Mixing pot: pick any two of the 12 friends and tap Mix. A matching pair makes a blend at once (nothing is used up) and writes the recipe in the Discovery book. Other pairs say "Not this time" and nothing is lost.
 - Everything the child earns is saved in the browser. Nothing is sent anywhere.
+- The gear button (Settings) is on every screen. It has Volume, Mute, Export this game and Import this game. Export downloads `fong-save-nightlite-choir.json`. Import takes that file (or pasted text): Add missing keeps what you have, Replace asks a grown-up question first, then a second tap, and overwrites only what is in the file. Restore previous brings back what you had before the last import. All games at once: arcade Settings, Data tab.
 
 ## More
 [DESIGN.md](DESIGN.md) | [IP-GUARDRAILS.md](IP-GUARDRAILS.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [ASSET_LOG.md](ASSET_LOG.md)

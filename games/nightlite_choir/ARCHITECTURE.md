@@ -13,6 +13,7 @@ games/nightlite_choir/
   js/worlds/attic.js  world data: theme, 100 BPM, 4 creatures, dust-mote glow
   js/worlds/observatory.js  world data: theme, 80 BPM, 4 creatures, star-sky look
   js/worlds/blends.js 6 blend creatures: art spec, synth spec, `blend: [parentA, parentB]` (the recipe table)
+  ../../js/gamesaves.js  shared FongGameSaves (export and import of the keys below)
   js/app.js           doors, screens, stage, tray, drag, undo, save/load, audio context, keys
   *.md                README, ARCHITECTURE, INFO, TODO, CHANGELOG, CLAUDE, AGENT, DESIGN, IP-GUARDRAILS, ASSET_LOG
 ```
@@ -30,6 +31,9 @@ games/nightlite_choir/
 - Observatory look: `glow.kind: 'stars'` builds a skylight and telescope silhouette (inline SVG), twinkling stars and three slow shooting stars (`buildSky`). Panels are translucent so the sky shows. `drawConstellation` puts an SVG of dashed pastel pink and lilac lines between the filled slots inside the stage. It has `pointer-events: none` and is redrawn on every stage change and resize.
 - Theme per world: CSS variables set by `applyTheme`. The Attic adds a plank background, a cardboard stage and a sunbeam with dust motes (`glow.kind: 'dust'`). All access is wrapped in try/catch, so storage can be blocked.
 - Debug hook: `window.Nightlite` (state, voices, addChar). Not used by the UI.
+
+## Settings overlay
+`#cfgOv` in index.html, logic in `js/app.js` (`openConfig`, `closeConfig`, `cfgExport`, `cfgImport`). Any `.gearBtn` opens it. `setVolume` and `setMuted` are shared with the world controls and call `syncCfg`. Import is a dry run first, then a real write through `FongGameSaves.importJSON(text, {mode, only: ['nightlite-choir']})`, then a reload. The `loadingSave` flag stops `saveProgress` so the old in-memory state cannot overwrite the import. The document key handler (`onKey`) closes the overlay on Escape and ignores other keys while it is open. Everything else in the body is marked `inert` and `aria-hidden` and restored on close. `nightlite.undo` holds the one-step undo and is not in the manifest.
 
 ## Milestone 3: sparks, eggs, pot (v0.4.0)
 - Screens: `doors`, `world`, `collect`, `pot` (`S.screen`). `openScreen(name)` pushes the current screen on `S.back` and pauses sound if it came from a world (the stage is kept). `goBack()` pops it and restarts the voices via `resumeWorld()`. `leaveWorld` and `enterWorld` clear the stack. Collection and pot use the calm door theme.

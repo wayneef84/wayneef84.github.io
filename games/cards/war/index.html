@@ -1737,6 +1737,9 @@
                 this.el.settingsModal.classList.add('hidden');
             };
 
+            // Saved history can come from an imported save: every stored value written into HTML goes through warEsc.
+            function warEsc(v) { return CardUtils.escapeHTML(v); }
+
             // History Management
             WarUI.prototype._loadHistory = function() {
                 var savedJson = localStorage.getItem('war_history');
@@ -1807,10 +1810,10 @@
                     var oppPoints = entry.player2Points !== undefined ? entry.player2Points : '-';
 
                     html += '<tr style="border-bottom: 1px solid #333;" class="' + resultClass + '">';
-                    html += '<td style="padding: 6px;">' + entry.date + '</td>';
+                    html += '<td style="padding: 6px;">' + warEsc(entry.date) + '</td>';
                     html += '<td style="padding: 6px; text-align: center;">' + resultText + '</td>';
-                    html += '<td style="padding: 6px; text-align: right;">' + yourPoints + '</td>';
-                    html += '<td style="padding: 6px; text-align: right;">' + oppPoints + '</td>';
+                    html += '<td style="padding: 6px; text-align: right;">' + warEsc(yourPoints) + '</td>';
+                    html += '<td style="padding: 6px; text-align: right;">' + warEsc(oppPoints) + '</td>';
                     html += '</tr>';
                 }
 
@@ -1885,7 +1888,7 @@
 
                 // Round header
                 html += '<div class="round-header">';
-                html += '<span class="round-id">#' + round.roundId + '</span>';
+                html += '<span class="round-id">#' + warEsc(round.roundId) + '</span>';
                 html += '<span class="round-time">' + this._formatTime(round.timestamp) + '</span>';
                 html += '</div>';
 
@@ -1972,12 +1975,12 @@
                         var gameResult = gameEntry.winner || gameEntry.result;
 
                         legacyHTML += '<tr style="border-bottom: 1px solid #333;">';
-                        legacyHTML += '<td style="padding: 8px;">' + gameEntry.date + '</td>';
+                        legacyHTML += '<td style="padding: 8px;">' + warEsc(gameEntry.date) + '</td>';
                         legacyHTML += '<td style="padding: 8px; text-align: center; color: ' + (gameResult === 'win' ? '#4ade80' : (gameResult === 'lose' ? '#ef4444' : '#888')) + '">';
                         legacyHTML += (gameResult === 'win' ? 'You' : (gameResult === 'lose' ? 'Opponent' : 'Tie'));
                         legacyHTML += '</td>';
-                        legacyHTML += '<td style="padding: 8px; text-align: right;">' + gameEntry.player1Points + '</td>';
-                        legacyHTML += '<td style="padding: 8px; text-align: right;">' + gameEntry.player2Points + '</td>';
+                        legacyHTML += '<td style="padding: 8px; text-align: right;">' + warEsc(gameEntry.player1Points) + '</td>';
+                        legacyHTML += '<td style="padding: 8px; text-align: right;">' + warEsc(gameEntry.player2Points) + '</td>';
                         legacyHTML += '</tr>';
                     }
 
@@ -1997,21 +2000,23 @@
                 var winnerText = match.winner === 'you' ? 'You Won' : 'Opponent Won';
                 var winnerColor = match.winner === 'you' ? '#4ade80' : '#ef4444';
 
-                var html = '<div class="match-entry" id="match-' + match.matchId + '" onclick="warUI._toggleMatchExpand(' + match.matchId + ')">';
+                var mid = parseInt(match.matchId, 10);
+                if (isNaN(mid)) { mid = 0; }
+                var html = '<div class="match-entry" id="match-' + mid + '" onclick="warUI._toggleMatchExpand(' + mid + ')">';
 
                 // Match header (always visible)
                 html += '<div class="match-header">';
                 html += '<div>';
-                html += '<strong>Match #' + match.matchId + '</strong> - ' + matchDate + '<br>';
+                html += '<strong>Match #' + mid + '</strong> - ' + warEsc(matchDate) + '<br>';
                 html += '<span style="color: ' + winnerColor + '">' + winnerText + '</span>';
-                html += ' | ' + match.totalRounds + ' rounds';
-                html += ' | You ' + match.yourFinalScore + ' - Opp ' + match.oppFinalScore;
+                html += ' | ' + warEsc(match.totalRounds) + ' rounds';
+                html += ' | You ' + warEsc(match.yourFinalScore) + ' - Opp ' + warEsc(match.oppFinalScore);
                 html += '</div>';
                 html += '<span class="expand-icon">▶</span>';
                 html += '</div>';
 
                 // Match rounds (collapsible)
-                html += '<div class="match-rounds" id="match-rounds-' + match.matchId + '" style="display: none;">';
+                html += '<div class="match-rounds" id="match-rounds-' + mid + '" style="display: none;">';
                 if (match.hasRoundHistory && match.rounds && match.rounds.length > 0) {
                     for (var r = 0; r < match.rounds.length; r++) {
                         html += this._renderRoundEntry(match.rounds[r]);

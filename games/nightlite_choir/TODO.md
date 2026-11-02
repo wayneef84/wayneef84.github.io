@@ -9,6 +9,9 @@
 - [x] Milestone 2b: Star Observatory world, 4 more creatures, world switcher (Dozemoon, Glintwand, Twirltail, Ringhum; name checks in ASSET_LOG.md) (v0.3.0)
 - [x] Milestone 3: free sparks, eggs and nest, Mixing pot, Discovery book, Collection screen, 6 blends (v0.4.0)
 - [x] Name checks for Mossweave, Halohum, Dewglint, Trotleaf, Tockmoon, Twirlwisp (ASSET_LOG.md)
+- [x] Settings overlay with per-game export and import (gear button)
+- [x] Grown-up gate, one-step undo and rollback for in-game import
+- [ ] Rare breeds setting (planned for the mixing window, not built)
 - [ ] Wayne to confirm the blend names and the spark numbers (see DESIGN.md)
 - [ ] Milestone 4: polish, tests, docs, final catalog update
 - [ ] Possible later: pause button, more than 6 slots, spooky night mode

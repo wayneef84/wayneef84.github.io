@@ -71,7 +71,9 @@
         for (k in S.found) if (S.found.hasOwnProperty(k) && S.found[k]) out.push(k);
         return out;
     }
+    var loadingSave = false;      // true while a save import is reloading the page, so old memory never overwrites it
     function saveProgress() {
+        if (loadingSave) return;
         var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(),
                      nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
         store(DATA_KEY, JSON.stringify(data));
@@ -504,6 +506,7 @@
         $('muteBtn').querySelector('.ico').textContent = m ? '🔇' : '🔊';
         $('muteBtn').querySelector('.lbl').textContent = m ? 'Unmute' : 'Mute';
         $('muteBtn').setAttribute('aria-pressed', m ? 'true' : 'false');
+        syncCfg();
         applyVolume();
     }
     function toast(msg) {
@@ -667,6 +670,248 @@
             })(DOORS[i]);
         }
     }
+    // ---------------------------------------------------------------- settings overlay (gear button on every screen)
+    // Volume and Mute share the world screen's state. Export and Import use FongGameSaves (id nightlite-choir).
+    // Replace and Restore are behind a parent question (times table), then a tap-twice confirm.
+    var SAVE_ID = 'nightlite-choir';
+    var UNDO_KEY = 'nightlite.undo';          // one-level undo, deliberately not in the FongGameSaves manifest
+    var cfgOpen = false, cfgFrom = null, cfgText = '', cfgArmed = '', cfgUnlocked = false, cfgGate = null, cfgHidden = [];
+    function setVolume(val) {
+        if (loadingSave) { syncCfg(); return; }      // no writes while an import is reloading the page
+        S.vol = val / 100;
+        if (S.muted && S.vol > 0) setMuted(false); else applyVolume();
+        store('nightlite.vol', String(val));
+        $('volRange').value = val;
+        syncCfg();
+    }
+    function syncCfg() {
+        var r = $('volRange'), c = $('cfgVol'), b = $('cfgMute');
+        if (c && r) c.value = r.value;
+        if (b) {
+            b.querySelector('.ico').textContent = S.muted ? '🔇' : '🔊';
+            b.querySelector('.lbl').textContent = S.muted ? 'Unmute' : 'Mute';
+            b.setAttribute('aria-pressed', S.muted ? 'true' : 'false');
+        }
+    }
+    function cfgMsg(text, bad) {
+        var m = $('cfgMsg');
+        m.textContent = text;
+        m.className = bad ? 'cfg-msg bad' : 'cfg-msg';
+    }
+    function cfgDisarm() {
+        cfgArmed = '';
+        $('cfgReplace').querySelector('.lbl').textContent = 'Replace my saves';
+        $('cfgRestore').querySelector('.lbl').textContent = 'Restore previous';
+    }
+    function hasUndo() { return !!store(UNDO_KEY); }
+    function syncUndo() { $('cfgRestore').hidden = !hasUndo(); }
+    function cfgFocusables() {
+        var list = $('cfgOv').querySelectorAll('button, a[href], input, textarea'), out = [], i;
+        for (i = 0; i < list.length; i++) if (!list[i].disabled && !list[i].hidden && !(list[i].parentNode && list[i].parentNode.hidden)) out.push(list[i]);
+        return out;
+    }
+    // Hide the rest of the page from taps, focus and screen readers while the overlay is open.
+    function hideRest(on) {
+        var i, kids, n;
+        if (on) {
+            cfgHidden = [];
+            kids = d.body.children;
+            for (i = 0; i < kids.length; i++) {
+                n = kids[i];
+                if (n.id === 'cfgOv' || n.id === 'toast' || n.tagName === 'SCRIPT') continue;
+                cfgHidden.push({ node: n, inert: n.hasAttribute('inert'), aria: n.getAttribute('aria-hidden') });
+                n.setAttribute('inert', '');
+                n.setAttribute('aria-hidden', 'true');
+            }
+        } else {
+            for (i = 0; i < cfgHidden.length; i++) {
+                n = cfgHidden[i];
+                if (!n.inert) n.node.removeAttribute('inert');
+                if (n.aria === null) n.node.removeAttribute('aria-hidden'); else n.node.setAttribute('aria-hidden', n.aria);
+            }
+            cfgHidden = [];
+        }
+    }
+    function openConfig(from) {
+        cfgFrom = from || d.activeElement;
+        cfgOpen = true;
+        cfgText = ''; $('cfgText').value = ''; $('cfgFile').value = '';
+        cfgUnlocked = false;
+        $('cfgGate').hidden = true;
+        cfgDisarm(); cfgMsg('');
+        syncCfg(); syncUndo();
+        hideRest(true);
+        d.body.className += ' cfg-lock';
+        $('cfgOv').hidden = false;
+        $('cfgClose').focus();
+    }
+    function closeConfig() {
+        if (!cfgOpen) return;
+        cfgOpen = false;
+        $('cfgOv').hidden = true;
+        hideRest(false);
+        d.body.className = d.body.className.replace(/ ?cfg-lock/g, '');
+        cfgDisarm();
+        if (cfgFrom && cfgFrom.focus) { try { cfgFrom.focus(); } catch (e) {} }
+    }
+    function cfgExport() {
+        var G = w.FongGameSaves;
+        if (!G) { cfgMsg('Saving to a file is not available here.', true); return; }
+        var r = G.exportGame(SAVE_ID), text = r.text, ok = false;
+        try {
+            var url = w.URL.createObjectURL(new w.Blob([text], { type: 'application/json' }));
+            var a = d.createElement('a');
+            a.href = url; a.download = 'fong-save-' + SAVE_ID + '.json'; a.style.display = 'none';
+            d.body.appendChild(a); a.click();
+            w.setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); w.URL.revokeObjectURL(url); }, 1000);
+            ok = true;
+        } catch (e) { ok = false; }
+        var warn = r.warnings.length ? ' Warning: ' + r.warnings[0] : '';
+        if (ok) { cfgMsg('Saved a file called fong-save-' + SAVE_ID + '.json.' + warn, r.warnings.length > 0); }
+        else { $('cfgText').value = text; cfgText = text; cfgMsg('Could not download. Copy the text in the box and keep it somewhere safe.' + warn, true); }
+    }
+    // Ask the grown-up question before anything that replaces saves. Returns true when already unlocked.
+    function cfgNeedGate(then) {
+        if (cfgUnlocked) return true;
+        var a = 6 + Math.floor(Math.random() * 4), b = 6 + Math.floor(Math.random() * 4);
+        cfgGate = { answer: a * b, then: then };
+        $('cfgQ').textContent = 'Grown-ups only. What is ' + a + ' × ' + b + '?';
+        $('cfgAns').value = '';
+        $('cfgGate').hidden = false;
+        cfgMsg('Replacing saves is locked so little fingers cannot wipe them.');
+        $('cfgAns').focus();
+        return false;
+    }
+    function cfgUnlock() {
+        if (!cfgGate) return;
+        if (parseInt($('cfgAns').value, 10) === cfgGate.answer) {
+            cfgUnlocked = true;
+            $('cfgGate').hidden = true;
+            cfgMsg('Unlocked. Tap the button again, then tap once more to confirm.');
+            var f = cfgGate.then;
+            cfgGate = null;
+            if (f && $(f)) $(f).focus();
+        } else {
+            $('cfgAns').value = '';
+            cfgMsg('Not quite. Ask a grown-up to help.', true);
+        }
+    }
+    // Stash what is stored now, so one Restore can bring it back.
+    function cfgStash() {
+        var snap = { save: store(DATA_KEY), mix: store(SAVE_KEY), vol: store('nightlite.vol') };
+        store(UNDO_KEY, JSON.stringify(snap));
+        return store(UNDO_KEY) !== null;
+    }
+    function cfgReload(failMsg) {
+        loadingSave = true;                                 // stop any save from overwriting the data while the page reloads
+        w.setTimeout(function () { try { w.location.reload(); } catch (e) { loadingSave = false; cfgMsg(failMsg, true); } }, 900);
+        w.setTimeout(function () { loadingSave = false; }, 4000);   // reload did not happen: let the game save again
+    }
+    function cfgImport(mode) {
+        var G = w.FongGameSaves;
+        if (loadingSave) return;
+        if (!G) { cfgMsg('Loading saves is not available here.', true); return; }
+        var text = cfgText;
+        var chk = G.importJSON(text, { mode: mode, dryRun: true, only: [SAVE_ID] });
+        if (!chk.ok) { cfgDisarm(); cfgMsg(chk.errors[0] || 'That file cannot be used.', true); return; }
+        if (mode === 'replace') {
+            if (!cfgNeedGate('cfgReplace')) return;
+            if (cfgArmed !== 'replace') {
+                cfgDisarm(); cfgArmed = 'replace';
+                $('cfgReplace').querySelector('.lbl').textContent = 'Tap again to confirm';
+                cfgMsg('This replaces your saves. Tap again to confirm.', true);
+                return;
+            }
+        }
+        cfgDisarm();
+        if (!cfgStash()) { cfgMsg('Could not keep a copy of your current saves, so nothing was changed.', true); return; }
+        loadingSave = true;                                 // no save or volume write while we import
+        var r = G.importJSON(text, { mode: mode, only: [SAVE_ID] });
+        if (!r.ok) {                                        // includes a storage failure: the import rolled back
+            loadingSave = false;
+            try { w.localStorage.removeItem(UNDO_KEY); } catch (e) {}
+            syncUndo();
+            cfgMsg(r.errors[0] || 'That file cannot be used.', true);
+            return;
+        }
+        syncUndo();
+        cfgMsg('Done. Loading your saves...');
+        cfgReload('Imported, but the page could not reload. Reload it to see your saves.');
+    }
+    function cfgRestore() {
+        if (loadingSave) return;
+        var raw = store(UNDO_KEY), snap = null;
+        if (raw) { try { snap = JSON.parse(raw); } catch (e) { snap = null; } }
+        if (!snap || typeof snap !== 'object') { syncUndo(); cfgMsg('There is nothing to restore.', true); return; }
+        if (!cfgNeedGate('cfgRestore')) return;
+        if (cfgArmed !== 'restore') {
+            cfgDisarm(); cfgArmed = 'restore';
+            $('cfgRestore').querySelector('.lbl').textContent = 'Tap again to confirm';
+            cfgMsg('This puts back the saves you had before the last import. Tap again to confirm.', true);
+            return;
+        }
+        cfgDisarm();
+        var keys = [['nightlite.save', snap.save], ['nightlite.mix', snap.mix], ['nightlite.vol', snap.vol]], i, now = {}, ok = true, k;
+        loadingSave = true;
+        for (i = 0; i < keys.length; i++) now[keys[i][0]] = store(keys[i][0]);
+        try {
+            for (i = 0; i < keys.length; i++) {
+                k = keys[i][0];
+                if (typeof keys[i][1] === 'string') w.localStorage.setItem(k, keys[i][1]); else w.localStorage.removeItem(k);
+            }
+        } catch (e) { ok = false; }
+        if (!ok) {                                          // put back what was there and say so
+            try {
+                for (i = 0; i < keys.length; i++) {
+                    k = keys[i][0];
+                    if (typeof now[k] === 'string') w.localStorage.setItem(k, now[k]); else w.localStorage.removeItem(k);
+                }
+            } catch (e2) {}
+            loadingSave = false;
+            cfgMsg('Could not restore (storage is blocked or full). Nothing was changed.', true);
+            return;
+        }
+        try { w.localStorage.removeItem(UNDO_KEY); } catch (e3) {}
+        syncUndo();
+        cfgMsg('Restored. Loading your saves...');
+        cfgReload('Restored, but the page could not reload. Reload it to see your saves.');
+    }
+    function initConfig() {
+        var gears = d.querySelectorAll('.gearBtn'), i;
+        for (i = 0; i < gears.length; i++) {
+            (function (g) { g.onclick = function () { openConfig(g); }; })(gears[i]);
+        }
+        $('cfgVol').value = $('volRange').value;
+        $('cfgVol').oninput = function () { setVolume(this.value); };
+        $('cfgMute').onclick = function () { if (!loadingSave) setMuted(!S.muted); };
+        $('cfgClose').onclick = closeConfig;
+        $('cfgOv').addEventListener('click', function (e) { if (e.target === $('cfgOv')) closeConfig(); });
+        $('cfgOv').addEventListener('keydown', function (e) {       // Escape is handled once, at document level (onKey)
+            if (e.key !== 'Tab') return;
+            var f = cfgFocusables(), first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && (d.activeElement === first || !$('cfgOv').contains(d.activeElement))) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && (d.activeElement === last || !$('cfgOv').contains(d.activeElement))) { e.preventDefault(); first.focus(); }
+        });
+        $('cfgExport').onclick = cfgExport;
+        $('cfgAdd').onclick = function () { cfgImport('merge'); };
+        $('cfgReplace').onclick = function () { cfgImport('replace'); };
+        $('cfgRestore').onclick = cfgRestore;
+        $('cfgUnlock').onclick = cfgUnlock;
+        $('cfgAns').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); cfgUnlock(); } });
+        $('cfgText').oninput = function () { cfgText = this.value; cfgDisarm(); };   // the box always holds the whole text
+        $('cfgFile').onchange = function () {
+            var f = this.files && this.files[0];
+            cfgDisarm();
+            if (!f) return;
+            var lim = (w.FongGameSaves && w.FongGameSaves.MAX_CHARS) || 600000;
+            if (f.size > lim) { cfgMsg('That file is too big.', true); return; }
+            var fr = new w.FileReader();
+            fr.onload = function () { cfgText = String(fr.result); $('cfgText').value = cfgText; cfgMsg('File loaded. Choose Add missing or Replace.'); };
+            fr.onerror = function () { cfgMsg('Could not read that file.', true); };
+            fr.readAsText(f);
+        };
+    }
+
     function showScreen(name) {
         var isWorld = !(name === 'doors' || name === 'collect' || name === 'pot');
         S.screen = isWorld ? 'world' : name;
@@ -712,6 +957,7 @@
 
     // ---------------------------------------------------------------- keyboard
     function onKey(e) {
+        if (cfgOpen) { if (e.key === 'Escape') closeConfig(); return; }   // overlay open: Escape closes it, nothing else runs
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         var k = e.key, tag = d.activeElement ? d.activeElement.tagName : '';
         if (tag === 'INPUT' && k !== 'Escape') return;
@@ -1074,6 +1320,7 @@
         updateSparkUI();
         var vol = parseInt(store('nightlite.vol'), 10);
         if (vol >= 0 && vol <= 100) { S.vol = vol / 100; $('volRange').value = vol; } else { S.vol = 0.7; }
+        initConfig();
         applyTheme(DOOR_THEME);
         buildGlow(10);
         renderDoors();
@@ -1086,11 +1333,7 @@
         $('potA').onclick = function () { if (S.pot[0]) potPick(S.pot[0]); };
         $('potB').onclick = function () { if (S.pot[1]) potPick(S.pot[1]); };
         $('muteBtn').onclick = function () { setMuted(!S.muted); };
-        $('volRange').oninput = function () {
-            S.vol = this.value / 100;
-            if (S.muted && S.vol > 0) setMuted(false); else applyVolume();
-            store('nightlite.vol', String(this.value));
-        };
+        $('volRange').oninput = function () { setVolume(this.value); };
         $('undoBtn').onclick = undo;
         $('resetBtn').onclick = clearAll;
         $('saveBtn').onclick = saveMix;
