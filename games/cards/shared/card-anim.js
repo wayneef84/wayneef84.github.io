@@ -16,7 +16,7 @@
  *
  * API (done is optional everywhere):
  *   deal(deckEl, targetEls, opts, done)  opts: rounds, stagger, duration, w, h, makeFlyer(), onArrive(target, i, round)
- *   flip(cardEl, done, opts)             opts: duration, swap() runs at the half-way point (swap face and back)
+ *   flip(cardEl, done, opts)             opts: duration, delay, swap() runs at the half-way point (swap face and back)
  *   sweep(cardEls, toEl, done, opts)     opts: duration, stagger, back (default true: cards slide back after)
  *   fly(el, fromEl, toEl, done, opts)    el may be null (a coin is made). opts: duration, keep, delay
  *   pulse(el, done, opts)
@@ -222,7 +222,7 @@
         }
         var d = clamp(opts.duration || 260, 60, 3000) / 2;
         animate(cardEl, { transform: 'scaleX(1)' }, { transform: 'scaleX(0.02)' }, {
-            duration: d, easing: 'ease-in',
+            duration: d, delay: opts.delay || 0, easing: 'ease-in',
             finish: swap,
             done: function () {
                 animate(cardEl, { transform: 'scaleX(0.02)' }, { transform: 'scaleX(1)' }, { duration: d, easing: 'ease-out', done: done });
