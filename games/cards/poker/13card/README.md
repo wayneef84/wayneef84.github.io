@@ -1,121 +1,23 @@
-# F.O.N.G. Poker: 13-Card (Chinese Poker)
+# 13 Card Poker (Chinese Poker, free-for-all)
 
-## What is this?
+You against 1 to 3 NPCs. Everyone gets 13 cards and sets them into a front of 3, a middle of 5 and a back of 5. Back must beat middle and middle must beat front, or the hand is a foul. Every pair of players is compared row by row and the points turn into coins.
 
-F.O.N.G. 13-Card Poker is a digital adaptation of the point-based arrangement game, heavily reliant on complex UI sorting.
+Open `index.html` (works from file:// and GitHub Pages, no network).
 
-**Who should play:** Fans of deep puzzle-solving and poker logic who enjoy taking their time to build the perfect hands.
+## Quick rules
 
-**Why it exists:** To test the Drag-and-Drop (DnD) capabilities of the F.O.N.G. UI component library, allowing players to sort massive hands across multiple drop-zones.
+- Rows: front 3 (trips > pair > high card, no straights or flushes), middle 5, back 5 (normal poker ranks).
+- Each pair of players: each row won +1, lost -1, tied 0. Win all three rows and get +3 more (a scoop, 6 total).
+- Foul: you pay 6 points to every clean opponent and collect nothing. Two fouls in one pair score 0.
+- One point is worth the ante in coins (1, 2 or 5). Everyone starts with 100 coins. Balances carry over and can go below zero.
+- After each round a panel shows who owes whom, each net result and the fewest-payments settlement.
 
----
+## Controls
 
-## Quick Start (30 seconds)
+NPCs (1 to 3), Ante, Skip animations, Reset bankrolls (asks first). Drag a card onto another to swap, or tap two cards. Auto-arrange suggests a legal setup. Lock reveals the hands. Tap an opponent to see their hand large.
 
-1. Launch the game from the Development section.
+## Files
 
-2. You will be dealt 13 cards.
+`index.html`, `ffa.css`, `ffa.js` (pure rules, scoring, settlement, save, NPC search), `faces.js` (SVG faces), `ffa-ui.js` (page), shared `games/cards/shared/card-anim.js`. Save key `fong.13card.save`. Tests: `node tests/13card.test.js`, `node tests/card-anim.test.js`.
 
-3. Drag and drop your cards into three separate rows: a 3-card front hand, a 5-card middle hand, and a 5-card back hand.
-
-4. Ensure your back hand beats your middle hand, and your middle hand beats your front hand!
-
-5. Tap "Lock Hand" to reveal the CPU's arrangement and calculate points.
-
-**Pro Tip:** Mis-setting your hand (making the front hand stronger than the back hand) is called "Fouling" and will cost you massive penalty points! Always double-check your rows.
-
----
-
-## Features
-
-- ✨ **Drag-and-Drop UI** - Seamlessly move cards between the 3 designated zones using native touch interactions.
-
-- 🎮 **Point Calculation Engine** - Automatically tallies royalties and standard points based on traditional scoring rules.
-
-- 📱 **Mobile-First Layout** - The 13 cards are fanned responsively so they are legible even on smaller mobile screens.
-
-- ⚡ **No Timers** - Purely strategic gameplay. Take as much time as you need to arrange your hand.
-
----
-
-## How to Play
-
-**Objective:**
-
-Arrange your 13 cards into three separate poker hands that are stronger than the corresponding hands of your opponents, maximizing your points.
-
-**Rules:**
-
-- **Front Hand:** 3 cards (straights and flushes do not count).
-
-- **Middle Hand:** 5 cards.
-
-- **Back Hand:** 5 cards.
-
-- The Back hand MUST be stronger than or equal to the Middle hand, and the Middle hand MUST be stronger than or equal to the Front hand.
-
-**Controls:**
-
-- **Move:** Tap and drag a card to a valid empty slot in one of the three rows.
-
-- **Swap:** Drag a card directly on top of another card to instantly swap their positions.
-
----
-
-## Status
-
-- **Version:** 0.3.0 (Alpha)
-
-- **Status:** Development
-
-- **Last Updated:** 2026-02-15
-
-- **Mobile Optimized:** Partial (Drag events need refinement on Android)
-
-- **Tested On:** iOS Safari 12+, Chrome 50+
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-**Issue:** Cards get stuck hovering when I lift my finger.
-
-- **Solution:** Native HTML5 Drag and Drop can behave erratically on some mobile browsers. If a card is stuck, tap the empty space on the board to clear the active drag-state.
-
-### Known Limitations
-
-- **Fantasyland:** The advanced "Fantasyland" bonus rule is not currently implemented in this version.
-
-- **Scoring Nuances:** Certain regional scoring rules (like 1-6 point variations) cannot currently be toggled in settings.
-
----
-
-## Performance & Compatibility
-
-- **Load Time:** Instantaneous.
-
-- **Mobile Support:** Playable, but tablet/desktop is highly recommended for dragging 13 tiny cards.
-
-- **Offline:** 100% offline capable.
-
----
-
-## Documentation Links
-
-- 📚 [ARCHITECTURE.md](ARCHITECTURE.md) - How the DnD API handles multi-zone sorting
-
-- 🛣️ [TODO.md](TODO.md) - Upcoming features (Fantasyland)
-
-- 📜 [CHANGELOG.md](CHANGELOG.md) - Version history
-
-- 🧠 [CLAUDE.md](CLAUDE.md) - Developer notes & touch event listeners
-
-- 📋 [INFO.md](INFO.md) - Quick facts & dependencies
-
----
-
-**Created By:** The C-G-J Alliance (F.O.N.G. Repository)
-
-**License:** Standard MIT / Non-Commercial Family Use
+More: MANUAL.md (how to play), ARCHITECTURE.md (scoring and settlement), TECHNICAL.md, TODO.md, CHANGELOG.md.

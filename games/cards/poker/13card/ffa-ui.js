@@ -449,7 +449,8 @@
         setControlsLocked(false);
         buildSettlement(pay);
         var mine = R.result.coins.you;
-        banner(mine > 0 ? 'You won ' + mine + ' coins this round.' : (mine < 0 ? 'You lost ' + (-mine) + ' coins this round.' : 'Even round.'));
+        var am = mine < 0 ? -mine : mine;
+        banner(mine > 0 ? 'You won ' + am + (am === 1 ? ' coin' : ' coins') + ' this round.' : (mine < 0 ? 'You lost ' + am + (am === 1 ? ' coin' : ' coins') + ' this round.' : 'Even round.'));
         $('btnDeal').textContent = 'Next round'; $('btnDeal').hidden = false;
         $('settle').scrollIntoView && $('settle').scrollIntoView({ block: 'nearest', behavior: A.reduced() ? 'auto' : 'smooth' });
     }
@@ -461,7 +462,7 @@
         clear(s);
         s.hidden = false;
         s.appendChild(mk('h3', '', 'Round ' + S.rounds + ' results (1 point = ' + res.ante + ' coin' + (res.ante > 1 ? 's' : '') + ')'));
-        s.appendChild(mk('h4', '', 'Who won points from whom'));
+        s.appendChild(mk('h4', '', 'Who won points from whom (loser to winner)'));
         ul = mk('ul');
         if (!res.owes.length) { ul.appendChild(mk('li', '', 'Everyone tied. No points moved.')); }
         for (i = 0; i < res.owes.length; i++) {
@@ -473,7 +474,7 @@
         ul = mk('ul');
         for (i = 0; i < R.players.length; i++) {
             var p = R.players[i], c = res.coins[p.id];
-            li = mk('li', c > 0 ? 'pos' : (c < 0 ? 'neg' : ''), p.name + ' ' + fmtChg(c) + ' coins (' + fmtChg(res.points[p.id]) + ' points)' + (res.fouls[p.id] ? ' FOUL' : '') + ', balance ' + fmtBal(S.bank[p.id]));
+            li = mk('li', c > 0 ? 'pos' : (c < 0 ? 'neg' : ''), p.name + ' ' + fmtChg(c) + (Math.abs(c) === 1 ? ' coin (' : ' coins (') + fmtChg(res.points[p.id]) + ' points)' + (res.fouls[p.id] ? ' FOUL' : '') + ', balance ' + fmtBal(S.bank[p.id]));
             ul.appendChild(li);
         }
         s.appendChild(ul);
