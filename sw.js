@@ -7,7 +7,7 @@
  * when you need every phone to drop its cached copies). Old caches are
  * deleted on activate.
  */
-var CACHE_VERSION = 'v5';
+var CACHE_VERSION = 'v4';
 
 var SHELL_CACHE = 'fong-shell-' + CACHE_VERSION;
 var RUNTIME_CACHE = 'fong-runtime-' + CACHE_VERSION;
