@@ -35,10 +35,24 @@ The placeholder names Orbi, Twinklit, Cometail and Moonmo were not cleared and w
 | Twirltail | Comet | Sweep | `whoosh` voice: airy noise band that opens and fades plus a thin glide that ends on G5 then E5 | Violet comet head, big pink swirl tail |
 | Ringhum | Humming planet | Soft drum | `thrum` voice: warm felt-mallet drum, pitch cycles C3 G3 E3 G3 | Periwinkle planet, pink ring, small pink cowgirl hat, humming note |
 
-Worlds share one stage. The first creature placed sets the tempo (Garden 90, Attic 100, Observatory 80), so mixed stages work. A three-chip world switcher in the tray shows one world's four friends at a time.
+Each world has its own stage (see "The stage" below). The first creature placed on a stage sets its tempo (Garden 90, Attic 100, Observatory 80), so a stage can mix friends from all worlds. A three-chip world switcher in the tray shows one world's four friends at a time and switches to that world's stage.
+
+## The stage (v0.6.0)
+The stage is a scene, not a grid of buttons. The tray tiles stay as the selectors. Friends stand at fixed spots placed by percent of a 5:4 scene box (`js/layout.js`): back spots are higher and smaller (depth scale 0.7), front spots are lower and bigger (1.0), and front friends overlap back ones. A friend is 25% of the scene width times its scale, so about 59px at the back and 85px at the front on a 340px wide phone scene.
+
+| World | Spots | Layout idea |
+|---|---|---|
+| Night Garden | 8 | Three staggered rows on a gentle hill (3 back, 2 middle, 3 front), a soft green rise behind them |
+| Toy Attic | 9 | Three shelf levels with three toys each, drawn with wooden planks under every level |
+| Star Observatory | 10 | An orbit around the middle of the sky, high friends small and low friends big. The dashed star-map lines join the friends in spot order |
+
+- Tap a tile: the friend goes to the first empty spot. Drag a tile onto any spot (an occupied spot is replaced). Tap a friend to send it home. Empty spots are soft dashed circles with a "+".
+- Each friend bops on the beat with its own small phase and floats a note. While its voice plays it also pulses a soft glow. Friends the player has not found stay as still, silent dark silhouettes with a "?". Reduced motion turns all of it off.
+- Each world keeps its stage while the page is open. Leaving a world (or the Collection and the pot) stops the sound, coming back starts that stage again. Switching worlds clears Undo.
+- Saves (`nightlite.mix`) keep the same shape plus the world id. Load puts the friends on that world's stage and drops extras beyond its capacity. Older 6-slot saves load as they are.
 
 ## Version 1 scope
-1. One stage per world with 6 slots. Tap a creature to place it. Its loop starts in time with the others.
+1. One stage per world, each with its own capacity: Garden 8, Attic 9, Observatory 10. Tap a creature to place it. Its loop starts in time with the others.
 2. 12 original base creatures, 4 per world. They are free and always available. Art from the generator, sound from the synth.
 3. Sparks, eggs, the Mixing pot and the Discovery book add 6 NEW things to collect (blends). Nothing that already works is locked or hidden. See "Sparks, eggs and the pot" below.
 4. Local save in localStorage (keys start with `nightlite.`). Everything works with storage blocked.
@@ -51,12 +65,12 @@ All numbers are ours and live as constants at the top of `js/app.js`.
 
 | Thing | Rule |
 |---|---|
-| Sparks | A free counter. +1 spark for every 15 seconds that two or more creatures stand on the stage and the page is visible. Cap 99. Nothing accrues while the tab is hidden or closed. No daily bonus, no login streak, no countdown, nothing to miss or lose. |
-| Wish on a star | A free button (door screen, every world, Collection): +3 sparks at any time, no timer. So a child can never get stuck. At 99 it says the jar is full. |
-| Egg | 5 sparks puts one egg in the nest (one egg at a time). It hatches by itself after about 20 seconds that the game is open and visible. Tapping the egg warms it: each tap takes 2 seconds off. Waiting is optional. It hatches one blend the child does not own yet. With all 6 owned the egg gives a happy twinkle and the sparks come back. |
-| Mixing pot | Pick 2 to 5 friends (the 12 base creatures, plus blends you own), tap Mix. A group that matches a recipe exactly (order never matters) makes the blend at once with a short sparkle. The friends are NOT used up. The recipe is saved in the Discovery book. Other groups say "Not this time. Nothing was lost." Eggs and the pot make the same blends. The pot is the guaranteed path. v0.5.0 adds Match my stage, What can I make?, hints and rare friends, see below. |
+| Sparks | A free counter. +1 spark for every 8 seconds that two or more creatures stand on the stage and the page is visible. Cap 99. Nothing accrues while the tab is hidden or closed. No daily bonus, no login streak, no countdown, nothing to miss or lose. |
+| Wish on a star | A free button (door screen, every world, Collection): +6 sparks at any time, no timer. So a child can never get stuck. At 99 it says the jar is full. |
+| Egg | (see Tiers, luck and eggs below) 3 sparks puts one egg in the nest (one egg at a time). It hatches by itself after about 12 seconds that the game is open and visible. Tapping the egg warms it: each tap takes 3 seconds off, with sparkles and a rising note. Waiting is optional. The hatch is animated (shake, split, sparkles). It hatches any blend, 3 times as likely to be one the child does not own. A repeat gives the 3 sparks back. A shimmering twin is 1 in 10 from an egg and from the pot. |
+| Mixing pot | The pot empties after a good mix. Pick 2 to 5 friends (the 12 base creatures, plus blends you own), tap Mix. A group that matches a recipe exactly (order never matters) makes the blend at once with a short sparkle. The friends are NOT used up. The recipe is saved in the Discovery book. Other groups say "Not this time. Nothing was lost." Eggs and the pot make the same blends. The pot is the guaranteed path. v0.5.0 adds Match my stage, What can I make?, hints and rare friends, see below. |
 | Discovery book | One card per recipe: the ingredient faces plus the blend, or "?" faces and the one-line clue while it is not found. Page 1 holds recipes of base friends, page 2 the recipes that use a blend. Eggs do not fill the book, only the pot does. |
-| Collection screen | Sparks, the nest, the Discovery book and the blends owned. Button on the door screen and in every world. |
+| Collection screen | Sparks, the nest, the Mixing pot button, the blends owned and the rare friends (tap one to hear it), then the Discovery book. Button on the door screen and in every world. |
 
 ## Blends (built in milestone 3)
 Each blend has parents from two DIFFERENT worlds, its own art (two parents' visual traits mixed), its own sound role and its own name. The recipe table is invented here. The tempo of a blend is the tempo of its first parent's world, and the "first creature placed sets the tempo" rule still applies.
@@ -80,6 +94,23 @@ Each blend has parents from two DIFFERENT worlds, its own art (two parents' visu
 Copy and adapt these files into this folder. Do not import from `games/sprunki_v2/`:
 - `js/synth.js` (synth), `js/art.js` (art generator), the tray, drag and drop, undo, save and load, volume and keyboard code in `js/app.js`, and the pack data format.
 - Do NOT reuse the Classic pack, its images or its loops. Those come from the community Sprunki game. See IP-GUARDRAILS.md.
+
+## Tiers, luck and eggs (v0.6.0)
+All rules are in `js/eggs.js` (no DOM, tested). Tier numbers per blend are in `js/worlds/tiers.js`.
+
+| Thing | Rule |
+|---|---|
+| Tiers | Every blend has one tier: 1 grey, 2 green, 3 blue, 4 purple, 5 gold, 6 red. 42 blends: 12, 10, 8, 6, 4, 2. Shown by a colored border and dots, plus a spoken color name. No tier words on screen. Higher tiers need more ingredients. The 12 base friends are always free |
+| Egg roll | The egg rolls a tier first: 50, 28, 14, 6, 1.9 and 0.1 percent. Then a blend of that tier, 3 times as likely to be one you do not have |
+| Depleted tier | A tier you own completely hands its share to the next tier up that still has something new. Other tiers keep their odds |
+| Luck | A bonus in percent points. It moves that much of the odds off the lowest live tier and up into the higher live tiers, in proportion to their normal odds. Cap 60. A hatch spends all banked luck |
+| Selling a repeat | A repeat (blend already owned, no new shimmer) gives the 3 sparks back and banks luck by its tier: 0.5, 1, 2, 4, 8, 16 percent points. A rarer repeat is worth more. The bonus shows under the friend and as "Banked luck" in the nest |
+| Egg looks | Each egg gets a random color. Special eggs: pattern +5 (spots, stripes or zigzag), sparkle +12, rainbow +25, golden +45, weights 12, 6, 3.5 and 0.5 out of 100 (the rest are plain). The boost is luck for that egg only. Eggs found shows each kind once seen, with its bonus, and "?" until then |
+| Shimmer | The shimmering twin is unchanged: 1 in 10 on a mix or an egg, collectible only |
+
+## Saves and sharing (v0.6.0)
+- A save is the device's collection (sparks, blends, recipes, rares, nest) and carries the game version. A newer save loads and is kept intact.
+- A share link is only a stage: `?w=garden&mix=id.id..id` (`w` is the world id, optional, default garden; the number of spots allowed is that world's capacity). It never carries a collection. Friends the visitor lacks show as silent outlines until they find them.
 
 ## Pot upgrade (v0.5.0)
 - Recipes have 2 to 5 distinct ingredients. Ingredients are base friends or blends the child owns. No two recipes share an ingredient set, so one pot never matches two blends. 21 blends now: the 6 above plus 15 from set CLAUDE (6 pairs, 4 triples, 3 quads, 2 quints, see [RECIPES_CLAUDE.md](RECIPES_CLAUDE.md)). A second set can be dropped in.

@@ -40,12 +40,14 @@ function loadWindow(randomFn, withApp, hook) {
     win.scrollTo = function () {};
     win.document.defaultView = win;
     var ctx = vm.createContext(win);
-    var files = ['js/synth.js', 'js/art.js', 'js/worlds/garden.js', 'js/worlds/attic.js', 'js/worlds/observatory.js', 'js/worlds/blends.js', 'js/worlds/blends_claude.js'];
+    var files = ['js/synth.js', 'js/art.js', 'js/worlds/garden.js', 'js/worlds/attic.js', 'js/worlds/observatory.js', 'js/worlds/blends.js', 'js/worlds/blends_claude.js', 'js/worlds/tiers.js'];
     var i;
     for (i = 0; i < files.length; i++) vm.runInContext(read(files[i].replace('js/', '')), ctx, { filename: files[i] });
     var extras = fs.readdirSync(DIR + 'worlds').filter(function (f) { return /^blends_.*\.js$/.test(f) && f !== 'blends_claude.js'; });
     for (i = 0; i < extras.length; i++) vm.runInContext(read('worlds/' + extras[i]), ctx, { filename: extras[i] });
     vm.runInContext(read('recipes.js'), ctx, { filename: 'recipes.js' });
+    vm.runInContext(read('eggs.js'), ctx, { filename: 'eggs.js' });
+    vm.runInContext(read('layout.js'), ctx, { filename: 'layout.js' });
     if (hook) hook(win);
     if (withApp) vm.runInContext(read('app.js'), ctx, { filename: 'app.js' });
     return win;
@@ -65,6 +67,16 @@ assert(blends.length >= oldCount + 15, 'old 6 plus the 15 from set CLAUDE (plus 
 var model = R.build(bases, blends);
 same(model.errors, [], 'every blend resolves, no shared ingredient sets: ' + model.errors.join('; '));
 assert.strictEqual(model.recipes.length, blends.length);
+
+// ---- tiers (js/worlds/tiers.js): 1 grey .. 6 red, every blend has one
+var TI = win.NightliteTiers, tierCount = {}, tierIds = Object.keys(TI);
+var blendIds = blends.map(function (b) { return b.id; });
+assert.strictEqual(blendIds.length, 42, '42 blends: ' + blendIds.length);
+blendIds.forEach(function (bid) { assert(TI[bid] >= 1 && TI[bid] <= 6 && TI[bid] === Math.floor(TI[bid]), 'tier 1..6 for ' + bid); tierCount[TI[bid]] = (tierCount[TI[bid]] || 0) + 1; });
+tierIds.forEach(function (tid) { assert(blendIds.indexOf(tid) >= 0, 'tiers.js has an unknown id: ' + tid); });
+assert.strictEqual(tierIds.length, blendIds.length, 'one tier per blend');
+same([1, 2, 3, 4, 5, 6].map(function (t) { return tierCount[t]; }), [12, 10, 8, 6, 4, 2], 'tier counts');
+same(model.errors, [], 'build vet has zero errors');
 
 // extras come from any NightliteBlendsExtra_ global: add a fake one and merge it
 var fake = loadWindow(null, false);
@@ -225,7 +237,7 @@ assert.strictEqual(N.state.nest.left, 7.5, 'old nest kept');
 same(N.state.rares, {}, 'no rares in an old save');
 N.saveProgress();
 var saved = JSON.parse(store['nightlite.save']);
-assert.strictEqual(saved.v, 5);
+assert.strictEqual(saved.v, 6);
 same(saved.blends.sort(), ['halohum', 'mossweave']);
 same(saved.found.sort(), ['glimmow+ringhum', 'mossle+skeinie']);
 same(saved.rares, []);
@@ -269,14 +281,252 @@ var on = hatchMany(true, 400);
 assert(on.rare > 0, 'some rare turned up in 400 hatches (' + on.rare + ' kinds)');
 var off = hatchMany(false, 400);
 assert.strictEqual(off.rare, 0, 'no rares when Off');
-// all owned: hatch ends with the twinkle and the sparks come back
-var all = loadWindow(seeded(3), true), st2 = all.Nightlite.state;
+// all owned: a repeat gives the sparks back (full egg cost), a new rare twin does not
+store = {};
+var all = loadWindow(seeded(3), true), st2 = all.Nightlite.state, ri, refunds = 0, spent;
 all.Nightlite.model.recipes.forEach(function (r) { st2.owned[r.id] = true; });
+st2.rareOn = false;
 st2.sparks = 4; st2.nest = { left: 0 };
 all.Nightlite.hatch();
-assert.strictEqual(st2.sparks, 9, 'sparks come back when every blend is owned');
-assert.strictEqual(st2.reveal.id, null, 'twinkle reveal');
+assert.strictEqual(st2.sparks, 7, 'a repeat gives the 3 sparks back');
+assert(st2.reveal.refund && !st2.reveal.isNew, 'reveal says repeat');
 assert.strictEqual(st2.nest, null);
+// eggs lean toward blends not owned yet: with one missing it comes up much more than 1 in N
+store = {};
+var lean = loadWindow(seeded(4), true), sl = lean.Nightlite.state, hit = 0, miss;
+lean.Nightlite.model.recipes.forEach(function (r) { sl.owned[r.id] = true; });
+miss = lean.Nightlite.model.recipes[0].id;
+for (ri = 0; ri < 300; ri++) {
+    sl.owned[miss] = false; sl.rareOn = false; sl.nest = { left: 0 };
+    lean.Nightlite.hatch();
+    if (sl.reveal.id === miss) hit++;
+}
+assert(hit > 300 * 3 / (lean.Nightlite.model.recipes.length + 2) * 0.6, 'unowned blend is favored (' + hit + ' of 300)');
+// eggs: shimmer is about 1 in 10 (the tier is separate)
+store = {};
+var rr = loadWindow(seeded(6), true), sr = rr.Nightlite.state, rhits = 0;
+for (ri = 0; ri < 600; ri++) { sr.rares = {}; sr.nest = { left: 0 }; rr.Nightlite.hatch(); if (sr.reveal.rare) rhits++; }
+assert(rhits > 600 / 10 * 0.6 && rhits < 600 / 10 * 1.4, 'egg shimmer about 1 in 10 (' + rhits + ' of 600)');
+assert(R.roll(function () { return 0.19; }, true, 5) && !R.roll(function () { return 0.2; }, true, 5), 'roll takes custom odds');
+
+// the pot empties after a good mix
+store = {};
+var pm = loadWindow(seeded(7), true), ps = pm.Nightlite.state, rec = pm.Nightlite.model.recipes[0];
+rec.ing.forEach(function (id) { ps.owned[id] = true; pm.Nightlite.potPick(id); });
+assert(!ps.owned[rec.id], 'not owned before the mix');
+pm.Nightlite.mixPot();
+assert(ps.owned[rec.id], 'mix made the blend');
+assert.strictEqual(ps.pot.filter(Boolean).length, 0, 'pot is empty for the next mix');
+
+// ---- tiers, luck and egg kinds (js/eggs.js)
+var EG = win.NightliteEggs;
+function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+function counts(arr) { return arr.map(function (c) { return { total: c[0], owned: c[1] }; }); }
+var base = EG.odds(counts([[12, 0], [10, 0], [8, 0], [6, 0], [4, 0], [2, 0]]), 0, 0);
+assert(Math.abs(sum(base) - 100) < 1e-9, 'odds add to 100');
+assert.strictEqual(base[0], 50); assert.strictEqual(base[5], 0.1);
+var depl = EG.odds(counts([[12, 12], [10, 0], [8, 0], [6, 0], [4, 0], [2, 0]]), 0, 0);
+assert.strictEqual(depl[0], 0, 'a depleted tier has no share');
+assert(Math.abs(depl[1] - 78) < 1e-9, 'its share moved up to the next tier');
+assert.strictEqual(depl[2], 14, 'the other tiers stay the same');
+var lucky = EG.odds(counts([[12, 0], [10, 0], [8, 0], [6, 0], [4, 0], [2, 0]]), 10, 0);
+assert(Math.abs(sum(lucky) - 100) < 1e-9);
+assert(Math.abs(lucky[0] - 40) < 1e-9, '10 luck takes 10 points off the lowest tier');
+assert(lucky[2] > 14 && lucky[4] > 1.9 && lucky[5] > 0.1, 'and gives them to the higher tiers');
+assert(Math.abs(lucky[5] / lucky[1] - 0.1 / 28) < 1e-9, 'in proportion to their normal odds');
+var allown = EG.odds(counts([[12, 12], [10, 10], [8, 8], [6, 6], [4, 4], [2, 2]]), 50, 0);
+assert.strictEqual(allown[0], 50, 'all owned: nothing to steer');
+assert(EG.odds(counts([[12, 0], [10, 0], [8, 0], [6, 0], [4, 0], [2, 0]]), 500, 500)[0] >= 0, 'luck is capped');
+assert(EG.sellLuck(1) < EG.sellLuck(2) && EG.sellLuck(5) < EG.sellLuck(6), 'a rarer repeat sells for more luck');
+assert.strictEqual(EG.addLuck(59, 16), 60, 'banked luck is capped');
+assert.strictEqual(EG.tierOf('x', {}), 1); assert.strictEqual(EG.tierOf('x', { x: 9 }), 1); assert.strictEqual(EG.tierOf('x', { x: 4 }), 4);
+var ids = Object.keys(win.NightliteTiers), tcount = [0, 0, 0, 0, 0, 0];
+ids.forEach(function (k) { tcount[win.NightliteTiers[k] - 1]++; });
+same(tcount, [12, 10, 8, 6, 4, 2]);
+// kinds are rolled by weight and every look is valid
+var kr = seeded(11), ks = {}, ei, lk;
+for (ei = 0; ei < 4000; ei++) { lk = EG.rollEgg(kr); ks[lk.kind] = (ks[lk.kind] || 0) + 1; assert(lk.color >= 0 && lk.color < EG.EGG_COLORS.length && lk.pattern >= 0 && lk.pattern < EG.EGG_PATTERNS); }
+assert(ks.plain > 2800 && ks.plain < 3400, 'most eggs are plain (' + ks.plain + ')');
+assert(ks.spots > 0 && ks.sparkle > 0 && ks.rainbow > 0, 'specials turn up');
+// the real roll: tier shares follow the odds, a golden egg and luck make better tiers likelier
+var items = Object.keys(win.NightliteTiers).map(function (k) { return { id: k, tier: win.NightliteTiers[k], owned: false }; });
+function tierShare(luck, extra, n) { var rn = seeded(12), t = [0, 0, 0, 0, 0, 0], q; for (q = 0; q < n; q++) t[EG.rollBlend(rn, items, luck, extra).tier - 1]++; return t; }
+var t0 = tierShare(0, 0, 6000), t1 = tierShare(0, 45, 6000);
+assert(t0[0] > 2700 && t0[0] < 3300, 'about half are grey (' + t0[0] + ')');
+assert(t1[0] < t0[0] - 1000 && sum(t1.slice(2)) > sum(t0.slice(2)) * 1.5, 'a golden egg shifts the tiers up');
+assert.strictEqual(EG.rollBlend(seeded(1), [], 0, 0), null);
+// hatching spends banked luck and a repeat banks new luck by tier
+store = {};
+var lk2 = loadWindow(seeded(13), true), sk = lk2.Nightlite.state;
+lk2.Nightlite.model.recipes.forEach(function (r) { sk.owned[r.id] = true; });
+sk.rareOn = false; sk.luck = 7; sk.nest = { left: 0, kind: 'sparkle', color: 1, pattern: 0 };
+lk2.Nightlite.hatch();
+assert(sk.reveal.refund && sk.reveal.used === 7 + 12, 'the egg used banked luck plus its sparkle boost');
+assert.strictEqual(sk.luck, EG.sellLuck(sk.reveal.tier), 'the repeat banked luck by its tier');
+store = {};
+var sv = loadWindow(seeded(14), true), ss = sv.Nightlite.state;
+ss.luck = 12.5; ss.eggsSeen = { sparkle: true, plain: true }; ss.nest = { left: 5, kind: 'rainbow', color: 3, pattern: 1 };
+sv.Nightlite.saveProgress();
+var sd = JSON.parse(store['nightlite.save']);
+assert.strictEqual(sd.v, 6); assert.strictEqual(sd.luck, 12.5); assert.strictEqual(sd.nest.kind, 'rainbow'); assert(sd.eggs.indexOf('sparkle') >= 0);
+var rl = loadWindow(seeded(14), true).Nightlite.state;
+assert.strictEqual(rl.luck, 12.5); assert.strictEqual(rl.nest.kind, 'rainbow'); assert(rl.eggsSeen.sparkle && rl.eggsSeen.rainbow);
+store = { 'nightlite.save': JSON.stringify({ v: 6, luck: 'lots', eggs: ['zzz', 'golden'], nest: { left: 3, kind: 'zzz', color: 99, pattern: -4 } }) };
+var bd = loadWindow(seeded(14), true).Nightlite.state;
+assert.strictEqual(bd.luck, 0); assert.strictEqual(bd.nest.kind, 'plain'); assert.strictEqual(bd.nest.color, 0); assert.strictEqual(bd.nest.pattern, 0); assert(bd.eggsSeen.golden && !bd.eggsSeen.zzz, 'junk egg data is cleaned');
+store = {};
+
+// ---- share code and save version
+assert.strictEqual(R.encodeMix(['mossle', null, 'glimmow', null, null, null]), 'mossle..glimmow', 'trailing empty spots dropped');
+assert.strictEqual(R.decodeMix('mossle..glimmow', 6).filter(Boolean).length, 2);
+assert.strictEqual(R.decodeMix('mossle..glimmow', 6).length, 3);
+assert.strictEqual(R.decodeMix('Mossle', 6), null, 'only lowercase ids');
+assert.strictEqual(R.decodeMix('<script>', 6), null);
+assert.strictEqual(R.decodeMix('a.b.c.d.e.f.g', 6), null, 'too many spots');
+assert.strictEqual(R.decodeMix('a.a', 6), null, 'no repeats');
+assert.strictEqual(R.decodeMix('..', 6), null, 'nothing on the stage');
+assert.strictEqual(R.decodeMix(null, 6), null);
+assert.strictEqual(R.compareVersions('v0.7.0', 'v0.6.0'), 1);
+assert.strictEqual(R.compareVersions('v0.6.0', 'v0.6.0'), 0);
+assert.strictEqual(R.compareVersions('v0.5.9', 'v0.6.0'), -1);
+assert.strictEqual(R.compareVersions('v1.0.0', 'v0.9.9'), 1);
+assert.strictEqual(R.compareVersions('junk', 'v0.6.0'), 0, 'unreadable version is not newer');
+store = { 'nightlite.save': JSON.stringify({ v: 6, app: 'v0.9.0', sparks: 3, blends: ['mossweave', 'futurebeast'], found: ['mossle+skeinie', 'a+b'], rares: ['futurebeast_rare', 'Bad Id!'] }) };
+var nw = loadWindow(seeded(8), true), ns = nw.Nightlite.state;
+assert.strictEqual(ns.saveNewer, true, 'newer save noticed');
+assert.strictEqual(ns.saveApp, 'v0.9.0');
+nw.Nightlite.saveProgress();
+var back = JSON.parse(store['nightlite.save']);
+assert.strictEqual(back.app, 'v0.6.0', 'the save is stamped with this game version');
+assert(back.blends.indexOf('futurebeast') >= 0 && back.found.indexOf('a+b') >= 0 && back.rares.indexOf('futurebeast_rare') >= 0, 'unknown entries from a newer game are kept');
+assert(back.rares.indexOf('Bad Id!') < 0, 'unsafe ids are not kept');
+store = { 'nightlite.save': JSON.stringify({ v: 5, sparks: 3, blends: ['futurebeast'] }) };
+var ow = loadWindow(seeded(8), true);
+assert.strictEqual(ow.Nightlite.state.saveNewer, false);
+ow.Nightlite.saveProgress();
+assert.strictEqual(JSON.parse(store['nightlite.save']).blends.indexOf('futurebeast'), -1, 'an old or equal save still drops unknown ids');
+store = {};
+var sh = loadWindow(seeded(9), true);
+sh.Nightlite.state.slots = ['mossle', null, 'mossweave'];
+assert.strictEqual(sh.Nightlite.shareUrl().split('&mix=')[1], 'mossle..mossweave');
+assert.strictEqual(sh.Nightlite.shareUrl().split('?')[1].split('&')[0], 'w=garden', 'share link names the world');
+
+// ---- stages: one per world, capacity 8 / 9 / 10, laid out as a scene (js/layout.js)
+var LY = win.NightliteLayout;
+assert(LY, 'layout.js loads');
+assert.strictEqual(LY.cap('garden'), 8); assert.strictEqual(LY.cap('attic'), 9); assert.strictEqual(LY.cap('observatory'), 10);
+assert.strictEqual(LY.cap('nope'), 8, 'unknown world falls back to the garden');
+assert(LY.isWorld('attic') && !LY.isWorld('blends') && !LY.isWorld('__proto__') && !LY.isWorld(null));
+['garden', 'attic', 'observatory'].forEach(function (wid) {
+    var sp = LY.spots(wid), i, j, half, a2, b2, d2, minRatio = 9, minS = 9, maxS = 0;
+    assert.strictEqual(sp.length, LY.cap(wid), wid + ' spot count');
+    for (i = 0; i < sp.length; i++) {
+        assert(sp[i].s >= 0.7 && sp[i].s <= 1, wid + ' depth scale in range');
+        half = LY.SIZE_PCT * sp[i].s / 2;         // half the friend, percent of width
+        assert(sp[i].x - half >= 0 && sp[i].x + half <= 100, wid + ' spot ' + i + ' fits across');
+        assert(sp[i].y - half / LY.ASPECT >= 0 && sp[i].y + half / LY.ASPECT <= 100, wid + ' spot ' + i + ' fits down');
+        minS = Math.min(minS, sp[i].s); maxS = Math.max(maxS, sp[i].s);
+        // phone: scene about 340px wide, back friends 56px or more, front 72px or more, never under 44px
+        assert(340 * LY.SIZE_PCT / 100 * sp[i].s >= 56, wid + ' smallest friend is 56px on a phone');
+        for (j = i + 1; j < sp.length; j++) {
+            a2 = sp[i].x - sp[j].x; b2 = (sp[i].y - sp[j].y) * 0.8;      // 1% of height is 0.8% of width at 5:4
+            d2 = Math.sqrt(a2 * a2 + b2 * b2);
+            assert(d2 > 12, wid + ' spots ' + i + ' and ' + j + ' are apart');
+            minRatio = Math.min(minRatio, d2 / (LY.SIZE_PCT * (sp[i].s + sp[j].s) / 2));
+        }
+    }
+    assert(minRatio >= 0.7, wid + ' friends overlap at most a little (ratio ' + minRatio.toFixed(2) + ')');
+    assert(maxS === 1 || wid === 'observatory', wid + ' has a front row at full size');
+    assert(340 * LY.SIZE_PCT / 100 * maxS >= 72, wid + ' front friends 72px or more');
+});
+assert(LY.shelves('attic').length === 3 && LY.shelves('garden').length === 0, 'attic has 3 shelf planks');
+var sp0 = LY.spots('garden'); sp0[0].x = -5; assert.notStrictEqual(LY.spots('garden')[0].x, -5, 'spots returns a copy');
+
+store = {};
+var sg2 = loadWindow(seeded(21), true), N2 = sg2.Nightlite, st3 = N2.state, wi, bases12 = ['mossle', 'glimmow', 'puddlet', 'hedgey', 'clopsy', 'skeinie', 'tocklet', 'mallowhorn', 'dozemoon', 'glintwand', 'twirltail', 'ringhum'];
+assert.deepStrictEqual(Object.keys(st3.stages), ['garden', 'attic', 'observatory']);
+['garden', 'attic', 'observatory'].forEach(function (wid) {
+    N2.enterWorld(wid);
+    assert(st3.slots === st3.stages[wid], wid + ' S.slots is the active stage');
+    for (wi = 0; wi < 12; wi++) N2.addChar(N2.charById[bases12[wi]]);
+    assert.strictEqual(st3.slots.filter(Boolean).length, Math.min(12, LY.cap(wid)), wid + ' fills to its capacity');
+    assert.strictEqual(st3.slots.length <= LY.cap(wid), true, wid + ' never holds more than its capacity');
+});
+assert.strictEqual(st3.stages.garden.filter(Boolean).length, 8);
+assert.strictEqual(st3.stages.attic.filter(Boolean).length, 9);
+assert.strictEqual(st3.stages.observatory.filter(Boolean).length, 10);
+N2.enterWorld('garden');
+assert.strictEqual(st3.slots.filter(Boolean).length, 8, 'the garden stage is kept while you visit another world');
+assert.strictEqual(st3.slots[0], 'mossle');
+assert.strictEqual(N2.shareUrl().split('?')[1].split('&')[0], 'w=garden');
+N2.enterWorld('observatory');
+assert.strictEqual(N2.shareUrl().split('?')[1].split('&')[0], 'w=observatory');
+assert.strictEqual(N2.shareUrl().split('&mix=')[1].split('.').length, 10);
+
+// shared links: w picks the world and its capacity, a bad w falls back to the garden, older 6 spot links still work
+function linkApp(search) { store = {}; return loadWindow(seeded(22), true, function (w3) { w3.location = { search: search, href: 'http://x/index.html' + search }; }).Nightlite; }
+var ln = linkApp('?w=attic&mix=mossle.glimmow.puddlet.hedgey.clopsy.skeinie.tocklet.mallowhorn.dozemoon');
+assert.strictEqual(ln.state.world.id, 'attic');
+assert.strictEqual(ln.state.stages.attic.filter(Boolean).length, 9, 'a 9 friend link fills the attic');
+assert.strictEqual(ln.state.stages.garden.filter(Boolean).length, 0, 'the garden stays empty');
+ln = linkApp('?w=garden&mix=mossle.glimmow.puddlet.hedgey.clopsy.skeinie.tocklet.mallowhorn.dozemoon');
+assert.strictEqual(ln.state.stages.garden.filter(Boolean).length, 0, 'too many for the garden: link refused');
+ln = linkApp('?mix=mossle.glimmow.puddlet.hedgey.clopsy.skeinie');
+assert.strictEqual(ln.state.world.id, 'garden'); assert.strictEqual(ln.state.slots.filter(Boolean).length, 6, 'old 6 spot links work, w defaults to the garden');
+ln = linkApp('?w=bogus&mix=mossle');
+assert.strictEqual(ln.state.world.id, 'garden'); assert.strictEqual(ln.state.slots[0], 'mossle');
+ln = linkApp('?w=observatory&mix=mossle..nopeling');
+assert.strictEqual(ln.state.world.id, 'observatory'); assert.strictEqual(ln.state.slots.length, 10); assert.strictEqual(ln.state.slots[2], 'nopeling', 'unknown ids stay as outlines');
+
+// Save then Load: the mix goes back on its own world's stage, a longer older save is cut to the capacity
+store = {};
+var sl2 = loadWindow(seeded(23), true), N3 = sl2.Nightlite;
+N3.enterWorld('attic'); N3.addChar(N3.charById.clopsy); N3.addChar(N3.charById.skeinie);
+sl2.document.getElementById = sl2.document.getElementById;          // (stub DOM: buttons are not clicked here)
+store['nightlite.mix'] = JSON.stringify({ v: 6, world: 'observatory', bpm: 80, slots: ['dozemoon', null, 'ringhum'] });
+N3.loadMix();
+assert.strictEqual(N3.state.world.id, 'observatory', 'load enters the saved mix world');
+assert.strictEqual(N3.state.stages.observatory[2], 'ringhum');
+assert.strictEqual(N3.state.stages.attic[0], 'clopsy', 'the attic stage is untouched');
+store['nightlite.mix'] = JSON.stringify({ v: 5, world: 'garden', bpm: 90, slots: ['mossle', 'glimmow', 'puddlet', 'hedgey', 'clopsy', 'skeinie', 'tocklet', 'mallowhorn', 'dozemoon', 'ringhum'] });
+N3.loadMix();
+assert.strictEqual(N3.state.stages.garden.filter(Boolean).length, 8, 'extra friends beyond the garden capacity are dropped');
+store['nightlite.mix'] = JSON.stringify({ slots: ['mossle', 'glimmow'] });     // very old save: no world, no tempo
+N3.loadMix();
+assert.strictEqual(N3.state.slots.filter(Boolean).length, 2);
+// remove, undo and reset act on the active world's stage only
+N3.removeAt(0);
+assert.strictEqual(N3.state.slots[0], null); assert.strictEqual(N3.state.slots.filter(Boolean).length, 1);
+N3.undo();
+assert.strictEqual(N3.state.slots[0], 'mossle', 'undo brings the friend back on the same stage');
+assert(N3.state.slots === N3.state.stages.garden, 'undo keeps the alias');
+N3.clearAll();
+assert.strictEqual(N3.state.stages.garden.filter(Boolean).length, 0);
+assert(N3.state.slots === N3.state.stages.garden, 'reset keeps the alias');
+N3.enterWorld('attic');
+assert.strictEqual(N3.state.stages.attic[0], 'clopsy', 'attic friends are still there');
+N3.undo();                                        // history was cleared by entering the world
+assert.strictEqual(N3.state.stages.attic[0], 'clopsy', 'nothing to undo after entering a world');
+
+// ---- review fixes: prototype-key ids, hatch guard, luck cap
+store = {};
+var pk = loadWindow(seeded(15), true), pks = pk.Nightlite.state;
+pk.Nightlite.enterWorld('garden');
+pks.slots[0] = 'constructor'; pks.slots[1] = '__proto__'; pks.slots[2] = 'mossle';
+pk.Nightlite.renderStage();
+pk.Nightlite.removeAt(0);
+pk.Nightlite.removeAt(1);
+assert.strictEqual(pks.slots[2], 'mossle', 'prototype-key ids are only outlines and do not break the stage');
+store = {};
+var hg = loadWindow(seeded(16), true), hgs = hg.Nightlite.state, before = hgs.sparks;
+hgs.nest = null; hg.Nightlite.hatch();
+assert.strictEqual(hgs.reveal, null, 'hatch with an empty nest rolls nothing');
+store = {};
+var lc = loadWindow(seeded(17), true), lcs = lc.Nightlite.state;
+lcs.luck = 55; lcs.nest = { left: 0, kind: 'golden', color: 0, pattern: 0 };
+lc.Nightlite.hatch();
+assert(lcs.reveal.used <= 60, 'shown luck is capped');
+store = {};
 
 // ---- review fixes
 // vetting: every NightliteBlendsExtra_* set plus the base blends must build with no errors (this is how a new set is checked)

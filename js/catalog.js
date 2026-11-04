@@ -277,7 +277,7 @@ var FONG_CATALOG = [
         funTitle: 'NIGHTLITE CHOIR+ 🌙',
         description: 'A cozy bedtime music game. Pick a door, then place little creatures from the Night Garden, the Toy Attic or the Star Observatory. Each one sings a loop and together they make a song. Collect free sparks, hatch eggs and mix 2 to 5 friends in the pot to find new blend creatures.',
         funDescription: 'Little glowing friends sing at night! Tap them to make a lullaby.',
-        version: 'v0.5.0',
+        version: 'v0.6.0',
         href: './games/nightlite_choir/index.html',
         hub: 'arcade',
         featured: false,

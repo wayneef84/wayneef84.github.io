@@ -11,6 +11,10 @@
 - [x] Name checks for Mossweave, Halohum, Dewglint, Trotleaf, Tockmoon, Twirlwisp (ASSET_LOG.md)
 - [x] Settings overlay with per-game export and import (gear button)
 - [x] Grown-up gate, one-step undo and rollback for in-game import
+- [x] Bigger stage as a scene, per world (Garden 8, Attic 9, Observatory 10), tiles stay as selectors (v0.6.0)
+- [ ] Look at the scenes on a real phone (spacing, tap targets, name pills) and tune `js/layout.js`
+- [ ] Rarity tiers (done in v0.6.0), more creatures. Waiting on Wayne's answers.
+- [x] v0.6.0: easier sparks, cheaper eggs, hatch animation, repeat refund, Collection preview, pot empties after a mix
 - [x] Pot upgrade (v0.5.0): 2 to 5 ingredients, blends as ingredients, Match my stage, What can I make?, closeness hints, 15 new blends (set CLAUDE), rare friends
 - [ ] Merge the second blend set (global `NightliteBlendsExtra_AGY`) when it arrives: drop the file in `js/worlds/`, add one script tag, add its ASSET_LOG rows
 - [ ] Wayne to listen to the rare sounds and the new blends on a real phone speaker (Cozynub bass is very low)
@@ -20,4 +24,4 @@
 - [ ] Try Drive backup and autosave on a real iPhone (popup after first tap, quiet reconnect)
 - [ ] Wayne to confirm the blend names and the spark numbers (see DESIGN.md)
 - [ ] Milestone 4: polish, tests, docs, final catalog update
-- [ ] Possible later: pause button, more than 6 slots, spooky night mode
+- [ ] Possible later: pause button, free-form dragging of friends on the scene, spooky night mode

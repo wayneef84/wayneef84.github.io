@@ -3,14 +3,15 @@
  * Engine forked from the S4K Mixer v2 app (tray, drag, undo, save, volume, audio context), adapted here.
  * Two screens: the door screen (world select) and a world (Night Garden, Toy Attic or Star Observatory).
  * Worlds register themselves in window.NightliteWorlds (see js/worlds/*.js).
- * One shared stage: creatures from all three worlds can stand on it. Tempo comes from the first creature placed.
+ * One stage per world (Garden 8, Attic 9, Observatory 10, see js/layout.js): creatures from any world can stand on it. Tempo comes from the first creature placed.
  * Milestone 3: free sparks, eggs in a nest, a Mixing pot, a Discovery book and 6 blend creatures (js/worlds/blends.js).
+ * v0.6.0: cheaper eggs (3 sparks), faster sparks, hatch animation, repeats refund, Collection preview, pot empties after a mix.
  * v0.5.0: recipes of 2 to 5 friends (blends can be ingredients), pot suggestions, extra blend sets (js/worlds/blends_*.js), rare friends.
  * Recipe rules live in js/recipes.js (no DOM, tested by tests/nightlite.test.js).
  */
 (function (w) {
     var d = document;
-    var SLOTS = 6;
+    var L = w.NightliteLayout;     // js/layout.js: per-world stage capacity and scene spots (garden 8, attic 9, observatory 10)
     var MASTER_CAP = 0.6;          // slider 100% = this gain at most: nothing sudden or loud
     var FADE_IN = 0.35;            // seconds. Creatures fade in softly on the next bar line.
 
@@ -22,21 +23,37 @@
 
     // Sparks: a free in-game number. Nothing is bought, nothing can be missed or lost.
     var SPARK_CAP = 99;            // the jar holds at most 99
-    var SPARK_EVERY = 15;          // +1 spark per 15 seconds of real play (2+ friends on the stage, page visible)
-    var WISH_GIVES = 3;            // "Wish on a star": free at any time, no timer
-    var EGG_COST = 5;              // an egg costs 5 sparks
-    var HATCH_SECS = 20;           // an egg hatches in about 20 seconds of looking at the game
-    var WARM_SHAVE = 2;            // each tap on the egg warms it: 2 seconds off
-    var SAVE_VERSION = 5;          // 5 adds rares: [ids]. Older saves load as they are (rares start empty), see loadProgress
+    var SPARK_EVERY = 8;           // +1 spark per 8 seconds of real play (2+ friends on the stage, page visible)
+    var WISH_GIVES = 6;            // "Wish on a star": free at any time, no timer
+    var EGG_COST = 3;              // an egg costs 3 sparks
+    var HATCH_SECS = 12;           // an egg hatches in about 12 seconds of looking at the game
+    var WARM_SHAVE = 3;            // each tap on the egg warms it: 3 seconds off
+    var HATCH_ANIM_MS = 1500;      // crack and pop before the reveal
+    var GAME_VERSION = 'v0.6.0';   // the game version, written into every save as "app" (keep in step with js/catalog.js and INFO.md)
+    var WHATS_NEW = [
+        { v: 'v0.6.0', date: '2026-11-02', items: ['Each world has its own bigger stage with friends arranged on a scene.', 'Sparks come faster and Wish on a star gives 6.', 'Eggs cost 3 sparks and hatch in about 12 seconds. Tap to warm them: sparkles and a rising note. Hatching is animated.',
+            'Every friend now has a color tier: grey, green, blue, purple, gold and red. Eggs roll a tier first, so gold and red are special.',
+            'Selling a repeat gives your sparks back and banks luck for the next egg, more for a rarer friend. The bonus shows under the friend.',
+            'Eggs come in random colors. Pattern, sparkle, rainbow and golden eggs carry a luck bonus. Find them all in Eggs found.',
+            'Lots of new friends to find in the Mixing pot and eggs.',
+            'Collection: blends and shimmering friends are on top, tap one to hear it. The Discovery book moved to the bottom.', 'The Mixing pot empties after a good mix.',
+            'Share a stage with a link. Friends you have not found show as outlines.', 'Saves now carry the game version, and this history lives in Settings.'] },
+        { v: 'v0.5.0', date: '2026-11-01', items: ['Mixing pot takes 2 to 5 friends, with Match my stage and What can I make?', '21 blends and shimmering rare friends.'] }
+    ];
+    var SAVE_VERSION = 6;           // 6 adds luck, eggs found and the egg look in the nest (older saves load with none)          // 5 adds rares: [ids]. Older saves load as they are (rares start empty), see loadProgress
     var DATA_KEY = 'nightlite.save';
+    var SEEN_KEY = 'nightlite.seen';   // the game version whose What is new the child or parent has opened
     var RARE_KEY = 'nightlite.rare';   // '1' or '0': the Rare friends toggle (default on)
     var POT_SLOTS = 5;
     var SAVE_LIST_CAP = 200;           // most entries read from each saved list (blends, found, rares)
     var R = w.NightliteRecipes;
+    var E = w.NightliteEggs;
 
     var S = { world: null, slots: [], vol: 0.7, muted: false, screen: 'doors', bpm: 90,
-              sparks: 0, owned: {}, found: {}, rares: {}, rareOn: true, nest: null, playSecs: 0,
+              sparks: 0, luck: 0, eggsSeen: {}, owned: {}, found: {}, rares: {}, rareOn: true, nest: null, playSecs: 0, hatching: false, saveApp: null, saveNewer: false, keep: { blends: [], found: [], rares: [] },
               view: 'garden', back: [], pot: [null, null, null, null, null], reveal: null, suggest: [], showSuggest: false, bookPage: 1 };
+    S.stages = { garden: [], attic: [], observatory: [] };     // one stage per world, kept while the page is open
+    S.slots = S.stages.garden;                                 // alias of the active world's stage array (set in enterWorld)
     var history = [];
     var ctx = null, mix = null, master = null;
     var voices = {};            // slot index -> { src, gain }
@@ -44,6 +61,8 @@
     var t0 = null;              // transport start time
     var toastTimer = null, drag = null, suppressClick = false, memMix = null;
     var charById = {};
+    // ids from links, saves and snapshots are untrusted: 'constructor' or '__proto__' must never find a friend
+    function chOf(id) { return (typeof id === 'string' && Object.prototype.hasOwnProperty.call(charById, id)) ? charById[id] : null; }
     var blendById = {};         // blend id -> creature
     var recipeByKey = {};       // sorted ids joined with '+' -> blend id (2 to 5 ingredients)
     var model = null;           // recipe tables and rules (js/recipes.js)
@@ -83,12 +102,26 @@
         for (k in S.found) if (S.found.hasOwnProperty(k) && S.found[k]) out.push(k);
         return out;
     }
+    function eggsSeenList() {
+        var out = [], k;
+        for (k in S.eggsSeen) if (S.eggsSeen.hasOwnProperty(k) && S.eggsSeen[k]) out.push(k);
+        return out;
+    }
     var loadingSave = false;      // true while a save import is reloading the page, so old memory never overwrites it
     function saveProgress() {
         if (loadingSave) return;
-        var data = { v: SAVE_VERSION, sparks: S.sparks, blends: ownedList(), found: foundList(), rares: raresList(),
-                     nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10 } : null };
+        // Entries this version does not know (from a newer game) are kept and written back, so loading a newer save here
+        // and playing does not erase them.
+        var data = { v: SAVE_VERSION, app: GAME_VERSION, sparks: S.sparks, blends: ownedList().concat(S.keep.blends), found: foundList().concat(S.keep.found), rares: raresList().concat(S.keep.rares),
+                     luck: Math.round(S.luck * 10) / 10, eggs: eggsSeenList(),
+                     nest: S.nest ? { left: Math.round(S.nest.left * 10) / 10, kind: S.nest.kind || 'plain', color: S.nest.color || 0, pattern: S.nest.pattern || 0 } : null };
         store(DATA_KEY, JSON.stringify(data));
+    }
+    // Only for a save from a NEWER game version: ids and keys this game has no blend for are kept as plain text (safe characters only).
+    function keepUnknown(list, v) {
+        if (!S.saveNewer || typeof v !== 'string' || !/^[a-z0-9_+]{1,200}$/.test(v)) return;
+        if (list === 'rares' && blendById.hasOwnProperty(R.baseId(v))) return;        // a rare of a blend this game knows but you do not own: not kept
+        if (S.keep[list].length < SAVE_LIST_CAP && S.keep[list].indexOf(v) < 0) S.keep[list].push(v);
     }
     function loadProgress() {
         var raw = store(DATA_KEY), data = null, i, id, key, n;
@@ -96,17 +129,22 @@
         if (!data || typeof data !== 'object') return;
         n = parseInt(data.sparks, 10);
         S.sparks = (n >= 0) ? Math.min(SPARK_CAP, n) : 0;
+        S.saveApp = (typeof data.app === 'string' && R.parseVersion(data.app)) ? data.app : null;
+        S.saveNewer = !!S.saveApp && R.compareVersions(S.saveApp, GAME_VERSION) > 0;
+        S.keep = { blends: [], found: [], rares: [] };
         // A save file can be edited by hand: ids are looked up with hasOwnProperty (so "constructor" means nothing),
         // each list is capped, and a rare only counts when its blend is already owned.
         if (Array.isArray(data.blends)) {
             for (i = 0; i < data.blends.length && i < SAVE_LIST_CAP; i++) {
                 id = data.blends[i];
                 if (typeof id === 'string' && blendById.hasOwnProperty(id)) S.owned[id] = true;
+                else keepUnknown('blends', id);
             }
         }
         if (Array.isArray(data.found)) {
             for (i = 0; i < data.found.length && i < SAVE_LIST_CAP; i++) {
                 key = data.found[i];
+                if (typeof key === 'string' && !recipeByKey.hasOwnProperty(key)) keepUnknown('found', key);
                 if (typeof key !== 'string' || !recipeByKey.hasOwnProperty(key)) continue;
                 S.found[key] = true; S.owned[recipeByKey[key]] = true;     // a found recipe always means the blend is owned
             }
@@ -115,11 +153,21 @@
             for (i = 0; i < data.rares.length && i < SAVE_LIST_CAP; i++) {
                 id = data.rares[i];
                 if (typeof id === 'string' && R.isRareId(id) && blendById.hasOwnProperty(R.baseId(id)) && S.owned[R.baseId(id)]) S.rares[id] = true;
+                else keepUnknown('rares', id);
             }
         }
         if (data.nest && typeof data.nest === 'object') {
             n = parseFloat(data.nest.left);
-            S.nest = { left: (n >= 0 && n <= HATCH_SECS) ? n : HATCH_SECS };
+            S.nest = { left: (n >= 0 && n <= HATCH_SECS) ? n : HATCH_SECS,
+                       kind: (typeof data.nest.kind === 'string' && E.isKind(data.nest.kind)) ? data.nest.kind : 'plain',
+                       color: (data.nest.color >= 0 && data.nest.color < E.EGG_COLORS.length) ? Math.floor(data.nest.color) : 0,
+                       pattern: (data.nest.pattern >= 0 && data.nest.pattern < E.EGG_PATTERNS) ? Math.floor(data.nest.pattern) : 0 };
+            S.eggsSeen[S.nest.kind] = true;
+        }
+        n = parseFloat(data.luck);
+        S.luck = (n >= 0) ? Math.min(E.LUCK_CAP, n) : 0;
+        if (Array.isArray(data.eggs)) {
+            for (i = 0; i < data.eggs.length && i < 12; i++) if (typeof data.eggs[i] === 'string' && E.isKind(data.eggs[i])) S.eggsSeen[data.eggs[i]] = true;
         }
     }
 
@@ -149,9 +197,13 @@
         if (got > 0) { toast('You wished on a star. +' + got + ' sparks!'); chime([84, 88, 91]); }
         else toast('Your spark jar is full. Time to make an egg or mix a pair!');
     }
+    // The active world's stage: its capacity, and swapping the stage array (S.slots always points at S.stages[world id])
+    function worldId() { return S.world && L.isWorld(S.world.id) ? S.world.id : 'garden'; }
+    function cap() { return L.cap(worldId()); }
+    function setSlots(arr) { S.stages[worldId()] = arr; S.slots = arr; }
     function stageCount() {
         var i, n = 0;
-        for (i = 0; i < SLOTS; i++) if (S.slots[i]) n++;
+        for (i = 0; i < cap(); i++) if (S.slots[i] && haveChar(chOf(S.slots[i]))) n++;
         return n;
     }
     // Called once a second with the seconds that really passed (at most 2). Sparks only trickle in while the child is
@@ -173,10 +225,10 @@
     }
     var nestSaveAcc = 0;
     function nestTick(dt) {
-        if (!S.nest) return;
+        if (!S.nest || S.hatching) return;
         S.nest.left -= dt;
         nestSaveAcc += dt;
-        if (S.nest.left <= 0) { hatch(); return; }
+        if (S.nest.left <= 0) { startHatch(); return; }
         if (nestSaveAcc >= 5) { nestSaveAcc = 0; saveProgress(); }
         updateNestLive();
     }
@@ -207,14 +259,44 @@
         for (i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1000003;
         return h + 1;
     }
-    function getBuffer(ch, cb) {
-        var key = ch.id + '@' + S.bpm;
+    function getBuffer(ch, cb) { getBufferAt(ch, S.bpm, cb); }
+    function getBufferAt(ch, bpm, cb) {
+        var key = ch.id + '@' + bpm;
         if (buffers[key]) { cb(buffers[key]); return; }
-        var r = w.NightliteSynth.render(ch.synth, S.bpm, hashSeed(ch.id));
+        var r = w.NightliteSynth.render(ch.synth, bpm, hashSeed(ch.id));
         var b = ctx.createBuffer(1, r.data.length, r.rate);
         b.getChannelData(0).set(r.data);
         buffers[key] = b;
         cb(b);
+    }
+    // Preview: tap a friend in the Collection to hear its loop (a few repeats, at its own tempo). Tap again to stop.
+    var preview = null;         // { id, src, gain, timer }
+    function stopPreview() {
+        var p = preview, cards, i;
+        preview = null;
+        cards = d.querySelectorAll('.ocard.playing');
+        for (i = 0; i < cards.length; i++) cards[i].classList.remove('playing');
+        if (!p) return;
+        w.clearTimeout(p.timer);
+        try { var t = ctx.currentTime; p.gain.gain.cancelScheduledValues(t); p.gain.gain.setTargetAtTime(0, t, 0.05); p.src.stop(t + 0.4); } catch (e) {}
+    }
+    function previewChar(ch, card) {
+        if (!ch || !ensureCtx()) return;
+        var same = preview && preview.id === ch.id;
+        stopPreview();
+        if (same) return;
+        getBufferAt(ch, ch.bpm || 90, function (buf) {
+            if (!buf) return;
+            var src = ctx.createBufferSource(), g = ctx.createGain(), t = ctx.currentTime + 0.03, rec;
+            src.buffer = buf; src.loop = true;
+            g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(1, t + 0.1);
+            src.connect(g); g.connect(mix);
+            src.start(t);
+            rec = { id: ch.id, src: src, gain: g, timer: null };
+            rec.timer = w.setTimeout(function () { if (preview === rec) stopPreview(); }, Math.min(9000, Math.max(3000, buf.duration * 2000)));
+            preview = rec;
+            if (card) card.classList.add('playing');
+        });
     }
     function anyVoice() {
         var k;
@@ -228,10 +310,17 @@
         if (when - now < 0.04) when += L;
         return when;
     }
+    // The glow pulse on a friend only runs while its voice plays
+    function markSing(i, on) {
+        var st = $('stage'), b = st ? st.querySelector('.slot[data-slot="' + i + '"]') : null;
+        if (!b) return;
+        if (on) b.classList.add('sing'); else b.classList.remove('sing');
+    }
     function stopVoice(i) {
         var v = voices[i];
         if (!v) return;
         delete voices[i];
+        markSing(i, false);
         try {
             var t = ctx.currentTime;
             v.gain.gain.cancelScheduledValues(t);
@@ -241,8 +330,8 @@
     }
     function startVoice(i) {
         var id = S.slots[i];
-        if (!id || !ensureCtx()) return;
-        var ch = charById[id];
+        if (!id || !haveChar(chOf(id)) || !ensureCtx()) return;      // an outline (a friend you have not found) stays silent
+        var ch = chOf(id);
         getBuffer(ch, function (buf) {
             if (!buf || S.slots[i] !== id) return;
             stopVoice(i);
@@ -255,6 +344,7 @@
             g.gain.linearRampToValueAtTime(1, when + FADE_IN);
             src.start(when);
             voices[i] = { src: src, gain: g };
+            markSing(i, true);
         });
     }
     function stopAllVoices() {
@@ -285,42 +375,63 @@
     function imgSrc(ch) { return w.NightliteArt.dataUri(w.NightliteArt.make(ch.art, false)); }
     function onStageIdx(id) {
         var i;
-        for (i = 0; i < SLOTS; i++) if (S.slots[i] === id) return i;
+        for (i = 0; i < cap(); i++) if (S.slots[i] === id) return i;
         return -1;
     }
     function firstEmpty() {
         var i;
-        for (i = 0; i < SLOTS; i++) if (!S.slots[i]) return i;
+        for (i = 0; i < cap(); i++) if (!S.slots[i]) return i;
         return -1;
     }
+    // Friends stand on a scene: each spot is placed by percent (js/layout.js), back spots are smaller and higher.
+    // Every friend gets a fixed small phase so the group does not bop in lockstep (no random numbers: tests stay seeded).
+    function phaseOf(idx) { return ((idx * 0.618 + 0.17) % 1); }
     function renderStage() {
-        var st = $('stage'), i;
+        var st = $('stage'), i, spots = L.spots(worldId()), sh = L.shelves(worldId());
         st.innerHTML = '';
-        for (i = 0; i < SLOTS; i++) {
+        for (i = 0; i < sh.length; i++) {
+            var pl = el('span', 'plank'); pl.style.top = sh[i] + '%'; pl.setAttribute('aria-hidden', 'true');
+            st.appendChild(pl);
+        }
+        for (i = 0; i < spots.length; i++) {
             (function (idx) {
-                var id = S.slots[idx], ch = id ? charById[id] : null;
-                var b = el('button', 'slot' + (ch ? ' on' : ''));
+                var id = S.slots[idx], ch = id ? chOf(id) : null, ghost = !!id && !haveChar(ch), sp = spots[idx];
+                var b = el('button', 'slot' + (ch && !ghost ? ' on' : '') + (ghost ? ' outline' : '') + (ch && !ghost && voices[idx] ? ' sing' : ''));
                 b.type = 'button';
                 b.setAttribute('data-slot', idx);
-                if (ch) {
+                b.style.left = sp.x + '%'; b.style.top = sp.y + '%';
+                b.style.width = (L.SIZE_PCT * sp.s) + '%';
+                b.style.zIndex = Math.round(sp.y * 10);
+                b.style.setProperty('--ph', phaseOf(idx).toFixed(2));
+                b.style.setProperty('--np', ((idx * 0.37 + 0.31) % 1).toFixed(2));
+                if (ghost) {
+                    if (ch) { var gi = el('img'); gi.src = imgSrc(ch); gi.alt = ''; gi.draggable = false; b.appendChild(gi); }
+                    b.appendChild(el('span', 'gq', '?'));
+                    b.appendChild(el('span', 'x', '×'));
+                    b.setAttribute('aria-label', 'A friend you have not found yet, spot ' + (idx + 1) + '. Tap to remove.');
+                } else if (ch) {
                     var im = el('img');
                     im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
                     b.appendChild(im);
                     b.appendChild(el('span', 'nm', ch.name));
                     b.appendChild(el('span', 'x', '×'));
-                    if (ch.rare) b.appendChild(el('span', 'rstar', '\u2605'));
+                    if (ch.rare) b.appendChild(el('span', 'rstar', '★'));
                     b.setAttribute('aria-label', ch.name + (ch.rare ? ' (rare)' : '') + ' on spot ' + (idx + 1) + '. Tap to remove.');
                 } else {
                     b.appendChild(el('span', 'plus', '+'));
                     b.setAttribute('aria-label', 'Empty spot ' + (idx + 1));
                 }
-                b.onclick = function () { if (S.slots[idx]) removeAt(idx); };
+                b.onclick = function () {
+                    if (!S.slots[idx]) return;
+                    if (!haveChar(chOf(S.slots[idx]))) toast('That friend is not in your Collection yet. Try an egg or the Mixing pot!');
+                    removeAt(idx);
+                };
                 st.appendChild(b);
             })(i);
         }
         drawConstellation();
     }
-    // Observatory only: soft lines join the filled slots like a star map. Decoration, never receives taps.
+    // Observatory only: soft lines join the filled spots like a star map, over a faint orbit. Decoration, never receives taps.
     var SVGNS = 'http://www.w3.org/2000/svg';
     function svgEl(tag, attrs) {
         var e = d.createElementNS(SVGNS, tag), k;
@@ -328,19 +439,19 @@
         return e;
     }
     function drawConstellation() {
-        var st = $('stage'), old = st.querySelector('.stars-map'), i, pts = [], sr, r, svg, a, b, dx, dy, len, ux, uy, cols = ['#f7bde0', '#cdbcff'];
+        var st = $('stage'), old = st.querySelector('.stars-map'), i, pts = [], sr, svg, a, b, dx, dy, len, ux, uy, cols = ['#f7bde0', '#cdbcff'], spots, W, H;
         if (old) st.removeChild(old);
         if (!S.world || S.world.id !== 'observatory') return;
         sr = st.getBoundingClientRect();
         if (!sr.width) return;
-        var slots = st.querySelectorAll('.slot');
-        for (i = 0; i < slots.length; i++) {
+        W = sr.width; H = sr.height;
+        spots = L.spots('observatory');
+        for (i = 0; i < spots.length; i++) {
             if (!S.slots[i]) continue;
-            r = slots[i].getBoundingClientRect();
-            pts.push({ x: r.left - sr.left + r.width / 2, y: r.top - sr.top + r.height / 2 });
+            pts.push({ x: spots[i].x * W / 100, y: spots[i].y * H / 100 });
         }
-        if (!pts.length) return;
-        svg = svgEl('svg', { 'class': 'stars-map', width: sr.width, height: sr.height, viewBox: '0 0 ' + sr.width + ' ' + sr.height, 'aria-hidden': 'true', focusable: 'false' });
+        svg = svgEl('svg', { 'class': 'stars-map', width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true', focusable: 'false' });
+        svg.appendChild(svgEl('ellipse', { cx: W / 2, cy: H / 2, rx: W * 0.36, ry: H * 0.32, fill: 'none', stroke: '#cdbcff', 'stroke-width': 1, 'stroke-dasharray': '1 9', 'stroke-linecap': 'round', opacity: 0.35 }));
         for (i = 0; i + 1 < pts.length; i++) {
             a = pts[i]; b = pts[i + 1];
             dx = b.x - a.x; dy = b.y - a.y; len = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -349,9 +460,9 @@
             svg.appendChild(svgEl('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: cols[i % 2], 'stroke-width': 1, opacity: 0.35 }));
         }
         for (i = 0; i < pts.length; i++) {
-            svg.appendChild(svgEl('circle', { cx: pts[i].x, cy: pts[i].y - 40 + (i % 2) * 6, r: 3.2, fill: cols[i % 2], 'class': 'tw' }));
+            svg.appendChild(svgEl('circle', { cx: pts[i].x, cy: pts[i].y - 30 + (i % 2) * 6, r: 3.2, fill: cols[i % 2], 'class': 'tw' }));
         }
-        st.appendChild(svg);
+        st.insertBefore(svg, st.firstChild);
     }
     function renderChips() {
         var box = $('worldChips'), i;
@@ -367,7 +478,7 @@
                 b.appendChild(el('span', 'cn', wd.chip || wd.short));
                 b.setAttribute('aria-pressed', on ? 'true' : 'false');
                 b.setAttribute('aria-label', 'Show friends from ' + wd.label);
-                b.onclick = function () { if (wd.id !== S.view) setWorldView(wd); };
+                b.onclick = function () { if (wd.id !== S.view) { if (setWorldView(wd)) startStage(); } };
                 box.appendChild(b);
             })(w.NightliteWorlds[WORLD_ORDER[i]]);
         }
@@ -444,7 +555,7 @@
     function afterChange() { renderStage(); renderTiles(); updateButtons(); }
 
     // ---------------------------------------------------------------- history / actions
-    function snapshot() { return { v: SAVE_VERSION, world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, SLOTS) }; }
+    function snapshot() { return { v: SAVE_VERSION, world: S.world.id, bpm: S.bpm, slots: S.slots.slice(0, cap()) }; }
     function setBpm(b) {
         S.bpm = b;
         d.documentElement.style.setProperty('--beat', (60 / b) + 's');
@@ -486,22 +597,22 @@
         if (!firstFilled()) { toast('The stage is already empty.'); return; }
         pushHistory();
         stopAllVoices();
-        S.slots = [];
+        setSlots([]);
         afterChange();
         toast('Stage cleared. Tap Undo to bring it back.');
     }
     function firstFilled() {
         var i;
-        for (i = 0; i < SLOTS; i++) if (S.slots[i]) return true;
+        for (i = 0; i < cap(); i++) if (S.slots[i]) return true;
         return false;
     }
     function restore(snap) {
         stopAllVoices();
-        S.slots = snap.slots.slice();
+        setSlots(snap.slots.slice(0, cap()));
         setBpm(snap.bpm > 0 ? snap.bpm : S.world.bpm);
         afterChange();
         var i;
-        for (i = 0; i < SLOTS; i++) if (S.slots[i] && charById[S.slots[i]]) startVoice(i); else S.slots[i] = null;
+        for (i = 0; i < cap(); i++) if (S.slots[i] && chOf(S.slots[i])) startVoice(i); else if (!(typeof S.slots[i] === 'string' && /^[a-z0-9_]{1,40}$/.test(S.slots[i]) && S.slots[i] !== '__proto__')) S.slots[i] = null;     // an outline (unknown id) stays
     }
     function undo() {
         if (!history.length) { toast('Nothing to undo.'); return; }
@@ -524,16 +635,59 @@
         if (!snap || !(snap.slots instanceof Array)) snap = memMix;
         if (!snap) { toast('No saved mix yet. Make one and tap Save.'); return; }
         for (i = 0; i < snap.slots.length; i++) {
-            if (snap.slots[i] && !haveChar(charById[snap.slots[i]])) snap.slots[i] = null;
+            if (snap.slots[i] && !haveChar(chOf(snap.slots[i]))) snap.slots[i] = null;
         }
         if (!(snap.bpm > 0)) {
             snap.bpm = S.world.bpm;       // older saves have no tempo: use the tempo of the first creature
-            for (i = 0; i < snap.slots.length; i++) if (snap.slots[i]) { snap.bpm = charById[snap.slots[i]].bpm; break; }
+            for (i = 0; i < snap.slots.length; i++) if (snap.slots[i]) { snap.bpm = chOf(snap.slots[i]).bpm; break; }
+        }
+        if (typeof snap.world === 'string' && L.isWorld(snap.world) && w.NightliteWorlds[snap.world] && snap.world !== worldId()) {
+            enterWorld(snap.world);       // the mix goes on THAT world's stage (this also clears undo)
         }
         ensureCtx();
         pushHistory();
         restore(snap);
         toast('Mix loaded.');
+    }
+
+    // ---------------------------------------------------------------- share a stage by link
+    // https://.../index.html?w=garden&mix=mossle.glimmow..hedgey  (see recipes.js encodeMix). w is the world id (default garden).
+    // Friends the visitor does not have show as outlines.
+    function shareUrl() { return (w.location ? w.location.href : 'index.html').split('#')[0].split('?')[0] + '?w=' + worldId() + '&mix=' + R.encodeMix(S.slots.slice(0, cap())); }
+    function shareMix() {
+        var url, nav = w.navigator;
+        if (!firstFilled()) { toast('Add some friends first, then share.'); return; }
+        url = shareUrl();
+        if (nav && nav.clipboard && nav.clipboard.writeText) {
+            nav.clipboard.writeText(url).then(function () { toast('Link copied. Send it to a friend!'); }, function () { w.prompt('Copy this link to share your stage:', url); });
+        } else { w.prompt('Copy this link to share your stage:', url); }
+    }
+    function loadSharedMix() {
+        var q = (w.location && w.location.search) || '', m = /[?&]mix=([^&#]*)/.exec(q), wm = /[?&]w=([^&#]*)/.exec(q), text, ids, i, first = null, world = 'garden', ghosts = 0, ch;
+        if (!m) return;
+        try { text = decodeURIComponent(m[1]); } catch (e) { return; }
+        if (wm && L.isWorld(wm[1]) && w.NightliteWorlds[wm[1]]) world = wm[1];      // anything else falls back to the garden
+        ids = R.decodeMix(text, L.cap(world));
+        if (!ids) { toast('That shared link did not look right, so the stage is empty.'); return; }
+        for (i = 0; i < ids.length; i++) {
+            ch = ids[i] ? chOf(ids[i]) : null;
+            if (ids[i] && !haveChar(ch)) ghosts++;
+            if (ch && haveChar(ch) && !first) first = ch;
+        }
+        enterWorld(world);
+        setSlots([]);
+        for (i = 0; i < cap(); i++) S.slots.push(ids[i] || null);
+        setBpm(first ? first.bpm : S.world.bpm);
+        afterChange();
+        toast(ghosts ? 'Shared stage loaded. ' + ghosts + ' friend' + (ghosts === 1 ? ' is' : 's are') + ' not in your Collection yet, so they show as outlines.' : 'Shared stage loaded. Tap anywhere to hear it.');
+        // browsers keep sound off until the first tap: start the friends on it
+        var go = function () {
+            d.removeEventListener('pointerdown', go, true); d.removeEventListener('keydown', go, true);
+            var k;
+            if (!ensureCtx()) return;
+            for (k = 0; k < cap(); k++) if (S.slots[k] && !voices[k]) startVoice(k);
+        };
+        d.addEventListener('pointerdown', go, true); d.addEventListener('keydown', go, true);
     }
 
     function setMuted(m) {
@@ -719,8 +873,26 @@
         $('volRange').value = val;
         syncCfg();
     }
+    function cfgVersionText() {
+        var t = 'Nightlite Choir+ ' + GAME_VERSION + '. The save on this device was made with ' + (S.saveApp || 'an older version') + '.';
+        if (S.saveNewer) t += ' That is NEWER than this game. Everything is kept, but new things from it may not show up until the game is updated.';
+        return t;
+    }
+    function renderWhatsNew() {
+        var box = $('cfgNew'), hist = $('cfgHist'), i, j, h, ul, target;
+        if (!box) return;
+        box.innerHTML = '';
+        if (hist) hist.innerHTML = '';
+        for (i = 0; i < WHATS_NEW.length; i++) {
+            target = (i === 0 || !hist) ? box : hist;
+            h = el('h4', '', WHATS_NEW[i].v + (WHATS_NEW[i].date ? ' (' + WHATS_NEW[i].date + ')' : '')); ul = el('ul');
+            for (j = 0; j < WHATS_NEW[i].items.length; j++) ul.appendChild(el('li', '', WHATS_NEW[i].items[j]));
+            target.appendChild(h); target.appendChild(ul);
+        }
+    }
     function syncCfg() {
-        var r = $('volRange'), c = $('cfgVol'), b = $('cfgMute');
+        var r = $('volRange'), c = $('cfgVol'), b = $('cfgMute'), v = $('cfgVer');
+        if (v) v.textContent = cfgVersionText();
         if (c && r) c.value = r.value;
         if (b) {
             b.querySelector('.ico').textContent = S.muted ? '🔇' : '🔊';
@@ -1079,6 +1251,7 @@
         });
     }
     function initConfig() {
+        renderWhatsNew();
         var gears = d.querySelectorAll('.gearBtn'), i;
         for (i = 0; i < gears.length; i++) {
             (function (g) { g.onclick = function () { openConfig(g); }; })(gears[i]);
@@ -1140,12 +1313,19 @@
         $('screenPot').hidden = (name !== 'pot');
         d.body.className = isWorld ? 'screen-world world-' + name : 'screen-' + name;
         $('toast').className = 'toast';
+        stopPreview();
         w.scrollTo(0, 0);
     }
-    // Show a world's look and friends. The stage, its sound and the undo history are not touched.
+    // Show a world's look, stage and friends. Each world has its own stage: switching to another world's stage
+    // stops the old voices and clears undo (the old stage stays in memory). Same world: sound and history untouched.
+    // Returns true when the stage changed (the caller starts that stage's voices).
     function setWorldView(world) {
+        var changed = false;
         S.world = world;
         S.view = world.id;
+        if (L.isWorld(world.id) && S.slots !== S.stages[world.id]) {
+            stopAllVoices(); history = []; S.slots = S.stages[world.id]; changed = true;
+        }
         if (!firstFilled()) setBpm(world.bpm);      // a stage that already has creatures keeps its tempo
         applyTheme(world.theme);
         buildGlow(world.glow ? world.glow.count : 12, world.glow ? world.glow.kind : '');
@@ -1153,6 +1333,11 @@
         $('screenWorld').setAttribute('aria-label', world.label);
         d.body.className = 'screen-world world-' + world.id;
         afterChange();
+        return changed;
+    }
+    function startStage() {
+        var i;
+        if (ctx) for (i = 0; i < cap(); i++) if (S.slots[i]) startVoice(i);
     }
     function enterWorld(id) {
         var world = w.NightliteWorlds[id];
@@ -1162,7 +1347,7 @@
         S.back = [];
         history = [];
         setWorldView(world);
-        if (ensureCtxIfRunning()) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
+        startStage();
     }
     function ensureCtxIfRunning() { return !!ctx; }
     function leaveWorld() {
@@ -1210,7 +1395,7 @@
     function resumeWorld() {
         showScreen(S.world.id);
         setWorldView(S.world);
-        if (ctx) { var i; for (i = 0; i < SLOTS; i++) if (S.slots[i]) startVoice(i); }
+        startStage();
     }
     function goBack() {
         var to = S.back.pop() || 'doors';
@@ -1366,16 +1551,17 @@
         if (rare && !S.rares[R.rareId(id)]) { S.rares[R.rareId(id)] = true; newRare = true; }
         saveProgress();
         S.showSuggest = false;
+        setPot([]);                 // the pot empties, ready for the next mix. The made friend stays in the bowl until you pick again.
         renderPot();
         potOut(blend, isNew, rare);
         if ((isNew || newRare) && w.FongCheer) w.FongCheer.cheer('big');
         chime(rare ? [84, 88, 91, 96, 100, 103] : [84, 88, 91, 96]);
         potMsg((rare ? 'A shimmering RARE ' + blend.name + ' appeared! ' : '') +
-               (isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.'));
+               (isNew ? 'You made ' + blend.name + '! It joined your Collection.' : 'You made ' + blend.name + ' again. It is already in your Collection.') + ' The pot is empty for your next mix.');
     }
     function stageIds() {
         var ids = [], i;
-        for (i = 0; i < SLOTS; i++) if (S.slots[i]) ids.push(S.slots[i]);
+        for (i = 0; i < cap(); i++) if (S.slots[i] && haveChar(chOf(S.slots[i]))) ids.push(S.slots[i]);
         return ids;
     }
     // Match my stage: fill the pot from the friends standing on the stage
@@ -1453,29 +1639,65 @@
         for (i = 0; i < bl.length; i++) if (!S.owned[bl[i].id]) out.push(bl[i]);
         return out;
     }
-    function eggSvg(warm, emptyNest) {
-        var s = '<svg viewBox="0 0 100 132" aria-hidden="true" focusable="false">' +
+    var EGG_PATH = 'M50 8 C78 8 90 54 90 78 C90 100 72 114 50 114 C28 114 10 100 10 78 C10 54 22 8 50 8Z';
+    function eggLook() { return S.nest && S.nest.kind ? S.nest : { kind: 'plain', color: 0, pattern: 0 }; }
+    // The egg picture. look = { kind, color, pattern }: plain (random color), spots (pattern), sparkle, rainbow, golden.
+    var eggUid = 0;
+    function eggSvg(warm, emptyNest, look) {
+        var uid = 'e' + (++eggUid), s = '<svg viewBox="0 0 100 132" aria-hidden="true" focusable="false">' +
+            '<defs><clipPath id="' + uid + 'c"><path d="' + EGG_PATH + '"/></clipPath>' +
+            '<linearGradient id="' + uid + 'r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a8a"/><stop offset="0.2" stop-color="#ffc872"/><stop offset="0.4" stop-color="#fff29a"/><stop offset="0.6" stop-color="#8fe0a0"/><stop offset="0.8" stop-color="#7fb8ff"/><stop offset="1" stop-color="#c79bff"/></linearGradient>' +
+            '<linearGradient id="' + uid + 'g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="0.5" stop-color="#f2b73c"/><stop offset="1" stop-color="#fff0a0"/></linearGradient></defs>' +
             '<ellipse cx="50" cy="116" rx="46" ry="13" fill="#7a5a3a"/><path d="M8 114 Q50 136 92 114" fill="none" stroke="#a98458" stroke-width="5" stroke-linecap="round"/>' +
             '<path d="M14 108 Q30 120 50 120 Q72 120 88 106" fill="none" stroke="#c9a672" stroke-width="3" stroke-linecap="round"/>';
+        var E = w.NightliteEggs, k, fill, pat = '', i, glow;
         if (emptyNest) return s.replace('viewBox="0 0 100 132"', 'viewBox="0 96 100 40"') + '</svg>';
-        if (warm > 0.2) s += '<ellipse cx="50" cy="66" rx="' + (42 + warm * 8) + '" ry="' + (52 + warm * 8) + '" fill="#ffe9a0" opacity="' + (0.15 + warm * 0.3).toFixed(2) + '"/>';
-        s += '<path d="M50 8 C78 8 90 54 90 78 C90 100 72 114 50 114 C28 114 10 100 10 78 C10 54 22 8 50 8Z" fill="#fbf0d8" stroke="#d9b98a" stroke-width="3"/>' +
-            '<circle cx="34" cy="62" r="6" fill="#c9b6f2"/><circle cx="64" cy="48" r="5" fill="#f4b6cc"/><circle cx="58" cy="86" r="7" fill="#a8dcc4"/><circle cx="30" cy="92" r="4" fill="#f4b6cc"/><circle cx="72" cy="72" r="3.5" fill="#c9b6f2"/>' +
-            '<ellipse cx="38" cy="36" rx="7" ry="11" fill="#fff" opacity="0.5" transform="rotate(18 38 36)"/>';
-        if (warm > 0.55) s += '<path d="M30 62 L40 70 L46 60 L54 72 L62 62 L70 70" fill="none" stroke="#b8905c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
-        if (warm > 0.8) s += '<path d="M40 70 L38 82 M54 72 L58 84" stroke="#b8905c" stroke-width="2.2" stroke-linecap="round"/>';
+        look = look || eggLook();
+        k = look.kind || 'plain';
+        fill = k === 'rainbow' ? 'url(#' + uid + 'r)' : (k === 'golden' ? 'url(#' + uid + 'g)' : E.EGG_COLORS[look.color % E.EGG_COLORS.length]);
+        glow = (k === 'golden' ? '#ffe27a' : (k === 'rainbow' ? '#e8d8ff' : '#ffe9a0'));
+        if (warm > 0.1) s += '<ellipse cx="50" cy="66" rx="' + (42 + warm * 14) + '" ry="' + (52 + warm * 14) + '" fill="' + glow + '" opacity="' + (0.18 + warm * 0.5).toFixed(2) + '"/>';
+        s += '<path d="' + EGG_PATH + '" fill="' + fill + '" stroke="' + (k === 'golden' ? '#c98f1e' : '#d9b98a') + '" stroke-width="3"/>';
+        if (k === 'plain') {
+            pat = '<circle cx="34" cy="62" r="6" fill="#c9b6f2"/><circle cx="64" cy="48" r="5" fill="#f4b6cc"/><circle cx="58" cy="86" r="7" fill="#a8dcc4"/><circle cx="30" cy="92" r="4" fill="#f4b6cc"/><circle cx="72" cy="72" r="3.5" fill="#c9b6f2"/>';
+        } else if (k === 'spots') {
+            if (look.pattern % 3 === 0) pat = '<circle cx="34" cy="48" r="8" fill="#e58aa8"/><circle cx="66" cy="42" r="6" fill="#7a9ae0"/><circle cx="58" cy="70" r="9" fill="#e58aa8"/><circle cx="30" cy="84" r="7" fill="#7a9ae0"/><circle cx="68" cy="96" r="6" fill="#e58aa8"/>';
+            else if (look.pattern % 3 === 1) pat = '<rect x="0" y="38" width="100" height="10" fill="#7a9ae0" opacity="0.7"/><rect x="0" y="62" width="100" height="10" fill="#e58aa8" opacity="0.7"/><rect x="0" y="86" width="100" height="10" fill="#7a9ae0" opacity="0.7"/>';
+            else pat = '<polyline points="0,50 14,38 28,50 42,38 56,50 70,38 84,50 100,38" fill="none" stroke="#e58aa8" stroke-width="6"/><polyline points="0,80 14,68 28,80 42,68 56,80 70,68 84,80 100,68" fill="none" stroke="#7a9ae0" stroke-width="6"/>';
+        } else if (k === 'sparkle') {
+            pat = '<circle cx="36" cy="64" r="4" fill="#c9b6f2"/><circle cx="62" cy="88" r="4" fill="#f4b6cc"/>';
+            for (i = 0; i < 5; i++) {
+                var sx = [30, 66, 50, 74, 36][i], sy = [40, 52, 74, 90, 96][i], sr = [8, 6, 9, 5, 6][i];
+                pat += '<path d="M' + sx + ' ' + (sy - sr) + ' L' + (sx + sr * 0.3) + ' ' + (sy - sr * 0.3) + ' L' + (sx + sr) + ' ' + sy + ' L' + (sx + sr * 0.3) + ' ' + (sy + sr * 0.3) + ' L' + sx + ' ' + (sy + sr) + ' L' + (sx - sr * 0.3) + ' ' + (sy + sr * 0.3) + ' L' + (sx - sr) + ' ' + sy + ' L' + (sx - sr * 0.3) + ' ' + (sy - sr * 0.3) + 'Z" fill="#fffbe0" stroke="#f2b73c" stroke-width="1"/>';
+            }
+        } else if (k === 'golden') {
+            pat = '<path d="M20 70 Q50 50 80 70" fill="none" stroke="#fff6c8" stroke-width="3" opacity="0.8"/><path d="M18 90 Q50 72 82 90" fill="none" stroke="#fff6c8" stroke-width="3" opacity="0.6"/>';
+        }
+        if (pat) s += '<g clip-path="url(#' + uid + 'c)">' + pat + '</g>';
+        s += '<ellipse cx="38" cy="36" rx="7" ry="11" fill="#fff" opacity="0.5" transform="rotate(18 38 36)"/>';
+        if (warm > 0.35) s += '<path d="M30 62 L40 70 L46 60 L54 72 L62 62 L70 70" fill="none" stroke="#b8905c" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+        if (warm > 0.65) s += '<path d="M40 70 L38 82 M54 72 L58 84" stroke="#b8905c" stroke-width="2.2" stroke-linecap="round"/>';
         return s + '</svg>';
     }
     function nestWarmth() { return S.nest ? Math.max(0, Math.min(1, 1 - S.nest.left / HATCH_SECS)) : 0; }
     function nestText() {
         var n = Math.max(1, Math.ceil(S.nest.left));
-        return 'Tap the egg to warm it and it hatches sooner. Or just wait, about ' + n + ' second' + (n === 1 ? '' : 's') + '.';
+        return S.hatching ? 'It is hatching!' : 'Tap the egg to warm it and it hatches sooner. Or just wait, about ' + n + ' second' + (n === 1 ? '' : 's') + '.';
     }
     function updateNestLive() {
         if (S.screen !== 'collect' || !S.nest) return;
         var f = $('nestFill'), t = $('nestText');
         if (f) f.style.width = Math.round(nestWarmth() * 100) + '%';
         if (t) t.textContent = nestText();
+    }
+    // "Sparkle egg: +12% luck" and the luck banked from repeats
+    function luckLine(hasEgg) {
+        var k = hasEgg && S.nest ? E.kindById(S.nest.kind) : null, parts = [], p;
+        if (k && k.boost > 0) parts.push(k.name + ': +' + pct(k.boost) + '% luck');
+        if (S.luck > 0) parts.push('Banked luck: +' + pct(S.luck) + '%');
+        p = el('p', 'luckline', parts.join('. ') || '');
+        p.hidden = !parts.length;
+        return p;
     }
     function renderNest() {
         var box = $('nestBox'), r, e, m, f, b;
@@ -1484,11 +1706,20 @@
             r = el('div', 'reveal');
             r.id = 'nestReveal';
             if (S.reveal.id) {
-                var rc = S.reveal.rare ? charById[R.rareId(S.reveal.id)] : charById[S.reveal.id];
+                var rc = S.reveal.rare ? charById[R.rareId(S.reveal.id)] : charById[S.reveal.id], rn = charById[S.reveal.id].name, tr = S.reveal.tier || 1, pips = el('span', 'pips', '');
                 var im = el('img'); im.src = imgSrc(rc); im.alt = '';
+                r.className = 'reveal t' + tr + (S.reveal.rare ? ' rare' : '');
                 r.appendChild(im);
-                r.appendChild(el('span', '', (S.reveal.rare ? '\u2605 A shimmering RARE ' : 'You hatched ') + charById[S.reveal.id].name + '!'));
-                r.appendChild(el('span', 'hint', 'Find it under Blends on any stage.'));
+                pips.textContent = new Array(tr + 1).join('●');
+                pips.style.color = E.TIER_COLORS[tr - 1];
+                pips.setAttribute('aria-label', E.TIER_NAMES[tr - 1] + ' friend');
+                r.appendChild(pips);
+                r.appendChild(el('span', '', (S.reveal.rare ? '★ A shimmering ' + rn + '!' : (S.reveal.isNew ? 'You hatched ' + rn + '!' : 'It is ' + rn + ' again!'))));
+                if (S.reveal.refund) {
+                    r.appendChild(el('span', 'sold', 'Repeat sold: +' + pct(S.reveal.sold) + '% luck for your next egg'));
+                    r.appendChild(el('span', 'hint', 'Your ' + EGG_COST + ' sparks came back too. Try another egg!'));
+                } else r.appendChild(el('span', 'hint', S.reveal.rare && !S.reveal.isNew ? 'A new shimmering twin for your Collection.' : 'Find it under Blends on any stage.'));
+                if (S.reveal.used > 0) r.appendChild(el('span', 'hint', 'That egg had +' + pct(S.reveal.used) + '% luck.'));
             } else {
                 r.appendChild(el('span', '', '\u2728 Twinkle! You already have every blend, so your sparks came back.'));
             }
@@ -1508,6 +1739,7 @@
             box.appendChild(m);
             var t = el('p', 'hint', nestText()); t.id = 'nestText';
             box.appendChild(t);
+            box.appendChild(luckLine(true));
         } else {
             e = el('div', 'egg empty');
             e.innerHTML = eggSvg(0, true);
@@ -1519,7 +1751,8 @@
             b.setAttribute('aria-label', 'Get an egg for ' + EGG_COST + ' sparks');
             b.onclick = getEgg;
             box.appendChild(b);
-            box.appendChild(el('p', 'hint', S.sparks < EGG_COST ? 'An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free.' : 'Put an egg in the nest. It hatches a new blend friend.'));
+            box.appendChild(luckLine(false));
+            box.appendChild(el('p', 'hint', S.sparks < EGG_COST ? 'An egg costs ' + EGG_COST + ' sparks. Wish on a star for more, it is free.' : 'Put an egg in the nest. Eggs can hatch a shimmering rare, and a repeat gives your sparks back.'));
         }
     }
     function getEgg() {
@@ -1528,50 +1761,97 @@
         ensureCtx();
         S.reveal = null;
         S.sparks -= EGG_COST;
-        if (!unownedBlends().length) {
-            // every blend is already yours: a happy twinkle and the sparks come right back
-            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);
-            S.reveal = { id: null };
-            chime([84, 88, 91, 96, 91]);
-        } else {
-            S.nest = { left: HATCH_SECS };
-            nestSaveAcc = 0;
-            chime([72, 76]);
-        }
+        S.nest = { left: HATCH_SECS };
+        var look = E.rollEgg(w.Math.random);
+        S.nest.kind = look.kind; S.nest.color = look.color; S.nest.pattern = look.pattern;
+        S.eggsSeen[look.kind] = true;
+        nestSaveAcc = 0;
+        chime([72, 76]);
         updateSparkUI(); saveProgress(); renderNest();
     }
     function warmEgg() {
-        if (!S.nest) return;
+        if (!S.nest || S.hatching) return;
         ensureCtx();
         S.nest.left = Math.max(0, S.nest.left - WARM_SHAVE);
-        chime([79]);
-        if (S.nest.left <= 0) { hatch(); return; }
+        chime([72 + Math.round(nestWarmth() * 14)]);      // the note climbs as the egg warms up
+        if (S.nest.left <= 0) { startHatch(); return; }
         var e = $('eggBtn');
         if (e) {
             e.innerHTML = eggSvg(nestWarmth());
             e.classList.remove('tapped'); void e.offsetWidth; e.classList.add('tapped');
+            miniBurst(e);
         }
         updateNestLive();
         saveProgress();
     }
+    // A few sparkles from the egg on every warm tap
+    function miniBurst(host) {
+        var b = el('span', 'burst small'), i, p, a;
+        for (i = 0; i < 6; i++) {
+            p = el('i');
+            a = (i / 6) * 6.2832 + w.Math.random();
+            p.style.setProperty('--dx', Math.round(Math.cos(a) * 46) + 'px');
+            p.style.setProperty('--dy', Math.round(Math.sin(a) * 46 - 10) + 'px');
+            b.appendChild(p);
+        }
+        host.appendChild(b);
+        w.setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 800);
+    }
+    // Hatching: the egg shakes and glows, splits in two, sparkles fly, then the new friend is revealed.
+    // Away from the Collection screen (or when it cannot be shown) it just hatches.
+    function startHatch() {
+        var e = S.screen === 'collect' ? $('eggBtn') : null, box;
+        if (S.hatching || !S.nest) return;
+        if (!e) { hatch(); return; }
+        S.hatching = true;
+        S.nest.left = 0;
+        saveProgress();
+        e.innerHTML = eggSvg(1, false, eggLook());
+        e.className = 'egg hatching';
+        e.disabled = true;
+        chime([76, 79, 83]);
+        w.setTimeout(function () {
+            box = $('nestBox');
+            if (S.screen === 'collect' && box && $('eggBtn') === e) {
+                var top = el('span', 'shell top'), bot = el('span', 'shell bot');
+                top.innerHTML = eggSvg(1); bot.innerHTML = eggSvg(1);
+                e.innerHTML = '';
+                e.className = 'egg split';
+                e.appendChild(top); e.appendChild(bot);
+                burst(e);
+            }
+        }, Math.round(HATCH_ANIM_MS * 0.6));
+        w.setTimeout(hatch, HATCH_ANIM_MS);
+    }
+    function tierOfId(id) { return E.tierOf(id, w.NightliteTiers); }
+    function pct(v) { return String(Math.round(v * 10) / 10); }
+    // The egg rolls a tier first (see js/eggs.js), then a blend of that tier. A repeat is "sold": the sparks come back and it
+    // banks luck (more for a rarer tier) that the next egg spends.
     function hatch() {
-        var c = unownedBlends(), pick, rare = false;
+        var bl = blendList(), pick, rare = false, newRare = false, refund = false, i, items = [], look = S.nest, boost, used, sold = 0, kind;
+        if (!S.nest) { S.hatching = false; return; }       // nothing in the nest (already hatched): never roll a free friend
         S.nest = null;
-        if (!c.length) {
-            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);     // nothing new to hatch: the sparks come back
+        S.hatching = false;
+        if (!bl.length) {
+            S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST);
             S.reveal = { id: null };
-            chime([84, 88, 91, 96, 91]);
-            toast('Twinkle! You already have every blend. Your sparks came back.');
         } else {
-            pick = c[Math.floor(Math.random() * c.length)];
+            kind = E.kindById(look && look.kind);
+            boost = kind.boost;
+            used = Math.min(E.LUCK_CAP, S.luck + boost);
+            for (i = 0; i < bl.length; i++) items.push({ id: bl[i].id, tier: tierOfId(bl[i].id), owned: !!S.owned[bl[i].id] });
+            pick = E.rollBlend(w.Math.random, items, S.luck, boost);
+            S.luck = 0;                                       // the luck was spent on this egg
             S.owned[pick.id] = true;
             rare = R.roll(w.Math.random, S.rareOn);
-            if (rare) S.rares[R.rareId(pick.id)] = true;
-            S.reveal = { id: pick.id, rare: rare };
-            chime(rare ? [84, 88, 91, 96, 100, 103] : [84, 88, 91, 96]);
-            toast('Your egg hatched: ' + (rare ? 'a RARE ' : '') + pick.name + '!');
-            if (w.FongCheer) w.FongCheer.cheer('big');
+            if (rare && !S.rares[R.rareId(pick.id)]) { S.rares[R.rareId(pick.id)] = true; newRare = true; }
+            refund = !pick.isNew && !newRare;
+            if (refund) { S.sparks = Math.min(SPARK_CAP, S.sparks + EGG_COST); sold = E.sellLuck(pick.tier); S.luck = E.addLuck(0, sold); }
+            S.reveal = { id: pick.id, rare: rare, isNew: pick.isNew, refund: refund, tier: pick.tier, sold: sold, used: used };
+            toast(refund ? 'Same friend again, ' + charById[pick.id].name + '. Sparks back and +' + pct(sold) + '% luck!' : 'Your egg hatched: ' + (rare ? 'a shimmering ' : '') + charById[pick.id].name + '!');
         }
+        chime(rare || (pick && pick.tier >= 4) ? [84, 88, 91, 96, 100, 103] : [84, 88, 91, 96]);
+        if (w.FongCheer && pick && (pick.isNew || newRare)) w.FongCheer.cheer('big');
         updateSparkUI(); saveProgress();
         if (S.screen === 'collect') renderCollect();
         else if (S.screen === 'world') renderTiles();
@@ -1581,7 +1861,32 @@
         renderNest();
         renderBook();
         renderOwned();
+        renderEggBook();
         updateSparkUI();
+    }
+    // Eggs found: every kind of egg. A kind you have not seen is a "?". A found one shows its look and its luck bonus.
+    function renderEggBook() {
+        var box = $('eggBox'), i, k, c, n = 0, svg;
+        if (!box) return;
+        box.innerHTML = '';
+        for (i = 0; i < E.EGG_KINDS.length; i++) {
+            k = E.EGG_KINDS[i];
+            c = el('div', 'eggcard' + (S.eggsSeen[k.id] ? ' found' : ''));
+            if (S.eggsSeen[k.id]) {
+                n++;
+                svg = el('span', 'eggpic'); svg.innerHTML = eggSvg(0, false, { kind: k.id, color: 2, pattern: i % E.EGG_PATTERNS });
+                c.appendChild(svg);
+                c.appendChild(el('span', 'nm', k.name));
+                c.appendChild(el('span', 'bonus', k.boost ? '+' + pct(k.boost) + '% luck' : 'No bonus'));
+                c.setAttribute('aria-label', k.name + (k.boost ? ', plus ' + pct(k.boost) + ' percent luck' : ', no bonus'));
+            } else {
+                c.appendChild(el('span', 'qm', '?'));
+                c.appendChild(el('span', 'nm', 'A special egg'));
+                c.setAttribute('aria-label', 'An egg not found yet');
+            }
+            box.appendChild(c);
+        }
+        $('eggCount').textContent = n + ' of ' + E.EGG_KINDS.length;
     }
     function faceCard(ch, star) {
         var f = el('span', 'face');
@@ -1642,35 +1947,41 @@
             box.appendChild(row);
         }
     }
+    function ownedCard(ch, shown, rare) {
+        var c = el('button', 'ocard t' + tierOfId(ch.id) + (rare ? ' rare' : '')), im = el('img');
+        c.type = 'button';
+        im.src = imgSrc(shown); im.alt = ''; im.draggable = false;
+        c.appendChild(im);
+        c.appendChild(el('span', 'nm', ch.name));
+        c.appendChild(el('span', 'hear', '\u25B6'));
+        if (rare) c.appendChild(el('span', 'rstar', '\u2605'));
+        c.setAttribute('aria-label', ch.name + (rare ? ' (rare)' : '') + '. Tap to hear it.');
+        c.onclick = function () { previewChar(shown, c); };
+        return c;
+    }
     function renderOwned() {
         var box = $('ownedBox'), rbox = $('rareBox'), bl = blendList(), i, ch, c, n = 0, nr = 0;
+        stopPreview();
         box.innerHTML = '';
         rbox.innerHTML = '';
         for (i = 0; i < bl.length; i++) {
             ch = bl[i];
-            c = el('div', 'ocard');
             if (S.owned[ch.id]) {
                 n++;
-                var im = el('img'); im.src = imgSrc(ch); im.alt = ch.name; im.draggable = false;
-                c.appendChild(im);
-                c.appendChild(el('span', 'nm', ch.name));
+                c = ownedCard(ch, ch, false);
             } else {
+                c = el('div', 'ocard locked t' + tierOfId(ch.id));
                 c.appendChild(el('span', 'qm', '?'));
                 c.appendChild(el('span', 'nm', '?'));
             }
             box.appendChild(c);
             if (S.rares[R.rareId(ch.id)]) {
                 nr++;
-                var rc = charById[R.rareId(ch.id)], rcard = el('div', 'ocard rare'), rim = el('img');
-                rim.src = imgSrc(rc); rim.alt = ch.name + ' (rare)'; rim.draggable = false;
-                rcard.appendChild(rim);
-                rcard.appendChild(el('span', 'nm', ch.name));
-                rcard.appendChild(el('span', 'rstar', '★'));
-                rbox.appendChild(rcard);
+                rbox.appendChild(ownedCard(ch, charById[R.rareId(ch.id)], true));
             }
         }
         $('ownedCount').textContent = n + ' of ' + bl.length;
-        $('rareCount').textContent = String(nr);
+        $('rareCount').textContent = nr + ' of ' + bl.length;
         $('rareCard').hidden = nr === 0;
     }
 
@@ -1717,6 +2028,18 @@
         buildGlow(10);
         renderDoors();
         showScreen('doors');
+        if (store(SEEN_KEY) !== GAME_VERSION) {
+            $('newBanner').hidden = false;
+            $('newBannerText').textContent = 'What is new in ' + GAME_VERSION;
+            $('newBanner').onclick = function () {
+                $('newBanner').hidden = true;
+                store(SEEN_KEY, GAME_VERSION);
+                var g = d.querySelector('.gearBtn');
+                if (g) g.click();
+                var nb = $('cfgNewBox'); if (nb) nb.open = true;
+            };
+        }
+        if (S.saveNewer) toast('This save is from a newer version of the game (' + S.saveApp + '). It is kept safe.');
 
         $('doorsBtn').onclick = leaveWorld;
         $('backBtn3').onclick = goBack;
@@ -1735,6 +2058,7 @@
         $('resetBtn').onclick = clearAll;
         $('saveBtn').onclick = saveMix;
         $('loadBtn').onclick = loadMix;
+        $('shareBtn').onclick = shareMix;
         var acts = d.querySelectorAll('[data-act]'), ai;
         for (ai = 0; ai < acts.length; ai++) {
             (function (b) {
@@ -1756,8 +2080,10 @@
         });
         d.addEventListener('visibilitychange', function () { if (d.hidden) saveProgress(); });
 
+        loadSharedMix();
+
         // Test/debug hook (not used by the UI).
-        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById, model: model, potPick: potPick };
+        w.Nightlite = { state: S, hatch: hatch, saveProgress: saveProgress, loadProgress: loadProgress, worlds: worlds, addChar: addChar, ensureCtx: ensureCtx, voices: voices, enterWorld: enterWorld, tick: tick, charById: charById, model: model, potPick: potPick, mixPot: mixPot, shareUrl: shareUrl, renderStage: renderStage, loadMix: loadMix, saveMix: saveMix, removeAt: removeAt, undo: undo, clearAll: clearAll };
     }
 
     if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', init); else init();
