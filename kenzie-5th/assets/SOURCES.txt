@@ -1,0 +1,12 @@
+Assets copied (read-only sources, originals untouched) into this portable folder.
+
+sprunki-pinki.svg       from /Users/wayneef/Documents/Dev/wayneef84.github.io-agy/games/sprunki_v2/assets/classic/img/v03.svg
+sprunki-oren.svg        from /Users/wayneef/Documents/Dev/wayneef84.github.io-agy/games/sprunki_v2/assets/classic/img/b01.svg
+sprunki-pinki-loop.m4a  converted (AAC 64 kbps) from .../games/sprunki/assets/packs/phase1/audio/v03.wav
+sprunki-oren-loop.m4a   converted (AAC 64 kbps) from .../games/sprunki/assets/packs/phase1/audio/b01.wav
+
+The two SVGs are also embedded inline in index.html (so the page works even if only index.html is copied).
+The loops are loaded from this folder when present. If they are missing, Pinki and Oren use the built-in synth beat instead.
+These are fan-game assets from Wayne's own repo. They are for the family tablet only, do not publish them.
+
+Kuromi art: the inline Kuromi in /Users/wayneef/Documents/_Active/kenzie-5th-birthday.html (Gemini version) was used as the base, with a bow added.
