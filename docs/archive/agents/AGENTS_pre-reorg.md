@@ -106,8 +106,6 @@ All agents must adhere to the specific data and legal policies for each project.
 | Project Name | Data Policy | Legal / Liability | Status |
 | :--- | :--- | :--- | :--- |
 | **Fong Arcade** | Personal / Non-Commercial | Standard MIT / GPL | Updated |
-| **16 TB Archive** | High Privacy / Cold Storage | Internal Only | Pending |
-| **SkyLantern Logistics** | Enterprise / NDA | Amazon Corporate | Active |
 | **Regex Builder** | Local Storage Only | Standard MIT | Active |
 
 ## 📚 Lessons Learned (Accumulated Wisdom)

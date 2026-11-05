@@ -1,7 +1,7 @@
 # NEGEN Version History & Changelog
 
 **Attributor:** Jules
-**Last Updated:** 2024-02-04 12:10 UTC (Estimated)
+**Last Updated:** 2026-02-04 (date corrected 2026-11-04, it was written as 2024 by mistake)
 
 This document tracks the evolution of the NEGEN engine, including major updates, bug fixes, and lessons learned.
 

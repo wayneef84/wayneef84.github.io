@@ -108,5 +108,5 @@ Identify your role immediately:
 
 ## 7. Legal & Compliance
 Before starting work, verify the legal context of the project you are touching.
-*   **Central Docs:** [`legal/`](../../../legal) (MSA, Privacy, Data Policy).
-*   **Policy Matrix:** See `AGENTS.md` for project-specific rules (e.g., SkyLantern NDA vs. Open Source Arcade).
+*   **Central Docs:** [`legal/`](../../../legal) (Privacy, Terms, Data Policy).
+*   **Policy Matrix:** See `AGENTS.md` for project-specific rules.

@@ -1,51 +1,28 @@
 # Privacy Policy
 
-**Last Updated:** January 1, 2026
-**Effective Date:** January 1, 2026
+**Last updated:** 2026-11-04
 
-**F.O.N.G.** respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and share information when you access our services.
+F.O.N.G. Arcade (https://wayneef84.github.io) is a personal, non-commercial site. It is hosted on GitHub Pages and has no accounts, no ads, no tracking and no analytics.
 
-## 1. Information We Collect
-We collect the following types of information:
+## What is stored and where
 
-*   **Personal Information:** Name, email address, tracking numbers (Shipment Tracker/SkyLantern).
-*   **Usage Data:** Log data (IP address, browser type, pages visited) stored locally or processed temporarily.
-*   **Application Data:**
-    *   **Fong Arcade:** Game progress, scores, preferences (stored in `localStorage`).
-    *   **SkyLantern Logistics:** Tracking numbers, carrier API keys (stored in `IndexedDB`).
-    *   **Input A11y:** Scanned text, QR codes (stored in `localStorage`).
-    *   **16 TB Archive:** Digital assets (photos, documents) stored in cold storage (Internal Only).
+- **On your device only.** Game progress, high scores, settings, themes and the optional cheer name are saved in your browser (`localStorage` or IndexedDB). They are never sent to us. Clearing your browser data or using Settings, Data, Reset app deletes them.
+- **Save files you export.** If you export a save, the file goes wherever you put it. Importing only reads the file you choose.
 
-## 2. How We Use Your Information
-We use your information to:
-*   Provide, operate, and maintain our services.
-*   Improve user experience and troubleshoot issues.
-*   Analyze usage trends and optimize performance.
-*   Comply with legal obligations and enforce our terms.
-*   **SkyLantern Logistics:** Enable shipment tracking and logistical data processing.
+## When data leaves your device
 
-## 3. Data Storage & Security
-*   **Local-First:** Most applications (Shipment Tracker, Fong Arcade) operate on a "Local-First" principle, storing sensitive data (API keys, tracking numbers) directly on your device (IndexedDB/LocalStorage) rather than centralized servers.
-*   **Encryption:** Sensitive data transmitted to carrier APIs is encrypted via HTTPS.
-*   **Amazon Corporate Compliance (SkyLantern):** For enterprise users, data handling adheres to Amazon Corporate security standards, including strict access controls and encryption where applicable.
-*   **16 TB Archive:** Data in the archive is stored offline in secure cold storage with restricted access.
+- **Shipment Tracker.** To look up a package, the tracking number is sent to the carrier (for example UPS, FedEx, DHL or USPS) through a small Cloudflare Worker proxy. Carrier API keys you enter stay in your browser.
+- **Google Drive backup (optional, off by default).** If a grown-up connects Google Drive, save files are copied to a hidden app folder in that Google account. Sign-in happens with Google and the sign-in token is kept in memory only.
+- **Hosting.** GitHub Pages serves the site and may log basic request data such as IP address. See GitHub's privacy statement.
 
-## 4. Third-Party Sharing
-We do not sell your personal data. We may share data with:
-*   **Service Providers:** Third-party vendors (e.g., Cloudflare, Carrier APIs like DHL/FedEx/UPS) solely for the purpose of providing services.
-*   **Legal Requirements:** If required by law or to protect our rights.
+## Children
 
-## 5. Your Rights
-Depending on your jurisdiction, you may have the right to:
-*   Access, update, or delete your personal information.
-*   Restrict or object to processing.
-*   Data portability.
+The site is made for a family, including young kids. It does not ask for or collect personal information from anyone. Parent-only features (Drive backup, resets, imports) sit behind a grown-ups question.
 
-## 6. Children's Privacy
-Our services are not directed to children under 13. We do not knowingly collect personal information from children under 13.
+## Changes
 
-## 7. Changes to This Policy
-We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
+Updates are posted on this page with a new date.
 
-## 8. Contact Us
-If you have any questions about this Privacy Policy, please contact the repository maintainer.
+## Contact
+
+Open an issue on the GitHub repo.

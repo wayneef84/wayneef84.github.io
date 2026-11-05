@@ -1,52 +1,27 @@
 # Data Policy
 
-**Effective Date:** January 1, 2026
-**Version:** 1.0 (Draft)
+**Last updated:** 2026-11-04
 
-This Data Policy outlines the governance, storage, access control, and retention schedules for data within the F.O.N.G. ecosystem.
+How data is handled on F.O.N.G. Arcade. The short version: everything stays in your browser unless you choose otherwise.
 
-## 1. Project Classifications
+## Storage
 
-| Classification | Description | Projects |
-| :--- | :--- | :--- |
-| **Public / Non-Sensitive** | Standard game data, high scores, user preferences. | Fong Arcade, Input A11y |
-| **Enterprise / Confidential** | Logistics data, tracking numbers, internal API keys. | SkyLantern Logistics |
-| **High Privacy / Cold Storage** | Personal archives, family photos, sensitive documents. | 16 TB Digital Archive |
+| Data | Stored in | Kept until |
+|---|---|---|
+| Game saves, scores, settings, themes, cheer name | `localStorage` | You clear browser data or use Settings, Data, Reset app |
+| Shipment Tracker shipments and carrier API keys | IndexedDB | You delete them in the app or clear browser data |
+| Input A11y scan history | `localStorage` | You delete entries or clear browser data |
+| Optional Google Drive backups | Hidden app folder in the connected Google account | You delete them from the app or from Google Drive. The newest 10 manual saves and 7 daily copies are kept per game |
 
-## 2. Data Storage & Retention
+## What leaves the device
 
-### A. Fong Arcade (Public)
-*   **Storage:** Browser `localStorage` (Client-side only).
-*   **Retention:** Indefinite until browser cache cleared by user.
-*   **Backup:** None (Local only).
+- Tracking numbers, sent to the carrier through the Cloudflare Worker proxy, only when you look up a shipment.
+- Save files, only when you export them or turn on Drive backup.
 
-### B. SkyLantern Logistics (Enterprise)
-*   **Storage:** `IndexedDB` (Client-side encrypted) + Optional Cloud Sync.
-*   **Retention:**
-    *   Active shipments: Retained until delivery + 30 days.
-    *   Archived shipments: Retained for 1 year (configurable).
-    *   API Keys: Stored locally, never transmitted to F.O.N.G. servers.
-*   **Deletion:** User-initiated deletion via app settings.
+Nothing else is sent anywhere. There is no server database, no account system and no analytics.
 
-### C. 16 TB Digital Archive (High Privacy)
-*   **Storage:** Physical Cold Storage (Offline HDD Arrays) + Encrypted Cloud Backup (AWS Glacier Deep Archive).
-*   **Access:** Restricted to family members and authorized administrators.
-*   **Retention:** Permanent preservation (Legacy/Heritage data).
-*   **Deletion:** Only upon unanimous consent of data owners or legal requirement.
+## Rules for contributors
 
-## 3. Access Control
-
-*   **Public Projects:** Open access. No authentication required.
-*   **SkyLantern Logistics:** Requires valid Carrier API keys. Enterprise features may require corporate SSO (Future).
-*   **16 TB Archive:** Strict Role-Based Access Control (RBAC).
-    *   **Admin:** Full read/write/delete.
-    *   **Viewer:** Read-only.
-    *   **No Access:** Default for all external agents/users.
-
-## 4. Compliance & Audit
-*   **GDPR/CCPA:** Users may request data export (JSON/CSV) or deletion at any time.
-*   **Audit Logs:** Access to the 16 TB Archive and SkyLantern admin panels is logged.
-*   **Amazon Compliance:** SkyLantern data handling adheres to Amazon Corporate security policies where applicable.
-
-## 5. Contact
-For data requests or inquiries, please contact the repository maintainer.
+- New features store data on the device first. Any feature that sends data off the device must be opt-in, must be explained in this file and the Privacy Policy, and must be behind the grown-ups question if it touches a Google account or deletes data.
+- Never commit API keys, tokens or personal data to the repo.
+- Treat imported files as untrusted input (see `docs/GAMESAVES.md`).
