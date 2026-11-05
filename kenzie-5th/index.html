@@ -1291,15 +1291,16 @@ function introChars(i){
       el.classList.remove('pre');void el.offsetWidth;el.classList.add('e-quick');
       if(id==='lily'){var ci=el.querySelector('.ci');ci.classList.remove('pre-un');ci.classList.add('unroll')}}
     function spot(el){ /* only the character who is talking gets the big entrance, and the last one's effects stop first */
-      if(pg!==PG||el.dataset.fx)return;el.dataset.fx='1';clearFx();var id=el.dataset.id,c=ctr(el);
-      el.classList.remove('pre','e-quick');void el.offsetWidth;el.classList.add(LITE?'e-quick':'e-'+id);tapCount[id]=1;
-      if(id==='lily'){var ci=el.querySelector('.ci');ci.classList.remove('pre-un');ci.classList.add('unroll')}
-      SFX.pop();burst(c.x,c.y,8,{shapes:['s']});if(!LITE)(ENTERFX[id]||function(){})(el,c)}
+      if(pg!==PG||el.dataset.fx)return;el.dataset.fx='1';var id=el.dataset.id;
+      el.classList.remove('pre','e-quick');void el.offsetWidth;el.classList.add(LITE?'e-quick':'e-'+id);tapCount[id]=1; /* reveal first, so an effect problem can never leave anyone hidden */
+      try{if(id==='lily'){var ci=el.querySelector('.ci');ci.classList.remove('pre-un');ci.classList.add('unroll')}}catch(e){}
+      try{clearFx();var c=ctr(el);SFX.pop();burst(c.x,c.y,8,{shapes:['s']});if(!LITE)(ENTERFX[id]||function(){})(el,c)}catch(e){console.error(e)}}
     Array.prototype.forEach.call(els,function(el,k){
       delete el.dataset.fx;
       say(el.dataset.id,1,{queue:true,onStart:function(){spot(el)}});
       tm(function(){spot(el)},1000+k*1800); /* one entrance per character: when its line starts, or on this schedule if speech is slow. Never a static pre-image first. */
     });
+    tm(function(){Array.prototype.forEach.call(els,function(el){if(el.classList.contains('pre'))quiet(el)})},14000); /* rescue: after 14 s nobody is left hidden, whatever the speech did */
     say('unicorn',INSTR[i],{queue:true,onDone:function(){if(pg!==PG)return;S.intro=false;S.visited[i]=true;startGame(i)}});
   }else{
     Array.prototype.forEach.call(els,function(el,k){
