@@ -1,6 +1,8 @@
 # GEMINI.md
 
-Read **[CLAUDE.md](CLAUDE.md)** first. It has the rules for every LLM, including Gemini and Jules (which runs on Gemini).
+Read **[CLAUDE.md](CLAUDE.md)** first. It has the rules for every LLM, including Gemini, AGY (Antigravity) and Jules (which runs on Gemini).
+
+AGY: also read "Claude and AGY on the same Mac" in [AGENTS.md](AGENTS.md). Claude CLI works in the same local checkout.
 
 Gemini-specific:
 - Strengths: visual design, CSS, flavor text, SVG assets, quick prototypes.

@@ -1,6 +1,6 @@
 # CLAUDE.md - Start here (all LLMs)
 
-Single entry point for Claude (browser and CLI), Gemini, Jules, Codex and any other LLM. `AGENTS.md`, `AGENT.md`, `GEMINI.md`, `JULES.md` and `ONBOARDING.md` point here. Index of every doc: [docs/INDEX.md](docs/INDEX.md).
+Single entry point for Claude (browser and CLI), AGY (Google Antigravity), Gemini, Jules, Codex and any other LLM. `AGENTS.md`, `AGENT.md`, `GEMINI.md`, `JULES.md` and `ONBOARDING.md` point here. Index of every doc: [docs/INDEX.md](docs/INDEX.md).
 
 ## What this site is
 
@@ -43,7 +43,7 @@ No build step. Open `index.html` or run any static server (`python3 -m http.serv
 2. Add `index.html`. Relative paths only, mobile-first, title uses "F.O.N.G.", link back to the hub.
 3. Put code in the folder (`js/`, `css/`). ES5, no CDNs. Reuse `negen/` or `shared/js/` when it fits.
 4. Register it in `js/catalog.js` (fields documented at the top of that file). Wrong or missing entries mean the hub will not show it.
-5. Add a row to `GAME_INVENTORY.md` (games) and a line to `CHANGELOG.md` if it is a release.
+5. Add a row to `GAME_INVENTORY.md` (games). Put details in the game's own `CHANGELOG.md` and one short line in the root `CHANGELOG.md` if it is a release.
 6. Add a short `README.md` in the folder. See `admin/DOC_TEMPLATES/` for the full set.
 7. Test: load the page, play it on a narrow viewport, check the console for errors. Run `tests/verification.spec.js` with Playwright if you touched the hub.
 8. If you add a third-party asset, log it in `LICENSE_AUDIT.md`.
@@ -84,6 +84,7 @@ In the repo (merged from `chore/tooling`):
 | Tool | Note |
 |---|---|
 | Claude (browser or CLI) | Reads this file. Subagents only for broad research, never to write one file |
+| AGY (Antigravity) | Local IDE agent on the same Mac and checkout as Claude CLI. Volume work: new games, polish, content. Branch prefix `agy/`. See "Claude and AGY" in `AGENTS.md` |
 | Gemini | Visual design, CSS, flavor text, SVG assets. See `GEMINI.md` |
 | Jules | Runs from GitHub comments. Git ops, refactors, structure. See `AGENTS.md` |
 | Codex and others | Follow this file. Same rules |

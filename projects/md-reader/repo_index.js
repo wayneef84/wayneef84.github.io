@@ -109,12 +109,6 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "verify_dual_icons.py",
-    "path": "../../verify_dual_icons.py",
-    "category": "Root",
-    "type": "py"
-  },
-  {
     "name": "URL_PARAMETERS.md",
     "path": "../../URL_PARAMETERS.md",
     "category": "Root",
@@ -145,12 +139,6 @@ var REPO_FILES = [
     "type": "md"
   },
   {
-    "name": "verify_root_hub.py",
-    "path": "../../verify_root_hub.py",
-    "category": "Root",
-    "type": "py"
-  },
-  {
     "name": "AI_FEEDBACK.md",
     "path": "../../AI_FEEDBACK.md",
     "category": "Root",
@@ -161,12 +149,6 @@ var REPO_FILES = [
     "path": "../../AGENTS.md",
     "category": "Root",
     "type": "md"
-  },
-  {
-    "name": "verify_md_reader.py",
-    "path": "../../verify_md_reader.py",
-    "category": "Root",
-    "type": "py"
   },
   {
     "name": "ONBOARDING.md",
@@ -2241,12 +2223,6 @@ var REPO_FILES = [
   {
     "name": "README.md",
     "path": "../../legal/README.md",
-    "category": "Legal",
-    "type": "md"
-  },
-  {
-    "name": "MSA.md",
-    "path": "../../legal/MSA.md",
     "category": "Legal",
     "type": "md"
   },

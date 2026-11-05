@@ -47,13 +47,7 @@ Key-value storage for user preferences and API keys.
 *   **v1.0.0**: Initial release with IDB v4 schema.
 
 ## ⚖️ Legal & Compliance
-**Policy Classification:** SkyLantern Logistics (Enterprise / NDA)
-**Compliance:** Amazon Corporate Security Standards
-
-This project handles sensitive logistics data and carrier API keys. Use is subject to the [Master Service Agreement](../../legal/MSA.md) and [Data Policy](../../legal/DATA_POLICY.md).
-
-*   **Data Retention:** Shipment data is stored locally in IndexedDB.
-*   **Confidentiality:** Do not share API keys or internal tracking numbers externally.
+Shipments and carrier API keys are stored locally in IndexedDB. Tracking numbers are sent to the carrier through the Cloudflare Worker proxy only when you look up a shipment. Do not share your API keys. See the [Privacy Policy](../../legal/PRIVACY_POLICY.md) and [Data Policy](../../legal/DATA_POLICY.md).
 
 ## Future Plans
 *   **Cloud Sync**: Optional adapter to sync data to Firebase/Supabase.

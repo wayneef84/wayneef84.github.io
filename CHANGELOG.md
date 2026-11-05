@@ -1,8 +1,18 @@
-# F.O.N.G. Root Hub - Changelog
+# F.O.N.G. Arcade - Changelog
 
-All notable changes to the root hub will be documented in this file.
+Site-wide release notes: one short entry per release-worthy change. Details live in each game's own `CHANGELOG.md`.
 
 ## [Unreleased]
+### Changed
+- **Docs:** AGY (Google Antigravity) added to `CLAUDE.md`, `AGENTS.md` and `GEMINI.md`, with rules for Claude and AGY sharing one checkout. `ARCHITECTURE.md` rewritten for the current site. `GAME_INVENTORY.md` refreshed (13 Card, Big 2, Nightlite rows, stale February plans removed). Changelog rule settled: root file gets one line per release, details go in the game's changelog.
+- **Legal:** `legal/` rewritten in plain language to match what the site really does (no accounts, data stays on the device, opt-in Drive backup, tracker lookups through the carrier proxy). Removed the made-up SkyLantern Logistics and 16 TB Archive entries and every Amazon reference. `legal/MSA.md` deleted.
+
+### Removed
+- Old one-off verification scripts and screenshots from the repo root (`verify_*.py`, `verification_*.png`).
+
+## [3.0.0] - 2026-11-04
+The revival release (PRs #266 to #313, Oct 25 to Nov 1). Homepage Settings and theme engine with 7 skins, installable offline app, per-device scores and stats, game saves with optional Google Drive backup, spoken cheers, site-wide navigation, phone fixes, and new or rebuilt games: Byte Runner, Byte Runner Quest, S4K Mixer v2, Memory Match, Nightlite Choir+ v0.5.0, Slots v4, Jigsaw v2, Big 2 deal options and 13 Card Poker v2.
+
 ### Added
 - **13 Card Poker v2.0.1:** free-for-all Chinese Poker (you plus 1 to 3 NPCs with SVG faces), 3-5-5 rows, scoop and foul scoring, coin stakes with carried-over bankrolls (save key `fong.13card.save`, registered in game saves), who-owes-whom settlement panel. New shared `games/cards/shared/card-anim.js` (deal, flip, sweep, coin fly, pulse; honors calm and reduced motion). Old negen `ThirteenCard.js` removed.
 - **Big 2 deal rules:** Players option (2, 3 or 4) and Who starts option (Lowest card or Last winner). 3 players get 17 cards each plus a face-up card for the start card holder, 2 players get 17 each with an 18 card spare pile and one card turned up. Start and fallback cards follow the ruleset suit order (Singapore now starts with the 3 of spades). Options and the last winner are saved in `fong.big2.opts`, added to the `js/gamesaves.js` manifest as `big2`. Big 2 folder now has the full doc set. Test: `node tests/big2-deal.test.js`.

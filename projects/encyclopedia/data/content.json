@@ -3,11 +3,6 @@
   "description": "A comprehensive guide to the repository, its projects, and its maintainers.",
   "entries": [
     {
-      "term": "16 TB Archive",
-      "definition": "Internal Only. Key strengths: Pending.",
-      "category": "Agent"
-    },
-    {
       "term": "Animal Stack",
       "definition": "Stack animals as high as you can without toppling over.",
       "category": "Project",
@@ -319,11 +314,6 @@
       "tags": [
         "Arcade"
       ]
-    },
-    {
-      "term": "SkyLantern Logistics",
-      "definition": "Amazon Corporate. Key strengths: Active.",
-      "category": "Agent"
     },
     {
       "term": "Slots",
