@@ -152,7 +152,7 @@ svg{display:block;overflow:visible}
 .wipe.rev{animation-direction:reverse;animation-fill-mode:both}
 @keyframes wipe{to{transform:skewX(-14deg) translateX(320%)}}
 /* ---------- ambient motion (transform and opacity only) ---------- */
-body.lite .amb,body.lite .idl,body.lite .shim{display:none}
+body.lite .amb,body.lite .shim{display:none} /* lighter mode hides decoration only, never the characters */
 body.lite .idl{animation:none}
 .tw{position:absolute;font-style:normal;opacity:.5;animation:twinkle 2.8s ease-in-out infinite}
 .cloud{position:absolute;left:-260px;width:150px;height:48px;background:#fff;border-radius:48px;opacity:.9;animation:drift linear infinite}
