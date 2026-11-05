@@ -42,8 +42,8 @@
     function rareId(id) { return id + RARE_SUFFIX; }
     function isRareId(id) { return typeof id === 'string' && id.length > RARE_SUFFIX.length && id.slice(-RARE_SUFFIX.length) === RARE_SUFFIX; }
     function baseId(id) { return isRareId(id) ? id.slice(0, id.length - RARE_SUFFIX.length) : id; }
-    // One roll: true about 1 time in RARE_ODDS. rnd is Math.random or a seeded function. Off means never.
-    function roll(rnd, on) { return !!on && rnd() < 1 / RARE_ODDS; }
+    // One roll: true about 1 time in RARE_ODDS (or 1 in odds when given: eggs use a better chance than the pot). rnd is Math.random or a seeded function. Off means never.
+    function roll(rnd, on, odds) { return !!on && rnd() < 1 / (odds > 1 ? odds : RARE_ODDS); }
 
     // Brighter sound for a rare friend, still C pentatonic: an octave layered on top (same pitch classes) and an added harmonic.
     function shift(seq, add) {
@@ -241,7 +241,43 @@
         return m;
     }
 
-    w.NightliteRecipes = { MIN: MIN, MAX: MAX, RARE_ODDS: RARE_ODDS, collectBlends: collectBlends, keyOf: keyOf, rareId: rareId, isRareId: isRareId,
+    // Share code for a stage: ids joined with '.', an empty spot is an empty piece ('mossle.glimmow..hedgey'). Ids are lowercase
+    // letters, digits and underscores only, so a shared link cannot carry anything else. decodeMix gives an array of ids or null.
+    var ID_RE = /^[a-z0-9_]{1,40}$/;
+    function encodeMix(slots) {
+        var out = [], i, last = -1;
+        for (i = 0; i < slots.length; i++) if (slots[i]) last = i;
+        for (i = 0; i <= last; i++) out.push(slots[i] && ID_RE.test(slots[i]) ? slots[i] : '');
+        return out.join('.');
+    }
+    function decodeMix(text, max) {
+        var parts, out = [], i, any = false;
+        if (typeof text !== 'string' || !text || text.length > 400) return null;
+        parts = text.split('.');
+        if (parts.length > max) return null;
+        for (i = 0; i < parts.length; i++) {
+            if (parts[i] === '') { out.push(null); continue; }
+            if (!ID_RE.test(parts[i])) return null;
+            if (out.indexOf(parts[i]) >= 0) return null;       // a friend can stand on the stage once
+            out.push(parts[i]); any = true;
+        }
+        return any ? out : null;
+    }
+    // 'v0.6.0' -> [0, 6, 0]. Anything else -> null.
+    function parseVersion(v) {
+        var m = /^v?(\d{1,4})\.(\d{1,4})\.(\d{1,4})$/.exec(typeof v === 'string' ? v : '');
+        return m ? [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10)] : null;
+    }
+    // 1 when a is newer than b, -1 when older, 0 when equal or one cannot be read
+    function compareVersions(a, b) {
+        var x = parseVersion(a), y = parseVersion(b), i;
+        if (!x || !y) return 0;
+        for (i = 0; i < 3; i++) { if (x[i] > y[i]) return 1; if (x[i] < y[i]) return -1; }
+        return 0;
+    }
+
+    w.NightliteRecipes = { encodeMix: encodeMix, decodeMix: decodeMix, parseVersion: parseVersion, compareVersions: compareVersions,
+                            MIN: MIN, MAX: MAX, RARE_ODDS: RARE_ODDS, collectBlends: collectBlends, keyOf: keyOf, rareId: rareId, isRareId: isRareId,
                            baseId: baseId, roll: roll, rareSynth: rareSynth, build: build };
     if (typeof module !== 'undefined' && module.exports) module.exports = w.NightliteRecipes;
 })(typeof window !== 'undefined' ? window : this);

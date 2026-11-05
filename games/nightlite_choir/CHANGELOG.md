@@ -1,5 +1,29 @@
 # Nightlite Choir+: Changelog
 
+## v0.6.0 - Eggs, sparks and Collection (2026-11-02)
+- Easier sparks: +1 per 8 seconds of play (was 15), Wish on a star gives 6 (was 3).
+- Cheaper, quicker eggs: 3 sparks (was 5), hatch in about 12 seconds (was 20), each warm tap takes 3 seconds off (was 2).
+- Stronger warm tap: bigger wobble, sparkles from the egg, a note that climbs as the egg warms, more glow and earlier cracks.
+- Hatching: the egg shakes and glows, splits in two and sparkles fly before the reveal (skipped away from the Collection screen and with reduced motion).
+- Eggs can now hatch a blend you already own (3 times less likely than a new one). A repeat gives the 3 sparks back, so nobody has to keep wishing. Eggs are a shimmering rare 1 in 5 (pot stays 1 in 10). A new rare twin on a repeat keeps the sparks spent.
+- Collection order: Sparks, Nest, Mixing pot, My blends, Rare friends, Discovery book. Tap a blend or rare friend to hear its loop (tap again to stop). Rare count shows N of total.
+- Pot empties after a good mix. The made friend stays in the bowl. A wrong group keeps its picks.
+- Saves carry the game version (`app`, for example `v0.6.0`). A save from a NEWER version loads, shows a notice, and its unknown blends, recipes and rares are kept and written back, so nothing is erased. Settings has "About this version" with the game version, the version of the save and a "What is new" list (`WHATS_NEW` at the top of `app.js`).
+- Bigger stages as scenes: each world has its own stage (Garden 8, Attic 9, Observatory 10) with friends standing on a hill, on shelves or on an orbit instead of a button grid (`js/layout.js`). Per-friend bop and note phase, a glow pulse on the beat while a friend sings, reduced motion turns it all off. Stages are kept per world while the page is open. Save/Load puts the mix on its world's stage. Older 6-slot saves still load.
+- Share a stage: Share button copies `index.html?w=garden&mix=mossle.glimmow..hedgey` (`w` is optional, default garden; at most the world's capacity in spots; older `?mix=` links still work) (ids joined by dots, an empty spot is empty). Opening it fills the stage. Friends the visitor does not have show as silent outlines (dark silhouette, grey fill, "?"), unknown ids show a plain "?". Saves are the device's collection, the link is only a stage.
+- Singing notes float up from friends on the stage in time with the beat (off with reduced motion). Outlines and unowned friends do not count for sparks, the pot or sound.
+- Tiers: every blend has a tier (grey, green, blue, purple, gold, red; 12/10/8/6/4/2 of 42). Collection cards have a tier border, hatched friends show colored dots. Eggs roll a tier first (50, 28, 14, 6, 1.9, 0.1 percent), then a blend. A tier you own completely hands its share up.
+- Selling a repeat: sparks back plus banked luck by tier (0.5 to 16 percent points), shown under the friend and in the nest. The next egg spends it. Luck moves odds off the lowest live tier into the higher ones.
+- Eggs come in 8 random colors. Pattern, sparkle, rainbow and golden eggs carry a luck boost. New "Eggs found" card shows each kind and its bonus once found. Eggs no longer roll shimmer at 1 in 5, it is 1 in 10 again.
+- 21 new blends (set MORE, `js/worlds/blends_more.js`, `RECIPES_MORE.md`, tiers in `js/worlds/tiers.js`).
+- Saves are v6: `luck`, `eggs`, and the egg look in the nest. Settings shows the latest "What is new" and a history. A banner on the door screen opens it once per version (`nightlite.seen`).
+- Lessons learned guide: `LL/LL_NIGHTLITE_CHOIR.md`.
+- Review fixes: ids from links, saves and snapshots go through `chOf()` (own properties only), so `?mix=constructor` is an outline and not a crash. Undo and Load keep outlines. Shown luck is capped at 60. Hatching with an empty nest rolls nothing, and hatch start is saved. Egg SVG ids are unique per egg, the hatch shells have a `-webkit-` clip-path.
+- Tests added for refund, egg odds and the empty pot. Test hook `Nightlite.mixPot`.
+
+- Phone layout: bars compacted at 480px and under so a world fits one screen with no page scroll; the world title stays on one line.
+- Reduced motion now also stops the hatch shell split.
+
 ## v0.5.0 - Pot upgrade (2026-11-01)
 - Mixing pot takes 2 to 5 friends. Blends you own can be ingredients. Recipe key = sorted ids joined with `+`, exact set match, order never matters. The 6 old recipes and old saves work unchanged. Tempo of a blend is the first ingredient's world, through blends.
 - Pot screen: 5 spots, Mix needs 2, "Match my stage" and "What can I make?" buttons with big suggestion cards (ingredient faces, "?" and a clue for new recipes), hints "Almost! Add N more friend(s)" and "That is a lot of friends. Try fewer."

@@ -17,6 +17,7 @@
             <span class="top-gap" aria-hidden="true"></span>
         </header>
         <main class="doors-wrap">
+            <button class="btn wide newbanner" id="newBanner" type="button" hidden><span class="ico">&#10024;</span><span class="lbl" id="newBannerText">What is new</span></button>
             <p class="lead">It is bedtime. Pick a door.</p>
             <div id="doors" class="doors"></div>
             <section class="bar sparkbar" aria-label="Sparks and collection">
@@ -57,6 +58,7 @@
             <button class="btn" id="resetBtn" type="button"><span class="ico">&#128260;</span><span class="lbl">Reset</span></button>
             <button class="btn" id="saveBtn" type="button"><span class="ico">&#128190;</span><span class="lbl">Save</span></button>
             <button class="btn" id="loadBtn" type="button"><span class="ico">&#128194;</span><span class="lbl">Load</span></button>
+            <button class="btn" id="shareBtn" type="button" aria-label="Copy a link to share this stage"><span class="ico">&#128279;</span><span class="lbl">Share</span></button>
         </section>
 
         <section class="bar tray" aria-label="Creatures">
@@ -91,17 +93,24 @@
                 <p class="hint">Pick 2 to 5 friends and mix them. Your friends always stay with you.</p>
                 <button class="btn primary wide" type="button" data-act="pot"><span class="ico">&#129379;</span><span class="lbl">Open the Mixing pot</span></button>
             </section>
-            <section class="card" aria-label="Discovery book">
-                <h2>Discovery book <span id="bookCount" class="count"></span></h2>
-                <div id="bookBox" class="book"></div>
+            <section class="card" aria-label="My blends">
+                <h2>My blends <span id="ownedCount" class="count"></span></h2>
+                <p class="hint">Tap a friend to hear it.</p>
+                <div id="ownedBox" class="owned"></div>
             </section>
             <section class="card" id="rareCard" aria-label="Rare friends" hidden>
                 <h2>Rare friends &#9733; <span id="rareCount" class="count"></span></h2>
+                <p class="hint">Tap a shimmering friend to hear its brighter song.</p>
                 <div id="rareBox" class="owned"></div>
             </section>
-            <section class="card" aria-label="My blends">
-                <h2>My blends <span id="ownedCount" class="count"></span></h2>
-                <div id="ownedBox" class="owned"></div>
+            <section class="card" aria-label="Eggs found">
+                <h2>Eggs found <span id="eggCount" class="count"></span></h2>
+                <p class="hint">Special eggs hide a luck bonus. Find one and its bonus shows here.</p>
+                <div id="eggBox" class="eggbook"></div>
+            </section>
+            <section class="card" aria-label="Discovery book">
+                <h2>Discovery book <span id="bookCount" class="count"></span></h2>
+                <div id="bookBox" class="book"></div>
             </section>
         </main>
     </section>
@@ -152,6 +161,10 @@
                 <label class="vol"><span class="ico" aria-hidden="true">&#128265;</span>
                     <input type="range" id="cfgVol" min="0" max="100" value="70" aria-label="Volume"></label>
             </div>
+            <h3>About this version</h3>
+            <p class="hint" id="cfgVer"></p>
+            <details class="cfg-new" id="cfgNewBox" open><summary>What is new</summary><div id="cfgNew"></div></details>
+            <details class="cfg-new"><summary>History of changes</summary><div id="cfgHist"></div></details>
             <h3>Your saves</h3>
             <p class="hint">Keep a copy of this game on a file, or load one back in.</p>
             <button class="btn wide" id="cfgExport" type="button"><span class="ico">&#128228;</span><span class="lbl">Export this game</span></button>
@@ -202,7 +215,11 @@
     <script src="js/worlds/observatory.js"></script>
     <script src="js/worlds/blends.js"></script>
     <script src="js/worlds/blends_claude.js"></script>
+    <script src="js/worlds/blends_more.js"></script>
+    <script src="js/worlds/tiers.js"></script>
     <script src="js/recipes.js"></script>
+    <script src="js/eggs.js"></script>
+    <script src="js/layout.js"></script>
     <script src="../../js/cheer.js"></script>
     <script src="../../js/gamesaves.js"></script>
     <script src="../../js/gdrive-config.js"></script>

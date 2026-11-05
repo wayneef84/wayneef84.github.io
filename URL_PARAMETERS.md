@@ -16,6 +16,12 @@ Both Letter Tracing and Words games support URL parameters for:
 
 ---
 
+## Nightlite Choir+
+
+`games/nightlite_choir/index.html?w=attic&mix=mossle.glimmow..hedgey` opens that world and fills its stage. `w` is the world id (`garden`, `attic` or `observatory`), optional, default `garden`, anything else counts as `garden`. Ids in `mix` are lowercase letters, digits and underscores, joined by dots, an empty spot is empty, at most the world's spots (garden 8, attic 9, observatory 10). Older `?mix=` links with up to 6 spots still work. Friends the visitor does not have show as outlines. A bad value is ignored.
+
+---
+
 ## Letter Tracing Game
 
 ### Base URL

@@ -2,7 +2,7 @@
 
 A cozy music game for a young child. Little creatures each sing a short loop. Put them on a stage and the loops layer into a song. Three worlds: the Night Garden, the Toy Attic and the Star Observatory. All three doors are open.
 
-Status: v0.5.0. 12 base creatures, free sparks, eggs, a Mixing pot for 2 to 5 friends, a Discovery book, 21 blend creatures and rare shimmer versions.
+Status: v0.6.0 (faster sparks, cheaper eggs with hatching, refunds on repeats, previewable Collection). 12 base creatures, free sparks, eggs, a Mixing pot for 2 to 5 friends, a Discovery book, 21 blend creatures and rare shimmer versions.
 
 ## Play
 Open `index.html` (works from file:// and GitHub Pages) or visit games/nightlite_choir/ on the site.

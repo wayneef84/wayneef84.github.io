@@ -49,7 +49,7 @@ One page. Start with [../CLAUDE.md](../CLAUDE.md). It is the entry point for eve
 | [../admin/DEPENDENCY_POLICY.md](../admin/DEPENDENCY_POLICY.md), [../admin/UPGRADE_CHECKLIST.md](../admin/UPGRADE_CHECKLIST.md) | Shared library versions |
 | [../admin/COMPLIANCE_FIXES.md](../admin/COMPLIANCE_FIXES.md) | Known rule violations backlog |
 | [../admin/DOC_TEMPLATES/](../admin/DOC_TEMPLATES/README_TEMPLATE.md) | Doc templates |
-| [../LL/README.md](../LL/README.md) | Lessons learned (card engine, ES5 and Safari, collaboration) |
+| [../LL/README.md](../LL/README.md) | Lessons learned (card engine, ES5 and Safari, collaboration, Nightlite Choir+) |
 | [../legal/README.md](../legal/README.md) | Privacy, terms, data policy |
 | [../negen/README.md](../negen/README.md) | Engine plans and progress |
 | [../wosky/TOOLKIT.md](../wosky/TOOLKIT.md) | How to add a WOS tool |

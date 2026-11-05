@@ -14,6 +14,7 @@ games/nightlite_choir/
   js/worlds/observatory.js  world data: theme, 80 BPM, 4 creatures, star-sky look
   js/worlds/blends.js 6 blend creatures: art spec, synth spec, `blend: [2 to 5 ids]` (the recipe table), `clue`
   js/worlds/blends_claude.js  15 more blends (global NightliteBlendsExtra_CLAUDE). Any NightliteBlendsExtra_* global is merged
+  js/layout.js        NightliteLayout: cap(worldId) and spots(worldId) = [{ x, y, s }] in percent of the 5:4 scene (no DOM, tested), plus shelves() for the Attic planks
   js/recipes.js       NightliteRecipes: collectBlends, build (match, hint, suggest, fromStage, tempo), roll, rareSynth. No DOM
   tests/nightlite.test.js  (repo root tests/) node test with a fake window
   ../../js/gamesaves.js  shared FongGameSaves (export and import of the keys below)
@@ -24,12 +25,13 @@ games/nightlite_choir/
 
 ## How it works
 - A world file registers itself in `window.NightliteWorlds`. A new world is one new file plus a script tag, a door entry and a name in `WORLD_ORDER` in app.js.
-- One shared stage (6 slots) for all worlds. Each creature gets its world id and tempo at init. The stage tempo is set when the first creature goes on an empty stage (`setBpm`), so a Garden creature placed first makes an Attic creature play at 90 BPM, and the reverse at 100 BPM. Loops are step based, so they re-render at the stage tempo (cached per creature and tempo). Entering a world keeps a non-empty stage and its tempo.
+- One stage per world: `S.stages = { garden, attic, observatory }` (capacities 8, 9, 10 from `NightliteLayout.cap`). `S.slots` is an alias of the active world's array (`setSlots` replaces both, `setWorldView` switches it, so never assign `S.slots` alone). `cap()` is the active capacity. Each creature gets its world id and tempo at init. A stage's tempo is set when the first creature goes on it empty (`setBpm`), so a Garden creature placed first makes an Attic creature play at 90 BPM, and the reverse at 100 BPM. Loops are step based, so they re-render at the stage tempo (cached per creature and tempo). Switching to another world's stage (door, chip, Load, shared link) stops the voices, clears Undo and starts that stage's friends (`startStage`).
 - The tray has a world switcher (three chips from `WORLD_ORDER`, the shown world highlighted) above the 4 creatures of the shown world. A chip tap calls `setWorldView`: it changes theme, title and tray only. The stage, its sound, tempo and undo history are untouched. Entering from the door screen calls `enterWorld`, which also clears undo and restarts the voices. Keys 1 to 4 place the shown friends.
 - On tap, app.js renders the creature loop with the synth at the world BPM (cached), then starts it as a looping buffer on the next bar line with a soft fade-in. Master gain is capped at 0.6 and a compressor sits before the output.
 - Audio context is created on the first tap (browser autoplay rules).
-- Leaving a world stops the sound and keeps the stage. Coming back restarts it.
-- Storage keys: `nightlite.vol`, `nightlite.mix`. The one saved mix stores the slots and the tempo, and may hold creatures from both worlds. Older v0.1.0 saves have no tempo and load at the tempo of their first creature.
+- Leaving a world stops the sound and keeps its stage in memory. Coming back restarts it.
+- Scene: `renderStage` fills `#stage` (a 5:4 box, `aspect-ratio`, width `min(100%, 60vh, 560px)`) with one absolutely placed `button.slot` per spot (`left/top/width` in percent, `z-index` from y so front friends overlap back ones, DOM and tab order stay by spot index). Each has `--ph` and `--np` (fixed per spot, no random numbers) as animation phase offsets for the bop and the note, and `.sing` (set by `markSing` while its voice plays) for the glow pulse that follows `--beat`. `drawConstellation` places the star-map SVG from the spot percents behind the friends.
+- Storage keys: `nightlite.vol`, `nightlite.mix`. The one saved mix stores the slots, the tempo and the world id, and may hold creatures from all worlds. Load enters the saved world and cuts the list to that world's capacity. Older v0.1.0 saves have no tempo and load at the tempo of their first creature.
 - Art generator additions for the Attic: bodies `doll`, `pony`, `tin`, `plush`, eyes `button`, mouths `stitch` and `grille`, accessories `braids`, `mane`, `horn`, `tuft`, `windkey` (a second one via `acc2`), plus `patch` and `mark: 'star'`. Synth additions: drum voices `clop` and `click`.
 - Observatory additions: bodies `moon`, `star`, `comet`, `planet` (spec `ring` sets the ring color), eyes `twinkle`, mouth `hum`, accessories `nightcap`, `wand`, `sparkles`, `cowhat`, `swirl` (comet tail, drawn behind). Synth drum voices `whoosh` (airy sweep, 2.6 s per hit) and `thrum` (soft felt drum). Pad and bell are plain tone specs (chord pad, octave 6 and 7 bell).
 - Observatory look: `glow.kind: 'stars'` builds a skylight and telescope silhouette (inline SVG), twinkling stars and three slow shooting stars (`buildSky`). Panels are translucent so the sky shows. `drawConstellation` puts an SVG of dashed pastel pink and lilac lines between the filled slots inside the stage. It has `pointer-events: none` and is redrawn on every stage change and resize.
@@ -48,6 +50,11 @@ games/nightlite_choir/
 - Save: `nightlite.save` = `{ v: 4, sparks, blends: [ids], found: ['a+b', ...], nest: { left } | null }`, written on every change and on page hide. `loadProgress` validates every field and ignores unknown ones. `nightlite.mix` snapshots get a `v` field; older snapshots without it still load. Blends not owned are dropped from a loaded mix.
 - UI sounds (wish, hatch, pot): `chime(notes)` plays a few soft sine notes (C pentatonic) through the same master gain, so Mute and Volume apply.
 - Art additions for the blends: accessory `ringband`. The egg and nest are a small inline SVG written in js/app.js (`eggSvg`).
+
+## v0.6.0: eggs and Collection
+`js/eggs.js` holds the tier odds, depletion, luck, egg kinds and `rollBlend` (pure, tested). `hatch()` builds the item list with tiers from `js/worlds/tiers.js`, calls `rollBlend`, spends luck, refunds `EGG_COST` and banks `sellLuck(tier)` on a repeat with no new shimmer. Save v6 adds `luck`, `eggs` and the egg look. `startHatch()` runs the shake and split animation (`HATCH_ANIM_MS`) on the Collection screen, then calls `hatch()`; elsewhere it hatches at once. `previewChar()` plays one friend's loop at its own tempo on a separate source (stopped on screen change). `mixPot()` empties the pot after a good mix.
+
+`recipes.js` also holds `encodeMix`, `decodeMix` (ids `[a-z0-9_]{1,40}`, at most `max` spots, no repeats; the app passes the world's capacity), `parseVersion` and `compareVersions`. `loadSharedMix()` runs at the end of `init`: `?w=<world id>&mix=...`, `w` optional (default garden). `keepUnknown()` preserves entries from a newer save.
 
 ## v0.5.0: pot upgrade
 - Recipes: `blend` is 2 to 5 distinct ids (base or blend). Key = sorted ids joined with `+` (2 ingredient keys are the same as before, so old `found` keys still match). `NightliteRecipes.build` makes `recipeByKey`, `recipes` (each with `ing` and `tier`: 2 when an ingredient is a blend) and an `errors` list (wrong count, unknown id, repeat, same set as another recipe). Matching is an exact set match, order never matters.
