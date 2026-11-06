@@ -19,3 +19,9 @@ jobs:
         run: node scripts/check-site.mjs --selftest
       - name: Validate catalog, JS syntax, links, ES5, paths, CDNs and docs
         run: node scripts/check-site.mjs
+      - name: Run unit tests (tests/*.test.js)
+        run: |
+          for t in tests/*.test.js; do
+            echo "== $t"
+            node "$t" || exit 1
+          done
