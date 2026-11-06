@@ -11,14 +11,14 @@ Read **[CLAUDE.md](CLAUDE.md)** first. It has the rules for every LLM (Claude, A
 | **AGY** | `A` | Builder (Google Antigravity) | Volume work, UI polish, content | New games, polish, recipes |
 | **Jules** | `J` | Lead Architect | Git ops, refactoring, integration | Structure, root files |
 
-Scope is guidance, not a lock. Wayne drives all three (Jules and Gemini from GitHub comments, Claude from browser or CLI). Whoever is assigned the task edits whatever files it needs.
+Scope is guidance, not a lock. Wayne drives all of them (Jules and Gemini from GitHub comments, Claude and AGY locally). Whoever is assigned the task edits whatever files it needs.
 
 ## Per-tool rules
 
 - **Claude:** owns doc upkeep. For shipment-tracker changes update `projects/shipment-tracker/ARCHITECTURE.md` and `TODO.md`. If a style disagreement comes up, CLAUDE.md wins.
 - **Gemini:** reuse CSS variables (`css/`, `games/shared/css/` if present). Prefer inline SVG over image files. If a script passes about 300 lines, split it or ask for a refactor. Visual design and game concepts are Gemini's call. Put new ideas in the PR description.
 - **Jules:** before new work, make sure the branch is stable (`git status`, merge `dev` in). Use `ls -R` and `grep` to check the real state, do not trust docs. Directory structure and git workflow are Jules's call. Branch and PR into `dev` only, never `main`.
-- **AGY:** branch prefix `agy/`. Open your own PRs into `dev`, Wayne merges. Escalate to Claude when you fail twice on a bug or need to change shared code (`games/cards/shared/`, `js/gamesaves.js` structure, `negen/`, `shared/`, `storage/`). Send one brief: goal, diff, failing log.
+- **AGY:** branch prefix `agy/`. Ship your own PRs into `dev` with the workflow in CLAUDE.md (merge once the check passes; shared code needs Claude's review first). Escalate to Claude when you fail twice on a bug or need to change shared code (`games/cards/shared/`, `js/gamesaves.js` structure, `negen/`, `shared/`, `storage/`). Send one brief: goal, diff, failing log.
 - **All:** Wayne has final say.
 
 ## Claude and AGY on the same Mac

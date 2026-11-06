@@ -4,6 +4,7 @@ Site-wide release notes: one short entry per release-worthy change. Details live
 
 ## [Unreleased]
 ### Changed
+- **Workflow:** "commit" now means push, PR into `dev`, merge once the check passes, clean up. Claude and AGY merge their own PRs. Shared code needs a second reviewer. The PR check now also runs every `tests/*.test.js`.
 - **Docs:** AGY (Google Antigravity) added to `CLAUDE.md`, `AGENTS.md` and `GEMINI.md`, with rules for Claude and AGY sharing one checkout. `ARCHITECTURE.md` rewritten for the current site. `GAME_INVENTORY.md` refreshed (13 Card, Big 2, Nightlite rows, stale February plans removed). Changelog rule settled: root file gets one line per release, details go in the game's changelog.
 - **Legal:** `legal/` rewritten in plain language to match what the site really does (no accounts, data stays on the device, opt-in Drive backup, tracker lookups through the carrier proxy). Removed the made-up SkyLantern Logistics and 16 TB Archive entries and every Amazon reference. `legal/MSA.md` deleted.
 

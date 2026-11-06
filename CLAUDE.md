@@ -31,11 +31,15 @@ No build step. Open `index.html` or run any static server (`python3 -m http.serv
 
 ## Branch and PR workflow
 
-1. Branch from `dev`: `claude/<topic>` (Claude), `feat/...` or `fix/...` (others). Jules or Gemini working from a GitHub comment: use the branch they open.
-2. Commit small. Messages: `feat:`, `fix:`, `docs:`, `refactor:`, `license:`.
-3. Push the branch. Open a PR into `dev`. Never push or force-push to `dev` or `main`.
-4. Wayne reviews and merges. Only Wayne merges `dev` to `main`.
-5. Delete the branch after merge.
+`dev` is the public branch: GitHub Pages publishes it, so a merge into `dev` is live in a minute or two.
+
+1. Branch from `dev` in a worktree under `~/Documents/Dev/wt/`: `claude/<topic>` (Claude), `agy/<topic>` (AGY), `feat/...` or `fix/...` (others). Jules or Gemini working from a GitHub comment: use the branch they open.
+2. Commit small. Messages: `feat:`, `fix:`, `docs:`, `refactor:`, `license:`. Checkpoint commits while work is unfinished stay on the branch (or a draft PR). Never merge a draft.
+3. **When Wayne says "commit", ship it in one go, no yes-prompts:** push, open a PR into `dev` (or the branch he names), merge once it passes, clean up.
+4. Before merging: rebase on the latest `origin/dev`, rerun `node scripts/check-site.mjs` and every `tests/*.test.js`, push, and wait for the PR check (it runs both). Never merge a failing PR.
+5. Shared or sensitive code needs a second reviewer before merge: `games/cards/shared/`, `js/` site modules (saves, Drive, scores, settings, theme), `negen/`, `shared/`, `storage/`, `sw.js`, `legal/`, anything that parses imported files. Claude reviews AGY's PRs. Claude's own get a separate code-reviewer pass. If you changed a shared file that pages cache, bump `CACHE_VERSION` in `sw.js`.
+6. Merge with a merge commit (`gh pr merge <n> --merge`). Claude and AGY merge their own PRs. Jules and Gemini PRs from GitHub comments wait for Wayne. Only Wayne merges `dev` to `main`. Never push or force-push to `dev` or `main`.
+7. After merge: open the live page and confirm it loads, then delete the branch (remote and local) and its worktree. If something broke, revert with a PR (`gh pr revert <n>`, or `git revert -m 1 <merge sha>` on a branch) and merge that. Do not patch `dev` directly.
 
 ## Add a game or tool
 
