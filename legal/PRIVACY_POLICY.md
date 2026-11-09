@@ -11,7 +11,7 @@ F.O.N.G. Arcade (https://wayneef84.github.io) is a personal, non-commercial site
 
 ## When data leaves your device
 
-- **Shipment Tracker.** To look up a package, the tracking number is sent to the carrier (for example UPS, FedEx, DHL or USPS) through a small Cloudflare Worker proxy. Carrier API keys you enter stay in your browser.
+- **Shipment Tracker.** To look up a package, the tracking number is sent to the carrier (DHL, FedEx or UPS), either directly from your browser or through an optional Cloudflare Worker proxy if one is set up. Carrier API keys you enter stay in your browser.
 - **Google Drive backup (optional, off by default).** If a grown-up connects Google Drive, save files are copied to a hidden app folder in that Google account. Sign-in happens with Google and the sign-in token is kept in memory only.
 - **Hosting.** GitHub Pages serves the site and may log basic request data such as IP address. See GitHub's privacy statement.
 
