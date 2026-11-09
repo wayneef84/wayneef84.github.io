@@ -15,7 +15,7 @@ Third-party code, fonts and assets are logged in [LICENSE_AUDIT.md](../LICENSE_A
 | Project | Where data lives | Leaves the device? |
 |---|---|---|
 | Games (arcade, cards, puzzle, educational) | Browser `localStorage` | No, unless you export a save file or turn on Google Drive backup |
-| Shipment Tracker | Browser IndexedDB | Tracking numbers go to the carrier through a small proxy to look up status |
+| Shipment Tracker | Browser IndexedDB | Tracking numbers go to the carrier (directly or through an optional proxy) to look up status |
 | Input A11y (scanner and OCR) | Browser `localStorage` | No. Images are processed in the browser |
 | WOS calculators and other tools | Browser `localStorage` | No |
 

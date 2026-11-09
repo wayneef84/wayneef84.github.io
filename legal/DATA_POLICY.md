@@ -15,7 +15,7 @@ How data is handled on F.O.N.G. Arcade. The short version: everything stays in y
 
 ## What leaves the device
 
-- Tracking numbers, sent to the carrier through the Cloudflare Worker proxy, only when you look up a shipment.
+- Tracking numbers, sent to the carrier (directly or through the optional Cloudflare Worker proxy), only when you look up a shipment.
 - Save files, only when you export them or turn on Drive backup.
 
 Nothing else is sent anywhere. There is no server database, no account system and no analytics.
